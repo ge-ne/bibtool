@@ -1,0 +1,1697 @@
+%%*****************************************************************************
+%% $Id: bibtcl.tex,v 1.1 2007-02-07 21:29:18 gene Exp $
+%%*****************************************************************************
+%% Author: Gerd Neugebauer
+%%-----------------------------------------------------------------------------
+%% 
+%%	To generate the printed documentation run LaTeX on the
+%%	driver file bibtcl.ltx.
+%% 
+%%-----------------------------------------------------------------------------
+
+\newcommand\code[1]{{\tt #1}}
+\newcommand\meta[1]{{\it #1\/}}
+\newcommand\file[1]{{\sf #1}}
+
+\newcommand\TclSummaryLabel[1]{{\bf #1\hss}}
+\newcommand\TclSummary[3]{\TclSummaryOO{bibtool #1
+    #2}{#3}\index{bibtool!#1}}
+\newcommand\TclSummaryOO[2]{\begin{list}{}{%
+      \parskip=0pt
+      \parsep=0pt
+      \topsep=0pt
+      \rightmargin=2em
+      \advance\leftmargin \rightmargin
+      \let\makelabel\TclSummaryLabel}
+  \item[#1] \ \par #2
+  \end{list}}
+
+\section{Introduction}
+
+The following description assumes that you are familiar with Tcl
+\cite{ousterhout:tcl,welch:practical}.  Thus it does not repeat any
+introductory material on this language.  You are referred to one of
+the books or the material to be found on the Web.  If you are not
+familiar enough with Tcl you are strongly encouraged to read an
+introductory text since there are some subtle points in Tcl which have
+to be understood.  Otherwise the language is not usable.
+
+The \BibTool{} library is made available for the Tcl programming
+language in the form of a dynamic loadable library. To use this
+library it is usually sufficient to source the file \file{bibtool.tcl}
+which is created during the installation of the library (see
+section~\ref{sec:installation}) and which can be found in the same
+directory where the machine dependent library resides---even though
+this file is not architecture dependent. Thus the first instruction to
+use the library in a Tcl program is
+
+\begin{verbatim}
+  source bibtool.tcl
+\end{verbatim}
+The file \file{bibtool.tcl} contains the information where the
+libraries can be found. It tries to find and load the appropriate
+dynamic library for the operating system and version it is running on.
+If you encounter problems like missing libraries then just reinstall
+the \BibTool{} library on this architecture into the same directory.
+This will create a new subdirectory containing the missing library.
+
+
+\section{Functional vs.\ Object-Oriented Reading}
+
+During the development of the \BibTool{} library an interesting
+question occurred. In principle there are two ways of thinking present
+even in plain Tcl/Tk, namely a functional/pro\-ce\-du\-ral and an
+object oriented point of view. The object oriented point of view can
+be seen mainly in Tk where the widgets act like objects. In Tcl most
+things have only a procedural flavor.
+
+The question arose which paradigm should be supported.  The first
+consideration was to use the procedural paradigm since this would
+require only a single new Tcl command to be implemented. This means
+the simplicity argument won.
+
+When lots of subcommands of this single command \code{bibtool} had
+already been implemented the issue was reconsidered. It turned out
+that only one single wrapper function had to be written in C to
+provide the object oriented point of view. Thus for many subcommands
+of \code{bibtool}---namely those dealing with databases or
+entries---there are two alternative notations available.
+
+Consider for example the following situation. the Tcl variables
+\code{entry1} and \code{entry2} contain references to single entries (we
+will see later how we can come to this situation). Then the equality
+of the entries (in the sense of pointers to the same internal data
+structure) can be checked with
+\begin{verbatim}
+  bibtool equal $entry1 $entry2
+\end{verbatim}
+This returns \code{1} upon success and \code{0} upon failure. In the
+object oriented paradigm we have to provide a method of a entry which
+decides whether or not it is identical to another entry. This can be
+written as
+\begin{verbatim}
+  $entry1 equal $entry2
+\end{verbatim}
+
+Another example is concerned with the access to a entry in a
+database. Suppose we have a reference to a database stored in the Tcl
+variable \code{db} and we have already loaded some \BibTeX{} files
+into this database. Then we can get a reference to the first
+entry---storing it in the Tcl variable \code{entry}---with the
+following command:
+\begin{verbatim}
+  set rec [bibtool first $db]
+\end{verbatim}%$
+If we consider \code{\$db} as an object then we can use the method
+\code{first} to get the first entry:
+\begin{verbatim}
+  set rec [$db first]
+\end{verbatim}%$
+
+Thus we have available both paradigms in this library. This effect is
+achieved by using handles to objects. These handles have the prefix
+\code{=BibTcl=}. For each object created a command is defined which is
+an alias to the appropriate \code{bibtool} subcommand. As long as the
+user does not try to define commands with this prefix everything works
+fine.
+
+
+\section{Databases}
+
+\code{bibtool} is designed to handle several databases simultaneously.
+To distinguish the different databases they get assigned a
+handle---which is a unique identifier---when they are created.  This
+handle has to be used to refer to a database later on.  Thus it is
+preferable to store it in Tcl variable.
+
+The handle can also be seen as an object in an object oriented
+context.  The database class provides a fixed set of methods for this
+object.  Instead of using an object oriented notation we have decided
+to use a more procedural approach.  But you can have your own model in
+mind when you read the code.
+
+One consequence of the use of handles is that \BibTool{} can determine
+which kind of object is addressed.  In case of an invalid object an
+appropriate error is raised.  This can occur for instance if a
+database handle is used after the database has been deleted, or if an
+arbitrary string is given as handle which does not correspond to an
+object in \BibTool.
+
+The first step to work with a database is the creation.  This can be
+done with the command \code{bibtool new}.  This command returns a
+handle for a new database which should be stored in a Tcl variable for
+later user:
+\begin{verbatim}
+  set db [bibtool new]
+\end{verbatim}%
+This database is empty. If you want to load some files into this
+database you can give the filenames as arguments to \code{bibtool
+  new}. Any number of \BibTeX{} files can be given this way:
+\begin{verbatim}
+  set db [bibtool new a.bib b.bib c.bib]
+\end{verbatim}%
+Since \BibTool{} is rather noisy by default it might be preferable to
+reduce the verbosity before loading a database. This can be done by
+utilizing \BibTool{} resources as in the following command:
+\begin{verbatim}
+  bibtool quiet=on verbose=off
+\end{verbatim}%
+Details on the use of \BibTool{} resources can be found in
+section~\ref{sec:tcl-resources} on page~\pageref{sec:tcl-resources}.
+
+
+But the files can not be loaded at creation time only but also later
+on. This is done with the command \code{bibtool read} as shown in the
+following example:
+\begin{verbatim}
+  bibtool read $db c.bib d.bib
+\end{verbatim}%$
+\code{bibtool read} needs the next argument to be a handle for a
+database. Any following arguments are taken to be file names which are
+loaded into the given database. Upon success the databse handle is
+returned. If one of the files does not exist, can not be read, or
+another error occurrs then this command issues a Tcl error. You can
+use \code{catch} to avoid a termination of Tcl and implement an error
+recovery scheme:
+\begin{verbatim}
+  foreach file {c.bib d.bib} {
+    if {[catch {bibtool read $db $file} message]} {
+      puts stderr "*** $message"
+    }
+  }
+\end{verbatim}%$
+The next important operation on a database is the writing
+operation. The command \code{bibtool write} writes the named database
+into the given file. Again an error is raised if this writing can not
+be performed. This is most probably caused by the inability to open
+the file.
+\begin{verbatim}
+  set file abc.bib
+  if {[catch {bibtool write $db $file} message]} {
+    puts stderr "*** $message"
+  }
+\end{verbatim}%$
+Usually the database is written to the file deleting its previous
+contents. Sometimes it can be desirable to append the database to an
+existing file. For this purpose the flag \code{-append} can be used:
+\begin{verbatim}
+  if {[catch {bibtool write $db $file -append} message]} {
+    puts stderr "*** $message"
+  }
+\end{verbatim}%$
+There is one special case of a file name. If the file name is the
+empty string then the output is written to the standard output stream.
+
+The final operation on a database is its deletion. This can be done
+with the command \code{bibtool delete}. This command takes as argument
+a single \BibTool{} object and performs the delete operation for
+it. Now we are interested in a database object only. Thus the object is a
+database handle.
+\begin{verbatim}
+  bibtool delete $db
+\end{verbatim}%$
+This command deletes the database \code{\$db}. Any reference to it or
+its contents might lead to a Tcl error. This deletion does not remove
+the file on the disk but only frees the handle.
+
+With the means given in this section we can already write a useful
+tool. If we want to write a Tcl program which normalizes a \BibTeX{}
+file then this can be done with the following piece of code:
+\begin{verbatim}
+ bibtool quiet=on verbose=off
+ bibtool write [bibtool new [lindex $argv 0]] [lindex $argv 1]
+\end{verbatim}%
+This Tcl program reads the \BibTeX{} file given as command line
+argument one and writes it to the file given as the second
+argument. No error detection is performed. To implement error recovery
+and the generalization to several input files is left to the reader.
+
+In fact this is a special case of the main loop of \BibTool. The same
+effect could be achieved with the following command line invocation of
+\BibTool:
+\begin{verbatim}
+  bibtool -- quiet=on -- verbose=off infile -o outfile
+\end{verbatim}
+where \code{infile} and \code{outfile} are the names of the input and
+output files respectively.
+
+Next we want to have access to the entries in a database. For this
+purpose two methods are provided which return a handle for the first
+or last entry in a given database respectively. These handles should
+be stored in Tcl variables for later use:
+\begin{verbatim}
+  set rec1 [$db first]
+  set rec2 [$db last]
+\end{verbatim}
+If the database is empty then no handle is created and the empty
+string is returned.
+
+Next we can try to find a certain entry in the database by speifying
+its key. This can be accomplished with the \code{find} method:
+\begin{verbatim}
+  set rec [$db find $key]
+\end{verbatim}
+If no appropriate entry is found then the empty string is returned.
+If you are finished with the database you should release it. This is
+done with the \code{delete} method:
+\begin{verbatim}
+  $db delete
+\end{verbatim}%$
+This command tries to free the memory occupied by the
+database\footnote{Currently a part of the memory is not really freed
+  but kept internally to be reused by the next database.}. This
+operation invalidates the handle the the database and any handles to
+entries therein. This means that any access with such handles leads to
+a Tcl error.
+
+One method is present which can be used to check a handle:
+\begin{verbatim}
+  $db valid
+\end{verbatim}%$
+This command returns \code{1} if the database is a valid database or
+entry handle.  Here is one place where it is preferable to use the
+procedural writing:
+\begin{verbatim}
+  bibtool valid $db
+\end{verbatim}%$
+This works for any string argument \code{\$db} not only those which
+have been valid \BibTool{} handles previously.
+
+
+
+
+\begin{table}[tp]
+  \TclSummaryOO{\meta{DB} count \meta{varname}}{}
+  \TclSummary{count}{\meta{DB} \meta{varname}}{Count the nunber of
+  entries of each type and store the result in the Tcl array
+  \meta{varname}. The old contents of this varaible is lost.}
+  \TclSummaryOO{\meta{DB} delete}{}
+  \TclSummary{delete}{\meta{DB}}{delete a database such that no further
+    operations are possible on them. Cf. \code{bibtool delete} for
+    entries.}
+  \TclSummaryOO{\meta{DB} find \meta{KEY}}{}
+  \TclSummary{find}{\meta{DB} \meta{KEY}}{Return a new entry handle which
+    corresponds to the first normal entry in the database \meta{DB}
+    which has the key \meta{KEY}. If none is found then the empty 
+    string is returned.} 
+  \TclSummaryOO{\meta{DB} first}{}
+  \TclSummary{first}{\meta{DB}}{Return a new entry handle which
+    corresponds to the first normal entry in the database \meta{DB}.
+    If the database is empty then the empty string is returned.}
+  \TclSummaryOO{\meta{DB} last}{}
+  \TclSummary{last}{\meta{DB}}{Return a new entry handle which
+    corresponds to the last normal entry in the database \meta{DB}.
+    If the database is empty then the empty string is returned.}
+
+  \caption{Summary of database operations}\label{fig:tcl-database}
+  \rule{\textwidth}{.1pt}
+\end{table}
+\begin{table}[tp]
+  \TclSummary{new}{}{create a new database and return a handle to it.}
+  \TclSummaryOO{\meta{DB} preamble}{}
+  \TclSummary{preamble}{\meta{DB}}{Return the preamble of the database
+    \meta{DB}.}
+  \TclSummaryOO{\meta{DB} read \meta{?FILE \ldots?}}{}
+  \TclSummary{read}{\meta{DB} \meta{?FILE \ldots?}}{read the contents of
+    the \BibTeX{} file \meta{FILE} into the database \meta{DB}.}
+  \TclSummaryOO{\meta{DB} entry \meta{TYPE}}{}
+  \TclSummary{entry}{\meta{DB} \meta{TYPE}}{Create a new entry in the
+    database \meta{DB} with the type \meta{TYPE}.}
+  \TclSummaryOO{\meta{DB} sort \meta{?-generate?} \meta{?-reverse?}}{}
+  \TclSummary{sort}{\meta{DB} \meta{?-generate?}
+  \meta{?-reverse?}}{sort the database \meta{DB} according to the sort
+  keys. If \meta{-generate} is specified then the sort keys are
+  generated first according to the resource \rsc{sort.format}. The
+  sort order is ascending or descending depending on the resource
+  \rsc{sort.reverse}. If the argument \meta{-reverse} is given then
+  this order is reversed again.}
+  \TclSummary{sort.format}{=\meta{FORMAT}}{}
+  \TclSummaryOO{\meta{DB} valid}{}
+  \TclSummary{valid}{\meta{DB}}{check whether the database handle
+    \meta{DB} is still valid. A database handle is invalidated by the
+    \code{delete} operation.}
+  \TclSummaryOO{\meta{DB} write \meta{FILE} \meta{?-append?}}{}
+  \TclSummary{write}{\meta{DB} \meta{FILE} \meta{?-append?}}{write the
+    contents of the database \meta{DB} into the file \meta{FILE}. If the
+    option \meta{-append} is given then the contents is appended to the
+    file. If the file is the empty string then the output is written
+    to stdout.}
+
+  \addtocounter{table}{-1}%
+  \caption{Summary of database operations (continued)}\label{fig:tcl-database2}
+  \rule{\textwidth}{.1pt}
+\end{table}
+A summary of the commands discussed in this section can be found in
+Table~\ref{fig:tcl-database}. 
+
+
+\section{Entries and Fields}
+
+Any \BibTool{} database consists of a set of entries. Currently there
+are three types of entries which are treated differently. The normal
+entry consists of a set of fields which have names and values. The
+following example illustrates such a normal entry:\label{example:bibtool}
+\begin{verbatim}
+  @Manual{        neugebauer:bibtool,
+    author  = {Gerd Neugebauer},
+    title   = {{BibTool} -- A Tool to Manipulate {\BibTeX} Files},
+    edition = {2.41},
+    year    = {1997} 
+  }
+\end{verbatim}
+Currently there are two kinds of special entries, namely
+\code{@preamble} and \code{@string} entries. These types of entries
+will be discussed later and we will focus for the moment on normal
+entries.
+
+To navigate through the database the methods \code{forward} and
+\code{backward} are provided. These commands take a entry handle as
+argument and modify it such that it references the next or previous
+entry respectively. Upon success the entry handle is returned. If
+there is no next or previous entry then the handle is released and
+the empty string is returned.
+\begin{verbatim}
+  if {[$entry forward]==""} {puts {At end.}}
+  if {[$entry backward]==""} {puts {At beginning.}}
+\end{verbatim}
+
+With these methods we are able to write down a loop which visits all
+normal entries. We show the loop starting from the first element and
+approaching to the last one. As an application we count the number of
+entries in the database:
+\begin{verbatim}
+  set count 0
+  for { set rec [$db first] } \
+      { $entry != "" } \
+      { set rec [$entry forward] }\
+      {
+    incr count 1
+  }
+\end{verbatim}%$
+
+
+
+Like for database handles we might be interested to get rid of a
+entry handle.  For this purpose the method \code{delete} is also
+provided for entries.  The deletion of a entry handle invalidates
+this handle. It does not alter the database in any way. Thus after the
+following piece of code the database has not been changed. 
+\begin{verbatim}
+  set rec [$db first]
+  $entry delete
+\end{verbatim}
+
+\label{bibtool:remove}%
+If you want to delete a database entry you can use the method
+\code{bibtool remove}. This takes as argument a single entry and
+removes it from the database. Additionally the handle is invalidated.
+Thus it can not be used any more.
+
+Consider the problem of looping through all entries and deleting some
+of them. For this purpose we want to assume that we have a boolean
+function \code{has\_to\_be\_deleted} which decides whether the entry
+given as argument has to be deleted. Then the loop can be implemented
+as follows:
+\begin{verbatim}
+  for {set rec [$db first]} \
+      {[bibtool $entry valid]} \
+      {set rec $next} {
+    set next [$entry dup]
+    $next forward
+    if {[has_to_be_deleted $entry]} {$entry remove}
+  }
+\end{verbatim}%$
+In this example we see several new things. First of all we see the
+method \code{bibtool remove} in action. Next we see the method
+\code{bibtool valid} which can not only be used to check valid database
+handles but also valid entry handles. It works absolutely analogously
+and is no surprise. 
+
+The new method which might be surprising is the \code{bibtool dup}.
+This method creates a new entry handle which points to the same entry
+as the handle given as argument. This is necessary since manipulations
+on the first handle can now be performed safely because they do not
+effect the new handle---except when the entry is deleted.
+
+Let us have a look at \code{bibtool dup} with another example. Let us
+assume that the Tcl variable \code{entry} contains a valid entry handle
+for the database \code{db}. The following piece of code creates a Tcl
+variable \code{new} which contains the same entry handle as
+\code{entry}:
+\begin{verbatim}
+  set new $entry
+  $entry forward
+\end{verbatim}
+The \code{bibtool forward} operation on \code{entry} modifies \code{new} as
+well. Thus \code{new} either points to the next entry of the initial
+one or it is invalidated if no such entry exists.
+
+In contrast the following piece of code creates a new handle and stores
+it in the Tcl variable \code{new}.
+\begin{verbatim}
+  set new [$entry dup]
+  $entry forward
+\end{verbatim}
+In this example \code{new} is not effected by the \code{bibtool forward}
+operation on \code{entry}. Even if there is no next entry and
+\code{entry} is invalidated then \code{new} still references the initial
+entry. 
+
+We have to come back to \code{bibtool valid} to complete the picture.
+Often it is interesting to know in advance whether the next or
+previous entry exists without duplicating a entry handle and moving
+just to avoid to invalidate a entry handle. For this purpose an
+additional argument can be used. If this optional argument to
+\code{bibtool valid} after the entry handle is \code{-next} or
+\code{-previous} then the existence of the next resp.\ previous entry
+is checked in addition to the validity of the entry handle itself. 
+
+Thus the following fragment checks whether there are at least two
+entries in the database \code{\$db}. This is done by positioning a entry at
+the beginning of the database and checking the validity of this
+entry and the next entry:
+\begin{verbatim}
+  set rec [$db first]
+  if { [bibtool valid $entry] &&
+       [bibtool valid $entry -previous] } {
+    puts {At least two entries.}
+  }
+\end{verbatim}%$
+
+Since we have the possibility to clone a entry handle with
+\code{bibtool dup} or allocate new ones with \code{bibtool first} or
+\code{bibtool last} we need method to compare two entry handles to
+see whether they point to the same entry. This function is called
+\code{bibtool equal}. This function takes two arguments and returns
+\code{1} if they are valid and point to the same entry. If they are
+valid and point to different entries then \code{0} is returned. If
+either one is invalid then an error is raised.
+
+Suppose we have a valid entry handle stored in the Tcl variable
+\code{entry} for which a next entry exists. We execute the following
+piece of code:
+\begin{verbatim}
+  set new $entry
+  $entry forward
+  if {[$entry equal $new]} {print yes}
+\end{verbatim}
+The last line will always produce the answer \code{yes}. This is due
+to the fact that the Tcl variables \code{entry} and \code{new} contain in
+fact the same entry handle. Whereas the following piece of code will
+never produce \code{yes} since here two independent entry handles are
+involved which represent successive entries in the database. 
+\begin{verbatim}
+  set new [$entry dup]
+  $entry forward
+  if {[$entry equal $new]} {print yes}
+\end{verbatim}
+
+As an convenient alias the method \code{bibtool ==} is provided as an
+alias for the method \code{bibtool equal}. Thus you can write
+\begin{verbatim}
+  if {[$entry == $new]} {print yes}
+\end{verbatim}
+This line will have the same effect as the last line in the example
+above. But beware not to forget the outer brackets. This subtle point
+is illustrated in the following example:
+\begin{verbatim}
+  set new [$entry dup]
+  if {[$entry == $new]} {print yes} else {print no}
+  if { $entry == $new } {print yes} else {print no}
+\end{verbatim}%$
+According to the explanations given earlier it is not surprising that
+the first conditional prints \code{yes} since both entry handles
+point to the same entry in the database. But they are in fact two
+different handles since \code{new} is derived from \code{entry} with the
+\code{bibtool dup} method. Thus the textual representation of the handles is
+different. These textual representations are compared in the second
+conditional and turn out not to be equal. As a consequence \code{no}
+is printed.
+
+This slight distinction might lead to confusion. If you have problems
+of this kind try to use \code{equal} instead of \code{==}. On the other
+hand the \code{==} notation is very intuitive and you just have to
+take care of the context in which it is evaluated by Tcl.
+
+
+\begin{table}[tp]
+  \TclSummaryOO{\meta{ENTRY} backward}{}
+  \TclSummary{backward}{\meta{ENTRY}}{Makes \meta{ENTRY} reference
+    to the predecessor of its current value.  Return \meta{ENTRY}
+    upon success. If none is present then delete the entry handle and
+    return the empty string.}
+  \TclSummaryOO{\meta{ENTRY} delete}{}
+  \TclSummary{delete}{\meta{ENTRY}}{Deletes the entry handle
+    \meta{ENTRY}. This does not mean that the entry itself is
+    modified. Only the reference to it can not be used any more.}
+  \TclSummaryOO{\meta{ENTRY} dup}{}
+  \TclSummary{dup}{\meta{ENTRY}}{Create a new entry handle pointing
+    to the same entry as the entry handle \meta{ENTRY}.}
+  \TclSummaryOO{\meta{ENTRY$_1$} equal \meta{ENTRY$_2$}}{}
+  \TclSummary{equal}{\meta{ENTRY$_1$} \meta{ENTRY$_2$}}{compares the
+    two entries. Returns 1 if they point to the same physical entry.}
+  \TclSummaryOO{\meta{ENTRY$_1$} == \meta{ENTRY$_2$}}{}
+  \TclSummary{==}{\meta{ENTRY$_1$} \meta{ENTRY$_2$}}{the same as
+    \code{equal}.}
+  \TclSummaryOO{\meta{ENTRY} fields}{}
+  \TclSummary{fields}{\meta{ENTRY}}{Return a list of normal fields in
+  the entry.}
+  \TclSummaryOO{\meta{ENTRY} remove}{}
+  \TclSummary{remove}{\meta{ENTRY}}{Remove the entry from its
+    database.  The handle is invalidated.  The entry ceases to exist.}
+  \TclSummaryOO{\meta{ENTRY} valid \meta{?-next\(\mid\)-previous?}}{}
+  \TclSummary{valid}{\meta{ENTRY} \meta{?-next\(\mid\)-previous?}}{
+    check whether the entry handle \meta{ENTRY} is still valid. If
+    the optional argument \meta{-previous} or \meta{-next} is given
+    then it is also checked whether the previous or next entry
+    exists. \code{1} is returned when all tests are
+    successful. Otherwise \code{0} is returned.}
+    
+  \caption{Summary of entry operations}\label{fig:tcl-entry}
+  \rule{\textwidth}{.1pt}
+\end{table}
+
+
+\section{Entry Fields}\label{sec:fields}
+
+As a database consists of a set of entries, any entry consists of a
+set of fields. The fields are determined by their name. Each name is
+unique within a entry. In addition to the name any field has a value.
+\BibTeX{} itself does not impose much restrictions on the allowed
+fields---except that they have some minor syntactic restrictions.
+Especially there is only one field which is treated special. This is
+the \code{crossref} field which is used for inheritance. Before we
+come to this point we want to present a method how to check for
+existing and not existing fields. 
+
+The method \code{bibtool fields} of a entry returns the list of all
+fields defined in a entry. For instance we can reconsider the
+\BibTeX{} entry on page~\pageref{example:bibtool}. Suppose the Tcl
+variable \code{entry} contains a handle pointing to this entry then
+\begin{verbatim}
+  fields $entry
+\end{verbatim}%$
+\noindent
+would return the following list of fields:
+\begin{verbatim}
+  author title edition year
+\end{verbatim}
+
+In addition to the normal fields which are stored directly in the
+entry, some information can be acessed as if it was stored in a
+field. Those pseudo-fields will be discussed later.
+
+To check for the existence or non-existence of a field one would could
+extract the list of fields and use the Tcl command \code{lsearch}. To
+avoid the overhead of constructing the intermediate list the method
+\code{bibtool missing} is provided. 
+\begin{verbatim}
+  $entry missing publisher
+\end{verbatim}%$
+This invocation returns \code{1} if there is no field with the name
+|publisher| in the entry \code{entry}. Otherwise \code{0} is returned.
+As always an error is raised if \code{entry} does not contain a valid
+entry handle.
+
+Now we come to the access methods for field values. We need a way to
+retrieve the value and a method to modify the value. The first
+approach to retrieve a value is using the method \code{bibtool get}.
+It takes a entry handle and a field name and returns the contents of
+the field as a string. Let us consider the following example:
+\begin{verbatim}
+  @String{ BibTool = {{BibTool}} }
+  @Manual{ neugebauer:bibtcl,
+    title =    BibTool # { -- Tcl Programmers Manual},
+    crossref = {neugebauer:bibtool},
+    remark =   {Distributed with BibTool}
+  }
+\end{verbatim}
+If we want to get the value of the \code{remark} field we can use the
+following method:
+\begin{verbatim}
+  $entry get remark
+\end{verbatim}%$
+This command returns the contents of the remark field as string. Thus
+the result is the Tcl string
+\begin{verbatim}
+  Distributed with BibTool
+\end{verbatim}
+The example has been chosen to illustrate some other points as well.
+In this example a \BibTeX{} macro \code{BibTool} is defined which
+contains the \BibTool{} logo protected from case changes in \BibTeX.
+This macro is used in the title field with the concatenation operator
+\code{\#}. Now we want to get the value of the title field:
+\begin{verbatim}
+  $entry get title
+\end{verbatim}%$
+This command yields as a result the string representation of the title
+field. For this purpose all macros are replaced by their values and
+the resultings strings are concatenated. Thus the result is
+\begin{verbatim}
+  {BibTool} -- Tcl Programmers Manual
+\end{verbatim}
+Note that the outer double quotes or braces are not contained in the
+result but inner braces or doulbe quotes are. This is due to the fact
+that the result is a Tcl string which does not need additional
+delimiters. 
+
+What would have happend if the macro \code{BibTool} would not have
+been defined? In this case the result of the macro expansion is the
+empty string. This empty string would have been concatenated with the
+rest yielding the result
+\begin{verbatim}
+   -- Tcl Programmers Manual
+\end{verbatim}
+
+Sometimes it is undesirable to get the expanded version of the value.
+For instance if you want to take advantage of the \BibTeX{} macro
+feature and manipulate things yourself. For this purpose the optional
+flag \code{-noexpand} can be used. If this flag is given the result is
+a Tcl list consisting of strings which contain the components of the
+value.  In this case the delimiters (\verb|{}| or \verb|""|) are part
+of the elements to distinguish the string constants from macros. Thus
+the command 
+\begin{verbatim}
+  $entry get title -noexpand
+\end{verbatim}%$
+\noindent
+leads to a Tcl list with the following two elements:
+\begin{verbatim}
+  BibTool
+  { -- Tcl Programmers Manual}
+\end{verbatim}
+
+Next we have to consider the case that we are asking for a field
+which does not exist in the entry considered. For instance we might
+ask for the author field:
+\begin{verbatim}
+  $entry get author
+\end{verbatim}%$
+Since the entry does not contain an \code{author} field we get the
+empty string as the result. 
+
+\BibTeX{} has the feature to use the \code{crossref} field for
+inheritance. If a field is missing in a entry but it has a
+\code{crossref} field then the field is sought in the entry whose key
+is the value of the \code{crossref} field as well.
+This behaviour can be triggered with the optional flag \code{-all} of
+the method \code{bibtool get}:
+\begin{verbatim}
+  $entry get author -all
+\end{verbatim}%$
+In our example the entry \code{neugebauer:bibtool} would be
+considered in this case. If we assume that this entry---as given on
+page~\pageref{example:bibtool}---is also present in the database then the
+result is the string
+\begin{verbatim}
+  Gerd Neugebauer
+\end{verbatim}
+
+In addition to the normal fields some pseudo-fields can be queried.
+These pseudo-fields give access to information not really stored as a
+field but present for a entry, a database, or as a global value in
+other form. One such a pseudo-field is the citation key. This citation
+key can be referenced as \code{\$key}. Thus the citation key can be
+retrieved with the following Tcl construct:
+\begin{verbatim}
+  set key [$entry get {$key}]
+\end{verbatim}
+Since the \code{\$} is a special character for Tcl it has to be
+protected to be not evaluated by Tcl.
+For our example the entry as given on page~\pageref{example:bibtool}
+this command will set the Tcl variable \code{key} to the value
+\begin{verbatim}
+  neugebauer:bibtcl
+\end{verbatim}
+
+\begin{table}[t]
+  \begin{center}\doublerulesep=.4pt
+    \begin{tabular}{lp{.6\textwidth}}\hline\hline
+      {\it pseudo field name}\rule[-1.5ex]{0pt}{4ex}	&
+      {\it meaning}\\\hline\rule{0pt}{3ex}%
+      \code{\$key}	      & The citation key.	\\
+      \code{\$sortkey}	      & The sort key, i.e.\ the string used
+			        for sorting entries.\\
+      \code{\$source}	      & The file the entry is read from or
+			        the empty string.	\\
+      \code{\$type}	      & The type of the entry.	\\
+      \code{\$default.key}    & The value of the resource
+			        \code{default.key}. This string is
+			        used as a key if the key specification
+			        failes completely.\\
+      \code{\$fmt.et.al}      & The value of the resource
+			        \code{fmt.et.al}. This string is used
+			        to abbreviate unnamed additional authors.\\
+      \code{\$fmt.name.pre}   & The value of the resource
+			        \code{fmt.name.pre}. This string is
+			        inserted between the first name and
+			        the last name.\\
+      \code{\$fmt.inter.name} & The value of the resource
+			        \code{fmt.inter.name}. This string is
+			        inserted between several last names of
+			        one person.\\
+      \code{\$fmt.name.name}  & The value of the resource
+			        \code{fmt.name.name}. This string is
+			        inserted between two names.\\
+      \code{\$fmt.name.title} & The value of the resource
+			        \code{fmt.name.title} This string is
+			        inserted between name and title.\\
+      \code{\$fmt.title.title}& The value of the resource
+			        \code{fmt.title.title}. This string is
+			        inserted between different words of
+			        the title.\\
+      \code{\$fmt.key.number} & The value of the resource
+			        \code{fmt.key.number}. This string is
+			        inserted between the generated key and
+			        the disambiguating number.\\[1ex]
+      \hline\hline
+    \end{tabular}
+    \caption{Some pseudo fields}\label{tab:pseudo-fields}
+  \end{center}
+\end{table}
+Table~\ref{tab:pseudo-fields} contains a list of pseudo fields. There
+are more pseudo fields which can be found in the \BibTool{}
+documentation. But the additional pseudo fields can not be considered
+really important in the context of Tcl.
+
+
+Now we come to the opposite operation. We want to set the value of a
+field to a given string.  For this purpose the method \code{bibtool
+set} is provided. This method takes a field name and a string or a list
+of components and sets the value accordingly. Since Tcl does not
+distinguish between a list and a string the second case has to be
+marked with the flag \code{-concat}. The effect of this operation is
+that the field has the given value afterwards. If the field did not
+exist already then this field is added to the entry.
+
+Let us consider an example. The simplest desire is to set the value of
+a field to new string. Suppose we want to change the value of the
+remark field then this can be done as follows:
+\begin{verbatim}
+  $entry set remark {Distributed as part of BibTool}
+\end{verbatim}%$
+Suppose we want to change the value of the field edition from
+\code{2.41} to \code{2.42}. This field is not present in the entry
+but inherited via a \code{crossref} field. Nevertheless this is not
+honored by \code{bibtool set}. A new field is added to this entry
+containing the new value. The other entry is left unchanged.
+
+Suppose we want to add a field \code{month} to the entry. This is one
+place where \BibTeX{} macros are indispensible. Instead of using the
+constant \verb|"June"| we should always use the macro \code{jun} which
+is defined by most \BibTeX{} styles. Thus the \BibTeX{} style designer
+can decide to use the full month name, an abbreviation, or even switch
+to a different language.
+
+If we write
+\begin{verbatim}
+  $entry set month jun
+\end{verbatim}%$
+\noindent
+then the result would be the string \code{jun} and not the \BibTeX{}
+macro. Thus we have to use the flag \code{-concat}.
+\begin{verbatim}
+  $entry set month jun -concat
+\end{verbatim}%$
+This works fine since Tcl does not distinguish the one string
+\code{jun} from the list containing \code{jun} as a single element.
+Nevertheless the correct way would be to use a construction like the
+following one:
+\begin{verbatim}
+  $entry set month [list jun] -concat
+\end{verbatim}%$
+If we want to add a specific day as well then this can be done like in
+the following example\footnote{Note that this does not allow switching
+the languages any more so easy. But this is not our topic here.}
+\begin{verbatim}
+  $entry set month [list jun {{~13}}] -concat
+\end{verbatim}%$
+Beware, \BibTool{} does not check the structure or the contents of
+field values. Thus you have to be careful to use only valid components
+in order for \BibTeX{} to work properly.
+
+\begin{table}[tp]
+  \TclSummary{fields}{\meta{ENTRY}}{This command returns a list of
+    field names in \meta{ENTRY}.}
+  \TclSummaryOO{\meta{ENTRY} forward}{}
+  \TclSummary{forward}{\meta{ENTRY}}{Makes \meta{ENTRY}
+    reference to the successor of its current value. Return
+    \meta{ENTRY} upon success. If none is present then delete the
+    entry handle and return the empty string.}
+  \TclSummaryOO{\meta{ENTRY} get \meta{FIELD}
+    \meta{?-noexpand$\mid$-all?}}{}
+  \TclSummary{get}{\meta{ENTRY} \meta{FIELD} \meta{?-noexpand?}
+    \meta{?-all?}}{This command returns the value of the field
+    \meta{FIELD} in the entry \meta{ENTRY}.  The value returned has
+    all strings expanded. If the option \meta{-noexpand} is given then the
+    unexpanded form as it is contained in the database is returned. If
+    the option \meta{-all} is given then the inheritance via crossref is
+    honored. I.e. each missing field is extracted from the crossrefed
+    entry (etc). If the field does not exist then the empty string is
+    returned.}
+  \TclSummaryOO{\meta{ENTRY} missing \meta{FIELD}}{}
+  \TclSummary{missing}{\meta{ENTRY} \meta{FIELD}}{This command returns
+    \code{1} if the field \meta{FIELD} is missing in the entry
+    \meta{ENTRY}.  Otherwise it returns \code{0}.} 
+  \TclSummaryOO{\meta{ENTRY} remove \meta{FIELD}}{}
+  \TclSummary{remove}{\meta{ENTRY} \meta{FIELD}}{Delete the field
+    \meta{FIELD} from the entry \meta{ENTRY}. If it does not exist
+    then nothing is changed.}
+  \TclSummaryOO{\meta{ENTRY} set \meta{FIELD} \meta{VALUE}}{}
+  \TclSummary{set}{\meta{ENTRY} \meta{FIELD} \meta{VALUE}}{This command
+    changes the value of the field or pseudo field \meta{FIELD} to
+    \meta{VALUE}. The field is added if it has not been present
+    already.} 
+ 
+  \caption{Summary of field operations}\label{fig:tcl-field}
+  \rule{\textwidth}{.1pt}
+\end{table}
+
+To complete the operations on entry fields we need a method to get
+rid of a certain field. For this purpose the method \code{bibtool
+  remove} can be used. We have seen this method already on
+page~\pageref{bibtool:remove}.  If a field is given together with the
+entry then this field is removed from the entry. Thus
+\begin{verbatim}
+  $entry remove remark
+\end{verbatim}%$
+Deletes the \code{remark} field from the given entry. If the field is
+not present in the entry given then nothing is done. This can be
+especially confusing if a field is inherited via a \code{crossref}
+field. The value can be retrieved with the \code{bibtool get} method
+even when the field has been removed:
+\begin{verbatim}
+  $entry remove author
+  $entry get author -all
+\end{verbatim}
+The result of the second command is \code{Gerd Neugebauer} even so the
+field has been deleted before.
+
+
+\section{Key Generation}
+
+The generation of new reference keys has been one of the first
+functionalities present in \BibTool. The keys are generated according
+to a specification described in detail in the \BibTool{}
+documentation. Thus it is not repeated here.
+
+The format specification can be specified with a resource command (see
+section~\ref{sec:tcl-resources}. For convenience the command
+\code{bibtool key.format} is provided. It can be used to set the key
+format. It is important to construct the argument such that the string
+which arrives in the resource command is has the proper syntax. This
+means that you have to be careful which characters might need
+quoting. The easiest way is to enclose the complete format with
+braces. Thus nearly everything works as expected.
+
+\begin{table}[t]
+  \begin{center}\doublerulesep=.4pt
+    \begin{tabular}{lp{.6\textwidth}}\hline\hline
+      {\it special format}\rule[-1.5ex]{0pt}{4ex}	&
+      {\it meaning}\\\hline\rule{0pt}{3ex}%
+      \code{empty}	& Use the default key.	\\
+      \code{short}	& Use the last names of authors or editors and the
+      first relevant word from the title.	\\
+      \code{long}	& Use the names of authors or editors with
+      initials and the first relevant word from the title.	\\
+      \code{new.short}	& Like \code{short} but only applied to entries
+      without a key.\\
+      \code{new.long}	& Like \code{long} but only applied to entries
+      without a key.\\[1ex]
+      \hline\hline
+    \end{tabular}
+    \caption{Special format specifiers}\label{tab:special-keys}
+  \end{center}
+\end{table}
+Usually the function \code{bibtool key.format} adds the given format
+specification as a further alternative after the specification already
+present. Thus it is possible to iteratively construct the
+specification by giving cases in decreasing order. This exception to
+this rule are the special specifications shown in
+Table~\ref{tab:special-keys}. Those special specifiers are not added
+but they entirely replace the old values. Thus the following
+instruction can be used to clear the old value before adding new
+alternatives: 
+\begin{verbatim}
+  bibtool key.format {empty}
+\end{verbatim}
+Two practical schemes are provided as convenient abbreviations, namely
+\code{short} and \code{long}. They use the names of authors or editors
+of a entry together with the first relevant word of the title.
+\begin{verbatim}
+  bibtool key.format {short}
+\end{verbatim}
+The relevant word is determined by skipping over all words which are
+added to the list of ignored words with \code{bibtool ignored.word}.
+This list usually contains articles from different languages. and is
+initialized at compile time.
+
+Now we are ready to generate a new key. This cam be done either
+globally by applying the function \code{bibtool key} to a database. In
+this case the new key is generated for each entry in this database.
+\begin{verbatim}
+  bibtool key $db
+\end{verbatim}%$
+
+The alternative is to apply they key generation algorithm to a single
+entry. In this case only the key of this entry is generated. As a
+side effect the new key of this entry is returned.
+\begin{verbatim}
+  set key [bibtool key $entry]
+  puts $key
+\end{verbatim}
+
+\INCOMPLETE
+
+
+\begin{table}[tp]
+  \TclSummary{key}{\meta{ENTRY}}{This command creates a new reference
+    key for \meta{ENTRY} according to the specification in effect and
+    stores it in \meta{ENTRY}. This string is returned.}
+  \TclSummary{key}{\meta{DB}}{This command creates a new reference
+    key for each entry in \meta{DB} according to the specification in
+    effect. The empty string is returned.}
+   \TclSummary{key.format}{=\meta{FORMAT}}{}
+   \TclSummary{ignored.word}{=\meta{WORD}}{}
+ 
+  \caption{Summary of key generation operations}\label{fig:tcl-keys}
+  \rule{\textwidth}{.1pt}
+\end{table}
+
+
+\section{Ignored Words}
+
+The format specifier for key generation or sorting can request that
+certain words are ignored. Those words are managed in a global list in
+\BibTool. Some commands are provided to manipulate this list. Some
+operations are already provided as resources. Nevertheless a more
+convenient form is provided as well.
+
+The list of ignored words is initialized at compile time. Usually this
+list contains articles in different languages since they are usually
+ignored when dealing with titles of publications.
+
+This list can be augmented with additional words with the command
+\code{bibtool add\_ignored}. This command adds add arguments to the
+list of ignored words. The following example should be superfluous but
+it illustrates the application of this operation:
+\begin{verbatim}
+  bibtool add_ignored the a an
+\end{verbatim}%
+
+If you are not satisfied with the compiled in list of ignored words
+you can clear this list with the command \code{bibtool
+  clear\_ignored}. After this operation the list of ignored words is
+empty and can be filled from scratch.
+\begin{verbatim}
+  bibtool clear_ignored
+\end{verbatim}%
+
+The operations above could also be achieved with resource commands. We
+just need an additional operation which returns the list of ignored
+words. This operation is performed by \code{bibtool get\_ignored}. The
+result can be stored in a Tcl variable and used in any way you like:
+\begin{verbatim}
+  set ignored [bibtool get_ignored]
+\end{verbatim}%
+
+
+\begin{table}[tp]
+  \TclSummary{ignored.word}{=\meta{WORD}}{}
+  \TclSummary{add\_ignored}{\meta{WORD} \ldots}{This command add all
+    arguments to the list of ignored words.}
+  \TclSummary{clear.ignored.words}{\{\}}{}
+  \TclSummary{clear\_ignored}{}{This command removes all words from
+    the list of ignored words.}  \TclSummary{get\_ignored}{}{This
+    command returns the list of ignored words.}
+
+  \caption{Summary of operations on ignored words}\label{fig:tcl-ignored}
+  \rule{\textwidth}{.1pt}
+\end{table}
+
+\section{\BibTeX{} Macros}
+
+In section~\ref{sec:fields} we have already seen \BibTeX{} macros and
+their expansion when the value of a field is retrieved. Since it is
+possible to get the value of a field in unexpanded form we need a way
+to get our hands on the value of a macro. For this purpose the database
+method \code{bibtool string\_get} is provided.
+\begin{verbatim}
+  $db string_get BibTool
+\end{verbatim}%$
+\noindent returns the value of the string \code{BibTool} as Tcl
+string. If this macro is not defined then the empty string is
+returned. The same remarks as for the values of fields hold for
+\BibTeX{} macros as well. They can be defined in terms of other macros
+with the concatenation operation (\verb|#|). If you want to get the
+unexpanded definition the you have to use the flag \code{-noexpand}. In
+this case the value returned is a list of components to be
+concatenated. In this case the string delimters are included to allow
+you to distinguish strings---which are enclosed in delimiters---from
+macros. 
+
+The reverse operation to accessing a macro value is the definition of
+one. Analogeously to field values the method \code{bibtool string\_set}
+can be used. This method takes a macro name and a string and arranges
+that the macro expands to the string given:
+\begin{verbatim}
+  $db string_set BibTool {{\sffamily BibTool}}
+\end{verbatim}%$
+
+\INCOMPLETE
+
+\begin{verbatim}
+  $db string_set BibTool [list Bib Tool] -concat
+\end{verbatim}%$
+
+If the value of a macro is the empty string we can not distinguish the
+case that the macro is not defined at all from the case that the macro
+is defined and has the empty string as its value. To allow this
+differtiation the method \code{bibtool string missing} can be used:
+\begin{verbatim}
+  $db string_missing BibTool
+\end{verbatim}%$
+This method returns \code{1} if the macro \code{BibTool} is not
+defined and \code{0} otherwise. Thus we would get \code{0} in our
+example. 
+
+\begin{table}[tp]
+  \TclSummaryOO{\meta{DB} string\_get \meta{MACRO} \meta{?-global?}}{}
+  \TclSummary{string\_get}{\meta{DB} \meta{MACRO}
+  \meta{?-global?}}{This command retieves the value of  the macro
+  \meta{MACRO} from the database \meta{DB} or the global set of
+  macros. If the flag \meta{-global} is given then only the global
+  maros are considered.}
+
+  \TclSummaryOO{\meta{DB} string\_missing \meta{MACRO} \meta{?-global?}}{}
+  \TclSummary{string\_missing}{\meta{DB} \meta{MACRO}
+  \meta{?-global?}}{This tests whether the macro \meta{MACRO} is
+  defined in the database \meta{DB} or the global macros. If the flag
+  \meta{-global} is given then only the global macros are
+  considered.}
+
+  \TclSummaryOO{\meta{DB} string\_remove \meta{MACRO} \meta{?-global?}}{}
+  \TclSummary{string\_remove}{\meta{DB} \meta{MACRO}
+  \meta{?-global?}}{Remove the definition of the macro \meta{MACRO}
+  from the database \meta{DB}. If the flag \meta{-global} is given
+  then the global macros are considered only.}
+
+  \TclSummaryOO{\meta{DB} string\_set \meta{MACRO} \meta{VALUE}
+    \meta{?-global?}}{}
+  \TclSummary{string\_set}{\meta{DB} \meta{MACRO} \meta{VALUE}
+  \meta{?-global?}}{This command assigns the new value \meta{VALUE} to
+  the macro \meta{MACRO} in the database \meta{DB}. If the flag
+  \meta{-global} is given then the change is not made local to the
+  database but in the global set of macros.}
+ 
+  \caption{Summary of macro operations}\label{fig:tcl-macro}
+  \rule{\textwidth}{.1pt}
+\end{table}
+
+Since we are now able to distinguish a not existing macro from an empty
+macro we need a method to get rid of a macro completely. This can be
+accomplished with the method \code{bibtool string\_remove}:
+\begin{verbatim}
+  $db string_remove BibTool
+\end{verbatim}%$
+After this operation the macro \code{BibTool} is missing. If the given
+macro has not been defined in the database then nothing will be done.
+Otherwise the macro definition is removed from the database.
+
+Finally we might be interested to get a complete list of all macros
+defined for a database. For this purpose the method \code{bibtool
+strings} can be used which returns the names of all macros as a Tcl
+list: 
+\begin{verbatim}
+  $db strings
+\end{verbatim}%$
+
+
+\section{Embedding \LaTeXTeX{} Macros}
+
+\begin{verbatim}
+  $db preamble
+\end{verbatim}%$
+
+\INCOMPLETE
+
+
+
+\section{De\TeX ing}
+
+When you are dealing with \LaTeXTeX{} commands it is pretty easy to
+get rid of macros. This cam be done with a \code{regsub} command wich
+matches the macro names and replaces them by the empty string. Suppose
+the Tcl variable \code{str} contains a string which should be
+de\TeX{}ed. 
+\begin{verbatim}
+  regsub -all {\\([^a-zA-Z]|[a-zA-Z]+)} $str {} str
+\end{verbatim}%$
+After the invocation of this command the Tcl variable \code{str}
+has all macro names stripped. For instance the string
+\begin{verbatim}
+  M{\"u}ller GmbH{\&}Co.
+\end{verbatim}
+\noindent is translated to
+\begin{verbatim}
+  Muller GmbH{}Co.
+\end{verbatim}
+Even if the first substitution might be acceptable for non-German
+speaking people then the second replancement is by far too aggressive.
+On the other side we could just replace the backslashes. This can be
+done with a Tcl command like
+\begin{verbatim}
+  regsub -all {\\} $str {} str
+\end{verbatim}%$
+\noindent results in
+\begin{verbatim}
+  M"uller GmbH{&}Co.
+\end{verbatim}
+This leaves the \code{\&} but also the crippled \verb|"|. Th eother
+problem are the arguments. They require matching braces. this can not
+be expressed with regular expressions. Thus \BibTool{} provides a
+command to define \TeX{} macros and expand in a string them.
+
+The command \code{bibtool tex define} can be used to define \TeX{} macros
+which should be used for expansion lateron. For our previous example
+we would have needed the following definitions:
+\begin{verbatim}
+  bibtool tex define {\&=&}
+  bibtool tex define {\"[1]=#1e}
+\end{verbatim}
+The argument of \code{bibtool tex define} is one string containing a
+control sequence on the left side optionally followed by the number of
+arguments in brackets. It is completed by a equality sign and the
+replacement text. If no arguments are given then the macro is assumed
+to have no arguments.
+
+In the example above the first definition makes a macro \verb|\&|
+without arguments and the second definition makes \verb|\"| a macro
+with one argment. Like in \LaTeX{} the sequence \verb|#|$n$ represents
+the $n^{th}$ argument.\footnote{Note that in German ae is the
+  representation of \"a without the umlaut accent.}
+
+There is one additional case which has not been described already. If
+you are a little bit familiar with \TeX{} you might know that you can
+make a character active and assign a macro to this character. Thus you
+can omit the leading backslash.
+
+This case is coverd in \code{bibtool tex define} as well. If the macro
+name consists of a single character only which is not the backslash
+then this character is made active then the remainder is used to
+assign a macro to it.
+
+As a side note I want to note that the reading and macro expansion
+apparatus of \TeX{} is internally imitated to a certain degree.  This
+included catagory codes. But those catagory codes can (currently) not
+be modified except by making a character active as described above.
+
+Initially no macros are defined in \BibTool. This can also be reached
+with the following command:
+\begin{verbatim}
+  bibtool tex reset
+\end{verbatim}
+After this command has been executed no macros are defined an no
+characters are active.
+
+But now we want to come to the point where we make use of thsoe
+definitions. This is achieved with the caommand \code{bibtool tex
+  expand}. All defined macros are replaced by their replacement
+text. Undefined macros are left unchanged. Thus we could use the
+following invocation:
+\begin{verbatim}
+  set str [bibtool tex expand $str]
+\end{verbatim}%$
+With the definitions given above and the value of the Tcl variable
+\code{str} given in the example above we get as a result the following
+new value in the Tcl variable \code{str}:
+\begin{verbatim}
+  M{ue}ller GmbH{&}Co.
+\end{verbatim}
+Now we could savely strip the braces (and possibly remaining \TeX{}
+macros with the method described above.
+
+\begin{table}[tp]
+  \TclSummary{tex define}{\meta{mac?[n]?=repl}}{Define the \TeX{} macro
+  or active character \meta{mac}. If \meta{[n]} is given then \meta{n}
+  must be a single digit which is interpreted as the muber of
+  arguments of the macro. The replacement text is \meta{repl}. In
+  ttthe replacement text \code{\#}\meta{n} represents the
+  \meta{n}$^{th}$ macro argument.}
+
+  \TclSummary{tex expand}{\meta{STRING}}{This command returns the
+  string which results from \meta{STRING} by replacing each defined
+  macro or active character and the optional arguments by it's
+  replacement text.}
+
+  \TclSummary{tex reset}{}{This command deletes all macros and active
+  characters previously defined.} 
+
+  \caption{Summary of operations on \TeX{} strings}\label{fig:tcl-tex}
+  \rule{\textwidth}{.1pt}
+\end{table}
+
+
+\section{Name Formatting}
+
+
+\begin{verbatim}
+  bibtool name list
+\end{verbatim}
+
+\INCOMPLETE
+
+\begin{verbatim}
+  bibtool name count
+\end{verbatim}
+
+\INCOMPLETE
+
+
+\begin{verbatim}
+  bibtool name format $format $name
+\end{verbatim}
+
+\INCOMPLETE
+
+
+\section{Formatting}
+
+In principal Tcl provides everything neccessary to extract the
+contents of entries and create a formatted string which is stored in a
+field.  Since \BibTool{} started as a tool to autmatically create
+reference keys for \BibTeX{} databases it has a powerful (and fast)
+mechanism to extract information from a entry and format it according
+to a given specification. For a full description we refer to
+\cite{neugebauer:bibtool}.
+\begin{table}[t]
+  \begin{center}\doublerulesep=.4pt
+    \begin{tabular}{lp{.6\textwidth}}\hline\hline
+      \textit{format}\rule[-1.5ex]{0pt}{4ex}	&
+      \textit{meaning}\\\hline\rule{0pt}{3ex}%
+      \code{\%}\textit{sign pre.post} \code{d(}\textit{field}\code{)} &
+      The \textit{post$^{th}$} number is extracted from the field --
+      \textit{post} defaults to 1. \textit{pre} digits starting from
+      the right are returned. If \textit{sign} is \code{+} then
+      missing digit are replaced by \code{0}. If \textit{sign} is
+      \code{-} and no number is found then \code{0} is returned
+      instead of the empty string.
+      \\
+      \code{\%}\textit{sign pre.post} \code{D(}\textit{field}\code{)} &
+      Acts like \code{d} but does not truncate longer numbers to
+      \textit{pre} digits.
+      \\
+      \code{\%}\textit{sign pre.post} \code{n(}\textit{field}\code{)} &
+      The field is treated as a list of names. Last names are
+      extracted. At most \textit{pre} names are used and remaining
+      names are indicated. At most \textit{post} letters from each
+      name are shown. If \textit{sign} is \code{+} then all letters
+      are translated to upper case. If \textit{sign} is \code{-} then
+      all letters are translated to lower case.
+      \\
+      \code{\%}\textit{sign pre.post} \code{N(}\textit{field}\code{)} &
+      Acts like \code {n} but appends the initials as well.
+      \\
+      \code{\%}\textit{sign pre.post} \code{p(}\textit{field}\code{)} &
+      Use the name format \textit{pre} to format at most \textit{post}
+      names accordingly. Translate the case according to the
+      \textit{sign}. 
+      \\
+      \code{\%}\textit{sign pre} \code{s(}\textit{field}\code{)} &
+      Use at most \textit{pre} characters. Translate the case
+      according to the \textit{sign}. 
+      \\
+      \code{\%}\textit{sign pre.post} \code{t(}\textit{field}\code{)} &
+      Use a list of words. The words in the \code{ignored.word} list
+      are not considered. At most \textit{pre} words are shown. At
+      most \textit{post} letters from each word are used. Translate
+      the case according to the \textit{sign}. \code{fmt.titlt.title}
+      is inserted between words.
+      \\
+      \code{\%}\textit{sign pre.post} \code{T(}\textit{field}\code{)} &
+      Acts like \code{t} but does not ignore words.
+      \\
+      \code{\%}\textit{sign pre.post} \code{w(}\textit{field}\code{)} &
+      Acts like \code{t} but inserts nothing between words.
+      \\
+      \code{\%}\textit{sign pre.post} \code{W(}\textit{field}\code{)} &
+      Acts like \code{T} but inserts nothing between words.
+      \\[1ex]
+      \hline\hline
+    \end{tabular}
+    \caption{Format specifiers}\label{tab:formats}
+  \end{center}
+\end{table}
+
+The procedure \code{bibtool format} takes a entry and a format
+specification and usually returnes a string representation of the
+format where certain constructions are expanded. If a syntax error is
+detected an error is raised.
+
+To start with the easy case we can state, that any allowed character
+is passed unchanged from the fromat to the result. The percent sign
+acts as an escape character which starts an extended command. To
+produce a single percent sign in the output you have to give two
+percent signs in the format specifier:
+\begin{verbatim}
+  $entry format {123%%abc}
+\end{verbatim}%$
+This instruction returns \code{123\%abc}.
+
+The percent sign starts a format specifier which is similar to a
+format specifier of the Tcl \code{format} instruction. But instead of
+giving arbitrary arguments to be formatted in addition to the format
+specifier, the format contains the names of fields in parentheses. The
+values of those fields -- or pseudo-fields -- are formatted according
+to the format specifier. The general form is as follows:
+
+\code{\%} \textit{sign pre.post spec} \code{(}\textit{field}\code{)}
+
+We will explain the meaning of the different parts from right to
+left. \textit{field} is the name of a field or pseudo-field. The value
+of this field is formatted according to the remaining parts of the
+format specifier.
+
+\textit{spec} is a single letter which determines the main
+functionality. Details can be found in Table~\ref{tab:formats}. For
+instance the letter \code{n} denotes name formatting. The other parts
+of the format specifier are optional and influence the exact operation
+of the formatting. In any case characters that are not allowed are
+silently ignored and \TeX{} macros are expanded.
+
+In general \textit{spe} can be preceeded by the qualifier
+\code{\#}. But this is not meaningful in the context of Tcl since it
+always returns the empty string.
+
+Let us finally reconsider our example entry from page
+\pageref{example:bibtool}.  For this entry \code{\$entry} we get the
+following results:
+
+\begin{tabular}{lll}
+ \code{\$entry format "\%n(author)"}      &\(\mapsto\)& \code{Neugebauer}\\
+ \code{\$entry format "\%+.3n(author)"}   &\(\mapsto\)& \code{NEU}\\
+ \code{\$entry format "\%-.2n(author)"}   &\(\mapsto\)& \code{ne}\\
+ \code{\$entry format "\%d(edition)"}     &\(\mapsto\)& \code{2}\\
+ \code{\$entry format "\%d(edition)"}     &\(\mapsto\)& \code{2}\\
+ \code{\$entry format "\%+3.2d(edition)"} &\(\mapsto\)& \code{041}\\
+ \code{\$entry format "\%2d(year)"}       &\(\mapsto\)& \code{97}\\
+ \code{\$entry format "\%-w(title)"}      &\(\mapsto\)& \code{bibtool}
+\end{tabular}
+
+
+\section{Analyzing a \LaTeX{} aux File}
+
+\BibTeX{} uses inormation from the auxiliary files created during a
+\LaTeX{} run. If you want to write a program to extract the entries
+used in a document or if you want to write a replacement for \BibTeX{}
+you need a method to get the information from the aux file. Since the
+information might be distributed in several aux files if the \LaTeX{}
+document uses \verb|\include| to combine several subdocuments.
+
+Thus it is rather handsome to have a method which collects th required
+information. This is done by the functions \code{bibtool aux} and
+\code{bibtool aux -db}.
+
+The function \code{bibtool aux} returns a list containing all
+citations mentioned in the aux file. One key is traeted special. If
+the key \code{*} is used then all entries in the database should be
+used. In \LaTeX{} this is accomplished by the macro invocation
+\begin{verbatim}
+  \nocite{*}
+\end{verbatim}
+Thus if a \code{*} is recognized then the list contains only one
+element namely this star. Otherwise you get the complete list with
+\begin{verbatim}
+  bibtool aux $auxfile
+\end{verbatim}%$
+If the document contains references to \code{neugebauer:bibtool} and
+\code{neugebauer:bibtcl} then the following Tcl list is returned:
+\begin{verbatim}
+  neugebauer:bibtool neugebauer:bibtcl
+\end{verbatim}
+
+The other information which can be extracted from an aux file is the
+list of databases to be used. This is done with the function
+\code{bibtool aux databases}. It takes the name of an aux file and
+returns the list of databases mentioned there:
+\begin{verbatim}
+  bibtool aux $auxfile -db
+\end{verbatim}%$
+More than one databases can be used in one document by separating them
+by a comma (\code{,}). In a \LaTeX{} document this might look at follows:
+\begin{verbatim}
+  \bibliography{db1,db2,db3}
+\end{verbatim}
+In this case the function \code{bibtool aux -db} returnes the
+following list
+\begin{verbatim}
+  db1 db2 db3
+\end{verbatim}
+
+If the aux file given to either function does not exist or can not be
+read then a Tcl error is raised. Thus you should always use
+\code{catch} and implement your own error recovery routine. 
+
+\begin{table}[tp]
+  \TclSummary{aux}{\meta{FILE}}{Reads the given \LaTeX{} \code{aux}
+    file and collects a list of all citations. If one citation is
+    \code{*} then this \code{*} is returned. Otherwise a list of all
+    citations found is returned. If the \LaTeX{} document has used
+    \code{\char'134 include} then the respective \code{aux} files are
+    also considered.} 
+
+  \TclSummary{aux}{\meta{FILE} \meta{-db}}{Reads the given \LaTeX{} \code{aux}
+    file and collects a list of all databases requested.  If the
+    \LaTeX{} document has used \code{\char'134 include} then the
+    respective \code{aux} files are also considered.} 
+
+  \caption{Summary of operations on aux files}\label{fig:tcl-aux}
+  \rule{\textwidth}{.1pt}
+\end{table}
+
+
+\section{Recognized Entry Types}
+
+In \BibTeX{} any entry has a certain type -- the entry type.
+\BibTool{} maintains a list of known entry types and complains if a
+entry is read which has an unknown entry type. Such entries are not
+stored in the database. Usually the entry types of the standard
+\BibTeX{} styles are already known to \BibTool. But if you are using
+some other kind of entry type then this has to be declared in
+\BibTool. This can be done with the resource command
+\code{new.entry.type}.
+
+\begin{verbatim}
+  bibtool new.entry.type={Law}
+\end{verbatim}
+
+Note that no spaces are allowed around the equality sign and that the
+braces are neccesary to preserve the case of the letters. This is
+useful since \BibTeX{} and \BibTool{} normally ignore the case of
+letters. But the string given as entry type is not only used to
+determine whether or not a entry can be stored in the database but
+also as the printing representation of the entry type. Thus in our
+example it would be possible to have entries of the following kind
+
+\begin{verbatim}
+  @law{ ... }
+  @Law{ ... }
+  @LAW{ ... }
+\end{verbatim}
+
+All of those would be accepted and be assigned the same entry
+type. All of them would be printed like the second example.
+
+As a sidemark you should note that \code{new.entry.type} can also be
+used to redefine the printing representation of existing entry
+types. Whenever an existing entry type is encountered as argument then
+just this modification is performed.
+
+For a Tcl program it might be necessary to know which entry types are
+defined in \BibTool. Thus it can present a menu to the user to select
+the appropriate type. For this purpose the instruction \code{bibtool
+  types} is provided. This can be seen in the following fragment of a
+program where \code{\$menu} is assumed to contain the path to a
+previously created \code{menu}.
+
+\begin{verbatim}
+  foreach type [bibtool types] {
+    $menu add checkbutton       \
+        -variable entry_type    \
+        -value $type            \
+        -label $type
+  }
+\end{verbatim}%$
+
+If you run this example you will see that the menu contains normal
+entry types only. Currently the following entry types are considered
+special:\medskip
+
+\mbox{}\hfill
+\begin{minipage}{.3\textwidth}
+  COMMENT	\\
+  PREAMBLE	\\
+  STRING
+\end{minipage}\hfill
+\begin{minipage}{.3\textwidth}
+  ALIAS		\\
+  INCLUDE	\\
+  MODIFY
+\end{minipage}
+\hfill\mbox{}\medskip
+
+The three sepcial entry types to the left are well known. The entry
+types to the right are likely to be introduced in \BibTeX\,1.0.
+
+If you want to get a complete list of all entry types you can give the
+optional argument \code{-all} to the \code{bibtool types}
+command. Then the special entry types are returned in addition to the
+normal entry types.
+
+
+
+\begin{table}[tp]
+  \TclSummary{types}{\meta{?-all?}}{Return the list of defined entry
+    types. Normally all normal entry types are returned.  If the
+    option \code{-all} is given then the special entry types are delivered
+    as well. The entry types are returned in some internal order. They
+    are not sorted.}
+  \TclSummary{version}{}{Return the version number of \BibTool.}
+
+  \caption{Summary of misc operations}\label{fig:tcl-misc}
+  \rule{\textwidth}{.1pt}
+\end{table}
+
+
+\section{The Version Number}
+
+Finally, BibTcl provides a means to get hold of the version number.
+This can be useful to give this information to the user or to see
+whether a new enough version is used when older versions might miss
+some features. I would like to provide means to test for features
+directly. But until I have descided how this will be implemented the
+version is the only indicator which can be used.
+
+The version number is returned by the function \code{bibtool version}.
+The return value consists of a number \meta{major}.\meta{minor} where
+\meta{mayor} is the major version number and \meta{minor} is the minor
+version number. Additionally some additions may be returned. Thus
+\begin{verbatim}
+  bibtool version
+\end{verbatim}
+\noindent may return \code{2.41} but a value of \code{2.41-a} is also
+a legal value---even so it is not very likely that you get your hands
+on such a release.
+
+
+\section{Using \BibTool{} Resources}\label{sec:tcl-resources}
+
+Nearly all resource commands of \BibTool{} are accessible through the
+\code{bibtool} command. If nothing else fits then the argument of the
+\code{bibtool} command is passed on to the resource evaluator. Since
+this is done for each single argument this means that special
+characters have to be protected in a way to ensure that they arrive
+safely there.
+
+For instance the resource evaluator treats the equality sign as
+optional. Separating spaces are enough. Thus the following two
+commands have the same effect:
+\begin{verbatim}
+  bibtool quiet=on
+  bibtool {quiet on}
+\end{verbatim}
+Note however that the second form requires the braces to protect the
+embedded space.
+
+\BibTool{} resources can also be queried. Since not each resource
+command corresponds to a single variable not all resource commands can
+be used to query values. At least each resource command which
+corresponds to a string, a boolean, or a numeric value can be queried.
+
+Consider the resource instruction from above \code{quiet=on}.  This
+instructions sets the boolean resource \code{quiet}.  This variable
+can be queried with
+\begin{verbatim}
+  bibtool quiet
+\end{verbatim}
+This Tcl command returns the value of the resource variable. Booleans
+are returned as \code{0} or \code{1} to conform to the Tcl conventions
+for booleans.
+
+\INCOMPLETE
+
+
+\begin{table}[tp]
+  \TclSummary{\meta{RSC\_VARIABLE}}{}{Returns the contents of the
+    resource variable \meta{RSC\_VARIABLE} if this variable is
+    available. Strings, booleans, and numerics are available.}
+  \TclSummary{\meta{RSC}}{\meta{\ldots}}{Passes the resource command
+    \meta{RSC} to the resource evaluator of \BibTool. Each single
+    argument is treated as a separate resource command.}
+    
+  \caption{Summary of resource operations}\label{fig:tcl-rsc}
+  \rule{\textwidth}{.1pt}
+\end{table}
+
+
+
+
+\chapter{Installation}\label{sec:installation}
+
+This section is the last one since it is required only once. It
+describes the installation of the dynamic loadable library.
+
+\section{UNIX}
+
+\begin{itemize}
+\item I suppose that you have unpacked \BibTool{}. You should be in
+  the main directory containing the directory \file{BibTcl}.
+  
+\item Configure and compile \BibTool{}---if not already done.  See the
+  files \file{README} and \file{INSTALL} there.  The object files must
+  be present in this directory. (In a next release a single library
+  will be assembled and the C API might be documented.)
+  
+\item Find the file \file{tclConfig.sh}. This file is created during
+  the configuration of Tcl and installed with it. One place to search
+  for it is in the directory \file{/usr/local/lib} or wherever Tcl has
+  installed its libraries.  Copy this file into the directory
+  \file{BibTcl}.
+
+\item Go to the directory \file{BibTcl} and run
+
+  \code{./configure}
+  
+  This will have a look at your system and find out which properties
+  it has.  From this information a \file{Makefile} is created.
+
+\item  Run
+
+  \code{make LIBDIR=/usr/local/lib/BibTool}
+  
+  where the path on the right side of the \code{=} should point to the
+  installed \BibTool.
+  
+  This step should produce the shared library and a small Tcl loader
+  \file{bibtool.tcl} which is independent of the architecture.  In
+  fact it figures out the architecture and uses the appropriate
+  installed version.
+
+\item Run
+
+  \code{make install LIBDIR=/usr/local/lib/BibTool}
+  
+  This creates a subdirectory of \file{LIBDIR} according to the OS
+  used.  This directory contains the shared library as well as the
+  loader script.  The loader script can be freely copied to any other
+  place. The shared library must stay in this directory since the
+  location is compiled into the loader script.
+
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Local Variables: 
+% mode: latex
+% TeX-master: "bibtcl.ltx"
+% End: 

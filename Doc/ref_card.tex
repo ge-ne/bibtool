@@ -1,0 +1,325 @@
+%%*****************************************************************************
+%% $Id: ref_card.tex,v 1.1 2007-02-07 21:28:48 gene Exp $
+%%=============================================================================
+%%
+%% This file is part of BibTool.
+%% It is distributed under the GNU General Public License.
+%% See the file COPYING for details.
+%%
+%% (c) 1996-1997 Gerd Neugebauer
+%%
+%% Net: gerd@informatik.uni-koblenz.de
+%%
+%%-----------------------------------------------------------------------------
+%% Usage:  latex     ref_card
+%%*****************************************************************************
+
+\newif\ifAfour \Afourtrue
+
+\ifx\documentclass\undefined
+\documentstyle[multicol]{article}
+\else
+\documentclass{article}
+\usepackage{multicol}
+\fi
+
+\input version
+
+\ifAfour
+\textwidth      = 170mm
+\textheight     = 260mm
+
+\oddsidemargin  = -10mm
+\evensidemargin = -10mm
+\topmargin      = -10mm
+\else
+\oddsidemargin  = -10mm
+\evensidemargin = -10mm
+\topmargin      = -20mm
+\fi
+
+\headsep        = 0pt
+\headheight     = 0pt
+\parsep         = 0pt
+\parindent      = 0pt
+\parskip        = 6pt
+
+\pagestyle{empty}
+
+\newcommand\BibTool{{\sc Bib\hskip-.1em
+        T\hskip-.15emo\hskip-.05emo\hskip-.05eml}}
+\newcommand\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+        T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\newenvironment{FlatList}{\begin{list}{}{%
+      \topsep=0pt\itemsep=0pt\parsep=0pt\let\makelabel=\flatlistlabel}}{\end{list}}%
+\newcommand\flatlistlabel[1]{\descriptionlabel{\sf #1}}
+\newcommand\Arg[1]{{\rm\{}{\sl #1}{\rm\}}}
+\newcommand\ARG[1]{{\sl #1}}
+\newcommand\OnOff{{\sl OnOff}}
+\newcommand\Num{{\sl n}}
+\newcommand\Section[1]{\smallskip\par\ \hfill{\normalsize\bf #1}\hfill\ \par}
+\newcommand\Lib[1]{{\tt #1}}
+
+\begin{document} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{center}
+  \Large \BibTool{} Quick Reference Card
+  \\
+  \scriptsize for \BibTool{} version \Version{}
+  --- see also \tt http://www.uni-koblenz.de/\~{}gerd/ftp/BibTool/
+  \\
+  {\rm{\copyright}}\Year{} Gerd Neugebauer ({\tt gerd@informatik.uni-koblenz.de})
+  \\
+  \rule{.8\textwidth}{.1pt}
+\end{center}
+\vfill
+\footnotesize\rm
+\begin{multicols}{2}
+  \Section{Command line options}
+  \begin{FlatList}
+  \item [-{}- \ARG{rsc\_command}]\ \\
+    Perform resource command as if given in a file.
+  \item [-A \ARG{type}]\ \\
+    Determine key disambiguation.
+  \item [-d\ ]\ \\
+    Check double entries.
+  \item [-f \ARG{key\_format}]\ \\
+    Generate keys according to \ARG{key\_format}
+  \item [-F\ ]\ \\
+    Enable key generation with free key format.
+  \item [-h\ ]\ \\
+    Print short help and exit.
+  \item [-i \ARG{input\_file}]\ \\
+    Mark a file to be processed later.
+  \item [-k\ ]\ \\
+    Make keys with the short format.
+  \item [-K\ ]\ \\
+    Make keys with the long format.
+  \item [-o \ARG{output\_file}]\ \\
+    Send the output to \ARG{output\_file}.
+  \item [-q\ ]\ \\
+    Suppress warning messages.
+  \item [-r \ARG{resource\_file}]\ \\
+    Read the resource file  \ARG{resource\_file}.
+  \item [-R\ ]\ \\
+    Load the default resource file now.
+  \item [-s\ \ ]\ \\
+    Sort the result.
+  \item [-S\ ]\ \\
+    Sort the result in reverse order.
+  \item [-v\ \ ]\ \\
+    Turn on verbose messages about the actions performed.
+  \item [-x \ARG{aux\_file}]\ \\
+    Extract those entries mentioned in \ARG{aux\_file}.
+  \item [-X \ARG{regex}]\ \\
+    Extract entries matching \ARG{regex}.
+  \end{FlatList}
+  \Section{Libraries}
+  \begin{tabular}{ll}
+  \Lib{check{\rm\_}y}	& Check the value of the year.\\
+  \Lib{default}		& All default settings.\\
+  \Lib{field}		& Redefine field names.\\
+  \Lib{brace}		& Use braces as delimiters.\\
+  \Lib{improve}		& Apply improvements.\\
+  \Lib{iso2tex}		& Translate ISO\,8859/1 characters.\\
+  \Lib{iso{\rm\_}def}	& Define ISO\,8859/1 characters for formatting.\\
+  \Lib{month}		& Introduce strings for month names.\\
+  \Lib{opt}		& Remove OPT in field names.\\
+  \Lib{sort{\rm\_}fld}	& Specify sort order for fields.\\
+  \Lib{tex{\rm\_}def}	& Define \TeX{} macros for formatting.\\
+  \end{tabular}
+  \Section{General}
+  \begin{FlatList}
+  \item [resource.search.path	= \Arg{dir$_1$:dir$_2$\ldots }]
+  \item [resource \Arg{file}]
+  \item [bibtex.search.path	= \Arg{dir$_1$:dir$_2$\ldots }]
+  \item [bibtex.env.name	= \Arg{ENV\_NAME}]
+  \item [env.separator		= \Arg{c}]
+  \item [dir.file.separator	= \Arg{c}]
+  \item [print \Arg{message}]
+  \item [quiet			= \OnOff]
+  \item [verbose		= \OnOff]
+  \item [crossref.limit		= \Arg{n}]
+  \end{FlatList}
+  \Section{Reading and Printing}
+  \begin{FlatList}
+  \item [input \Arg{bib\_file}]
+  \item [output.file		= \Arg{file}]
+  \item [pass.comments		= \OnOff]
+  \item [new.entry.type \Arg{type}]
+  \item [print.line.length	= \Num]
+  \item [print.indent		= \Num]
+  \item [print.align		= \Num]
+  \item [print.align.key	= \Num]
+  \item [print.align.preamble	= \Num] 
+  \item [print.deleted.entries  = \OnOff]
+  \item [print.deleted.prefix   = \Arg{prefix}]
+  \item [print.align.comment	= \Num]
+  \item [print.newline		= \Num]
+  \item [print.use.tab		= \OnOff]
+  \item [print.braces		= \OnOff]
+  \item [print.parentheses	= \OnOff]
+  \item [print.comma.at.end 	= \OnOff]
+  \item [print.wide.equal 	= \OnOff]
+  \item [new.field.type \Arg{new=old}]
+  \item [symbol.type		= \ARG{type}]\ \\
+    upper, lower, cased
+  \end{FlatList}
+  \Section{Sorting}
+  \begin{FlatList}
+  \item [sort = \OnOff]
+  \item [sort.reverse = \OnOff]
+  \item [sort.format = \Arg{format}]
+  \item [sort.order \Arg{\ldots }]
+  \item [sort.macros = \OnOff]
+  \end{FlatList}
+  \Section{Searching (Extraction)}
+  \begin{FlatList}
+  \item [tex.define \Arg{macro[arg]=text}]
+  \item [extract.file \Arg{file}]
+  \item [select \Arg{field$_1$\ldots field$_n$ "regex"}]
+  \item [select \Arg{type$_1$\ldots type$_n$ }]
+  \item [select.by.string \Arg{field$_1$\ldots field$_n$ "regex"}]
+  \item [select.by.string.ignore \Arg{chars}]
+  \item [select.case.sensitive = \OnOff]
+  \item [select.fields = \Arg{field$_1$,field$_2$,\ldots }]
+  \end{FlatList}
+  \Section{Field Manipulation}
+  \begin{FlatList}
+  \item [add.field \Arg{field=value}]
+  \item [delete.field \Arg{field}]
+  \item [rewrite.rule \Arg{ pattern }]\ \\
+    delete all matching fields
+  \item [rewrite.rule \Arg{ pattern \# replacement}]\ \\
+    rewrite all fields
+  \item [rewrite.rule \Arg{f$_1$\ldots f$_n$ \# pattern \# replacement}]\ \\
+    rewrite some fields
+  \item [rewrite.case.sensitive = \OnOff]
+  \item [rewrite.limit = \Arg{n}]
+  \end{FlatList}
+  \Section{Checks}
+  \begin{FlatList}
+  \item [check.double = \OnOff]
+  \item [check.do.delete = \OnOff]
+  \item [check.rule \Arg{field \# pattern \# message}]
+  \item [check.case.sensitive = \OnOff]
+  \end{FlatList}
+  \Section{Strings}
+  \begin{FlatList}
+  \item [macro.file \Arg{file}]
+  \item [print.all.strings = \OnOff]
+  \item [expand.macros = \OnOff]
+  \end{FlatList}
+\end{multicols}
+\vfill\vfill\vfill
+\begin{center}\rule{.8\textwidth}{.1pt}\end{center}
+\newpage
+\begin{center}\rule{.8\textwidth}{.1pt}\end{center}\vfill
+\begin{multicols}2
+  \Section{Counting}
+  \begin{FlatList}
+  \item [count.all = \OnOff]
+  \item [count.used = \OnOff]
+  \end{FlatList}
+  \Section{Key Generation}
+  \begin{FlatList}
+  \item [preserve.keys	 	= \OnOff]
+  \item [preserve.key.case	= \OnOff]
+  \item [key.format		= \Arg{format}]\ \\
+    special values: short, long, short.need, long.need, empty
+  \item [key.generation		= \OnOff]
+  \item [default.key		= \Arg{key}]
+  \item [key.base		= \ARG{base}]\ \\
+    values: upper, lower, digit
+  \item [key.number.separator	= \Arg{s}]
+  \item [key.expand.macros	= \OnOff]
+  \item [fmt.name.title		= \Arg{s}]
+  \item [fmt.title.title	= \Arg{s}]
+  \item [fmt.name.name		= \Arg{s}]
+  \item [fmt.inter.name		= \Arg{s}]
+  \item [fmt.name.pre		= \Arg{s}]
+  \item [fmt.et.al		= \Arg{s}]
+  \item [new.format.type	= \Arg{n="spec"}]
+  \end{FlatList}
+  \Section{Name Formatting Specification}
+  \begin{FlatList}
+  \item [\%{\it n}\/f{[{\it mid}][{\it pre}][{\it post}]}]\ \\
+    format first names. Use {\it n}\/ letters. Insert {\it pre}\/
+    before, {\it mid} between, and {\it post} after the words.
+  \item [\%{\it n}\/v{[{\it mid}][{\it pre}][{\it post}]}]\ \\
+    format ``von'' part.
+  \item [\%{\it n}\/l{[{\it mid}][{\it pre}][{\it post}]}]\ \\
+    format last name.
+  \item [\%{\it n}\/j{[{\it mid}][{\it pre}][{\it post}]}]\ \\
+    format ``junior'' part.
+  \end{FlatList}
+  \Section{Format Specifications}
+  {\bf Pseudo fields:} 
+  \begin{FlatList}
+  \item [\$key]
+  \item [\$default.key]
+  \item [\$sortkey]
+  \item [\$source]
+  \item [\$type]
+  \item [@type]
+  \item [\$day]
+  \item [\$month]
+  \item [\$mon]
+  \item [\$year]
+  \item [\$hour]
+  \item [\$minute]
+  \item [\$second]
+  \item [\$user]
+  \item [\$hostname]
+  \end{FlatList}
+  {\bf Formatting Fields:} 
+  \begin{FlatList}
+  \item [\%$\pm ${\it x}.{\it y}\/ n({\it field}\/)]\ \\
+    format {\it y}\/ characters of {\it x}\/ last names.
+  \item [\%$\pm ${\it x}.{\it y}\/ N({\it field}\/)]\ \\
+    format {\it y}\/ characters of {\it x}\/ names.
+  \item [\%$\pm ${\it x}.{\it y}\/ p({\it field}\/)]\ \\
+    format {\it x}\/ names according to the name format {\it y}.
+  \item [\%$\pm ${\it x}.{\it y}\/ d({\it field}\/)]\ \\
+    format at most {\it x}\/ digits of the {\it y}$^{th}$ number.
+  \item [\%$\pm ${\it x}.{\it y}\/ D({\it field}\/)]\ \\
+    format {\it x}\/ digits of the {\it y}$^{th}$ number without truncation.
+  \item [\%$\pm ${\it x}\/ s({\it field}\/)]\ \\
+    format {\it x}\/ string characters.
+  \item [\%$\pm ${\it x}.{\it y}\/ t({\it field}\/)]\ \\
+    format {\it x}\/ sentence words of length {\it y}.
+  \item [\%$\pm ${\it x}.{\it y}\/ T({\it field}\/)]\ \\
+    format {\it x}\/ sentence words  of length {\it y}. (Words ignored)
+  \item [\%$\pm ${\it x}.{\it y}\/ w({\it field}\/)]\ \\
+    format {\it x}\/ words of length {\it y}.
+  \item [\%$\pm ${\it x}\/ W({\it field}\/)]\ \\
+    format {\it x}\/ words of length {\it y}. (Words ignored)
+  \item [\%$\pm ${\it x}.{\it y}\/ \#n({\it field}\/)]\ \\
+    test whether the  number of names is between {\it x}\/ and {\it y}.
+  \item [\%$\pm ${\it x}.{\it y}\/ \#N({\it field}\/)]\ \\
+    test whether the  number of names is between {\it x}\/ and {\it y}.
+  \item [\%$\pm ${\it x}.{\it y}\/ \#p({\it field}\/)]\ \\
+    test whether the  number of names is between {\it x}\/ and {\it y}.
+  \item [\%$\pm ${\it x}.{\it y}\/ \#s({\it field}\/)]\ \\
+    test whether the  number of characters is between {\it x}\/ and {\it y}.
+  \item [\%$\pm ${\it x}.{\it y}\/ \#t({\it field}\/)]\ \\
+    test whether the  number of words is between {\it x}\/ and {\it y}.
+  \item [\%$\pm ${\it x}.{\it y}\/ \#T({\it field}\/)]\ \\
+    test whether the  number of not ignored words is between {\it x}\/
+    and {\it y}. 
+  \item [\%$\pm ${\it x}.{\it y}\/ \#w({\it field}\/)]\ \\
+    test whether the  number of words is between {\it x}\/ and {\it y}.
+  \item [\%$\pm ${\it x}.{\it y}\/ \#W({\it field}\/)]\ \\
+    test whether the  number of not ignored words is between {\it x}\/
+    and {\it y}. 
+  \end{FlatList} 
+\end{multicols}
+\vfill\vfill\vfill
+\begin{center}\rule{.8\textwidth}{.1pt}\end{center}
+\end{document} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Local Variables:
+% mode: latex
+% TeX-master: nil
+% End:

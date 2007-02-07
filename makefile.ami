@@ -1,0 +1,506 @@
+# *****************************************************************************
+#  $Id: makefile.ami,v 1.1 2007-02-07 21:26:42 gene Exp $
+# =============================================================================
+#  
+#  This file is part of BibTool.
+#  It is distributed under the GNU General Public License.
+#  See the file COPYING for details.
+#  
+#  (c) 1996-1997 Gerd Neugebauer
+#  
+#  Net: gerd@informatik.uni-koblenz.de
+#  
+# *****************************************************************************
+
+#  Look also in the file config.h for configuration parameters.
+#  Read the file INSTALL for explanation.
+# =============================================================================
+
+#  This is the makefile for BibTool on Amiga computers.
+#  The SAS/C compiler is assumed.
+#  If you are using the GNU C compiler you might want to have a look
+#  at makefile.unx
+
+# =============================================================================
+#  Configuration Section
+# =============================================================================
+# 
+# -------------------------------------------------------
+#  Destination directory for make install
+#  This is usually a directory where public executables
+#  are installed.
+
+BINDIR     = TeXMF:bin/local
+
+# -------------------------------------------------------
+#  Destination directory for make install.lib
+#  This is usually a directory where public shared files
+#  are installed plus a final BibTool.
+# 
+
+LIBDIR     = TeXMF:bibtool/lib
+
+# -------------------------------------------------------
+#  Destination directory for make install.include
+#  This is usually a directory where public include files
+#  are installed plus a final `BibTool'.
+# 
+
+INCLDUEDIR = TeXMF:bibtool/lib
+
+# -------------------------------------------------------
+#  Name the C compiler
+# 
+
+# SAS/C (Amiga)
+CC         = sc
+
+# -------------------------------------------------------
+#  C_OPTIONS are the flags for the C compiler.
+#  It should always contain a path to the header files.
+#  For debugging it should be -g. 
+#  For final version you can try to activate 
+#  the optimizer with -O or -O2 or whatever
+#  BEWARE: Some C compiler produce erroneous code if the
+# 	   optimizer is turned on.
+# 
+
+#  SAS/C (Amiga)
+C_OPTIONS = idir=include define=STDC_HEADERS=1 noicons
+# C_OPTIONS = idir=include define=STDC_HEADERS=1 noicons optimize
+
+# -------------------------------------------------------
+#  EXT is the optional extension of the final executable.
+#  Various Operating Systems have their own ideas about
+#  that.
+# 
+
+EXT		=
+
+# -------------------------------------------------------
+#  Extension of object files
+# 
+
+OBJ		= .o
+
+# -------------------------------------------------------
+#  Name some programs
+# 
+#  MV is a command to move certain files maybe to other
+#  directories or drives. Only plain files are moved.
+
+MV		= rename
+
+#  RM is a command to remove certain files. It should not
+#  be confused when trying to remove non-existent files.
+#  Only plain files are removed.
+
+RM		= delete
+
+# 
+#  MAKEDEPEND is a program to find dependencies for
+#  .c and .h files.
+#  Not present on MS-DOS, Atari, Amiga, Next
+MAKEDEPEND	= makedepend
+# MAKEDEPEND	= gcc -MM
+# 
+#  INSTALL is a program to properly install some executable files.
+#  Maybe cp should also do this job (on Unix)
+
+INSTALL		= copy
+
+# 
+#  INSTALL_DATA is a command to install some data files.
+
+INSTALL_DATA	= copy
+
+# 
+#  INSTALL_DIR is a command to create a directory if not
+#  already existent. If your install does not support the 
+#  -d option you can try to use mkdir instead.
+
+INSTALL_DIR	= makedir
+
+#  -------------------------------------------------------
+#  The ranlib program or : for nothing.
+# 
+RANLIB	        = ranlib
+
+#  -------------------------------------------------------
+#  The ar program invocation to add files to the archive.
+# 
+AR		= ar r
+
+# 
+#  PERL is the complet path to an existing perl executable.
+#  Perl 4.* and Perl 5.* are both ok.
+# 
+PERL	      = /usr/local/bin/perl
+
+# -------------------------------------------------------
+#  Defines to support (non-ANSI) C compilers.
+#  For Solaris 2 you may have to define HAVE_STRING_H
+#  For ANSI C compilers they should be empty.
+#  Mostly needed for the GNU regex library.
+#  Include
+#  -DHAVE_STRING_H	if your C compiler has string.h
+# 			(e.g. on Solaris 2)
+# 			Maybe you have to enlarge the
+# 			include search path.
+#  -DREGEX_MALLOC	if you have NO alloca() library
+# 			function
+#  -DHAVE_ALLOCA_H	if you need alloca.h for alloca()
+# 
+#  -DHAVE_CONFIG_H	if you want to use the file REGEX_DIR/config.h
+# 			this file has to be created then.
+# 
+
+#  SAS/C (Amiga)
+NON_ANSI_DEFS = define=REGEX_MALLOC=1 define=HAVE_STRING_H=1
+
+# -------------------------------------------------------
+#  GNU Regular Expression Library support.
+#  First of all the (sub)directory containing the 
+#  necessary files (excluding trailing slash).
+# 
+#  This directory is contained in the BibTool distribution.
+#  I have tried newer versions of this library without
+#  positive results. (Try it if you don't believe me:-)
+# 
+REGEX_DIR     = regex-0.12
+# 
+
+REGEX_DEF     = define=REGEX=1 idir=$(REGEX_DIR)
+
+REGEX         = regex$(OBJ)
+
+# -------------------------------------------------------
+#  Kpathsea Library support.
+#  This library provides means to specify a search path 
+#  with recursive search in subdirectories.
+#  The library is NOT contained in the BibTool distribution.
+#  This routines are expected to work with Kpathsea-2.6 or
+#  above.
+# 
+#  See the file INSTALL for details.
+# 
+#  Kpathsea is not known to work yet on anything else but
+#  Unix platforms.
+#  This item is purely experimental.
+#  Maybe you are better off not trying it!
+# 
+#  The value of KPATHSEA_DIR is the directory containing
+#  the distribution of kpathsea. I.e. the directory
+#  containing the subdirectory kpathsea.
+#  The value of KPATHSEA is the name of the kpathsea library.
+#  if kpathsea should not be used then it has to be empty.
+#  The value of KPATHSEA_DEF are the additional flags for the
+#  C compiler. It should arrange things that the macro
+#  KPATHSEA is defined and the directory beneath kpathsea
+#  is in the include search path.
+
+#  Kpathsea is not known to work with 1 yet.
+#  I guess you need to make some modification to the makefile
+#  when you try it. (see makefile.unx for an example)
+#  If you succeed please drop me a mail.
+KPATHSEA_DIR  = ../kpse2-6
+KPATHSEA      = 
+KPATHSEA_DEF  = 
+#  KPATHSEA     = $(KPATHSEA_DIR)/kpathsea/kpathsea.a
+
+# -------------------------------------------------------
+#  Default search paths
+#  The values are NULL or a string containing a colon
+#  separated list of directories.
+#  DON'T FORGET THE CURRENT DIRECTORY!
+# 
+#  The character ENV_SEP separates the directories in
+#  environment search paths.
+# 
+
+BIBINPUTS_DEFAULT = ".,TeXMF:bibtex/bib"
+BIBTOOL_DEFAULT   = ".,$(LIBDIR)"
+ENV_SEP           = ","
+
+# -------------------------------------------------------
+#  Declare the file naming conventions.
+#  FILE_TYPES contains optionally a macro definition
+#  determining the file naming conventions.
+#  -DMSDOS denotes MSDOG-like file names. (Also for Atari)
+#  -DAMIGA denotes the Amiga file names.
+#  The default (empty) are UN*X-like file names.
+# 
+#  DIR_SEP is the directory-file separator.
+
+FILE_TYPES	  = define=1=1
+DIR_SEP		  = /
+
+# =============================================================================
+#  End of Configuration Section
+# =============================================================================
+
+MAKEFILE      = SMakefile
+
+RSC_DEF	      = define=RSC_BIBINPUTS_DEFAULT=$(BIBINPUTS_DEFAULT)	\
+		define=RSC_BIBTOOL_DEFAULT=$(BIBTOOL_DEFAULT)		\
+		define=ENV_SEP=$(ENV_SEP)
+
+DONT_LINK     =
+LINK_TO       = link to
+STANDALONE    = define=STANDALONE=1
+
+CFLAGS	      = $(C_OPTIONS) $(FILE_TYPES)
+
+CFILES	      = main.c		\
+		$(CLIBFILES)
+CLIBFILES     = database.c	\
+		entry.c		\
+		error.c		\
+		expand.c	\
+		init.c		\
+		key.c		\
+		macros.c	\
+		names.c		\
+		parse.c		\
+		print.c		\
+		pxfile.c	\
+		record.c	\
+		rewrite.c	\
+		rsc.c		\
+		s_parse.c	\
+		symbols.c	\
+		stack.c		\
+		sbuffer.c	\
+		tex_aux.c	\
+		tex_read.c	\
+		version.c	\
+		type.c		\
+		wordlist.c
+
+HPATH	      = include${DIR_SEP}bibtool${DIR_SEP}
+HFILES	      = config.h		\
+		${HPATH}database.h	\
+		${HPATH}bibtool.h	\
+		${HPATH}config.h	\
+		${HPATH}entry.h		\
+		${HPATH}error.h		\
+		${HPATH}expand.h	\
+		${HPATH}general.h	\
+		${HPATH}init.h		\
+		${HPATH}key.h		\
+		${HPATH}keynode.h	\
+		${HPATH}macros.h	\
+		${HPATH}names.h		\
+		${HPATH}parse.h		\
+		${HPATH}print.h		\
+		${HPATH}pxfile.h	\
+		${HPATH}record.h	\
+		${HPATH}regex.h		\
+		${HPATH}resource.h	\
+		${HPATH}rewrite.h	\
+		${HPATH}rsc.h		\
+		${HPATH}s_parse.h	\
+		${HPATH}sbuffer.h	\
+		${HPATH}stack.h		\
+		${HPATH}symbols.h	\
+		${HPATH}tex_aux.h	\
+		${HPATH}tex_read.h	\
+		${HPATH}type.h		\
+		${HPATH}version.h	\
+		${HPATH}wordlist.h
+
+OFILES	      = main$(OBJ)	\
+		$(OLIBFILES)
+OLIBFILES     = database$(OBJ)	\
+		entry$(OBJ)	\
+		error$(OBJ)	\
+		expand$(OBJ)	\
+		init$(OBJ)	\
+		key$(OBJ)	\
+		macros$(OBJ)	\
+		names$(OBJ)	\
+		parse$(OBJ)	\
+		print$(OBJ)	\
+		pxfile$(OBJ)	\
+		record$(OBJ)	\
+		rewrite$(OBJ)	\
+		rsc$(OBJ)	\
+		s_parse$(OBJ)	\
+		symbols$(OBJ)	\
+		stack$(OBJ)	\
+		sbuffer$(OBJ)	\
+		tex_aux$(OBJ)	\
+		tex_read$(OBJ)	\
+		type$(OBJ)	\
+		version$(OBJ)	\
+		wordlist$(OBJ)
+
+DOCFILES      = Doc$(DIR_SEP)bibtool.1		\
+		Doc$(DIR_SEP)bibtool.tex	\
+		Doc$(DIR_SEP)bibtool.bib	\
+		Doc$(DIR_SEP)bibtool.bbl	\
+		Doc$(DIR_SEP)bibtool.aux	\
+		Doc$(DIR_SEP)bibtool.ind	\
+		Doc$(DIR_SEP)bibtool.idx	\
+		Doc$(DIR_SEP)bibtool.ist	\
+		Doc$(DIR_SEP)config.tex		\
+		Doc$(DIR_SEP)version.tex	\
+		Doc$(DIR_SEP)dina4.sty		\
+		Doc$(DIR_SEP)ref_card.tex	\
+		Doc$(DIR_SEP)Makefile		\
+		Doc$(DIR_SEP)c_get.pl		\
+		Doc$(DIR_SEP)c_lib.tex
+
+LIBFILES      = Lib$(DIR_SEP)braces.rsc		\
+		Lib$(DIR_SEP)check_y.rsc	\
+		Lib$(DIR_SEP)default.rsc	\
+		Lib$(DIR_SEP)field.rsc		\
+		Lib$(DIR_SEP)improve.rsc	\
+		Lib$(DIR_SEP)iso2tex.rsc	\
+		Lib$(DIR_SEP)month.rsc		\
+		Lib$(DIR_SEP)opt.rsc		\
+		Lib$(DIR_SEP)sort_fld.rsc	\
+		Lib$(DIR_SEP)tex_def.rsc
+
+PROGFILES     = Perl$(DIR_SEP)bibtool.pl	\
+		Tcl$(DIR_SEP)bibtool.tcl
+ETCFILES      = README				\
+		INSTALL				\
+		COPYING				\
+		Changes				\
+		makefile.unx			\
+		makefile.dos			\
+		makefile.ata			\
+		makefile.ami			\
+		ToDo				\
+		THANKS				\
+		pxfile.man			\
+		sbuffer.man			\
+		Doc$(DIR_SEP)c.tex		\
+		Doc$(DIR_SEP)c_main.tex		\
+		Doc$(DIR_SEP)c_lib.ind		\
+		$(MSDOS_targets)		\
+		$(PROGFILES)			\
+		$(AUTOCONFFILES)		\
+		$(BIBTCLFILES)
+
+AUTOCONFFILES = configure			\
+		configure.in			\
+		install-sh			\
+		mkdirchain			\
+		AutoConf$(DIR_SEP)config.h.in	\
+		AutoConf$(DIR_SEP)makefile.in	\
+		AutoConf$(DIR_SEP)reconfig.h.in
+
+BIBTCLFILES   = BibTcl$(DIR_SEP)Makefile.in	\
+		BibTcl$(DIR_SEP)README		\
+		BibTcl$(DIR_SEP)bibtool.c	\
+		BibTcl$(DIR_SEP)bibtcl.tex	\
+		BibTcl$(DIR_SEP)bibtcl.ltx	\
+		BibTcl$(DIR_SEP)bibtcl.bib	\
+		BibTcl$(DIR_SEP)version.tex	\
+		BibTcl$(DIR_SEP)configure.in	\
+		BibTcl$(DIR_SEP)configure	\
+		BibTcl$(DIR_SEP)dina4.sty	\
+		BibTcl$(DIR_SEP)bibtool.ist	\
+		BibTcl$(DIR_SEP)main.tcl
+
+DISTFILES     = $(ETCFILES)			\
+		$(CFILES)			\
+		$(HFILES)			\
+		$(LIBFILES)			\
+		$(DOCFILES)			\
+		$(REGEX_DIR)
+
+# -----------------------------------------------------------------------------
+#  The main target
+# -----------------------------------------------------------------------------
+
+all: bibtool$(EXT)
+
+bibtool$(EXT): $(OFILES) $(REGEX) $(KPATHSEA)
+	$(CC) $(CFLAGS) $(LINK_TO) $@ $(OFILES) $(REGEX) $(KPATHSEA)
+
+tex_read$(EXT): tex_read.c
+	$(CC) $(CFLAGS) $(STANDALONE) tex_read.c $(LINK_TO) tex_read$(EXT)
+
+tex_aux$(OBJ): tex_aux.c
+	$(CC) $(CFLAGS) $(REGEX_DEF) $(DONT_LINK) tex_aux.c
+
+main$(OBJ): main.c
+	$(CC) $(CFLAGS) $(REGEX_DEF) $(KPATHSEA_DEF) $(DONT_LINK) main.c
+
+parse$(OBJ): parse.c
+	$(CC) $(CFLAGS) $(KPATHSEA_DEF) $(DONT_LINK) parse.c
+
+rewrite$(OBJ): rewrite.c
+	$(CC) $(CFLAGS) $(REGEX_DEF) $(DONT_LINK) rewrite.c
+
+rsc$(OBJ): rsc.c
+	$(CC) $(CFLAGS) $(RSC_DEF) $(DONT_LINK) rsc.c
+
+# __________________________________________________________________
+#  Include the makefile into the dependencies to force updates
+#  when the makefile is modified.
+$(OFILES): $(MAKEFILE) config.h
+
+# __________________________________________________________________
+#  Targets from the GNU Regular Expression Library.
+
+#  regex.c: 1/regex.c
+# 	$(MV) 1/regex.c .
+regex$(OBJ): $(REGEX_DIR)$(DIR_SEP)regex.c $(MAKEFILE)
+	$(CC) $(CFLAGS) idir=$(REGEX_DIR) $(NON_ANSI_DEFS) \
+	$(REGEX_DIR)$(DIR_SEP)regex.c objname=$@ ignore=85+93+100+104+161
+
+SMakefile: makefile.ami
+	$(MV) makefile.ami $@
+
+# -----------------------------------------------------------------------------
+#  General development targets
+# -----------------------------------------------------------------------------
+
+CLEAN_TARGETS	= \#?$(OBJ) \#?.bak \#?.lnk regex.c
+
+clean:
+	-$(RM) $(CLEAN_TARGETS)
+
+veryclean: clean
+	-$(RM) bibtool
+
+libbib.a: $(OLIBFILES)
+	$(AR) $@ $(OLIBFILES) regex.o
+	$(RANLIB) $@
+
+install: install.bin install.lib
+
+install.bin: bibtool$(EXT)
+	-$(INSTALL_DIR) $(BINDIR)
+	$(INSTALL) bibtool$(EXT) $(BINDIR)
+
+INSTALL_LIB_FILES = Lib$(DIR_SEP)\#?.rsc
+
+install.lib: 
+	-$(INSTALL_DIR) $(LIBDIR)
+	$(INSTALL_DATA) $(INSTALL_LIB_FILES) $(LIBDIR)
+
+install.include: 
+	-$(INSTALL_DIR) $(INCLUDEDIR)
+	$(INSTALL_DATA) $(INSTALL_INCLUDE_FILES) $(INCLUDEDIR)
+
+install.man: 
+
+uninstall.bin:
+	-$(RM) $(BINDIR)$(DIR_SEP)bibtool$(EXT)
+
+uninstall.lib:
+	-$(RM) $(LIBDIR)
+
+uninstall.include:
+	-$(RM) $(INCLUDEDIR)
+
+uninstall.man:
+
+# =============================================================================
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+main.o database.o entry.o error.o expand.o init.o key.o macros.o names.o parse.o print.o pxfile.o record.o rewrite.o rsc.o s_parse.o symbols.o stack.o sbuffer.o tex_aux.o tex_read.o type.o version.o wordlist.o: config.h include/bibtool/database.h include/bibtool/bibtool.h include/bibtool/config.h include/bibtool/entry.h include/bibtool/error.h include/bibtool/expand.h include/bibtool/general.h include/bibtool/init.h include/bibtool/key.h include/bibtool/keynode.h include/bibtool/macros.h include/bibtool/names.h include/bibtool/parse.h include/bibtool/print.h include/bibtool/pxfile.h include/bibtool/record.h include/bibtool/regex.h include/bibtool/resource.h include/bibtool/rewrite.h include/bibtool/rsc.h include/bibtool/s_parse.h include/bibtool/sbuffer.h include/bibtool/stack.h include/bibtool/symbols.h include/bibtool/tex_aux.h include/bibtool/tex_read.h include/bibtool/type.h include/bibtool/version.h include/bibtool/wordlist.h main.c database.c entry.c error.c expand.c init.c key.c macros.c names.c parse.c print.c pxfile.c record.c rewrite.c rsc.c s_parse.c symbols.c stack.c sbuffer.c tex_aux.c tex_read.c version.c type.c wordlist.c

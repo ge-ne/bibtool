@@ -1,0 +1,114 @@
+.TH pxfile 3 local
+.SH NAME
+pxfile \- Extended file opening with search path and optional extensions.
+.SH SYNOPSIS
+.nf
+.B #include "pxfile.h"
+
+.B FILE* px_fopen(filename,mode,pattern,path,show)
+.B char * filename;
+.B char * mode;
+.B char ** pattern;
+.B char ** path;
+.B int (*show)();
+
+.B char **px_s2p(specification,seperator)
+.B char *specification;
+.B int  seperator;
+.fi
+.SH DESCRIPTION
+The extended file opening routine allows to open a file like
+.B fopen(3)
+.
+The file is searched on a path and additional modifications of the
+file name are possible. E.g. the addion of an extension or prepending
+a fixed prefix is posible.
+
+.BR px_fopen ()
+opens a file named 
+.I filename
+with the mode
+.I mode
+which is the same as the mode used by
+.BR fopen (3).
+.I path
+is a NULL terminated array of strings indicating the possible directories to 
+search for the file. A value of
+.I NULL
+indicates that only the current directory should be examined.
+.BR px_s2p ()
+can be used to allocate and fill a path array form a simple string
+specification.
+
+.I pattern
+is a NULL terminated array of format specifications to be used with 
+.BR fprintf (3).
+Two strings are indicated with the special '%s'. The first '%s' is replaced by 
+the directory name. The second '%s' is replaced by the file name given.
+A value of
+.I NULL
+is the same as
+
+.nf
+{ "%s/%s",
+  NULL
+}
+.fi
+
+The following example value of
+.I pattern
+shows how default extensions can be tried. First the pure file name
+is tried. Afterwards the extensions
+.B .tex
+and
+.B .TeX
+are tried.
+
+.nf
+{ "%s/%s",
+  "%s/%s.tex",
+  "%s/%s.TeX",
+  NULL
+}
+.fi
+
+.I show
+is a pointer to a function. This function is called before an attempt
+is made to open a file. The argument of the function is the complete
+file name as string. The open is tried only if
+.I show
+returns an integer different from 0.
+This function can be used to display the file names before trying to open.
+A value of
+.I NULL
+can be used to indicate that no such function should be used.
+
+.BR px_s2p ()
+constructs a
+.I pattern
+for
+.BR px_fopen ()
+from a
+.I specification.
+Memory is allocated to store the array and the strings contained.
+.I specification
+is a strings where the different directories are separated by the character
+.I seperator.
+If not enough memory is available
+.I NULL
+is returned. The memory allocated consists of one block which can be 
+freed with
+.BR free (3).
+
+.SH FILES
+pxfile.h
+.SH SEE ALSO
+.BR fopen (3),
+.BR fprintf (3),
+.BR free (3)
+
+.SH DIAGNOSTICS
+NULL is returned to indicate failure. 
+.SH BUGS
+Mainly UN*X type file names are supported.
+

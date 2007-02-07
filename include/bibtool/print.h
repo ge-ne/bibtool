@@ -1,0 +1,35 @@
+/******************************************************************************
+** $Id: print.h,v 1.1 2007-02-07 21:32:06 gene Exp $
+**=============================================================================
+** 
+** This file is part of BibTool.
+** It is distributed under the GNU General Public License.
+** See the file COPYING for details.
+** 
+** (c) 1996-1997 Gerd Neugebauer
+** 
+** Net: gerd@informatik.uni-koblenz.de
+** 
+**-----------------------------------------------------------------------------
+** Description:
+**	This header file provides access to the functions and
+**	variables defined in |print.c|. Consult also the documentation
+**	of this file for details.
+**
+**	This header file automatically includes |record.h| and |database.h|.
+**
+******************************************************************************/
+
+#include <bibtool/record.h>
+#include <bibtool/database.h>
+
+#ifdef __STDC__
+#define _ARG(A) A
+#else
+#define _ARG(A) ()
+#endif
+ char * sput_record _ARG((Record rec,DB db,char *start));/* print.c          */
+ void fput_record _ARG((FILE *file,Record rec,DB db,char *start));/* print.c */
+ void put_record _ARG((int (*fct)_ARG((int)),Record rec,DB db,char *start));/* print.c*/
+ void set_key_type _ARG((char * s));		   /* print.c                */
+ void set_symbol_type _ARG((char * s));		   /* print.c                */

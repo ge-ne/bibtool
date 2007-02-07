@@ -1,0 +1,100 @@
+.TH StringBuffer 3 local
+.SH NAME
+StringBuffer \- Handle strings like files
+.SH SYNOPSIS
+.nf
+.B #include "sbuffer.h"
+
+.B StringBuffer* sbopen()
+
+.B int sbclose(sb)
+.B StringBuffer* sb;
+
+.B int sbputs(string,sb)
+.B char* string;
+.B StringBuffer* sb;
+
+.B int sbputc(c,sb)
+.B int c;
+.B StringBuffer* sb;
+
+.B int sbputchar(c,sb)
+.B int c;
+.B StringBuffer* sb;
+
+.B char* sbflush(sb)
+.B StringBuffer* sb;
+
+.B int sbtell(sb)
+.B StringBuffer* sb;
+
+.B int sbrewind(sb)
+.B StringBuffer* sb;
+
+.B int sbseek(sb,pos)
+.B StringBuffer* sb;
+.B int pos;
+.fi
+.SH DESCRIPTION
+The string buffer routines are a means to use strings like files. The
+routines manage the allocation and freeing of memory internally.
+
+.B sbopen()
+returns a new string buffer. Memory is allocated to keep the
+informations required.
+
+.B sbclose()
+frees the memory allocated for a string buffer. Any access to a part of
+the string buffer is not save after this call.
+
+.B sbputs()
+put a string into the string buffer. The string is appended at the end
+of existing contents. 0 is returned upon success.
+
+.B sbputc()
+put a character into the string buffer. The character is appended at the end
+of existing contents. 0 is returned upon success. This is a function.
+A macro with the same functionality is provided by
+.B sbputchar()
+
+.B sbputchar()
+put a character into the string buffer. This is a macro with the same
+functionality as
+.B sbputc()
+
+.B sbtell()
+find the current position of the string buffer for later use with
+.B sbseek()
+
+.B sbseek()
+set the writing position of the string buffer to the given value. If
+value points beyond the current string size non null is returned.
+
+.B sbrewind()
+reset the writing position to the beginning of the string buffer.
+
+.B sbflush()
+close the string component of the string buffer and return a pointer
+to a string containing the contents of the string buffer. The writing
+position is not changed. Thus following calls to
+.B sbputs()
+or
+.B sbputc()
+continue adding characters. The string may not be properly terminated
+after additional writing operations.
+
+.SH FILES
+sbuffer.h
+.SH SEE ALSO
+.BR fopen (3),
+.BR fclose (3),
+.BR fputs (3),
+.BR fputc (3), ...
+
+.SH DIAGNOSTICS
+Usually 0 is returned to indicate success. 
+.SH BUGS
+Missing a 
+.B printf()
+variant for string buffer.
+ Horrible documentation.

@@ -1,0 +1,99 @@
+.TH BIBTOOL 1 local
+.SH NAME
+BibTool \- BibTeX file manipulation tool
+.SH SYNOPSIS
+.B bibtool
+[options] [[file ... ]file]
+.SH DESCRIPTION
+.I BibTool
+takes the following options
+.TP
+.BR -A c
+Kind of disambiguating keystrings: <c>=0|a|A
+.TP
+.B -h
+Print help info and exit
+.TP
+.BR -i \ \ infile
+Specify input file. If 
+.B -i
+omitted it may not start
+with a -. If absent stdin is taken to read from.
+Multiple input files may be given.
+.TP
+.B -k
+Key generation enabled.
+.TP
+.B -K
+Key generation enabled (long key).
+.TP
+.BR -f \ \ format
+Key generation enabled (formated key)
+.TP
+.BR -m \ \ macfile
+Dump macros to macfile. - is stdout
+.TP
+.BR -M \ \ macfile
+Dump used macros to macfile. - is stdout
+.TP
+.BR -o \ \ outfile
+Specify output file as next argument
+If absent stdout is taken to write to.
+.TP
+.B -O
+Optimization (remove empty fields)
+.TP
+.B -q
+Quiet mode. No warnings.
+.TP
+.BR -r \ \ resource
+Load resource file (several are possible).
+.TP
+.B -s
+Sort.
+.TP
+.B -S
+Sort reverse.
+.TP
+.B -v
+Enable verbose mode
+.TP
+.BR -x \ \ file
+Extract from aux file.
+.TP
+.BR -X \ \ regex
+Extract regular expression.
+.TP
+.B --
+Print statistics (short).
+.TP
+.B -+
+Print statistics.
+.PP
+Input files should follow the
+.I bibtex
+conventions.
+.SH FILES
+none
+.SH SEE ALSO
+.IR bibtex (1),
+.IR latex (1),
+.IR tex (1)
+.br
+The
+.IR "BibTool Manual" ,
+included as the file
+.B bibtool.tex
+in the
+.I BibTool
+source distribution.  This file contains a complete and hopefully up-to-date
+documentation of the program.
+.SH DIAGNOSTICS
+many
+.SH BUGS
+Some arrays are allocated statically which may result in an overflow.
+.br
+Most memory is allocated but not returned to the OS. A garbage collection
+algorithm might be integrated in a future release.
+.br
+It is very likely that this man page is out of date.

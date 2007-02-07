@@ -1,0 +1,170 @@
+%%*****************************************************************************
+%% $Id: bibtcl.ltx,v 1.1 2007-02-07 21:29:08 gene Exp $
+%%*****************************************************************************
+%% Author: Gerd Neugebauer
+%%-----------------------------------------------------------------------------
+
+\newif\ifAfour \Afourtrue
+
+\ifx\documentclass\undefined
+\ifAfour
+\documentstyle[11pt,dina4,makeidx]{book}
+\else
+\documentstyle[11pt,makeidx]{book}
+\fi
+  \newcommand\LaTeXTeX{(\kern-.15emL\kern-.36em\raise.3ex\hbox{\sc
+      a}\kern-.3em)\kern-.15em\TeX}%
+\else
+\documentclass[11pt]{book}
+\usepackage{makeidx}
+\ifAfour
+\makeatletter
+\input{dina4.sty}
+
+  \DeclareRobustCommand{\LaTeXTeX}{(\kern-.15emL\kern-.36em%
+    {\sbox\z@ T%
+      \vbox to\ht0{\hbox{$\m@th$%
+          \csname S@\f@size\endcsname
+          \fontsize\sf@size\z@
+          \math@fontsfalse\selectfont
+          A}%
+        \vss}%
+      }\kern-.2em)%
+    \kern-.15em%
+    \TeX}
+\makeatother
+\fi
+  \DeclareFontShape{OT1}{cmss}{m}{it}{<-> ssub * cmss/m/sl}{}
+
+\fi
+
+\makeatletter%>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+\def\ps@headings{\let\@mkboth\markboth
+  \def\@oddfoot{}\def\@evenfoot{}
+  \def\@evenhead{\vbox{\vss\hbox to \textwidth{\rm\thepage \hss
+        {\scriptsize\sc\ \leftmark}}\kern 1.5mm\hrule depth 0.2 true pt}}
+  \def\@oddhead{\vbox{\vss\hbox to \textwidth{\rm{\scriptsize\sc \rightmark\ }
+        \hss \thepage}\kern 1.5mm\hrule depth 0.2 true pt}}
+  \def\chaptermark##1{\markboth {\ifnum \c@secnumdepth>\m@ne
+     \thechapter. \ \fi ##1}{}}
+  \def\sectionmark##1{\markright
+                      {\ifnum \c@secnumdepth >\z@ \thesection. \ \fi ##1}}}
+
+\pagestyle{headings}
+\addtolength{\headheight}{2pt}
+
+
+\newcommand\opt[1]{{\tt-#1}\index{#1@{\tt-#1}}}
+\newcommand\sh{\smallskip\par\hspace*{2em}\@ifnextchar[{\sh@}{\sh@@}}
+\def\sh@[#1]#2{{\tt bibtool -#1 {\it #2}}\index{#1@{\tt-#1}}
+        \smallskip\par\noindent\ignorespaces}
+\def\sh@@#1{{\tt bibtool {\it #1}}
+        \smallskip\par\noindent\ignorespaces}
+\newcommand\rsc[1]{{\sf #1}\index{#1@{\sf #1}}}
+\newcommand\RSc[2]{\smallskip\par\hspace*{2em}{\sf #1 #2}\index{#1@{\sf #1}}
+        \smallskip\par\noindent\ignorespaces}
+\newcommand\RSC[2]{\RSc{#1}{= \(\{\)#2\(\}\)}}
+\newcommand\Rsc[2]{\RSc{#1}{= #2}}
+\newcommand\env[1]{{\tt #1}\index{#1@{\tt #1}}}
+
+
+\makeatother%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+\newcommand\BS{$\backslash$}
+
+\newcommand\BibTool{{\sc Bib\hskip-.1em\-%
+        \mbox{T\hskip-.15emo\hskip-.05emo\hskip-.05eml}}}
+\newcommand\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+        T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\newfont\cminch{cminch}
+\ifx\chaptername\relax\else
+\renewcommand\chaptername{\cminch}
+\renewcommand\appendixname{\cminch}
+\fi
+\newcommand\rfill[1]{\leaders\hrule height #1\hfill}
+
+\newcommand\INCOMPLETE{\begin{center}
+    \unitlength=1mm\framebox(80,10){\sf To be completed.}
+  \end{center}}
+
+\makeindex
+
+\input version
+
+\begin{document}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\thispagestyle{empty}
+\null\vfill
+{\begin{center}
+\rule{\textwidth}{5pt}%
+\bigskip\par
+\hbox to \textwidth{\cminch \hss B\hss I\hss B\hss T\hss O\hss O\hss L\hss}
+\medskip\par\normalsize
+\mbox{}\rfill{5pt}\ A Tool to Manipulate \BibTeX\ Files\ \rfill{5pt}\null
+%\medskip\par\normalsize          Version  \Version
+\vfill {\Huge\bf Tcl Programmers Manual}\vfill
+{\LARGE\it        $\cal G$\kern-.1emerd $\cal N$\kern-.2emeugebauer}
+\vfill\vfill
+\begin{minipage}{.8\textwidth}\small
+  \begin{center} \bf Abstract \end{center}
+  
+  \BibTool{} provides a library of useful C functions to manipulate
+  \BibTeX{} files.  This library has been used to implement new
+  primitives for Tcl which utilize these functions. Thus it is easy to
+  write tools to manipulate \BibTeX{} files or graphical interfaces to
+  them.
+\end{minipage}\vfill\vfill
+
+{\small\sf --- This documentation is still in a rudimentary form and
+  needs additional efforts. ---}
+\end{center}}
+%------------------------------------------------------------------------------
+\newpage
+\noindent
+\begin{minipage}{\textwidth}\parskip=1ex
+This file is part of \BibTool{} Version \Version
+\medskip
+
+Copyright {\copyright}\Year{} Gerd Neugebauer
+\medskip
+
+\BibTool{} is  free software; you can redistribute  it and/or  modify it under
+the terms of the GNU General Public License as published  by the Free Software
+Foundation; either version 1, or (at your option) any later version.
+
+\BibTool{} is distributed in the hope that it will be  useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of  MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received  a copy of the GNU  General Public License along with
+this documentation; see the file COPYING.  If not,  write to the Free Software
+Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+\end{minipage}
+\vfill\par\noindent
+Gerd Neugebauer\\
+Mainzer Str.\ 8\\
+56321 Rhens (Germany)\smallskip\par\noindent
+WWW: {\tt http://www.uni-koblenz.de/\~{}gerd}\smallskip\par\noindent
+Net: {\tt gerd@informatik.uni-koblenz.de}\\
+\phantom{Net:} {\scriptsize\tt gerd@imn.th-leipzig.de}\\
+\phantom{Net:} {\tiny\tt gerd@intellektik.informatik.th-darmstadt.de}
+%------------------------------------------------------------------------------
+\tableofcontents
+
+
+\chapter{The Tcl Module}
+
+\input bibtcl.tex
+
+\printindex
+
+\bibliographystyle{alpha}
+\bibliography{bibtcl}
+
+\end{document}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Local Variables: 
+% mode: latex
+% TeX-master: nil
+% End: 

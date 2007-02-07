@@ -1,0 +1,45 @@
+dnl	This file is an input file used by the GNU "autoconf" program to
+dnl	generate the file "configure", which is run to configure the
+dnl	Makefile in this directory.
+AC_INIT(bibtool.c)
+
+# Recover information that Tcl computed with its configure script.
+
+AC_MSG_CHECKING(for tcl configuration file)
+	
+CONFIG_FILE=`echo 'puts [[file join [file dirname [info library]] tclConfig.sh]]' | tclsh`
+if test -f $CONFIG_FILE ; then
+	AC_MSG_RESULT($CONFIG_FILE)
+elif test -f tclConfig.sh ; then
+	CONFIG_FILE=tclConfig.sh
+	AC_MSG_RESULT($CONFIG_FILE)
+else
+	AC_MSG_WARN(not found. Ensure that a properly installed tclsh is on your path.)
+	exit 1
+fi
+
+. $CONFIG_FILE
+
+AC_PATH_PROGS(TCLSH,tclsh tclsh-8.0 tclsh-8.1 tclx,/usr/local/bin/tclsh)
+
+CC=$TCL_CC
+AC_SUBST(CC)
+SHLIB_CFLAGS=$TCL_SHLIB_CFLAGS
+AC_SUBST(SHLIB_CFLAGS)
+SHLIB_LD=$TCL_SHLIB_LD
+AC_SUBST(SHLIB_LD)
+SHLIB_LD_LIBS=$TCL_SHLIB_LD_LIBS
+AC_SUBST(SHLIB_LD_LIBS)
+SHLIB_SUFFIX=$TCL_SHLIB_SUFFIX
+AC_SUBST(SHLIB_SUFFIX)
+SHLIB_VERSION=$TCL_SHLIB_VERSION
+AC_SUBST(SHLIB_VERSION)
+AC_SUBST(TCL_BUILD_LIB_SPEC)
+TCL_LIBS=$TCL_LIBS
+AC_SUBST(TCL_LIBS)
+TCL_VERSION=$TCL_VERSION
+AC_SUBST(TCL_VERSION)
+TCL_PREFIX=$TCL_PREFIX
+AC_SUBST(TCL_PREFIX)
+
+AC_OUTPUT(Makefile)

@@ -1,0 +1,535 @@
+##=============================================================================
+## 
+## This file is part of BibTool.
+## It is distributed under the GNU General Public License.
+## See the file COPYING for details.
+## 
+## (c) 1996-1997 Gerd Neugebauer
+## 
+## Net: gerd@informatik.uni-koblenz.de
+## 
+##*****************************************************************************
+
+- Version 2.43
+	Additional library braces.rsc to  translate quotes as field delimiters
+	into braces.
+
+	bibtool -h reports  now  also the library path.   This can be used  by
+	external scripts to find the installation directory of BibTool.
+
+	Bugfix: comments are no longer crippled.
+
+	Minor bugfix in rewriting code: empty pattern works again.
+
+	The regression tests have revealed a bugfix in the key generation
+	code. I am not aware of the change that has let to this effect but the
+	new behaviour is correct. Before, the macro expansion was suppressed
+	under certain circumstances.
+
+	BibTcl: `bibtool count db' added.
+
+	BibTcl fix: 'bibtool missing' ignores the case of the field name.
+
+	BibTcl: consistently renaming `record' to `entry'.
+
+	Minor modifications of   makefile to correctly  generate libbib.a  and
+	install the header files.
+
+	Reorganization  of the   code; header  files  are  now   in  their own
+	directory.  I  don't   have  the   appropriate  information for   some
+	DOS compilers yet. Thus minor modifications  in the makefile might  be
+	required.
+
+	C  function  entry_statistics()  removed.  The  functionality  can  be
+	modeled with the new C function db_count(). This takes into account
+	that several databases can be managed internally.
+
+	C function save_word()  renamed  to  add_word().  list_words() removed
+	since it has been used for debugging only.
+
+	EntryTypes implementation changed.  The API doesn't change.   Datatype
+	StringTab is  now local to symbols.c.  Datatype  Rule  is now local to
+	rewrite.c.
+
+- Version 2.42
+	New  selection  operation   introduced.  The  selection   with regular
+	expressions  is  complemented by    a  selection according   to simple
+	substrings. This   selection  is  initiated   with  the  new  resource
+	`select.string' which   takes   the same arguments   as  the  resource
+	`select'  but does   comparison  for a substring   instead  of regular
+	expression matching.  The value  of `select.case.sensitive'   is taken
+	into account  but  at runtime and  not at  specification time. Certain
+	characters can  be ignored for the  comparison. Those are contained in
+	the new string resource `select.ignored'.
+
+	New  resource `print.entry.types' introduced.  This resource controlls
+	the entry types and the order in which they  are printed.  In fact the
+	macro printing facility is obsolete with this new resource.
+
+	New resource  `clear.ignored.words'   introduced.  In fact   this is a
+	function which  deletes all  ignored words.   Thus it  is possible  to
+	determine all ignored words at runtime--even the compiled in defaults.
+
+	Bug fixed: selection honours the resource print.all.strings now.
+
+	Makefiles slightly improved. Less manual adaption. Installation of all
+	library files -- even on Solaris.
+
+	Name formatting omission fixed: Translation and  length are taken into
+	account correctly.  The new name format  sign * has been introduced to
+	denote the inheritance of the translation from the calling format.
+
+	Restriction relaxed. Now it is possible to  declare up to MAXINT entry
+	types and not only 4096.  The Record data structure and the associated
+	macros have been modified slightly to accomplish this.
+
+	Bug in the  aux file selection mechanism  fixed.  This bug caused some
+	crossreferenced entries to be missing under special circumstances.
+
+	Bug in key.c fixed which caused a crash  because an initialization was
+	missing under certain circumstances.
+
+	Make target libbib.a  added.  This is known to  work on UNIX.  I would
+	like to get feedback for other systems.
+
+	Minor bug in names.c fixed.
+
+	Minor bug in print.c fixed.  print.wide.equal does not have exceptions
+	any more.
+
+	Minor bug in print.c fixed. Deleted fields are treated better.
+
+	Bug in  database.c fixed  which caused macro  expansion  to fail under
+	certain circumstances.
+
+	BibTcl:  'bibtool  format'  allows to  use  the  full  power of format
+	specifications.
+
+	BibTcl: 'bibtool sprint'   added  which returns  the formatted  string
+	representation of an entry.
+
+	BibTcl: Bug in `$rec set \$key ...' fixed.
+
+	Minor changes in the C interface (Just wait for the compiler or linker
+	to complain about different arguments:-).
+
+- Version 2.41
+	New boolean resource  `print.equal.right' which controls whether the =
+	in normal entries is aligned right or left.
+
+	New boolean `resource  print.wide.equal'  which controlls whether  the
+	equal sign  is  surrounded by spaces   even if the alignment  forces a
+	narrower layout.
+
+	New boolean  `resource print.comma.at.end' which controlls whether the
+	comma between  fields is printed at  the end or at  the beginning of a
+	field/value pair.
+
+	New  boolean    `resource print.deleted.entries'  which   controls the
+	treatment  of deleted entries.  If  this  resource is true then delete
+	entries are put as comments into the output.  This is the old behavior
+	and thus it is the default.
+
+	Pseudo field `sortkey' added.
+
+	Pseudo field `source' added which contains the filename the record has
+	been read from or the empty string if this can not be determined.
+
+	Makefile adapted to meet the description.
+
+	configure creates ./config.h aswell.
+
+	Strings can be either local  to a database or  global.  The output  of
+	macros   does  include local   macros   only.  This   is   a point  of
+	incompatibility with previous versions.
+
+	Massive extensions to BibTcl.
+
+	Cleaning of the sources and massive addition of documentation. Now the
+	documentation of the C functions is present.  Thus it becomes possible
+	to use the BibTool routines  to write C programs.   BibTcl is a  first
+	application  of  this  technique.  Nevertheless  a  few  changes  seem
+	possible before things are cut in stone.
+
+	According to a suggestion of Oren Patashnik the term entry is used
+	instead of record -- at least in the documentation.
+
+	Minor bug in print.c fixed which caused  looping when small values for
+	line length and alignment column was given.
+
+	Minor bugfix in key.c. The resource crossref.limit was off by 1.
+
+	Some  additions  have   been  made to  support   new   features in the
+	forthcoming  BibTeX 1.0. They  do not really  work right  now but just
+	restrict the accepted input files.
+
+	Flag --with-kpathsea added to configure.
+
+- Version 2.40
+	Sorting  uses the new key  instead of the  old one as before. This has
+	not been specified, but the new behaviour might be more intuitive.
+
+	key.format=empty   fixed.   key.format short.need   and  long.need are
+	aliases for new.short and new.long resp.
+
+	Some error messages slightly improved.
+
+	Minor print bug fixed: additional commas appeared  when the last field
+	was deleted.
+
+	Typo   in   documentation:  I  had    typed   preserve.key instead  of
+	preserve.keys. Shame on me:-)
+	Some additional examples in the documentation.
+
+	Field deletetion   completely  covered by   the rewriting   mechanism.
+	delete.field is kept for backward compatibility as an alias.
+
+- Version 2.39
+	The default for the pattern in the  select resource is  now ".".  Thus
+	it is easier to select entries with a given type.
+
+	New resource preserve.keys introduced. If this resource is on then key
+	generation touches  only entries  with empty keys.  The keys  of other
+	entries are left unchanged. Initially this resource is off.
+
+	The  disambiguation now respects  the order of the entries. Previously
+	it used the reverse order which was contra-intuitive.
+
+	Formating names:  Names connected by  ~ or  tight initials (A.U. Thor)
+	are now treated better.
+
+	Nasty little  bug in the    key specification parser  fixed. This  has
+	(sometimes) let  to a wrong evaluation of  disjunctions.  Minor bug in
+	verbose messages fixed.
+
+	AutoConf scripts added.
+
+- Version 2.38
+	Format specifier %d enhanced. It can fail now if no number is found in
+	the field. The minus  sign means padding to  a fixed length. The  plus
+	sign means  not to fail  but use 0. The post  specifier can be used to
+	select another but the first number. E.g. %.2d means to use the second
+	number.
+
+	Format specifier %D introduced. It acts  like %d but does not truncate
+	the number. Thus larger numbers are used completetly.
+
+	Bug fixed. If the key  format failed then the  key was left empty. Now
+	the default key is used as written  in the documentation.  Somehow the
+	bugfix  for  the select   statement  has not  made  it  into  the last
+	release. Now it should be in.
+
+	Several mistakes in the documentation corrected.
+
+- Version 2.37
+	kpathsea support for searching BibTeX files added.
+
+	Bugs  fixed:  Searching/key  generation   combination  and   aux  file
+	evaluation.
+
+	The distribution is now availlable in two forms: as a gzipped tar file
+	and as a zip archive.
+
+- Version 2.36
+	Added sample file for interfacing BibTool with Tcl: Tcl/bibtool.tcl
+
+	Added sample file for interfacing BibTool with Perl: Perl/bibtool.pl
+
+	Minor bug fix in string paring routines. E.g. select from command line
+	was not evaluated properly.
+
+	Minor  bug  fixed.  add.field  now works   again  as  described in the
+	documentation.
+
+	Minor bug  fixed.  Command  line  argument -r  issued  a warning  when
+	everything was ok.
+
+- Version 2.35
+	Inheritance via crossref can be used to access fields in another
+	entry when creating keys.
+	E.g. this means that crossreferencing inproceedings can access
+	the booktitle of the proceedings.
+	The new resource crossref.limit restricts the number of crossrefs
+	followed. E.g. 0 means do not follow crossrefs (as it has been in
+	previous releases). The default is 32.
+
+	New boolean resource check.do.delete introduced. If this resource is
+	on then the double entries are not only preceeded by ### instead of @
+	but deleted completely.
+
+	New boolean resource sort.macros introduced. If this is on then the
+	macro definitions are sorted alphabetically. Default: on
+
+	The handling of comments has been changed completely. Comments are now
+	attached to the preamble/string/normal entry following them. 
+	Especially during sorting the comments are rearranged as well.
+	This seems useful to keep comments on macro definitions and the
+	definitions together.
+	The last comment always stays at the end.
+
+	Minor bug fixed. The searching for .bibtoolrsc went wrong.
+
+	Minor bug fixed. output.file resource acted incorrect.
+
+	print.all.strings acts like described in the documentation.
+
+	Resource arguments in the command line can have unbalanced braces in
+	strings now. Still there is no escape character defined.
+
+	Internally BibTool can handle more than one database simultaneously.
+	This is needed for the SQL interface.
+	Let's see how this can be used otherwise.
+
+- Version 2.34
+	Default value of key.expand.macros changed to on. This seems to be a
+	more sensible default value. (Possible incomatibility to old version)
+
+	new.format.type introduced. This command can be used to specify
+	formatting rules for names. It is used in conjunction with the %p
+	format specification which has been added.
+
+	The format specifiers for counting names/words/characters have been
+	added. Those act as booleans which force backtracking if they fail.
+	The qualifier # is used to enable counting.
+
+	When writing macro files undefined macros are written as
+	_string instead of @STRING. Thus they are comments to BibTeX.
+
+	The command line options -x and -X now also set print.all.strings to
+	off. (This has no effect yet)
+
+	The documentation has been updated.
+
+- Version 2.33
+	Reference card added (prepared for A4 paper).
+	Bug-fix in rewrite.c. add.field no longer crashes.
+	Format specifiers %n and %N now also use the post argument. This
+	argument is used to restrict the number of characters transferred.
+
+- Version 2.32
+	New resource select.fields introduced. This resource controlls
+	which fields are considered when selecting with -X.
+
+- Version 2.31
+	I have moved to a new job. My email address has been changed in all
+	files (maybe I have missed some?).
+
+	The resource select.case.sensitive behaved contra-intuitive.
+	This has been fixed. This means that old scripts might need adaption.
+
+	select and rewrite.rule can take several fields now. Thus you can 
+	specify several selections or rewrites more compact.
+
+	The survey of related programs in the documentation has been enlarged.
+
+- Version 2.30
+	Minor bugfix in s_parse.c. Resource specifications in the
+	command line may have let to an overflow of an array. This has
+	been fixed.
+
+	New resource print.parentheses introduced. This resource
+	allows the user to specify whether {} or () should be used to
+	delimit each entry.
+
+- Version 2.29
+	Support for compilation without the GNU Regular Expression Library
+	improved.
+
+	The @comment is really more liberal than I thought. This prefix is
+	simply ignored (As I have read in the BibTeX sources). This behaviour
+	is now also performed by BibTool.
+
+- Version 2.28
+	Some additional updates for the new makefiles.
+	Bugfix in print.c which let to additional strings after the regular
+	end of an entry.
+
+- Version 2.27
+	Reorganization of the files. Slight corrections of function protptypes
+	in various files. Change of the Makefile to support Amiga SAS/C.
+
+- Version 2.26
+	Minor bug in key.c fixed. One step further to a 8-bit clean program.
+	I wonder which 8-bit traps are still hidden in BibTool.
+
+	The TeX macro mechnism has been enhanced to allow one to define single
+	character macros. This means tex.define automatically makes a character
+	active if it is encountered as macro name of a definition.
+
+- Version 2.25
+	Finally all separators can be arbitrary strings. Only allowed
+	characters are used (as it has been done in version 1.*). I hope this
+	finally fixes the bug in key.c which I had troubles with in the 
+	previous versions.
+
+- Version 2.24
+	Documentation for regular expressions added.
+	Resource select and select.case.sensitive added. The selection allows
+	to specify a regular expression for arbitrary fields. This subsumes the
+	old extract.regex which is kept for backward compatibility.
+	A bugfix in 2.23 corrected.
+
+- Version 2.23
+	Some minor modifications for DEC-Alpha.
+	Some minor modifications for the native HP C compiler.
+	Some bugs in key.c fixed.
+
+- Version 2.22
+	\par (double newlines) is preserved now. parse.c has been modified.
+	The line breaking algorithm in print.c has been adapted.
+
+	Allocation bug in stack.c fixed.
+	Bug in expand.c which added garbage to expanded strings.
+	Some improvements for non-ANSI C compilers (I really don't know why I
+	continue this).
+
+- Version 2.21
+
+	Preserving of case of keys introduced. For this purpose the resource
+	preserve.key.case has been introduced. The management of the list of
+	old keys is done in macros.c mainly. Minor change in print.c and
+	parse.c.
+
+- Version 2.20
+
+	Minor bug fix in sort.order.
+	Compression method changed to gzip.
+
+- Version 2.19
+
+	Key format specifiers t, w, W introduced. w, W, t and T take a post
+	argument to limit the number of characters to use.
+	sort.order introduced to sort fields in an entry.
+	Wrong mail addresses in many files corrected.
+
+- Version 2.18
+
+	Rewriting missed some multiply occurring patterns. (rewrite.c)
+	Resource rewrite.limit added.
+	Problem with recursive resources fixed. (parse.c)
+
+- Version 2.17
+
+	The documentation is now compatible with LaTeX 2e.
+
+- Version 2.16
+
+	New resource print.newline introduced to control the number of 
+	empty lines between entries.
+	MSDOS support: Imitating emtex search path initialization as option.
+
+- Version 2.15
+
+	Some problems with 8-bit characters fixed.
+	String expansion before key generation added: key.expand.macro
+	Hashindex was computed wrong for some strings with ASCII values > 127.
+	Hashtable enlarged and new algorithm for hashindex
+
+- Version 2.14
+
+	delete.field bug fixed. The deletion of the last field lead
+	to the deletion of all fields. (rewrite.c)
+	Comments added to print.c
+	Target zip in Makefile.
+
+- Version 2.13
+
+	Yet more modifications for the MSDOS port.
+	What a brain-dead OS.
+
+- Version 2.12
+
+	Version 2.12 of GNU regex library integrated.
+	alloca.c is no longer needed.
+	Some improvements for the MSDOS port.
+	aux.[ch] renamed to tex_aux.[ch]
+	Resource search path seems to work now.
+
+- Version 2.11
+
+	Some typos fixed.
+	Redefinition of entry types enabled.
+
+- Version 2.10
+
+	String/Macro expansion added: expand.macros
+	Case in-sensitive treatment of ignored words.
+	Some additional targets in Makefile.
+
+- Version 2.09
+
+	Makefile enhanced.
+	Error/verbose/debug messages improved.
+	Hell, I forgot to remove trace statements.
+
+- Version 2.08
+
+	Comment parsing and printing improved.
+	symbol.type introduced.
+	Minor improvement of non-ANSI support.
+
+- Version 2.07
+
+	Printing improved. Rewriting of macro names completed and documented.
+	Truncating bug in print.c fixed.
+	Minor improvement of non-ANSI support.
+
+- Version 2.06
+
+	UN*X man pages for sbuffer(), pxfile()
+	Absolute path name use improved.
+	Minor bug fixed.
+
+- Version 2.05
+
+	Semantic checks with regular expressions.
+	Crossref modification when key generation is enabled.
+	Preference bug for search path building fixed.
+	Rewriting enhanced.
+
+- Version 2.04
+
+	String parser introduced. Error checking/messages improved.
+	Undocumented command line options changed.
+	Command line specification of resources introduced.
+	Minor bug fixes.
+	Code slightly reorganized. (I really found a static array)
+	Samples directory renamed to Lib.
+
+- Version 2.03
+
+	Field rewriting introduced.
+	Resource optimize is obsolete. The functionality can be achieved
+	by field rewriting.
+	Resource search path introduced.
+
+- Version 2.02
+
+	Minor bug fixes.
+	Static array in key generation routine made dynamic.
+	There is still a limit which can be reached when a short TeX macro
+	expands into very long text.
+	Checking double entries feature introduced.
+	Printing TABs can be emulated by SPACEs.
+
+- Version 2.01
+
+	Bug fixes.
+	Print representation for items introduced.
+	Distribution improved.
+	Resource samples added.
+
+- Version 2.0 released
+
+	Major revision.
+
+	Sorting integrated.
+	Resources introduced.
+	Several command line options deleted.
+	Key formatting improved.
+
+	Draft Documentation.
+
+- Version 1.7
+
+

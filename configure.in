@@ -1,0 +1,100 @@
+dnl ***************************************************************************
+dnl $Id: configure.in,v 1.1 2007-02-07 21:27:14 gene Exp $
+dnl ===========================================================================
+dnl 
+dnl This file is part of BibTool.
+dnl It is distributed under the GNU General Public License.
+dnl See the file COPYING for details.
+dnl 
+dnl (c) 1996-1997 Gerd Neugebauer
+dnl 
+dnl Net: gerd@informatik.uni-koblenz.de
+dnl 
+dnl ***************************************************************************
+AC_REVISION($Revision: 1.1 $)dnl
+AC_PREREQ(2.12)
+
+dnl ---------------------------------------------------------------------------
+dnl Process this file with autoconf to produce a configure script.
+AC_INIT(sbuffer.c)
+
+dnl ---------------------------------------------------------------------------
+dnl Checks for programs.
+AC_PROG_CC
+AC_PROG_INSTALL
+AC_PROG_RANLIB
+
+AC_PATH_PROGS(PERL,perl perl5.003 perl4.036,/usr/local/bin/perl)
+AC_PATH_PROGS(TCLSH,tclsh tclsh-8.0 tclsh-8.1 tclx,/usr/local/bin/tclsh)
+
+dnl ---------------------------------------------------------------------------
+dnl for regexp
+AC_AIX
+AC_ISC_POSIX
+AC_MINIX
+
+dnl ---------------------------------------------------------------------------
+dnl Checks for libraries.
+
+dnl ---------------------------------------------------------------------------
+dnl Checks for header files.
+AC_HEADER_STDC
+AC_STDC_HEADERS
+
+dnl ---------------------------------------------------------------------------
+dnl Checks for typedefs, structures, and compiler characteristics.
+AC_C_CONST
+AC_TYPE_SIZE_T
+
+dnl ---------------------------------------------------------------------------
+dnl Checks for library functions.
+AC_FUNC_ALLOCA
+AC_FUNC_MEMCMP
+
+dnl ---------------------------------------------------------------------------
+dnl Check for headers.
+AC_CHECK_HEADERS(string.h)
+AC_CHECK_HEADERS(stdlib.h)
+AC_CHECK_HEADERS(time.h)
+AC_CHECK_FUNCS(getenv)
+AC_CHECK_FUNCS(strrchr)
+
+dnl ---------------------------------------------------------------------------
+kpathsea=0
+AC_ARG_WITH(kpathsea,Use the KPATHSEA library.,kpathsea=1,kpathsea=0)
+
+if test $kpathsea -eq 0; then
+	kpathsea_dir=
+	kpathsea_lib=
+	kpathsea_def=
+else
+
+	AC_MSG_CHECKING(for kpathsea library)
+	kpathsea_dir=
+	kpathsea_lib=
+	kpathsea_def=
+	for cand in ../kpse2-6 .. kpse2-6 .
+	do
+		if test -f $cand/kpathsea/tex-file.h ; then
+			kpathsea_dir=$cand
+			kpathsea_lib=$cand/kpathsea/kpathsea.a
+			kpathsea_def="-DHAVE_LIBKPATHSEA -I$cand"
+		fi
+	done
+	if test -z "$kpathsea_dir"; then
+		AC_MSG_WARN(not found)
+	else
+		AC_MSG_RESULT($kpathsea_dir)
+	fi
+fi
+AC_SUBST(kpathsea_dir)dnl
+AC_SUBST(kpathsea_lib)dnl
+AC_SUBST(kpathsea_def)dnl
+
+dnl ---------------------------------------------------------------------------
+dnl AC_CONFIG_SUBDIRS(regex-0.12)
+dnl ---------------------------------------------------------------------------
+
+AC_CONFIG_HEADER(include/bibtool/config.h:AutoConf/config.h.in regex-0.12/config.h:AutoConf/reconfig.h.in)
+
+AC_OUTPUT(makefile:AutoConf/makefile.in)

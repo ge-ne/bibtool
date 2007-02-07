@@ -1,0 +1,89 @@
+#!/bin/sh
+# Make directory hierarchy. 
+# Written by Noah Friedman <friedman@prep.ai.mit.edu>
+# (Minor modificatons by karl@cs.umb.edu.)
+# Public domain.
+
+for file in ${1+"$@"} ; do 
+   oIFS="${IFS}"; IFS='/'; set - ${file}; IFS="${oIFS}"
+   test ".${1}" = "." && shift
+
+   pathcomp=''
+
+   while test $# -ne 0 ; do
+     pathcomp="${pathcomp}/${1}"
+     shift
+
+     if test ! -d "${pathcomp}"; then
+        echo "mkdir $pathcomp" 1>&2
+        mkdir "${pathcomp}" || exit 1
+     fi
+   done
+done
+
+exit 0
+
+Date: Fri, 14 May 93 12:47:22 edt
+From: friedman@gnu.ai.mit.edu (Noah Friedman)
+To: meyering@idefix.comco.com
+Cc: gnu-prog-disc@gnu.ai.mit.edu
+Subject: Re: directory-making fragment
+
+>Hi Noah.
+>I'm thinking about adding this to the *utils.
+>Have you heard anything that would indicate I shouldn't?
+
+No, though I discovered from personal experience that this shell fragment
+is too long on some systems to appear on a command line.  The pty buffer on
+some systems is very small---if you try to do "make installdirs", you get
+an immediate failure.  Running it interactively just prints lots of C-g's. 
+
+What I did for the texinfo distribution is to put the script in a separate
+file called `mkinstalldirs', then invoke it from the Makefile with the
+appropriate arguments.  Here is what it looks like:
+
+    #!/bin/sh
+    # Make directory hierarchy. 
+    # Written by Noah Friedman <friedman@prep.ai.mit.edu>
+    # Public domain.
+
+    umask 002
+    for file in ${1+"$@"} ; do 
+       oIFS="${IFS}"; IFS='/'; set - ${file}; IFS="${oIFS}"
+       test ".${1}" = "." && shift
+
+       pathcomp=''
+
+       while test $# -ne 0 ; do
+         pathcomp="${pathcomp}/${1}"
+         shift
+
+         if test ! -d "${pathcomp}"; then
+            echo "mkdir $pathcomp" 1>&2
+            mkdir "${pathcomp}"
+         fi
+       done
+    done
+
+    # eof
+
+
+>On May 7,  6:18am, Noah Friedman wrote:
+>| The following target might be a useful thing for people to include in all
+>| GNU Makefiles and make the `install' target depend on it.  This is what I
+>| did for Bison.
+>| 
+>| # Make sure all installation directories, e.g. $(bindir) actually exist by
+>| # making them if necessary.
+>| installdirs:
+>| 	for file in $(bindir) $(datadir) $(libdir) $(infodir) $(mandir) ; do \
+>| 	   oIFS="$${IFS}"; IFS='/'; set - $${file}; IFS="$${oIFS}"; \
+>| 	   pathcomp=''; test ".$${1}" = "." && shift; \
+>| 	   while test $$# -ne 0 ; do \
+>| 	     pathcomp="$${pathcomp}/$${1}"; shift; \
+>| 	     if test ! -d "$${pathcomp}"; then \
+>| 	        echo "making directory $$pathcomp" 1>&2 ; \
+>| 	        mkdir "$${pathcomp}"; \
+>| 	     fi; \
+>| 	   done; \
+>| 	done

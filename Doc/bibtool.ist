@@ -1,0 +1,7 @@
+preamble "\\begin{theindex}\\footnotesize\n"
+lethead_prefix "  \\medskip\\par{\\Large\\bf "
+lethead_suffix "}\n"
+lethead_flag 1
+delim_0 " \\dotfill "
+delim_1 " \\dotfill "
+delim_2 " \\dotfill "

@@ -1,0 +1,23 @@
+% dina4.sty  07 Nov 89
+% Commands for page size DIN-A4
+% T. Hofmann, CIBA-GEIGY AG, Basle, 20-MAR-1986
+% K. Guntermann, THD, 02-APR-1987
+%
+% use \documentstyle[dina4]{...}
+
+\hoffset=0pt
+\voffset=0pt
+
+\topmargin 0 pt
+%\footskip 50 pt
+\ifcase \@ptsize 
+    \textheight 598 pt    % mods for 10 pt (\baselineskip=12pt)
+\or \textheight 594.8 pt  % mods for 11 pt (\baselineskip=13.6pt)
+\or \textheight 595 pt    % mods for 12 pt (\baselineskip=15pt)
+\fi 
+
+%      \textheight 699pt                % old value of T. Hofmann
+       \textwidth 434pt
+       \oddsidemargin 24pt
+       \evensidemargin 10pt
+       \marginparwidth 42pt

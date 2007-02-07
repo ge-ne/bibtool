@@ -1,0 +1,170 @@
+##=============================================================================
+## 
+## This file is part of BibTool.
+## It is distributed under the GNU General Public License.
+## See the file COPYING for details.
+## 
+## (c) 1997 Gerd Neugebauer
+## 
+## Net: gerd@informatik.uni-koblenz.de
+## 
+##*****************************************************************************
+
+
+This file contains ideas for improvements.
+
+Most of the  items are mere  key words and  may not be meaningful  for
+others.  I try to  keep the items in  a  order form highest to  lowest
+priority.  However, I change the order from time to time and hopefully
+items will disappear at some time.
+
+
+General ideas:
+
+    *   Make a C library of routines for manipulating BibTeX files.
+	(partially done. The main emphasis went into the documentation.
+	 Additional cleaning needed)
+
+	- Use the lib and provide a interface to various programming
+	  languages. The first candidate would be C. Other candidates
+	  are C++, Tcl, Perl, Guile.
+	- Use the lib and provide an SQL interface (see below).
+	- Use the lib to write a better BibTeX.
+
+    *	Add a SQL like extraction language (partially exists).
+	Maybe this is the time to completely redesign the resource
+	language. I think I will make a major revision or a seperate
+	program/library for this.
+
+    *	Use Unicode UTF8 as character set. This goes beyond BibTeX and
+	brings in a new quality.
+
+Special ideas:
+
+    *	Provide a better installation routine. Especially for BibTcl a
+	wish script might be the best solution since wish has to be
+	installed before BibTcl can be made.
+
+    *   The different keys: Sortkey/OldKey deserve a clearer handling.
+	Maybe some bugs are hidden here.
+
+    *	Maybe an index/several indices should be used to speed up
+	access to records. Maybe a real database engine should be used for
+	the underlying mechanism.
+
+    *	Support for the extended  key notation file::key. This is said
+	to be used in BibTeX1.0.
+
+    *	Support the special fields @ALIAS and @MODIFY as described by
+	Oren Patashnik in TUGboat. (partially done) Each function has
+	to be checked to decide if a refinement of the specification
+	is necessary
+
+    *   Implement a garbage collector for the symbol table to avoid
+	memory leaks when used from C/C++/Tcl/Perl/...
+
+    *	An escape character in strings might be missing.
+
+    *	Integrate field rewriting into the key generation algorithm.
+	Allow arbitrary fields to be constructed like keys.
+	Maybe this is a step towards a general manipulation language.
+	I should keep this in mind for major revision 3.
+	(The reverse is done. Key formats are evaluated when rewriting)
+
+    *	General formatting language (Maybe a replacement for BibTeX)
+	Other applications: extract all keys, prettyprint entries in
+	pure ASCII (HTML), etc.
+	The main problem is to make a decision for the scripting language.
+	I think I should use something existing and not roll a new one.
+	(Tcl, Perl, or Guile are likely candidates)
+
+    *   Use a tree representation in field rewriting instead of parsing and
+	evaluating the format each time (speed issue).
+
+    *   Do a better job when sorting. Especially for international
+	bibliographies the sorting may not be adequate. Learn something from
+	xindy?
+
+    *   Analyze bst files to find record types and entries used.
+	(partially exists but is not integrated yet)
+
+    *	Provide a specification for the statistics function. Maybe SQL
+	serves for this purpose.
+
+    *   Use the kpathsea library to find files.
+	It has been done for Unix-like operating systems. For others it's
+	still missing.
+
+    *   Selection of items according to regexp match on fields.
+	This has to be generalized to allow full power of a 
+	first order language.
+
+    *   Make the program 16-bit clean. This means UniCode!
+
+    *   Eliminate compiled in defaults completely.
+	Use a library directory to load initializations.
+
+    *	Integrate add/delete.field into the rewriting mechanism.
+
+    *	Automatic string detection.
+	The reverse of string expansion. Replace common values by new strings.
+	This can partially be done with field rewriting!
+
+    *	Respect crossref at selection
+
+    *	Support \cite in fields.
+
+    *	Documentation: improve tutorial part. (Maybe a book?)
+
+    *	Documentation in texinfo format?
+
+    *	Documentation in HTML format?
+
+    *	UN*X man pages?
+
+
+   *** Write a graphical front end for BibTool
+
+    -   Maybe not a simple task. BibTool is already too powerful.
+	(first experiments are not very promising)
+
+   ***	Write a replacement for BibTeX :-)
+	Maybe I will wait until BibTeX 1.0 is out.
+
+    -	Better styles
+	in a readable programming language.
+	This is a major problem. Which language should I use?
+	I am working towards making a library. Thus it should be easy to
+	integrate BibTool into any language.
+    -	Object oriented approach.
+	e.g. for proceedings containing articles.
+	@proceeding{abc,
+		editor = "...",
+		booktitle = "...",
+		title = "...",
+	    @inprocedings{1,
+		author = "...",
+		title = "..."
+	    }
+	}
+
+    -	Drop limitations. E.g.
+	- size of a field.
+	- order of crossreferenced records
+
+    -   Support multi-language bibliographies.
+
+    -   Backward compatibility: It should be possible to use the new program
+	as a replacement for the existing BibTeX without modification of the
+	BibTeX database.
+	The styles should be usable or an automatic translation into a new
+	format should be provided.
+
+
+
+If you have read until here and you want to take one of the tasks then
+contact me.
+
+Gerd Neugebauer
+gerd@informatik.uni-koblenz.de
+

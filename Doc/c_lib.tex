@@ -1,0 +1,316 @@
+%%*****************************************************************************
+%% $Id: c_lib.tex,v 1.1 2007-02-07 21:28:46 gene Exp $
+%%=============================================================================
+%%
+%% This file is part of BibTool.
+%% It is distributed under the GNU General Public License.
+%% See the file COPYING for details.
+%%
+%% (c) 1997 Gerd Neugebauer
+%%
+%% Net: gerd@informatik.uni-koblenz.de
+%%
+%%-----------------------------------------------------------------------------
+%% Usage:  latex     c_lib
+%%         makeindex -s bibtool.ist bibtool
+%%         latex     c_lib
+%%*****************************************************************************
+
+\NeedsTeXFormat{LaTeX2e}
+\documentclass[11pt,a4paper]{book}
+
+\usepackage{dina4}
+\usepackage{array,shortvrb,makeidx}
+\makeindex
+\input{config}
+
+\parindent=0pt
+\parskip=1ex
+
+\makeatletter
+\newcommand\ClassFont{\scriptsize\sf}
+\newcommand\File[2]{\section{The File \texttt{#1}}\label{sec:#2}}
+\newcommand\Header[2]{\section{The Header File \texttt{#1}}\label{sec:#2}}
+\newcommand\Module[2]{\section{The Module \texttt{#1}}\label{sec:#2}}
+\newcommand\Fct[1]{\textbf{\large #1}}
+\newcommand\Mac[1]{\textbf{\large #1}}
+\newcommand\Var[1]{\textbf{#1}}
+\newcommand\Type[1]{\textbf{#1}}
+\newenvironment{Function}[2]{%
+  \begin{description}\item[\texttt{#1()}]\index{#2()|tt}\ 
+    \hfill{\ClassFont Function}\\%
+    }{\end{description}}
+\newenvironment{Macro}[2]{%
+  \begin{description}\item[\texttt{#1()}]\index{#2()|sf}\ 
+    \hfill{\ClassFont Macro}\\%
+    }{\end{description}}
+\newenvironment{Constant}[2]{%
+  \begin{description}\item[\texttt{#1}]\index{#2|sf}\ 
+    \hfill{\ClassFont Macro}\\%
+    }{\end{description}}
+\newenvironment{Variable}[2]{%
+  \begin{description}\item[\texttt{#1}]\index{#2|tt}\ 
+    \hfill{\ClassFont Variable}\\%
+    }{\end{description}}
+\newenvironment{Result}{%
+  \begin{description}\item[\textmd{Returns:}] }{\end{description}}
+\newenvironment{Arguments}[1]{\begingroup\tt\tabcolsep=0pt
+  \begin{tabular*}{.925\textwidth}{ll@{\extracolsep{\fill}}>{\it\small}p{.55\textwidth}}
+    #1%
+    }{\end{tabular*}\endgroup\par}
+
+\newenvironment{Typedef}[2]{\begin{description}%
+  \item[#1]\ \hfill{\ClassFont Type}\\}{}
+\newcommand\STRUCT[1]{\par
+    \texttt{typedef struct}%
+    \textbf{\ #1 }
+    \texttt{\char123}\par
+    \begingroup\tt\tabcolsep=0pt\rule{1em}{0pt}%
+    \begin{tabular*}{.9\textwidth}%
+      {ll@{\extracolsep{\fill}}>{\it\small}p{.55\textwidth}}%
+}
+
+\newcommand\EndSTRUCT[1]{\end{tabular*}\endgroup\par
+  \texttt{\char125}
+  #1;
+  \end{description}
+  }
+\newcommand\Member[1]{\textbf{#1}}
+\makeatother
+
+\MakeShortVerb{|}
+
+\newcommand\Ccomment[1]{\hfill\parbox[t]{.5\textwidth}{\it/* #1\hfill*/}}
+
+\newcommand\BibTool{{\sc Bib\hskip-.1em\-%
+        \mbox{T\hskip-.15emo\hskip-.05emo\hskip-.05eml}}}
+\newcommand\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+        T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\makeatletter%>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+\def\ps@headings{\let\@mkboth\markboth
+  \def\@oddfoot{}\def\@evenfoot{}
+  \def\@evenhead{\vbox{\vss\hbox to \textwidth{\rm\thepage \hss
+        {\scriptsize\sc\ \leftmark}}\kern 1.5mm\hrule depth 0.2 true pt}}
+  \def\@oddhead{\vbox{\vss\hbox to \textwidth{\rm{\scriptsize\sc \rightmark\ }
+        \hss \thepage}\kern 1.5mm\hrule depth 0.2 true pt}}
+  \def\chaptermark##1{\markboth {\ifnum \c@secnumdepth>\m@ne
+     \thechapter. \ \fi ##1}{}}
+  \def\sectionmark##1{\markright
+                      {\ifnum \c@secnumdepth >\z@ \thesection. \ \fi ##1}}}
+
+\pagestyle{headings}
+\addtolength{\headheight}{2pt}
+\makeatother
+
+\newfont\cminch{cminch}
+\ifx\chaptername\relax\else
+\renewcommand\chaptername{\cminch}
+\renewcommand\appendixname{\cminch}
+\fi
+\newcommand\rfill[1]{\leaders\hrule height #1\hfill}
+
+\newcommand\INCOMPLETE{\begin{center}
+    \unitlength=1mm\framebox(80,10)\textsf{To be completed.}
+  \end{center}}
+
+\begin{document}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\thispagestyle{empty}
+\null\vfill
+{\begin{center}
+\rule{\textwidth}{5pt}%
+\bigskip\par
+\hbox to \textwidth{\cminch \hss B\hss I\hss B\hss T\hss O\hss O\hss L\hss}
+\medskip\par\normalsize
+\mbox{}\rfill{5pt}\ A Tool to Manipulate \BibTeX\ Files\ \rfill{5pt}\null
+%\medskip\par\normalsize          Version  \Version
+\vfill {\Huge\bf C Programmers Manual}\vfill
+{\LARGE\it        $\cal G$\kern-.1emerd $\cal N$\kern-.2emeugebauer}
+\vfill\vfill
+\begin{minipage}{.8\textwidth}\small
+  \begin{center} \bf Abstract \end{center}
+  
+  \BibTool{} provides a library of useful C functions to manipulate
+  \BibTeX{} files.  This library has been used to implement the
+  \BibTool{} program. This document describes This library and allows
+  you to write C programs dealing with \BibTeX{} files.
+\end{minipage}\vfill\vfill
+
+\textsf{\small --- This documentation is still in a rudimentary form and
+  needs additional efforts. ---}
+\end{center}}
+%------------------------------------------------------------------------------
+\newpage
+\noindent
+\begin{minipage}{\textwidth}\parskip=1ex
+This file is part of \BibTool{} Version \Version
+\medskip
+
+Copyright {\copyright}\Year{} Gerd Neugebauer
+\medskip
+
+\BibTool{} is  free software; you can redistribute  it and/or  modify it under
+the terms of the GNU General Public License as published  by the Free Software
+Foundation; either version 1, or (at your option) any later version.
+
+\BibTool{} is distributed in the hope that it will be  useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of  MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received  a copy of the GNU  General Public License along with
+this documentation; see the file COPYING.  If not,  write to the Free Software
+Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+\end{minipage}
+\vfill\par\noindent
+Gerd Neugebauer\\
+Mainzer Str.\ 8\\
+56321 Rhens (Germany)\smallskip\par\noindent
+WWW: {\tt http://www.uni-koblenz.de/\~{}gerd}\smallskip\par\noindent
+Net: {\tt gerd@informatik.uni-koblenz.de}%\\
+%\phantom{Net:} {\scriptsize\tt gerd@imn.htwk-leipzig.de}\\
+%\phantom{Net:} {\tiny\tt gerd@intellektik.informatik.th-darmstadt.de}
+%------------------------------------------------------------------------------
+\tableofcontents
+
+\chapter{Introduction}
+
+The \BibTool{} C library provides functions to deal with \BibTeX{}
+files.  These functions are described in this document. Thus it should
+be fairly easy to write new C program which handle \BibTeX{}
+files. The reader is assumed to be familiar with \BibTeX{} files. this
+documentation will not repeat an introduction into \BibTeX.
+
+This documentation can not only be used to write new C programs
+dealing with \BibTeX{} files but also to understand \BibTool---The
+Program which serves as one example for using the \BibTool C library.
+In any case it is essential to understand some of the underlying
+concepts. Thus it is vital to read some sections very carefully.
+Especially the section
+
+
+
+
+
+The \BibTool{} program uses the \BibTool{} C library. Well, in fact it
+is the other way round. Historically the \BibTool{} program was first
+and then the library has been extracted from it. Nevertheless the
+\BibTool{} program can serve as an example how the \BibTool{} C
+libary can be used.
+
+\input c_main
+
+\chapter{The \BibTool{} C Library}
+
+\input c
+
+
+\chapter{Creating and Using the \BibTool{} C Library}
+
+\section{Creating the \BibTool{} C Library}
+
+Creating the \BibTool{} library should not be too hard. Mainly make
+\BibTool{} in the main directory according to the instructions given
+there. As a side effect various object files are created. These object
+files---except the one for main.c---have to be put into the library.
+
+For UNIX this is prepared in the makefile. Usually an invocation of
+make should be enough:
+
+\begin{verbatim}
+  make libbib.a
+\end{verbatim}
+
+This invocation of make is in fact the same as the following two
+commands:
+
+\begin{verbatim}
+  ar r libbib.a $OFILES
+  ranlib libbib.a
+\end{verbatim}
+
+Here |$OFILES| denotes the list of object files as described above. On
+some systems no ranlib program is present and needed. In this case the
+second command can be omitted.
+
+For other operating systems I simply do not know how things work
+there. I would be grateful to receive descriptions what to do there.
+
+
+\section{Using the \BibTool{} C Library}
+
+%First of all you need to include the appropriate header file which
+%provides all
+
+
+
+If you have written a program which uses the \BibTool{} C Library you
+have to include the library into the linking list. In addition the
+directory where the library can be found has to be specified.  On UNIX
+this can be done with the compiler switches |-l| and |-L|
+respectively.  Thus consider you have a program named |mybib.c| and
+you have created the object file |mybib.o| for it. The linking step
+can be performed with the following command:
+
+\begin{verbatim}
+  cc mybib.o -L$DIR -lbib -o mybib
+\end{verbatim}
+
+Here |$DIR| denotes the path containing the file |libbib.a|. This path
+can be omitted if the library has been installed in a ``standard''
+place like |/usr/lib|.
+
+
+
+
+\chapter{Coding Standards}
+
+Several tools are used for the development of \BibTool. Mostly they
+are home grown---maybe they will be replaced by some wider used tools
+some day. Among those tools are indentation routines for Emacs to
+format the comments contained in the source. There is also a Lisp
+function to generate the function prototypes contained in the header
+files and sometimes in the C files as well. And finally there is a
+Program to extract the documentation from the source files and
+generate a printable manual.
+
+All those support programs rely on standards for coding. Some of those
+standards have been develped independantly but should be used for
+consistency. In the following sections these coding standards are
+described. 
+
+\section{K\&R-C vs. ANSI-C}
+
+\BibTool{} tries hard to be portable to wide variety of C systems.
+Thus it can not be assumed that an ANSI C compiler is at hand. As a
+consequence the function heads are written in the old style which is
+also tolerated by ANSI compliant compilers. This means that the
+argument types are given after the argument list.
+
+Here it is essential that the arguments type declarations are given in
+the same order as the arguments of the function. Each type variable
+must have a new type declaration in a line by it's own. This feature
+is used by the program which extracts the function prototypes.
+
+Those function heads are use to generate function prototypes which can
+be understood by ANSI-C compilers as well as by of K\&R
+compilers. This is achieved by the od trick to introduce a macro which
+expands to nothing on the old compilers and to its aregument on ANSI
+compilers. This macro is defined appropriately according to the
+existence of the macro \verb|__STDC__| which should indicate an ANSI
+compliant compiler.
+
+
+%\section{Indentation}
+
+
+
+
+\printindex
+
+\end{document}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Local Variables: 
+% mode: latex
+% TeX-master: nil
+% End: 
