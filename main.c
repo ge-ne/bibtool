@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: main.c,v 1.5 2007-02-08 19:47:16 gene Exp $
+** $Id: main.c,v 1.6 2007-02-08 20:54:48 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2004 Gerd Neugebauer
+** (c) 1996-2007 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -64,8 +64,12 @@
 #include <bibtool/symbols.h>
 #include <bibtool/sbuffer.h>
 #include <bibtool/expand.h>
+#include <bibtool/crossref.h>
 #include <bibtool/version.h>
 #ifdef HAVE_LIBKPATHSEA
+#ifdef __STDC__
+#define HAVE_PROTOTYPES
+#endif
 #include <kpathsea/debug.h>
 #endif
 #include "config.h"
@@ -153,7 +157,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2007-02-08 19:47:16 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2007-02-08 20:54:48 $",
     "gerd@informatik.uni-koblenz.de"
   };
 
@@ -329,17 +333,6 @@ void save_macro_file(file)			   /*			     */
 /***				    MAIN				   ***/
 /*****************************************************************************/
 
-
-/*-----------------------------------------------------------------------------
-** Function:	true()
-** Type:	static int
-** Purpose:	
-**		
-** Arguments:
-**		
-** Returns:	
-**___________________________________________________			     */
-static int true() { return TRUE; }
 
 /*-----------------------------------------------------------------------------
 ** Function:	keep_selected()
@@ -550,6 +543,11 @@ int main(argc,argv)				   /*			     */
     { for (i=0;i<c_len;i++) c[i] = cnt[i];	   /*                        */
     }						   /*                        */
   }						   /*                        */
+						   /*			     */
+  if ( rsc_expand_crossref )			   /*                        */
+  {						   /*			     */
+    db_forall(the_db,expand_crossref);		   /*                        */
+  }						   /*			     */
 						   /*			     */
   if ( rsc_make_key )				   /*                        */
   {						   /*                        */
