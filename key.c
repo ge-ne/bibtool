@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: key.c,v 1.4 2007-02-08 05:43:31 gene Exp $
+** $Id: key.c,v 1.5 2007-02-08 19:47:16 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2003 Gerd Neugebauer
+** (c) 1996-2004 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -128,6 +128,10 @@
 			  if ( *CP == C ) { ++(CP); }			\
 			  else { ErrPrintF("*** BibTool: Missing %c",C);\
 				   return RET; }
+#define ExpectVoid(CP,C)  SkipSpaces(CP);				\
+			  if ( *CP == C ) { ++(CP); }			\
+			  else { ErrPrintF("*** BibTool: Missing %c",C);\
+				   return; }
 #define MakeNode(KNP,TYPE,SP,CP) c = *CP; *CP = '\0';			\
 			  *KNP = new_key_node(TYPE,symbol((Uchar*)*SP));\
 			  *CP  = c;
@@ -679,7 +683,7 @@ static void fmt_title(sb,line,len,in,trans,ignore,sep)/*		     */
   int	        nw, i, j;			   /*			     */
   unsigned char *s;				   /*			     */
 						   /*			     */
-  if ( len == 0 ) return;			   /*                        */
+  /*  if ( len == 0 ) return;			   /*                        */
  						   /*                        */
   if (	 tmp_sb == (StringBuffer*)0		   /*			     */
       && (tmp_sb=sbopen()) == (StringBuffer*)0 )   /*			     */
@@ -787,7 +791,7 @@ void def_format_type(s)				   /*                        */
  						   /*                        */
   SkipSpaces(s);				   /*                        */
   if ( *s == '=' ) s++;				   /*                        */
-  Expect(s,'"', );				   /*                        */
+  ExpectVoid(s,'"');				   /*                        */
   cp = s;					   /*                        */
   while ( *cp && *cp != '"' ) cp++;		   /*                        */
   c   = *cp;					   /*                        */
@@ -2235,7 +2239,8 @@ Uchar *get_field(db,rec,name)		   	   /*			     */
 	    n -= 2 )				   /*			     */
       {						   /*                        */
 	if ( *cpp == name )			   /*                        */
-	{ return ( rsc_key_expand_macros	   /*                        */
+	{					   /*                        */
+          return ( rsc_key_expand_macros	   /*                        */
 		   ? expand_rhs(*(cpp+1),"{","}",db)/*                       */
 		   : *(cpp+1) );		   /*			     */
 	}					   /*                        */
@@ -2246,7 +2251,7 @@ Uchar *get_field(db,rec,name)		   	   /*			     */
        						   /*                        */
       if ( xref == NULL ) { return (Uchar*)NULL; } /* No crossref field found*/
       xref = symbol(lower(expand_rhs(xref,sym_empty,sym_empty,db)));/*       */
-      if ( (rec = db_find(db,xref)) == RecordNULL )/*                        */
+      if ( (rec = db_search(db,xref)) == RecordNULL )/*                      */
       { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",xref);/*         */
 	return (Uchar*)NULL;			   /*                        */
       }						   /*                        */

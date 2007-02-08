@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: tex_aux.c,v 1.4 2007-02-08 05:43:31 gene Exp $
+** $Id: tex_aux.c,v 1.5 2007-02-08 19:47:16 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2003 Gerd Neugebauer
+** (c) 1996-2004 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -14,6 +14,7 @@
 
 #include <bibtool/general.h>
 #include <bibtool/expand.h>
+#include <bibtool/sbuffer.h>
 #include <bibtool/error.h>
 #include <bibtool/rsc.h>
 #include <bibtool/key.h>
@@ -26,6 +27,13 @@
 /*===========================================================================*/
 
 #include <bibtool/tex_aux.h>
+
+#ifdef __STDC__
+#define _ARG(A) A
+#else
+#define _ARG(A) ()
+#endif
+ static void save_ref _ARG((char *s));
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -153,7 +161,13 @@ int read_aux(fname,fct,verbose)			   /*                        */
   rsc_select = TRUE; 				   /*                        */
   					   	   /*                        */
   if ( (file=fopen(fname,"r") ) == NULL )	   /*                        */
-  { return TRUE; }				   /*                        */
+  { StringBuffer *sb = sbopen();
+    sbputs(fname,sb);
+    sbputs(".aux",sb);
+    file = fopen(sbflush(sb),"r");
+    sbclose(sb);
+  }			   			   /*                        */
+  if ( file == NULL ) { return TRUE; }		   /*                        */
  						   /*                        */
   rsc_del_q = FALSE;				   /*                        */
  						   /*                        */
@@ -269,41 +283,51 @@ int apply_aux(db)				   /*                        */
     { ClearRecordMARK(rec); }			   /*                        */
   }						   /*                        */
  						   /*                        */
+ 						   /*                        */
   for ( rec = rec1;				   /* Phase 2:               */
 	rec != RecordNULL;			   /*  For all marked entries*/
-	rec = NextRecord(rec) )			   /*  which have a xref and */
+	rec = NextRecord(rec) )		   	   /*  which have a xref and */
   {						   /*  mark all xrefs.       */
-    if ( RecordIsMARKED(rec) &&			   /*                        */
-	 RecordIsXREF(rec)   &&			   /*                        */
-	 !RecordIsDELETED(rec)	 		   /*                        */
+    if ( RecordIsMARKED(rec) &&		   	   /*                        */
+	 RecordIsXREF(rec)   &&		   	   /*                        */
+	 !RecordIsDELETED(rec)		   	   /*                        */
        )					   /*                        */
     { Uchar  *key;				   /*                        */
       int    count;				   /*                        */
       Record r = rec;				   /*                        */
  						   /*                        */
       for ( count=rsc_xref_limit;		   /* Prevent infinite loop  */
-	    count>=0		&&		   /*                        */
+	    count >= 0	  &&	   	   	   /*                        */
 	      RecordIsXREF(r)   &&		   /*                        */
 	      !RecordIsDELETED(r);		   /*                        */
 	    count-- )				   /*                        */
-      {						   /*                        */
-	key = get_field(db,rec1,sym_crossref);	   /*                        */
-        if ( key == NULL )			   /*                        */
-	{ count = 0; }				   /*                        */
+      {					   	   /*                        */
+	if ( (key = get_field(db,r,sym_crossref)) == NULL )/*                */
+	{ count = -1; }			   	   /*                        */
 	else					   /*                        */
-	{ key = symbol(lower(expand_rhs(key,	   /*                        */
+	{					   /*                        */
+	  key = symbol(lower(expand_rhs(key,	   /*                        */
 					sym_empty, /*                        */
 					sym_empty, /*                        */
 					db)));     /*                        */
 	  if ( (r=db_find(db,key)) == RecordNULL ) /*                        */
 	  { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",key);/*      */
-	    count = 0;			   	   /*                        */
+	    count = -1;			   	   /*                        */
 	  }					   /*                        */
-	  else					   /*                        */
-	  { SetRecordMARK(r); }			   /*                        */
-	}					   /*                        */
-      }    					   /*                        */
-    }						   /*                        */
+	  else				   	   /*                        */
+	  {					   /*                        */
+	    if ( RecordIsMARKED(r) )		   /*                        */
+	    { count = -1; }			   /*                        */
+	    SetRecordMARK(r);			   /*                        */
+	    ClearRecordDELETED(r);		   /*                        */
+	  }					   /*                        */
+	}			   		   /*                        */
+      }			   		   	   /*                        */
+      if ( count == -1 )			   /*                        */
+      { ErrPrintF("*** BibTool: Crossref limit exceeded; `%s' possibly looped.\n",
+		  key);				   /*                        */
+      }						   /*                        */
+    }    					   /*                        */
   }						   /*                        */
  						   /*                        */
   for ( rec = rec1;				   /* Phase 3:               */
@@ -315,3 +339,4 @@ int apply_aux(db)				   /*                        */
  						   /*                        */
   return TRUE;					   /*                        */
 }						   /*------------------------*/
+

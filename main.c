@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: main.c,v 1.4 2007-02-08 05:43:31 gene Exp $
+** $Id: main.c,v 1.5 2007-02-08 19:47:16 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2003 Gerd Neugebauer
+** (c) 1996-2004 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -109,7 +109,7 @@
 **___________________________________________________			     */
 char * getenv(name)				   /*			     */
   char *name;				   	   /*			     */
-{ return (char*)0;				   /*			     */
+{ return (char*)NULL;				   /*			     */
 }						   /*------------------------*/
 #endif
 #endif
@@ -123,7 +123,8 @@ char * getenv(name)				   /*			     */
   { "bibtool [options] [%co outfile] [[%ci] infile] ...\n",
     "\n\tOptions:\n",
     "\t%cA<c>\t\tKind of disambiguating keystrings: <c>=0|a|A\n",
-    "\t%cd\t\tCheck double entries\n",
+    "\t%cc\t\tInclude crossreferenced entries into the output (toggle)\n",
+    "\t%cd\t\tCheck double entries (toggle)\n",
     "\t%cf <format>\tKey generation enabled (formated key)\n",
     "\t%cF\t\tKey generation enabled with formated key\n",
     "\t%ch\t\tPrint this help info and exit\n",
@@ -152,7 +153,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2007-02-08 05:43:31 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2007-02-08 19:47:16 $",
     "gerd@informatik.uni-koblenz.de"
   };
 
@@ -328,6 +329,86 @@ void save_macro_file(file)			   /*			     */
 /***				    MAIN				   ***/
 /*****************************************************************************/
 
+
+/*-----------------------------------------------------------------------------
+** Function:	true()
+** Type:	static int
+** Purpose:	
+**		
+** Arguments:
+**		
+** Returns:	
+**___________________________________________________			     */
+static int true() { return TRUE; }
+
+/*-----------------------------------------------------------------------------
+** Function:	keep_selected()
+** Type:	static int
+** Purpose:	
+**		
+** Arguments:
+**	db	
+**	rec	
+** Returns:	
+**___________________________________________________			     */
+static int keep_selected(db,rec)		   /*                        */
+  DB db;					   /*                        */
+  Record rec;					   /*                        */
+{						   /*                        */
+  if ( !is_selected(db,rec) )			   /*                        */
+  { SetRecordDELETED(rec);			   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  return FALSE;					   /*                        */
+}						   /*------------------------*/
+
+#ifdef UNUSED
+/*-----------------------------------------------------------------------------
+** Function:	keep_xref()
+** Type:	int 
+** Purpose:	Undelete crossreferenced entries
+**		
+** Arguments:
+**	db	
+**	rec	
+** Returns:	
+**___________________________________________________			     */
+int keep_xref(db,rec)				   /*                        */
+  DB db;					   /*                        */
+  Record rec;					   /*                        */
+{						   /*                        */
+  if ( !RecordIsDELETED(rec) )		   	   /*                        */
+  { Uchar  *key;				   /*                        */
+    int    count;				   /*                        */
+ 						   /*                        */
+    for ( count=rsc_xref_limit;		   	   /* Prevent infinite loop  */
+	  count >= 0;		   	   	   /*                        */
+	  count-- )				   /*                        */
+    {					   	   /*                        */
+      if ( (key = get_field(db,rec,sym_crossref)) == NULL )/*                */
+      { return FALSE; }			   	   /*                        */
+ 						   /*                        */
+      key = symbol(lower(expand_rhs(key,	   /*                        */
+				    sym_empty,     /*                        */
+				    sym_empty, 	   /*                        */
+				    db)));     	   /*                        */
+      if ( (rec=db_search(db,key)) == RecordNULL ) /*                        */
+      { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",key);/*          */
+        return FALSE;			   	   /*                        */
+      }					   	   /*                        */
+ 						   /*                        */
+      if ( !RecordIsDELETED(rec) ) { return FALSE; }/*                       */
+      ClearRecordDELETED(rec);		   	   /*                        */
+    }					   	   /*                        */
+ 						   /*                        */
+    ErrPrintF("*** BibTool: Crossref limit exceeded; `%s' possibly looped.\n",
+	      key);				   /*                        */
+  }    					   	   /*                        */
+  return FALSE;					   /*                        */
+}						   /*------------------------*/
+#endif
+
+
 #define Toggle(X) X = !(X)
 
 /*-----------------------------------------------------------------------------
@@ -372,6 +453,7 @@ int main(argc,argv)				   /*			     */
     else					   /*			     */
     { switch ( *++ap )				   /*			     */
       { case 'A': set_base((Uchar*)(ap+1));  break;/* disambiguation	     */
+	case 'c': Toggle(rsc_xref_select);   break;/* include crossreferences*/
 	case 'd': Toggle(rsc_double_check);  break;/* double entries	     */
 #ifdef HAVE_LIBKPATHSEA
 	case 'D': kpathsea_debug=atoi(++ap); break;/* kpathsea debugging     */
@@ -390,7 +472,7 @@ int main(argc,argv)				   /*			     */
 	  save_output_file(argv[++i]);	    break; /*			     */
 	case 'q': Toggle(rsc_quiet);	    break; /* quiet		     */
 	case 'r':				   /* resource file	     */
-	  if ( ++i < argc && load_rsc(argv[i]) )   /*			     */
+	  if ( ++i < argc && load_rsc(argv[i]) )   /*		             */
 	  { need_rsc = FALSE; }		   	   /*			     */
 	  else					   /*                        */
 	  {  NoRscError(argv[i]); }		   /*                        */
@@ -448,12 +530,15 @@ int main(argc,argv)				   /*			     */
   {						   /*			     */
     if ( read_db(the_db,			   /*                        */
 		 input_files[i],		   /*                        */
-		 is_selected,			   /*                        */
 		 rsc_verbose) )	   		   /*                        */
     { NoFileError(input_files[i]); }		   /*			     */
   }						   /*			     */
  						   /*                        */
+  db_forall(the_db,keep_selected);		   /*                        */
+						   /*                        */
   apply_aux(the_db);				   /*                        */
+ 						   /*                        */
+  if ( rsc_xref_select ) db_xref_undelete(the_db); /*                        */
  						   /*                        */
   if ( rsc_cnt_all || rsc_cnt_used )		   /*			     */
   { int i;					   /*                        */
@@ -503,7 +588,24 @@ int main(argc,argv)				   /*			     */
   if ( output_file == NULL ||			   /*                        */
        (file=fopen(output_file,"w")) == NULL )	   /*                        */
   { file = stdout; }				   /*                        */
-  print_db(file,the_db,(char*)rsc_print_et);	   /*                        */
+ 						   /*                        */
+  if ( rsc_select ) { rsc_del_q = FALSE; }	   /*                        */
+ 						   /*                        */
+  { char * print_spec = (char*)rsc_print_et;	   /*                        */
+ 						   /*                        */
+    if ( rsc_expand_macros )			   /*                        */
+    { char * cp;				   /*                        */
+      print_spec = new_string(print_spec);	   /*                        */
+      for ( cp=print_spec; *cp; cp++ )		   /*                        */
+      { if ( *cp == 's' ||			   /*                        */
+	     *cp == 'S' ||			   /*                        */
+	     *cp == '$' ) *cp = ' ';		   /*                        */
+      }						   /*                        */
+    }						   /*                        */
+    print_db(file,the_db,print_spec);	   	   /*                        */
+    if ( rsc_expand_macros) free(print_spec);	   /*                        */
+  }						   /*                        */
+ 						   /*                        */
   if ( file != stdout ) { fclose(file); }	   /*                        */
 						   /*			     */
   if ( macro_file != NULL  && *macro_file )	   /*			     */
@@ -694,6 +796,7 @@ static int update_crossref(db,rec)		   /*			     */
   { ERROR2("Crossref not found: ",(char*)s);	   /*			     */
     return 0;					   /*			     */
   }						   /*			     */
+  if (rsc_key_case) { s = get_key_name(s); }	   /*                        */
   if ( (t=(Uchar*)malloc(strlen((char*)s)+3))==(Uchar*)NULL )/* get temp mem */
   { OUT_OF_MEMORY("update_crossref()"); }	   /*		             */
 						   /*			     */

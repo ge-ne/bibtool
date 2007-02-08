@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: expand.c,v 1.4 2007-02-08 05:43:31 gene Exp $
+** $Id: expand.c,v 1.5 2007-02-08 19:47:16 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2003 Gerd Neugebauer
+** (c) 1996-2004 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -200,7 +200,7 @@ static int expand(s,sb,brace,first,q_open,q_close,db)/*                      */
         break;        				   /*                        */
       default:					   /*                        */
         if ( is_space(*s) ) ++s;		   /* Ignore spaces.         */
-        else if ( *s == '\\' )			   /* Only macros are left.  */
+        else			   		   /* Only macros are left.  */
 	{ Uchar *sym = (Uchar*)s;	   	   /*                        */
 	  char  *val;			   	   /*                        */
 	  char  c;			   	   /*                        */
@@ -228,10 +228,6 @@ static int expand(s,sb,brace,first,q_open,q_close,db)/*                      */
 	    first = FALSE;			   /*                        */
 	  }					   /*                        */
 	}	   				   /*                        */
-	else
-	{ ERROR2("Malformed string for expansion: ",s);
-	  s++;
-	}
     }    					   /*                        */
   }						   /*                        */
   return brace;					   /*                        */

@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: rsc.c,v 1.4 2007-02-08 05:43:31 gene Exp $
+** $Id: rsc.c,v 1.5 2007-02-08 19:47:16 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2003 Gerd Neugebauer
+** (c) 1996-2004 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -49,13 +49,16 @@
 #else
 #define _ARG(A) ()
 #endif
- int load_rsc _ARG((char *name));		   /* rsc.c		     */
- int search_rsc _ARG((void));			   /* rsc.c		     */
- int set_rsc _ARG((Uchar * name,Uchar * val));	   /* rsc.c		     */
- int use_rsc _ARG((Uchar * s));			   /* rsc.c		     */
- static int test_true _ARG((Uchar * s));	   /* rsc.c		     */
- static void init_rsc _ARG((void));		   /* rsc.c		     */
- void rsc_print _ARG((char *s));		   /* rsc.c		     */
+ int load_rsc _ARG((char *name));
+ int resource _ARG((char *name));
+ int search_rsc _ARG((void));
+ int set_rsc _ARG((Uchar *name,Uchar *val));
+ int use_rsc _ARG((Uchar *s));
+ static int test_true _ARG((Uchar * s));
+ static void init_rsc _ARG((void));
+ void rsc_print _ARG((char *s));
+
+#define NoRscError(X)	      WARNING3("Resource file ",X," not found.")
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -169,11 +172,30 @@ int search_rsc()				   /*			     */
 **	name	The name of the resource file to read.
 ** Returns:	|FALSE| iff the reading failed.
 **___________________________________________________			     */
-int load_rsc(name)				   /*			     */
+int load_rsc(name)			   	   /*			     */
   register char *name;				   /*			     */
 {						   /*			     */
   if ( r_v == NULL ) { init_rsc(); }		   /*			     */
   return ( name != NULL ? read_rsc(name) : 0 );	   /*			     */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	resource()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**	name	
+**	 warnp	
+** Returns:	
+**___________________________________________________			     */
+int resource(name)			   	   /*			     */
+  register char *name;				   /*			     */
+{						   /*			     */
+  int ret = load_rsc(name);			   /*                        */
+  if ( !ret )
+  { NoRscError(name); }
+  return ret;	   				   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -229,7 +251,7 @@ int use_rsc(s)					   /*			     */
   (void)sp_open(s);				   /*			     */
   if ( (name = SParseSymbol(&s)) == NULL ) return 1; /*			     */
 						   /*			     */
-  (void)SParseSkip(&s);				   /*			     */
+  (void)SParseSkip(&s);				   /*                        */
 						   /*			     */
   if ( (value = SParseValue(&s)) == NULL )	   /*                        */
   { ReleaseSymbol(name);			   /*                        */

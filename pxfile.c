@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: pxfile.c,v 1.4 2007-02-08 05:43:31 gene Exp $
+** $Id: pxfile.c,v 1.5 2007-02-08 19:47:16 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2003 Gerd Neugebauer
+** (c) 1996-2004 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -24,8 +24,18 @@
 **	    
 ******************************************************************************/
 
+#include "config.h"
 #include <bibtool/general.h>
 #include <bibtool/pxfile.h>
+#include <bibtool/sbuffer.h>
+
+#include <ctype.h>
+
+#ifndef __STDC__
+#ifndef HAVE_GETENV
+ extern char * getenv _ARG((char* name));	   /*			     */
+#endif
+#endif
 
 #ifndef DEFAULT_PATTERN
 #ifdef MSDOS
@@ -44,7 +54,10 @@
 #else
 #define _ARG(A) ()
 #endif
- static int absolute_file _ARG((char *n,char **base,char ***p));/* pxfile.c  */
+ FILE * px_fopen _ARG((char * name,char * mode,char **pattern,char **path,int (*show)_ARG((char*))));
+ char ** px_s2p _ARG((char * s,int sep));
+ static int absolute_file _ARG((char *name,char **basename,char ***path));
+ static void expand_env _ARG((char * s,char * se,StringBuffer * res));
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -199,6 +212,9 @@ FILE * px_fopen(name,mode,pattern,path,show)	   /*			     */
   return(NULL);					   /* failure		     */
 }						   /*------------------------*/
 
+#define INIT_SIZE 32
+#define INC_SIZE 16
+	
 /*-----------------------------------------------------------------------------
 ** Function:	px_s2p()
 ** Purpose:	Translate a path string specification into an array of the 
@@ -206,35 +222,123 @@ FILE * px_fopen(name,mode,pattern,path,show)	   /*			     */
 **		The memory of the array is malloced and should be freed when
 **		not used any longer.
 ** Arguments:
-**	s
-**	sep
+**	s	String to analyze
+**	sep	Separator
 ** Returns:	The array of the components
 **___________________________________________________			     */
-char **px_s2p(s,sep)				   /*			     */
+char ** px_s2p(s,sep)				   /*			     */
   char		  * s;				   /*			     */
   int		  sep;				   /*			     */
 { register char	  *cp;				   /*			     */
-  register size_t n, l;				   /*			     */
+  register size_t l = 1;			   /*			     */
   char		  **pattern;			   /*			     */
-						   /*			     */
+  int		  *array;			   /*                        */
+  int		  array_size = INIT_SIZE;	   /*                        */
+  int		  array_ptr  = 0;		   /*                        */
+  char 		  *t;				   /*                        */
+  StringBuffer    *sb;				   /*                        */
+					       	   /*			     */
   if ( s == NULL ) return(NULL);		   /* No string to analyze   */
 						   /*			     */
-  for ( n=2,l=1,cp=s; *cp; ++l,++cp )		   /* Count the lenght and   */
-    if ( *cp == sep ) ++n;			   /*  number of fields	     */
-						   /*			     */
-  if ( (pattern=(char**)malloc( n*sizeof(char*)	   /*			     */
+  if ( (array=(int*)malloc(array_size*sizeof(int)))/*                        */
+       == NULL )				   /*                        */
+  { return NULL; }				   /*                        */
+ 						   /*                        */
+  t  = cp = s;					   /*                        */
+  sb = sbopen();				   /*                        */
+  for(;;)	   	   			   /* Count the number of    */
+  {			   			   /*  fields and expand     */
+    if ( *cp == sep || *cp == '\0' )		   /*                        */
+    { if ( array_ptr >= array_size )		   /*                        */
+      { array_size += INC_SIZE;			   /*                        */
+        array 	    = (int*)realloc(array,	   /*                        */
+				    array_size*sizeof(int));/*               */
+	if ( array == NULL ) return NULL;	   /*                        */
+      }						   /*                        */
+      array[array_ptr++] = sbtell(sb);		   /*                        */
+      expand_env(t,cp,sb);			   /*                        */
+      sbputchar('\0',sb);			   /*                        */
+      t = cp+1;					   /*                        */
+      if ( *cp ) cp++;				   /*                        */
+      else break;				   /*                        */
+    }						   /*                        */
+    else					   /*                        */
+    { cp++;					   /*                        */
+    }						   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  l = sbtell(sb);				   /*                        */
+  s = sbflush(sb);				   /*                        */
+ 						   /*                        */
+  if ( (pattern=(char**)malloc( (array_ptr+1)*sizeof(char*)/*		     */
 			       +l*sizeof(char)))   /*			     */
       == (char**)NULL )				   /* Try to allocate space  */
-  { return(NULL); }				   /*			     */
+  { return NULL; }				   /*			     */
 						   /*			     */
-  pattern[n-1] = 0L;				   /* Mark end		     */
-  (void)strcpy((char*)&pattern[n],s);		   /* save the string spec   */
-  s = (char *) &pattern[n];			   /*			     */
-  pattern[0] = s;				   /*			     */
-  for ( l=0,cp=s; *cp; ++cp )			   /*			     */
-  { if ( *cp == sep )				   /*			     */
-    { *cp = '\0'; pattern[++l] = cp+1; }	   /*			     */
-  }						   /*			     */
+  cp = (char*)&pattern[array_ptr+1];		   /*                        */
+  (void)memcpy(cp,s,l);		   		   /* save the string spec   */
+ 						   /*                        */
+  for ( l=0; l<array_ptr; l++ )			   /*                        */
+  { pattern[l] = cp + array[l]; }		   /*                        */
+  pattern[array_ptr] = 0L;			   /* Mark end		     */
 						   /*			     */
-  return(pattern);				   /*			     */
+  (void)free(array);				   /*                        */
+  sbclose(sb);					   /*                        */
+  return pattern;				   /*			     */
 }						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	expand_env()
+** Type:	static char *
+** Purpose:	
+**		
+** Arguments:
+**	s	
+**	se	
+** Returns:	
+**___________________________________________________			     */
+static void expand_env(s,se,res)		   /*                        */
+  char * s;					   /*                        */
+  char * se;					   /*                        */
+  StringBuffer * res;				   /*                        */
+{						   /*                        */
+  StringBuffer * val = sbopen();		   /*                        */
+ 						   /*                        */
+  for ( ; s<se; s++ )
+  {
+    if ( *s == '$' )
+    { char beg = '\0';
+      char * env;
+      sbrewind(val);
+      s++;
+      if ( *s == '{' || *s == '(' )
+      { beg = *(s++); }
+      while ( isalpha(*s) || isdigit(*s) || *s == '_' )
+      { sbputchar(*s,val);
+        s++;
+      }
+      if ( ( beg == '{' && *s == '}' ) ||
+	   ( beg == '(' && *s == ')' )
+	 )
+      { s++; }
+      env = sbflush(val);
+      if ( *env )
+      { env = getenv(env);
+        if ( env != NULL )
+	{ sbputs(env,res); }
+      }
+    }
+#ifdef HOME_ENV_VAR 
+    else if ( *s == '~' )
+    {
+      char * env = getenv(HOME_ENV_VAR);
+      if ( env != NULL )
+      { sbputs(env,res); }
+    }
+#endif
+    else					   /*                        */
+    { sbputchar(*s,res);			   /*                        */
+    }						   /*                        */
+  }						   /*                        */
+}						   /*------------------------*/
+

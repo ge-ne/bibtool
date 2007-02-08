@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: rsc.h,v 1.4 2007-02-08 05:43:31 gene Exp $
+** $Id: rsc.h,v 1.5 2007-02-08 19:47:16 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2003 Gerd Neugebauer
+** (c) 1996-2004 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -49,8 +49,9 @@ DECLARE( char* , rsc_v_rsc        , RSC_BIBTOOL_DEFAULT		);
 #else
 #define _ARG(A) ()
 #endif
- int load_rsc _ARG((char *name));		   /* rsc.c                  */
- int search_rsc _ARG((void));			   /* rsc.c                  */
- int set_rsc _ARG((Uchar * name,Uchar * val));	   /* rsc.c                  */
- int use_rsc _ARG((Uchar * s));			   /* rsc.c                  */
- void rsc_print _ARG((char *s));		   /* rsc.c                  */
+ int load_rsc _ARG((char *name));
+ int resource _ARG((char *name));
+ int search_rsc _ARG((void));
+ int set_rsc _ARG((Uchar *name,Uchar *val));
+ int use_rsc _ARG((Uchar *s));
+ void rsc_print _ARG((char *s));

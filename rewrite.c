@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: rewrite.c,v 1.4 2007-02-08 05:43:31 gene Exp $
+** $Id: rewrite.c,v 1.5 2007-02-08 19:47:16 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2003 Gerd Neugebauer
+** (c) 1996-2004 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -62,12 +62,14 @@
 #define _ARG(A) ()
 #endif
  int is_selected _ARG((DB db,Record rec));
+ int set_regex_syntax _ARG((char* name));
  static Rule new_rule _ARG((Uchar *field,Uchar *pattern,Uchar *frame,int flags,int casep));
  static Uchar * check_regex _ARG((Uchar *field,Uchar *value,Rule rule,DB db,Record rec));
  static Uchar * repl_regex _ARG((Uchar *field,Uchar *value,Rule rule,DB db,Record rec));
  static int s_match _ARG((Uchar * p,Uchar * s));
  static int s_search _ARG((Uchar * pattern,Uchar * s));
  static void add_rule _ARG((Uchar *s,Rule *rp,Rule *rp_end,int flags,int casep));
+ static void free_rule _ARG((Rule rule));
  static void init_s_search _ARG((char * ignored));
  static void rewrite_1 _ARG((Uchar *frame,StringBuffer *sb,Uchar *match,DB db,Record rec));
  void add_check_rule _ARG((Uchar *s));
@@ -280,18 +282,25 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
   }						   /*                        */
   stackp = 0;					   /*                        */
 						   /*			     */
-  DebugPrint2("Parsing ",s);	   		   /*			     */
+  DebugPrint2("Parsing from: ",s);		   /*			     */
   (void)sp_open(s);				   /*			     */
   (void)SParseSkip(&s);				   /*			     */
 						   /*			     */
   while (*s && *s != '"')			   /*                        */
-  { if ( (field=SParseSymbol(&s)) == NULL)	   /*                        */
-    { return; }					   /*                        */
+  {
+    DebugPrint2("\tlooking for symbol in: ",s);	   /*			     */
+    field = SParseSymbol(&s);	   /*                        */
+    DebugPrint2("\tok ",s);
+    if ( field == NULL)	   			   /*                        */
+    {						   /*                        */
+      DebugPrint2("\tno symbol found in: ",s);	   /*			     */
+      return; }					   /*                        */
+    DebugPrint1("\tok ");
     DebugPrint2("field   = ",field);	   	   /*			     */
     (void)SParseSkip(&s);			   /*                        */
 						   /*			     */
     if ( stackp > stacksize )			   /*                        */
-    { stacksize += 4;				   /*                        */
+    { stacksize += 8;				   /*                        */
       if ( (stack=(Uchar**)realloc((char*)stack,   /*                        */
 				  stacksize*sizeof(char*)))==NULL)/*         */
       { OUT_OF_MEMORY("rule stack"); }		   /*                        */
@@ -313,7 +322,7 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
   { return; }					   /*			     */
   else						   /*			     */
   { (void)SParseEOS(&s); }			   /*			     */
-    DebugPrint2("frame	 = ",frame);		   /*			     */
+  DebugPrint2("frame  = ",frame);		   /*			     */
 						   /*			     */
   if ( stackp == 0 )				   /* No field specified.    */
   { rule = new_rule((Uchar*)0,pattern,frame,flags,casep); /*		     */
@@ -922,9 +931,46 @@ int is_selected(db,rec)	   		   	   /*			     */
       }						   /*                        */
       else ReturnIf(s_search(RuleGoal(rule),value))/*                        */
     }						   /*			     */
-    else if ( RuleFlag(rule) & RULE_NOT )
-    { return TRUE;
-    }
+    else if ( RuleFlag(rule) & RULE_NOT )	   /*                        */
+    { return TRUE;				   /*                        */
+    }						   /*                        */
   }						   /*                        */
   return FALSE;				   	   /* return the result.     */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	set_regex_syntax()
+** Type:	int
+** Purpose:	experimental
+**		
+** Arguments:
+**	name	
+** Returns:	nothing
+**___________________________________________________			     */
+int set_regex_syntax(name)			   /*                        */
+  char* name;					   /*                        */
+{						   /*                        */
+#ifdef REGEX
+  if ( strcmp(name,"emacs")  == 0 )
+  { re_set_syntax(RE_SYNTAX_EMACS); }
+  else if ( strcmp(name,"awk") == 0 )
+  { re_set_syntax(RE_SYNTAX_AWK); }
+  else if ( strcmp(name,"grep") == 0 )
+  { re_set_syntax(RE_SYNTAX_GREP); }
+  else if ( strcmp(name,"egrep") == 0 )
+  { re_set_syntax(RE_SYNTAX_EGREP); }
+  else if ( strcmp(name,"posix_awk") == 0 )
+  { re_set_syntax(RE_SYNTAX_POSIX_AWK); }
+  else if ( strcmp(name,"posix_egrep") == 0 )
+  { re_set_syntax(RE_SYNTAX_POSIX_EGREP); }
+  else if ( strcmp(name,"ed") == 0 )
+  { re_set_syntax(RE_SYNTAX_ED); }
+  else if ( strcmp(name,"sed") == 0 )
+  { re_set_syntax(RE_SYNTAX_SED); }
+  else
+  { WARNING3("Unknown regexp syntax: ",name,"\n");
+    return 1;
+  }						   /*                        */
+#endif
+  return 0;					   /*                        */
 }						   /*------------------------*/

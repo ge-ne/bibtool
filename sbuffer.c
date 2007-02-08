@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: sbuffer.c,v 1.4 2007-02-08 05:43:31 gene Exp $
+** $Id: sbuffer.c,v 1.5 2007-02-08 19:47:16 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2003 Gerd Neugebauer
+** (c) 1996-2004 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -153,7 +153,7 @@ int sbputc(c,sb)				   /*                        */
 ** Purpose:	Close a string buffer with a trailing |\0| and reset the
 **		current pointer to the beginning.
 **		The next write operation starts right at the end. Thus
-**		additional write operations will overwirte the
+**		additional write operations will overwrite the
 **		terminating byte.
 ** Arguments:
 **	sb	String buffer to close.

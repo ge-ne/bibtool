@@ -1,5 +1,5 @@
 dnl ***************************************************************************
-dnl $Id: configure.in,v 1.3 2007-02-08 05:35:56 gene Exp $
+dnl $Id: configure.in,v 1.4 2007-02-08 19:47:16 gene Exp $
 dnl ===========================================================================
 dnl 
 dnl This file is part of BibTool.
@@ -11,7 +11,7 @@ dnl
 dnl Net: gene@gerd-neugebauer.de
 dnl 
 dnl ***************************************************************************
-AC_REVISION($Revision: 1.3 $)dnl
+AC_REVISION($Revision: 1.4 $)dnl
 AC_PREREQ(2.12)
 
 dnl ---------------------------------------------------------------------------
@@ -24,8 +24,8 @@ AC_PROG_CC
 AC_PROG_INSTALL
 AC_PROG_RANLIB
 
-AC_PATH_PROGS(PERL,perl perl5.003 perl4.036,/usr/local/bin/perl)
-AC_PATH_PROGS(TCLSH,tclsh tclsh-8.0 tclsh-8.1 tclsh-8.2 tclx,/usr/local/bin/tclsh)
+dnl AC_PATH_PROGS(PERL,perl perl5.003 perl4.036 /usr/local/bin/perl)
+dnl AC_PATH_PROGS(TCLSH,tclsh tclsh-8.0 tclsh-8.1 tclsh-8.2 tclx,/usr/local/bin/tclsh)
 
 dnl ---------------------------------------------------------------------------
 dnl for regexp
@@ -93,7 +93,7 @@ dnl ---------------------------------------------------------------------------
 dnl AC_CONFIG_SUBDIRS(regex-0.12)
 dnl ---------------------------------------------------------------------------
 
-AC_CONFIG_SUBDIRS(BibTcl)
+dnl AC_CONFIG_SUBDIRS(BibTcl)
 
 AC_CONFIG_HEADER(include/bibtool/config.h:AutoConf/config.h.in regex-0.12/config.h:AutoConf/reconfig.h.in)
 

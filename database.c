@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: database.c,v 1.4 2007-02-08 05:43:31 gene Exp $
+** $Id: database.c,v 1.5 2007-02-08 19:47:16 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2003 Gerd Neugebauer
+** (c) 1996-2004 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -19,8 +19,10 @@
 ******************************************************************************/
 
 #include <bibtool/general.h>
+#include <bibtool/expand.h>
 #include <bibtool/symbols.h>
 #include <bibtool/database.h>
+#include <bibtool/record.h>
 #include <bibtool/parse.h>
 #include <bibtool/macros.h>
 #include <bibtool/print.h>
@@ -38,24 +40,26 @@
 #else
 #define _ARG(A) ()
 #endif
- DB new_db _ARG((void));			   /* database.c             */
- Record db_find _ARG((DB db,Uchar *key));	   /* database.c             */
- Uchar * db_new_key _ARG((DB db,Uchar *key));	   /* database.c             */
- Uchar * db_string _ARG((DB db,Uchar *s,int localp));/* database.c           */
- int *db_count _ARG((DB db,int *lp));		   /* database.c             */
- int read_db _ARG((DB db,char *file,int (*fct)_ARG((DB,Record)),int verbose));/* database.c*/
- static Record insert_record _ARG((Record rec,Record ptr,int (*less)_ARG((Record,Record))));/* database.c*/
- static Record rec__sort _ARG((Record rec,int (*less)_ARG((Record,Record))));/* database.c*/
- static int cmp_heap _ARG((Record r1,Record r2));  /* database.c             */
- static void mark_string _ARG((Record rec,Uchar *s));/* database.c           */
- void db_add_record _ARG((DB db,Record rec));	   /* database.c             */
- void db_forall _ARG((DB db,int (*fct)_ARG((DB,Record))));/* database.c      */
- void db_mac_sort _ARG((DB db));		   /* database.c             */
- void db_rewind _ARG((DB db));			   /* database.c             */
- void db_sort _ARG((DB db,int (*less)_ARG((Record,Record))));/* database.c   */
- void delete_record _ARG((DB db,Record rec));	   /* database.c             */
- void free_db _ARG((DB db));			   /* database.c             */
- void print_db _ARG((FILE *file,DB db,char *spec));/* database.c             */
+ DB new_db _ARG((void));
+ Record db_find _ARG((DB db,Uchar *key));
+ Record db_search _ARG((DB db,Uchar *key));
+ Uchar * db_new_key _ARG((DB db,Uchar *key));
+ Uchar * db_string _ARG((DB db,Uchar *s,int localp));
+ int * db_count _ARG((DB db,int *lp));
+ int read_db _ARG((DB db,char *file,int verbose));
+ static Record insert_record _ARG((Record rec,Record ptr,int (*less)_ARG((Record,Record))));
+ static Record rec__sort _ARG((Record rec,int (*less)_ARG((Record,Record))));
+ static int cmp_heap _ARG((Record r1,Record r2));
+ static void mark_string _ARG((Record rec,Uchar *s));
+ void db_insert _ARG((DB db,Record rec));
+ void db_forall _ARG((DB db,int (*fct)_ARG((DB,Record))));
+ void db_mac_sort _ARG((DB db));
+ void db_rewind _ARG((DB db));
+ void db_sort _ARG((DB db,int (*less)_ARG((Record,Record))));
+ void db_xref_undelete _ARG((DB db));
+ void delete_record _ARG((DB db,Record rec));
+ void free_db _ARG((DB db));
+ void print_db _ARG((FILE *file,DB db,char *spec));
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -117,7 +121,7 @@ void free_db(db)				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	add_db_record()
+** Function:	db_insert()
 ** Purpose:	Add a record to a database.
 **		The record can be any kind of record. It is added to the
 **		appropriate category.
@@ -126,19 +130,40 @@ void free_db(db)				   /*                        */
 **	rec	Record to add to the database.
 ** Returns:	nothing
 **___________________________________________________			     */
-void db_add_record(db,rec)			   /*                        */
+void db_insert(db,rec)			   	   /*                        */
   DB     db;					   /*                        */
   Record rec;					   /*                        */
 { Record *rp;					   /*                        */
 						   /*                        */
   switch ( RecordType(rec) )			   /*                        */
-  { case BIB_STRING:   rp = &DBstring(db);   break;/*                        */
-    case BIB_PREAMBLE: rp = &DBpreamble(db); break;/*                        */
-    case BIB_COMMENT:  rp = &DBcomment(db);  break;/*                        */
-    case BIB_MODIFY:   rp = &DBmodify(db);   break;/*                        */
-    case BIB_INCLUDE:  rp = &DBinclude(db);  break;/*                        */
-    case BIB_ALIAS:    rp = &DBalias(db);    break;/*                        */
-    default:	       rp = &DBnormal(db);   break;/*                        */
+  { case BIB_STRING:				   /*                        */
+      rp = &DBstring(db);			   /*                        */
+      DebugPrint1("Inserting String");	   	   /*                        */
+      break;					   /*                        */
+    case BIB_PREAMBLE:				   /*                        */
+      rp = &DBpreamble(db);			   /*                        */
+      DebugPrint1("Inserting Preamble");	   /*                        */
+      break;					   /*                        */
+    case BIB_COMMENT:				   /*                        */
+      rp = &DBcomment(db);			   /*                        */
+      DebugPrint1("Inserting Comment");	   	   /*                        */
+      break;					   /*                        */
+    case BIB_MODIFY:				   /*                        */
+      rp = &DBmodify(db);   			   /*                        */
+      DebugPrint1("Inserting Modify");	   	   /*                        */
+      break;					   /*                        */
+    case BIB_INCLUDE:				   /*                        */
+      rp = &DBinclude(db);  			   /*                        */
+      DebugPrint1("Inserting Include");	   	   /*                        */
+      break;					   /*                        */
+    case BIB_ALIAS:				   /*                        */
+      rp = &DBalias(db);    			   /*                        */
+      DebugPrint1("Inserting Alias");		   /*                        */
+      break;					   /*                        */
+    default:	       				   /*                        */
+      rp = &DBnormal(db);			   /*                        */
+      DebugPrint2("Inserting Entry ",*RecordHeap(rec));/*                    */
+      break;					   /*                        */
   }						   /*                        */
 						   /*                        */
   if ( *rp == RecordNULL )			   /* List is empty          */
@@ -163,14 +188,12 @@ void db_add_record(db,rec)			   /*                        */
 ** Arguments:
 **	db	Database to augment.
 **	file	File name to read from.
-**	fct	Function to determine whether to store a given record.
 **	verbose	Boolean to determine whether progress should be reported.
 ** Returns:	1 if the file can not be opened. 0 otherwise.
 **___________________________________________________			     */
-int read_db(db,file,fct,verbose)		   /*                        */
+int read_db(db,file,verbose)		   	   /*                        */
   DB		  db;				   /*                        */
   char		  *file;			   /*                        */
-  int		  (*fct)_ARG((DB,Record));	   /* Function pointer	     */
   int		  verbose;			   /*                        */
 { register int	  type;				   /*			     */
   static Record	  master_record = RecordNULL;	   /*			     */
@@ -202,17 +225,13 @@ int read_db(db,file,fct,verbose)		   /*                        */
     { SkipWarning; }				   /*  a warning.	     */
     else if ( IsSpecialRecord(type) )		   /* STRING/PREAMBLE/COMMENT*/
     {						   /*                        */
-      db_add_record(db,copy_record(master_record));/*                        */
+      db_insert(db,copy_record(master_record));	   /*                        */
     }						   /*			     */
-    else					   /*			     */
-    { if ( (*fct)(db,master_record) )		   /*                        */
-      { rec = copy_record(master_record);	   /* Make a private copy.   */
-	RecordOldKey(rec) = *RecordHeap(rec);	   /*                        */
-	db_add_record(db,rec);			   /*                        */
-	if ( verbose ) { ErrC('+'); FlushErr; }	   /*			     */
-      }						   /*			     */
-      else if ( verbose )			   /*			     */
-      { ErrC('.'); FlushErr; }			   /* Just to see something. */
+    else					   /*                        */
+    { rec = copy_record(master_record);	   	   /* Make a private copy.   */
+      RecordOldKey(rec) = *RecordHeap(rec);	   /*                        */
+      db_insert(db,rec);			   /*                        */
+      if ( verbose ) { ErrC('+'); FlushErr; }	   /*			     */
     }						   /*			     */
   }						   /*			     */
  						   /*                        */
@@ -240,52 +259,253 @@ static void mark_string(rec,s)			   /*                        */
 { int    d;					   /*                        */
   Record r;					   /*                        */
  						   /*                        */
-  FOREVER					   /*                        */
+  while(*s)					   /*                        */
   {						   /*                        */
-    switch (*s)
-    { case '\0': return;
-      case '"':
-	d = 0;
-	while ( *++s && (*s!='"' || d>0) )
-	{ switch (*s)
-	  { case '{': d++; break;
-	    case '}': d--; break;
-	    case '\\': if (s[1]) s++;
-	  }
-	}
-	if ( *s ) s++;
-	break;
-      case '{':
-	d = 1;
-	while ( *++s && d>0 )
-	{ switch (*s)
-	  { case '{': d++; break;
-	    case '}': d--; break;
-	    case '\\': if (s[1]) s++;
-	  }
-	}
-	if ( *s ) s++;
-	break;
-      default:
-	if ( is_allowed(*s) )
-	{ Uchar c, *t;
-	  Uchar *mac = s;
-	  while ( is_allowed(*s) ) s++;
-	  c = *s;
-	  *s ='\0';
-	  t = new_Ustring(mac);
-	  *s = c;
-	  mac = sym_add(t,0);
-	  free(t);
-	  for ( r=rec; r; r=NextRecord(r) )
-	  { if ( *RecordHeap(r) == mac )
-	    { SetRecordMARK(r); break;
-	    }
-	  }
-	}
-	else s++;
+    switch (*s)					   /*                        */
+    { case '\0': return;			   /*                        */
+      case '"':					   /*                        */
+	d = 0;					   /*                        */
+	while ( *++s && (*s!='"' || d>0) )	   /*                        */
+	{ switch (*s)				   /*                        */
+	  { case '{': d++; break;		   /*                        */
+	    case '}': d--; break;		   /*                        */
+	    case '\\': if (s[1]) s++;		   /*                        */
+	  }					   /*                        */
+	}					   /*                        */
+	if ( *s ) s++;				   /*                        */
+	break;					   /*                        */
+      case '{':					   /*                        */
+	d = 1;					   /*                        */
+	while ( *++s && d>0 )			   /*                        */
+	{ switch (*s)				   /*                        */
+	  { case '{': d++; break;		   /*                        */
+	    case '}': d--; break;		   /*                        */
+	    case '\\': if (s[1]) s++;		   /*                        */
+	  }					   /*                        */
+	}					   /*                        */
+	if ( *s ) s++;				   /*                        */
+	break;					   /*                        */
+      default:					   /*                        */
+	if ( is_allowed(*s) )			   /*                        */
+	{ Uchar c, *t;				   /*                        */
+	  Uchar *mac = s;			   /*                        */
+	  while ( is_allowed(*s) ) s++;		   /*                        */
+	  c = *s;				   /*                        */
+	  *s ='\0';				   /*                        */
+	  t = new_Ustring(mac);			   /*                        */
+	  *s = c;				   /*                        */
+	  mac = sym_add(t,0);			   /*                        */
+	  free(t);				   /*                        */
+	  for ( r=rec; r; r=NextRecord(r) )	   /*                        */
+	  {					   /*                        */
+	    if ( *RecordHeap(r) == mac )	   /*                        */
+	    {					   /*                        */
+	      SetRecordMARK(r);			   /*                        */
+	      break;		   		   /*                        */
+	    }					   /*                        */
+	  }					   /*                        */
+	}					   /*                        */
+	else s++;				   /*                        */
     }						   /*                        */
   }						   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	print_segment()
+** Type:	static void
+** Purpose:	
+**		
+** Arguments:
+**	file	
+**	 db	
+**	 rec	
+** Returns:	nothing
+**___________________________________________________			     */
+static void print_segment(file, db, rec, allp)	   /*                        */
+  FILE   *file;					   /*                        */
+  DB     db;					   /*                        */
+  Record rec;					   /*                        */
+  int    allp;					   /*                        */
+{						   /*                        */
+  if ( rec == RecordNULL ) return;		   /*                        */
+ 						   /*                        */
+  while ( PrevRecord(rec) != RecordNULL )	   /* Rewind to beginning.   */
+  { rec = PrevRecord(rec); }		   	   /*                        */
+ 						   /*                        */
+  while ( rec != RecordNULL )		   	   /*                        */
+  {						   /*                        */
+    if (!RecordIsDELETED(rec))		   	   /*                        */
+    {					   	   /*                        */
+      if ( allp || RecordIsMARKED(rec) )	   /*                        */
+      {					   	   /*                        */
+	fput_record(file,rec,db,(Uchar*)"@");      /*                        */
+      }					   	   /*                        */
+    }					   	   /*                        */
+    else if ( rsc_del_q )			   /*                        */
+    { fput_record(file,rec,db,rsc_del_pre); }      /*                        */
+    rec = NextRecord(rec);			   /*                        */
+  }						   /*                        */
+}						   /*------------------------*/
+
+static void preprint_string(file, db, strings, rec)
+  FILE   *file;					   /*                        */
+  DB     db;					   /*                        */
+  Record strings;
+  Record rec;					   /*                        */
+{ int i;					   /*                        */
+  int d;					   /*                        */
+  Record r;					   /*                        */
+ 						   /*                        */
+  for ( i=0; i < RecordFree(rec); i+=2 )   	   /*                        */
+  { if ( RecordHeap(rec)[i] != NULL )	   	   /*                        */
+    { Uchar * s = RecordHeap(rec)[i+1];   	   /*                        */
+
+      while(*s)					   /*                        */
+      {						   /*                        */
+	switch (*s)				   /*                        */
+	{ case '\0': return;			   /*                        */
+	  case '"':				   /*                        */
+	    d = 0;				   /*                        */
+	    while ( *++s && (*s!='"' || d>0) )	   /*                        */
+	    { switch (*s)			   /*                        */
+	      { case '{': d++; break;		   /*                        */
+		case '}': d--; break;		   /*                        */
+		case '\\': if (s[1]) s++;	   /*                        */
+	      }					   /*                        */
+	    }					   /*                        */
+	    if ( *s ) s++;			   /*                        */
+	    break;				   /*                        */
+	  case '{':				   /*                        */
+	    d = 1;				   /*                        */
+	    while ( *++s && d>0 )		   /*                        */
+	    { switch (*s)			   /*                        */
+	      { case '{': d++; break;		   /*                        */
+		case '}': d--; break;		   /*                        */
+		case '\\': if (s[1]) s++;	   /*                        */
+	      }					   /*                        */
+	    }					   /*                        */
+	    if ( *s ) s++;			   /*                        */
+	    break;				   /*                        */
+	  default:				   /*                        */
+	    if ( is_allowed(*s) )		   /*                        */
+	    { Uchar c, *t;			   /*                        */
+	      Uchar *mac = s;			   /*                        */
+	      while ( is_allowed(*s) ) s++;	   /*                        */
+	      c = *s;				   /*                        */
+	      *s ='\0';				   /*                        */
+	      t = new_Ustring(mac);		   /*                        */
+	      *s = c;				   /*                        */
+	      mac = sym_add(t,0);		   /*                        */
+	      free(t);				   /*                        */
+ 						   /*                        */
+	      for ( r = strings;		   /*                        */
+		    r != RecordNULL;		   /*                        */
+		    r = NextRecord(r) )		   /*                        */
+	      {					   /*                        */
+		if ( *RecordHeap(r) == mac &&	   /*                        */
+		     RecordIsMARKED(r) )	   /*                        */
+	        {				   /*                        */
+		  ClearRecordMARK(r);		   /*                        */
+		  fput_record(file,r,db,(Uchar*)"@");/*                      */
+ 						   /*                        */
+		  preprint_string(file,		   /*                        */
+				  db,		   /*                        */
+				  strings,	   /*                        */
+				  r);		   /*                        */
+		}				   /*                        */
+	      }					   /*                        */
+	    }					   /*                        */
+	    else s++;				   /*                        */
+        }					   /*                        */
+      }						   /*                        */
+    }					   	   /*                        */
+  }					   	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	print_strings()
+** Type:	static void
+** Purpose:	
+**		
+** Arguments:
+**	file	
+**	 db	
+**	 allp	
+** Returns:	nothing
+**___________________________________________________			     */
+static void print_strings(file, db, allp)	   /*                        */
+  FILE   *file;					   /*                        */
+  DB     db;					   /*                        */
+  int    allp;					   /*                        */
+{ Record strings = DBstring(db);		   /*                        */
+  Record rec;					   /*                        */
+    						   /*                        */
+  if ( strings == RecordNULL ) return;		   /*                        */
+ 						   /*                        */
+  while (PrevRecord(strings) ) 			   /* find beginning         */
+  { strings = PrevRecord(strings); }		   /*  of strings            */
+ 						   /*                        */
+  if ( allp )					   /*                        */
+  {
+    for ( rec = strings;			   /*                        */
+	  rec != RecordNULL;			   /*                        */
+	  rec = NextRecord(rec) )		   /*                        */
+    { SetRecordMARK(rec); }			   /*                        */
+  }
+  else
+  { int    i;					   /*                        */
+ 						   /*                        */
+    for ( rec = strings;			   /* reset all marks        */
+	  rec != RecordNULL;			   /*                        */
+	  rec = NextRecord(rec) )		   /*                        */
+    { ClearRecordMARK(rec); }			   /*                        */
+ 						   /*                        */
+    if ( (rec=DBnormal(db)) != RecordNULL )	   /*                        */
+    { 						   /*                        */
+      while ( PrevRecord(rec) ) rec = PrevRecord(rec);/*                     */
+						   /*                        */
+      for ( ;					   /*                        */
+	    rec != RecordNULL;			   /*                        */
+	    rec = NextRecord(rec) )		   /*                        */
+      {						   /*                        */
+	if ( !RecordIsDELETED(rec) )		   /*                        */
+	{					   /*                        */
+	  for ( i=2; i < RecordFree(rec); i+=2 )   /*                        */
+	  { if ( RecordHeap(rec)[i] != NULL )	   /*                        */
+	    { mark_string(strings,RecordHeap(rec)[i+1]);/*                   */
+	    }					   /*                        */
+	  }					   /*                        */
+	}					   /*                        */
+      }						   /*                        */
+
+      for ( rec = strings;			   /* mark the dependencies  */
+	    rec != RecordNULL;			   /*  from within strings   */
+	    rec = NextRecord(rec) )		   /*                        */
+      {						   /*                        */
+	if ( RecordIsMARKED(rec) )
+	{					   /*                        */
+	  for ( i=2; i < RecordFree(rec); i+=2 )   /*                        */
+	  { if ( RecordHeap(rec)[i] != NULL )	   /*                        */
+            { mark_string(strings,RecordHeap(rec)[i+1]);/*                   */
+	    }					   /*                        */
+	  }					   /*                        */
+	}					   /*                        */
+      }			   			   /*                        */
+    }						   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  for ( rec = strings;				   /*                        */
+	rec != RecordNULL;			   /*                        */
+	rec = NextRecord(rec))			   /*                        */
+  {						   /*                        */
+    if (!RecordIsDELETED(rec) &&		   /*                        */
+	RecordIsMARKED(rec) )	   	   	   /*                        */
+    {					   	   /*                        */
+      preprint_string(file,db,strings,rec);	   /*                        */
+    }					   	   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  print_segment(file, db, strings, FALSE);	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -324,78 +544,36 @@ void print_db(file,db,spec)			   /*                        */
   DB     db;					   /*                        */
   char   *spec;					   /*                        */
 { Record rec;					   /*                        */
-  int    allp;					   /* Boolean indicating     */
- 						   /* whether all or only the*/
- 						   /* marked records should  */
- 						   /* be printed.            */
-  if ( DBstring(db) != RecordNULL &&
-       ( strchr(spec,'S') != NULL
-	 || (strchr(spec,'s') != NULL && !rsc_all_macs)
-       ) )
-  { Record rec1;
-    int    i;
- 
-    for ( rec = DBstring(db);
-	  PrevRecord(rec);
-	  rec = PrevRecord(rec) ) {}
-    rec1 = rec;
-    for ( ;
-	  rec != RecordNULL;
-	  rec = NextRecord(rec) )
-    { ClearRecordMARK(rec); }
-
-    if ( (rec=DBnormal(db)) != RecordNULL )
-    { 
-      while ( PrevRecord(rec) ) rec = PrevRecord(rec);
-    }
-						   /*                        */
-    for ( ;					   /*                        */
-	  rec != RecordNULL;			   /*                        */
-	  rec = NextRecord(rec) )		   /*                        */
-    { 						   /*                        */
-      if ( !RecordIsDELETED(rec) )		   /*                        */
-      {						   /*                        */
-	for ( i=2; i < RecordFree(rec); i+=2 )	   /*                        */
-	{ if ( RecordHeap(rec)[i] != NULL )	   /*                        */
-	  { mark_string(rec1,RecordHeap(rec)[i+1]);/*                        */
-	  }   					   /*                        */
-	}					   /*                        */
-      }						   /*                        */
-    }						   /*                        */
-  }						   /*                        */
-						   /*                        */
+ 						   /*                        */
   while ( *spec )				   /*                        */
   { switch ( *(spec++) )			   /*                        */
-    { case 'p': case 'P': rec = DBpreamble(db); allp = TRUE; break;/*        */
-      case 's':           rec = DBstring(db);   allp = rsc_all_macs; break;/**/
-      case '$':           rec = DBstring(db);   allp = TRUE; break;/*        */
-      case 'S':		  rec = DBstring(db);   allp = FALSE;break;/*        */
-      case 'n': case 'N': rec = DBnormal(db);   allp = TRUE; break;/*        */
-      case 'c': case 'C': rec = DBcomment(db);  allp = TRUE; break;/*        */
-      case 'i': case 'I': rec = DBinclude(db);  allp = TRUE; break;/*        */
-      case 'a': case 'A': rec = DBalias(db);    allp = TRUE; break;/*        */
-      case 'm': case 'M': rec = DBmodify(db);   allp = TRUE; break;/*        */
-      default:		  rec = RecordNULL;	   /*                        */
-    }						   /*                        */
- 						   /*                        */
-    if ( rec != RecordNULL )			   /*                        */
-    {						   /*                        */
-      while ( PrevRecord(rec) != RecordNULL )	   /* Rewind to beginning.   */
-      { rec = PrevRecord(rec); }		   /*                        */
- 						   /*                        */
-      while ( rec != RecordNULL )		   /*                        */
-      {						   /*                        */
-	if (!RecordIsDELETED(rec))		   /*                        */
-	{					   /*                        */
-	  if ( allp || RecordIsMARKED(rec) )	   /*                        */
-	  {					   /*                        */
-	    fput_record(file,rec,db,(Uchar*)"@");  /*                        */
-	  }					   /*                        */
-	}					   /*                        */
-	else if ( rsc_del_q )			   /*                        */
-	{ fput_record(file,rec,db,rsc_del_pre); }  /*                        */
-	rec = NextRecord(rec);			   /*                        */
-      }						   /*                        */
+    { case 'p': case 'P':			   /*                        */
+	print_segment(file, db, DBpreamble(db), TRUE);/*                     */
+	break;					   /*                        */
+      case 'n': case 'N':			   /*                        */
+	print_segment(file, db, DBnormal(db), TRUE);/*                       */
+	break;					   /*                        */
+      case 's':					   /*                        */
+	print_strings(file, db,rsc_all_macs);	   /*                        */
+	break;					   /*                        */
+      case '$':					   /*                        */
+	print_strings(file, db, TRUE);		   /*                        */
+	break;					   /*                        */
+      case 'S':					   /*                        */
+	print_strings(file, db, FALSE);		   /*                        */
+	break;					   /*                        */
+      case 'c': case 'C':			   /*                        */
+	print_segment(file, db, DBcomment(db), TRUE);/*                      */
+	break;					   /*                        */
+      case 'i': case 'I':			   /*                        */
+	print_segment(file, db, DBinclude(db), TRUE);/*                      */
+	break;					   /*                        */
+      case 'a': case 'A':			   /*                        */
+	print_segment(file, db, DBalias(db), TRUE);/*                        */
+	break;					   /*                        */
+      case 'm': case 'M':			   /*                        */
+	print_segment(file, db, DBmodify(db), TRUE);/*                       */
+	break;					   /*                        */
     }						   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
@@ -494,26 +672,69 @@ Record db_find(db,key)				   /*                        */
   Uchar		  *key;				   /*                        */
 { register Record rec;				   /*                        */
 						   /*                        */
+  DebugPrint2("Finding... ",key); 
+ 						   /*                        */
+ if ( DBnormal(db) == RecordNULL ) return RecordNULL;/*                      */
+						   /*                        */
+  for ( rec = DBnormal(db);			   /*                        */
+	rec != RecordNULL;			   /*                        */
+	rec = NextRecord(rec) )			   /*                        */
+  {						   /*                        */
+    if ( !RecordIsDELETED(rec) )		   /*                        */
+    { if ( RecordOldKey(rec) != NULL )		   /*                        */
+      { if ( RecordOldKey(rec) == key ) return rec; }/*                      */
+      else if ( *RecordHeap(rec) == key ) return rec;/*                      */
+    }						   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  for ( rec = PrevRecord(DBnormal(db));		   /*                        */
+	rec != RecordNULL;			   /*                        */
+	rec = PrevRecord(rec) )			   /*                        */
+  {						   /*                        */
+    if ( !RecordIsDELETED(rec) )		   /*                        */
+    { if ( RecordOldKey(rec) != NULL )		   /*                        */
+      { if ( RecordOldKey(rec) == key ) return rec; }/*                      */
+      else if ( *RecordHeap(rec) == key ) return rec; /*                     */
+    }						   /*                        */
+  }		   				   /*                        */
+  return RecordNULL;				   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	db_search()
+** Purpose:	Search the database for a record with a given key.
+**		If |RecordOldKey| is set for the record then use this value.
+**		Otherwise use |*Heap|. |*Heap| contains the reference
+**		key of normal records.
+**
+**		Deleted records are not ignored! An arbitrary matching
+**		record is returned. Thus if more than one record have
+**		the same key then the behaviour is nondeterministic. 
+** Arguments:
+**	db	Database to search in.
+** Returns:	nothing
+**___________________________________________________			     */
+Record db_search(db,key)			   /*                        */
+  DB              db;				   /*                        */
+  Uchar		  *key;				   /*                        */
+{ register Record rec;				   /*                        */
+						   /*                        */
   if ( DBnormal(db) == RecordNULL ) return RecordNULL;/*                     */
 						   /*                        */
   for ( rec = DBnormal(db);			   /*                        */
 	rec != RecordNULL;			   /*                        */
 	rec = NextRecord(rec) )			   /*                        */
-  { if ( !RecordIsDELETED(rec) )
-    { if ( RecordOldKey(rec) != NULL )
-      { if ( RecordOldKey(rec) == key ) return rec; }
-      else if ( *RecordHeap(rec) == key ) return rec; 
-    }
-  }
+  { if ( RecordOldKey(rec) != NULL )		   /*                        */
+    { if ( RecordOldKey(rec) == key ) return rec; }/*                        */
+    else if ( *RecordHeap(rec) == key ) return rec; /*                       */
+  }						   /*                        */
  						   /*                        */
   for ( rec = PrevRecord(DBnormal(db));		   /*                        */
 	rec != RecordNULL;			   /*                        */
 	rec = PrevRecord(rec) )			   /*                        */
-  { if ( !RecordIsDELETED(rec) )
-    { if ( RecordOldKey(rec) != NULL )
-      { if ( RecordOldKey(rec) == key ) return rec; }
-      else if ( *RecordHeap(rec) == key ) return rec; 
-    }
+  { if ( RecordOldKey(rec) != NULL )		   /*                        */
+    { if ( RecordOldKey(rec) == key ) return rec; }/*                        */
+    else if ( *RecordHeap(rec) == key ) return rec;/*                        */
   }		   				   /*                        */
   return RecordNULL;				   /*                        */
 }						   /*------------------------*/
@@ -537,7 +758,7 @@ Uchar * db_new_key(db,key)			   /*                        */
   for ( rec = DBnormal(db);			   /*                        */
 	rec != RecordNULL;			   /*                        */
 	rec = NextRecord(rec) )			   /*                        */
-  {
+  {						   /*                        */
     if ( RecordOldKey(rec) != NULL &&		   /*                        */
 	 RecordOldKey(rec) == key )		   /*                        */
     return *RecordHeap(rec); 			   /*                        */
@@ -546,7 +767,7 @@ Uchar * db_new_key(db,key)			   /*                        */
   for ( rec = PrevRecord(DBnormal(db));		   /*                        */
 	rec != RecordNULL;			   /*                        */
 	rec = PrevRecord(rec) )			   /*                        */
-  {
+  {						   /*                        */
     if ( RecordOldKey(rec) != NULL &&		   /*                        */
 	 RecordOldKey(rec) == key )		   /*                        */
     return *RecordHeap(rec); 			   /*                        */
@@ -794,7 +1015,7 @@ Uchar * db_string(db,s,localp)			   /*                        */
 **	lp	pointer to an integer for the length.
 ** Returns:	Static array containing the statistics.
 **___________________________________________________			     */
-int *db_count(db,lp)				   /*                        */
+int * db_count(db,lp)				   /*                        */
   DB         db;				   /*                        */
   int        *lp;				   /*                        */
 { static int *count;				   /*                        */
@@ -820,55 +1041,119 @@ int *db_count(db,lp)				   /*                        */
   for ( i=0; i<len; i++ ) count[i] = 0;		   /*                        */
   count[len-1] = -1;				   /*                        */
 						   /*                        */
-  if ( (rec=DBstring(db)) != RecordNULL )
-  { while ( PrevRecord(rec) != RecordNULL ) rec = PrevRecord(rec);
-    while ( rec != RecordNULL )
-    { count[BIB_STRING]++;
-      rec = NextRecord(rec);
-    }
-  }
-  if ( (rec=DBcomment(db)) != RecordNULL )
-  { while ( PrevRecord(rec) != RecordNULL ) rec = PrevRecord(rec);
-    while ( rec != RecordNULL )
-    { count[BIB_COMMENT]++;
-      rec = NextRecord(rec);
-    }
-  }
-  if ( (rec=DBpreamble(db)) != RecordNULL )
-  { while ( PrevRecord(rec) != RecordNULL ) rec = PrevRecord(rec);
-    while ( rec != RecordNULL )
-    { count[BIB_PREAMBLE]++;
-      rec = NextRecord(rec);
-    }
-  }
-  if ( (rec=DBalias(db)) != RecordNULL )
-  { while ( PrevRecord(rec) != RecordNULL ) rec = PrevRecord(rec);
-    while ( rec != RecordNULL )
-    { count[BIB_ALIAS]++;
-      rec = NextRecord(rec);
-    }
-  }
-  if ( (rec=DBmodify(db)) != RecordNULL )
-  { while ( PrevRecord(rec) != RecordNULL ) rec = PrevRecord(rec);
-    while ( rec != RecordNULL )
-    { count[BIB_MODIFY]++;
-      rec = NextRecord(rec);
-    }
-  }
-  if ( (rec=DBinclude(db)) != RecordNULL )
-  { while ( PrevRecord(rec) != RecordNULL ) rec = PrevRecord(rec);
-    while ( rec != RecordNULL )
-    { count[BIB_INCLUDE]++;
-      rec = NextRecord(rec);
-    }
-  }
-  if ( (rec=DBnormal(db)) != RecordNULL )
-  { while ( PrevRecord(rec) != RecordNULL ) rec = PrevRecord(rec);
-    while ( rec != RecordNULL )
-    { count[RecordType(rec)]++;
-      rec = NextRecord(rec);
-    }
-  }
+  if ( (rec=DBstring(db)) != RecordNULL )	   /*                        */
+  { while ( PrevRecord(rec) != RecordNULL ) rec = PrevRecord(rec);/*         */
+    while ( rec != RecordNULL )			   /*                        */
+    { count[BIB_STRING]++;			   /*                        */
+      rec = NextRecord(rec);			   /*                        */
+    }						   /*                        */
+  }						   /*                        */
+  if ( (rec=DBcomment(db)) != RecordNULL )	   /*                        */
+  { while ( PrevRecord(rec) != RecordNULL ) rec = PrevRecord(rec);/*         */
+    while ( rec != RecordNULL )			   /*                        */
+    { count[BIB_COMMENT]++;			   /*                        */
+      rec = NextRecord(rec);			   /*                        */
+    }						   /*                        */
+  }						   /*                        */
+  if ( (rec=DBpreamble(db)) != RecordNULL )	   /*                        */
+  { while ( PrevRecord(rec) != RecordNULL ) rec = PrevRecord(rec);/*         */
+    while ( rec != RecordNULL )			   /*                        */
+    { count[BIB_PREAMBLE]++;			   /*                        */
+      rec = NextRecord(rec);			   /*                        */
+    }						   /*                        */
+  }						   /*                        */
+  if ( (rec=DBalias(db)) != RecordNULL )	   /*                        */
+  { while ( PrevRecord(rec) != RecordNULL ) rec = PrevRecord(rec);/*         */
+    while ( rec != RecordNULL )			   /*                        */
+    { count[BIB_ALIAS]++;			   /*                        */
+      rec = NextRecord(rec);			   /*                        */
+    }						   /*                        */
+  }						   /*                        */
+  if ( (rec=DBmodify(db)) != RecordNULL )	   /*                        */
+  { while ( PrevRecord(rec) != RecordNULL ) rec = PrevRecord(rec);/*         */
+    while ( rec != RecordNULL )			   /*                        */
+    { count[BIB_MODIFY]++;			   /*                        */
+      rec = NextRecord(rec);			   /*                        */
+    }						   /*                        */
+  }						   /*                        */
+  if ( (rec=DBinclude(db)) != RecordNULL )	   /*                        */
+  { while ( PrevRecord(rec) != RecordNULL ) rec = PrevRecord(rec);/*         */
+    while ( rec != RecordNULL )			   /*                        */
+    { count[BIB_INCLUDE]++;			   /*                        */
+      rec = NextRecord(rec);			   /*                        */
+    }						   /*                        */
+  }						   /*                        */
+  if ( (rec=DBnormal(db)) != RecordNULL )	   /*                        */
+  { while ( PrevRecord(rec) != RecordNULL ) rec = PrevRecord(rec);/*         */
+    while ( rec != RecordNULL )			   /*                        */
+    { if ( !RecordIsDELETED(rec) ) count[RecordType(rec)]++;/*               */
+      rec = NextRecord(rec);			   /*                        */
+    }						   /*                        */
+  }						   /*                        */
 						   /*                        */
   return count;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	db_xref_undelete()
+** Type:	void
+** Purpose:	Scan through the database and undelete all entries
+**		which are in the transitive closure wrt the crossref
+**		relation. Initially all not deleted entries are in the
+**		set to consider.
+** Arguments:
+**	db	Database to treat
+** Returns:	nothing
+**___________________________________________________			     */
+void db_xref_undelete(db)			   /*                        */
+  DB db;					   /*                        */
+{ Record rec1;					   /*                        */
+  Record rec = DBnormal(db);			   /*                        */
+  if ( rec == RecordNULL ) return;		   /* No entries left anyhow.*/
+ 						   /*                        */
+  while ( PrevRecord(rec) != RecordNULL )	   /* Rewind                 */
+  { rec = PrevRecord(rec); }			   /*                        */
+ 						   /*                        */
+  for ( ;				   	   /* Phase:                 */
+	rec != RecordNULL;			   /*  For all marked entries*/
+	rec = NextRecord(rec) )		   	   /*  which have a xref and */
+  {						   /*  mark all xrefs.       */
+    if ( RecordIsXREF(rec)   &&		   	   /*                        */
+	 !RecordIsDELETED(rec)		   	   /*                        */
+       )					   /*                        */
+    { Uchar  *key;				   /*                        */
+      int    count;				   /*                        */
+      Record r = rec;				   /*                        */
+ 						   /*                        */
+      for ( count=rsc_xref_limit;		   /* Prevent infinite loop  */
+	    count >= 0 && RecordIsXREF(r);	   /*                        */
+	    count-- )				   /*                        */
+      {					   	   /*                        */
+	if ( (key = get_field(db,r,sym_crossref)) == NULL )/*                */
+	{ count = -1;				   /*                        */
+	}			   	   	   /*                        */
+	else					   /*                        */
+	{					   /*                        */
+	  key = symbol(lower(expand_rhs(key,	   /*                        */
+					sym_empty, /*                        */
+					sym_empty, /*                        */
+					db)));     /*                        */
+	  if ( (r=db_search(db,key)) == RecordNULL )/*                       */
+	  { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",key);/*      */
+	    count = -1;			   	   /*                        */
+	  }					   /*                        */
+	  else if ( !RecordIsDELETED(r) )	   /*                        */
+	  { count = -1; }			   /*                        */
+	  else					   /*                        */
+	  { ClearRecordDELETED(r);		   /*                        */
+	  }					   /*                        */
+	}			   		   /*                        */
+      }			   		   	   /*                        */
+      if ( count == -1 )			   /*                        */
+      { ErrPrintF("*** BibTool: Crossref limit exceeded; `%s' possibly looped.\n",
+		  key);				   /*                        */
+      }						   /*                        */
+    }    					   /*                        */
+  }						   /*                        */
+ 						   /*                        */
 }						   /*------------------------*/

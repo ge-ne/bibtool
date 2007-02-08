@@ -4,7 +4,7 @@
 %% It is distributed under the GNU General Public License.
 %% See the file COPYING for details.
 %% 
-%% (c) 1996-2002 Gerd Neugebauer
+%% (c) 1996-2003 Gerd Neugebauer
 %% 
 %% Net: gene@gerd-neugebauer.de
 %% 
@@ -91,6 +91,7 @@ print.wide.equal         = off
 quiet                    = off
 rewrite.case.sensitive   = on
 rewrite.limit            = 512
+select.crossrefs	 = off
 select.case.sensitive    = off
 select.fields            = "$key"
 sort                     = off

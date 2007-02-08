@@ -1,12 +1,12 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.4 2007-02-08 05:43:31 gene Exp $
+%% $Id: bibtool.tex,v 1.5 2007-02-08 19:47:16 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
 %% It is distributed under the GNU General Public License.
 %% See the file COPYING for details.
 %%
-%% (c) 1995-2003 Gerd Neugebauer
+%% (c) 1995-2004 Gerd Neugebauer
 %%
 %% Net: gene@gerd-neugebauer@sdm
 %%
@@ -611,9 +611,18 @@ in fact a short version of the following command:
 As a simple case of extraction we might want to extract all books from a
 bibliography. This can be done with the following command:
 
-\sh[-]{select\{\@{}book\} all.bib \texttt{-o} some.bib}
+\sh[-]{select\{@book\} all.bib \texttt{-o} some.bib}
 
 A similar method can also be applied for other entry types.
+
+\begin{description}
+\item[Note] Usually crossreferenced entries are not selected automatically.
+  This can result in incomplete --- and thus incorrect --- \BibTeX\ files. To
+  avoid this behaviour use the following command:
+
+  \sh[-]{select\{\@{}book\} \texttt{-c} all.bib \texttt{-o} some.bib}
+
+\end{description}
 
 %------------------------------------------------------------------------------
 \subsection{Translating ISO 8859-1 Characters}
@@ -624,6 +633,52 @@ nice characters that are incompatible with standard \ASCII{} as used in
 \BibTeX.  You can use \BibTool\ to do the trick:
 
 \sh[r]{iso2tex \texttt{-i} iso.bib \texttt{-o} ascii.bib}
+
+
+%------------------------------------------------------------------------------
+\subsection{Correctly Sorting Crossreferenced Entries}
+
+\BibTeX\ has a restriction that a crossreferenced entry has to come after the
+referencing entry. This can be achieved by putting all entries containing a
+field ``crossref'' before those containing none. As second sorting criterion
+we want to use the reference key.
+
+This can be achieved with a resource file containing the following
+
+\Rsc{sort.format}{\{\{\%1.\#s(crossref)a\#z\}\$key\}}
+\vspace*{-1.6\baselineskip}
+\Rsc{sort.reverse}{off}
+\vspace*{-1.6\baselineskip}
+\Rsc{sort}{on}
+
+The magic is contained in the first instruction. Thus we will examine it in
+detail: 
+\begin{description}
+\item [\texttt{\%1.\#s(crossref)}]\ \\
+  This formatting instruction does not produce any output but simply acts as
+  condition to determine whether or not to include the following string. The
+  condition counts the allowed characters (\texttt{\#s}) of the field
+  \texttt{crossref} and compares this number with the given interval
+  $[1,\infty]$ (\texttt{1.}).
+
+  Thus it detects those entries containing a non empty crossref field.
+\item [\texttt{\%1.\#s(crossref)}a]\ \\
+  If the condition holds then the string \texttt{a} is used as part of the
+  sort key.
+\item [\texttt{\{\%1.\#s(crossref)a\#z\}}]\ \\
+  If the first condition fails then the next alteranative after the hash mark
+  (\texttt{\#}) is considered. This is the string \texttt{z} which will always
+  succeed and thus be included into the sort key.
+
+  Thus this construction will produce \texttt{a} if a crossref field is
+  present and not empty or \texttt{z} otherwise.
+\item [\texttt{\{\%1.\#s(crossref)a\#z\}\$key}]\ \\
+  Finally the reference key (\texttt{\$key}) is appended to the characterizing
+  initial letter.
+\end{description}
+
+The sorting according to ascending ASCII order will bring all the entries with
+crossref fields to the beginning.
 
 
 %------------------------------------------------------------------------------
@@ -1463,6 +1518,8 @@ A concise description of regular expressions is contained in the document
 cases of doubt this documentation is preferable. The remainder of this section
 contains a short description of regular expressions.
 
+Note that the default regular expressions of the Emacs style are used.
+
 \begin{description}
 \item[Ordinary characters] match only to themselves or their upper or lower
   case counterpart. Any character not mentioned as special is an ordinary
@@ -1502,19 +1559,23 @@ contains a short description of regular expressions.
   with a followed by at most one b and ended by a c. Thus it matches
   \emph{abc}. But it does not match the string \emph{abbc}. 
 
-\item[The bar] (\texttt{|}) separates two regular expressions. The combined
+\item[The bar] (\verb/\|/) separates two regular expressions. The combined
   regular expression matches a string if one of the alternative separated by
   the bar does.
 
-  E.g. the regular expression \emph{abc\(\mid\)def} matches the string
-  \emph{abc} and the string \emph{def}.
+  Note that the bar has to be preceeded by a backslash.
+  
+  E.g. the regular expression \emph{abc\(\backslash\mid\)def} matches the
+  string \emph{abc} and the string \emph{def}.
 
-\item[Parentheses] (\verb|()|) can be used to group regular expressions. A
+\item[Parentheses] (\verb|\(\)|) can be used to group regular expressions. A
   group is enclosed in parentheses. It matches a string if the enclosed
   regular expression does.
 
-  E.g. the regular expression \emph{a(b\(\mid\)d)c} matches the strings
-  \emph{abc} and \emph{adc}.
+  Note that the parantheses have to be preceeded by a backslash.
+  
+  E.g. the regular expression \emph{\(a\backslash(b\backslash\mid\backslash d)c\)}
+  matches the strings \emph{abc} and \emph{adc}.
   
 \item[The dollar] (\verb|$|) %$
   matches the empty string at the end of the string. It can be used to anchor
@@ -1570,12 +1631,12 @@ contains a short description of regular expressions.
 \subsection{Extracting by \texttt{aux} Files}
 
 \BibTool{} includes a module to extract \BibTeX{} entries required for a
-document. This is accomplished by analyzing the \texttt{aux} file of the
+document.  This is accomplished by analyzing the \texttt{aux} file of the
 document. The \texttt{aux} file is usually produced by \LaTeX. It contains the
 information which \BibTeX{} files and which references are used in the
-document.  Only those entries mentioned in the \texttt{aux} file are selected for
-printing. Since the \BibTeX{} files are already named in the \texttt{aux} file it
-is not necessary to specify an input file.
+document. Only those entries mentioned in the \texttt{aux} file are selected
+for printing. Since the \BibTeX{} files are already named in the \texttt{aux}
+file it is not necessary to specify an input file.
 
 To use an \texttt{aux} file the command line option \opt{x} can be given. This
 option is followed by the name of the \texttt{aux} file.
@@ -1592,6 +1653,9 @@ A small difference exists between the two variants. the command line option
 automatically sets the resource \rsc{print.all.strings} to \verb|off|. This
 has to be done in the resource file manually.
 
+Note that the extraction automatically respects the crossreferences in the
+selected entries. Thus you will get a complete \BibTeX\ file --- unless some
+references can not be resolved and an error is produced.
 
 One special feature of \BibTeX{} is supported. If the command
 \verb|\nocite{*}| is given in the \LaTeX{} file then all entries of the
@@ -1618,9 +1682,9 @@ following funny syntax:
 
 \RSC{select.by.string}{"some string"}
 
-This operation selects all entries containing \texttt{some string} in one of the
-normal fields. The search can be restricted to specific fields or extended to
-pseudo-fields by specifying those fields before the search string. An
+This operation selects all entries containing \texttt{some string} in one of
+the normal fields. The search can be restricted to specific fields or extended
+to pseudo-fields by specifying those fields before the search string. An
 arbitrary number of whitespace separated fields can be given there. Thus the
 general syntax for this resource is as follows:
 
@@ -1653,7 +1717,10 @@ match against the given field fails. The general form is the same as for
 \rsc{select.by.string}: 
 
 \RSC{select.by.non.string}{\textit{field\(_1\) \(\ldots\) field\(_n\) "string"}}
-
+\begin{description}
+\item[Note] Crossreferences are not considered unless \rsc{select.crossrefs}
+  is set.
+\end{description}
 
 \subsection{Extracting with Regular Expressions}\label{sec:extract}
 
@@ -1738,6 +1805,29 @@ This is equivalent to specifying a single regular expression to be matched
 against the key. This feature is kept for backward compatibility only. It is
 not encouraged and will vanish in a future release.
 
+\begin{description}
+\item[Note] Crossreferences are not considered unless \rsc{select.crossrefs}
+  is set.
+\end{description}
+
+\subsection{Extracting and Crossreferences}\label{sec:xref}
+
+When extracting entries due to contained substrings or regular expression
+matching crossreferenes are not considered automatically. This behaviour can
+result in incomplete and thus incorrect \BibTeX\ files.
+
+The automatic selection of crossreferenced entries can be controlled by the
+resource \rsc{select.crossrefs}. This resource is \texttt|off| by default.
+This means that crossreferences are ignored.
+
+The following instruction can be used to turn on the automatic inclusion of
+crossreferenced entries:
+
+\Rsc{select.crossrefs}{on}
+
+The depth of crossreference chains can be restricted with the resource
+\rsc{crossref.limit}.
+
 \begin{Summary}
   \Desc{\opt{x}}{\rsc{extract.file}\{file\}}{Extract the entries from an
     \texttt{aux} file.}
@@ -1753,6 +1843,8 @@ not encouraged and will vanish in a future release.
     characters to be ignored by the substring matching.}
   \Desc{}{\rsc{select.case.sensitive}=off}{Turn off the case
     insensitive comparison.}
+  \Desc{\opt{c}}{\rsc{select.crossrefs}=on}{Turn on the additional selection of
+    crossreferenced entries.}
   \Desc{}{\rsc{select.fields}\{fields\}}{Determine fields for \opt{X}.}
   \Desc{}{\rsc{select.non}\{spec\}}{Select certain entries according
     to a failing regular expression matching.}
@@ -2207,30 +2299,31 @@ list:
         \end{Example}
 
   \item [\texttt{d}] Format a number, e.g.\ a year.\\
-        The first number in the field is searched. At most \textit{pre} digits
-        --- counted from the right --- are used. E.g.\ the field 
-        \texttt{"june 1958"} formatted with \texttt{\%2d} results in
-        \texttt{58}. 
-
-        \textit{pre} defaults to a large number except in when the
-        negative sign is present. Then it defaults to 1.
+    
+    The \textit{post}$^{th}$ number in the field is searched. At most
+    \textit{pre} digits --- counted from the right --- are used. E.g.\ the
+    field \texttt{"june 1958"} formatted with \texttt{\%2d} results in
+    \texttt{58}.
+    
+    \textit{pre} defaults to a large number except in when the negative sign
+    is present. Then it defaults to 1.
         
-        If no number is contained in the field then this specifier
-        fails. Thus the specifier \texttt{\%0d} can be used to check for
-        a number.
-
-        Positive and negative signs make no sense in specifying
-        translations since numbers have no uppercase or lowercase
-        counterparts. Thus they have a different meaning in this
-        context. 
-
-        If the positive sign is given then the specifier does not fail
-        at all. Instead of failing a single \verb|0| is used.
-
-        If the negative sign is given then the result is padded with
-        \verb|0| if required. In this case the specifier does not fail
-        at all. Even if no number is found then an appropriate number
-        of \verb|0|s is used.
+    \textit{post} defaults to 1. Thus if you want to select the second numer
+    you can simply use \texttt{\%.2d} as format specifier.
+        
+    If no number is contained in the field then this specifier fails. Thus the
+    specifier \texttt{\%0d} can be used to check for a number.
+    
+    Positive and negative signs make no sense in specifying translations since
+    numbers have no uppercase or lowercase counterparts. Thus they have a
+    different meaning in this context.
+    
+    If the positive sign is given then the specifier does not fail at all.
+    Instead of failing a single \verb|0| is used.
+    
+    If the negative sign is given then the result is padded with \verb|0| if
+    required. In this case the specifier does not fail at all. Even if no
+    number is found then an appropriate number of \verb|0|s is used.
 
         \begin{Example}
           \verb|pages = {89--123}|\\
@@ -2440,9 +2533,9 @@ list:
     \textit{pre} and \textit{post} both default to 0.
 
     If \(a\) is the number of allowed characters then\\
-    \texttt{\%\textit{l}.\textit{h}\#p} succeeds if and only if
+    \texttt{\%\textit{l}.\textit{h}\#s} succeeds if and only if
     \(l\leq a\leq h\).\\
-    \texttt{\%-\textit{l}.\textit{h}\#p} succeeds if and only if
+    \texttt{\%-\textit{l}.\textit{h}\#s} succeeds if and only if
     \(l>a\) or \(a>h\).
 
         \begin{Example}
@@ -3663,6 +3756,7 @@ rewrite.case.sensitive   = on
 rewrite.limit            = 512
 quiet                    = off
 select.case.sensitive    = off
+select.crossrefs	 = off
 select.field             = "\$key"
 sort                     = off
 sort.cased               = off

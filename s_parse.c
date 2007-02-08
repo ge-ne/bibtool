@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: s_parse.c,v 1.4 2007-02-08 05:43:31 gene Exp $
+** $Id: s_parse.c,v 1.5 2007-02-08 19:47:16 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2003 Gerd Neugebauer
+** (c) 1996-2004 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -134,6 +134,17 @@ Uchar * s_parse(type,sp,errp)			   /*                        */
   static char    *unexpected = "Unexpected ";	   /*                        */
   static char    *expected   = " expected.";	   /*                        */
  						   /*                        */
+  DebugPrint2((type == StringParseSkip ? "ParseSkip ":
+	       type == StringParseNext ? "ParseNext ":
+	       type == StringParseNumber ? "ParseNumber ":
+	       type == StringParseSymbol ? "ParseSymbol ":
+	       type == StringParseString ? "ParseString ":
+	       type == StringParseUnquotedString ? "ParseUnquotedString ":
+	       type == StringParseBraces ? "ParseBraces ":
+	       type == StringParseUnquotedBraces ? "ParseUnquotedBraces ":
+	       type == StringParseEOS ? "ParseEOS ":
+	       type == StringParseValue ? "ParseValue ":
+	       "???"),s);		   	   /*			     */
   while( is_space(*s) ) s++;			   /*                        */
   *sp = s;					   /*                        */
  						   /*                        */
@@ -146,7 +157,7 @@ Uchar * s_parse(type,sp,errp)			   /*                        */
       { Error(errp,s,"Symbol",expected);	   /*                        */
 	return NULL;				   /*                        */
       }						   /*                        */
-      break;					   /*                        */
+     break;					   /*                        */
  						   /*                        */
     case StringParseNumber:			   /*                        */
       if ( is_digit(*s) )			   /*                        */
@@ -170,18 +181,19 @@ Uchar * s_parse(type,sp,errp)			   /*                        */
       { int level = 1;				   /*                        */
       						   /*                        */
 	while ( *s && level > 0 )		   /*                        */
-	{ switch ( *s )				   /*                        */
+	{					   /*                        */
+	  switch ( *s )				   /*                        */
 	  { case '{': level++; break;		   /*                        */
 	    case '}': --level; break;		   /*                        */
-	    case '"':
-	      do
-	      { s++;
-	        if ( *s == '\\' )
-		{ if ( *++s ) s++; }
-	      } while (*s && *s!='"');
-	      break;
+	    case '"':				   /*                        */
+	      s++;				   /*                        */
+	      do				   /*                        */
+	      { if ( *s == '\\' && *++s ) s++;	   /*                        */
+	        else s++;			   /*                        */
+	      } while (*s && *s!='"');		   /*                        */
+	      break;				   /*                        */
 	  }					   /*                        */
-	  s++;					   /*                        */
+	  if ( *s ) s++;			   /*                        */
 	}					   /*                        */
 	if ( level > 0 )			   /*                        */
 	{ Error(errp,s,unexpected,"end of braces.");/*                       */
@@ -255,7 +267,7 @@ Uchar * s_parse(type,sp,errp)			   /*                        */
   if (   type == StringParseUnquotedString	   /*                        */
       || type == StringParseUnquotedBraces ) s++;  /*                        */
   *sp = s;					   /*                        */
-  if (   type == StringParseSymbol )		   /*                        */
+ if (   type == StringParseSymbol )		   /*                        */
   { (void)lower(cp); }			   	   /*                        */
  						   /*                        */
   { Uchar *sym = symbol(cp);			   /*                        */

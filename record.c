@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: record.c,v 1.4 2007-02-08 05:43:31 gene Exp $
+** $Id: record.c,v 1.5 2007-02-08 19:47:16 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2003 Gerd Neugebauer
+** (c) 1996-2004 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -207,7 +207,7 @@ Record unlink_record(rec)			   /*                        */
 ** Function:	record_gc()
 ** Purpose:	Garbage collecting a record list. The entries marked
 **		as deleted are unlinked and the memory is freed. Any
-**		pointers to such a deleted entry become invalid.
+**		pointer to such a deleted entry becomes invalid.
 **		
 **		Be careful when using this function!
 ** Arguments:
@@ -219,10 +219,11 @@ Record record_gc(rec)				   /*                        */
   Record rec;					   /*                        */
 { Record ret = RecordNULL;			   /*                        */
  						   /*                        */
-  if ( rec == RecordNULL ) return rec;
-  while ( PrevRecord(rec) != RecordNULL )
-  { rec = PrevRecord(rec); }
- 
+  if ( rec == RecordNULL ) return rec;		   /*                        */
+ 						   /*                        */
+  while ( PrevRecord(rec) != RecordNULL )	   /* Rewind                 */
+  { rec = PrevRecord(rec); }			   /*                        */
+  						   /*                        */
   while ( rec != RecordNULL )
   {
     if ( RecordIsDELETED(rec) )
@@ -232,8 +233,8 @@ Record record_gc(rec)				   /*                        */
     { ret = rec;
       rec = NextRecord(rec);
     }
-  }
-
+  }						   /*                        */
+ 						   /*                        */
   return ret;					   /*                        */
 }						   /*------------------------*/
 

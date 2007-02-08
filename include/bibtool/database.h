@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: database.h,v 1.4 2007-02-08 05:43:31 gene Exp $
+** $Id: database.h,v 1.5 2007-02-08 19:47:16 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2003 Gerd Neugebauer
+** (c) 1996-2004 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -148,20 +148,22 @@
 #else
 #define _ARG(A) ()
 #endif
- DB new_db _ARG((void));			   /* database.c             */
- Record db_find _ARG((DB db,Uchar *key));	   /* database.c             */
- Uchar * db_new_key _ARG((DB db,Uchar *key));	   /* database.c             */
- Uchar * db_string _ARG((DB db,Uchar *s,int localp));/* database.c           */
- int *db_count _ARG((DB db,int *lp));		   /* database.c             */
- int read_db _ARG((DB db,char *file,int (*fct)_ARG((DB,Record)),int verbose));/* database.c*/
- void db_add_record _ARG((DB db,Record rec));	   /* database.c             */
- void db_forall _ARG((DB db,int (*fct)_ARG((DB,Record))));/* database.c      */
- void db_mac_sort _ARG((DB db));		   /* database.c             */
- void db_rewind _ARG((DB db));			   /* database.c             */
- void db_sort _ARG((DB db,int (*less)_ARG((Record,Record))));/* database.c   */
- void delete_record _ARG((DB db,Record rec));	   /* database.c             */
- void free_db _ARG((DB db));			   /* database.c             */
- void print_db _ARG((FILE *file,DB db,char *spec));/* database.c             */
+ DB new_db _ARG((void));
+ Record db_find _ARG((DB db,Uchar *key));
+ Record db_search _ARG((DB db,Uchar *key));
+ Uchar * db_new_key _ARG((DB db,Uchar *key));
+ Uchar * db_string _ARG((DB db,Uchar *s,int localp));
+ int *db_count _ARG((DB db,int *lp));
+ int read_db _ARG((DB db,char *file,int verbose));
+ void db_insert _ARG((DB db,Record rec));
+ void db_forall _ARG((DB db,int (*fct)_ARG((DB,Record))));
+ void db_mac_sort _ARG((DB db));
+ void db_rewind _ARG((DB db));
+ void db_sort _ARG((DB db,int (*less)_ARG((Record,Record))));
+ void db_xref_undelete _ARG((DB db));
+ void delete_record _ARG((DB db,Record rec));
+ void free_db _ARG((DB db));
+ void print_db _ARG((FILE *file,DB db,char *spec));
 
 /*---------------------------------------------------------------------------*/
 

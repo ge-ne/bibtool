@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: resource.h,v 1.4 2007-02-08 05:43:31 gene Exp $
+** $Id: resource.h,v 1.5 2007-02-08 19:47:16 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2003 Gerd Neugebauer
+** (c) 1996-2004 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -116,7 +116,8 @@ RSC_NEXT('p')
 RSC_NEXT('q')
   RscBoolean( "quiet"		      , r_q   ,rsc_quiet	  , FALSE   )
 RSC_NEXT('r')
-  RscByFct(   "resource"	      , r_r   ,load_rsc(val)		    )
+  RscByFct(   "regexp.syntax"	      , r_rs  ,set_regex_syntax(val)	    )
+  RscByFct(   "resource"	      , r_r   ,resource(val)		    )
   RscByFct(   "resource.search.path"  , r_rsp ,set_rsc_path(val)	    )
   RscByFct(   "rewrite.rule"	      , r_rr  ,add_rewrite_rule(val)	    )
   RscBoolean( "rewrite.case.sensitive", r_rcs ,rsc_case_rewrite	  ,  TRUE   )
@@ -129,6 +130,7 @@ RSC_NEXT('s')
   RscBoolean( "select.case.sensitive" , r_scs ,rsc_case_select	  , FALSE   )
   RscString(  "select.fields"	      , r_self,rsc_sel_fields     , "$key"  ) 
   RscByFct(   "select.non"	      , r_seln,add_extract(val,TRUE,TRUE)   )
+  RscBoolean( "select.crossrefs"      , r_sxc ,rsc_xref_select	  , FALSE   )
   RscBoolean( "sort"		      , r_s   ,rsc_sort		  , FALSE   )
   RscBoolean( "sort.cased"	      , r_sc  ,rsc_sort_cased     , FALSE   )
   RscBoolean( "sort.macros"	      , r_sm  ,rsc_srt_macs	  , TRUE    )

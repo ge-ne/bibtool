@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: symbols.c,v 1.4 2007-02-08 05:43:31 gene Exp $
+** $Id: symbols.c,v 1.5 2007-02-08 19:47:16 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2003 Gerd Neugebauer
+** (c) 1996-2004 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -235,8 +235,8 @@ void init_symbols()				   /*			     */
 						   /*			     */
   if ( sym_empty != NULL ) return;		   /*                        */
   for ( i=0; i<HASHMAX; i++ ) sym_tab[i] = NULL;   /*			     */
-  sym_empty    = sym_add((Uchar*)"",-1);	   /*                        */
-  sym_crossref = sym_add((Uchar*)"crossref",-1);   /*                        */
+  sym_empty    = sym_add((Uchar*)new_string(""),-1);/*                       */
+  sym_crossref = sym_add((Uchar*)new_string("crossref"),-1); /*              */
 }						   /*------------------------*/
 
  static StringTab last_stp = NULL;	
@@ -297,7 +297,7 @@ void sym_set_flag(s,flags)			   /*			     */
 **		convenient alternative to this function.
 ** Arguments:
 **	s	String which should be translated into a symbol.
-**	count	The use count which should be added t the symbol
+**	count	The use count which should be added to the symbol
 ** Returns:	The new symbol.
 **___________________________________________________			     */
 Uchar * sym_add(s,count)			   /*			     */

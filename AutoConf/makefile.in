@@ -1,12 +1,12 @@
 # *****************************************************************************
-#  $Id: makefile.in,v 1.3 2007-02-08 05:35:57 gene Exp $
+#  $Id: makefile.in,v 1.4 2007-02-08 19:47:16 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 1996-2002 Gerd Neugebauer
+#  (c) 1996-2004 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -400,7 +400,7 @@ PROGFILES     = Perl$(DIR_SEP)bibtool.pl	\
 ETCFILES      = README				\
 		INSTALL				\
 		COPYING				\
-		Changes				\
+		Changes.xml			\
 		makefile.unx			\
 		makefile.dos			\
 		makefile.ata			\
