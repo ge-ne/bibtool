@@ -7,3 +7,7 @@ autom4te.cache
 *.orig
 *.log
 makefile
+*.bak
+.project
+bibtool
+Work
