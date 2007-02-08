@@ -1,5 +1,5 @@
 # *****************************************************************************
-#  $Id: makefile.in,v 1.4 2007-02-08 19:47:16 gene Exp $
+#  $Id: makefile.in,v 1.5 2007-02-08 20:37:29 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -27,6 +27,14 @@
 # 
 prefix	    = @prefix@
 exec_prefix = @exec_prefix@
+
+# -------------------------------------------------------
+#  Prefix to be prepended to all installation directories.
+#  Thus it is possible to install in a different location
+#  as the final location. This seems useful for building
+#  RPMs on Linux.
+
+INSTALLPREFIX =
 
 # -------------------------------------------------------
 #  Destination directory for make install
@@ -192,6 +200,8 @@ CXREF		= cxref
 #  -DREGEX_MALLOC	if you have NO alloca() library
 # 			function
 #  -DHAVE_ALLOCA_H	if you need alloca.h for alloca()
+#  -DSTD_HEADERS        if gcc reports conflicting types
+#                       for malloc (on Linux?)
 # 
 
 NON_ANSI_DEFS = @DEFS@
@@ -288,7 +298,8 @@ C_FLAGS	      = $(CFLAGS) $(C_INCLUDE) $(FILE_TYPES)
 
 CFILES	      = main.c				\
 		$(CLIBFILES)
-CLIBFILES     = database.c			\
+CLIBFILES     = crossref.c
+		database.c			\
 		entry.c				\
 		error.c				\
 		expand.c			\
@@ -313,7 +324,8 @@ CLIBFILES     = database.c			\
 		wordlist.c
 
 HPATH	      = include${DIR_SEP}bibtool${DIR_SEP}
-HFILES	      = config.h		\
+HFILES	      = config.h			\
+		${HPATH}crossref.h		\
 		${HPATH}database.h		\
 		${HPATH}bibtool.h		\
 		${HPATH}config.h		\
@@ -346,7 +358,8 @@ HFILES	      = config.h		\
 
 OFILES	      = main$(OBJ)			\
 		$(OLIBFILES)
-OLIBFILES     = database$(OBJ)			\
+OLIBFILES     = crossref$(OBJ)			\
+		database$(OBJ)			\
 		entry$(OBJ)			\
 		error$(OBJ)			\
 		expand$(OBJ)			\
@@ -499,43 +512,43 @@ depend:
 install: install.bin install.lib
 
 install.bin install-exec: bibtool$(EXT)
-	-$(INSTALL_DIR) $(BINDIR)
-	$(INSTALL) bibtool$(EXT) $(BINDIR)
+	-$(INSTALL_DIR) $(INSTALLPREFIX)$(BINDIR)
+	$(INSTALL) bibtool$(EXT) $(INSTALLPREFIX)$(BINDIR)
 
 INSTALL_LIB_FILES = Lib$(DIR_SEP)*.*
 
 install.lib install-data: 
-	-$(INSTALL_DIR) $(LIBDIR)
+	-$(INSTALL_DIR) $(INSTALLPREFIX)$(LIBDIR)
 	for lib in $(INSTALL_LIB_FILES); do	\
-	  $(INSTALL_DATA) $$lib $(LIBDIR);	\
+	  $(INSTALL_DATA) $$lib $(INSTALLPREFIX)$(LIBDIR);	\
 	done
 
 INSTALL_INCLUDE_FILES = $(HFILES)
 
 install.include install-include: 
-	-$(INSTALL_DIR) $(INCLUDEDIR)
+	-$(INSTALL_DIR) $(INSTALLPREFIX)$(INCLUDEDIR)
 	for inc in $(INSTALL_INCLUDE_FILES); do	\
-	  $(INSTALL_DATA) $$inc $(INCLUDEDIR);	\
+	  $(INSTALL_DATA) $$inc $(INSTALLPREFIX)$(INCLUDEDIR);	\
 	done
 
 install.man install-man: 
-	-$(INSTALL_DIR) $(MANDIR)$(DIR_SEP)man$(MANSECT)
+	-$(INSTALL_DIR) $(INSTALLPREFIX)$(MANDIR)$(DIR_SEP)man$(MANSECT)
 	$(INSTALL) Doc$(DIR_SEP)bibtool.1 \
-		$(MANDIR)$(DIR_SEP)man$(MANSECT)$(DIR_SEP)bibtool.$(MANSECT)
+		$(INSTALLPREFIX)$(MANDIR)$(DIR_SEP)man$(MANSECT)$(DIR_SEP)bibtool.$(MANSECT)
 
 uninstall: uninstall.bin uninstall.lib
 
 uninstall.bin uninstall-exec:
-	-$(RM) $(BINDIR)$(DIR_SEP)bibtool$(EXT)
+	-$(RM) $(INSTALLPREFIX)$(BINDIR)$(DIR_SEP)bibtool$(EXT)
 
 uninstall.lib uninstall-data:
-	-$(RM) $(LIBDIR)
+	-$(RM) $(INSTALLPREFIX)$(LIBDIR)
 
 uninstall.include uninstall-include:
-	-$(RM) $(INCLUDEDIR)
+	-$(RM) $(INSTALLPREFIX)$(INCLUDEDIR)
 
 uninstall.man uninstall-man:
-	-$(RM) $(MANDIR)$(DIR_SEP)man$(MANSECT)$(DIR_SEP)bibtool.$(MANSECT)
+	-$(RM) $(INSTALLPREFIX)$(MANDIR)$(DIR_SEP)man$(MANSECT)$(DIR_SEP)bibtool.$(MANSECT)
 
 status:
 	@echo $(LIBDIR)
