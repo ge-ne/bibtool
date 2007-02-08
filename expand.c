@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: expand.c,v 1.5 2007-02-08 19:47:16 gene Exp $
+** $Id: expand.c,v 1.6 2007-02-08 20:51:48 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -70,6 +70,7 @@ Uchar * expand_rhs(s,pre,post,db)		   /*                        */
   DB   db;					   /*                        */
 { static StringBuffer *sb = NULL;		   /*                        */
 						   /*                        */
+  DebugPrint1("expand_rhs");
   if ( sb == NULL && (sb = sbopen()) == NULL )	   /*                        */
   { OUT_OF_MEMORY("string expansion");}		   /*                        */
  						   /*                        */
@@ -200,7 +201,11 @@ static int expand(s,sb,brace,first,q_open,q_close,db)/*                      */
         break;        				   /*                        */
       default:					   /*                        */
         if ( is_space(*s) ) ++s;		   /* Ignore spaces.         */
-        else			   		   /* Only macros are left.  */
+        else if (!is_allowed(*s))		   /*                        */
+	{ PUTC(*s,sb);
+	  s++;
+	}
+        else		   			   /* Only macros are left.  */
 	{ Uchar *sym = (Uchar*)s;	   	   /*                        */
 	  char  *val;			   	   /*                        */
 	  char  c;			   	   /*                        */
