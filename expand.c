@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: expand.c,v 1.3 2007-02-08 05:35:57 gene Exp $
+** $Id: expand.c,v 1.4 2007-02-08 05:43:31 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2002 Gerd Neugebauer
+** (c) 1996-2003 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -200,7 +200,7 @@ static int expand(s,sb,brace,first,q_open,q_close,db)/*                      */
         break;        				   /*                        */
       default:					   /*                        */
         if ( is_space(*s) ) ++s;		   /* Ignore spaces.         */
-        else 					   /* Only macros are left.  */
+        else if ( *s == '\\' )			   /* Only macros are left.  */
 	{ Uchar *sym = (Uchar*)s;	   	   /*                        */
 	  char  *val;			   	   /*                        */
 	  char  c;			   	   /*                        */
@@ -208,7 +208,7 @@ static int expand(s,sb,brace,first,q_open,q_close,db)/*                      */
           DebugPrint2("Start symbol: ",s);	   /*                        */
 	  while ( is_allowed(*s) ) ++s;		   /*                        */
 	  c = *s; *s = '\0';			   /*                        */
-	  { Uchar *sym_copy;		   /* Local copy of sym      */
+	  { Uchar *sym_copy;			   /* Local copy of sym      */
 	    if ( (sym_copy = (Uchar*)malloc(strlen((char*)sym)+1))/* Allocate memory*/
 		== (Uchar*)NULL )		   /* Upon failure           */
 	    { OUT_OF_MEMORY("expand string"); }	   /*  exit.                 */
@@ -228,6 +228,10 @@ static int expand(s,sb,brace,first,q_open,q_close,db)/*                      */
 	    first = FALSE;			   /*                        */
 	  }					   /*                        */
 	}	   				   /*                        */
+	else
+	{ ERROR2("Malformed string for expansion: ",s);
+	  s++;
+	}
     }    					   /*                        */
   }						   /*                        */
   return brace;					   /*                        */

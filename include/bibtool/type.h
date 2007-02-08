@@ -1,22 +1,22 @@
 /******************************************************************************
-** $Id: type.h,v 1.3 2007-02-08 05:35:57 gene Exp $
+** $Id: type.h,v 1.4 2007-02-08 05:43:31 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2002 Gerd Neugebauer
+** (c) 1996-2003 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
 **	This module is a replacement for the system header file
-**	|ctype.h|. in contrast to some implemetations of the |isalpha|
+**	|ctype.h|. In contrast to some implemetations of the |isalpha|
 **	and friends the macros in this header are stable. This means
 **	that the argument is evaluated exactely once and each macro
-**	consistes of execately one C statement. Thus these macros can
+**	consistes of exacetely one C statement. Thus these macros can
 **	be used even at those places where only a single statement is
 **	allowed (conditionals without braces) or with arguments
 **	containing side effects.
@@ -24,8 +24,8 @@
 **	In addition this is a starting point to implement an xord
 **	array like \TeX{} has one (some day\dots)
 **
-**	This header file requires the initializaation function
-**	|init_type()| to be called before all macros will work as
+**	This header file requires the initialization function
+**	|init_type()| to be called before the macros will work as
 **	described. 
 **
 **	This header file also provides the functions and varaibles
@@ -94,7 +94,7 @@
   /*9 ) */ T__None,
   /*a * */ T__Allowed,
   /*b + */ T__Allowed,
-  /*c , */ T__None,
+  /*c , */ T__None|T__WordSep,
   /*d - */ T__Allowed,
   /*e . */ T__Allowed|T__WordSep,
   /*f / */ T__Allowed,
@@ -114,7 +114,7 @@
   /*d = */ T__None,
   /*e > */ T__Allowed,
   /*f ? */ T__Allowed,
-  /*0 @ */ T__Allowed,
+  /*0 @ */ T__Allowed|T__WordSep,
   /*1 A */ T__Allowed|T__Upper,
   /*2 B */ T__Allowed|T__Upper,
   /*3 C */ T__Allowed|T__Upper,
@@ -479,5 +479,6 @@
 #endif
  char * lower _ARG((char * s));			   /* type.c                 */
  int case_cmp _ARG((char * s,char * t));	   /* type.c                 */
+ void add_word_sep _ARG((char *s));		   /* type.c                 */
  void init_type _ARG((void));			   /* type.c                 */
 

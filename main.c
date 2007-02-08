@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: main.c,v 1.3 2007-02-08 05:35:57 gene Exp $
+** $Id: main.c,v 1.4 2007-02-08 05:43:31 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2002 Gerd Neugebauer
+** (c) 1996-2003 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -152,7 +152,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2007-02-08 05:35:57 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2007-02-08 05:43:31 $",
     "gerd@informatik.uni-koblenz.de"
   };
 
@@ -213,7 +213,6 @@ static void usage(fullp)			   /*			     */
 }						   /*------------------------*/
 
 
-#define SkipWarning	      WARNING("*** Skiping to next '@'")
 #define UnknownWarning(X)     WARNING2("Unknown flag ignored: ",X)
 #define NoSFileWarning	      WARNING("Missing select option. Flag ignored.")
 #define NoFileError(X)	      WARNING3("File ",X," not found.")

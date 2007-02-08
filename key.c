@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: key.c,v 1.3 2007-02-08 05:35:57 gene Exp $
+** $Id: key.c,v 1.4 2007-02-08 05:43:31 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2002 Gerd Neugebauer
+** (c) 1996-2003 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -267,7 +267,7 @@ void set_separator(n,s)				   /*			     */
   switch (n)					   /*                        */
   { case 1: init_key(1); break;
     case 2: init_key(2); break;
-  }
+  }						   /*                        */
 }						   /*------------------------*/
 
 
@@ -510,11 +510,11 @@ static int deTeX(line,save_fct,flags)		   /*			     */
     { if ( --brace < 0 ) brace = 0;		   /*                        */
     }						   /*			     */
     else if ( ( c == ',' 			   /* Commas                 */
-		&& (flags&DETEX_FLAG_COMMA) )
+		&& (flags&DETEX_FLAG_COMMA) )	   /*                        */
 	      ||				   /* or                     */
 	      ( (flags&DETEX_FLAG_ALLOWED)	   /* allowed characters     */
-		&& is_allowed(c) )
-	    )
+		&& is_allowed(c) )		   /*                        */
+	    )					   /*                        */
     { if ( bp != buffer && *(bp-1) != '\0' )	   /*  are treated as        */
       { StoreChar('\0');			   /*  single words upon     */
 	SaveWord;				   /*  request, or ignored.  */
@@ -524,9 +524,9 @@ static int deTeX(line,save_fct,flags)		   /*			     */
       SaveWord;					   /*			     */
       last = ' ';				   /*			     */
     }						   /*                        */
-    else if ( !(flags&DETEX_FLAG_ALLOWED)
-	      && is_wordsep(c)
-	      && !is_wordsep(last) ) /* Don't repeat spaces.   */
+    else if ( !(flags&DETEX_FLAG_ALLOWED)	   /*                        */
+	      && is_wordsep(c)			   /*                        */
+	      && !is_wordsep(last) ) 		   /* Don't repeat spaces.   */
     { if ( brace == 0 )				   /* Remember the beginning */
       { StoreChar('\0'); SaveWord; last = ' '; }   /*  of the next word.     */
       else					   /*                        */
@@ -1206,8 +1206,8 @@ static KeyNode new_key_node(type,string)	   /*			     */
   NodeNext(new)	  = (KeyNode)0;			   /*			     */
   NodeThen(new)	  = (KeyNode)0;			   /*			     */
   NodeElse(new)	  = (KeyNode)0;			   /*			     */
-  NodePre(new)	  = -1;
-  NodePost(new)	  = -1;
+  NodePre(new)	  = -1;				   /*                        */
+  NodePost(new)	  = -1;				   /*                        */
   return new;					   /*			     */
 }						   /*------------------------*/
 
@@ -1225,9 +1225,9 @@ void free_key_node(kn)				   /*			     */
 						   /*			     */
   while ( kn != (KeyNode)0 )			   /*                        */
   {						   /*                        */
-    free_key_node(NodeThen(kn));
-    free_key_node(NodeElse(kn));
-    next = NodeNext(kn);
+    free_key_node(NodeThen(kn));		   /*                        */
+    free_key_node(NodeElse(kn));		   /*                        */
+    next = NodeNext(kn);			   /*                        */
     free(kn);					   /*                        */
     kn = next;					   /*                        */
   }						   /*                        */
@@ -1403,6 +1403,8 @@ static int fmt_parse(sp,knp)			   /*			     */
 { int		ret;				   /*			     */
   KeyNode	new;				   /*			     */
 						   /*			     */
+  *knp = (KeyNode)NULL;				   /*                        */
+ 						   /*                        */
   while ( (ret=fmt__parse(sp,knp)) == 0 )	   /*			     */
   { SkipSpaces(*sp);				   /*			     */
     if ( **sp == '#' )				   /*			     */
@@ -1614,8 +1616,10 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
       default:					   /*			     */
 #ifdef DEBUG
 	fprintf(err_file,"+++ BibTool: FORMAT %s%d.%d%s%c(%s)\n",/*	     */
-		(NodeType(kn)&NodePlusMask?"+":
-		 (NodeType(kn)&NodeMinusMask?"-":"")),/*		     */
+		(NodeType(kn)&NodePlusMask	   /*                        */
+		 ? "+"				   /*                        */
+		 :(NodeType(kn)&NodeMinusMask	   /*                        */
+		   ?"-":"")),			   /*		             */
 		NodePre(kn),			   /*			     */
 		NodePost(kn),			   /*			     */
 		(NodeType(kn)&NodeCountMask?"#":""),/*			     */
@@ -1640,20 +1644,20 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 	  switch ( NodeType(kn)	& 0x1ff )	   /*			     */
 	  {					   /*                        */
 	    case 'p':				   /*			     */
-	      fmt_names(sb,s,UsePreOr(2),UsePostOr(0),trans);/*          */
+	      fmt_names(sb,s,UsePreOr(2),UsePostOr(0),trans);/*              */
 	      break;				   /*			     */
 	    case 'n':				   /*			     */
-	      if ( formatp ) init_key(3);
+	      if ( formatp ) init_key(3);	   /*                        */
 	      NameStrip(format[0]) = UsePostOr(-1);/*                        */
-	      fmt_names(sb,s,UsePreOr(2),0,trans);/*                     */
+	      fmt_names(sb,s,UsePreOr(2),0,trans); /*                        */
 	      break;				   /*			     */
 	    case 'N':				   /*			     */
-	      if ( formatp ) init_key(3);
+	      if ( formatp ) init_key(3);	   /*                        */
 	      NameStrip(format[1]) = UsePostOr(-1);/*                        */
 	      if (NextName(format[1]))		   /*                        */
 	      { NamePre(NextName(format[1])) = NamePreSep;/*                 */
 	      }					   /*                        */
-	      fmt_names(sb,s,UsePreOr(2),1,trans);/*                     */
+	      fmt_names(sb,s,UsePreOr(2),1,trans); /*                        */
 	      break;				   /*			     */
 	    case 'T':				   /*			     */
 	      fmt_title(sb,			   /*                        */
@@ -1694,7 +1698,7 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 	      { return 1; }			   /*                        */
 	      break;				   /*			     */
 	    case 's':				   /*			     */
-	      fmt_string(sb,		   /*                        */
+	      fmt_string(sb,		   	   /*                        */
 			 s,			   /*                        */
 			 UsePreOr(0xffff),	   /*                        */
 			 trans,			   /*                        */
@@ -1882,9 +1886,9 @@ Uchar* fmt_expand(sb,cp,db,rec)			   /*                        */
        post = -1,				   /*                        */
        type = 0;				   /*                        */
  						   /*                        */
-  while ( *cp && *cp != (Uchar)'%' )
-  { sbputchar((Uchar)*cp,sb);
-    cp++;
+  while ( *cp && *cp != (Uchar)'%' )		   /*                        */
+  { sbputchar((Uchar)*cp,sb);			   /*                        */
+    cp++;					   /*                        */
   }						   /*                        */
  					       	   /*                        */
   if ( *cp == (Uchar)'%' )			   /*                        */

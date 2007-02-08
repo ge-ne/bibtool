@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: resource.h,v 1.3 2007-02-08 05:35:57 gene Exp $
+** $Id: resource.h,v 1.4 2007-02-08 05:43:31 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2002 Gerd Neugebauer
+** (c) 1996-2003 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -71,6 +71,7 @@ RSC_NEXT('f')
   RscByFct(   "fmt.name.title"	      , r_fnt ,set_separator(4,val)	    )
   RscByFct(   "fmt.title.title"	      , r_ftt ,set_separator(5,val)	    )
   RscByFct(   "fmt.et.al"	      , r_fea ,set_separator(7,val)	    )
+  RscByFct(   "fmt.word.separator"    , r_fws ,add_word_sep(val)	    )
   RscByFct(   "field.type"	      , r_ft  ,set_symbol_type(val)	    )
 RSC_NEXT('i')
   RscByFct(   "input"		      , r_i   ,save_input_file(val)	    )

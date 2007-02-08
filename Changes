@@ -10,6 +10,9 @@
 ## 
 ##*****************************************************************************
 
+
+	Minor documentation bug fixed.
+
 - Version 2.46
 	Resource  `sort.cased' introduced to  allow the  sorting order  to take
 	advantage of  upper  and  lower case characters.  The default is  false

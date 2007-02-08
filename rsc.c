@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: rsc.c,v 1.3 2007-02-08 05:35:57 gene Exp $
+** $Id: rsc.c,v 1.4 2007-02-08 05:43:31 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2002 Gerd Neugebauer
+** (c) 1996-2003 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -34,6 +34,7 @@
 #include <bibtool/rewrite.h>
 #include <bibtool/s_parse.h>
 #include <bibtool/entry.h>
+#include <bibtool/type.h>
 #include <bibtool/version.h>
 #include "config.h"
 #define RSC_INIT

@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: type.c,v 1.3 2007-02-08 05:35:57 gene Exp $
+** $Id: type.c,v 1.4 2007-02-08 05:43:31 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2002 Gerd Neugebauer
+** (c) 1996-2003 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -61,6 +61,23 @@ void init_type()				   /*                        */
     trans_upper[i] = is_lower(i)?to_upper(i):i;	   /*                        */
     trans_id[i] = i;				   /*                        */
   }						   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	add_word_sep()
+** Type:	void
+** Purpose:	
+**		
+** Arguments:
+**	s	
+** Returns:	nothing
+**___________________________________________________			     */
+void add_word_sep(s)				   /*                        */
+  char *s;					   /*                        */
+{						   /*                        */
+  if ( s == (char *)NULL ) return;		   /*                        */
+  for ( ; *s ; s++ )				   /*                        */
+  { type__allowed[*s] |= T__WordSep; }		   /*                        */
 }						   /*------------------------*/
 
 #ifdef DEBUG

@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: parse.c,v 1.3 2007-02-08 05:35:57 gene Exp $
+** $Id: parse.c,v 1.4 2007-02-08 05:43:31 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2002 Gerd Neugebauer
+** (c) 1996-2003 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -99,18 +99,23 @@
 
 /*---------------------------------------------------------------------------*/
 
- static Uchar *str_syntax	= (Uchar*)"Syntax Error";
- static Uchar *str_eof		= (Uchar*)"EOF unexpected";
+ static Uchar *str_unexpected	= (Uchar*)"Unexpected character encountered";
  static char *str_stdin		= "<stdin>";
 
+#define Error3(X,Y,Z)	error(ERR_ERROR|ERR_POINT|ERR_FILE,(Uchar*)X,	\
+			      (Uchar*)Y,(Uchar*)Z,			\
+			      file_line_buffer,flp,flno,filename)
 #define Error(X)	error(ERR_ERROR|ERR_POINT|ERR_FILE,(Uchar*)X,	\
 			      sym_empty,sym_empty,			\
 			      file_line_buffer,flp,flno,filename)
 #define Warning(X)	error(ERR_WARN|ERR_POINT|ERR_FILE,(Uchar*)X,	\
 			      sym_empty,sym_empty,			\
 			      file_line_buffer,flp,flno,filename)
-#define SyntaxError	Error(str_syntax)
-#define EofError	Error(str_eof)
+#define UnterminatedError(X,LINE)					\
+			error(ERR_ERROR|ERR_FILE,(Uchar*)X,		\
+			      sym_empty,sym_empty,			\
+			      NULL,NULL,LINE,filename)
+#define UnexpectedError Error(str_unexpected)
 
 /*-----------------------------------------------------------------------------
 ** Function:	init___()
@@ -274,7 +279,7 @@ int seen()					   /*			     */
 }						   /*------------------------*/
 
 
-#define Expect(C,N)	  if ( GetC != C )	    { SyntaxError; return(N); }
+#define Expect(C,N)	  if ( GetC != C ) { UnexpectedError; return(N); }
 #define ExpectSymbol(C,N) if (!parse_symbol(C))		return(N)
 #define ExpectKey(C,N)    if (!parse_key(C))		return(N)
 #define ExpectRhs(N)	  if (!parse_rhs())		return(N)
@@ -447,7 +452,9 @@ static int parse_symbol(alpha)			   /*			     */
   c = GetC;					   /*                        */
   cp = flp-1;			   	   	   /*			     */
   if ( alpha && (! is_alpha(c)) )		   /*			     */
-  { SyntaxError; return(FALSE); }		   /*			     */
+  { Error("Symbol does not start with a letter");  /*                        */
+    return FALSE;				   /*                        */
+  }		   				   /*			     */
   while ( is_allowed(CurrentC) ) { SkipC; }	   /*			     */
   c = CurrentC;					   /*                        */
   CurrentC = '\0';		   		   /*			     */
@@ -472,7 +479,9 @@ static int parse_key(alpha)			   /*			     */
   c  = GetC;					   /*                        */
   cp = flp-1;			   		   /*			     */
   if ( alpha && (! is_alpha(c)) )		   /*			     */
-  { SyntaxError; return(FALSE); }		   /*			     */
+  { Error("Key does not start with a letter");	   /*                        */
+    return(FALSE);				   /*                        */
+  }		   				   /*			     */
   while ( is_allowed(CurrentC) || CurrentC == '\'')/*                        */
   { SkipC; }	   				   /*			     */
   c = CurrentC;					   /*                        */
@@ -525,12 +534,16 @@ static int parse_string(quotep)			   /*			     */
   int   quotep;				   	   /*			     */
 { Uchar c;					   /*                        */
   int   left;				   	   /*			     */
+  int   start_flno = flno;			   /*                        */
 						   /*			     */
   left = 0;					   /*			     */
   if ( quotep ) (void)sbputchar('"',parse_sb);	   /*"			     */
   do						   /*			     */
   { switch ( c=skip_nl() )			   /*			     */
-    { case EOF:	 EofError; return(FALSE);	   /*			     */
+    { case EOF:					   /*                        */
+	UnterminatedError("Unterminated double quote",
+			  start_flno);
+	return(FALSE);	   			   /*			     */
       case '{':	 left++; (void)sbputchar(c,parse_sb); break;/*		     */
       case '}':	 if ( left--<0 )		   /*			     */
 		 { Warning("Expecting \" here"); } /*			     */
@@ -558,16 +571,20 @@ static int parse_string(quotep)			   /*			     */
 ** Returns:	Success status
 **___________________________________________________			     */
 static int parse_block(quotep)			   /*			     */
-  int   quotep;					   /*			     */
-{ Uchar c;					   /*                        */
-  int   left;				   	   /*			     */
+  int quotep;					   /*			     */
+{ int c;					   /*                        */
+  int left;				   	   /*			     */
+  int start_flno = flno;			   /*                        */
 						   /*			     */
   left = 1;					   /*			     */
   if ( quotep ) (void)sbputchar('{',parse_sb);	   /*			     */
  						   /*                        */
   FOREVER					   /*			     */
   { switch ( c=skip_nl() )			   /*			     */
-    { case EOF: EofError; return FALSE;		   /*			     */
+    { case EOF:
+	UnterminatedError("Unterminated open brace",
+			  start_flno);
+	return FALSE;		   		   /*			     */
       case '{': left++; break;			   /*			     */
       case '}':					   /*			     */
 	if ( --left < 1 )			   /*			     */
@@ -589,18 +606,25 @@ static int parse_block(quotep)			   /*			     */
 **___________________________________________________			     */
 static int parse_rhs()				   /*			     */
 {						   /*			     */
+  int start_flno = flno;			   /*                        */
+ 						   /*                        */
   sbrewind(parse_sb);				   /*			     */
   do						   /*			     */
   { if ( sbtell(parse_sb) != 0 )		   /*			     */
     { (void)sbputs(" # ",parse_sb); }		   /*			     */
 						   /*			     */
     switch ( GetC )				   /*			     */
-    { case EOF: EofError;	   return(FALSE);  /*			     */
+    { case EOF:					   /*                        */
+	UnterminatedError("Unterminated value",	   /*                        */
+			  start_flno);		   /*                        */
+	return(FALSE);  			   /*			     */
 						   /*			     */
-      case '"': if ( !parse_string(TRUE) ) return(FALSE);/*		     */
+      case '"':					   /*                        */
+	if ( !parse_string(TRUE) ) return(FALSE);  /*		             */
 	break;					   /*			     */
 						   /*			     */
-      case '{': if ( !parse_block(TRUE) ) return(FALSE);/*		     */
+      case '{':					   /*                        */
+	if ( !parse_block(TRUE) ) return(FALSE);   /*		             */
 	break;					   /*			     */
 						   /*			     */
       case '0': case '1': case '2': case '3': case '4':/*		     */
@@ -687,23 +711,23 @@ int parse_bib(rec)				   /*			     */
   if ( comment_sb == (StringBuffer*)NULL )	   /*                        */
   { comment_sb = sbopen(); } 			   /*                        */
  						   /*                        */
-  RecordOldKey(rec)	 = NULL;	   	   /*			     */
-  RecordFree(rec)	 = 0;		   	   /*			     */
-  RecordComment(rec)	 = sym_empty;	   	   /*                        */
+  RecordOldKey(rec)  = NULL;	   	   	   /*			     */
+  RecordFree(rec)    = 0;		   	   /*			     */
+  RecordComment(rec) = sym_empty;	   	   /*                        */
  						   /*                        */
   do						   /*                        */
   { init_parse();				   /*			     */
 						   /*			     */
     while ( (c=skip_c()) != '@' )		   /* Skip to next @	     */
-    { if ( c==EOF )				   /*                        */
+    { if ( c == EOF )				   /*                        */
       { char *s, *t;				   /*                        */
 	if ( ignored == 0 ) return(BIB_EOF); 	   /*			     */
 	RecordType(rec) = BIB_COMMENT;		   /*                        */
  						   /*                        */
-	s = t = sbflush(comment_sb);
-	while ( *s ) s++;
-	while ( t <= --s  && is_space(*s) ) *s = '\0';
-	if ( *t ) RecordComment(rec) = symbol(t);
+	s = t = sbflush(comment_sb);		   /*                        */
+	while ( *s ) s++;			   /*                        */
+	while ( t <= --s  && is_space(*s) ) *s = '\0';/*                     */
+	if ( *t ) RecordComment(rec) = symbol(t);  /*                        */
 	sbrewind(comment_sb);			   /*                        */
 	return(BIB_COMMENT);		   	   /*			     */
       }						   /*                        */
@@ -725,7 +749,9 @@ int parse_bib(rec)				   /*			     */
     }						   /*			     */
 						   /*			     */
     if ( (type=find_entry_type((char*)flp)) == BIB_NOOP )/*		     */
-    { Error("Unknown entry type"); return(BIB_NOOP); }/*		     */
+    { Error("Unknown entry type");		   /*                        */
+      return(BIB_NOOP);				   /*                        */
+    }						   /*		             */
     flp += strlen((char*)EntryName(type));	   /*			     */
  						   /*                        */
     if ( type == BIB_COMMENT && rsc_pass_comment ) /*                        */
@@ -785,7 +811,7 @@ int parse_bib(rec)				   /*			     */
       do					   /*			     */
       { ExpectEq(rec,BIB_NOOP);			   /*			     */
 	for( n=0; GetC==','; n++)		   /*			     */
-	{ if ( n > 0 )				   /*			     */
+	{ if ( n == 1 )				   /*			     */
 	  { Warning("Multiple ',' ignored."); }	   /*			     */
 	}					   /*			     */
 	UnGetC;					   /*			     */
@@ -904,9 +930,14 @@ static int see_rsc(fname)			   /*			     */
 **___________________________________________________			     */
 static int parse_value()			   /*			     */
 {						   /*			     */
+  int   start_flno = flno;			   /*                        */
+ 						   /*                        */
   sbrewind(parse_sb);				   /*			     */
   switch ( GetC )				   /*			     */
-  { case EOF: EofError;		 return(FALSE);	   /*			     */
+  { case EOF:					   /*                        */
+      UnterminatedError("Unterminated value",	   /*                        */
+			start_flno);		   /*                        */
+      return FALSE;	   			   /*			     */
 						   /*			     */
     case '"':					   /*			     */
       if ( !parse_string(FALSE) ) return(FALSE);   /*			     */
@@ -920,7 +951,7 @@ static int parse_value()			   /*			     */
       break;					   /*			     */
 						   /*			     */
     case '{':					   /*			     */
-      if ( !parse_block(FALSE) ) return(FALSE);	   /*			     */
+      if ( !parse_block(FALSE) ) return FALSE;	   /*			     */
       push_string(symbol(sbflush(parse_sb)));	   /*			     */
       sbrewind(parse_sb);			   /*			     */
       break;					   /*			     */
@@ -929,7 +960,7 @@ static int parse_value()			   /*			     */
       UnGetC; ExpectSymbol(TRUE,FALSE);		   /*			     */
   }						   /*			     */
 						   /*			     */
-  return(TRUE);					   /*			     */
+  return TRUE;					   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -986,7 +1017,9 @@ int read_rsc(name)				   /*			     */
 	  token = pop_string();			   /*			     */
 	  if ( TestC == '=' ) (void)GetC;	   /* = is optional	     */
 	  if ( !parse_value() )			   /*			     */
-	  { SyntaxError; (void)seen(); return(-1); }/*			     */
+	  { (void)seen();			   /*                        */
+	    return(-1);				   /*                        */
+	  }					   /*			     */
 	  (void)set_rsc(token,pop_string());	   /*			     */
 	}					   /*			     */
     }						   /*			     */
