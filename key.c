@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: key.c,v 1.1 2007-02-07 21:26:40 gene Exp $
+** $Id: key.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 ******************************************************************************/
 
@@ -37,13 +37,13 @@
 #else
 #define _ARG(A) ()
 #endif
- char *get_field _ARG((DB db,Record rec,char *name));/* key.c                */
- char* fmt_expand _ARG((StringBuffer *sb,char *cp,DB db,Record rec));/* key.c*/
+ Uchar *get_field _ARG((DB db,Record rec,Uchar *name));/* key.c              */
+ Uchar* fmt_expand _ARG((StringBuffer *sb,Uchar *cp,DB db,Record rec));/* key.c*/
  int apply_fmt _ARG((StringBuffer *sb,char *fmt,Record rec,DB db));/* key.c  */
- int foreach_ignored_word _ARG((int (*fct)_ARG((char*))));/* key.c           */
+ int foreach_ignored_word _ARG((int (*fct)_ARG((Uchar*))));/* key.c          */
  int mark_key _ARG((DB db,Record rec));		   /* key.c                  */
- int set_field _ARG((DB db,Record rec,char *name,char *value));/* key.c      */
- static KeyNode new_key_node _ARG((int type,char *string));/* key.c          */
+ int set_field _ARG((DB db,Record rec,Uchar *name,Uchar *value));/* key.c    */
+ static KeyNode new_key_node _ARG((int type,Uchar *string));/* key.c         */
  static char * itostr _ARG((int i,char *digits));  /* key.c                  */
  static int add_fmt_tree _ARG((char *s,KeyNode *treep));/* key.c             */
  static int deTeX _ARG((char *line,void (*save_fct)_ARG((char*)),int commap));/* key.c*/
@@ -59,21 +59,23 @@
  static void eval__special _ARG((StringBuffer *sb,KeyNode kn,Record rec));/* key.c*/
  static void fmt_names _ARG((StringBuffer *sb,char *line,int maxname,int post,char *trans));/* key.c*/
  static void fmt_string _ARG((StringBuffer *sb,char * s,int n,char *trans,char *sep));/* key.c*/
- static void fmt_title _ARG((StringBuffer *sb,char *line,int len,int in,char *trans,int ignore,char *sep));/* key.c*/
+ static void fmt_title _ARG((StringBuffer *sb,char *line,int len,int in,char *trans,int ignore,Uchar *sep));/* key.c*/
  static void init_key _ARG((int state));	   /* key.c                  */
  static void key_init _ARG((void));		   /* key.c                  */
- static void push_s _ARG((StringBuffer *sb,unsigned char *s,int max,unsigned char *trans));/* key.c*/
+ static void push_s _ARG((StringBuffer *sb,Uchar *s,int max,char *trans));/* key.c*/
  static void push_word _ARG((char * s));	   /* key.c                  */
  void add_format _ARG((char *s));		   /* key.c                  */
- void add_ignored_word _ARG((char *s));		   /* key.c                  */
+ void add_ignored_word _ARG((Uchar *s));	   /* key.c                  */
  void add_sort_format _ARG((char *s));		   /* key.c                  */
  void clear_ignored_words _ARG((void));		   /* key.c                  */
  void def_format_type _ARG((char *s));		   /* key.c                  */
+ void end_key_gen _ARG((void));			   /* key.c                  */
  void free_key_node _ARG((KeyNode kn));		   /* key.c                  */
  void make_key _ARG((DB db,Record rec));	   /* key.c                  */
  void make_sort_key _ARG((DB db,Record rec));	   /* key.c                  */
- void set_base _ARG((char *value));		   /* key.c                  */
- void set_separator _ARG((int n,char *s));	   /* key.c                  */
+ void set_base _ARG((Uchar *value));		   /* key.c                  */
+ void set_separator _ARG((int n,Uchar *s));	   /* key.c                  */
+ void start_key_gen _ARG((void));		   /* key.c                  */
 
 #ifdef DEBUG
  static void show_fmt _ARG((KeyNode kn,int in));   /* key.c                  */
@@ -127,7 +129,7 @@
 			  else { ErrPrintF("*** BibTool: Missing %c",C);\
 				   return RET; }
 #define MakeNode(KNP,TYPE,SP,CP) c = *CP; *CP = '\0';			\
-			  *KNP = new_key_node(TYPE,symbol(*SP));	\
+			  *KNP = new_key_node(TYPE,symbol((Uchar*)*SP));\
 			  *CP  = c;
 #define ParseOrReturn(CP,NODEP)						\
 	if ( (ret=fmt_parse(CP,NODEP)) != 0  ) return ret
@@ -163,7 +165,7 @@ static void push_word(s)			   /*			     */
 ** Purpose:	Push a word to the stack when no space is left in the
 **		allocated array. 
 ** Arguments:
-**	sword to push
+**	s	word to push
 ** Returns:	nothing
 **___________________________________________________			     */
 static void Push_Word(s)			   /*			     */
@@ -177,7 +179,7 @@ static void Push_Word(s)			   /*			     */
   { wp = (char**)realloc(words,words_len*sizeof(char*)); }/*		     */
   if ( wp == (char**)0 )			   /*			     */
   { words_len -= WordLenInc;			   /*			     */
-    ERROR("Push_Word() failed: Word not pushed."); /*		             */
+    ERROR((Uchar*)"Push_Word() failed: Word not pushed.");/*		     */
     return;					   /*			     */
   }						   /*			     */
 						   /*			     */
@@ -192,15 +194,15 @@ static void Push_Word(s)			   /*			     */
 
 #define NoSeps 8
 
- static char *key_seps[NoSeps] =
- { /* 0 */ "**key*",
-   /* 1 */ "-",
-   /* 2 */ ".",
-   /* 3 */ ".",
-   /* 4 */ ":",
-   /* 5 */ "-",
-   /* 6 */ "*",
-   /* 7 */ ".ea"
+ static Uchar *key_seps[NoSeps] =
+ { /* 0 */ (Uchar*)"**key*",
+   /* 1 */ (Uchar*)"-",
+   /* 2 */ (Uchar*)".",
+   /* 3 */ (Uchar*)".",
+   /* 4 */ (Uchar*)":",
+   /* 5 */ (Uchar*)"-",
+   /* 6 */ (Uchar*)"*",
+   /* 7 */ (Uchar*)".ea"
  };
 
 #define DefaultKey    key_seps[0]
@@ -214,26 +216,26 @@ static void Push_Word(s)			   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function:	set_separator()
-** Purpose:	Modify the key_seps array. This array contains the
+** Purpose:	Modify the |key_seps| array. This array contains the
 **		different separators used during key formatting. The
 **		elements of the array have the following meaning:
 **		\begin{description}
 **		\item[0] The default key which is used when the
-**		formatting instruction fails completely.
+**		  formatting instruction fails completely.
 **		\item[1] The separator which is inserted between
-**		different names of a multi-authored publication.
+**		  different names of a multi-authored publication.
 **		\item[2] The separator inserted between the first name
-**		and the last name when a name is formatted.
+**		  and the last name when a name is formatted.
 **		\item[3] The separator inserted between the last names
-**		when more then one last name is present
+**		  when more then one last name is present
 **		\item[4] The separator between the name and the title
-**		of a publication.
+**		  of a publication.
 **		\item[5] The separator inserted between words of the
-**		title.
+**		  title.
 **		\item[6] The separator inserted before the number
-**		which might be added to disambiguate reference keys.
+**		  which might be added to disambiguate reference keys.
 **		\item[7] The string which is added when a list of
-**		names is truncated. (|.ea|)
+**		  names is truncated. (|.ea|)
 **		\end{description}
 ** Arguments:
 **	n	Array index to modify.
@@ -245,23 +247,24 @@ static void Push_Word(s)			   /*			     */
 **___________________________________________________			     */
 void set_separator(n,s)				   /*			     */
   register int	n;				   /*			     */
-  register char *s;				   /*			     */
-{ register char *t, *tp;			   /*			     */
+  Uchar *s;				   	   /*			     */
+{ Uchar *t, *tp;			   	   /*			     */
   						   /*                        */
   if ( n < 0 || n >= NoSeps )			   /*			     */
   { ERROR("Invalid separator specification.");     /*			     */
     return;					   /*			     */
   }						   /*			     */
  						   /*                        */
-  t  = new_string(s);				   /*			     */
+  t = (Uchar*)new_string((char*)s);		   /*			     */
   for ( tp=t; *s ; s++ )		   	   /*			     */
   { if ( is_allowed(*s) ) *tp++ = *s; }	   	   /*			     */
   *tp = '\0';					   /*			     */
  						   /*                        */
-  key_seps[n] = symbol(t);			   /*			     */
+  ReleaseSymbol(key_seps[n]);			   /*                        */
+  key_seps[n] = symbol(t);		   	   /*			     */
   free(t);					   /*                        */
-
-  switch (n)
+ 						   /*                        */
+  switch (n)					   /*                        */
   { case 1: init_key(1); break;
     case 2: init_key(2); break;
   }
@@ -308,7 +311,7 @@ void set_separator(n,s)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void set_base(value)				   /*			     */
-  register char *value;				   /*			     */
+  Uchar *value;				   	   /*			     */
 {						   /*			     */
   if	  ( case_cmp(value,"upper") ) key_base = KEY_BASE_UPPER;/*	     */
   else if ( case_cmp(value,"lower") ) key_base = KEY_BASE_LOWER;/*	     */
@@ -319,7 +322,7 @@ void set_base(value)				   /*			     */
   else { ERROR("Unknown base ignored."); }	   /*			     */
 }						   /*------------------------*/
 
-#define ITOA_LEN 32
+#define ITOA_LEN 64
 /*-----------------------------------------------------------------------------
 ** Function:	itostr()
 ** Purpose:	Translate number using the ``digits'' given.
@@ -431,7 +434,7 @@ static void key_init()				   /*			     */
     { OUT_OF_MEMORY("key generation."); }	   /*			     */
 #ifdef INITIALIZE_IGNORED_WORDS
     for ( wp=word_list; *wp!=NULL; ++wp )	   /* add ignored words.     */
-    { add_ignored_word(*wp); }			   /*			     */
+    { add_ignored_word((Uchar*)*wp); }		   /*			     */
 #endif
   }						   /*			     */
 }						   /*------------------------*/
@@ -444,25 +447,29 @@ static void key_init()				   /*			     */
 
 #define DeTeX_BUFF_LEN 256
 
+#define DETEX_FLAG_NONE    0
+#define DETEX_FLAG_COMMA   1
+#define DETEX_FLAG_ALLOWED 2
 
 /*-----------------------------------------------------------------------------
 ** Function:	deTeX()
-** Purpose:	Expand TeX seqeuences or eliminate them.
+** Purpose:	Expand TeX sequences or eliminate them.
 **
 ** Arguments:
-**	line
-**	save_fct
-**	commap
+**	line	string to work on
+**	save_fct Function pointer which is called to store resulting
+**		characters. 
+**	flags	
 ** Returns:	
 **___________________________________________________			     */
-static int deTeX(line,save_fct,commap)		   /*			     */
+static int deTeX(line,save_fct,flags)		   /*			     */
   char		*line;				   /*			     */
-  int		commap;				   /*			     */
+  int		flags;				   /*			     */
   void		(*save_fct)_ARG((char*));	   /*			     */
-{ static char	*buffer;			   /*			     */
+{ static Uchar	*buffer;			   /*			     */
   static size_t len   = 0;			   /*			     */
-  char		c, *s, *bp;			   /*			     */
-  char		last  = ' ';			   /*			     */
+  Uchar		c, *s, *bp;			   /*			     */
+  Uchar		last  = (Uchar)' ';		   /*			     */
   int		wp    = 0;			   /*			     */
   int		brace;				   /*			     */
 						   /*			     */
@@ -470,22 +477,22 @@ static int deTeX(line,save_fct,commap)		   /*			     */
 #define SaveChar(C)  *(bp++) = last = C
 #define StoreChar(C) *(bp++) = C
 						   /*			     */
-  brace = 2*strlen(line);			   /*			     */
+  brace = 4*strlen(line);			   /*			     */
   if ( brace > len )				   /*			     */
   { if ( len == 0 )				   /*			     */
     { len    = ( brace < DeTeX_BUFF_LEN		   /*			     */
 		? DeTeX_BUFF_LEN : brace );	   /*			     */
-      buffer = malloc(len);			   /*			     */
+      buffer = (Uchar*)malloc(sizeof(Uchar)*len);  /*			     */
     }						   /*			     */
     else					   /*			     */
     { len    = brace;				   /*			     */
-      buffer = realloc(buffer,len);		   /*			     */
+      buffer = (Uchar*)realloc((char*)buffer,sizeof(Uchar)*len);/*	     */
     }						   /*			     */
     if ( buffer == NULL ) 			   /*                        */
     { OUT_OF_MEMORY("deTeX()"); }   		   /*			     */
   }						   /*			     */
 						   /*			     */
-  TeX_open_string(line);			   /*			     */
+  TeX_open_string((Uchar*)line);		   /*			     */
   bp	= buffer;				   /*			     */
   brace = 0;					   /*			     */
   wp    = 0;					   /*                        */
@@ -496,30 +503,37 @@ static int deTeX(line,save_fct,commap)		   /*			     */
     if (   is_alpha(c)				   /* Letters and	     */
 	|| is_digit(c)				   /* digits and	     */
 	|| is_extended(c)			   /* extended chars and     */
-	|| ( c == '-' && last != c ) )		   /* nonrepeated hyphens    */
+	|| ( c == (Uchar)'-' && last != c ) )	   /* nonrepeated hyphens    */
     { SaveChar(c); }				   /*			     */
-    else if ( is_wordsep(c) && !is_wordsep(last) ) /* Don't repeat spaces.   */
-    { if ( brace == 0 )				   /* Remember the beginning */
-      { StoreChar('\0'); SaveWord; last = ' '; }   /*  of the next word.     */
-      else					   /*                        */
-      { char *t;				   /*                        */
-	for (t=InterNameSep; *t; ++t )		   /*                        */
-	{ SaveChar(*t);	}			   /*                        */
-      }		   				   /*			     */
+    else if ( c == (Uchar)'{'	) { ++brace; }	   /* Count braces.	     */
+    else if ( c == (Uchar)'}'	)		   /*                        */
+    { if ( --brace < 0 ) brace = 0;		   /*                        */
     }						   /*			     */
-    else if ( c == '{'	) { ++brace; }		   /* Count braces.	     */
-    else if ( c == '}'	)			   /*                        */
-    { if ( --brace<0 ) brace = 0;		   /*                        */
-    }						   /*			     */
-    else if ( c == ',' && commap )		   /* Commas are counted as  */
-    { if ( bp != buffer && *(bp-1) != '\0' )	   /*                        */
+    else if ( ( c == ',' 			   /* Commas                 */
+		&& (flags&DETEX_FLAG_COMMA) )
+	      ||				   /* or                     */
+	      ( (flags&DETEX_FLAG_ALLOWED)	   /* allowed characters     */
+		&& is_allowed(c) )
+	    )
+    { if ( bp != buffer && *(bp-1) != '\0' )	   /*  are treated as        */
       { StoreChar('\0');			   /*  single words upon     */
 	SaveWord;				   /*  request, or ignored.  */
       }						   /*                        */
-      StoreChar(',');				   /*			     */
+      StoreChar(c);				   /*			     */
       StoreChar('\0');				   /*			     */
       SaveWord;					   /*			     */
       last = ' ';				   /*			     */
+    }						   /*                        */
+    else if ( !(flags&DETEX_FLAG_ALLOWED)
+	      && is_wordsep(c)
+	      && !is_wordsep(last) ) /* Don't repeat spaces.   */
+    { if ( brace == 0 )				   /* Remember the beginning */
+      { StoreChar('\0'); SaveWord; last = ' '; }   /*  of the next word.     */
+      else					   /*                        */
+      { Uchar *t;				   /*                        */
+	for (t=InterNameSep; *t; ++t )		   /*                        */
+	{ SaveChar(*t);	}			   /*                        */
+      }		   				   /*			     */
     }						   /*			     */
   }						   /*			     */
  						   /*                        */
@@ -542,9 +556,9 @@ static int deTeX(line,save_fct,commap)		   /*			     */
 /***		       Title Formatting Section				   ***/
 /*****************************************************************************/
 
-#define PushS(SB,S)	push_s(SB,S,0,trans)
-#define PushStr(SB,S,M)	push_s(SB,S,M,trans)
-#define PushC(SB,C)	(void)sbputchar(trans[C],SB);
+#define PushS(SB,S)	push_s(SB,S,0,(Uchar*)trans)
+#define PushStr(SB,S,M)	push_s(SB,S,M,(Uchar*)trans)
+#define PushC(SB,C)	(void)sbputchar(trans[(unsigned int)(C)],SB);
 
 /*-----------------------------------------------------------------------------
 ** Function:	push_s()
@@ -556,10 +570,10 @@ static int deTeX(line,save_fct,commap)		   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void push_s(sb,s,max,trans)		   /*			     */
-  StringBuffer *sb;
-  register unsigned char *s;			   /*			     */
-  register int max;				   /*                        */
-  register unsigned char *trans;		   /*			     */
+  StringBuffer *sb;				   /*                        */
+  Uchar *s;			   	   	   /*			     */
+  int max;				   	   /*                        */
+  char *trans;		   		   	   /*			     */
 {						   /*                        */
   if ( max <= 0 ) 				   /*                        */
   { while ( *s )				   /*			     */
@@ -593,7 +607,7 @@ static void push_s(sb,s,max,trans)		   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void add_ignored_word(s)			   /*			     */
-  register char *s;				   /*			     */
+  Uchar *s;				   	   /*			     */
 { key_init();					   /*                        */
   add_word(s,&ignored_words[(*s)&31]);		   /*			     */
   DebugPrint2("Adding ignored word ",s);	   /*                        */
@@ -627,7 +641,7 @@ void clear_ignored_words()			   /*                        */
 ** Returns:	The return status of the last |fct| call.
 **___________________________________________________			     */
 int foreach_ignored_word(fct)			   /*                        */
-  int (*fct)_ARG((char*));			   /*                        */
+  int (*fct)_ARG((Uchar*));			   /*                        */
 { int i;					   /*                        */
  						   /*                        */
   key_init();					   /*                        */
@@ -654,16 +668,16 @@ int foreach_ignored_word(fct)			   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void fmt_title(sb,line,len,in,trans,ignore,sep)/*		     */
-  StringBuffer *sb;				   /*                        */
-  char	 *line;					   /*			     */
-  int	 len;					   /*			     */
-  int	 in;					   /*			     */
-  char	 *trans;				   /* Translation table	     */
-  int    ignore;				   /*                        */
-  char   *sep;					   /*                        */
-{ int	 nw, i, j;				   /*			     */
-  char	 *s;					   /*			     */
-  int	 first = TRUE;				   /*			     */
+  StringBuffer  *sb;				   /*                        */
+  char	        *line;				   /*			     */
+  int	        len;				   /*			     */
+  int	        in;				   /*			     */
+  char	        *trans;				   /* Translation table	     */
+  int           ignore;				   /*                        */
+  Uchar         *sep;				   /*                        */
+{ int	        first = TRUE;			   /*			     */
+  int	        nw, i, j;			   /*			     */
+  unsigned char *s;				   /*			     */
 						   /*			     */
   if ( len == 0 ) return;			   /*                        */
  						   /*                        */
@@ -672,7 +686,7 @@ static void fmt_title(sb,line,len,in,trans,ignore,sep)/*		     */
   { OUT_OF_MEMORY("fmt_title()"); } 		   /*			     */
 						   /*			     */
   ResetWords;					   /*                        */
-  nw = deTeX(*line=='{'?line+1:line,push_word,FALSE);/*			     */
+  nw = deTeX(*line=='{'?line+1:line,push_word,DETEX_FLAG_NONE);/*	     */
  						   /*                        */
   for ( i=0; i < nw; ++i )		   	   /*			     */
   {						   /*			     */
@@ -682,7 +696,7 @@ static void fmt_title(sb,line,len,in,trans,ignore,sep)/*		     */
     s = sbflush(tmp_sb);			   /* Get the translated word*/
 						   /*			     */
     if ( ! ignore || 				   /*                        */
-	 ! find_word(s,ignored_words[(*s)&31] ) )  /*			     */
+	 ! find_word((Uchar*)s,ignored_words[(*s)&31] ) )/*		     */
     { if ( first ) { first = FALSE; }		   /*			     */
       else { PushS(sb,sep); }		   	   /*			     */
       if ( in <= 0 )				   /*                        */
@@ -719,7 +733,7 @@ static int fmt_c_words(line,min,max,not,ignore)	   /*			     */
 { int	 n, i, nw;				   /*			     */
 						   /*			     */
   ResetWords;					   /*                        */
-  nw = deTeX(*line=='{'?line+1:line,push_word,FALSE);/*			     */
+  nw = deTeX(*line=='{'?line+1:line,push_word,DETEX_FLAG_NONE);/*            */
   n = 0;					   /*                        */
  						   /*                        */
   for ( i=0; i < nw; ++i )		   	   /*			     */
@@ -769,11 +783,11 @@ void def_format_type(s)				   /*                        */
 		  " has been changed.\n");	   /*                        */
   }						   /*                        */
  						   /*                        */
-  if ( formatp ) { init_key(3); }
+  if ( formatp ) { init_key(3); }		   /*                        */
  						   /*                        */
   SkipSpaces(s);				   /*                        */
   if ( *s == '=' ) s++;				   /*                        */
-  Expect(s,'"',);				   /*                        */
+  Expect(s,'"', );				   /*                        */
   cp = s;					   /*                        */
   while ( *cp && *cp != '"' ) cp++;		   /*                        */
   c   = *cp;					   /*                        */
@@ -819,11 +833,15 @@ static void fmt_names(sb,line,maxname,post,trans)  /*		             */
   }						   /*                        */
  						   /*                        */
   ResetWords;					   /*                        */
-  wp = deTeX(*line=='{'?line+1:line,push_word,TRUE);/*			     */
+  wp = deTeX(*line=='{'?line+1:line,push_word,DETEX_FLAG_COMMA);/*	     */
   words[wp] = NULL;				   /*                        */
  						   /*                        */
   for ( i=0; i<wp; i++)			   	   /*			     */
-  { if ( strcmp(words[i],"and") == 0 )		   /*                        */
+  {						   /*                        */
+#ifdef DEBUG
+    printf("%3d '%s'\n",i,words[i]);		   /*                        */
+#endif
+    if ( strcmp(words[i],"and") == 0 )		   /*                        */
     { words[i] = and; }				   /*                        */
     else if ( strcmp(words[i],",") == 0 )	   /*                        */
     { words[i] = comma; }			   /*                        */
@@ -835,7 +853,8 @@ static void fmt_names(sb,line,maxname,post,trans)  /*		             */
 			    maxname,		   /*                        */
 			    comma,		   /*                        */
 			    and,		   /*                        */
-			    NameNameSep,EtAl));	   /*                        */
+			    (char*)NameNameSep,	   /*                        */
+			    (char*)EtAl));	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -860,7 +879,7 @@ static int fmt_c_names(line,min,max,not)	   /*		             */
 	      n;				   /*			     */
   						   /*                        */
   ResetWords;					   /*                        */
-  wp = deTeX(*line=='{'?line+1:line,push_word,TRUE);/*			     */
+  wp = deTeX(*line=='{'?line+1:line,push_word,DETEX_FLAG_COMMA);/*	     */
   words[wp] = NULL;				   /*                        */
  						   /*                        */
   for ( i=0, n=1; i<wp; i++)			   /*			     */
@@ -929,7 +948,9 @@ static int fmt_digits(sb,s,mp,pp,n,sel,trunc)	   /*			     */
   else						   /*                        */
   {						   /*                        */
     while ( s != cp )				   /*			     */
-    { (void)sbputchar(*s,sb); ++s; }	   	   /*			     */
+    { (void)sbputchar((char)(*s),sb);		   /*                        */
+      ++s;					   /*                        */
+    }	   					   /*			     */
   }						   /*                        */
   return 0;					   /*                        */
 }						   /*------------------------*/
@@ -952,15 +973,15 @@ static int fmt_digits(sb,s,mp,pp,n,sel,trunc)	   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void fmt_string(sb,s,n,trans,sep)	   /*			     */
-  StringBuffer *sb;				   /*                        */
-  register char * s;				   /*			     */
+  StringBuffer  *sb;				   /*                        */
+  register char *s;				   /*			     */
   register int	n;				   /*			     */
   register char *trans;				   /*			     */
   char          *sep;				   /*                        */
 {						   /*			     */
   while ( *s && n>0 )				   /*			     */
   { if ( is_allowed(*s) )			   /*			     */
-    { (void)sbputchar(trans[*s],sb); n--; }	   /*			     */
+    { (void)sbputchar(trans[*((unsigned char*)s)],sb); n--; }/*		     */
     else if ( is_space(*s) )			   /*			     */
     { (void)sbputs(sep,sb); n--;	   	   /*                        */
       while ( is_space(*s) ) s++;		   /* skip over multiple SPC */
@@ -992,7 +1013,7 @@ static int fmt_c_string(s,min,max,not)		   /*			     */
   while ( *s )				   	   /*			     */
   { if ( is_allowed(*s) ) { n++; }	   	   /*			     */
     else if ( is_space(*s) )			   /*			     */
-    { n += strlen(TitleTitleSep);	   	   /*                        */
+    { n += strlen((char*)TitleTitleSep);	   /*                        */
       while ( is_space(*s) ) s++;		   /* skip over multiple SPC */
     }   					   /*			     */
     ++s;					   /*			     */
@@ -1009,64 +1030,34 @@ static int fmt_c_string(s,min,max,not)		   /*			     */
 #define GetEntryOrReturn(S,NAME)					\
 	if((S=get_field(tmp_key_db,rec,NAME))==NULL) return(FALSE)
 
+ static WordList old_keys = WordNULL;
 
 /*-----------------------------------------------------------------------------
-** Function:	make_key()
-** Purpose:	Generate a key for a given record.
+** Function:	start_key_gen()
+** Purpose:	
+**		
+**		
 ** Arguments:
-**	db	Database containing the record.	
-**	rec	Record to consider.
+**		
 ** Returns:	nothing
 **___________________________________________________			     */
-void make_key(db,rec)				   /*			     */
-  DB		  db;				   /*                        */
-  register Record rec;				   /*			     */
-{ register char	  *kp,				   /*			     */
-		  **cpp;			   /*			     */
-  int		  n,				   /*			     */
-		  pos;				   /*			     */
-						   /*			     */
-  if ( IsSpecialRecord(RecordType(rec)) ) return;  /*			     */
-						   /*			     */
-  if ( key_tree == (KeyNode)0 )			   /*			     */
-  { *RecordHeap(rec) = sym_empty;		   /* store an empty key     */
-    return;					   /*			     */
-  }						   /*			     */
- 						   /*                        */
-  if ( formatp ) { init_key(3); }
-						   /*			     */
-  if ( rsc_key_preserve && **RecordHeap(rec) != '\0' )/*		     */
-  { return; }					   /*			     */
-						   /*			     */
-  key_init();					   /*			     */
-  sbrewind(key_sb);				   /* clear key		     */
-						   /*			     */
-  if ( eval_fmt(key_sb,key_tree,rec,db) )	   /*                        */
-  { sbputs(DefaultKey,key_sb);			   /*                        */
-  }			   			   /*			     */
-						   /*			     */
-  pos		    = sbtell(key_sb);		   /*			     */
-  kp		    = sbflush(key_sb);		   /* get collected key	     */
-  cpp		    = RecordHeap(rec);		   /* get destination for key*/
-  ReleaseSymbol(RecordOldKey(rec));
-  RecordOldKey(rec) = *cpp;			   /* save old key	     */
-  ReleaseSymbol(*cpp);
-  *cpp		    = symbol(kp);		   /* store new key	     */
-						   /*			     */
-  if ( sym_flag(*cpp)&SYMBOL_KEY )		   /* is key already used?   */
-  {						   /* Then disambiguate:     */
-    (void)sbseek(key_sb,pos);			   /*			     */
-    (void)sbputs(KeyNumberSep,key_sb);		   /* put separator at end   */
-    n	= 1;					   /* start with no 1	     */
-    pos = sbtell(key_sb);			   /*			     */
-    do						   /* last symbol was present*/
-    { (void)sbseek(key_sb,pos);			   /*			     */
-      (void)sbputs(itostr(n++,key__base[key_base]),/*			     */
-		   key_sb);			   /*			     */
-      *cpp = symbol(sbflush(key_sb));		   /*	store new key	     */
-    } while ( sym_flag(*cpp)&SYMBOL_KEY );	   /*			     */
-  }						   /*			     */
-  sym_set_flag(*cpp,SYMBOL_KEY);		   /* Mark the symbol as key */
+void start_key_gen()				   /*                        */
+{						   /*                        */
+  free_words(&old_keys,sym_unlink);		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	end_key_gen()
+** Purpose:	
+**		
+**		
+** Arguments:
+**		
+** Returns:	nothing
+**___________________________________________________			     */
+void end_key_gen()				   /*                        */
+{						   /*                        */
+  free_words(&old_keys,sym_unlink);		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -1081,11 +1072,83 @@ int mark_key(db,rec)				   /*			     */
   DB	 db;					   /*                        */
   Record rec;				   	   /*			     */
 {						   /*			     */
-  if ( IsSpecialRecord(RecordType(rec)) ) return 0;/*			     */
- 						   /*                        */
-  if ( *RecordHeap(rec) == NULL ) { return 0; }	   /*			     */
-  sym_set_flag(*RecordHeap(rec),SYMBOL_KEY);	   /*		             */
+  if ( IsSpecialRecord(RecordType(rec)) ||	   /*                        */
+       *RecordHeap(rec) == NULL )		   /*                        */
+  { return 0; }	   				   /*			     */
+   						   /*                        */
+  add_word(symbol(*RecordHeap(rec)),&old_keys);
   return 0;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	make_key()
+** Purpose:	Generate a key for a given record.
+** Arguments:
+**	db	Database containing the record.	
+**	rec	Record to consider.
+** Returns:	nothing
+**___________________________________________________			     */
+void make_key(db,rec)				   /*			     */
+  DB		  db;				   /*                        */
+  register Record rec;				   /*			     */
+{ register Uchar  *kp;			   	   /*			     */
+  int		  pos;				   /*			     */
+						   /*			     */
+  if ( IsSpecialRecord(RecordType(rec)) ) return;  /*			     */
+						   /*			     */
+  if ( key_tree == (KeyNode)0 )			   /*			     */
+  { *RecordHeap(rec) = sym_empty;		   /* store an empty key     */
+    return;					   /*			     */
+  }						   /*			     */
+ 						   /*                        */
+  if ( formatp ) { init_key(3); }		   /*                        */
+						   /*			     */
+  if ( rsc_key_preserve &&			   /*                        */
+       **RecordHeap(rec) != '\0' )		   /*		             */
+  { return; }					   /*			     */
+						   /*			     */
+  key_init();					   /*			     */
+  sbrewind(key_sb);				   /* clear key		     */
+						   /*			     */
+  if ( eval_fmt(key_sb,key_tree,rec,db) )	   /*                        */
+  { sbputs(DefaultKey,key_sb);			   /*                        */
+  }			   			   /*			     */
+						   /*			     */
+  ReleaseSymbol(RecordOldKey(rec));		   /*                        */
+  RecordOldKey(rec) = *RecordHeap(rec);		   /* save old key	     */
+#ifndef NEW
+#define trans trans_id
+  ResetWords;					   /*                        */
+  { char * buffer = new_string(sbflush(key_sb));
+    int nw = deTeX(*buffer=='{'?buffer+1:buffer,push_word,DETEX_FLAG_ALLOWED);
+    int i;
+    sbrewind(key_sb);
+    for ( i=0; i < nw; ++i )		   	   /*			     */
+    { if ( strcmp(words[i],"\\") )
+        PushS(key_sb,words[i]);			   /*			     */
+    }
+    free(buffer);
+  }
+#undef trans
+#endif
+  pos = sbtell(key_sb);		   		   /*			     */
+  kp  = (Uchar*)sbflush(key_sb);	   	   /* get collected key	     */
+						   /*			     */
+  if ( find_word(kp,old_keys) )		   	   /* is key already used?   */
+  { int n = 1;					   /* Then disambiguate:     */
+    (void)sbseek(key_sb,pos);			   /*			     */
+    (void)sbputs(KeyNumberSep,key_sb);		   /* put separator at end   */
+    pos = sbtell(key_sb);			   /*			     */
+    do						   /* last symbol was present*/
+    { (void)sbseek(key_sb,pos);			   /*			     */
+      (void)sbputs(itostr(n++,key__base[key_base]),/*			     */
+		   key_sb);			   /*			     */
+      kp = (Uchar*)sbflush(key_sb);	   	   /*	get new key	     */
+    } while ( find_word(kp,old_keys) );	   	   /*			     */
+  }						   /*			     */
+ 						   /*                        */
+  *RecordHeap(rec) = symbol(kp);		   /* store new key	     */
+  add_word(symbol(kp),&old_keys);		   /* remember new key       */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -1100,7 +1163,7 @@ int mark_key(db,rec)				   /*			     */
 void make_sort_key(db,rec)			   /*			     */
   DB		  db;				   /*                        */
   register Record rec;				   /*			     */
-{ register char	  *kp;				   /*			     */
+{ register Uchar  *kp;				   /*			     */
 						   /*			     */
   if ( IsSpecialRecord(RecordType(rec)) ) return;  /*			     */
 						   /*			     */
@@ -1109,8 +1172,8 @@ void make_sort_key(db,rec)			   /*			     */
 						   /*			     */
   if (	 sort_key_tree != (KeyNode)0		   /*			     */
       && eval_fmt(key_sb,sort_key_tree,rec,db) == 0 )/*			     */
-  { kp		   = sbflush(key_sb);		   /* get collected key	     */
-    RecordSortkey(rec) = symbol(kp);		   /* store new key	     */
+  { kp		       = (Uchar*)sbflush(key_sb);  /* get collected key	     */
+    RecordSortkey(rec) = symbol(kp);	   	   /* store new key	     */
   }						   /*			     */
   else						   /* If everything fails    */
   { RecordSortkey(rec) = RecordHeap(rec)[0];	   /* use the reference key  */
@@ -1133,7 +1196,7 @@ void make_sort_key(db,rec)			   /*			     */
 **___________________________________________________			     */
 static KeyNode new_key_node(type,string)	   /*			     */
   int	  type;					   /*			     */
-  char	  *string;				   /*			     */
+  Uchar	  *string;				   /*			     */
 { KeyNode new;					   /*			     */
   if( (new=(KeyNode)malloc(sizeof(SKeyNode))) == (KeyNode)0 )/*		     */
   { OUT_OF_MEMORY(" new_key_node()"); } 	   /*			     */
@@ -1210,15 +1273,15 @@ static int add_fmt_tree(s,treep)		   /*			     */
 						   /*			     */
   if ( special )				   /*			     */
   { free_key_node(*treep);			   /*			     */
-    *treep = new_key_node(NodeSPECIAL,(char*)NULL);/*			     */
+    *treep = new_key_node(NodeSPECIAL,(Uchar*)NULL);/*			     */
     NodePre(*treep) = special;			   /*			     */
     return TRUE;				   /*			     */
   }						   /*			     */
 						   /*			     */
   if ( fmt_parse(&s,&kn) > 0 )			   /*			     */
   { error(ERR_POINT|ERR_WARN,			   /*			     */
-	  "Format Error. Format ignored.",	   /*			     */
-	  (char*)0,(char*)0,s0,(unsigned char*)s,0,sym_empty);/*	     */
+	  (Uchar*)"Format Error. Format ignored.", /*			     */
+	  (Uchar*)0,(Uchar*)0,s0,(Uchar*)s,0,(char*)sym_empty);/*	     */
     return FALSE;				   /*			     */
   }						   /*			     */
   if ( *treep == (KeyNode)0 ) { *treep	= kn; }	   /*			     */
@@ -1227,7 +1290,7 @@ static int add_fmt_tree(s,treep)		   /*			     */
     *treep  = kn;				   /*			     */
   }						   /*			     */
   else						   /*			     */
-  { kn_or = new_key_node(NodeOR,(char*)NULL);	   /*			     */
+  { kn_or = new_key_node(NodeOR,(Uchar*)NULL);	   /*			     */
     NodeThen(kn_or) = *treep;			   /*			     */
     NodeElse(kn_or) = kn;			   /*			     */
     *treep	    = kn_or;			   /*			     */
@@ -1343,7 +1406,7 @@ static int fmt_parse(sp,knp)			   /*			     */
   while ( (ret=fmt__parse(sp,knp)) == 0 )	   /*			     */
   { SkipSpaces(*sp);				   /*			     */
     if ( **sp == '#' )				   /*			     */
-    { new  = new_key_node(NodeOR,(char*)NULL);	   /*			     */
+    { new  = new_key_node(NodeOR,(Uchar*)NULL);	   /*			     */
       NodeThen(new) = *knp;			   /*			     */
       *knp = new;				   /*			     */
       knp  = &NodeElse(new);			   /*			     */
@@ -1505,7 +1568,7 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
   StringBuffer  *sb;				   /*                        */
   KeyNode	kn;				   /*			     */
   Record	rec;				   /*			     */
-{ char	   	*s;				   /*			     */
+{ Uchar	   	*s;				   /*			     */
   int		pos;				   /*			     */
   char		*trans;				   /*                        */
 						   /*			     */
@@ -1707,21 +1770,21 @@ static void eval__special(sb,kn,rec)		   /*			     */
   StringBuffer *sb;				   /*                        */
   KeyNode	kn;				   /*			     */
   Record	rec;				   /*			     */
-{ char		*s;				   /*			     */
+{ Uchar		*s;				   /*			     */
   int		missing	= TRUE,		   	   /*			     */
 		fmt;			   	   /*			     */
-  static char	*s_author	= NULL;		   /*			     */
-  static char	*s_editor	= NULL;		   /*			     */
-  static char	*s_title	= NULL;		   /*			     */
-  static char	*s_booktitle	= NULL;		   /*			     */
-  static char	*s_key		= NULL;		   /*			     */
+  static Uchar	*s_author	= (Uchar*)NULL;	   /*			     */
+  static Uchar	*s_editor	= (Uchar*)NULL;	   /*			     */
+  static Uchar	*s_title	= (Uchar*)NULL;	   /*			     */
+  static Uchar	*s_booktitle	= (Uchar*)NULL;	   /*			     */
+  static Uchar	*s_key		= (Uchar*)NULL;	   /*			     */
 						   /*			     */
-  if ( s_author == NULL )			   /*			     */
-  { s_author	= sym_add("author",-1);		   /*			     */
-    s_editor	= sym_add("editor",-1);		   /*			     */
-    s_title	= sym_add("title",-1);		   /*			     */
-    s_booktitle = sym_add("booktitle",-1);	   /*			     */
-    s_key	= sym_add("key",-1);		   /*			     */
+  if ( s_author == (Uchar*)NULL )		   /*			     */
+  { s_author	= sym_add((Uchar*)"author",-1);	   /*			     */
+    s_editor	= sym_add((Uchar*)"editor",-1);	   /*			     */
+    s_title	= sym_add((Uchar*)"title",-1);	   /*			     */
+    s_booktitle = sym_add((Uchar*)"booktitle",-1); /*			     */
+    s_key	= sym_add((Uchar*)"key",-1);	   /*			     */
   }						   /*			     */
 						   /*			     */
   if ( formatp ) init_key(3);			   /*                        */
@@ -1776,25 +1839,24 @@ int apply_fmt(sb,fmt,rec,db)			   /*                        */
   DB	         db;				   /*                        */
 { static char    *old_fmt = NULL;		   /*                        */
   static KeyNode old_kn   = (KeyNode)0;		   /*                        */
-  int		 ret;				   /*                        */
  						   /*                        */
   if (   old_fmt == NULL			   /* This is the first time */
       || strcmp(fmt,old_fmt) != 0 )		   /*   or the format needs  */
   {						   /*   recompilation.       */
-    key_init();
-    if ( old_fmt != NULL )
-    { free(old_fmt);
-      free_key_node(old_kn);
-      old_kn = (KeyNode)0;
-    }
-
-    old_fmt = new_string(fmt);
-    if ( !add_fmt_tree(old_fmt,&old_kn) )
-    { free(old_fmt);
-      old_fmt = NULL;
-      return 1;
-    }
-  }
+    key_init();					   /*                        */
+    if ( old_fmt != NULL )			   /*                        */
+    { free(old_fmt);				   /*                        */
+      free_key_node(old_kn);			   /*                        */
+      old_kn = (KeyNode)0;			   /*                        */
+    }						   /*                        */
+ 						   /*                        */
+    old_fmt = new_string(fmt);			   /*                        */
+    if ( !add_fmt_tree(old_fmt,&old_kn) )	   /*                        */
+    { free(old_fmt);				   /*                        */
+      old_fmt = NULL;				   /*                        */
+      return 1;					   /*                        */
+    }						   /*                        */
+  }						   /*                        */
   return eval_fmt(sb,old_kn,rec,db);		   /*                        */
 }						   /*------------------------*/
 
@@ -1808,23 +1870,24 @@ int apply_fmt(sb,fmt,rec,db)			   /*                        */
 **	cp	format
 ** Returns:	The first character after the % format.
 **___________________________________________________			     */
-char* fmt_expand(sb,cp,db,rec)			   /*                        */
+Uchar* fmt_expand(sb,cp,db,rec)			   /*                        */
   StringBuffer *sb;				   /*                        */
-  char	       *cp;				   /*                        */
+  Uchar	       *cp;				   /*                        */
   DB	       db;				   /*                        */
   Record       rec;				   /*                        */
-{ char *sp, c, *s;			   	   /*                        */
+{ Uchar	       *field;				   /*                        */
+  Uchar	       *sp, c;			   	   /*                        */
   char *trans = trans_id;			   /*                        */
   int  pre  = -1,				   /*                        */
        post = -1,				   /*                        */
        type = 0;				   /*                        */
-
-  while ( *cp && *cp != '%' )
-  { sbputchar(*cp,sb);
+ 						   /*                        */
+  while ( *cp && *cp != (Uchar)'%' )
+  { sbputchar((Uchar)*cp,sb);
     cp++;
-  }
-					       	   /*                        */
-  if (*cp =='%')				   /*                        */
+  }						   /*                        */
+ 					       	   /*                        */
+  if ( *cp == (Uchar)'%' )			   /*                        */
   { 						   /*                        */
     switch ( *++cp )			   	   /*			     */
     { case '+': trans = trans_upper; ++cp; break;  /*		             */
@@ -1854,98 +1917,102 @@ char* fmt_expand(sb,cp,db,rec)			   /*                        */
     SkipAllowed(cp);			   	   /*			     */
     c = *cp;					   /*                        */
     *cp = '\0';					   /*                        */
-    sp = symbol(sp);			   	   /*                        */
+    field = symbol(sp);			   	   /*                        */
     *cp = c;					   /*                        */
     SkipSpaces(cp);			   	   /*			     */
     if ( *cp == ')' ) { cp++; }			   /*                        */
     else					   /*                        */
-    { ErrPrintF("*** BibTool: Missing ')' in format before: %s\n",*cp);/*    */
+    { ErrPrintF("*** BibTool: Missing ')' in format before: %s\n",cp);/*     */
       return cp;				   /*                        */
     }						   /*                        */
  						   /*                        */
-    if ( (s=get_field(db,rec,sp)) != NULL )
+    if ( (field=get_field(db,rec,field)) != NULL ) /*                        */
     {					   	   /*			     */
       DebugPrint1("Field found");	   	   /*			     */
  						   /*                        */
-#define UsePostOr(X) (post > 0 ? post : (X))
-#define UsePreOr(X)  (pre >= 0 ? pre  : (X))
-#define HasMinus     (type&NodeMinusMask)
-#define HasPlus      (type&NodePlusMask)
+#define PostOr(X)	(post > 0 ? post : (X))
+#define PreOr(X)	(pre >= 0 ? pre  : (X))
+#define HasMinus	(type&NodeMinusMask)
+#define HasPlus		(type&NodePlusMask)
       switch ( type & 0x1ff )	   		   /*			     */
       {					   	   /*                        */
 	case 'p':				   /*			     */
-	  fmt_names(sb,s,UsePreOr(2),UsePostOr(0),trans);/*                  */
+	  fmt_names(sb,				   /*                        */
+		    field,			   /*                        */
+		    PreOr(2),		   	   /*                        */
+		    PostOr(0),		   	   /*                        */
+		    trans);			   /*                        */
 	  break;				   /*			     */
 	case 'n':				   /*			     */
-	  if ( formatp ) init_key(3);
-	  NameStrip(format[0]) = UsePostOr(-1);	   /*                        */
-	  fmt_names(sb,s,UsePreOr(2),0,trans);	   /*                        */
+	  if ( formatp ) init_key(3);		   /*                        */
+	  NameStrip(format[0]) = PostOr(-1);	   /*                        */
+	  fmt_names(sb,field,PreOr(2),0,trans);    /*                        */
 	  break;				   /*			     */
 	case 'N':				   /*			     */
-	  if ( formatp ) init_key(3);
-	  NameStrip(format[1]) = UsePostOr(-1);	   /*                        */
+	  if ( formatp ) init_key(3);		   /*                        */
+	  NameStrip(format[1]) = PostOr(-1);	   /*                        */
 	  if (NextName(format[1]))		   /*                        */
 	  { NamePre(NextName(format[1])) = NamePreSep;/*                     */
 	  }					   /*                        */
-	  fmt_names(sb,s,UsePreOr(2),1,trans);	   /*                        */
+	  fmt_names(sb,field,PreOr(2),1,trans);    /*                        */
 	  break;				   /*			     */
 	case 'T':				   /*			     */
 	  fmt_title(sb,				   /*                        */
-		    s,				   /*                        */
-		    UsePreOr(1),		   /*                        */
-		    UsePostOr(0),		   /*                        */
+		    field,			   /*                        */
+		    PreOr(1),		   	   /*                        */
+		    PostOr(0),		   	   /*                        */
 		    trans,			   /*                        */
 		    TRUE,			   /*                        */
 		    TitleTitleSep);		   /*                        */
 	  break;				   /*			     */
 	case 't':				   /*			     */
 	  fmt_title(sb,				   /*                        */
-		    s,				   /*                        */
-		    UsePreOr(1),		   /*                        */
-		    UsePostOr(0),		   /*                        */
+		    field,			   /*                        */
+		    PreOr(1),		   	   /*                        */
+		    PostOr(0),		   	   /*                        */
 		    trans,			   /*                        */
 		    FALSE,			   /*                        */
 		    TitleTitleSep);		   /*                        */
 	  break;				   /*			     */
 	case 'd':				   /*			     */
 	  (void)fmt_digits(sb,			   /*                        */
-			   s,		   	   /*                        */
+			   field,	   	   /*                        */
 			   HasMinus,		   /*                        */
 			   HasPlus,		   /*                        */
 			   pre,	   	   	   /*                        */
-			   UsePostOr(1),	   /*                        */
+			   PostOr(1),	   	   /*                        */
 			   TRUE);		   /*                        */
 	  break;				   /*			     */
 	case 'D':				   /*			     */
 	  (void)fmt_digits(sb,			   /*                        */
-			   s,		   	   /*                        */
+			   field,	   	   /*                        */
 			   HasMinus,		   /*                        */
 			   HasPlus,		   /*                        */
 			   pre,	   	   	   /*                        */
-			   UsePostOr(1),	   /*                        */
+			   PostOr(1),	   	   /*                        */
 			   FALSE);		   /*                        */
 	  break;				   /*			     */
 	case 's':				   /*			     */
 	  fmt_string(sb,			   /*                        */
-		     s,				   /*                        */
-		     UsePreOr(0xffff),		   /*                        */
+		     field,			   /*                        */
+		     PreOr(0xffff),		   /*                        */
 		     trans,			   /*                        */
 		     " ");	   		   /*		             */
 	  break;				   /*			     */
 	case 'W':				   /*			     */
 	  fmt_title(sb,				   /*                        */
-		    s,				   /*                        */
-		    UsePreOr(1),		   /*                        */
-		    UsePostOr(0),		   /*                        */
+		    field,			   /*                        */
+		    PreOr(1),		   	   /*                        */
+		    PostOr(0),		   	   /*                        */
 		    trans,			   /*                        */
 		    TRUE,			   /*                        */
 		    sym_empty);			   /*                        */
 	  break;				   /*			     */
 	case 'w':				   /*			     */
 	  fmt_title(sb,				   /*                        */
-		    s,				   /*                        */
-		    UsePreOr(1),		   /*                        */
-		    UsePostOr(0),		   /*                        */
+		    field,			   /*                        */
+		    PreOr(1),		   	   /*                        */
+		    PostOr(0),		   	   /*                        */
 		    trans,			   /*                        */
 		    FALSE,			   /*                        */
 		    sym_empty);			   /*                        */
@@ -1956,13 +2023,13 @@ char* fmt_expand(sb,cp,db,rec)			   /*                        */
     { DebugPrint1("Field not found");	   	   /*			     */
     }						   /*                        */
   }						   /*                        */
-#undef UsePostOr
-#undef UsePreOr
-#undef HasMinus
-#undef HasPlus
  						   /*                        */
   return cp;					   /*                        */
 }						   /*------------------------*/
+#undef PostOr
+#undef PreOr
+#undef HasMinus
+#undef HasPlus
 
 
 #ifdef DEBUG
@@ -2027,8 +2094,8 @@ static void show_fmt(kn,in)			   /*			     */
 #endif
 
 
- static char * sym_user = NULL;
- static char * sym_host = NULL;
+ static Uchar * sym_user = NULL;
+ static Uchar * sym_host = NULL;
 
 /*-----------------------------------------------------------------------------
 ** Function:	get_field()
@@ -2044,10 +2111,10 @@ static void show_fmt(kn,in)			   /*			     */
 **		arbitrary string.
 ** Returns:	The address of the value or |NULL|.
 **___________________________________________________			     */
-char *get_field(db,rec,name)		   	   /*			     */
-  DB db;					   /*                        */
+Uchar *get_field(db,rec,name)		   	   /*			     */
+  DB		  db;				   /*                        */
   register Record rec;				   /*			     */
-  register char	  *name;			   /*			     */
+  register Uchar  *name;			   /*			     */
 { 						   /*                        */
 #ifdef HAVE_TIME_H
   static struct tm *tp;				   /*                        */
@@ -2060,7 +2127,7 @@ char *get_field(db,rec,name)		   	   /*			     */
   }						   /*                        */
 #define ReturnTime(F) if ( the_time > 0 )	\
   { (void)strftime(buffer,32,F,tp);		\
-    return symbol(buffer); }			\
+    return symbol((Uchar*)buffer); }		\
   return sym_empty
 #else
 #define ReturnTime(F) return sym_empty
@@ -2077,7 +2144,7 @@ char *get_field(db,rec,name)		   	   /*			     */
         if ( case_cmp(name,"key") )		   /*			     */
 	{ return (**RecordHeap(rec)		   /*                        */
 		  ? *RecordHeap(rec)		   /*                        */
-		  : NULL);			   /*                        */
+		  : (Uchar*)NULL);		   /*                        */
 	}					   /*		             */
         break;					   /*                        */
       case 'd': case 'D':			   /*                        */
@@ -2102,7 +2169,7 @@ char *get_field(db,rec,name)		   	   /*			     */
       case 'h': case 'H':			   /*                        */
 	if ( case_cmp(name,"hostname") )	   /*			     */
 	{ if ( sym_host==NULL )			   /*                        */
-	  { sym_host = getenv("HOSTNAME");	   /*                        */
+	  { sym_host = (Uchar*)getenv("HOSTNAME"); /*                        */
 	    sym_host = symbol(sym_host?sym_host:sym_empty);/*                */
 	  }					   /*                        */
 	  return sym_host;			   /*                        */
@@ -2135,7 +2202,7 @@ char *get_field(db,rec,name)		   	   /*			     */
       case 'u': case 'U':			   /*                        */
 	if ( case_cmp(name,"user") )		   /*			     */
 	{ if ( sym_user==NULL )			   /*                        */
-	  { sym_user = getenv("USER");		   /*                        */
+	  { sym_user = (Uchar*)getenv("USER");	   /*                        */
 	    sym_user = symbol(sym_user?sym_user:sym_empty);/*                */
 	  }					   /*                        */
 	  return sym_user;			   /*                        */
@@ -2152,9 +2219,9 @@ char *get_field(db,rec,name)		   	   /*			     */
     }						   /*                        */
   }						   /*			     */
   else						   /*			     */
-  { register char **cpp;			   /*			     */
-    char *xref;					   /*                        */
-    register int n, count;			   /*			     */
+  { register Uchar **cpp;			   /*			     */
+    Uchar	   *xref;			   /*                        */
+    register int   n, count;			   /*			     */
 						   /*			     */
     for ( count=rsc_xref_limit;count>=0;count-- )  /* Prevent infinite loop  */
     {						   /*                        */
@@ -2173,17 +2240,17 @@ char *get_field(db,rec,name)		   	   /*			     */
         cpp++;			   	   	   /*			     */
       }					   	   /*			     */
        						   /*                        */
-      if ( xref == NULL ) { return (char*)0; }	   /* No crossref field found*/
-      xref = symbol(expand_rhs(xref,sym_empty,sym_empty,db));/*              */
+      if ( xref == NULL ) { return (Uchar*)NULL; } /* No crossref field found*/
+      xref = symbol(lower(expand_rhs(xref,sym_empty,sym_empty,db)));/*       */
       if ( (rec = db_find(db,xref)) == RecordNULL )/*                        */
       { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",xref);/*         */
-	return (char*)0;			   /*                        */
+	return (Uchar*)NULL;			   /*                        */
       }						   /*                        */
       DebugPrint2("Following crossref to ",xref);  /*                        */
     }						   /*			     */
   }						   /*                        */
  						   /*                        */
-  return (char*)0;				   /* Nothing found.	     */
+  return (Uchar*)NULL;				   /* Nothing found.	     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -2207,8 +2274,8 @@ char *get_field(db,rec,name)		   	   /*			     */
 int set_field(db,rec,name,value)		   /*			     */
   DB db;					   /*                        */
   register Record rec;				   /*			     */
-  register char	  *name;			   /*			     */
-  char	  	  *value;			   /*			     */
+  Uchar		  *name;			   /*			     */
+  Uchar	  	  *value;			   /*			     */
 { 						   /*                        */
   value = symbol(value);			   /*                        */
 				   		   /*                        */
@@ -2217,7 +2284,7 @@ int set_field(db,rec,name,value)		   /*			     */
   }						   /*			     */
   else if ( *name == '$' )			   /*			     */
   { ++name;					   /*			     */
-    switch (*name)				   /*                        */
+    switch ( *name )				   /*                        */
     { case 'k': case 'K':			   /*                        */
         if ( case_cmp(name,"key") )		   /*			     */
 	{ *RecordHeap(rec) = value;	   	   /*                        */

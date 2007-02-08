@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: macros.h,v 1.1 2007-02-07 21:31:54 gene Exp $
+** $Id: macros.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -20,6 +20,8 @@
 **
 ******************************************************************************/
 
+#include <bibtool/type.h>
+
 /*-----------------------------------------------------------------------------
 ** Typedef:	Macro
 ** Purpose:	This is a pointer type to represent a mapping from a
@@ -27,8 +29,8 @@
 **		by a counter which can be used as a reference count.
 **___________________________________________________			     */
  typedef struct mACRO				   /*			     */
- { char		*mc_name;			   /* Name of the macro.     */
-   char		*mc_value;			   /* Value of the macro.    */
+ { Uchar	*mc_name;		   	   /* Name of the macro.     */
+   Uchar	*mc_value;		   	   /* Value of the macro.    */
    int		mc_used;			   /* Reference count.	     */
    struct mACRO *mc_next;			   /* Pointer the next macro.*/
  } SMacro, *Macro;				   /*			     */
@@ -44,7 +46,7 @@
 
 /*-----------------------------------------------------------------------------
 ** Macro:	MacroName()
-** Type:	char *
+** Type:	Uchar *
 ** Purpose:	This is the functional representation of the name
 **		component of a |Macro|. It can be used to extract this
 **		information. It can also be used as a lvalue.
@@ -55,7 +57,7 @@
 
 /*-----------------------------------------------------------------------------
 ** Macro:	MacroValue()
-** Type:	char *
+** Type:	Uchar *
 ** Purpose:	This is the functional representation of the value
 **		component of a |Macro|. It can be used to extract this
 **		information. It can also be used as a lvalue.
@@ -93,14 +95,14 @@
 #else
 #define _ARG(A) ()
 #endif
- Macro new_macro _ARG((char *name,char *val,Macro next,int count));/* macros.c*/
- char * get_item _ARG((char * name,int type));	   /* macros.c               */
- char * get_key_name _ARG((char *s));		   /* macros.c               */
- char * look_macro _ARG((char *name,int add));	   /* macros.c               */
- int def_macro _ARG((char *name,char *val,int count));/* macros.c            */
- void def_field_type _ARG((char * s));		   /* macros.c               */
+ Macro new_macro _ARG((Uchar *name,Uchar *val,Macro next,int count));/* macros.c*/
+ Uchar * get_item _ARG((Uchar * name,int type));   /* macros.c               */
+ Uchar * get_key_name _ARG((Uchar *s));		   /* macros.c               */
+ Uchar * look_macro _ARG((Uchar *name,int add));   /* macros.c               */
+ int def_macro _ARG((Uchar *name,Uchar *val,int count));/* macros.c          */
+ void def_field_type _ARG((Uchar * s));		   /* macros.c               */
  void dump_mac _ARG((char *fname,int allp));	   /* macros.c               */
- void foreach_macro _ARG((int (*fct) _ARG((char *,char *))));/* macros.c     */
+ void foreach_macro _ARG((int (*fct) _ARG((Uchar *,Uchar *))));/* macros.c   */
  void free_macro _ARG((Macro mac));		   /* macros.c               */
  void init_macros _ARG((void));			   /* macros.c               */
  void save_key _ARG((char * s,char * key));	   /* macros.c               */

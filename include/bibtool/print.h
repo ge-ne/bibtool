@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: print.h,v 1.1 2007-02-07 21:32:06 gene Exp $
+** $Id: print.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -28,8 +28,8 @@
 #else
 #define _ARG(A) ()
 #endif
- char * sput_record _ARG((Record rec,DB db,char *start));/* print.c          */
- void fput_record _ARG((FILE *file,Record rec,DB db,char *start));/* print.c */
- void put_record _ARG((int (*fct)_ARG((int)),Record rec,DB db,char *start));/* print.c*/
+ char * sput_record _ARG((Record rec,DB db,Uchar *start));/* print.c         */
+ void fput_record _ARG((FILE *file,Record rec,DB db,Uchar *start));/* print.c*/
+ void put_record _ARG((int (*fct)_ARG((int)),Record rec,DB db,Uchar *start));/* print.c*/
  void set_key_type _ARG((char * s));		   /* print.c                */
  void set_symbol_type _ARG((char * s));		   /* print.c                */

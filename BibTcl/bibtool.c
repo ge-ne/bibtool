@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: bibtool.c,v 1.1 2007-02-07 21:29:07 gene Exp $
+** $Id: bibtool.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 *******************************************************************************
 ** Author: Gerd Neugebauer
 **===========================================================================*/
@@ -127,8 +127,6 @@ static int rec_lt(r1,r2)			   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	new__record()
 ** Purpose:	Create a new handle for a record.
-**		
-**		
 ** Arguments:
 **	rec	
 **	pos	
@@ -143,15 +141,7 @@ static char * new__record(interp,rec,s_db,pos)	   /*                        */
   char	     *name;				   /*                        */
  						   /*                        */
   if ( rec == NULL ) return empty;		   /*                        */
- 						   /*                        */
-  i = 1;					   /*                        */
-  do						   /*                        */
-  { sprintf(buffer,"%s/=%d=",s_db,i++);		   /*                        */
-  } while (Tcl_FindHashEntry(&bibtool_table,buffer) != NULL);/*              */
- 						   /*                        */
-  if ( (name = malloc(strlen(buffer)+1)) == NULL ) return empty;/*           */
-  strcpy(name,buffer);				   /*                        */
- 						   /*                        */
+						   /*                        */
   switch (pos)					   /*                        */
   {						   /*                        */
     case REC_BEGINNING:				   /*                        */
@@ -167,6 +157,16 @@ static char * new__record(interp,rec,s_db,pos)	   /*                        */
 	rec = PrevRecord(rec);			   /*                        */
       break;					   /*                        */
   }						   /*                        */
+ 						   /*                        */
+  if ( rec == NULL ) return empty;		   /*                        */
+						   /*                        */
+  i = 1;					   /*                        */
+  do						   /*                        */
+  { sprintf(buffer,"%s/=%d=",s_db,i++);		   /*                        */
+  } while (Tcl_FindHashEntry(&bibtool_table,buffer) != NULL);/*              */
+ 						   /*                        */
+  if ( (name = malloc(strlen(buffer)+1)) == NULL ) return empty;/*           */
+  strcpy(name,buffer);				   /*                        */
  						   /*                        */
   MakeObject(name);				   /*                        */
   Tcl_SetHashValue(Tcl_CreateHashEntry(&bibtool_table,name,&i),/*            */
@@ -486,17 +486,18 @@ static int bt_fields(interp,argc,argv)		   /*                        */
   char	     *argv[];				   /*                        */
 { Record     rec;				   /*                        */
   int n;					   /*                        */
-  char **cpp;					   /*                        */
+  Uchar **cpp;					   /*                        */
  						   /*                        */
   NeedArgs(1);					   /*                        */
   GetRecord(rec,argv[2]);			   /*                        */
-  cpp = RecordHeap(rec);			   /*                        */
+  cpp = RecordHeap(rec);		   	   /*                        */
   n   = RecordFree(rec);			   /*                        */
   for ( n -= 2, cpp += 2;			   /*			     */
 	n > 0;				   	   /*			     */
 	n -= 2 )				   /*			     */
   {						   /*                        */
-    if (*cpp) { Tcl_AppendElement(interp,*cpp); }  /*                        */
+    if (*cpp) { Tcl_AppendElement(interp,	   /*                        */
+				  (char*)(*cpp)); }/*                        */
     cpp++; cpp++;				   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -879,7 +880,7 @@ static int bt_missing(interp,argc,argv)		   /*                        */
   char	     *argv[];				   /*                        */
 { Record     rec;				   /*                        */
   int n;					   /*                        */
-  char **cpp;					   /*                        */
+  Uchar **cpp;					   /*                        */
  						   /*                        */
   NeedArgs(3);					   /*                        */
   GetRecord(rec,argv[2]);			   /*                        */
@@ -889,7 +890,7 @@ static int bt_missing(interp,argc,argv)		   /*                        */
   for ( n -= 2, cpp += 2;			   /*			     */
 	n > 0;				   	   /*			     */
 	n -= 2 )				   /*			     */
-  { if (*cpp && case_cmp(*cpp,argv[3])==0 )	   /*                        */
+  { if (*cpp && case_cmp((char*)(*cpp),argv[3])==0 )/*                       */
     { Tcl_SetResult(interp,zero,TCL_STATIC);	   /*                        */
       return TCL_OK;	   	   		   /*                        */
     }						   /*                        */
@@ -1249,7 +1250,7 @@ static int bt_resource(interp,argc,argv)	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	bt_rsc()
+** Function:	bt_remove()
 ** Purpose:	
 **		
 **		
@@ -1268,7 +1269,7 @@ static int bt_remove(interp,argc,argv)		   /*                        */
  						   /*                        */
   NeedArgs(2);					   /*                        */
   GetRecord(rec,argv[2]);			   /*                        */
- 						   /*                        */
+
   if ( argc > 3 )				   /*                        */
   { remove_field(sym_add(argv[3],0),rec); }	   /*                        */
   else						   /*                        */
@@ -1384,31 +1385,31 @@ static int bt_set(interp,argc,argv)		   /*                        */
   GetRecord(rec,argv[2]);			   /*                        */
  						   /*                        */
 #define If_Separator_(S,N) if (strcmp(argv[3],S)==0) set_separator(N,argv[4])
-  if ( *argv[3] == '$' )
-  {
+ 						   /*                        */
+  if ( *argv[3] == '$' )			   /*                        */
+  {						   /*                        */
     if ( strcmp(argv[3],"$key") == 0 )		   /*                        */
-    { RecordOldKey(rec)
-	= *RecordHeap(rec) = symbol(argv[4]);
+    { RecordOldKey(rec)				   /*                        */
+	= *RecordHeap(rec) = symbol(argv[4]);	   /*                        */
     }	   					   /*                        */
     else if ( strcmp(argv[3],"$source") == 0 )	   /*                        */
     { RecordSource(rec) = symbol(argv[4]); }	   /*                        */
     else if ( strcmp(argv[3],"$type") == 0 )	   /*                        */
     { if ( (n = find_entry_type(argv[4])) < 0 )	   /*                        */
       { ErrorExit("undefined entry type"); }	   /*                        */
-      SetRecordType(rec,n);			   /*                        */
+      RecordType(rec) = n;			   /*                        */
     }						   /*                        */
     else if ( strcmp(argv[3],"$sortkey") == 0 )	   /*                        */
-    { RecordSortkey(rec) = symbol(argv[4]);	   /*                        */
-    }						   /*                        */
-    else If_Separator_("$default.key"    ,0);
-    else If_Separator_("$fmt.inter.name" ,1);
-    else If_Separator_("$fmt.name.pre"   ,2);
-    else If_Separator_("$fmt.name.name"  ,3);
-    else If_Separator_("$fmt.name.title" ,4);
-    else If_Separator_("$fmt.title.title",5);
-    else If_Separator_("$fmt.key.number" ,6);
-    else If_Separator_("$fmt.et.al"      ,7);
-    else
+    { RecordSortkey(rec) = symbol(argv[4]); }	   /*                        */
+    else If_Separator_("$default.key"    ,0);	   /*                        */
+    else If_Separator_("$fmt.inter.name" ,1);	   /*                        */
+    else If_Separator_("$fmt.name.pre"   ,2);	   /*                        */
+    else If_Separator_("$fmt.name.name"  ,3);	   /*                        */
+    else If_Separator_("$fmt.name.title" ,4);	   /*                        */
+    else If_Separator_("$fmt.title.title",5);	   /*                        */
+    else If_Separator_("$fmt.key.number" ,6);	   /*                        */
+    else If_Separator_("$fmt.et.al"      ,7);	   /*                        */
+    else					   /*                        */
     {						   /*                        */
       Tcl_SetResult(interp,"illegal key",TCL_STATIC);/*                      */
       return TCL_ERROR;	   	   		   /*                        */
@@ -1417,7 +1418,7 @@ static int bt_set(interp,argc,argv)		   /*                        */
   else if ( *argv[3] == '@' )	   		   /*                        */
   {
   }
-  else
+  else						   /*                        */
   { push_to_record(rec,				   /*                        */
 		   symbol(argv[3]),		   /*                        */
 		   symbol(argv[4]));		   /*                        */
@@ -1454,23 +1455,23 @@ static int bt_sort(interp,argc,argv)	   	   /*                        */
     {						   /*                        */
       while ( PrevRecord(rec) != RecordNULL )      /*                        */
       { rec = PrevRecord(rec); }                   /*                        */
-      if ( CheckArg(3,"-generate") ||
-	   CheckArg(4,"-generate") )
-      {
+      if ( CheckArg(3,"-generate") ||		   /*                        */
+	   CheckArg(4,"-generate") )		   /*                        */
+      {						   /*                        */
 	for ( ; rec!=RecordNULL; rec=NextRecord(rec) )/*                     */
-	{ make_sort_key(db,rec); }
-      }
-      else
-      {
+	{ make_sort_key(db,rec); }		   /*                        */
+      }						   /*                        */
+      else					   /*                        */
+      {						   /*                        */
 	for ( ; rec!=RecordNULL; rec=NextRecord(rec) )/*                     */
-	{ if ( RecordSortkey(rec) == NULL
+	{ if ( RecordSortkey(rec) == NULL	   /*                        */
 	       || *RecordSortkey(rec) == '\0' )	   /*                        */
           { RecordSortkey(rec) = *RecordHeap(rec); }/*                       */
 	}					   /*                        */
-      }
-
+      }						   /*                        */
+ 						   /*                        */
       i = rsc_sort_reverse;			   /*                        */
-      if ( CheckArg(3,"-reverse") ||
+      if ( CheckArg(3,"-reverse") ||		   /*                        */
 	   CheckArg(4,"-reverse") ) { i = !i; }	   /*                        */
       if ( i ) fct = rec_lt;	   		   /*                        */
       else     fct = rec_gt;	   		   /*                        */
@@ -1487,6 +1488,17 @@ static int bt_sort(interp,argc,argv)	   	   /*                        */
   return TCL_OK;	   	   		   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	bt_sput()
+** Purpose:	
+**		
+**		
+** Arguments:
+**	interp	
+**	argc	
+**	argv	
+** Returns:	
+**___________________________________________________			     */
 static int bt_sput(interp,argc,argv)		   /*                        */
   Tcl_Interp *interp;				   /*                        */
   int	     argc;				   /*                        */
@@ -1583,7 +1595,7 @@ static int bt_str_remove(interp,argc,argv)	   /*                        */
   char	     *argv[];				   /*                        */
 { DB	     db;				   /*                        */
   Record     rec;				   /*                        */
-  char       *s;				   /*                        */
+  Uchar      *s;				   /*                        */
  						   /*                        */
   NeedArgs(2);					   /*                        */
   GetDB(db,argv[2]);			   	   /*                        */
@@ -1625,7 +1637,7 @@ static int bt_str_set(interp,argc,argv)	   	   /*                        */
   char	     *argv[];				   /*                        */
 { DB	     db;				   /*                        */
   Record     rec;				   /*                        */
-  char       *s, *t;				   /*                        */
+  Uchar      *s, *t;				   /*                        */
  						   /*                        */
   NeedArgs(4);					   /*                        */
   GetDB(db,argv[2]);			   	   /*                        */
@@ -1738,16 +1750,16 @@ static int bt_tex(interp,argc,argv)		   /*                        */
   Tcl_Interp *interp;				   /*                        */
   int	     argc;				   /*                        */
   char	     *argv[];				   /*                        */
-{ char	     *s;				   /*                        */
+{ Uchar	     *s;				   /*                        */
   int	     kept = 0;				   /*                        */
-  char       q[2];
+  char       q[2];				   /*                        */
  						   /*                        */
   NeedArgs(2);					   /*                        */
-  switch ( *argv[2] )
-  {
-    case 'd':
-      if (strcmp(argv[2],"define") == 0)
-      {
+  switch ( *argv[2] )				   /*                        */
+  {						   /*                        */
+    case 'd':					   /*                        */
+      if (strcmp(argv[2],"define") == 0)	   /*                        */
+      {						   /*                        */
 	NeedArgs(3);				   /*                        */
 	TeX_def(argv[3]);
 	return TCL_OK;
@@ -2009,7 +2021,7 @@ int BibtoolCmd(clientData, interp, argc, argv)	   /*                        */
       OnCommand("read")		bt_read(interp,argc,argv);/*		     */
       OnCommand("record")	bt_record(interp,argc,argv);/*		     */
       OnCommand("remove")	bt_remove(interp,argc,argv);/*		     */
-      OnCommand("remove_string") bt_str_rm(interp,argc,argv);/*		     */
+      OnCommand("remove_string") bt_str_remove(interp,argc,argv);/*	     */
       OnCommand("rsc")		bt_rsc(interp,argc,argv,2);/*		     */
       OnCommand("resource")	bt_rsc(interp,argc,argv,2);/*		     */
       break;					   /*			     */
@@ -2023,7 +2035,7 @@ int BibtoolCmd(clientData, interp, argc, argv)	   /*                        */
       OnCommand("string_get")	bt_str_get(interp,argc,argv);/*		     */
       OnCommand("string_missing") bt_str_missing(interp,argc,argv);/*	     */
       OnCommand("string_set")	bt_str_set(interp,argc,argv);/*		     */
-      OnCommand("string_remove") bt_str_rm(interp,argc,argv);/*		     */
+      OnCommand("string_remove") bt_str_remove(interp,argc,argv);/*	     */
       break;					   /*			     */
     case 't':					   /*			     */
       OnCommand("tex")		bt_tex(interp,argc,argv);/*		     */

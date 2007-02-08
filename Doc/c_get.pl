@@ -5,9 +5,9 @@
 # It is distributed under the GNU General Public License.
 # See the file COPYING for details.
 #
-# (c) 1997 Gerd Neugebauer
+# (c) 1997-2001 Gerd Neugebauer
 #
-# Net: gerd@informatik.uni-koblenz.de
+# Net: gene@gerd-neugebauer.de
 #
 #*****************************************************************************
 

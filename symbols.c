@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: symbols.c,v 1.1 2007-02-07 21:27:14 gene Exp $
+** $Id: symbols.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -35,7 +35,7 @@
 **		
 **___________________________________________________			     */
  typedef struct STAB				   /*                        */
-  { char	*st_name;	/* The string representation of the symbol   */
+  { Uchar	*st_name;	/* The string representation of the symbol   */
     int		st_count;	/* 			                     */
     int		st_flags;	/* Bits of certain flags.                    */
     int		st_used; 	/* Counter for determining the number of uses*/
@@ -77,7 +77,7 @@
 
 /*-----------------------------------------------------------------------------
 ** Macro*:	SymbolName()
-** Type:	char *
+** Type:	Uchar *
 ** Purpose:	The name slot of a |StringTab|, i.e.\ the string
 **		representation. This macro can also be used as lvalue.
 ** Arguments:
@@ -106,17 +106,17 @@
 #else
 #define _ARG(A) ()
 #endif
- static StringTab new_string_tab _ARG((char *name,int count,int flags));/* symbols.c*/
+ Uchar * sym_add _ARG((Uchar *s,int count));	   /* symbols.c              */
+ Uchar * sym_extract _ARG((Uchar *ap,Uchar *ep,int count));/* symbols.c      */
  char * new_string _ARG((char * s));		   /* symbols.c              */
- char * sym_add _ARG((char *s,int count));	   /* symbols.c              */
- char * sym_extract _ARG((char *ap,char *ep,int count));/* symbols.c         */
- int sym_flag _ARG((char * s));			   /* symbols.c              */
- static int hashindex _ARG((char *s));		   /* symbols.c              */
+ int sym_flag _ARG((Uchar * s));		   /* symbols.c              */
+ static StringTab new_string_tab _ARG((Uchar *name,int count,int flags));/* symbols.c*/
+ static int hashindex _ARG((Uchar *s));		   /* symbols.c              */
  void init_symbols _ARG((void));		   /* symbols.c              */
  void sym_dump _ARG((void));			   /* symbols.c              */
  void sym_gc _ARG((void));			   /* symbols.c              */
- void sym_set_flag _ARG((char *s,int flags));	   /* symbols.c              */
- void sym_unlink _ARG((char *s));		   /* symbols.c              */
+ void sym_set_flag _ARG((Uchar *s,int flags));	   /* symbols.c              */
+ void sym_unlink _ARG((Uchar *s));		   /* symbols.c              */
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -130,8 +130,8 @@
 
 
 
- char * sym_empty    = NULL;
- char * sym_crossref = NULL;
+ Uchar * sym_empty    = NULL;
+ Uchar * sym_crossref = NULL;
 
 
 /*****************************************************************************/
@@ -179,7 +179,7 @@ char * new_string(s)				   /*			     */
 ** Returns:	Pointer to a new inbstance of a |StringTab|.
 **___________________________________________________			     */
 static StringTab new_string_tab(name,count,flags)  /*			     */
-  char		     *name;			   /*			     */
+  Uchar		     *name;			   /*			     */
   int		     count;			   /*			     */
   int		     flags;			   /*			     */
 { register StringTab new;			   /*			     */
@@ -196,14 +196,14 @@ static StringTab new_string_tab(name,count,flags)  /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function:	hashindex()
-** Purpose:	Compute the sum of ASCII values modulo HASHMAX
+** Purpose:	Compute the sum of ASCII values modulo |HASHMAX|
 **		to be used as an hashindex.
 ** Arguments:
 **	s	string to be analyzed.
 ** Returns:	hashindex
 **___________________________________________________			     */
 static int hashindex(s)				   /*                        */
-  char *s;					   /*                        */
+  Uchar *s;					   /*                        */
 { int	index=0;				   /*                        */
   while ( *s ) index = (index+*(s++)) % HASHMAX;   /*                        */
   return ( index < 0 ? -index : index );	   /*                        */
@@ -235,8 +235,8 @@ void init_symbols()				   /*			     */
 						   /*			     */
   if ( sym_empty != NULL ) return;		   /*                        */
   for ( i=0; i<HASHMAX; i++ ) sym_tab[i] = NULL;   /*			     */
-  sym_empty    = sym_add("",-1);		   /*                        */
-  sym_crossref = sym_add("crossref",-1);	   /*                        */
+  sym_empty    = sym_add((Uchar*)"",-1);	   /*                        */
+  sym_crossref = sym_add((Uchar*)"crossref",-1);   /*                        */
 }						   /*------------------------*/
 
  static StringTab last_stp = NULL;	
@@ -249,7 +249,7 @@ void init_symbols()				   /*			     */
 ** Returns:	The flags of the recently touched |StringTab|.
 **___________________________________________________			     */
 int sym_flag(s)					   /*			     */
-  char * s;					   /*                        */
+  Uchar * s;					   /*                        */
 {						   /*                        */
   if ( last_stp == NULL || SymbolName(last_stp) != s )/*                     */
   { s = sym_add(s,0); }				   /*                        */
@@ -267,7 +267,7 @@ int sym_flag(s)					   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void sym_set_flag(s,flags)			   /*			     */
-  register char *s;				   /*			     */
+  register Uchar *s;				   /*			     */
   register int  flags;				   /*			     */
 { 						   /*                        */
   if ( last_stp == NULL || SymbolName(last_stp) != s )/*                     */
@@ -300,18 +300,18 @@ void sym_set_flag(s,flags)			   /*			     */
 **	count	The use count which should be added t the symbol
 ** Returns:	The new symbol.
 **___________________________________________________			     */
-char * sym_add(s,count)				   /*			     */
-  register char	     *s;			   /*			     */
+Uchar * sym_add(s,count)			   /*			     */
+  register Uchar     *s;		   	   /*			     */
   register int	     count;			   /*			     */
 { register StringTab *stp;			   /*			     */
 						   /*			     */
-  if ( s == NULL ) return(NULL);		   /* ignore dummies.	     */
+  if ( s == (Uchar*)NULL ) return (Uchar*)NULL;	   /* ignore dummies.	     */
  						   /*                        */
   for ( stp = &sym_tab[hashindex(s)];		   /*			     */
        *stp != NULL;		   		   /*			     */
         stp = &NextSymbol(*stp) )		   /*			     */
   {						   /*                        */
-    if ( strcmp(s,SymbolName(*stp)) == 0 )	   /*			     */
+    if ( strcmp((char*)s,(char*)SymbolName(*stp)) == 0 )/*		     */
     { if ( count>0 ) SymbolCount(*stp) += count;   /*			     */
       last_stp = *stp;			   	   /*			     */
       if ( s != SymbolName(*stp) )		   /*                        */
@@ -324,7 +324,7 @@ char * sym_add(s,count)				   /*			     */
     SymbolFlags(*stp) != SYMBOL_STATIC;		   /*                        */
   }	   					   /*			     */
   else						   /*                        */
-  { s = new_string(s); }	   		   /*			     */
+  { s = new_Ustring(s); }		   	   /*			     */
   *stp	   = new_string_tab(s,count,0);		   /*			     */
   last_stp = *stp;				   /*			     */
   SymbolUsed(*stp)++;				   /*                        */
@@ -346,7 +346,7 @@ char * sym_add(s,count)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void sym_unlink(s)				   /*			     */
-  register char	     *s;			   /*			     */
+  register Uchar     *s;			   /*			     */
 { register StringTab st;			   /*			     */
 						   /*			     */
   if ( s == NULL ) return;		   	   /* ignore dummies.	     */
@@ -386,7 +386,7 @@ void sym_gc()					   /*                        */
     while (sym_tab[i] && SymbolUsed(sym_tab[i])<=0)
     { st = sym_tab[i];
       sym_tab[i] = NextSymbol(st);
-      if ( SymbolFlags(st) & SYMBOL_STATIC == 0 )
+      if ( (SymbolFlags(st) & SYMBOL_STATIC) == 0 )
       { free(SymbolName(st)); }
       free(st);
     }
@@ -396,7 +396,7 @@ void sym_gc()					   /*                        */
       while ( (st2=NextSymbol(st)) != NULL &&
 	      SymbolUsed(st) <= 0 )
       { NextSymbol(st) = NextSymbol(st2);
-        if ( SymbolFlags(st2) & SYMBOL_STATIC == 0 )
+        if ( (SymbolFlags(st2) & SYMBOL_STATIC) == 0 )
 	{ free(SymbolName(st2)); }
 	free(st2);
       }						   /*                        */
@@ -414,11 +414,11 @@ void sym_gc()					   /*                        */
 **	count
 ** Returns:	
 **___________________________________________________			     */
-char * sym_extract(ap,ep,count)			   /*			     */
-  register char *ap;				   /* pointer to first char  */
-  register char *ep;				   /* pointer after last char*/
+Uchar * sym_extract(ap,ep,count)		   /*			     */
+  register Uchar *ap;				   /* pointer to first char  */
+  register Uchar *ep;				   /* pointer after last char*/
   register int	count;				   /*			     */
-{ char c;					   /*			     */
+{ Uchar c;					   /*			     */
 						   /*			     */
   c   = *ep;					   /*			     */
   *ep = '\0';					   /*			     */

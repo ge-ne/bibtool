@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: tex_read.h,v 1.1 2007-02-07 21:31:53 gene Exp $
+** $Id: tex_read.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -23,12 +23,11 @@
 #else
 #define _ARG(A) ()
 #endif
- int TeX_read _ARG((char * cp,char **sp));	   /* tex-read.c             */
- void TeX_active _ARG((int c,int arity,char * s)); /* tex-read.c             */
- void TeX_close _ARG((void));			   /* tex-read.c             */
- void TeX_def _ARG((char *s));			   /* tex-read.c             */
- void TeX_define _ARG((char *name,int arity,char *body));/* tex-read.c       */
- void TeX_open_file _ARG((FILE * file));	   /* tex-read.c             */
- void TeX_open_string _ARG((char * s));		   /* tex-read.c             */
+ int TeX_read _ARG((Uchar * cp,Uchar **sp));	   /* tex-read.c             */
+ void TeX_active _ARG((int c,int arity,unsigned char * s));/* tex_read.c     */
+ void TeX_close _ARG((void));			   /* tex_read.c             */
+ void TeX_def _ARG((unsigned char *s));		   /* tex_read.c             */
+ void TeX_define _ARG((char *name,int arity,char *body));/* tex_read.c       */
+ void TeX_open_file _ARG((FILE * file));	   /* tex_read.c             */
+ void TeX_open_string _ARG((unsigned char * s));   /* tex_read.c             */
  void TeX_reset _ARG((void));			   /* tex_read.c             */
-

@@ -4,9 +4,9 @@
 ## It is distributed under the GNU General Public License.
 ## See the file COPYING for details.
 ## 
-## (c) 1996-1997 Gerd Neugebauer
+## (c) 1996-2001 Gerd Neugebauer
 ## 
-## Net: gerd@informatik.uni-koblenz.de
+## Net: gene@gerd-neugebauer.de
 ## 
 ##*****************************************************************************
 
@@ -49,10 +49,13 @@ to this list;-):
 	AIX 4.1.4
 	Amiga			SAS/C
 	DEC Alpha/OSF/1		
+	HP 9000/778/HP-UX 10.20 gcc 2.7.2.3
 	Linux			gcc
 	MIPS/Ultrix4.4		gcc 2.4.5
 	MIPS/RISCos 4.52	gcc
 	MSDOS,OS/2,Win32,WinNT  emx, dj, Watcom C, MSC
+	MS-Windows 4.0, Sp 6	Cygwin
+	IBM PC 486DX2-66, OS/2 Merlin 4.0 FixPack #5. EMX v.0.9c+GCC+dmake 4.0
 	NeXT			
 	SGI Indigo2/IRIX 6.2	cc
 
@@ -64,7 +67,7 @@ support a broad variety of systems/compilers.
 	Mainzer Str. 8
 	56321 Rhens (Germany)
 
-	Net: gerd@uni-koblenz.de
+	Net: gene@gerd-neugebauer.de
 
 You can also send me a mail if  you encounter problems in compiling BibTool,
 or crashes, or shows  unexpected (contradicting the documentation)  behavior
@@ -234,9 +237,8 @@ General instructions:
 			    directory   in  the same    directory  where the
 			    directory kpathsea  resides  or you can put  the
 			    kpathsea directory in in the BibTool directory.
-			    (See also section 7)
+			    (default) (See also section 7)
     --without-kpathsea	    disable the search for the kpathsea library.
-			    (default)
     --prefix=PREFIX         install architecture-independent files in PREFIX
 			    [/usr/local]
     --exec-prefix=EPREFIX   install architecture-dependent files in EPREFIX
@@ -362,6 +364,7 @@ for files.  This  library is already used by  the web2c distribution of Karl
 Berry  and the teTeX distribution.   To achieve compatibility with those TeX
 systems you can try to make BibTool use the same library.
 
+
 The kpathsea library is  currently  NOT  CONTAINED  in the  distribution  of
 BibTool since this is  an experimental feature.  You  can get  kpathsea from
 the same location where you  got BibTool.  Fetch  the file kpse2-6.tar.gz or
@@ -393,7 +396,7 @@ change soon.
 =======================
 
 Well, if the procedures described above don't work I have some hints.  These
-hints may also be useful   if you plan to port   BibTool to other  operating
+hints may also  be  useful if you plan to port  BibTool  to other  operating
 systems or C compilers.
 
 First of all a small list of assumptions that I use.
@@ -402,13 +405,13 @@ First of all a small list of assumptions that I use.
     for non-ANSI  systems.  This support  can be improved.  (I don't know if
     it's worthwhile to do so).
 
- -  BibTool   has   been developed on  UN*X   (SunOS)  and UN*X-like systems
+ -  BibTool  has  been  developed  on  UN*X  (SunOS)  and  UN*X-like systems
     (Atari).  Such file/directory naming  conventions  found their way  into
     the code.  Single character delimiters between directories and files can
     be modified in a resource file.
 
  -  ASCII encoding is assumed.
-    I  role  my  own type.h  instead of   using  ctypes.h.  This  has mainly
+    I  role  my  own type.h  instead  of  using  ctypes.h.  This  has mainly
     historical reasons. Maybe this code should be rewritten to be adapted at
     make time.
 
@@ -442,5 +445,5 @@ Attention: This documentation is experimental.  Some things are likely to be
 ========================
 
 The  Tcl/Tk interface  is  called  BibTcl.  It is  contained  in  the BibTcl
-subdirectory. See the file README in this directories for details.
+subdirectory. See the file README in this directory for details.
 

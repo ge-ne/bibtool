@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: rsc.c,v 1.1 2007-02-07 21:26:40 gene Exp $
+** $Id: rsc.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -50,9 +50,9 @@
 #endif
  int load_rsc _ARG((char *name));		   /* rsc.c		     */
  int search_rsc _ARG((void));			   /* rsc.c		     */
- int set_rsc _ARG((char * name,char * val));	   /* rsc.c		     */
- int use_rsc _ARG((char * s));			   /* rsc.c		     */
- static int test_true _ARG((char * s));		   /* rsc.c		     */
+ int set_rsc _ARG((Uchar * name,Uchar * val));	   /* rsc.c		     */
+ int use_rsc _ARG((Uchar * s));			   /* rsc.c		     */
+ static int test_true _ARG((Uchar * s));	   /* rsc.c		     */
  static void init_rsc _ARG((void));		   /* rsc.c		     */
  void rsc_print _ARG((char *s));		   /* rsc.c		     */
 
@@ -72,10 +72,10 @@
 
 /*---------------------------------------------------------------------------*/
 
-#define RscNumeric(SYM,S,V,I) static char *S = NULL;
-#define RscString(SYM,S,V,I)  static char *S = NULL;
-#define RscBoolean(SYM,S,V,I) static char *S = NULL;
-#define RscByFct(SYM,S,FCT)   static char *S = NULL;
+#define RscNumeric(SYM,S,V,I) static Uchar *S = (Uchar*)NULL;
+#define RscString(SYM,S,V,I)  static Uchar *S = (Uchar*)NULL;
+#define RscBoolean(SYM,S,V,I) static Uchar *S = (Uchar*)NULL;
+#define RscByFct(SYM,S,FCT)   static Uchar *S = (Uchar*)NULL;
 #include <bibtool/resource.h>
 
 /*-----------------------------------------------------------------------------
@@ -96,10 +96,10 @@
 **___________________________________________________			     */
 static void init_rsc()				   /*			     */
 {						   /*			     */
-#define RscNumeric(SYM,S,V,I)  S = symbol(SYM);
-#define RscString(SYM,S,V,I)   S = symbol(SYM);
-#define RscBoolean(SYM,S,V,I)  S = symbol(SYM);
-#define RscByFct(SYM,S,FCT)    S = symbol(SYM);
+#define RscNumeric(SYM,S,V,I)  S = symbol((Uchar*)SYM);
+#define RscString(SYM,S,V,I)   S = symbol((Uchar*)SYM);
+#define RscBoolean(SYM,S,V,I)  S = symbol((Uchar*)SYM);
+#define RscByFct(SYM,S,FCT)    S = symbol((Uchar*)SYM);
 #ifndef MAKEDEPEND
 #include <bibtool/resource.h>
 #endif
@@ -187,9 +187,9 @@ int load_rsc(name)				   /*			     */
 ** Returns:	|TRUE| iff the string represents true.
 **___________________________________________________			     */
 static int test_true(s)				   /*			     */
-  register char * s;				   /*			     */
+  Uchar * s;				   	   /*			     */
 {						   /*			     */
-  switch ( *s )
+  switch ( *s )					   /*                        */
   { case '1':		return (s[1] == '\0');
     case 'o': case 'O':
       return ((s[1] == 'n' || s[1] == 'N') &&
@@ -221,9 +221,9 @@ static int test_true(s)				   /*			     */
 ** Returns:	|FALSE| iff no error has occurred.
 **___________________________________________________			     */
 int use_rsc(s)					   /*			     */
-  char		*s;				   /*			     */
-{ register char *name,				   /*			     */
-		*value;				   /*			     */
+  Uchar		*s;				   /*			     */
+{ register Uchar *name,				   /*			     */
+		 *value;			   /*			     */
 						   /*			     */
   (void)sp_open(s);				   /*			     */
   if ( (name = SParseSymbol(&s)) == NULL ) return 1; /*			     */
@@ -251,15 +251,19 @@ int use_rsc(s)					   /*			     */
 ** Returns:	|FALSE| iff everything went right.
 **___________________________________________________			     */
 int set_rsc(name,val)				   /*			     */
-  register char * name;				   /*			     */
-  register char * val;				   /*			     */
+  Uchar *name;				   	   /*			     */
+  Uchar *val;				   	   /*			     */
 {						   /*			     */
   if ( rsc_verbose )				   /*			     */
-    VerbosePrint4("Resource ",name," = ",(val==NULL?"*NULL*":val));/*	     */
+  { VerbosePrint4("Resource ",			   /*                        */
+		  (char*)name,			   /*                        */
+		  " = ",			   /*                        */
+		  (val==NULL?"*NULL*":(char*)val));/*	                     */
+  }						   /*                        */
 						   /*			     */
 #define SETQ(V,T) V=T; ReleaseSymbol(name);
 #define RscNumeric(SYM,S,V,I)		\
-  if( name==S ) { SETQ(V,atoi(val));	     ReleaseSymbol(val); return 0; }
+  if( name==S ) { SETQ(V,atoi((char*)val));  ReleaseSymbol(val); return 0; }
 #define RscString(SYM,S,V,I)		\
   if( name==S ) { ReleaseSymbol(V); V = val; ReleaseSymbol(name); return 0; }
 #define RscBoolean(SYM,S,V,I)		\
@@ -291,7 +295,7 @@ int set_rsc(name,val)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void rsc_print(s)				   /*			     */
-  register char *s;				   /*			     */
+  char *s;				   	   /*			     */
 { ErrPrintF("%s\n",s);				   /* print the string itself*/
 			   			   /* followed by a newline  */
 }						   /*------------------------*/

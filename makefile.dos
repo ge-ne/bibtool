@@ -1,18 +1,19 @@
 # *****************************************************************************
-#  $Id: makefile.dos,v 1.1 2007-02-07 21:26:47 gene Exp $
+#  $Id: makefile.dos,v 1.2 2007-02-08 05:27:32 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 1996-1997 Gerd Neugebauer
+#  (c) 1996-1998 Gerd Neugebauer
 #  
 #  Net: gerd@informatik.uni-koblenz.de
 #  
 # *****************************************************************************
 
-#  Look also in the file config.h for configuration parameters.
+#  Look also in the file include/bibtool/config.h for additional
+#  configuration parameters.
 #  Read the file INSTALL for explanation.
 # =============================================================================
 
@@ -45,7 +46,7 @@ LIBDIR     = c:\\emtex\\bibtool
 #  are installed plus a final `BibTool'.
 # 
 
-INCLDUEDIR = c:\\emtex\\bibtool\\include\\bibtool
+INCLUDEDIR = c:\\emtex\\bibtool\\include\\bibtool
 
 # -------------------------------------------------------
 #  Name the C compiler
@@ -59,8 +60,7 @@ CC         = gcc
 # CC       = cl
 
 # -------------------------------------------------------
-#  C_OPTIONS are the flags for the C compiler.
-#  It should always contain a path to the header files.
+#  CFLAGS are the flags for the C compiler.
 #  For debugging it should be -g. 
 #  For final version you can try to activate 
 #  the optimizer with -O or -O2 or whatever
@@ -68,16 +68,29 @@ CC         = gcc
 # 	   optimizer is turned on.
 # 
 
-C_OPTIONS  = -Iinclude
+CFLAGS  =
 #  Watcom (MSDOS)
-# C_OPTIONS  = -Iinclude -ox
-# C_OPTIONS  = -Iinclude -d2 -w3
+# CFLAGS  = -ox
+# CFLAGS  = -d2 -w3
 #  MSC (MSDOS)
 #  The include path is missing since I don't know the approriate switch (yet)
-# C_OPTIONS  =/AL /Zi /Zd /W4 /D__STDC__
-# C_OPTIONS  =/AL /Zi /Zd /D__STDC__
-# C_OPTIONS  =/AL /D__STDC__
-# C_OPTIONS  =/AL /Ox /D__STDC__
+# CFLAGS  =/AL /Zi /Zd /W4 /D__STDC__
+# CFLAGS  =/AL /Zi /Zd /D__STDC__
+# CFLAGS  =/AL /D__STDC__
+# CFLAGS  =/AL /Ox /D__STDC__
+
+# -------------------------------------------------------
+#  C_INCLUDE are the flags for the C compiler pointing it
+#  to the location of the header files. Usually this
+#  does not need any modifications.
+# 
+
+C_INCLUDE  = -Iinclude
+#  Watcom (MSDOS)
+# C_INCLUDE  = -Iinclude
+#  MSC (MSDOS)
+#  The include path is missing since I don't know the approriate switch (yet)
+# C_INCLUDE = 
 
 # -------------------------------------------------------
 #  EXT is the optional extension of the final executable.
@@ -238,7 +251,7 @@ KPATHSEA_DEF  =
 # 
 
 #  >>> Replace all " in the next three lines with \" for the dj/emx compilers.
-#  >>> Maybe this is also required for ; which might be replaced by \;
+#  >>> This is also required for ; which has to be replaced by \;
 #  >>> Maybe this is also necessary for other compilers.
 BIBINPUTS_DEFAULT = ".;c:\\emtex\\bibinput"
 BIBTOOL_DEFAULT   = ".;c:\\emtex\\bibtool"
@@ -261,7 +274,7 @@ DIR_SEP		  = \\
 #  End of Configuration Section
 # =============================================================================
 
-MAKEFILE      = makefile
+MAKE_FILE      =
 
 RSC_DEF	      = -DRSC_BIBINPUTS_DEFAULT=$(BIBINPUTS_DEFAULT)		\
 		-DRSC_BIBTOOL_DEFAULT=$(BIBTOOL_DEFAULT)		\
@@ -271,7 +284,7 @@ DONT_LINK     = -c
 LINK_TO       = -o
 STANDALONE    = -DSTANDALONE
 
-CFLAGS	      = $(C_OPTIONS) $(FILE_TYPES)
+C_FLAGS	      = $(C_INCLUDE) $(CFLAGS) $(FILE_TYPES)
 
 CFILES	      = main.c		\
 		$(CLIBFILES)
@@ -438,18 +451,18 @@ DISTFILES     = $(ETCFILES)			\
 #  The main target
 # -----------------------------------------------------------------------------
 
-all: bibtool$(EXT)
+default all: bibtool$(EXT)
 
 emx: bibtool.emx
 bibtool.emx: $(OFILES) $(REGEX) $(KPATHSEA)
-	$(CC) $(CFLAGS) -o bibtool.emx $(OFILES) $(REGEX) $(KPATHSEA)
+	$(CC) $(C_FLAGS) -o bibtool.emx $(OFILES) $(REGEX) $(KPATHSEA)
 	emxbind -b -q $(EMXGPP)/bin/emx.exe bibtool.emx bibtool.exe
 
 dj: bibtool.dj
 bibtool.exe bibtool.dj: $(OFILES) $(REGEX)  $(KPATHSEA) link.dj
-	$(CC) $(CFLAGS) -o bibtool.exe @link.dj
+	$(CC) $(C_FLAGS) -o bibtool.exe @link.dj
 #  Alternative:
-# 	$(CC) $(CFLAGS) -o bibtool.dj @link.dj
+# 	$(CC) $(C_FLAGS) -o bibtool.dj @link.dj
 # 	copy /b $(DJGPPDOS)\bin\go32.exe+bibtool.dj bibtool.exe
 
 wat: bibtool.wat
@@ -463,33 +476,39 @@ bibtool.msc:  $(OFILES) $(REGEX) $(KPATHSEA) link.msc
 	exehdr /pmtype:windowcompat bibtool.exe
 
 tex_read$(EXT): tex_read.c
-	$(CC) $(CFLAGS) $(STANDALONE) tex_read.c $(LINK_TO) tex_read$(EXT)
+	$(CC) $(C_FLAGS) $(STANDALONE) tex_read.c $(LINK_TO) tex_read$(EXT)
 
 tex_aux$(OBJ): tex_aux.c
-	$(CC) $(CFLAGS) $(REGEX_DEF) $(DONT_LINK) tex_aux.c
+	$(CC) $(C_FLAGS) $(REGEX_DEF) $(DONT_LINK) tex_aux.c
 
 main$(OBJ): main.c
-	$(CC) $(CFLAGS) $(REGEX_DEF) $(KPATHSEA_DEF) $(DONT_LINK) main.c
+	$(CC) $(C_FLAGS) $(REGEX_DEF) $(KPATHSEA_DEF) $(DONT_LINK) main.c
+
+init$(OBJ): init.c
+	$(CC) $(C_FLAGS) $(KPATHSEA_DEF) $(DONT_LINK) init.c
 
 parse$(OBJ): parse.c
-	$(CC) $(CFLAGS) $(KPATHSEA_DEF) $(DONT_LINK) parse.c
+	$(CC) $(C_FLAGS) $(KPATHSEA_DEF) $(DONT_LINK) parse.c
 
 rewrite$(OBJ): rewrite.c
-	$(CC) $(CFLAGS) $(REGEX_DEF) $(DONT_LINK) rewrite.c
+	$(CC) $(C_FLAGS) $(REGEX_DEF) $(DONT_LINK) rewrite.c
 
 rsc$(OBJ): rsc.c
-	$(CC) $(CFLAGS) $(RSC_DEF) $(DONT_LINK) rsc.c
+	$(CC) $(C_FLAGS) $(RSC_DEF) $(DONT_LINK) rsc.c
+
+.c$(OBJ):
+	$(CC) $(C_FLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
 
 # __________________________________________________________________
 #  Include the makefile into the dependencies to force updates
 #  when the makefile is modified.
-$(OFILES): $(MAKEFILE) config.h
+$(OFILES): $(MAKE_FILE)
 
 # __________________________________________________________________
 #  Targets from the GNU Regular Expression Library.
 
-regex$(OBJ): $(REGEX_DIR)$(DIR_SEP)regex.c $(MAKEFILE)
-	$(CC) $(CFLAGS) -I$(REGEX_DIR) $(NON_ANSI_DEFS) $(REGEX_DIR)$(DIR_SEP)regex.c $(DONT_LINK) -o $@
+regex$(OBJ): $(REGEX_DIR)$(DIR_SEP)regex.c $(MAKE_FILE)
+	$(CC) $(C_FLAGS) -I$(REGEX_DIR) $(NON_ANSI_DEFS) $(REGEX_DIR)$(DIR_SEP)regex.c $(DONT_LINK) -o $@
 
 # -----------------------------------------------------------------------------
 #  General development targets
@@ -506,9 +525,9 @@ veryclean: clean
 # -------------------------------------------------------
 #  Some support for MSDOS-like computers.
 .c.obj:
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(C_FLAGS) -c $<
 .c.o:
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(C_FLAGS) -c $<
 
 libbib.a: $(OLIBFILES)
 	$(AR) $@ $(OLIBFILES) regex.o
@@ -542,6 +561,9 @@ uninstall.include:
 	-$(RM) $(INCLUDEDIR)
 
 uninstall.man:
+
+status:
+	@echo $(LIBDIR)
 
 # =============================================================================
 # DO NOT DELETE THIS LINE -- make depend depends on it.

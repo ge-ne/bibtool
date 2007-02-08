@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: names.c,v 1.1 2007-02-07 21:27:30 gene Exp $
+** $Id: names.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 *******************************************************************************
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 ******************************************************************************/
 
@@ -29,15 +29,15 @@
 #else
 #define _ARG(A) ()
 #endif
- NameNode name_format _ARG((char *s));		   /* names.c                */
+ NameNode name_format _ARG((Uchar *s));		   /* names.c                */
+ Uchar * pp_list_of_names _ARG((char **wa,NameNode format,char *trans,int max,char *comma,char *and,char *namesep,char *etal));/* names.c*/
  char * pp_names _ARG((char *s,NameNode format,char *trans,int max,char *namesep,char *etal));/* names.c*/
- static NameNode new_name_node _ARG((int type,int strip,char *pre,char *mid,char *post));/* names.c*/
- char * pp_list_of_names _ARG((char **wa,NameNode format,char *trans,int max,char *comma,char *and,char *namesep,char *etal));/* names.c*/
+ static NameNode new_name_node _ARG((int type,int strip,Uchar *pre,Uchar *mid,Uchar *post));/* names.c*/
  static int is_jr _ARG((char * s));		   /* names.c                */
  static int is_lower_word _ARG((char *s));	   /* names.c                */
- static void free_name_node _ARG((NameNode node)); /* names.c                */
  static void initial _ARG((char *s,char *trans,int len,StringBuffer *sb));/* names.c*/
  static void pp_one_name _ARG((StringBuffer *sb,char **w,NameNode format,char *trans,int len,char *comma,int commas));/* names.c*/
+
 #ifdef BIBTEX_SYNTAX
  static void set_type _ARG((char **sp,char **midp));/* names.c               */
  void set_name_format _ARG((NameNode *nodep,char *s));/* names.c             */
@@ -67,9 +67,9 @@
 static NameNode new_name_node(type,strip,pre,mid,post)/*                     */
   int      type;				   /*                        */
   int      strip;				   /*                        */
-  char     *pre;				   /*                        */
-  char     *mid;				   /*                        */
-  char     *post;				   /*                        */
+  Uchar    *pre;				   /*                        */
+  Uchar    *mid;				   /*                        */
+  Uchar    *post;				   /*                        */
 { NameNode new;					   /*                        */
  						   /*                        */
   if ( (new = (NameNode)malloc(sizeof(SNameNode))) == NameNULL )/*           */
@@ -82,6 +82,8 @@ static NameNode new_name_node(type,strip,pre,mid,post)/*                     */
   NextName(new)  = NameNULL;			   /*                        */
   return new;					   /*                        */
 }						   /*------------------------*/
+
+#ifdef UNUSED
 
 /*-----------------------------------------------------------------------------
 ** Function:	free_name_node()
@@ -102,6 +104,7 @@ static void free_name_node(node)		   /*                        */
     node = next;				   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
+#endif
 
 #ifdef DEBUG
 /*-----------------------------------------------------------------------------
@@ -134,9 +137,9 @@ static void dump_name_node(n)			   /*                        */
   }						   /*                        */
   fprintf(err_file,				   /*                        */
 	  "[%s][%s][%s]\n",			   /*                        */
-	  (NamePre(n)?NamePre(n):""),		   /*                        */
-	  (NameMid(n)?NameMid(n):""),		   /*                        */
-	  (NamePost(n)?NamePost(n):""));	   /*                        */
+	  (NamePre(n)?(char*)NamePre(n):""),	   /*                        */
+	  (NameMid(n)?(char*)NameMid(n):""),	   /*                        */
+	  (NamePost(n)?(char*)NamePost(n):""));	   /*                        */
 }						   /*------------------------*/
 #endif
 
@@ -192,11 +195,11 @@ void set_name_format(nodep,s)			   /*                        */
 { int      n,					   /*                        */
 	   type,				   /*                        */
     	   strip;				   /*                        */
-  char     *mid,				   /*                        */
+  Uchar    *mid,				   /*                        */
 	   *pre,				   /*                        */
 	   *post,				   /*                        */
 	   c;					   /*                        */
-  char     *space;				   /*                        */
+  Uchar    *space;				   /*                        */
   char     buffer[256];				   /*                        */
 #define UseBuffer(S) strcpy(buffer,S);s=buffer
  						   /*                        */
@@ -216,7 +219,11 @@ void set_name_format(nodep,s)			   /*                        */
       *s = '\0';				   /*                        */
       mid = symbol(mid);			   /*                        */
       *s = c;					   /*                        */
-      *nodep = new_name_node(NameString,-1,0L,mid,0L);/*                     */
+      *nodep = new_name_node(NameString,	   /*                        */
+			     -1,		   /*                        */
+			     (Uchar*)NULL,	   /*                        */
+			     mid,		   /*                        */
+			     (Uchar*)NULL));	   /*                        */
       nodep  = &NextName(*nodep);		   /*                        */
  						   /*                        */
       if ( c == '\0' ) return;			   /*                        */
@@ -267,14 +274,14 @@ void set_name_format(nodep,s)			   /*                        */
 ** Returns:	
 **___________________________________________________			     */
 NameNode name_format(s)				   /*                        */
-  char *s;					   /*                        */
-{ int  type,					   /*                        */
-       strip;					   /*                        */
-  char *pre,					   /*                        */
-       *mid,					   /*                        */
-       *post;					   /*                        */
-  char c;					   /*                        */
-  char *cp;					   /*                        */
+  Uchar	   *s;					   /*                        */
+{ int	   type,				   /*                        */
+	   strip;				   /*                        */
+  Uchar	   *pre,				   /*                        */
+     	   *mid,				   /*                        */
+     	   *post;				   /*                        */
+  Uchar	   c;					   /*                        */
+  Uchar    *cp;					   /*                        */
   NameNode node = NameNULL;			   /*                        */
   NameNode *nnp;				   /*                        */
   static char *msg = "Missing ']' in format string.";
@@ -310,7 +317,7 @@ NameNode name_format(s)				   /*                        */
         case 'j': type |= NameJr;    break;	   /*                        */
         default:  type |= NoName;		   /*                        */
 	  error(ERR_ERROR|ERR_POINT,		   /*                        */
-		"Wrong type of format.",	   /*                        */
+		(Uchar*)"Wrong type of format.",   /*                        */
 		(Uchar*)0,			   /*                        */
 		(Uchar*)0,			   /*                        */
 		s,				   /*                        */
@@ -356,7 +363,7 @@ NameNode name_format(s)				   /*                        */
 ** Returns:	Pointer to static string which is reused upon the next
 **		invocation of this function.
 **___________________________________________________			     */
-char * pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*        */
+Uchar * pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
   char     **wa;				   /*                        */
   NameNode format;				   /*                        */
   char     *trans;				   /*                        */
@@ -381,11 +388,11 @@ char * pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*        */
   {						   /*                        */
     if ( *(wa+1) == NULL			   /* Look at the end        */
 	 && strcmp(*wa,"others")==0 )		   /*  for `and others'      */
-    { sbputs(etal,sb);				   /*                        */
+    { sbputs(etal,sb);			   	   /*                        */
       break;					   /*                        */
     }						   /*                        */
     if ( max >= 0 && --max < 0 )		   /*                        */
-    { sbputs(etal,sb);				   /*                        */
+    { sbputs(etal,sb);			   	   /*                        */
       break;					   /*                        */
     }						   /*                        */
  						   /*                        */
@@ -403,7 +410,7 @@ char * pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*        */
     wa = ( word != NULL? ++w : w ) ;		   /*                        */
   }						   /*                        */
  						   /*                        */
-  return sbflush(sb);				   /*                        */
+  return (Uchar*)sbflush(sb);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -562,7 +569,7 @@ static void initial(s,trans,len,sb)		   /*                        */
   while ( len > 0 )				   /*                        */
   { if (*s=='\0') { return; }			   /*                        */
     if ( is_alpha(*s) )				   /*                        */
-    { sbputc(trans[*s],sb);			   /*                        */
+    { sbputc(trans[*((unsigned char *)s)],sb);	   /*                        */
       len--;					   /*                        */
     }						   /*                        */
     s++;					   /*                        */
@@ -768,7 +775,7 @@ char * pp_names(s,format,trans,max,namesep,etal)   /*                        */
 int main(argc,argv)				   /*                        */
   int  argc;					   /*                        */
   char *argv[];					   /*                        */
-{ char s[1024];					   /*                        */
+{ Uchar s[1024];				   /*                        */
   NameNode format = NameNULL;			   /*                        */
  						   /*                        */
   init_type();					   /*                        */

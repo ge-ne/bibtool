@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: print.c,v 1.1 2007-02-07 21:28:01 gene Exp $
+** $Id: print.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -38,15 +38,15 @@
 #else
 #define _ARG(A) ()
 #endif
- char * sput_record _ARG((Record rec,DB db,char *start));/* print.c          */
+ char * sput_record _ARG((Record rec,DB db,Uchar *start));/* print.c          */
  static int fput_char _ARG((int c));		   /* print.c                */
  static int sput_char _ARG((int c));		   /* print.c                */
  static void indent _ARG((int col,int (*fct)_ARG((int))));/* print.c         */
  static void line_breaking _ARG((char *t,int align,int (*fct)_ARG((int))));/* print.c*/
- static void print_equation _ARG((char *pre,char *s,char *t,int align,int (*fct)_ARG((int))));/* print.c*/
+ static void print_equation _ARG((Uchar *pre,Uchar *s,Uchar *t,int align,int (*fct)_ARG((int))));/* print.c*/
  static void puts_in _ARG((char *s,int in,int (*fct)_ARG((int))));/* print.c */
- void fput_record _ARG((FILE *file,Record rec,DB db,char *start));/* print.c */
- void put_record _ARG((int (*fct)_ARG((int)),Record rec,DB db,char *start));/* print.c*/
+ void fput_record _ARG((FILE *file,Record rec,DB db,Uchar *start));/* print.c*/
+ void put_record _ARG((int (*fct)_ARG((int)),Record rec,DB db,Uchar *start));/* print.c*/
  void set_key_type _ARG((char * s));		   /* print.c                */
  void set_symbol_type _ARG((char * s));		   /* print.c                */
 
@@ -243,7 +243,7 @@ static void line_breaking(t,align,fct)		   /*			     */
       default:					   /* Now we should have a   */
 	while ( is_allowed(*t) ) ++t;		   /*	SYMBOL		     */
 	end_c = *t; *t = '\0';			   /*			     */
-	s = get_item(symbol(s),symbol_type);	   /*			     */
+	s = (char*)get_item(symbol(s),symbol_type);/*			     */
 	len = strlen(s);			   /*			     */
     }						   /*			     */
 						   /* Now s is a single	     */
@@ -328,9 +328,9 @@ static void line_breaking(t,align,fct)		   /*			     */
 ** Returns:	nothing
 **___________________________________________________'			     */
 static void print_equation(pre,s,t,align,fct)	   /*			     */
-  char *pre;					   /*                        */
-  char *s;				   	   /*			     */
-  char *t;				   	   /*			     */
+  Uchar *pre;					   /*                        */
+  Uchar *s;				   	   /*			     */
+  Uchar *t;				   	   /*			     */
   int  align;				   	   /*			     */
   int (*fct)_ARG((int));			   /*                        */
 {						   /*			     */
@@ -359,7 +359,7 @@ static void print_equation(pre,s,t,align,fct)	   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
 
- static FILE * ofile = stdout;
+ static FILE * ofile=NULL;
 
 /*-----------------------------------------------------------------------------
 ** Function:	fput_char()
@@ -389,7 +389,7 @@ void fput_record(file,rec,db,start)	   	   /*			     */
   FILE	 *file;			   		   /*                        */
   DB	 db;			   		   /*                        */
   Record rec;			   		   /* record to print	     */
-  char	 *start;		   	   	   /* initial string = "@"   */
+  Uchar	 *start;		   	   	   /* initial string = "@"   */
 {						   /*                        */
   ofile = file;					   /*                        */
   put_record(fput_char,rec,db,start);		   /*                        */
@@ -425,7 +425,7 @@ static int sput_char(c)				   /*                        */
 char * sput_record(rec,db,start)	   	   /*			     */
   DB	 db;			   		   /*                        */
   Record rec;			   		   /* record to print	     */
-  char	 *start;		   	   	   /* initial string = "@"   */
+  Uchar	 *start;		   	   	   /* initial string = "@"   */
 {						   /*                        */
   if ( osb == NULL ) osb = sbopen();		   /*                        */
   sbrewind(osb);				   /*                        */
@@ -486,18 +486,20 @@ char * sput_record(rec,db,start)	   	   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void put_record(fct,rec,db,start)		   /*                        */
-  int    (*fct)_ARG((int));			   /*                        */
-  Record rec;					   /*                        */
-  DB	 db;			   		   /*                        */
-  char	 *start;		   	   	   /* initial string = "@"   */
-{ char	       **hp;			   	   /* heap pointer	     */
+  int	       (*fct)_ARG((int));		   /*                        */
+  Record       rec;				   /*                        */
+  DB	       db;				   /*                        */
+  Uchar	       *start;		   	   	   /* initial string = "@"   */
+{ Uchar	       **hp;			   	   /* heap pointer	     */
   unsigned int i;			   	   /*			     */
-  char open_brace, close_brace;			   /*			     */
+  char	       open_brace, close_brace;		   /*			     */
+  static int   first = 1;
   						   /*                        */
   sort_record(rec);				   /*                        */
  						   /*                        */
   hp = RecordHeap(rec);				   /*			     */
-  if ( IsNormalRecord(RecordType(rec)) ) { NL; }   /*			     */
+  if ( rsc_no_nl && first ) { first = 0; }
+  else if ( IsNormalRecord(RecordType(rec)) ) { NL; }/*			     */
  						   /*                        */
   if ( *RecordComment(rec) )		   	   /*                        */
   { PUTS(RecordComment(rec));			   /*                        */
@@ -558,8 +560,8 @@ void put_record(fct,rec,db,start)		   /*                        */
       PUTS(start);				   /*			     */
       PUTS(EntryName(RecordType(rec)));	   	   /*			     */
       PUTC(open_brace);				   /*			     */
-      { char *comma1 = sym_empty,		   /*                        */
-	     *comma2 = ",";			   /*                        */
+      { Uchar *comma1 = sym_empty,		   /*                        */
+	      *comma2 = (Uchar*)",";		   /*                        */
  						   /*                        */
         if (rsc_print_ce)			   /*                        */
 	{ comma1 = comma2;			   /*                        */

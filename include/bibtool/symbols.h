@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: symbols.h,v 1.1 2007-02-07 21:31:54 gene Exp $
+** $Id: symbols.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -36,6 +36,8 @@
 
 #ifndef SYMBOLS_H_LOADED
 #define SYMBOLS_H_LOADED
+
+#include <bibtool/type.h>
 
 /*-----------------------------------------------------------------------------
 ** Macro:	symbol()
@@ -71,39 +73,42 @@
 /***									   ***/
 /*****************************************************************************/
 
-#define SYMBOL_KEY	1
-#define SYMBOL_STATIC	2
+#define SYMBOL_STATIC	1
 
 /*-----------------------------------------------------------------------------
 ** Variable:	sym_empty
-** Type:	char *
+** Type:	Uchar *
 ** Purpose:	The empty symbol. This is a symbol pointing
 **		immediately to a |\0| byte.  This needs
 **		|init_symbols()| to be called first.
 **___________________________________________________			     */
- extern char * sym_empty;
+ extern Uchar * sym_empty;
 
 /*-----------------------------------------------------------------------------
 ** Variable:	sym_crossref
-** Type:	char *
+** Type:	Uchar *
 ** Purpose:	The symbol |crossref|. This variable needs
 **		|init_symbols()| to be called first.
 **___________________________________________________			     */
- extern char * sym_crossref;
+ extern Uchar * sym_crossref;
+
+
+#define new_Ustring(S) (Uchar*)new_string((char*)(S))
+
 
 #ifdef __STDC__
 #define _ARG(A) A
 #else
 #define _ARG(A) ()
 #endif
+ Uchar * sym_add _ARG((Uchar *s,int count));	   /* symbols.c              */
+ Uchar * sym_extract _ARG((Uchar *ap,Uchar *ep,int count));/* symbols.c      */
  char * new_string _ARG((char * s));		   /* symbols.c              */
- char * sym_add _ARG((char *s,int count));	   /* symbols.c              */
- char * sym_extract _ARG((char *ap,char *ep,int count));/* symbols.c         */
- int sym_flag _ARG((char * s));			   /* symbols.c              */
+ int sym_flag _ARG((Uchar * s));		   /* symbols.c              */
  void init_symbols _ARG((void));		   /* symbols.c              */
  void sym_dump _ARG((void));			   /* symbols.c              */
  void sym_gc _ARG((void));			   /* symbols.c              */
- void sym_set_flag _ARG((char *s,int flags));	   /* symbols.c              */
- void sym_unlink _ARG((char *s));		   /* symbols.c              */
+ void sym_set_flag _ARG((Uchar *s,int flags));	   /* symbols.c              */
+ void sym_unlink _ARG((Uchar *s));		   /* symbols.c              */
 
 #endif /* SYMBOLS_H_LOADED */

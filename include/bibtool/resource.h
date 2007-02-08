@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: resource.h,v 1.1 2007-02-07 21:31:53 gene Exp $
+** $Id: resource.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -23,8 +23,8 @@
 **	with a command name.
 **
 **	This is one place where the power and the beauty of the C
-**	preprocessor make live easy. It should also be fun to find the
-**	three ways in which this file is used. Read the sources and
+**	preprocessor makes live easy. It should also be fun to figure out
+**	the three ways in which this file is used.  Read the sources and
 **	enjoy it! 
 **
 **	For the normal user this file is consulted automatically when
@@ -121,16 +121,19 @@ RSC_NEXT('r')
   RscBoolean( "rewrite.case.sensitive", r_rcs ,rsc_case_rewrite	  ,  TRUE   )
   RscNumeric( "rewrite.limit"	      , r_rl  ,rsc_rewrite_limit  ,   512   )
 RSC_NEXT('s')
-  RscByFct(   "select"		      , r_sel ,add_extract(val)		    )
-  RscByFct(   "select.by.string"      , r_sbs ,add_s_extract(val)	    )
-  RscString(  "select.by.string.ignored", r_seli,rsc_sel_ignored  , "{}\\[] ") 
+  RscByFct(   "select"		      , r_sel ,add_extract(val,TRUE,FALSE)  )
+  RscByFct(   "select.by.string"      , r_sbs ,add_extract(val,FALSE,FALSE) )
+  RscByFct(   "select.by.non.string"  , r_sbns,add_extract(val,FALSE,TRUE)  )
+  RscString(  "select.by.string.ignored",r_seli,rsc_sel_ignored   ,"{}\\[] ") 
   RscBoolean( "select.case.sensitive" , r_scs ,rsc_case_select	  , FALSE   )
   RscString(  "select.fields"	      , r_self,rsc_sel_fields     , "$key"  ) 
+  RscByFct(   "select.non"	      , r_seln,add_extract(val,TRUE,TRUE)   )
   RscBoolean( "sort"		      , r_s   ,rsc_sort		  , FALSE   )
   RscBoolean( "sort.macros"	      , r_sm  ,rsc_srt_macs	  , TRUE    )
   RscBoolean( "sort.reverse"	      , r_sr  ,rsc_sort_reverse   , FALSE   )
   RscByFct(   "sort.order"	      , r_so  ,add_sort_order(val)	    )
   RscByFct(   "sort.format"	      , r_sf  ,add_sort_format(val)	    )
+  RscBoolean( "suppress.initial.newline", r_sin ,rsc_no_nl	  , FALSE   )
   RscByFct(   "symbol.type"	      , r_st  ,set_symbol_type(val)	    )
 RSC_NEXT('t')
   RscByFct(   "tex.define"	      , r_td  ,TeX_def(val)		    ) 

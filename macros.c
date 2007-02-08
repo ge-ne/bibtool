@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: macros.c,v 1.1 2007-02-07 21:27:11 gene Exp $
+** $Id: macros.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 ******************************************************************************/
 
@@ -43,9 +43,9 @@
 ** Returns:	The new |Macro|.
 **___________________________________________________			     */
 Macro new_macro(name,val,next,count)		   /*                        */
-  register char  *name;				   /*                        */
-  register char  *val;				   /*                        */
-  register int   count;				   /*                        */
+  Uchar		 *name;				   /*                        */
+  Uchar		 *val;				   /*                        */
+  int		 count;				   /*                        */
   Macro          next;				   /*                        */
 { register Macro new;				   /*                        */
  						   /*                        */
@@ -74,6 +74,8 @@ void free_macro(mac)				   /*                        */
  						   /*                        */
   while (mac)					   /*                        */
   { next = NextMacro(mac);			   /*                        */
+    ReleaseSymbol(MacroName(mac));		   /*                        */
+    ReleaseSymbol(MacroValue(mac));		   /*                        */
     free(mac);					   /*                        */
     mac = next;					   /*                        */
   }						   /*                        */
@@ -89,8 +91,8 @@ void free_macro(mac)				   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 int def_macro(name,val,count)			   /*                        */
-  char           *name;				   /*                        */
-  char           *val;				   /*                        */
+  Uchar		 *name;			   	   /*                        */
+  Uchar		 *val;				   /*                        */
   int		 count;				   /*                        */
 { register Macro *mp;				   /*                        */
  						   /*                        */
@@ -135,8 +137,8 @@ int def_macro(name,val,count)			   /*                        */
 **		is required.
 ** Returns:	The value or |NULL|.
 **___________________________________________________			     */
-char * look_macro(name,add)			   /*                        */
-  char           *name;				   /*                        */
+Uchar * look_macro(name,add)			   /*                        */
+  Uchar		 *name;			   	   /*                        */
   int		 add;				   /*                        */
 { register Macro *mp;				   /*                        */
 						   /*                        */
@@ -178,7 +180,7 @@ char * look_macro(name,add)			   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void foreach_macro(fct)				   /*                        */
-  int (*fct) _ARG((char *,char *));		   /*                        */
+  int (*fct) _ARG((Uchar *,Uchar *));		   /*                        */
 { Macro mac;					   /*                        */
   for ( mac=macros; 				   /*                        */
 	mac != MacroNULL; 			   /*                        */
@@ -236,8 +238,6 @@ void dump_mac(fname,allp)			   /*                        */
   if ( file != stdout ) (void)fclose(file);	   /*                        */
 }						   /*------------------------*/
 
-#define DeclareMacro(M) name = symbol(M); def_macro(name,name,-1)
-
 /*-----------------------------------------------------------------------------
 ** Function:	init_macros()
 ** Purpose:	Initialize some macros from a table defined in the
@@ -254,13 +254,15 @@ void dump_mac(fname,allp)			   /*                        */
 void init_macros()				   /*                        */
 { 						   /*                        */
 #ifdef INITIALIZE_MACROS	
-  register char *name;				   /*                        */
+  register Uchar *name;				   /*                        */
   register char**wp;				   /*			     */
   static char *word_list[] =			   /*                        */
   { INITIALIZE_MACROS, NULL };			   /*                        */
  						   /*                        */
   for ( wp=word_list; *wp!=NULL; ++wp )		   /*                        */
-  { DeclareMacro(*wp); }			   /*			     */
+  { name = symbol((Uchar*)*wp);			   /*                        */
+    def_macro(name,name,-1);			   /*                        */
+  }		   				   /*			     */
 #endif
 }						   /*------------------------*/
 
@@ -281,8 +283,8 @@ void init_macros()				   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void def_item(name,value)		   /*                        */
-  register char * name;				   /*                        */
-  register char * value;			   /*                        */
+  register Uchar * name;			   /*                        */
+  register Uchar * value;			   /*                        */
 {						   /*                        */
   name  = symbol(name);				   /*                        */
   value = symbol(value);			   /*                        */
@@ -305,21 +307,24 @@ static void def_item(name,value)		   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void def_field_type(s)				   /*                        */
-  char * s;					   /*                        */
-{ char *name, *val, c;				   /*                        */
+  Uchar * s;					   /*                        */
+{ Uchar *name, *val, c;				   /*                        */
  						   /*                        */
   while ( *s && !is_allowed(*s) ) ++s;		   /*                        */
   if ( *s == '\0' ) return;			   /*                        */
   name = s;					   /*                        */
   while ( is_allowed(*s) ) ++s;			   /*                        */
-  c = *s; *s = '\0'; val = new_string(name); *s = c;/*                       */
+  c   = *s;					   /*                        */
+  *s  = '\0';					   /*                        */
+  val = new_Ustring(name);	   		   /*                        */
+  *s  = c;					   /*                        */
  						   /*                        */
-  { char * cp;				   	   /*                        */
+  { Uchar * cp;				   	   /*                        */
     for ( cp=val; *cp; ++cp ) *cp = ToLower(*cp);  /*                        */
   }						   /*                        */
  						   /*                        */
   name = symbol(val);				   /*                        */
-  free(val);					   /*                        */
+  free((char*)val);				   /*                        */
   						   /*                        */
   while ( *s && !is_allowed(*s) ) ++s;		   /*                        */
   if ( *s == '\0' ) return;			   /*                        */
@@ -346,8 +351,8 @@ void def_field_type(s)				   /*                        */
 **	type
 ** Returns:	
 **___________________________________________________			     */
-static char * get_mapped_or_cased(name,mac,type)   /*                        */
-  register char * name;				   /*                        */
+static Uchar * get_mapped_or_cased(name,mac,type)  /*                        */
+  Uchar		 *name;				   /*                        */
   int            type;				   /*                        */
   register Macro mac;				   /*                        */
 { static StringBuffer* sb = (StringBuffer*)NULL;   /*                        */
@@ -360,13 +365,12 @@ static char * get_mapped_or_cased(name,mac,type)   /*                        */
   if ( sb == NULL &&				   /*                        */
        (sb=sbopen()) == NULL )			   /*                        */
   { OUT_OF_MEMORY("get_item()"); } 		   /*                        */
-  sbrewind(sb);
+  sbrewind(sb);					   /*                        */
   if ( type == SYMBOL_TYPE_LOWER ) 	   	   /*                        */
-  { sbputs(name,sb);
+  { sbputs((char*)name,sb);
   }
   else
   { 						   /*                        */
-    						   /*                        */
     switch ( type )			   	   /*                        */
     { case SYMBOL_TYPE_CASED:			   /*                        */
 	while ( *name )				   /*                        */
@@ -387,7 +391,7 @@ static char * get_mapped_or_cased(name,mac,type)   /*                        */
 	break;					   /*                        */
     }						   /*                        */
   }						   /*                        */
-  return sbflush(sb);				   /*                        */
+  return (Uchar*)sbflush(sb);			   /*                        */
 }						   /*------------------------*/
 
 
@@ -410,9 +414,9 @@ static char * get_mapped_or_cased(name,mac,type)   /*                        */
 ** Returns:	A pointer to a static string. This location  is reused
 **		upon the next invocation of this function.
 **___________________________________________________			     */
-char * get_item(name,type)			   /*                        */
-  register char * name;				   /*                        */
-  int            type;				   /*                        */
+Uchar * get_item(name,type)			   /*                        */
+  Uchar *name;				   	   /*                        */
+  int   type;				   	   /*                        */
 { return get_mapped_or_cased(name,items,type);	   /*                        */
 }						   /*------------------------*/
 
@@ -449,7 +453,7 @@ void save_key(s,key)			   	   /*                        */
 **	s
 ** Returns:	
 **___________________________________________________			     */
-char * get_key_name(s)		   	   	   /*                        */
-  register char *s;			   	   /*                        */
+Uchar * get_key_name(s)		   	   	   /*                        */
+  Uchar *s;			   	   	   /*                        */
 { return get_mapped_or_cased(s,keys,SYMBOL_TYPE_LOWER);/*                    */
 }						   /*------------------------*/

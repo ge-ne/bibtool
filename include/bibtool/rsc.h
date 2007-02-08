@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: rsc.h,v 1.1 2007-02-07 21:31:53 gene Exp $
+** $Id: rsc.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -20,16 +20,17 @@
 **	accessible to those modules including this header file.
 ******************************************************************************/
 
+#include <bibtool/type.h>
 
 #ifdef RSC_INIT
 #define RscNumeric(SYM,S,V,I) int    V = I;
-#define RscString(SYM,S,V,I)  char * V = I;
+#define RscString(SYM,S,V,I)  Uchar * V = (Uchar*)I;
 #define RscBoolean(SYM,S,V,I) int    V = I;
 #define RscByFct(SYM,S,FCT)   
 #define DECLARE(TYPE,VAR,VAL) TYPE VAR = VAL
 #else
 #define RscNumeric(SYM,S,V,I) extern int    V;
-#define RscString(SYM,S,V,I)  extern char * V;
+#define RscString(SYM,S,V,I)  extern Uchar * V;
 #define RscBoolean(SYM,S,V,I) extern int    V;
 #define RscByFct(SYM,S,FCT)   
 #define DECLARE(TYPE,VAR,VAL) extern TYPE VAR
@@ -50,6 +51,6 @@ DECLARE( char* , rsc_v_rsc        , RSC_BIBTOOL_DEFAULT		);
 #endif
  int load_rsc _ARG((char *name));		   /* rsc.c                  */
  int search_rsc _ARG((void));			   /* rsc.c                  */
- int set_rsc _ARG((char * name,char * val));	   /* rsc.c                  */
- int use_rsc _ARG((char * s));			   /* rsc.c                  */
+ int set_rsc _ARG((Uchar * name,Uchar * val));	   /* rsc.c                  */
+ int use_rsc _ARG((Uchar * s));			   /* rsc.c                  */
  void rsc_print _ARG((char *s));		   /* rsc.c                  */

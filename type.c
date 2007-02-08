@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: type.c,v 1.1 2007-02-07 21:27:44 gene Exp $
+** $Id: type.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** 
@@ -63,6 +63,10 @@ void init_type()				   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
+#ifdef DEBUG
+#include <assert.h>
+#endif
+
 /*-----------------------------------------------------------------------------
 ** Function:	case_cmp()
 ** Purpose:	Compare two strings ignoring cases. If the strings are
@@ -77,11 +81,18 @@ int case_cmp(s,t)				   /*                        */
   register char * s;				   /*                        */
   register char * t;				   /*                        */
 {						   /*                        */
+#ifdef DEBUG
+  assert(s!=NULL);
+  assert(t!=NULL);
+#endif
   while ( *s )					   /*                        */
   { if ( ToLower(*(s++)) != ToLower(*(t++)) )	   /*                        */
       return 0;				   	   /*                        */
   }						   /*                        */
-  return(*t=='\0'?1:0);				   /*                        */
+#ifdef DEBUG
+  assert(t!=NULL);
+#endif
+  return (*t=='\0'?1:0);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -89,7 +100,7 @@ int case_cmp(s,t)				   /*                        */
 ** Purpose:	Function to translate all letters in a string to lower case.
 ** Arguments:
 **	s	string to convert
-** Returns:	The converted string
+** Returns:	The converted string.
 **___________________________________________________			     */
 char * lower(s)			   		   /*                        */
   register char * s;				   /*                        */

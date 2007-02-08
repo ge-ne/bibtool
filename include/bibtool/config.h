@@ -1,14 +1,15 @@
+/* include/bibtool/config.h.  Generated automatically by configure.  */
 /******************************************************************************
-** $Id: config.h,v 1.1 2007-02-07 21:31:59 gene Exp $
+** $Id: config.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-1999 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gerd.neugebauer@sdm.de
 ** 
 ******************************************************************************/
 
@@ -19,7 +20,7 @@
 **  makefile.
 **  It affects the way file names are handled.
 */
-#undef MSDOS
+/* #undef MSDOS */
 
 /*-----------------------------------------------------------------------------
 **  Define the following macro if this is compiled on an Amiga.
@@ -27,58 +28,58 @@
 **  makefile.
 **  It affects the way file names are handled.
 */
-#undef AMIGA
+/* #undef AMIGA */
 
 
 /*-----------------------------------------------------------------------------
 **  Define to empty if the keyword const does not work.
 */
-#undef const
+/* #undef const */
 
 /*-----------------------------------------------------------------------------
 **  Define to `unsigned' if not defined elsewhere.
 */
-#undef size_t
+/* #undef size_t */
 
 /*-----------------------------------------------------------------------------
 **  Define if you have the ANSI C header files.
 */
-#undef STDC_HEADERS
+#define STDC_HEADERS 1
 
 /*-----------------------------------------------------------------------------
 **  Define if you have the <string.h> header file.
 */
-#undef HAVE_STRING_H
+#define HAVE_STRING_H 1
 
 /*-----------------------------------------------------------------------------
 **  Define if you have the <stdlib.h> header file.
 */
-#undef HAVE_STDLIB_H
+#define HAVE_STDLIB_H 1
 
 /*-----------------------------------------------------------------------------
 **  Define if you have the <time.h> header file.
 */
-#undef HAVE_TIME_H
+#define HAVE_TIME_H 1
 
 /*-----------------------------------------------------------------------------
 **  Define if you have the function getenv().
 */
-#undef HAVE_GETENV
+#define HAVE_GETENV 1
 
 /*-----------------------------------------------------------------------------
 **  Define if you have the function strrchr().
 */
-#undef HAVE_STRRCHR
+#define HAVE_STRRCHR 1
 
 /*-----------------------------------------------------------------------------
 **  Define if using alloca.c.
 */
-#undef C_ALLOCA
+/* #undef C_ALLOCA */
 
 /*-----------------------------------------------------------------------------
 **  Define if you have alloca, as a function or macro.
 */
-#undef HAVE_ALLOCA
+#define HAVE_ALLOCA 1
 
 #ifndef HAVE_ALLOCA
 #define REGEX_MALLOC
@@ -87,13 +88,13 @@
 /*-----------------------------------------------------------------------------
 **  Define if you have <alloca.h> and it should be used (not on Ultrix).
 */
-#undef HAVE_ALLOCA_H
+#define HAVE_ALLOCA_H 1
 
 /*-----------------------------------------------------------------------------
 **  Define to one of _getb67, GETB67, getb67 for Cray-2 and Cray-YMP systems.
 **  This function is required for alloca.c support on those systems.
 */
-#undef CRAY_STACKSEG_END
+/* #undef CRAY_STACKSEG_END */
 
 /*-----------------------------------------------------------------------------
 **  If using the C implementation of alloca, define if you know the
@@ -103,4 +104,4 @@
  STACK_DIRECTION < 0 => grows toward lower addresses
  STACK_DIRECTION = 0 => direction of growth unknown
  */
-#undef STACK_DIRECTION
+/* #undef STACK_DIRECTION */

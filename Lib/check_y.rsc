@@ -4,9 +4,9 @@
 %% It is distributed under the GNU General Public License.
 %% See the file COPYING for details.
 %% 
-%% (c) 1995-1997 Gerd Neugebauer
+%% (c) 1995-2001 Gerd Neugebauer
 %% 
-%% Net: gerd@uni-koblenz.de
+%% Net: gene@gerd-neugebauer.de
 %% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %

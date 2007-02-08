@@ -1,18 +1,19 @@
 # *****************************************************************************
-#  $Id: makefile.ata,v 1.1 2007-02-07 21:26:45 gene Exp $
+#  $Id: makefile.ata,v 1.2 2007-02-08 05:27:32 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 1996-1997 Gerd Neugebauer
+#  (c) 1996-1998 Gerd Neugebauer
 #  
 #  Net: gerd@informatik.uni-koblenz.de
 #  
 # *****************************************************************************
 
-#  Look also in the file config.h for configuration parameters.
+#  Look also in the file include/bibtool/config.h for additional
+#  configuration parameters.
 #  Read the file INSTALL for explanation.
 # =============================================================================
 
@@ -43,7 +44,7 @@ LIBDIR     = c:\\tex\\bibtool
 #  are installed plus a final `BibTool'.
 # 
 
-INCLDUEDIR = c:\\tex\\bibtool\\include\\bibtool
+INCLUDEDIR = c:\\tex\\bibtool\\include\\bibtool
 
 # -------------------------------------------------------
 #  Name the C compiler
@@ -53,8 +54,7 @@ CC         = gcc
 # CC         = cc
 
 # -------------------------------------------------------
-#  C_OPTIONS are the flags for the C compiler.
-#  It should always contain a path to the header files.
+#  CFLAGS are the flags for the C compiler.
 #  For debugging it should be -g. 
 #  For final version you can try to activate 
 #  the optimizer with -O or -O2 or whatever
@@ -62,7 +62,15 @@ CC         = gcc
 # 	   optimizer is turned on.
 # 
 
-C_OPTIONS =
+CFLAGS =
+
+# -------------------------------------------------------
+#  C_INCLUDE are the flags for the C compiler pointing it
+#  to the location of the header files. Usually this
+#  does not need any modifications.
+# 
+
+C_INCLUDE  = -Iinclude
 
 # -------------------------------------------------------
 #  EXT is the optional extension of the final executable.
@@ -116,7 +124,7 @@ INSTALL_DATA	= install -m 644
 #  already existent. If your install does not support the 
 #  -d option you can try to use mkdir instead.
 
-INSTALL_DIR	= mkdirchain
+INSTALL_DIR	= ./mkdirchain
 #  INSTALL_DIR = install -d
 #  INSTALL_DIR = mkdir
 
@@ -247,7 +255,7 @@ DONT_LINK     = -c
 LINK_TO       = -o
 STANDALONE    = -DSTANDALONE
 
-CFLAGS	      = $(C_OPTIONS) $(FILE_TYPES)
+C_FLAGS	      = $(C_INCLUDE) $(CFLAGS) $(FILE_TYPES)
 
 CFILES	      = main.c		\
 		$(CLIBFILES)
@@ -414,40 +422,46 @@ DISTFILES     = $(ETCFILES)			\
 #  The main target
 # -----------------------------------------------------------------------------
 
-all: bibtool$(EXT)
+default all: bibtool$(EXT)
 
 tp: bibtool.ttp
 bibtool.ttp: $(OFILES) $(REGEX) $(KPATHSEA)
-	$(CC) $(CFLAGS) -o $@ $(OFILES) $(REGEX) $(KPATHSEA)
+	$(CC) $(C_FLAGS) -o $@ $(OFILES) $(REGEX) $(KPATHSEA)
 
 tex_read$(EXT): tex_read.c
-	$(CC) $(CFLAGS) $(STANDALONE) tex_read.c $(LINK_TO) tex_read$(EXT)
+	$(CC) $(C_FLAGS) $(STANDALONE) tex_read.c $(LINK_TO) tex_read$(EXT)
 
 tex_aux$(OBJ): tex_aux.c
-	$(CC) $(CFLAGS) $(REGEX_DEF) $(DONT_LINK) tex_aux.c
+	$(CC) $(C_FLAGS) $(REGEX_DEF) $(DONT_LINK) tex_aux.c
 
 main$(OBJ): main.c
-	$(CC) $(CFLAGS) $(REGEX_DEF) $(KPATHSEA_DEF) $(DONT_LINK) main.c
+	$(CC) $(C_FLAGS) $(REGEX_DEF) $(KPATHSEA_DEF) $(DONT_LINK) main.c
+
+init$(OBJ): init.c
+	$(CC) $(C_FLAGS) $(KPATHSEA_DEF) $(DONT_LINK) init.c
 
 parse$(OBJ): parse.c
-	$(CC) $(CFLAGS) $(KPATHSEA_DEF) $(DONT_LINK) parse.c
+	$(CC) $(C_FLAGS) $(KPATHSEA_DEF) $(DONT_LINK) parse.c
 
 rewrite$(OBJ): rewrite.c
-	$(CC) $(CFLAGS) $(REGEX_DEF) $(DONT_LINK) rewrite.c
+	$(CC) $(C_FLAGS) $(REGEX_DEF) $(DONT_LINK) rewrite.c
 
 rsc$(OBJ): rsc.c
-	$(CC) $(CFLAGS) $(RSC_DEF) $(DONT_LINK) rsc.c
+	$(CC) $(C_FLAGS) $(RSC_DEF) $(DONT_LINK) rsc.c
+
+.c$(OBJ):
+	$(CC) $(C_FLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
 
 # __________________________________________________________________
 #  Include the makefile into the dependencies to force updates
 #  when the makefile is modified.
-$(OFILES): $(MAKEFILE) config.h
+$(OFILES): $(MAKEFILE)
 
 # __________________________________________________________________
 #  Targets from the GNU Regular Expression Library.
 
 regex$(OBJ): $(REGEX_DIR)$(DIR_SEP)regex.c $(MAKEFILE)
-	$(CC) $(CFLAGS) -I$(REGEX_DIR) $(NON_ANSI_DEFS) $(REGEX_DIR)$(DIR_SEP)regex.c $(DONT_LINK) -o $@
+	$(CC) $(C_FLAGS) -I$(REGEX_DIR) $(NON_ANSI_DEFS) $(REGEX_DIR)$(DIR_SEP)regex.c $(DONT_LINK) -o $@
 
 # -----------------------------------------------------------------------------
 #  General development targets
@@ -493,6 +507,9 @@ uninstall.include:
 	-$(RM) $(INCLUDEDIR)
 
 uninstall.man:
+
+status:
+	@echo $(LIBDIR)
 
 # =============================================================================
 # DO NOT DELETE THIS LINE -- make depend depends on it.

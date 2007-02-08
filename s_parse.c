@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: s_parse.c,v 1.1 2007-02-07 21:28:03 gene Exp $
+** $Id: s_parse.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 ******************************************************************************/
 
@@ -27,10 +27,10 @@
 #else
 #define _ARG(A) ()
 #endif
- char * s_parse _ARG((int type,char **sp,int errp));/* s_parse.c             */
- int sp_open _ARG((char * s));			   /* s_parse.c              */
+ Uchar * s_parse _ARG((int type,Uchar **sp,int errp));/* s_parse.c           */
+ int sp_open _ARG((Uchar * s));			   /* s_parse.c              */
  void sp_close _ARG((void));			   /* s_parse.c              */
- void sp_error _ARG((char *s,char *a,char *b));	   /* s_parse.c              */
+ void sp_error _ARG((Uchar *s,char *a,char *b));   /* s_parse.c              */
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -39,7 +39,7 @@
 /*---------------------------------------------------------------------------*/
 
 #define Error(E,S,A,B)	\
-  if(E) error(ERR_ERROR|ERR_POINT,A,B,(char*)0,sp_line,(Uchar*)S,0,(char*)0)
+  if(E) error(ERR_ERROR|ERR_POINT,(Uchar*)A,(Uchar*)B,(Uchar*)0,sp_line,(Uchar*)S,0,(char*)0)
 
  static Uchar *sp_line = NULL;
 
@@ -55,8 +55,8 @@
 ** Returns:	|TRUE|
 **___________________________________________________			     */
 int sp_open(s)					   /*                        */
-  register char * s;				   /*                        */
-{ sp_line = (Uchar*)s;				   /*                        */
+  Uchar *s;				   	   /*                        */
+{ sp_line = s;				   	   /*                        */
   return TRUE;					   /*                        */
 }						   /*------------------------*/
 
@@ -124,15 +124,15 @@ int sp_open(s)					   /*                        */
 **		message should be created in case of an error.
 ** Returns:	A symbol containing the requested entity or |NULL|.
 **___________________________________________________			     */
-char * s_parse(type,sp,errp)			   /*                        */
-  int 		type;				   /*                        */
-  char		**sp;				   /*                        */
-  int		errp;				   /*                        */
-{ register char *s = *sp;			   /*                        */
-  char          c,				   /*                        */
-  		*cp;				   /*                        */
-  static char   *unexpected = "Unexpected ";	   /*                        */
-  static char   *expected   = " expected.";	   /*                        */
+Uchar * s_parse(type,sp,errp)			   /*                        */
+  int 		 type;				   /*                        */
+  Uchar		 **sp;				   /*                        */
+  int		 errp;				   /*                        */
+{ register Uchar *s = *sp;			   /*                        */
+  char           c,				   /*                        */
+  		 *cp;				   /*                        */
+  static char    *unexpected = "Unexpected ";	   /*                        */
+  static char    *expected   = " expected.";	   /*                        */
  						   /*                        */
   while( is_space(*s) ) s++;			   /*                        */
   *sp = s;					   /*                        */
@@ -174,7 +174,11 @@ char * s_parse(type,sp,errp)			   /*                        */
 	  { case '{': level++; break;		   /*                        */
 	    case '}': --level; break;		   /*                        */
 	    case '"':
-	      do {s++;} while (*s && *s!='"');
+	      do
+	      { s++;
+	        if ( *s == '\\' )
+		{ if ( *++s ) s++; }
+	      } while (*s && *s!='"');
 	      break;
 	  }					   /*                        */
 	  s++;					   /*                        */
@@ -253,7 +257,9 @@ char * s_parse(type,sp,errp)			   /*                        */
   *sp = s;					   /*                        */
   if (   type == StringParseSymbol )		   /*                        */
   { (void)lower(cp); }			   	   /*                        */
-  s   = symbol(cp);				   /*                        */
-  free(cp);					   /*                        */
-  return s;					   /*                        */
+ 						   /*                        */
+  { Uchar *sym = symbol(cp);			   /*                        */
+    free(cp);					   /*                        */
+    return sym;					   /*                        */
+  }						   /*                        */
 }						   /*------------------------*/

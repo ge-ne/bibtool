@@ -1849,32 +1849,30 @@ fi
 done
 
 
-kpathsea=0
 # Check whether --with-kpathsea or --without-kpathsea was given.
 if test "${with_kpathsea+set}" = set; then
   withval="$with_kpathsea"
-  kpathsea=1
+  :
 else
-  kpathsea=0
+  with_kpathsea=yes
 fi
 
 
-if test $kpathsea -eq 0; then
+if test $with_kpathsea = no; then
 	kpathsea_dir=
 	kpathsea_lib=
 	kpathsea_def=
 else
-
 	echo $ac_n "checking for kpathsea library""... $ac_c" 1>&6
-echo "configure:1870: checking for kpathsea library" >&5
+echo "configure:1868: checking for kpathsea library" >&5
 	kpathsea_dir=
 	kpathsea_lib=
 	kpathsea_def=
-	for cand in ../kpse2-6 .. kpse2-6 .
+	for cand in .. ../kpse3-2 kpse3-2 . 
 	do
 		if test -f $cand/kpathsea/tex-file.h ; then
 			kpathsea_dir=$cand
-			kpathsea_lib=$cand/kpathsea/kpathsea.a
+			kpathsea_lib=$cand/kpathsea/STATIC/libkpathsea.a
 			kpathsea_def="-DHAVE_LIBKPATHSEA -I$cand"
 		fi
 	done
@@ -1884,6 +1882,9 @@ echo "configure:1870: checking for kpathsea library" >&5
 		echo "$ac_t""$kpathsea_dir" 1>&6
 	fi
 fi
+
+
+subdirs="BibTcl"
 
 
 
@@ -2031,6 +2032,7 @@ s%@LIBOBJS@%$LIBOBJS%g
 s%@kpathsea_dir@%$kpathsea_dir%g
 s%@kpathsea_lib@%$kpathsea_lib%g
 s%@kpathsea_def@%$kpathsea_def%g
+s%@subdirs@%$subdirs%g
 
 CEOF
 EOF
@@ -2249,4 +2251,102 @@ EOF
 chmod +x $CONFIG_STATUS
 rm -fr confdefs* $ac_clean_files
 test "$no_create" = yes || ${CONFIG_SHELL-/bin/sh} $CONFIG_STATUS || exit 1
+
+if test "$no_recursion" != yes; then
+
+  # Remove --cache-file and --srcdir arguments so they do not pile up.
+  ac_sub_configure_args=
+  ac_prev=
+  for ac_arg in $ac_configure_args; do
+    if test -n "$ac_prev"; then
+      ac_prev=
+      continue
+    fi
+    case "$ac_arg" in
+    -cache-file | --cache-file | --cache-fil | --cache-fi \
+    | --cache-f | --cache- | --cache | --cach | --cac | --ca | --c)
+      ac_prev=cache_file ;;
+    -cache-file=* | --cache-file=* | --cache-fil=* | --cache-fi=* \
+    | --cache-f=* | --cache-=* | --cache=* | --cach=* | --cac=* | --ca=* | --c=*)
+      ;;
+    -srcdir | --srcdir | --srcdi | --srcd | --src | --sr)
+      ac_prev=srcdir ;;
+    -srcdir=* | --srcdir=* | --srcdi=* | --srcd=* | --src=* | --sr=*)
+      ;;
+    *) ac_sub_configure_args="$ac_sub_configure_args $ac_arg" ;;
+    esac
+  done
+
+  for ac_config_dir in BibTcl; do
+
+    # Do not complain, so a configure script can configure whichever
+    # parts of a large source tree are present.
+    if test ! -d $srcdir/$ac_config_dir; then
+      continue
+    fi
+
+    echo configuring in $ac_config_dir
+
+    case "$srcdir" in
+    .) ;;
+    *)
+      if test -d ./$ac_config_dir || mkdir ./$ac_config_dir; then :;
+      else
+        { echo "configure: error: can not create `pwd`/$ac_config_dir" 1>&2; exit 1; }
+      fi
+      ;;
+    esac
+
+    ac_popdir=`pwd`
+    cd $ac_config_dir
+
+      # A "../" for each directory in /$ac_config_dir.
+      ac_dots=`echo $ac_config_dir|sed -e 's%^\./%%' -e 's%[^/]$%&/%' -e 's%[^/]*/%../%g'`
+
+    case "$srcdir" in
+    .) # No --srcdir option.  We are building in place.
+      ac_sub_srcdir=$srcdir ;;
+    /*) # Absolute path.
+      ac_sub_srcdir=$srcdir/$ac_config_dir ;;
+    *) # Relative path.
+      ac_sub_srcdir=$ac_dots$srcdir/$ac_config_dir ;;
+    esac
+
+    # Check for guested configure; otherwise get Cygnus style configure.
+    if test -f $ac_sub_srcdir/configure; then
+      ac_sub_configure=$ac_sub_srcdir/configure
+    elif test -f $ac_sub_srcdir/configure.in; then
+      ac_sub_configure=$ac_configure
+    else
+      echo "configure: warning: no configuration information is in $ac_config_dir" 1>&2
+      ac_sub_configure=
+    fi
+
+    # The recursion is here.
+    if test -n "$ac_sub_configure"; then
+
+      # Make the cache file name correct relative to the subdirectory.
+      case "$cache_file" in
+      /*) ac_sub_cache_file=$cache_file ;;
+      *) # Relative path.
+        ac_sub_cache_file="$ac_dots$cache_file" ;;
+      esac
+  case "$ac_given_INSTALL" in
+        [/$]*) INSTALL="$ac_given_INSTALL" ;;
+        *) INSTALL="$ac_dots$ac_given_INSTALL" ;;
+        esac
+
+      echo "running ${CONFIG_SHELL-/bin/sh} $ac_sub_configure $ac_sub_configure_args --cache-file=$ac_sub_cache_file --srcdir=$ac_sub_srcdir"
+      # The eval makes quoting arguments work.
+      if eval ${CONFIG_SHELL-/bin/sh} $ac_sub_configure $ac_sub_configure_args --cache-file=$ac_sub_cache_file --srcdir=$ac_sub_srcdir
+      then :
+      else
+        { echo "configure: error: $ac_sub_configure failed for $ac_config_dir" 1>&2; exit 1; }
+      fi
+    fi
+
+    cd $ac_popdir
+  done
+fi
+
 

@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: error.h,v 1.1 2007-02-07 21:31:59 gene Exp $
+** $Id: error.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -89,8 +89,8 @@
 **	X	Error message.
 ** Returns:	nothing
 **___________________________________________________			     */
-#define ERROR_EXIT(X)			\
-	error(ERR_ERROR|ERR_EXIT,X,	\
+#define ERROR_EXIT(X)				\
+	error(ERR_ERROR|ERR_EXIT,(Uchar*)X,	\
 	      (Uchar*)0,(Uchar*)0,(Uchar*)0,(Uchar*)0,0,(char*)0)
 
 /*-----------------------------------------------------------------------------
@@ -104,8 +104,9 @@
 **	X	String denoting the type of unallocatable memory.
 ** Returns:	nothing
 **___________________________________________________			     */
-#define OUT_OF_MEMORY(X)		\
-	error(ERR_ERROR|ERR_EXIT,err_oom,X,err_point,(Uchar*)0,(Uchar*)0,0,(char*)0)
+#define OUT_OF_MEMORY(X)			\
+	error(ERR_ERROR|ERR_EXIT,err_oom,	\
+	      (Uchar*)X,err_point,(Uchar*)0,(Uchar*)0,0,(char*)0)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ERROR()
@@ -116,8 +117,9 @@
 **	X	Error message.
 ** Returns:	nothing
 **___________________________________________________			     */
-#define ERROR(X)	\
-	error(ERR_ERROR,X,(Uchar*)0,(Uchar*)0,(Uchar*)0,(Uchar*)0,0,(char*)0)
+#define ERROR(X)				\
+	error(ERR_ERROR,(Uchar*)X,		\
+	      (Uchar*)0,(Uchar*)0,(Uchar*)0,(Uchar*)0,0,(char*)0)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ERROR2()
@@ -129,8 +131,9 @@
 **	Y	Continuation of the error message.
 ** Returns:	nothing
 **___________________________________________________			     */
-#define ERROR2(X,Y)	\
-	error(ERR_ERROR,X,Y,(Uchar*)0,(Uchar*)0,(Uchar*)0,0,(char*)0)
+#define ERROR2(X,Y)				\
+	error(ERR_ERROR,(Uchar*)X,		\
+	      (Uchar*)Y,(Uchar*)0,(Uchar*)0,(Uchar*)0,0,(char*)0)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ERROR3()
@@ -143,8 +146,9 @@
 **	Z	Second continuation of the error message.
 ** Returns:	nothing
 **___________________________________________________			     */
-#define ERROR3(X,Y,Z)	\
-	error(ERR_ERROR,X,Y,Z,(Uchar*)0,(Uchar*)0,0,(char*)0)
+#define ERROR3(X,Y,Z)				\
+	error(ERR_ERROR,(Uchar*)X,		\
+	      (Uchar*)Y,(Uchar*)Z,(Uchar*)0,(Uchar*)0,0,(char*)0)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	WARNING()
@@ -155,8 +159,9 @@
 **	X	Warning message.
 ** Returns:	nothing
 **___________________________________________________			     */
-#define WARNING(X)	\
-	error(ERR_WARN,X,(Uchar*)0,(Uchar*)0,(Uchar*)0,(Uchar*)0,0,(char*)0)
+#define WARNING(X)				\
+	error(ERR_WARN,(Uchar*)X,		\
+	      (Uchar*)0,(Uchar*)0,(Uchar*)0,(Uchar*)0,0,(char*)0)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	WARNING2()
@@ -168,8 +173,9 @@
 **	Y	Continuation of warning message.
 ** Returns:	nothing
 **___________________________________________________			     */
-#define WARNING2(X,Y)	\
-	error(ERR_WARN,X,Y,(Uchar*)0,(Uchar*)0,(Uchar*)0,0,(char*)0)
+#define WARNING2(X,Y)				\
+	error(ERR_WARN,(Uchar*)X,		\
+	      (Uchar*)Y,(Uchar*)0,(Uchar*)0,(Uchar*)0,0,(char*)0)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	WARNING3()
@@ -182,8 +188,9 @@
 **	Z	Second continuation of warning message.
 ** Returns:	nothing
 **___________________________________________________			     */
-#define WARNING3(X,Y,Z)	\
-	error(ERR_WARN,X,Y,Z,(Uchar*)0,(Uchar*)0,0,(char*)0)
+#define WARNING3(X,Y,Z)				\
+	error(ERR_WARN,(Uchar*)X,		\
+	      (Uchar*)Y,(Uchar*)Z,(Uchar*)0,(Uchar*)0,0,(char*)0)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	Err()
@@ -245,6 +252,21 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 #define ErrPrintF2(F,A,B)	(void)fprintf(err_file,F,A,B)
+
+/*-----------------------------------------------------------------------------
+** Macro:	ErrPrintF3()
+** Type:	void
+** Purpose:	Apply a formatting instruction (with |printf()|). This
+**		macro takes a format string and three additional arguments
+**		which are determined by the formatting string.
+** Arguments:
+**	F	Format
+**	A	First argument.
+**	B	Second argument.
+**	C	Third argument.
+** Returns:	nothing
+**___________________________________________________			     */
+#define ErrPrintF3(F,A,B,C)	(void)fprintf(err_file,F,A,B,C)
 
 /*-----------------------------------------------------------------------------
 ** Constant:	FlushErr()
@@ -363,4 +385,5 @@
 #define _ARG(A) ()
 #endif
  void error _ARG((int type,Uchar *s1,Uchar *s2,Uchar *s3,Uchar *line,Uchar *ep,int line_no,char *file_name));/* error.c*/
+ void init_error _ARG((FILE * file));
 

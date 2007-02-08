@@ -4,11 +4,70 @@
 ## It is distributed under the GNU General Public License.
 ## See the file COPYING for details.
 ## 
-## (c) 1996-1997 Gerd Neugebauer
+## (c) 1996-2001 Gerd Neugebauer
 ## 
-## Net: gerd@informatik.uni-koblenz.de
+## Net: gene@gerd-neugebauer.de
 ## 
 ##*****************************************************************************
+
+- Version 2.45
+
+	Resource  suppress.initial.newline introduced  to  suppress the  empty
+	line at the beginning of the output file
+
+	Bugfix:  Some  C comilers  don't  like  the  initialization of  static
+	variables with  stderr. The  code has been  moved to  a initialization
+	routine.
+
+	Bugfix:  -R  disables  the reading  of  the  resource  at the  end  of
+	processing of commandline arguments.
+
+	Bugfix:  Parsing of select arguments with backslashes were not treated
+	correctly.
+
+	Minor documentation bugs fixed.
+
+- Version 2.44
+	Key generation fixed to expand BibTeX strings. The current
+	behaviour is likely to change again in a future release. 
+
+	Updated to work with kpathsea 3.1 (partially).
+
+	Searching for the kpathsea library is now the default in the configure
+	script.  Thus it is possible to simply place BibTool  in a web2c tree.
+	This only requires that the directory  is named bibtool and bibtool is
+	added to the filelists in Makefile, configure, and configure.in of the
+	web2c main directory.
+
+	Check.double message improved.
+
+	Initialization bug for kpathsea fixed.
+
+	Bugfix for crossreferencing:  normalization to lowercase  was  missing
+	twice.
+
+	Bugfix in the TeX reading routines: spaces after active characters are
+	not ignored. All characters are treated as unsigned.  This seems to be
+	preferrable for extended ASCII characters.
+
+	Key generation routines adapted to  work with multiple databases.  The
+	symbol table  is  no longer  abused  to store  information for the key
+	generation.  This may slow down the key generation a little bit. If it
+	turns out to be a problem I will use a better algorithm.
+
+	Minor modifications in makefiles.
+
+	The configuration of BibTcl is now done automatically.
+
+	New datatype introduced:  Uchar  will  hold  UniCode characters  in  a
+	future  release.  I  just have  to find  regexp routines to  work with
+	UTF-8.
+
+	Extraction extended to allow negation of the regular expression/string
+	matching result. New resources select.non and select.by.non.string  to
+	specify such a request.
+	C  function  add_extract() extended  to cover  negated  values and the
+	former function add_s_extract().
 
 - Version 2.43
 	Additional library braces.rsc to  translate quotes as field delimiters
@@ -235,8 +294,8 @@
 
 	Added sample file for interfacing BibTool with Perl: Perl/bibtool.pl
 
-	Minor bug fix in string paring routines. E.g. select from command line
-	was not evaluated properly.
+	Minor bug fix  in string  parsing routines.  E.g. select  from command
+	line was not evaluated properly.
 
 	Minor  bug  fixed.  add.field  now works   again  as  described in the
 	documentation.

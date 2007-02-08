@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: init.c,v 1.1 2007-02-07 21:27:30 gene Exp $
+** $Id: init.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -24,9 +24,14 @@
 #include <bibtool/key.h>
 #include <bibtool/entry.h>
 #include <bibtool/symbols.h>
+#include <bibtool/macros.h>
 #include <bibtool/parse.h>
 #include <bibtool/type.h>
+#include <bibtool/sbuffer.h>
 #include "config.h"
+#ifdef HAVE_LIBKPATHSEA
+#include <kpathsea/proginit.h>
+#endif
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -69,8 +74,12 @@ void init_bibtool(progname)			   /*                        */
     rsc_v_bibtex = sbflush(sb_bibtex);		   /*                        */
   }						   /*                        */
 #endif
-#ifdef KPATHSEA
+#ifdef HAVE_LIBKPATHSEA
+#ifdef HAVE_LIBKPATHSEA2
   kpse_set_progname(progname);			   /*                        */
+#else
+  kpse_set_program_name(progname,"bibtool");	   /*                        */
+#endif
 #endif
 						   /*			     */
   init_type();					   /*			     */

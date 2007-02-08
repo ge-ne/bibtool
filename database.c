@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: database.c,v 1.1 2007-02-07 21:27:41 gene Exp $
+** $Id: database.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -39,15 +39,15 @@
 #define _ARG(A) ()
 #endif
  DB new_db _ARG((void));			   /* database.c             */
- Record db_find _ARG((DB db,char *key));	   /* database.c             */
- char * db_new_key _ARG((DB db,char *key));	   /* database.c             */
- char * db_string _ARG((DB db,char *s,int localp));/* database.c             */
+ Record db_find _ARG((DB db,Uchar *key));	   /* database.c             */
+ Uchar * db_new_key _ARG((DB db,Uchar *key));	   /* database.c             */
+ Uchar * db_string _ARG((DB db,Uchar *s,int localp));/* database.c           */
  int *db_count _ARG((DB db,int *lp));		   /* database.c             */
  int read_db _ARG((DB db,char *file,int (*fct)_ARG((DB,Record)),int verbose));/* database.c*/
  static Record insert_record _ARG((Record rec,Record ptr,int (*less)_ARG((Record,Record))));/* database.c*/
  static Record rec__sort _ARG((Record rec,int (*less)_ARG((Record,Record))));/* database.c*/
  static int cmp_heap _ARG((Record r1,Record r2));  /* database.c             */
- static void mark_string _ARG((Record rec,char *s));/* database.c            */
+ static void mark_string _ARG((Record rec,Uchar *s));/* database.c           */
  void db_add_record _ARG((DB db,Record rec));	   /* database.c             */
  void db_forall _ARG((DB db,int (*fct)_ARG((DB,Record))));/* database.c      */
  void db_mac_sort _ARG((DB db));		   /* database.c             */
@@ -182,7 +182,7 @@ int read_db(db,file,fct,verbose)		   /*                        */
   { master_record = new_record(0,32); }		   /*                        */
   RecordSource(master_record) = (file==NULL	   /*                        */
 				 ?sym_empty	   /*                        */
-				 :symbol(file));   /*                        */
+				 :symbol((Uchar*)file));/*                   */
  						   /*                        */
   if ( file == NULL ) file = "<stdin>";		   /*                        */
   if ( verbose ) 			   	   /* If desired print an    */
@@ -236,7 +236,7 @@ int read_db(db,file,fct,verbose)		   /*                        */
 **___________________________________________________			     */
 static void mark_string(rec,s)			   /*                        */
   Record rec;					   /*                        */
-  char   *s;					   /*                        */
+  Uchar   *s;					   /*                        */
 { int    d;					   /*                        */
   Record r;					   /*                        */
  						   /*                        */
@@ -267,13 +267,13 @@ static void mark_string(rec,s)			   /*                        */
 	if ( *s ) s++;
 	break;
       default:
-	if (is_allowed(*s))
-	{ char c, *t;
-	  char *mac = s;
+	if ( is_allowed(*s) )
+	{ Uchar c, *t;
+	  Uchar *mac = s;
 	  while ( is_allowed(*s) ) s++;
 	  c = *s;
 	  *s ='\0';
-	  t = new_string(mac);
+	  t = new_Ustring(mac);
 	  *s = c;
 	  mac = sym_add(t,0);
 	  free(t);
@@ -389,7 +389,7 @@ void print_db(file,db,spec)			   /*                        */
 	{					   /*                        */
 	  if ( allp || RecordIsMARKED(rec) )	   /*                        */
 	  {					   /*                        */
-	    fput_record(file,rec,db,"@");	   /*                        */
+	    fput_record(file,rec,db,(Uchar*)"@");  /*                        */
 	  }					   /*                        */
 	}					   /*                        */
 	else if ( rsc_del_q )			   /*                        */
@@ -491,7 +491,7 @@ void db_forall(db,fct)				   /*                        */
 **___________________________________________________			     */
 Record db_find(db,key)				   /*                        */
   DB              db;				   /*                        */
-  char		  *key;				   /*                        */
+  Uchar		  *key;				   /*                        */
 { register Record rec;				   /*                        */
 						   /*                        */
   if ( DBnormal(db) == RecordNULL ) return RecordNULL;/*                     */
@@ -527,9 +527,9 @@ Record db_find(db,key)				   /*                        */
 **	key	Key to find.
 ** Returns:	nothing
 **___________________________________________________			     */
-char * db_new_key(db,key)			   /*                        */
+Uchar * db_new_key(db,key)			   /*                        */
   DB              db;				   /*                        */
-  char		  *key;				   /*                        */
+  Uchar		  *key;				   /*                        */
 { register Record rec;				   /*                        */
 						   /*                        */
   if ( DBnormal(db) == RecordNULL ) return NULL;   /*                        */
@@ -537,7 +537,8 @@ char * db_new_key(db,key)			   /*                        */
   for ( rec = DBnormal(db);			   /*                        */
 	rec != RecordNULL;			   /*                        */
 	rec = NextRecord(rec) )			   /*                        */
-  { if ( RecordOldKey(rec) != NULL &&		   /*                        */
+  {
+    if ( RecordOldKey(rec) != NULL &&		   /*                        */
 	 RecordOldKey(rec) == key )		   /*                        */
     return *RecordHeap(rec); 			   /*                        */
   }						   /*                        */
@@ -545,7 +546,8 @@ char * db_new_key(db,key)			   /*                        */
   for ( rec = PrevRecord(DBnormal(db));		   /*                        */
 	rec != RecordNULL;			   /*                        */
 	rec = PrevRecord(rec) )			   /*                        */
-  { if ( RecordOldKey(rec) != NULL &&		   /*                        */
+  {
+    if ( RecordOldKey(rec) != NULL &&		   /*                        */
 	 RecordOldKey(rec) == key )		   /*                        */
     return *RecordHeap(rec); 			   /*                        */
   }						   /*                        */
@@ -697,7 +699,8 @@ static Record insert_record(rec,ptr,less)	   /*			     */
 static int cmp_heap(r1,r2)		   	   /*                        */
   register Record r1;				   /*                        */
   register Record r2;				   /*                        */
-{ return strcmp(*RecordHeap(r1),*RecordHeap(r2))<0;/*                        */
+{ return strcmp((char*)*RecordHeap(r1),		   /*                        */
+		(char*)*RecordHeap(r2))<0;	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -750,9 +753,9 @@ void db_sort(db,less)				   /*                        */
 **	localp	Boolean determining whether the search is only local to the db.
 ** Returns:	The macro expansion or |NULL| upon failure.
 **___________________________________________________			     */
-char * db_string(db,s,localp)			   /*                        */
+Uchar * db_string(db,s,localp)			   /*                        */
   DB     db;					   /*                        */
-  char   *s;					   /*                        */
+  Uchar   *s;					   /*                        */
   int    localp;				   /*                        */
 { Record rec;					   /*                        */
  						   /*                        */

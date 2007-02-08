@@ -61,13 +61,9 @@ source code.   No compiled  versions  are  available from  the  author
 
 BibTool can be obtained from the CTAN archives:
 
-* ftp.dante.de:/tex-archive/biblio/bibtex/utils/bibtool/BibTool
-* ftp.tex.ac.uk:/tex-archive/biblio/bibtex/utils/bibtool/BibTool
-* tug2.cs.umb.edu:/tex-archive/biblio/bibtex/utils/bibtool/BibTool
-
-or directly from the home site.
-
-* ftphost.uni-koblenz.de:/outgoing/gene/BibTool
+* ftp.dante.de:/tex-archive/biblio/bibtex/utils/bibtool
+* ftp.tex.ac.uk:/tex-archive/biblio/bibtex/utils/bibtool
+* ctan.tug.org:/tex-archive/biblio/bibtex/utils/bibtool
 
 Get  the  file BibTool-x.xx.tar.gz  where  x.xx is the version number.
 Unpack it with the command (on UN*X)
@@ -83,14 +79,9 @@ It will create  a  directory  named  BibTool-x.xx which contains   the
 installation instructions in the file INSTALL.
 
 
-A WWW page is available under the URL
-
-* http://www.uni-koblenz.de/~gerd/ftp/BibTool/
-
-
 ----------------------------------------------------------------------
 Enjoy it!
 
 Gerd Neugebauer
-gerd@informatik.uni-koblenz.de
+gerd.neugebauer@sdm.de
 

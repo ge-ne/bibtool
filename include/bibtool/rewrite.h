@@ -1,33 +1,32 @@
 /******************************************************************************
-** $Id: rewrite.h,v 1.1 2007-02-07 21:31:56 gene Exp $
+** $Id: rewrite.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 ******************************************************************************/
 
 #include <bibtool/record.h>
 #include <bibtool/database.h>
 
+
 #ifdef __STDC__
 #define _ARG(A) A
 #else
 #define _ARG(A) ()
 #endif
- int is_selected _ARG((DB db,Record rec));	   /* rewrite.c              */
- void add_check_rule _ARG((char *s));		   /* rewrite.c              */
- void add_extract _ARG((char *s));		   /* rewrite.c              */
- void add_field _ARG((char *spec));		   /* rewrite.c              */
- void add_rewrite_rule _ARG((char *s));		   /* rewrite.c              */
- void add_s_extract _ARG((char *s));		   /* rewrite.c              */
- void clear_addlist _ARG((void));		   /* rewrite.c              */
- void remove_field _ARG((char *field,Record rec)); /* rewrite.c              */
- void rewrite_record _ARG((DB db,Record rec));	   /* rewrite.c              */
- void save_regex _ARG((char *s));		   /* rewrite.c              */
-
+ int is_selected _ARG((DB db,Record rec));
+ void add_check_rule _ARG((Uchar *s));
+ void add_extract _ARG((Uchar *s,int regexp,int notp));
+ void add_field _ARG((Uchar *spec));
+ void add_rewrite_rule _ARG((Uchar *s));
+ void clear_addlist _ARG((void));
+ void remove_field _ARG((Uchar *field,Record rec));
+ void rewrite_record _ARG((DB db,Record rec));
+ void save_regex _ARG((Uchar *s));

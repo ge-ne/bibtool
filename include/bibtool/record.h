@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: record.h,v 1.1 2007-02-07 21:32:06 gene Exp $
+** $Id: record.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -19,6 +19,7 @@
 
 #ifndef RecordNULL
 
+#include <bibtool/type.h>
 #include <bibtool/wordlist.h>
 
 /*-----------------------------------------------------------------------------
@@ -40,19 +41,19 @@
 **
 **________________________________________________   			     */
 typedef struct rECORD				/*                           */
-  { char	  * rc_key;			/* The sort key.             */
-    char	  * rc_old_key;			/* The old sort key.         */
-    int		    rc_type;			/* The type of the record.   */
-    int		    rc_flags;			/* Some bits; e.g. used      */
+  { Uchar	  * rc_key;			/* The sort key.             */
+    Uchar	  * rc_old_key;			/* The old sort key.         */
+    int		  rc_type;			/* The type of the record.   */
+    int		  rc_flags;			/* Some bits; e.g. used      */
  						/*  during selecting aux     */
  						/*  records.                 */
-    int		    rc_free;			/* The size of the heap. This*/
+    int		  rc_free;			/* The size of the heap. This*/
  						/*  is purely internal and   */
  						/*  must not be modified.    */
-    char	  **rc_heap;			/* The heap.                 */
-    char          * rc_comment;			/* The comment following     */
+    Uchar	  **rc_heap;			/* The heap.                 */
+    Uchar	  * rc_comment;			/* The comment following     */
  						/*  the given record.        */
-    char	  * rc_source;			/* The source of the record. */
+    Uchar	  * rc_source;			/* The source of the record. */
  						/*  I.e. the file name it    */
  						/*  has been read from.      */
     struct rECORD * rc_next;			/* Pointer to the next       */
@@ -248,7 +249,7 @@ typedef struct rECORD				/*                           */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	RecordOldKey()
-** Type:	char *
+** Type:	Uchar *
 ** Purpose:	
 **		
 **		
@@ -259,7 +260,7 @@ typedef struct rECORD				/*                           */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	RecordSortkey()
-** Type:	char *
+** Type:	Uchar *
 ** Purpose:	This is the functional representation of the sort key
 **		of a record. This can be used to access the key component
 **		of a record. It can also be used as lvalue.
@@ -283,7 +284,7 @@ typedef struct rECORD				/*                           */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	RecordHeap()
-** Type:	char **
+** Type:	Uchar **
 ** Purpose:	The heap of a record is a array of strings. The even
 **		positions contain the names of fields and the
 **		following array cell contains its value. If the name
@@ -319,7 +320,7 @@ typedef struct rECORD				/*                           */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	RecordComment()
-** Type:	char *
+** Type:	Uchar *
 ** Purpose:	This is the functional representation of the comment
 **		component of a record. It can be used to get this value
 **		as well as an lvalue to set it.
@@ -330,7 +331,7 @@ typedef struct rECORD				/*                           */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	RecordSource()
-** Type:	char *
+** Type:	Uchar *
 ** Purpose:	This is the functional representation of the source
 **		indicator of a record. It is a string containing the
 **		file name from which this record has been read. The
@@ -364,11 +365,11 @@ typedef struct rECORD				/*                           */
  Record new_record _ARG((int token,int size));	   /* record.c               */
  Record record_gc _ARG((Record rec));		   /* record.c               */
  Record unlink_record _ARG((Record rec));	   /* record.c               */
- WordList new_wordlist _ARG((char * s));	   /* record.c               */
- void add_sort_order _ARG((char *val));		   /* record.c               */
+ WordList new_wordlist _ARG((Uchar * s));	   /* record.c               */
+ void add_sort_order _ARG((Uchar *val));	   /* record.c               */
  void free_1_record _ARG((Record rec));		   /* record.c               */
  void free_record _ARG((Record rec));		   /* record.c               */
- void push_to_record _ARG((Record rec,char *s,char *t));/* record.c          */
+ void push_to_record _ARG((Record rec,Uchar *s,Uchar *t));/* record.c        */
  void sort_record _ARG((Record rec));		   /* record.c               */
 
 

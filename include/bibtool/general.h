@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: general.h,v 1.1 2007-02-07 21:31:59 gene Exp $
+** $Id: general.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 ******************************************************************************/
 
@@ -25,7 +25,7 @@
 #include <stddef.h>
 #include <string.h>
 
-#ifdef MAYBE_NOT
+#ifdef LINT
  int fputs(char*,FILE*);
  int fputc(char,FILE*);
  int fclose(FILE*);

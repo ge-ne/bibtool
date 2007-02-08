@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: entry.h,v 1.1 2007-02-07 21:31:56 gene Exp $
+** $Id: entry.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -22,20 +22,22 @@
 **
 ******************************************************************************/
 
+#include <bibtool/type.h>
+
 /*-----------------------------------------------------------------------------
 ** Variable:	entry_type
-** Type:	char **
+** Type:	Uchar **
 ** Purpose:	This is an array of strings which represent entry
 **		types. They are either built-in or user defined. Use
 **		the function |def_entry_type()| to allocate a new
 **		entry type and the function |get_entry_type()| to find
 **		a certain entry type.
 **___________________________________________________			     */
- extern char **entry_type;
+ extern Uchar **entry_type;
 
 /*-----------------------------------------------------------------------------
 ** Macro:	EntryName()
-** Type:	char *
+** Type:	Uchar *
 ** Purpose:	This is the functional representation of the name
 **		component for an entry type. The argument is the index
 **		of an entry type. This macro can also be used as
@@ -151,7 +153,7 @@
 #else
 #define _ARG(A) ()
 #endif
- char * get_entry_type _ARG((int i));		   /* entry.c                */
- int find_entry_type _ARG((char *s));		   /* entry.c                */
- void def_entry_type _ARG((char * s));		   /* entry.c                */
+ Uchar * get_entry_type _ARG((int i));		   /* entry.c                */
+ int find_entry_type _ARG((Uchar *s));		   /* entry.c                */
+ void def_entry_type _ARG((Uchar * s));		   /* entry.c                */
  void init_entries _ARG((void));		   /* entry.c                */

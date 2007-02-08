@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: s_parse.h,v 1.1 2007-02-07 21:32:06 gene Exp $
+** $Id: s_parse.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -42,7 +42,7 @@
 #else
 #define _ARG(A) ()
 #endif
- char * s_parse _ARG((int type,char **sp,int errp));/* s_parse.c             */
- int sp_open _ARG((char * s));			   /* s_parse.c              */
+ Uchar * s_parse _ARG((int type,Uchar **sp,int errp));/* s_parse.c           */
+ int sp_open _ARG((Uchar * s));			   /* s_parse.c              */
  void sp_close _ARG((void));			   /* s_parse.c              */
- void sp_error _ARG((char *s,char *a,char *b));	   /* s_parse.c              */
+ void sp_error _ARG((Uchar *s,char *a,char *b));   /* s_parse.c              */

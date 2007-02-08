@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: record.c,v 1.1 2007-02-07 21:27:58 gene Exp $
+** $Id: record.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 ******************************************************************************/
 
@@ -30,11 +30,11 @@
  Record new_record _ARG((int token,int size));	   /* record.c               */
  Record record_gc _ARG((Record rec));		   /* record.c               */
  Record unlink_record _ARG((Record rec));	   /* record.c               */
- WordList new_wordlist _ARG((char * s));	   /* record.c               */
- void add_sort_order _ARG((char *val));		   /* record.c               */
+ WordList new_wordlist _ARG((Uchar * s));	   /* record.c               */
+ void add_sort_order _ARG((Uchar *val));	   /* record.c               */
  void free_1_record _ARG((Record rec));		   /* record.c               */
  void free_record _ARG((Record rec));		   /* record.c               */
- void push_to_record _ARG((Record rec,char *s,char *t));/* record.c          */
+ void push_to_record _ARG((Record rec,Uchar *s,Uchar *t));/* record.c        */
  void sort_record _ARG((Record rec));		   /* record.c               */
 
 /*****************************************************************************/
@@ -55,12 +55,12 @@
 Record copy_record(rec)				   /*			     */
   register Record rec;				   /*			     */
 { register Record new;				   /*			     */
-  register char	 **new_heap,			   /*			     */
-		 **old_heap;			   /*			     */
-  register int	 i;				   /*			     */
+  register Uchar  **new_heap,			   /*			     */
+		  **old_heap;			   /*			     */
+  register int	  i;				   /*			     */
 						   /*			     */
   if (	(new=(Record)malloc(sizeof(SRecord))) == 0L/*			     */
-     || (new_heap=(char**)malloc(sizeof(char*)*(size_t)RecordFree(rec)))/*   */
+     || (new_heap=(Uchar**)malloc(sizeof(Uchar*)*(size_t)RecordFree(rec)))/* */
 	== 0L )					   /*			     */
   { OUT_OF_MEMORY("Record"); }      		   /*                        */
   RecordSortkey(new)	  = sym_empty;		   /*			     */
@@ -91,15 +91,15 @@ Record copy_record(rec)				   /*			     */
 ** Returns:	The new record.
 **___________________________________________________			     */
 Record new_record(token,size)			   /*			     */
-  int token;				   	   /*			     */
-  int size;					   /*                        */
+  int		  token;			   /*			     */
+  int		  size;				   /*                        */
 { register Record new;				   /*			     */
-  register char	 **new_heap;			   /*			     */
-  register int	 i;				   /*			     */
+  register Uchar  **new_heap;			   /*			     */
+  register int	  i;				   /*			     */
 						   /*			     */
   if ( size < 1 ) size = 1;			   /*                        */
   if (	(new=(Record)malloc(sizeof(SRecord))) == 0L/*			     */
-     || (new_heap=(char**)malloc(sizeof(char*)*(size_t)(size)))/*            */
+     || (new_heap=(Uchar**)malloc(sizeof(Uchar*)*(size_t)(size)))/*          */
 	== 0L )					   /*			     */
   { OUT_OF_MEMORY("Record"); }      		   /*                        */
   RecordSortkey(new)	  = sym_empty;		   /*			     */
@@ -252,8 +252,8 @@ Record record_gc(rec)				   /*                        */
 **___________________________________________________			     */
 void push_to_record(rec,s,t)			   /*			     */
   register Record rec;				   /*                        */
-  register char *s;				   /*			     */
-  register char *t;				   /*			     */
+  register Uchar *s;				   /*			     */
+  register Uchar *t;				   /*			     */
 { register int i;		   		   /*			     */
    						   /*                        */
   if ( s == sym_crossref ) { SetRecordXREF(rec); } /*			     */
@@ -265,7 +265,7 @@ void push_to_record(rec,s,t)			   /*			     */
     }   					   /*                        */
   }						   /*                        */
   for ( i=2; i < RecordFree(rec); i+=2 )	   /* search empty field     */
-  { if ( RecordHeap(rec)[i] == (char*)0 )	   /* if found then          */
+  { if ( RecordHeap(rec)[i] == (Uchar*)NULL )	   /* if found then          */
     { RecordHeap(rec)[i++] = s;			   /* add the new item       */
       RecordHeap(rec)[i]   = t;			   /*                        */
       return;					   /*                        */
@@ -274,9 +274,9 @@ void push_to_record(rec,s,t)			   /*			     */
   i = RecordFree(rec);				   /*                        */
   RecordFree(rec) += 2;				   /*                        */
   if ( (RecordHeap(rec)   			   /* enlarge the heap	     */
-	=(char**)realloc(RecordHeap(rec),	   /*	                     */
-			 RecordFree(rec)*sizeof(char*)))/*                   */
-     == (char**)0 )				   /*	                     */
+	=(Uchar**)realloc(RecordHeap(rec),	   /*	                     */
+			 RecordFree(rec)*sizeof(Uchar*)))/*                  */
+     == (Uchar**)NULL )			   	   /*	                     */
   { OUT_OF_MEMORY("heap"); }      		   /*                        */
 						   /*			     */
   RecordHeap(rec)[i++] = s;		   	   /*			     */
@@ -301,7 +301,7 @@ void push_to_record(rec,s,t)			   /*			     */
 ** Returns:	
 **___________________________________________________			     */
 WordList new_wordlist(s)			   /*                        */
-  register char * s;				   /*                        */
+  Uchar * s;				   	   /*                        */
 { register WordList wl;				   /*                        */
   if ( (wl=(WordList)malloc(sizeof(SWordList))) == WordNULL )/*              */
   { OUT_OF_MEMORY("WordList"); }		   /*                        */
@@ -334,19 +334,19 @@ WordList new_wordlist(s)			   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void add_sort_order(val)			   /*                        */
-  char      *val;				   /*                        */
-{ char      *s;					   /*                        */
+  Uchar      *val;				   /*                        */
+{ Uchar     *s;					   /*                        */
   int       type;				   /*                        */
   OrderList ol;					   /*                        */
   WordList  *wlp, wl, wl_next;			   /*                        */
  						   /*                        */
   (void)SParseSkip(&val);			   /*                        */
   if ( *val == '*' )				   /*                        */
-  { s    = NULL;				   /*                        */
+  { s    = (Uchar*)NULL;			   /*                        */
     type = BIB_NOOP;				   /*                        */
     val++;					   /*                        */
   }						   /*                        */
-  else if ( (s=SParseSymbol(&val)) == NULL )	   /*                        */
+  else if ( (s=SParseSymbol(&val)) == (Uchar*)NULL )/*                       */
   { return; }					   /*                        */
   else if ( (type=find_entry_type(s)) == BIB_NOOP )/*                        */
   { Err("Undefined entry type for sort order");	   /*                        */

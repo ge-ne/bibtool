@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: expand.c,v 1.1 2007-02-07 21:26:17 gene Exp $
+** $Id: expand.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -34,7 +34,7 @@
 #else
 #define _ARG(A) ()
 #endif
- char * expand_rhs _ARG((char *s,char *pre,char *post,DB db));/* expand.c    */
+ Uchar * expand_rhs _ARG((Uchar *s,char *pre,char *post,DB db));/* expand.c  */
  static int expand _ARG((char *s,StringBuffer *sb,int brace,int first,char *q_open,char *q_close,DB db));/* expand.c*/
  static void expand__ _ARG((char *s,StringBuffer *sb,char *q_open,char *q_close,DB db));/* expand.c*/
 
@@ -63,8 +63,8 @@
 **		static variable of this function and will be overwritten with
 **		the next invocation.
 **___________________________________________________			     */
-char * expand_rhs(s,pre,post,db)		   /*                        */
-  char *s;					   /*                        */
+Uchar * expand_rhs(s,pre,post,db)		   /*                        */
+  Uchar *s;					   /*                        */
   char *pre;					   /*                        */
   char *post;					   /*                        */
   DB   db;					   /*                        */
@@ -76,8 +76,8 @@ char * expand_rhs(s,pre,post,db)		   /*                        */
   DebugPrint2("Expanding ",s);			   /*                        */
  						   /*                        */
   sbrewind(sb);					   /*                        */
-  expand__(s,sb,pre,post,db);			   /*                        */
-  return sbflush(sb);				   /*                        */
+  expand__((char*)s,sb,pre,post,db);		   /*                        */
+  return (Uchar*)sbflush(sb);			   /*                        */
 }						   /*------------------------*/
 
 #define PUTS(S,SB) (void)sbputs(S,SB)
@@ -201,23 +201,23 @@ static int expand(s,sb,brace,first,q_open,q_close,db)/*                      */
       default:					   /*                        */
         if ( is_space(*s) ) ++s;		   /* Ignore spaces.         */
         else 					   /* Only macros are left.  */
-	{ register char *sym = s;		   /*                        */
-	  char          *val;			   /*                        */
-	  char          c;			   /*                        */
+	{ Uchar *sym = (Uchar*)s;	   	   /*                        */
+	  char  *val;			   	   /*                        */
+	  char  c;			   	   /*                        */
  						   /*                        */
           DebugPrint2("Start symbol: ",s);	   /*                        */
 	  while ( is_allowed(*s) ) ++s;		   /*                        */
 	  c = *s; *s = '\0';			   /*                        */
-	  { register char *sym_copy;		   /* Local copy of sym      */
-	    if ( (sym_copy = (char*)malloc(strlen(sym)+1))/* Allocate memory */
-		== NULL )			   /* Upon failure           */
+	  { Uchar *sym_copy;		   /* Local copy of sym      */
+	    if ( (sym_copy = (Uchar*)malloc(strlen((char*)sym)+1))/* Allocate memory*/
+		== (Uchar*)NULL )		   /* Upon failure           */
 	    { OUT_OF_MEMORY("expand string"); }	   /*  exit.                 */
-	    (void)strcpy(sym_copy,sym);		   /* Save sym               */
+	    (void)strcpy((char*)sym_copy,(char*)sym);/* Save sym             */
 	    *s = c;				   /* Restore end mark       */
 	    sym = symbol(sym_copy);		   /* Intern the symbol.     */
-	    free(sym_copy);			   /* Free the temp. memory  */
+	    free((char*)sym_copy);		   /* Free the temp. memory  */
 	  }					   /*                        */
-	  val = db_string(db,sym,1);		   /*                        */
+	  val = (char*)db_string(db,sym,1);	   /*                        */
 	  if ( val )			   	   /*                        */
 	  { brace = expand(val,sb,brace,first,q_open,q_close,db); }/*        */
 	  else					   /*                        */

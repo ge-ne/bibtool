@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: keynode.h,v 1.1 2007-02-07 21:31:59 gene Exp $
+** $Id: keynode.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -18,6 +18,8 @@
 **	should not be visible outside.
 **
 ******************************************************************************/
+
+#include <bibtool/type.h>
 
 /*-----------------------------------------------------------------------------
 ** Typedef:	KeyNode
@@ -29,9 +31,9 @@
  { short int	  kn_type;
    short int      kn_pre;
    short int      kn_post;
-   char           *kn_string;
-   char           *kn_from;
-   char		  *kn_to;
+   Uchar	  *kn_string;
+   Uchar	  *kn_from;
+   Uchar	  *kn_to;
    struct kEYnODE *kn_next;
    struct kEYnODE *kn_then;
    struct kEYnODE *kn_else;

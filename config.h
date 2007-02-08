@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: config.h,v 1.1 2007-02-07 21:27:30 gene Exp $
+** $Id: config.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -197,7 +197,7 @@
 /*-----------------------------------------------------------------------------
 **  The following macro holds the subdir of EMTEXDIR for bibtex.
 */
-#define EMTEXT_BIBTEX		"\\bibinput"
+#define EMTEXT_BIBTEX		"\\bibtex\\bib"
 /*-----------------------------------------------------------------------------
 **  The following macro holds the subdir of EMTEXDIR for bibtool.
 */

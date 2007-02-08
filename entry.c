@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: entry.c,v 1.1 2007-02-07 21:27:16 gene Exp $
+** $Id: entry.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -46,11 +46,7 @@
 #else
 #define _ARG(A) ()
 #endif
- char * get_entry_type _ARG((int i));		   /* entry.c                */
- int find_entry_type _ARG((char *s));		   /* entry.c                */
- static int match _ARG((char *s,char *t));	   /* entry.c                */
- void def_entry_type _ARG((char * s));		   /* entry.c                */
- void init_entries _ARG((void));		   /* entry.c                */
+ static int match _ARG((Uchar *s,Uchar *t));	   /* entry.c                */
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -62,7 +58,7 @@
 
 #define EntrySizeIncrement 8
 
- char       **entry_type;
+ Uchar	    **entry_type;
  static int entry_ptr	= 0;
  static int entry_size  = 0;
 
@@ -98,15 +94,15 @@ void init_entries()				   /*			     */
   register char**wp;				   /*			     */
 #endif
 						   /*			     */
-  def_entry_type("STRING"  );		   	   /*			     */
-  def_entry_type("PREAMBLE");		   	   /*			     */
-  def_entry_type("COMMENT" );		   	   /*			     */
-  def_entry_type("ALIAS"   );		   	   /*			     */
-  def_entry_type("MODIFY"  );		   	   /*			     */
-  def_entry_type("INCLUDE" );		   	   /*			     */
+  def_entry_type((Uchar*)"STRING"  );		   /*			     */
+  def_entry_type((Uchar*)"PREAMBLE");		   /*			     */
+  def_entry_type((Uchar*)"COMMENT" );		   /*			     */
+  def_entry_type((Uchar*)"ALIAS"   );		   /*			     */
+  def_entry_type((Uchar*)"MODIFY"  );		   /*			     */
+  def_entry_type((Uchar*)"INCLUDE" );		   /*			     */
 #ifdef INITIALIZE_BIBTEX_ENTRIES
   for ( wp=word_list; *wp!=NULL; ++wp )		   /* add compiled in types. */
-  { def_entry_type(*wp); }			   /*			     */
+  { def_entry_type((Uchar*)(*wp)); }		   /*			     */
 #endif
 }						   /*------------------------*/
 
@@ -123,14 +119,14 @@ void init_entries()				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void def_entry_type(s)				   /*			     */
-  char *s;				   	   /*			     */
+  Uchar *s;				   	   /*			     */
 { int  i;				   	   /*                        */
  						   /*                        */
   for (i=0; i<entry_ptr; ++i)			   /*			     */
   { 						   /*                        */
     if ( case_cmp(s,EntryName(i)) )		   /*			     */
     { free(EntryName(i));			   /*                        */
-      EntryName(i) = new_string(s);		   /*			     */
+      EntryName(i) = new_Ustring(s); 		   /*			     */
       return;				   	   /*			     */
     }						   /*			     */
   }						   /*			     */
@@ -138,14 +134,14 @@ void def_entry_type(s)				   /*			     */
   if ( entry_ptr <= entry_size )		   /*			     */
   { entry_size += EntrySizeIncrement;		   /*			     */
     entry_type = ( entry_ptr == 0		   /*			     */
-		  ? (char**)malloc((size_t)(entry_size*sizeof(char*)))
-		  : (char**)realloc((char*)entry_type,
-					(size_t)(entry_size*sizeof(char*)))
+		  ? (Uchar**)malloc((size_t)(entry_size*sizeof(Uchar*)))
+		  : (Uchar**)realloc((char*)entry_type,
+				     (size_t)(entry_size*sizeof(Uchar*)))
 		  );				   /*			     */
-    if ( entry_type == NULL )			   /*			     */
+    if ( entry_type == (Uchar**)NULL )		   /*			     */
     { OUT_OF_MEMORY("entry type"); }		   /*                        */
   }						   /*			     */
-  entry_type[entry_ptr++] = new_string(s);	   /*			     */
+  entry_type[entry_ptr++] = new_Ustring(s);	   /*		             */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -159,8 +155,8 @@ void def_entry_type(s)				   /*			     */
 ** Returns:	
 **___________________________________________________			     */
 static int match(s,t)				   /*			     */
-  register char *s;				   /*			     */
-  register char *t;				   /*			     */
+  register Uchar *s;				   /*			     */
+  register Uchar *t;				   /*			     */
 {						   /*			     */
   while( *t )					   /*			     */
   { if ( ToLower(*s) != ToLower(*t) ) return(FALSE);/*			     */
@@ -177,7 +173,7 @@ static int match(s,t)				   /*			     */
 ** Returns:	The index in the array or |NOOP|.
 **___________________________________________________			     */
 int find_entry_type(s)				   /*			     */
-  char *s;				   	   /*			     */
+  Uchar *s;				   	   /*			     */
 { int i;				   	   /*			     */
 						   /*			     */
   for (i=0; i<entry_ptr; ++i)			   /*			     */
@@ -197,7 +193,7 @@ int find_entry_type(s)				   /*			     */
 **	idx	Index of entry type.
 ** Returns:	Print representation of the entry type or |NULL|.
 **___________________________________________________			     */
-char * get_entry_type(idx)			   /*                        */
+Uchar * get_entry_type(idx)			   /*                        */
   int idx;				   	   /*                        */
 {						   /*                        */
   return (idx<0||idx>=entry_ptr ? NULL : EntryName(idx));/*                  */

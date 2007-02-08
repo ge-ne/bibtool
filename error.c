@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: error.c,v 1.1 2007-02-07 21:27:24 gene Exp $
+** $Id: error.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -39,10 +39,25 @@
 /*---------------------------------------------------------------------------*/
 
  char  *err_format = "*** BibTool: %s";
- Uchar *err_point  = ".";
- Uchar *err_oom    = "Out of memory for ";
+ Uchar *err_point  = (Uchar*)".";
+ Uchar *err_oom    = (Uchar*)"Out of memory for ";
 
- FILE * err_file   = stderr;
+ FILE * err_file = NULL;
+
+/*-----------------------------------------------------------------------------
+** Function:	init_error()
+** Type:	void
+** Purpose:	
+**		
+** Arguments:
+**		
+** Returns:	nothing
+**___________________________________________________			     */
+void init_error(file)				   /*                        */
+  FILE * file;					   /*                        */
+{ err_file = file;
+}						   /*------------------------*/
+
 
 #define ErrNL		(void)fputc('\n',err_file)
 #define ErrChar(C)	(void)fputc(C,err_file)

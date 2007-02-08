@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: stack.c,v 1.1 2007-02-07 21:27:24 gene Exp $
+** $Id: stack.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -38,8 +38,8 @@
 #else
 #define _ARG(A) ()
 #endif
- char * pop_string _ARG((void));		   /* stack.c                */
- void push_string _ARG((char * s));		   /* stack.c                */
+ Uchar * pop_string _ARG((void));		   /* stack.c                */
+ void push_string _ARG((Uchar * s));		   /* stack.c                */
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -47,7 +47,7 @@
 
 /*---------------------------------------------------------------------------*/
 
- static char **stack;
+ static Uchar  **stack;
  static size_t stack_size = 0;
  static size_t stack_ptr  = 0;
 
@@ -64,13 +64,14 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 void push_string(s)				   /*                        */
-  register char * s;				   /*                        */
-{ if ( stack_ptr >= stack_size )		   /*                        */
+  register Uchar *s;				   /*                        */
+{						   /*                        */
+  if ( stack_ptr >= stack_size )		   /*                        */
   { stack_size += 16;		   		   /*                        */
     stack = (stack_ptr == 0			   /*                        */
-	     ?(char**)malloc((size_t)(stack_size*sizeof(char*)))/*           */
-	     :(char**)realloc((char*)stack,	   /*                        */
-			      (size_t)(stack_size*sizeof(char*))));/*        */
+	     ?(Uchar**)malloc((size_t)(stack_size*sizeof(Uchar*)))/*         */
+	     :(Uchar**)realloc((char*)stack,	   /*                        */
+			       (size_t)(stack_size*sizeof(Uchar*))));/*      */
     if ( stack == NULL )			   /*                        */
     { OUT_OF_MEMORY("stack"); }	   		   /*                        */
   }		   				   /*                        */
@@ -87,10 +88,10 @@ void push_string(s)				   /*                        */
 ** Arguments:	none
 ** Returns:	The old top element or |NULL| if the stack is empty.
 **___________________________________________________			     */
-char * pop_string()				   /*                        */
+Uchar * pop_string()				   /*                        */
 {						   /*                        */
-  if ( stack_ptr <= 0 ) return(NULL);		   /*                        */
+  if ( stack_ptr <= 0 ) return NULL;		   /*                        */
  						   /*                        */
   DebugPrint2("poping ",stack[stack_ptr-1]);	   /*                        */
-  return(stack[--stack_ptr]);			   /*                        */
+  return stack[--stack_ptr];			   /*                        */
 }						   /*------------------------*/

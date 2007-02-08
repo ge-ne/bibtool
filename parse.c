@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: parse.c,v 1.1 2007-02-07 21:27:50 gene Exp $
+** $Id: parse.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 ******************************************************************************/
 
@@ -42,7 +42,7 @@
  int seen _ARG((void));				   /* parse.c                */
  static int fill_line _ARG((void));		   /* parse.c                */
  static int parse_block _ARG((int quotep));	   /* parse.c                */
- static int parse_equation _ARG((Record rec,int macp));/* parse.c            */
+ static int parse_equation _ARG((Record rec));	   /* parse.c                */
  static int parse_key _ARG((int alpha));	   /* parse.c                */
  static int parse_rhs _ARG((void));		   /* parse.c                */
  static int parse_string _ARG((int quotep));	   /* parse.c                */
@@ -99,15 +99,15 @@
 
 /*---------------------------------------------------------------------------*/
 
- static Uchar *str_syntax	= "Syntax Error";
- static Uchar *str_eof		= "EOF unexpected";
- static Uchar *str_stdin	= "<stdin>";
+ static Uchar *str_syntax	= (Uchar*)"Syntax Error";
+ static Uchar *str_eof		= (Uchar*)"EOF unexpected";
+ static char *str_stdin		= "<stdin>";
 
-#define Error(X)	error(ERR_ERROR|ERR_POINT|ERR_FILE,X,	\
-			      sym_empty,sym_empty,		\
+#define Error(X)	error(ERR_ERROR|ERR_POINT|ERR_FILE,(Uchar*)X,	\
+			      sym_empty,sym_empty,			\
 			      file_line_buffer,flp,flno,filename)
-#define Warning(X)	error(ERR_WARN|ERR_POINT|ERR_FILE,X,	\
-			      sym_empty,sym_empty,		\
+#define Warning(X)	error(ERR_WARN|ERR_POINT|ERR_FILE,(Uchar*)X,	\
+			      sym_empty,sym_empty,			\
 			      file_line_buffer,flp,flno,filename)
 #define SyntaxError	Error(str_syntax)
 #define EofError	Error(str_eof)
@@ -178,7 +178,7 @@ void init_read()				   /*			     */
 #ifndef HAVE_LIBKPATHSEA
   init___(&f_path,				   /*			     */
 	  f_pattern,				   /*			     */
-	  &rsc_v_bibtex,			   /*			     */
+	  (char**)&rsc_v_bibtex,		   /*			     */
 	  rsc_e_bibtex	);			   /*			     */
 #endif
 }						   /*------------------------*/
@@ -225,7 +225,7 @@ int see_bib(fname)				   /*			     */
   InitLine;					   /*			     */
   if ( fname == NULL )				   /*			     */
   {						   /*                        */
-    filename = str_stdin;			   /*			     */
+    filename = str_stdin;		   	   /*			     */
     file     = stdin;			   	   /*			     */
     return TRUE;				   /*			     */
   }						   /*                        */
@@ -278,8 +278,8 @@ int seen()					   /*			     */
 #define ExpectSymbol(C,N) if (!parse_symbol(C))		return(N)
 #define ExpectKey(C,N)    if (!parse_key(C))		return(N)
 #define ExpectRhs(N)	  if (!parse_rhs())		return(N)
-#define ExpectEq(R,N)	  if (!parse_equation(R,FALSE))	return(N)
-#define ExpectEqMac(R,N)  if (!parse_equation(R,TRUE))	return(N)
+#define ExpectEq(R,N)	  if (!parse_equation(R))	return(N)
+#define ExpectEqMac(R,N)  if (!parse_equation(R))	return(N)
 
 /*-----------------------------------------------------------------------------
 ** Function:	init_parse()
@@ -358,7 +358,7 @@ static int fill_line()				   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function:	skip()
-** Purpose:	Skip over spaces. Return the next nonspace character or EOF.
+** Purpose:	Skip over spaces. Return the next nonspace character or |EOF|.
 **		If inc is TRUE point to the first character after the one
 **		returned.
 ** Arguments:
@@ -440,16 +440,17 @@ static int skip_nl()				   /*			     */
 ** Returns:	Success status
 **___________________________________________________			     */
 static int parse_symbol(alpha)			   /*			     */
-  register int alpha;				   /*			     */
-{ register int c;				   /*			     */
-  register char * cp;				   /*			     */
+  register int   alpha;				   /*			     */
+{ register Uchar c;				   /*			     */
+  register Uchar *cp;				   /*			     */
 						   /*			     */
   c = GetC;					   /*                        */
-  cp = (char*)flp-1;			   	   /*			     */
+  cp = flp-1;			   	   	   /*			     */
   if ( alpha && (! is_alpha(c)) )		   /*			     */
   { SyntaxError; return(FALSE); }		   /*			     */
   while ( is_allowed(CurrentC) ) { SkipC; }	   /*			     */
-  c = CurrentC; CurrentC = '\0';		   /*			     */
+  c = CurrentC;					   /*                        */
+  CurrentC = '\0';		   		   /*			     */
   push_string(symbol(lower(cp)));		   /*			     */
   CurrentC = c;					   /*			     */
   return TRUE;					   /*			     */
@@ -464,17 +465,21 @@ static int parse_symbol(alpha)			   /*			     */
 ** Returns:	Success status
 **___________________________________________________			     */
 static int parse_key(alpha)			   /*			     */
-  register int alpha;				   /*			     */
-{ register int c;				   /*			     */
-  register char * cp, *s;			   /*			     */
+  register int   alpha;				   /*			     */
+{ register Uchar c;				   /*			     */
+  register Uchar *cp;			   	   /*			     */
 						   /*			     */
-  c = GetC;  cp = (char*)flp-1;			   /*			     */
+  c  = GetC;					   /*                        */
+  cp = flp-1;			   		   /*			     */
   if ( alpha && (! is_alpha(c)) )		   /*			     */
   { SyntaxError; return(FALSE); }		   /*			     */
-  while ( is_allowed(CurrentC) ) { SkipC; }	   /*			     */
-  c = CurrentC; CurrentC = '\0';		   /*			     */
+  while ( is_allowed(CurrentC) || CurrentC == '\'')/*                        */
+  { SkipC; }	   				   /*			     */
+  c = CurrentC;					   /*                        */
+  CurrentC = '\0';		   		   /*			     */
   if ( rsc_key_case )				   /*                        */
-  { s = symbol(cp);				   /*                        */
+  { Uchar *s;					   /*                        */
+    s  = symbol(cp);				   /*                        */
     cp = symbol(lower(cp));			   /*                        */
     save_key(cp,s);				   /*                        */
   }						   /*                        */
@@ -495,14 +500,15 @@ static int parse_key(alpha)			   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void parse_number()			   /*			     */
-{ register int c;				   /*			     */
-  register char * cp;				   /*			     */
+{ register Uchar c;				   /*			     */
+  register Uchar *cp;				   /*			     */
 						   /*			     */
-  cp = (char*)flp;				   /*                        */
-  while ( is_digit(*flp) ) flp++;	   	   /*			     */
-  c = *flp; *flp = '\0';			   /*			     */
+  cp = flp;				   	   /*                        */
+  while ( is_digit(CurrentC) ) { SkipC; }	   /*			     */
+  c = CurrentC;					   /*                        */
+  CurrentC = '\0';			   	   /*			     */
   push_string(symbol(cp));			   /*                        */
-  *flp = c;		   			   /*			     */
+  CurrentC = c;		   			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -516,9 +522,9 @@ static void parse_number()			   /*			     */
 ** Returns:	Success status
 **___________________________________________________"			     */
 static int parse_string(quotep)			   /*			     */
-  int          quotep;				   /*			     */
-{ register int c,				   /*                        */
-    	       left;				   /*			     */
+  int   quotep;				   	   /*			     */
+{ Uchar c;					   /*                        */
+  int   left;				   	   /*			     */
 						   /*			     */
   left = 0;					   /*			     */
   if ( quotep ) (void)sbputchar('"',parse_sb);	   /*"			     */
@@ -552,8 +558,9 @@ static int parse_string(quotep)			   /*			     */
 ** Returns:	Success status
 **___________________________________________________			     */
 static int parse_block(quotep)			   /*			     */
-  int quotep;					   /*			     */
-{ register int c, left;				   /*			     */
+  int   quotep;					   /*			     */
+{ Uchar c;					   /*                        */
+  int   left;				   	   /*			     */
 						   /*			     */
   left = 1;					   /*			     */
   if ( quotep ) (void)sbputchar('{',parse_sb);	   /*			     */
@@ -598,13 +605,15 @@ static int parse_rhs()				   /*			     */
 						   /*			     */
       case '0': case '1': case '2': case '3': case '4':/*		     */
       case '5': case '6': case '7': case '8': case '9':/*		     */
-	UnGetC; parse_number();			   /*			     */
+	UnGetC;					   /*                        */
+	parse_number();			   	   /*			     */
 	(void)sbputs(pop_string(),parse_sb);	   /*			     */
 	break;					   /*			     */
 						   /*			     */
       default:					   /*			     */
-	UnGetC; ExpectSymbol(TRUE,FALSE);	   /*			     */
-	{ register char * mac;			   /*			     */
+	UnGetC;					   /*                        */
+	ExpectSymbol(TRUE,FALSE);	   	   /*			     */
+	{ register Uchar * mac;			   /*			     */
 	  mac = pop_string();			   /*			     */
 #ifdef OLD
 	  (void)look_macro(mac,1);		   /*			     */
@@ -629,10 +638,9 @@ static int parse_rhs()				   /*			     */
 **	macp
 ** Returns:	Success status
 **___________________________________________________			     */
-static int parse_equation(rec,macp)		   /*			     */
+static int parse_equation(rec)		   	   /*			     */
   Record rec;					   /*                        */
-  int    macp;					   /*			     */
-{ register char *s, *t;				   /*			     */
+{ Uchar  *s, *t;				   /*			     */
 						   /*			     */
   ExpectSymbol(TRUE,FALSE);			   /*			     */
   Expect('=',FALSE);				   /*			     */
@@ -641,9 +649,6 @@ static int parse_equation(rec,macp)		   /*			     */
   t = pop_string();				   /*			     */
   s = pop_string();				   /*			     */
   push_to_record(rec,s,t);			   /*			     */
-#ifdef OLD
-  if ( macp ) { def_macro(s,t,0); }		   /*			     */
-#endif
   return(TRUE);					   /*			     */
 }						   /*------------------------*/
 
@@ -697,7 +702,7 @@ int parse_bib(rec)				   /*			     */
  						   /*                        */
 	s = t = sbflush(comment_sb);
 	while ( *s ) s++;
-	while ( t <= --s  && isspace(*s) ) *s = '\0';
+	while ( t <= --s  && is_space(*s) ) *s = '\0';
 	if ( *t ) RecordComment(rec) = symbol(t);
 	sbrewind(comment_sb);			   /*                        */
 	return(BIB_COMMENT);		   	   /*			     */
@@ -712,16 +717,16 @@ int parse_bib(rec)				   /*			     */
       { sbputchar('\n',comment_sb); }	   	   /*			     */
       else					   /*			     */
       { (void)sprintf(buffer,"%ld",ignored);	   /*			     */
-	error(ERR_WARN|ERR_FILE,buffer,		   /*			     */
-	      " non-space characters ignored.",	   /*			     */
-	      (char*)0,(Uchar*)0,(Uchar*)0,	   /*			     */
+	error(ERR_WARN|ERR_FILE,(Uchar*)buffer,	   /*			     */
+	      (Uchar*)" non-space characters ignored.",/*		     */
+	      (Uchar*)0,(Uchar*)0,(Uchar*)0,	   /*			     */
 	      flno,filename);			   /*			     */
       }						   /*			     */
     }						   /*			     */
 						   /*			     */
     if ( (type=find_entry_type((char*)flp)) == BIB_NOOP )/*		     */
     { Error("Unknown entry type"); return(BIB_NOOP); }/*		     */
-    flp += strlen(EntryName(type));		   /*			     */
+    flp += strlen((char*)EntryName(type));	   /*			     */
  						   /*                        */
     if ( type == BIB_COMMENT && rsc_pass_comment ) /*                        */
     { sbputchar('@',comment_sb);		   /*                        */
@@ -807,18 +812,19 @@ int parse_bib(rec)				   /*			     */
     case EOF:					   /*                        */
       { char *s;				   /*                        */
         if (c=='{') { s="'{'"; } else { s="'('"; } /*                        */
-	error(ERR_ERROR|ERR_FILE,s,		   /*                        */
-	      " not closed at end of file.",	   /*                        */
-	      (char*)0,(Uchar*)0,(Uchar*)0,	   /*			     */
+	error(ERR_ERROR|ERR_FILE,(Uchar*)s,	   /*                        */
+	      (Uchar*)" not closed at end of file.",/*                       */
+	      (Uchar*)0,(Uchar*)0,(Uchar*)0,	   /*			     */
 	      line,name);			   /*			     */
       }						   /*                        */
       break;					   /*                        */
     default:					   /*			     */
-      { char *s;				   /*                        */
+      { Uchar *s;				   /*                        */
         if (c=='{') { s="'{'"; } else { s="'('"; } /*                        */
 	error(ERR_ERROR|ERR_FILE,		   /*                        */
-	      s," not properly terminated.", 	   /*                        */
-	      (char*)0,(Uchar*)0,(Uchar*)0, 	   /*			     */
+	      s,				   /*                        */
+	      (Uchar*)" not properly terminated.", /*                        */
+	      (Uchar*)0,(Uchar*)0,(Uchar*)0, 	   /*			     */
 	      line,name);			   /*			     */
       }						   /*                        */
       return(BIB_NOOP);				   /*			     */
@@ -827,7 +833,7 @@ int parse_bib(rec)				   /*			     */
   { char *s, *t;				   /*                        */
     s = t = sbflush(comment_sb);		   /*                        */
     while ( *s ) s++;				   /*                        */
-    while ( t <= --s  && isspace(*s) ) *s = '\0';  /*                        */
+    while ( t <= --s  && is_space(*s) ) *s = '\0'; /*                        */
     if ( *t ) RecordComment(rec) = symbol(t);	   /*                        */
   }						   /*                        */
   sbrewind(comment_sb);				   /*                        */
@@ -946,7 +952,7 @@ static int parse_value()			   /*			     */
 int read_rsc(name)				   /*			     */
   char	        *name;				   /*			     */
 { int	        c;				   /*			     */
-  char	        *token;				   /*			     */
+  Uchar	        *token;				   /*			     */
  						   /*                        */
   char		*s_filename;			   /*			     */
   FILE		*s_file;			   /*                        */

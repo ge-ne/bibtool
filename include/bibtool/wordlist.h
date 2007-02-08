@@ -1,18 +1,20 @@
 /******************************************************************************
-** $Id: wordlist.h,v 1.1 2007-02-07 21:32:04 gene Exp $
+** $Id: wordlist.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 ******************************************************************************/
 
 #ifndef WordNULL
+
+#include <bibtool/type.h>
 
 /*-----------------------------------------------------------------------------
 ** Typedef:	WordList
@@ -21,7 +23,7 @@
 **		is prety generic.
 **________________________________________________   			     */
  typedef struct wORDlIST			   /*                        */
- { char            *wl_word;			   /* String value of	     */
+ { Uchar	   *wl_word;			   /* String value of	     */
  						   /*  this node.            */
    struct wORDlIST *wl_next;			   /* Pointer to the next    */
  						   /*  node.                 */
@@ -38,7 +40,7 @@
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ThisWord()
-** Type:	char *
+** Type:	Uchar *
 ** Purpose:	This macro returns the string of a |WordList| node.
 ** Arguments:
 **	WL	|WordList| to consider which is not |WordNULL|.
@@ -62,9 +64,9 @@
 #else
 #define _ARG(A) ()
 #endif
- int find_word _ARG((char *s,WordList wl));	   /* wordlist.c             */
- int foreach_word _ARG((WordList wl,int (*fct)_ARG((char*))));/* wordlist.c  */
- void free_words _ARG((WordList *wlp,void (*fct)_ARG((char*))));/* wordlist.c*/
- void add_word _ARG((char *s,WordList *wlp));	   /* wordlist.c             */
+ int find_word _ARG((Uchar *s,WordList wl));	   /* wordlist.c             */
+ int foreach_word _ARG((WordList wl,int (*fct)_ARG((Uchar*))));/* wordlist.c */
+ void free_words _ARG((WordList *wlp,void (*fct)_ARG((Uchar*))));/* wordlist.c*/
+ void add_word _ARG((Uchar *s,WordList *wlp));	   /* wordlist.c             */
 
 #endif

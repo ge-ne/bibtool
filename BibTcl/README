@@ -45,37 +45,41 @@ UNIX
 - Ensure that the command  tclsh is present on  your path. This tclsh needs to
   be not too old and it needs to be installed properly.
 
-- Run
+- If you have wish at hand you can try the program install.tcl in this
+  directory.  This program performs the following tasks and displays
+  the results in a window:
+
+  - Run
 	./configure
 
-  You need to give the  same arguments as  for the configuration of BibTool in
-  the previous directory. Especially prefix and exec-prefix are required to be
-  the same.
+    You need to give the same arguments as for the configuration of BibTool in
+    the previous directory. Especially prefix  and exec-prefix are required to
+    be the same.
 
-  This should produce the file Makefile in the current directory.
+    This should produce the file Makefile in the current directory.
 
-- On Solaris edit the Makefile and remove  '-z text'  from SHLIB_LD.
+  - On Solaris edit the Makefile and remove  '-z text'  from SHLIB_LD.
 
-- Run
+  - Run
 	make
 
-  This should  produce  the shared library  and  a small  Tcl loader which  is
-  independent of  the architecture.  In fact  it figures out  the architecture
-  and uses the appropriate version which should be installed.
+    This  should produce the shared library  and a small  Tcl  loader which is
+    independent of the architecture.  In fact  it figures out the architecture
+    and uses the appropriate version which should be installed.
 
-- Run
+  - Run
 	make install
 
-  This creates  a   subdirectory of LIBDIR  according  to  the OS  used.  This
-  directory contains the  shared library as  well as the   loader script.  The
-  loader script can be  freely copied to any other  place. The  shared library
-  must stay in this  directory since the location is  compiled into the loader
-  script.
+    This creates a  subdirectory of  LIBDIR according  to  the OS used.   This
+    directory contains the  shared library as well as  the loader script.  The
+    loader script can be freely copied to any  other place. The shared library
+    must stay in this directory since the location is compiled into the loader
+    script.
 
-- Run
+  - Run
 	make clean
 
-  to remove the intermediate files.
+    to remove the intermediate files.
 
 
 This procedure can  be repeated  for different  architectures which  share the
@@ -92,3 +96,4 @@ descriptions.
 
 
 Gerd Neugebauer
+gerd.neugebauer@sdm.de

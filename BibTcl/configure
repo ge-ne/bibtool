@@ -519,30 +519,12 @@ fi
 
 
 
-# Recover information that Tcl computed with its configure script.
-
-echo $ac_n "checking for tcl configuration file""... $ac_c" 1>&6
-echo "configure:526: checking for tcl configuration file" >&5
-	
-CONFIG_FILE=`echo 'puts [file join [file dirname [info library]] tclConfig.sh]' | tclsh`
-if test -f $CONFIG_FILE ; then
-	echo "$ac_t""$CONFIG_FILE" 1>&6
-elif test -f tclConfig.sh ; then
-	CONFIG_FILE=tclConfig.sh
-	echo "$ac_t""$CONFIG_FILE" 1>&6
-else
-	echo "configure: warning: not found. Ensure that a properly installed tclsh is on your path." 1>&2
-	exit 1
-fi
-
-. $CONFIG_FILE
-
-for ac_prog in tclsh tclsh-8.0 tclsh-8.1 tclx
+for ac_prog in tclsh tclsh-8.0 tclsh-8.1 tclsh-8.2 tclsh-8.3 tclx
 do
 # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
 echo $ac_n "checking for $ac_word""... $ac_c" 1>&6
-echo "configure:546: checking for $ac_word" >&5
+echo "configure:528: checking for $ac_word" >&5
 if eval "test \"`echo '$''{'ac_cv_path_TCLSH'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
@@ -572,8 +554,31 @@ fi
 
 test -n "$TCLSH" && break
 done
-test -n "$TCLSH" || TCLSH="/usr/local/bin/tclsh"
 
+
+if test -z "$TCLSH" ; then
+	echo "configure: warning: tclsh not found.
+Ensure that a properly installed tclsh is on your path or live without BibTcl." 1>&2
+	exit 0
+fi
+
+# Recover information that Tcl computed with its configure script.
+
+echo $ac_n "checking for tcl configuration file""... $ac_c" 1>&6
+echo "configure:569: checking for tcl configuration file" >&5
+	
+CONFIG_FILE=`echo 'puts [file join [file dirname [info library]] tclConfig.sh]' | $TCLSH`
+if test -f $CONFIG_FILE ; then
+	echo "$ac_t""$CONFIG_FILE" 1>&6
+elif test -f tclConfig.sh ; then
+	CONFIG_FILE=tclConfig.sh
+	echo "$ac_t""$CONFIG_FILE" 1>&6
+else
+	echo "configure: warning: not found. Ensure that a properly installed tclsh is on your path." 1>&2
+	exit 1
+fi
+
+. $CONFIG_FILE
 
 CC=$TCL_CC
 

@@ -1,18 +1,19 @@
 # *****************************************************************************
-#  $Id: makefile.in,v 1.1 2007-02-07 21:32:09 gene Exp $
+#  $Id: makefile.in,v 1.2 2007-02-08 05:27:32 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 1996-1997 Gerd Neugebauer
+#  (c) 1996-1999 Gerd Neugebauer
 #  
-#  Net: gerd@informatik.uni-koblenz.de
+#  Net: gerd.neugebauer@sdm.de
 #  
 # *****************************************************************************
 
-#  Look also in the file config.h for configuration parameters.
+#  Look also in the file include/bibtool/config.h for additional
+#  configuration parameters.
 #  Read the file INSTALL for explanation.
 # =============================================================================
 
@@ -69,8 +70,7 @@ INCLUDEDIR = @includedir@/bibtool
 CC         = @CC@
 
 # -------------------------------------------------------
-#  C_OPTIONS are the flags for the C compiler.
-#  It should always contain a path to the header files.
+#  CFLAGS are the flags for the C compiler.
 #  For debugging it should be -g. 
 #  For final version you can try to activate 
 #  the optimizer with -O or -O2 or whatever
@@ -78,11 +78,19 @@ CC         = @CC@
 # 	   optimizer is turned on.
 # 
 
-C_OPTIONS     = -Iinclude
-# C_OPTIONS = -Iinclude -O
+CFLAGS     =
+# CFLAGS = -O
 #  GNU C
-# C_OPTIONS = -Iinclude -g -Wall
-# C_OPTIONS = -Iinclude -g -Wall -pedantic -Wpointer-arith -Wshadow -Wcast-align
+# CFLAGS = -g -Wall
+# CFLAGS = -g -Wall -pedantic -Wpointer-arith -Wshadow -Wcast-align
+
+##-------------------------------------------------------
+## C_INCLUDE are the flags for the C compiler pointing it
+## to the location of the header files. Usually this
+## does not need any modifications.
+##
+
+C_INCLUDE     = -Iinclude
 
 # -------------------------------------------------------
 #  EXT is the optional extension of the final executable.
@@ -141,7 +149,7 @@ INSTALL_DATA	= @INSTALL_DATA@
 #  already existent. If your install does not support the 
 #  -d option you can try to use mkdir instead.
 
-INSTALL_DIR	= mkdirchain
+INSTALL_DIR	= ./mkdirchain
 
 # -------------------------------------------------------
 # The ranlib program or : for nothing.
@@ -276,7 +284,7 @@ DONT_LINK     = -c
 LINK_TO       = -o
 STANDALONE    = -DSTANDALONE
 
-CFLAGS	      = $(C_OPTIONS) $(FILE_TYPES)
+C_FLAGS	      = $(CFLAGS) $(C_INCLUDE) $(FILE_TYPES)
 
 CFILES	      = main.c				\
 		$(CLIBFILES)
@@ -305,7 +313,7 @@ CLIBFILES     = database.c			\
 		wordlist.c
 
 HPATH	      = include${DIR_SEP}bibtool${DIR_SEP}
-HFILES	      = config.h			\
+HFILES	      = config.h		\
 		${HPATH}database.h		\
 		${HPATH}bibtool.h		\
 		${HPATH}config.h		\
@@ -414,57 +422,71 @@ DISTFILES     = $(ETCFILES)			\
 #  The main target
 # -----------------------------------------------------------------------------
 
-all: bibtool$(EXT)
+default all: bibtool$(EXT)
 
 bibtool$(EXT): $(OFILES) $(REGEX) $(KPATHSEA)
-	$(CC) $(CFLAGS) $(LINK_TO) $@ $(OFILES) $(REGEX) $(KPATHSEA)
+	$(CC) $(C_FLAGS) $(LINK_TO) $@ $(OFILES) $(REGEX) $(KPATHSEA)
 
 tex_read$(EXT): tex_read.c
-	$(CC) $(CFLAGS) $(STANDALONE) tex_read.c $(LINK_TO) tex_read$(EXT)
+	$(CC) $(C_FLAGS) $(STANDALONE) tex_read.c $(LINK_TO) tex_read$(EXT)
 
 tex_aux$(OBJ): tex_aux.c
-	$(CC) $(CFLAGS) $(REGEX_DEF) $(DONT_LINK) tex_aux.c -o tex_aux$(OBJ)
+	$(CC) $(C_FLAGS) $(REGEX_DEF) $(DONT_LINK) tex_aux.c -o tex_aux$(OBJ)
 
 main$(OBJ): main.c
-	$(CC) $(CFLAGS) $(REGEX_DEF) $(KPATHSEA_DEF) $(DONT_LINK) main.c
+	$(CC) $(C_FLAGS) $(REGEX_DEF) $(KPATHSEA_DEF) $(DONT_LINK) main.c
+
+init$(OBJ): init.c
+	$(CC) $(C_FLAGS) $(KPATHSEA_DEF) $(DONT_LINK) init.c
 
 parse$(OBJ): parse.c
-	$(CC) $(CFLAGS) $(KPATHSEA_DEF) $(DONT_LINK) parse.c -o parse$(OBJ)
+	$(CC) $(C_FLAGS) $(KPATHSEA_DEF) $(DONT_LINK) parse.c -o parse$(OBJ)
 
 rewrite$(OBJ): rewrite.c
-	$(CC) $(CFLAGS) $(REGEX_DEF) $(DONT_LINK) rewrite.c -o rewrite$(OBJ)
+	$(CC) $(C_FLAGS) $(REGEX_DEF) $(DONT_LINK) rewrite.c -o rewrite$(OBJ)
 
 rsc$(OBJ): rsc.c
-	$(CC) $(CFLAGS) $(RSC_DEF) $(DONT_LINK) rsc.c -o rsc$(OBJ)
+	$(CC) $(C_FLAGS) $(RSC_DEF) $(DONT_LINK) rsc.c -o rsc$(OBJ)
+
+.c$(OBJ):
+	$(CC) $(C_FLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
 
 # __________________________________________________________________
 #  Include the makefile into the dependencies to force updates
 #  when the makefile is modified.
 
-$(OFILES): $(MAKEFILE) config.h
+$(OFILES): $(MAKEFILE)
 
 # __________________________________________________________________
 #  Targets from the GNU Regular Expression Library.
 
 regex$(OBJ): $(REGEX_DIR)$(DIR_SEP)regex.c $(MAKEFILE)
-	$(CC) $(CFLAGS) -I$(REGEX_DIR) -I.. $(NON_ANSI_DEFS) $(REGEX_DIR)$(DIR_SEP)regex.c $(DONT_LINK) -o $@
+	$(CC) $(C_FLAGS) -I$(REGEX_DIR) -I.. $(NON_ANSI_DEFS) $(REGEX_DIR)$(DIR_SEP)regex.c $(DONT_LINK) -o $@
+
+
+bibtcl:
+	cd BibTcl && $(MAKE) $(MFLAGS)
 
 # -----------------------------------------------------------------------------
 #  General development targets
 # -----------------------------------------------------------------------------
 
-CLEAN_TARGETS	= *$(OBJ) xref *.bak core #* *~ ; cd Doc; $(MAKE) clean
+CLEAN_TARGETS	= *$(OBJ) xref *.bak core #* *~ 
 
-clean:
+clean mostlyclean:
 	-$(RM) $(CLEAN_TARGETS)
+	-cd Doc && $(MAKE) $(MFLAGS) clean
+	-cd BibTcl && $(MAKE) $(MFLAGS) clean
 
-veryclean: clean
-	-$(RM) bibtool
+veryclean distclean realclean extraclean: clean
+	-$(RM) bibtool config.cache config.status makefile
 
-doc: Doc$(DIR_SEP)config.tex
-	cd Doc; $(MAKE) DIR_SEP=$(DIR_SEP)
+doc dvi: Doc$(DIR_SEP)config.tex
+	cd Doc; $(MAKE) $(MFLAGS) DIR_SEP=$(DIR_SEP)
 
-test:
+info:
+
+test check:
 	(cd Test; $(MAKE))
 
 libbib.a: $(OLIBFILES)
@@ -476,13 +498,13 @@ depend:
 
 install: install.bin install.lib
 
-install.bin: bibtool$(EXT)
+install.bin install-exec: bibtool$(EXT)
 	-$(INSTALL_DIR) $(BINDIR)
 	$(INSTALL) bibtool$(EXT) $(BINDIR)
 
 INSTALL_LIB_FILES = Lib$(DIR_SEP)*.*
 
-install.lib: 
+install.lib install-data: 
 	-$(INSTALL_DIR) $(LIBDIR)
 	for lib in $(INSTALL_LIB_FILES); do	\
 	  $(INSTALL_DATA) $$lib $(LIBDIR);	\
@@ -490,28 +512,33 @@ install.lib:
 
 INSTALL_INCLUDE_FILES = $(HFILES)
 
-install.include: 
+install.include install-include: 
 	-$(INSTALL_DIR) $(INCLUDEDIR)
 	for inc in $(INSTALL_INCLUDE_FILES); do	\
 	  $(INSTALL_DATA) $$inc $(INCLUDEDIR);	\
 	done
 
-install.man: 
+install.man install-man: 
 	-$(INSTALL_DIR) $(MANDIR)$(DIR_SEP)man$(MANSECT)
 	$(INSTALL) Doc$(DIR_SEP)bibtool.1 \
 		$(MANDIR)$(DIR_SEP)man$(MANSECT)$(DIR_SEP)bibtool.$(MANSECT)
 
-uninstall.bin:
+uninstall: uninstall.bin uninstall.lib
+
+uninstall.bin uninstall-exec:
 	-$(RM) $(BINDIR)$(DIR_SEP)bibtool$(EXT)
 
-uninstall.lib:
+uninstall.lib uninstall-data:
 	-$(RM) $(LIBDIR)
 
-uninstall.include:
+uninstall.include uninstall-include:
 	-$(RM) $(INCLUDEDIR)
 
-uninstall.man:
+uninstall.man uninstall-man:
 	-$(RM) $(MANDIR)$(DIR_SEP)man$(MANSECT)$(DIR_SEP)bibtool.$(MANSECT)
+
+status:
+	@echo $(LIBDIR)
 
 # =============================================================================
 # DO NOT DELETE THIS LINE -- make depend depends on it.

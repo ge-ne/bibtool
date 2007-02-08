@@ -1,17 +1,17 @@
 %%*****************************************************************************
-%% $Id: ref_card.tex,v 1.1 2007-02-07 21:28:48 gene Exp $
+%% $Id: ref_card.tex,v 1.2 2007-02-08 05:27:32 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
 %% It is distributed under the GNU General Public License.
 %% See the file COPYING for details.
 %%
-%% (c) 1996-1997 Gerd Neugebauer
+%% (c) 1996-2001 Gerd Neugebauer
 %%
-%% Net: gerd@informatik.uni-koblenz.de
+%% Net: gene@gerd-neugebauer@sdm
 %%
 %%-----------------------------------------------------------------------------
-%% Usage:  latex     ref_card
+%% Usage:  latex ref_card
 %%*****************************************************************************
 
 \newif\ifAfour \Afourtrue
@@ -60,6 +60,14 @@
 \newcommand\Num{{\sl n}}
 \newcommand\Section[1]{\smallskip\par\ \hfill{\normalsize\bf #1}\hfill\ \par}
 \newcommand\Lib[1]{{\tt #1}}
+\newcommand\mailto[1]{{\tt #1}}
+\newcommand\NewPage{\end{multicols}
+ \vfill\vfill\vfill
+ \begin{center}\rule{.8\textwidth}{.1pt}\end{center}
+ \newpage
+ \begin{center}\rule{.8\textwidth}{.1pt}\end{center}\vfill
+ \begin{multicols}{2}
+}
 
 \begin{document} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -67,11 +75,11 @@
   \Large \BibTool{} Quick Reference Card
   \\
   \scriptsize for \BibTool{} version \Version{}
-  --- see also \tt http://www.uni-koblenz.de/\~{}gerd/ftp/BibTool/
+%  --- see also \tt http://www.uni-koblenz.de/\~{}gerd/ftp/BibTool/
   \\
-  {\rm{\copyright}}\Year{} Gerd Neugebauer ({\tt gerd@informatik.uni-koblenz.de})
+  \copyright\Year{} Gerd Neugebauer (\mailto{gerd.neugebauer@sdm.de})
   \\
-  \rule{.8\textwidth}{.1pt}
+  \rule{.80\textwidth}{.1pt}
 \end{center}
 \vfill
 \footnotesize\rm
@@ -211,12 +219,7 @@
   \item [print.all.strings = \OnOff]
   \item [expand.macros = \OnOff]
   \end{FlatList}
-\end{multicols}
-\vfill\vfill\vfill
-\begin{center}\rule{.8\textwidth}{.1pt}\end{center}
-\newpage
-\begin{center}\rule{.8\textwidth}{.1pt}\end{center}\vfill
-\begin{multicols}2
+\NewPage
   \Section{Counting}
   \begin{FlatList}
   \item [count.all = \OnOff]

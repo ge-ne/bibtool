@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: database.h,v 1.1 2007-02-07 21:32:01 gene Exp $
+** $Id: database.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -149,9 +149,9 @@
 #define _ARG(A) ()
 #endif
  DB new_db _ARG((void));			   /* database.c             */
- Record db_find _ARG((DB db,char *key));	   /* database.c             */
- char * db_new_key _ARG((DB db,char *key));	   /* database.c             */
- char * db_string _ARG((DB db,char *s,int localp));/* database.c             */
+ Record db_find _ARG((DB db,Uchar *key));	   /* database.c             */
+ Uchar * db_new_key _ARG((DB db,Uchar *key));	   /* database.c             */
+ Uchar * db_string _ARG((DB db,Uchar *s,int localp));/* database.c           */
  int *db_count _ARG((DB db,int *lp));		   /* database.c             */
  int read_db _ARG((DB db,char *file,int (*fct)_ARG((DB,Record)),int verbose));/* database.c*/
  void db_add_record _ARG((DB db,Record rec));	   /* database.c             */

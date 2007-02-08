@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: main.c,v 1.1 2007-02-07 21:27:36 gene Exp $
+** $Id: main.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 ** >>> See the file Doc/c_lib.tex for a printed documentation of the
 ** >>> main parts of the C source.
@@ -64,6 +64,7 @@
 #include <bibtool/symbols.h>
 #include <bibtool/sbuffer.h>
 #include <bibtool/expand.h>
+#include <bibtool/version.h>
 #ifdef HAVE_LIBKPATHSEA
 #include <kpathsea/debug.h>
 #endif
@@ -149,7 +150,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2007-02-07 21:27:36 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2007-02-08 05:27:32 $",
     "gerd@informatik.uni-koblenz.de"
   };
 
@@ -360,6 +361,7 @@ int main(argc,argv)				   /*			     */
   int	c_len;					   /*                        */
   int   *c;					   /*                        */
  						   /*                        */
+  init_error(stderr);				   /*                        */
   init_bibtool(argv[0]);			   /*                        */
 						   /*			     */
   for ( i=1; i<argc; i++ )			   /*			     */
@@ -368,10 +370,10 @@ int main(argc,argv)				   /*			     */
     }						   /*			     */
     else					   /*			     */
     { switch ( *++ap )				   /*			     */
-      { case 'A': set_base(ap+1);	    break; /* disambiguation	     */
-	case 'd': Toggle(rsc_double_check); break; /* double entries	     */
+      { case 'A': set_base((Uchar*)(ap+1));  break;/* disambiguation	     */
+	case 'd': Toggle(rsc_double_check);  break;/* double entries	     */
 #ifdef HAVE_LIBKPATHSEA
-	case 'D': kpathsea_debug = atoi(++ap); break;/* kpathsea debugging   */
+	case 'D': kpathsea_debug=atoi(++ap); break;/* kpathsea debugging     */
 #endif
 	case 'f': add_format(argv[++i]);	   /*	!!! no break !!!     */
 	case 'F': rsc_make_key = TRUE;	    break; /* key generation	     */
@@ -392,7 +394,7 @@ int main(argc,argv)				   /*			     */
 	  else					   /*                        */
 	  {  NoRscError(argv[i]); }		   /*                        */
 	  break;				   /*			     */
-	case 'R': need_rsc = search_rsc();  break; /* default resource file  */
+	case 'R': need_rsc |= !search_rsc();break; /* default resource file  */
 	case 's': Toggle(rsc_sort);	    break; /* sort		     */
 	case 'S':				   /*			     */
 	  Toggle(rsc_sort);			   /*			     */
@@ -404,21 +406,21 @@ int main(argc,argv)				   /*			     */
 	  rsc_all_macs = FALSE;			   /*                        */
 	  if ( ++i < argc )			   /*			     */
 	  { if ( read_aux(argv[i],save_input_file,*++ap=='v') )/*            */
-	    { ERROR3("aux File ",argv[i]," not found.");/*                   */
+	    { ERROR3("aux file ",argv[i]," not found.");/*                   */
 	    }					   /*                        */
 	  }					   /*                        */
 	  else		    { NoSFileWarning; }	   /*			     */
 	  break;				   /*			     */
 	case 'X':				   /* extract pattern	     */
 	  rsc_all_macs = FALSE;			   /*                        */
-	  if ( ++i < argc ) { save_regex(argv[i]); }/*			     */
+	  if ( ++i < argc ) { save_regex((Uchar*)argv[i]); }/*		     */
 	  else		    { MissingPattern; }	   /*			     */
 	  break;				   /*			     */
 	case '#': Toggle(rsc_cnt_all);	    break; /* print full statistics  */
 	case '@': Toggle(rsc_cnt_used);	    break; /* print short statistics */
 	case '-':				   /* extended command	     */
-	  if ( *++ap )	      { (void)use_rsc(ap); }/*			     */
-	  else if ( ++i<argc ){ (void)use_rsc(argv[i]); }/*		     */
+	  if ( *++ap )	      { (void)use_rsc((Uchar*)ap); }/*		     */
+	  else if ( ++i<argc ){ (void)use_rsc((Uchar*)argv[i]); }/*	     */
 	  else		      { MissingResource;  }/*			     */
 	  break;				   /*			     */
 #ifdef SYMBOL_DUMP
@@ -453,22 +455,25 @@ int main(argc,argv)				   /*			     */
   apply_aux(the_db);				   /*                        */
  						   /*                        */
   if ( rsc_cnt_all || rsc_cnt_used )		   /*			     */
-  { int i;
-    int * cnt = db_count(the_db,&c_len);
-
-    if ( (c=(int*)malloc(c_len*sizeof(int))) == NULL )
-    { rsc_cnt_all = rsc_cnt_used = 0; }
-    else
-    { for (i=0;i<c_len;i++) c[i] = cnt[i];
-    }
-  }
+  { int i;					   /*                        */
+    int * cnt = db_count(the_db,&c_len);	   /*                        */
+ 						   /*                        */
+    if ( (c=(int*)malloc(c_len*sizeof(int))) == NULL )/*                     */
+    { rsc_cnt_all = rsc_cnt_used = 0; }		   /*                        */
+    else					   /*                        */
+    { for (i=0;i<c_len;i++) c[i] = cnt[i];	   /*                        */
+    }						   /*                        */
+  }						   /*                        */
 						   /*			     */
   if ( rsc_make_key )				   /*                        */
-  { if ( rsc_key_preserve )	   		   /*                        */
+  {						   /*                        */
+    start_key_gen();				   /*                        */
+    if ( rsc_key_preserve )	   		   /*                        */
     { db_forall(the_db,mark_key); }		   /*                        */
     db_rewind(the_db);				   /*                        */
     db_forall(the_db,do_keys);		   	   /*                        */
     db_forall(the_db,update_crossref);	   	   /*                        */
+    end_key_gen();				   /*                        */
   }						   /*                        */
   else						   /*                        */
   {						   /*                        */
@@ -490,7 +495,7 @@ int main(argc,argv)				   /*			     */
   if ( output_file == NULL ||			   /*                        */
        (file=fopen(output_file,"w")) == NULL )	   /*                        */
   { file = stdout; }				   /*                        */
-  print_db(file,the_db,rsc_print_et);		   /*                        */
+  print_db(file,the_db,(char*)rsc_print_et);	   /*                        */
   if ( file != stdout ) { fclose(file); }	   /*                        */
 						   /*			     */
   if ( macro_file != NULL  && *macro_file )	   /*			     */
@@ -506,16 +511,15 @@ int main(argc,argv)				   /*			     */
 						   /*			     */
   if ( rsc_cnt_all || rsc_cnt_used )		   /*			     */
   { int i;					   /*                        */
-    int *cnt = db_count(the_db,NULL);		   /*                        */
+    int *cnt = db_count(the_db,(int*)NULL);	   /*                        */
 						   /*                        */
-    (void)fputc('\n',err_file);		   	   /*			     */
+    ErrC('\n');		   	   	   	   /*			     */
     for (i=0; i<c_len; ++i)			   /*			     */
     { if ( rsc_cnt_all || c[i] > 0 )	   	   /*			     */
-      { (void)fprintf(err_file,			   /*			     */
-		      "---  %-15s %5d read  %5d written\n",/*		     */
-		      get_entry_type(i),	   /*			     */
-		      c[i],		   	   /*			     */
-		      cnt[i]);		   	   /*			     */
+      { ErrPrintF3("---  %-15s %5d read  %5d written\n",/*		     */
+		   get_entry_type(i),	   	   /*			     */
+		   c[i],		   	   /*			     */
+		   cnt[i]);		   	   /*			     */
       }						   /*			     */
     }						   /*			     */
   }						   /*                        */
@@ -548,7 +552,8 @@ int main(argc,argv)				   /*			     */
 static int rec_gt(r1,r2)			   /*                        */
   Record r1;					   /*                        */
   Record r2;					   /*                        */
-{ return (strcmp(RecordSortkey(r1),RecordSortkey(r2)) < 0);/*                */
+{ return (strcmp((char*)RecordSortkey(r1),	   /*                        */
+		 (char*)RecordSortkey(r2)) < 0);   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -564,7 +569,8 @@ static int rec_gt(r1,r2)			   /*                        */
 static int rec_lt(r1,r2)			   /*                        */
   Record r1;					   /*                        */
   Record r2;					   /*                        */
-{ return (strcmp(RecordSortkey(r1),RecordSortkey(r2)) > 0);/*                */
+{ return (strcmp((char*)RecordSortkey(r1),	   /*                        */
+		 (char*)RecordSortkey(r2)) > 0);   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -620,11 +626,11 @@ static int do_no_keys(db,rec)			   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 static int update_crossref(db,rec)		   /*			     */
-  DB		db;				   /*                        */
-  Record	rec;				   /*			     */
-{ register char	**hp;				   /*			     */
-  register int  i;				   /*                        */
-  char		*t,*s;			   	   /*			     */
+  DB		 db;				   /*                        */
+  Record	 rec;				   /*			     */
+{ register Uchar **hp;				   /*			     */
+  register int   i;				   /*                        */
+  Uchar		 *t,*s;			   	   /*			     */
 						   /*			     */
   if ( !RecordIsXREF(rec) ) return 0;		   /*			     */
 						   /*                        */
@@ -639,17 +645,17 @@ static int update_crossref(db,rec)		   /*			     */
 						   /*			     */
   t = *++hp; t++;				   /*			     */
   (void)sp_open(t);				   /* Try to extract	     */
-  if ( (s = SParseSymbol(&t)) == NULL )	   	   /*  the crossref as symbol*/
+  if ( (s = SParseSymbol(&t)) == (Uchar)NULL )	   /*  the crossref as symbol*/
   { return 0; }					   /*			     */
 						   /*			     */
-  if ( (s = db_new_key(db,s)) == NULL )	   	   /*			     */
-  { ERROR2("Crossref not found: ",s);		   /*			     */
+  if ( (s = db_new_key(db,s)) == (Uchar)NULL )	   /*			     */
+  { ERROR2("Crossref not found: ",(char*)s);	   /*			     */
     return 0;					   /*			     */
   }						   /*			     */
-  if ( (t = malloc(strlen(s)+3)) == NULL )	   /* allocate temp memory   */
+  if ( (t=(Uchar*)malloc(strlen((char*)s)+3))==(Uchar*)NULL )/* get temp mem */
   { OUT_OF_MEMORY("update_crossref()"); }	   /*		             */
 						   /*			     */
-  (void)sprintf(t,(**hp=='"'?"\"%s\"":"{%s}"),s);  /* construct new crossref */
+  (void)sprintf((char*)t,(**hp=='"'?"\"%s\"":"{%s}"),s);/* make new crossref */
   *hp = symbol(t);				   /* store new crossref     */
   free(t);					   /* free temp memory	     */
   return 0;					   /*                        */
@@ -673,8 +679,20 @@ static int dbl_check(db,rec)			   /*                        */
 {						   /*                        */
   if ( PrevRecord(rec) != RecordNULL		   /*                        */
        && equal_records(PrevRecord(rec),rec) )	   /*			     */
-  { WARNING2("Possible double entries discovered: \n***\t\t",/*	             */
-	     RecordSortkey(rec));		   /*			     */
+  {
+    if ( !rsc_quiet )
+    { Uchar *k1 = *RecordHeap(rec);
+      Uchar *k2 = *RecordHeap(PrevRecord(rec));
+      ErrPrint("*** BibTool WARNING: Possible double entries discovered: \n***\t");
+      if ( k1 == NULL ) k1 = "";
+      if ( k2 == NULL ) k2 = "";
+      ErrPrint(k2);
+      ErrPrint(" =?= ");
+      ErrPrint(k1);
+      ErrPrint("\n***\t");
+      ErrPrint(RecordSortkey(rec));		   /*			     */
+      ErrPrint("\n");				   /*                        */
+    }						   /*                        */
     if (rsc_del_dbl)				   /*                        */
     { delete_record(db,rec); }		   	   /*                        */
     else 					   /*                        */

@@ -3,11 +3,19 @@ dnl	generate the file "configure", which is run to configure the
 dnl	Makefile in this directory.
 AC_INIT(bibtool.c)
 
+AC_PATH_PROGS(TCLSH,tclsh tclsh-8.0 tclsh-8.1 tclsh-8.2 tclsh-8.3 tclx,)
+
+if test -z "$TCLSH" ; then
+	AC_MSG_WARN(tclsh not found.
+Ensure that a properly installed tclsh is on your path or live without BibTcl.)
+	exit 0
+fi
+
 # Recover information that Tcl computed with its configure script.
 
 AC_MSG_CHECKING(for tcl configuration file)
 	
-CONFIG_FILE=`echo 'puts [[file join [file dirname [info library]] tclConfig.sh]]' | tclsh`
+CONFIG_FILE=`echo 'puts [[file join [file dirname [info library]] tclConfig.sh]]' | $TCLSH`
 if test -f $CONFIG_FILE ; then
 	AC_MSG_RESULT($CONFIG_FILE)
 elif test -f tclConfig.sh ; then
@@ -19,8 +27,6 @@ else
 fi
 
 . $CONFIG_FILE
-
-AC_PATH_PROGS(TCLSH,tclsh tclsh-8.0 tclsh-8.1 tclx,/usr/local/bin/tclsh)
 
 CC=$TCL_CC
 AC_SUBST(CC)

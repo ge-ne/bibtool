@@ -1,17 +1,17 @@
 dnl ***************************************************************************
-dnl $Id: configure.in,v 1.1 2007-02-07 21:27:14 gene Exp $
+dnl $Id: configure.in,v 1.2 2007-02-08 05:27:32 gene Exp $
 dnl ===========================================================================
 dnl 
 dnl This file is part of BibTool.
 dnl It is distributed under the GNU General Public License.
 dnl See the file COPYING for details.
 dnl 
-dnl (c) 1996-1997 Gerd Neugebauer
+dnl (c) 1996-2001 Gerd Neugebauer
 dnl 
-dnl Net: gerd@informatik.uni-koblenz.de
+dnl Net: gene@gerd-neugebauer.de
 dnl 
 dnl ***************************************************************************
-AC_REVISION($Revision: 1.1 $)dnl
+AC_REVISION($Revision: 1.2 $)dnl
 AC_PREREQ(2.12)
 
 dnl ---------------------------------------------------------------------------
@@ -60,24 +60,22 @@ AC_CHECK_FUNCS(getenv)
 AC_CHECK_FUNCS(strrchr)
 
 dnl ---------------------------------------------------------------------------
-kpathsea=0
-AC_ARG_WITH(kpathsea,Use the KPATHSEA library.,kpathsea=1,kpathsea=0)
+AC_ARG_WITH(kpathsea,Use the KPATHSEA library.,,with_kpathsea=yes)
 
-if test $kpathsea -eq 0; then
+if test $with_kpathsea = no; then
 	kpathsea_dir=
 	kpathsea_lib=
 	kpathsea_def=
 else
-
 	AC_MSG_CHECKING(for kpathsea library)
 	kpathsea_dir=
 	kpathsea_lib=
 	kpathsea_def=
-	for cand in ../kpse2-6 .. kpse2-6 .
+	for cand in .. ../kpse3-2 kpse3-2 . 
 	do
 		if test -f $cand/kpathsea/tex-file.h ; then
 			kpathsea_dir=$cand
-			kpathsea_lib=$cand/kpathsea/kpathsea.a
+			kpathsea_lib=$cand/kpathsea/STATIC/libkpathsea.a
 			kpathsea_def="-DHAVE_LIBKPATHSEA -I$cand"
 		fi
 	done
@@ -95,6 +93,9 @@ dnl ---------------------------------------------------------------------------
 dnl AC_CONFIG_SUBDIRS(regex-0.12)
 dnl ---------------------------------------------------------------------------
 
+AC_CONFIG_SUBDIRS(BibTcl)
+
 AC_CONFIG_HEADER(include/bibtool/config.h:AutoConf/config.h.in regex-0.12/config.h:AutoConf/reconfig.h.in)
 
 AC_OUTPUT(makefile:AutoConf/makefile.in)
+

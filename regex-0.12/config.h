@@ -1,15 +1,15 @@
 /* regex-0.12/config.h.  Generated automatically by configure.  */
 /******************************************************************************
-** $Id: config.h,v 1.1 2007-02-07 21:29:45 gene Exp $
+** $Id: config.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-1999 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gerd.neugebauer@sdm.de
 ** 
 ******************************************************************************/
 

@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: wordlist.c,v 1.1 2007-02-07 21:27:45 gene Exp $
+** $Id: wordlist.c,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
@@ -20,8 +20,8 @@
 ******************************************************************************/
 
 #include <bibtool/general.h>
-#include <bibtool/wordlist.h>
 #include <bibtool/error.h>
+#include <bibtool/wordlist.h>
 
 /*****************************************************************************/
 /* Internal Programs							     */
@@ -54,7 +54,7 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 void add_word(s,wlp)				   /*			     */
-  register char	    *s;				   /*			     */
+  register Uchar    *s;				   /*			     */
   register WordList *wlp;			   /*			     */
 { register WordList wl;				   /*			     */
   register int	    cmp = 1;			   /*			     */
@@ -90,9 +90,9 @@ void add_word(s,wlp)				   /*			     */
 ** Returns:	|0| if the word was not found. |1| otherwise.
 **___________________________________________________			     */
 int delete_word(s,wlp,fct)			   /*                        */
-  char     *s;					   /*                        */
+  Uchar    *s;					   /*                        */
   WordList *wlp;				   /*                        */
-  void    (*fct)_ARG((char*));			   /*                        */
+  void    (*fct)_ARG((Uchar*));			   /*                        */
 { WordList wl;				   	   /*			     */
   int cmp = 1;					   /*                        */
   while ( *wlp != WordNULL			   /*			     */
@@ -122,7 +122,7 @@ int delete_word(s,wlp,fct)			   /*                        */
 **___________________________________________________			     */
 void free_words(wlp,fct)			   /*                        */
   WordList *wlp;				   /*                        */
-  void    (*fct)_ARG((char*));			   /*                        */
+  void    (*fct)_ARG((Uchar*));			   /*                        */
 { WordList wl, next;				   /*                        */
  						   /*                        */
   wl   = *wlp;					   /*                        */
@@ -151,7 +151,7 @@ void free_words(wlp,fct)			   /*                        */
 **___________________________________________________			     */
 int foreach_word(wl,fct)			   /*                        */
   WordList wl;					   /*                        */
-  int (*fct)_ARG((char*));			   /*                        */
+  int (*fct)_ARG((Uchar*));			   /*                        */
 { int ret = 1;					   /*                        */
   while ( wl && (ret=(fct)(ThisWord(wl))) )	   /*                        */
   { wl = NextWord(wl); }			   /*                        */
@@ -168,7 +168,7 @@ int foreach_word(wl,fct)			   /*                        */
 ** Returns:	|FALSE| iff the word does not occur in the wordlist.
 **___________________________________________________			     */
 int find_word(s,wl)				   /*			     */
-  register char	    *s;				   /*			     */
+  register Uchar    *s;				   /*			     */
   register WordList wl;				   /*			     */
 {					   	   /*			     */
   while ( wl != WordNULL )			   /*                        */

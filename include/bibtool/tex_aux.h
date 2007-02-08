@@ -1,14 +1,14 @@
 /******************************************************************************
-** $Id: tex_aux.h,v 1.1 2007-02-07 21:31:56 gene Exp $
+** $Id: tex_aux.h,v 1.2 2007-02-08 05:27:32 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-1997 Gerd Neugebauer
+** (c) 1996-2001 Gerd Neugebauer
 ** 
-** Net: gerd@informatik.uni-koblenz.de
+** Net: gene@gerd-neugebauer.de
 ** 
 ******************************************************************************/
 
@@ -20,7 +20,7 @@
 #define _ARG(A) ()
 #endif
  int apply_aux _ARG((DB db));			   /* tex_aux.c              */
- int foreach_aux _ARG((int (fct)_ARG((char*))));   /* tex_aux.c              */
+ int foreach_aux _ARG((int (fct)_ARG((Uchar*))));  /* tex_aux.c              */
  int aux_used _ARG((char *s));	   		   /* tex_aux.c              */
  int read_aux _ARG((char *fname,void (*fct)(char*),int verbose));/* tex_aux.c*/
  void clear_aux _ARG((void));			   /* tex_aux.c              */
