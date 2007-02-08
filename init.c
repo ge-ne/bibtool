@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: init.c,v 1.5 2007-02-08 19:47:16 gene Exp $
+** $Id: init.c,v 1.6 2007-02-08 20:49:57 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -30,6 +30,9 @@
 #include <bibtool/sbuffer.h>
 #include "config.h"
 #ifdef HAVE_LIBKPATHSEA
+#ifdef __STDC__
+#define HAVE_PROTOTYPES
+#endif
 #include <kpathsea/proginit.h>
 #endif
 

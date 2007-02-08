@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: parse.c,v 1.5 2007-02-08 19:47:16 gene Exp $
+** $Id: parse.c,v 1.6 2007-02-08 20:46:25 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -23,6 +23,9 @@
 #include <bibtool/macros.h>
 #include <bibtool/print.h>
 #ifdef HAVE_LIBKPATHSEA
+#ifdef __STDC__
+#define HAVE_PROTOTYPES
+#endif
 #include <kpathsea/tex-file.h>
 #endif
 
