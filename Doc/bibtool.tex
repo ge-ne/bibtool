@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.5 2007-02-08 19:47:16 gene Exp $
+%% $Id: bibtool.tex,v 1.6 2007-02-08 20:52:32 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -1256,6 +1256,11 @@ by specifying resources on the command line.
   \item [\rsc{print.newline}]
         This numeric resource specifies the number of newlines between
         entries. This value defaults to 1.
+  \item [\rsc{print.terminal.comma}]
+        This boolean resource specifies whether a comma should be printed
+        after the last record of a normal entry. This contradicts the rules of
+        \BibTeX\ but might be useful for other programs. This value defaults
+        to \textsf{off}.
   \item [\rsc{print.use.tab}]
         This boolean resource specifies if the \texttt{TAB} character should be
         used for indenting. This use is said to cause portability problems.
@@ -3750,6 +3755,7 @@ print.indent             = 2
 print.line.length        = 77
 print.newline            = 1
 print.parentheses        = off
+print.terminal.comma     = off
 print.use.tab            = on
 print.wide.equal         = off
 rewrite.case.sensitive   = on
