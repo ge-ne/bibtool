@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: record.c,v 1.5 2007-02-08 19:47:16 gene Exp $
+** $Id: record.c,v 1.6 2007-02-08 20:38:47 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2004 Gerd Neugebauer
+** (c) 1996-2007 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -26,16 +26,17 @@
 #else
 #define _ARG(A) ()
 #endif
- Record copy_record _ARG((Record rec));		   /* record.c               */
- Record new_record _ARG((int token,int size));	   /* record.c               */
- Record record_gc _ARG((Record rec));		   /* record.c               */
- Record unlink_record _ARG((Record rec));	   /* record.c               */
- WordList new_wordlist _ARG((Uchar * s));	   /* record.c               */
- void add_sort_order _ARG((Uchar *val));	   /* record.c               */
- void free_1_record _ARG((Record rec));		   /* record.c               */
- void free_record _ARG((Record rec));		   /* record.c               */
- void push_to_record _ARG((Record rec,Uchar *s,Uchar *t));/* record.c        */
- void sort_record _ARG((Record rec));		   /* record.c               */
+ Record copy_record _ARG((Record rec));
+ Record new_record _ARG((int token,int size));
+ Record record_gc _ARG((Record rec));
+ Record unlink_record _ARG((Record rec));
+ WordList new_wordlist _ARG((Uchar * s));
+ void add_sort_order _ARG((Uchar *val));
+ void free_1_record _ARG((Record rec));
+ void free_record _ARG((Record rec));
+ void provide_to_record _ARG((Record rec,Uchar *s,Uchar *t));
+ void push_to_record _ARG((Record rec,Uchar *s,Uchar *t));
+ void sort_record _ARG((Record rec));
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -243,7 +244,7 @@ Record record_gc(rec)				   /*                        */
 ** Purpose:	Put an equation s=t onto the heap of a record.
 **		If a field s is already there then the value is
 **		overwritten.  The arguments are expected to be
-**		synbols. Thus it is not necessary to make private
+**		symbols. Thus it is not necessary to make private
 **		copies and it is possible to avoid expensive string
 **		comparisons. 
 ** Arguments:
@@ -263,6 +264,52 @@ void push_to_record(rec,s,t)			   /*			     */
   { if ( RecordHeap(rec)[i] == s )		   /* if found then          */
     { RecordHeap(rec)[i+1] = t;			   /* overwrite the value    */
       return;					   /*                        */
+    }   					   /*                        */
+  }						   /*                        */
+  for ( i=2; i < RecordFree(rec); i+=2 )	   /* search empty field     */
+  { if ( RecordHeap(rec)[i] == (Uchar*)NULL )	   /* if found then          */
+    { RecordHeap(rec)[i++] = s;			   /* add the new item       */
+      RecordHeap(rec)[i]   = t;			   /*                        */
+      return;					   /*                        */
+    }   					   /*                        */
+  }						   /*                        */
+  i = RecordFree(rec);				   /*                        */
+  RecordFree(rec) += 2;				   /*                        */
+  if ( (RecordHeap(rec)   			   /* enlarge the heap	     */
+	=(Uchar**)realloc(RecordHeap(rec),	   /*	                     */
+			 RecordFree(rec)*sizeof(Uchar*)))/*                  */
+     == (Uchar**)NULL )			   	   /*	                     */
+  { OUT_OF_MEMORY("heap"); }      		   /*                        */
+						   /*			     */
+  RecordHeap(rec)[i++] = s;		   	   /*			     */
+  RecordHeap(rec)[i]   = t;		   	   /*			     */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	provide_to_record()
+** Purpose:	Put an equation s=t onto the heap of a record if the key s
+**              is not defined already.
+**		If a field s is already there then the value is
+**		ignored.  The arguments are expected to be
+**		symbols. Thus it is not necessary to make private
+**		copies and it is possible to avoid expensive string
+**		comparisons. 
+** Arguments:
+**	s	Left hand side of the equation.
+**	t	Right hand side of the equation.
+** Returns:	nothing
+**___________________________________________________			     */
+void provide_to_record(rec,s,t)			   /*			     */
+  register Record rec;				   /*                        */
+  register Uchar *s;				   /*			     */
+  register Uchar *t;				   /*			     */
+{ register int i;		   		   /*			     */
+   						   /*                        */
+  if ( s == sym_crossref ) { SetRecordXREF(rec); } /*			     */
+ 						   /*                        */
+  for ( i=2; i < RecordFree(rec); i+=2 )	   /* search the field       */
+  { if ( RecordHeap(rec)[i] == s )		   /* if found then          */
+    { return;					   /*  done                  */
     }   					   /*                        */
   }						   /*                        */
   for ( i=2; i < RecordFree(rec); i+=2 )	   /* search empty field     */

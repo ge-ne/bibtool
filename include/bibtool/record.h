@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: record.h,v 1.5 2007-02-08 19:47:16 gene Exp $
+** $Id: record.h,v 1.6 2007-02-08 20:38:47 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2004 Gerd Neugebauer
+** (c) 1996-2007 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -369,6 +369,7 @@ typedef struct rECORD				/*                           */
  void add_sort_order _ARG((Uchar *val));	   /* record.c               */
  void free_1_record _ARG((Record rec));		   /* record.c               */
  void free_record _ARG((Record rec));		   /* record.c               */
+ void provide_to_record _ARG((Record rec,Uchar *s,Uchar *t));/*              */
  void push_to_record _ARG((Record rec,Uchar *s,Uchar *t));/* record.c        */
  void sort_record _ARG((Record rec));		   /* record.c               */
 
