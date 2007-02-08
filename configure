@@ -4566,7 +4566,7 @@ echo $ECHO_N "checking for kpathsea library... $ECHO_C" >&6
 	kpathsea_dir=
 	kpathsea_lib=
 	kpathsea_def=
-	for cand in .. ../kpse3-2 kpse3-2 .
+	for cand in .. ../kpse3-2 kpse3-2 . /usr/include
 	do
 		if test -f $cand/kpathsea/tex-file.h ; then
 			kpathsea_dir=$cand

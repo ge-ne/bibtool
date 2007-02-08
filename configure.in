@@ -1,17 +1,17 @@
 dnl ***************************************************************************
-dnl $Id: configure.in,v 1.4 2007-02-08 19:47:16 gene Exp $
+dnl $Id: configure.in,v 1.5 2007-02-08 20:57:35 gene Exp $
 dnl ===========================================================================
 dnl 
 dnl This file is part of BibTool.
 dnl It is distributed under the GNU General Public License.
 dnl See the file COPYING for details.
 dnl 
-dnl (c) 1996-2002 Gerd Neugebauer
+dnl (c) 1996-2004 Gerd Neugebauer
 dnl 
 dnl Net: gene@gerd-neugebauer.de
 dnl 
 dnl ***************************************************************************
-AC_REVISION($Revision: 1.4 $)dnl
+AC_REVISION($Revision: 1.5 $)dnl
 AC_PREREQ(2.12)
 
 dnl ---------------------------------------------------------------------------
@@ -71,7 +71,7 @@ else
 	kpathsea_dir=
 	kpathsea_lib=
 	kpathsea_def=
-	for cand in .. ../kpse3-2 kpse3-2 . 
+	for cand in .. ../kpse3-2 kpse3-2 . /usr/include /usr/local/include
 	do
 		if test -f $cand/kpathsea/tex-file.h ; then
 			kpathsea_dir=$cand
