@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: key.c,v 1.5 2007-02-08 19:47:16 gene Exp $
+** $Id: key.c,v 1.6 2007-02-08 20:48:39 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -2124,6 +2124,7 @@ Uchar *get_field(db,rec,name)		   	   /*			     */
   register Record rec;				   /*			     */
   register Uchar  *name;			   /*			     */
 { 						   /*                        */
+  DebugPrint2("get_field ",name);
 #ifdef HAVE_TIME_H
   static struct tm *tp;				   /*                        */
   static time_t the_time = 0;			   /*                        */
@@ -2238,12 +2239,13 @@ Uchar *get_field(db,rec,name)		   	   /*			     */
 	    n > 0;				   /*			     */
 	    n -= 2 )				   /*			     */
       {						   /*                        */
-	if ( *cpp == name )			   /*                        */
+	if ( *cpp == name && *(cpp+1) != NULL )    /*                        */
 	{					   /*                        */
-          return ( rsc_key_expand_macros	   /*                        */
+	  return ( rsc_key_expand_macros	   /*                        */
 		   ? expand_rhs(*(cpp+1),"{","}",db)/*                       */
 		   : *(cpp+1) );		   /*			     */
 	}					   /*                        */
+ 						   /*                        */
         if ( *cpp == sym_crossref ) { xref = *++cpp; }/*                     */
 	else cpp++;				   /*                        */
         cpp++;			   	   	   /*			     */
