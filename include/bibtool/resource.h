@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: resource.h,v 1.5 2007-02-08 19:47:16 gene Exp $
+** $Id: resource.h,v 1.6 2007-02-08 20:42:40 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2004 Gerd Neugebauer
+** (c) 1996-2007 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -64,6 +64,7 @@ RSC_NEXT('e')
   RscByFct(   "extract.file"	      , r_ef  ,read_aux(val,save_input_file,FALSE)	    )
   RscByFct(   "extract.regex"	      , r_er  ,save_regex(val)		    )
   RscBoolean( "expand.macros"	      , r_em  ,rsc_expand_macros  , FALSE   )
+  RscBoolean( "expand.crossref"	      , r_ex  ,rsc_expand_crossref, FALSE   )
 RSC_NEXT('f')
   RscByFct(   "fmt.inter.name"	      , r_fin ,set_separator(1,val)	    )
   RscByFct(   "fmt.name.pre"	      , r_fnp ,set_separator(2,val)	    )
@@ -94,25 +95,26 @@ RSC_NEXT('p')
   RscBoolean( "pass.comments"	      , r_pc  ,rsc_pass_comment	  , FALSE   )
   RscBoolean( "preserve.key.case"     , r_pkc ,rsc_key_case	  , FALSE   )
   RscBoolean( "preserve.keys"         , r_pk  ,rsc_key_preserve	  , FALSE   )
+  RscByFct(   "print"		      , r_p   ,rsc_print(val)	 	    )
   RscNumeric( "print.align.string"    , r_pas ,rsc_col_s	  ,    18   )
   RscNumeric( "print.align.comment"   , r_pac ,rsc_col_c	  ,    10   )
   RscNumeric( "print.align.preamble"  , r_pap ,rsc_col_p	  ,    11   )
   RscNumeric( "print.align.key"	      , r_pak ,rsc_col_key	  ,    18   ) 
   RscNumeric( "print.align"	      , r_pa  ,rsc_col		  ,    18   )
   RscBoolean( "print.all.strings"     , r_pam ,rsc_all_macs	  ,  TRUE   ) 
+  RscString(  "print.entry.types"     , r_pet ,rsc_print_et	  , "pisnmac")
   RscBoolean( "print.equal.right"     , r_per ,rsc_eq_right	  ,  TRUE   )
   RscBoolean( "print.braces"	      , r_pb  ,rsc_braces	  ,  TRUE   )
+  RscBoolean( "print.comma.at.end"    , r_pce ,rsc_print_ce	  ,  TRUE   )
   RscString(  "print.deleted.prefix"  , r_pdp ,rsc_del_pre	  , "###"   )
   RscBoolean( "print.deleted.entries" , r_pdr ,rsc_del_q	  ,  TRUE   )
   RscNumeric( "print.indent"	      , r_pi  ,rsc_indent	  ,     2   ) 
   RscNumeric( "print.line.length"     , r_pll ,rsc_linelen	  ,    77   )
   RscNumeric( "print.newline"         , r_pnl ,rsc_newlines	  ,     1   )
   RscBoolean( "print.parentheses"     , r_pp  ,rsc_parentheses	  , FALSE   )
+  RscBoolean( "print.terminal.comma"  , r_ptc ,rsc_print_tc	  , FALSE   )
   RscBoolean( "print.use.tab"	      , r_put ,rsc_use_tabs	  ,  TRUE   )
-  RscByFct(   "print"		      , r_p   ,rsc_print(val)	 	    )
-  RscBoolean( "print.comma.at.end"    , r_pce ,rsc_print_ce	  ,  TRUE   )
   RscBoolean( "print.wide.equal"      , r_pwe ,rsc_print_we	  , FALSE   )
-  RscString(  "print.entry.types"     , r_pet ,rsc_print_et	  , "pisnmac")
 RSC_NEXT('q')
   RscBoolean( "quiet"		      , r_q   ,rsc_quiet	  , FALSE   )
 RSC_NEXT('r')
