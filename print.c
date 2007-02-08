@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: print.c,v 1.5 2007-02-08 19:47:16 gene Exp $
+** $Id: print.c,v 1.6 2007-02-08 20:44:35 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -201,7 +201,7 @@ static void line_breaking(t,align,fct)		   /*			     */
   register char *t;				   /* string to print.	     */
   int		align;				   /* alignment column	     */
   int (*fct)_ARG((int));			   /*                        */
-{ register char *s;				   /* intermediate pointer   */
+{ register unsigned char *s;			   /* intermediate pointer   */
   char		end_c;				   /* temp. character.	     */
   int		brace,				   /* brace counter	     */
 		len,				   /* length of rem. output  */
@@ -262,9 +262,9 @@ static void line_breaking(t,align,fct)		   /*			     */
 	first = TRUE;				   /*			     */
       }						   /* Now we have to break   */
       else					   /*  a single entry	     */
-      { char save_c,				   /*                        */
-	     *save_ptr,				   /*                        */
-	     *ptr;			   	   /*			     */
+      { unsigned char save_c,			   /*                        */
+	              *save_ptr,		   /*                        */
+	              *ptr;			   /*			     */
 						   /*			     */
         if ( 0 <= rsc_linelen - column )	   /*                        */
 	  save_ptr = s + rsc_linelen - column;	   /* Potential end	     */
@@ -594,6 +594,7 @@ void put_record(fct,rec,db,start)		   /*                        */
 	  hp += 2;				   /* Goto next pair.	     */
 	}					   /*                        */
       }						   /*			     */
+      if (rsc_print_tc) { PUTC(','); }		   /*                        */
       NL;					   /*                        */
       PUTC(close_brace);	   	   	   /*                        */
       for ( i=rsc_newlines; i>0; --i ) { NL; }	   /*                        */
