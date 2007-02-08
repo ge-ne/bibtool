@@ -4,7 +4,7 @@
 ## It is distributed under the GNU General Public License.
 ## See the file COPYING for details.
 ## 
-## (c) 1996-2001 Gerd Neugebauer
+## (c) 1996-2002 Gerd Neugebauer
 ## 
 ## Net: gene@gerd-neugebauer.de
 ## 
@@ -34,6 +34,7 @@ Table of Contents
 BibTool is known to work on the following operating systems/C compilers: (At
 least an earlier version has been compiled successfully on them.)
 
+	Linux			gcc
 	Sun4/SunOS4.1.*		cc, gcc
 	SparcStation/Solaris2.4 gcc
 	SparcStation/Solaris2.5 gcc
@@ -50,7 +51,6 @@ to this list;-):
 	Amiga			SAS/C
 	DEC Alpha/OSF/1		
 	HP 9000/778/HP-UX 10.20 gcc 2.7.2.3
-	Linux			gcc
 	MIPS/Ultrix4.4		gcc 2.4.5
 	MIPS/RISCos 4.52	gcc
 	MSDOS,OS/2,Win32,WinNT  emx, dj, Watcom C, MSC

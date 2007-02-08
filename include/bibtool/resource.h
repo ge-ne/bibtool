@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: resource.h,v 1.2 2007-02-08 05:27:32 gene Exp $
+** $Id: resource.h,v 1.3 2007-02-08 05:35:57 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2001 Gerd Neugebauer
+** (c) 1996-2002 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -129,6 +129,7 @@ RSC_NEXT('s')
   RscString(  "select.fields"	      , r_self,rsc_sel_fields     , "$key"  ) 
   RscByFct(   "select.non"	      , r_seln,add_extract(val,TRUE,TRUE)   )
   RscBoolean( "sort"		      , r_s   ,rsc_sort		  , FALSE   )
+  RscBoolean( "sort.cased"	      , r_sc  ,rsc_sort_cased     , FALSE   )
   RscBoolean( "sort.macros"	      , r_sm  ,rsc_srt_macs	  , TRUE    )
   RscBoolean( "sort.reverse"	      , r_sr  ,rsc_sort_reverse   , FALSE   )
   RscByFct(   "sort.order"	      , r_so  ,add_sort_order(val)	    )

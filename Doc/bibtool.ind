@@ -1,57 +1,57 @@
 \begin{theindex}\footnotesize
 
-  \item {\tt  --} \dotfill 7, 10, 11, 16, 27
+  \item {\tt  --} \dotfill 7, 10, 11, 16, 28
 
   \indexspace
 
-  \item {\sf  add.field} \dotfill 47, 48, 50
+  \item \textsf  {add.field} \dotfill 48, 49, 51
 
   \indexspace
 
   \item {\tt  BIBINPUTS} \dotfill 17
-  \item {\sf  bibtex.env.name} \dotfill 17
-  \item {\sf  bibtex.search.path} \dotfill 17
+  \item \textsf  {bibtex.env.name} \dotfill 17
+  \item \textsf  {bibtex.search.path} \dotfill 17
   \item {\tt  BIBTOOL} \dotfill 14
   \item {\tt  BIBTOOLRSC} \dotfill 14
 
   \indexspace
 
-  \item {\sf  check.case.sensitive} \dotfill 52
-  \item {\sf  check.double} \dotfill 51, 52
-  \item {\sf  check.double.delete} \dotfill 51, 52
-  \item {\sf  check.rule} \dotfill 51, 52
-  \item {\sf  clear.ignored.words} \dotfill 43, 47
-  \item {\sf  count.all} \dotfill 54
-  \item {\sf  count.used} \dotfill 54
-  \item {\sf  crossref.limit} \dotfill 40
+  \item \textsf  {check.case.sensitive} \dotfill 53
+  \item \textsf  {check.double} \dotfill 52, 53
+  \item \textsf  {check.double.delete} \dotfill 52, 53
+  \item \textsf  {check.rule} \dotfill 52, 53
+  \item \textsf  {clear.ignored.words} \dotfill 44, 48
+  \item \textsf  {count.all} \dotfill 55
+  \item \textsf  {count.used} \dotfill 55
+  \item \textsf  {crossref.limit} \dotfill 40, 41
 
   \indexspace
 
-  \item {\tt  -d} \dotfill 51, 52
-  \item {\sf  default.key} \dotfill 29, 31, 32, 40
-  \item {\sf  delete.field} \dotfill 47, 48, 50
-  \item {\sf  digit} \dotfill 31
-  \item {\sf  dir.file.separator} \dotfill 17
+  \item {\tt  -d} \dotfill 52, 53
+  \item \textsf  {default.key} \dotfill 29, 32, 33, 41
+  \item \textsf  {delete.field} \dotfill 48, 49, 51
+  \item \textsf  {digit} \dotfill 31, 32
+  \item \textsf  {dir.file.separator} \dotfill 17
 
   \indexspace
 
-  \item {\sf  empty} \dotfill 30
-  \item {\sf  env.separator} \dotfill 17
-  \item {\sf  expand.macros} \dotfill 53, 54
-  \item {\sf  extract.file} \dotfill 25, 28
-  \item {\sf  extract.regex} \dotfill 27
-  \item {\sf  extract.regexp} \dotfill 28
+  \item \textsf  {empty} \dotfill 30, 31
+  \item \textsf  {env.separator} \dotfill 17
+  \item \textsf  {expand.macros} \dotfill 54, 55
+  \item \textsf  {extract.file} \dotfill 26, 28
+  \item \textsf  {extract.regex} \dotfill 28
+  \item \textsf  {extract.regexp} \dotfill 28
 
   \indexspace
 
-  \item {\tt  -F} \dotfill 30, 32
-  \item {\tt  -f} \dotfill 8, 28, 32
-  \item {\sf  fmt.et.al} \dotfill 32, 40
-  \item {\sf  fmt.inter.name} \dotfill 31, 32, 40
-  \item {\sf  fmt.name.name} \dotfill 31, 32, 40
-  \item {\sf  fmt.name.pre} \dotfill 32, 40
-  \item {\sf  fmt.name.title} \dotfill 29, 31, 32, 40
-  \item {\sf  fmt.title.title} \dotfill 31, 32, 40
+  \item {\tt  -F} \dotfill 31, 33
+  \item {\tt  -f} \dotfill 9, 29, 33
+  \item \textsf  {fmt.et.al} \dotfill 32, 33, 41
+  \item \textsf  {fmt.inter.name} \dotfill 32, 33, 41
+  \item \textsf  {fmt.name.name} \dotfill 32, 33, 41
+  \item \textsf  {fmt.name.pre} \dotfill 32, 33, 41
+  \item \textsf  {fmt.name.title} \dotfill 29, 32, 33, 41
+  \item \textsf  {fmt.title.title} \dotfill 32, 33, 41
 
   \indexspace
 
@@ -61,126 +61,130 @@
   \indexspace
 
   \item {\tt  -i} \dotfill 16, 17
-  \item {\sf  ignored.word} \dotfill 36, 39, 43, 47
-  \item {\sf  input} \dotfill 16
-  \item {\sf  input.file} \dotfill 17
+  \item \textsf  {ignored.word} \dotfill 37, 40, 43, 44, 48
+  \item \textsf  {input} \dotfill 16
+  \item \textsf  {input.file} \dotfill 17
 
   \indexspace
 
   \item {\tt  -K} \dotfill 8
   \item {\tt  -k} \dotfill 8
-  \item {\sf  key.base} \dotfill 29, 31, 32
-  \item {\sf  key.expand.macros} \dotfill 31, 32
-  \item {\sf  key.format} \dotfill 28, 30, 32
-  \item {\sf  key.generation} \dotfill 30, 32
-  \item {\sf  key.number.separator} \dotfill 31, 32
+  \item \textsf  {key.base} \dotfill 29, 31--33
+  \item \textsf  {key.expand.macros} \dotfill 32, 33
+  \item \textsf  {key.format} \dotfill 29, 31, 33
+  \item \textsf  {key.generation} \dotfill 31, 33
+  \item \textsf  {key.number.separator} \dotfill 31--33
 
   \indexspace
 
-  \item {\sf  long} \dotfill 29, 31
-  \item {\sf  lower} \dotfill 31
+  \item \textsf  {long} \dotfill 30, 32
+  \item \textsf  {lower} \dotfill 31, 32
 
   \indexspace
 
-  \item {\sf  macro.file} \dotfill 52, 54
+  \item \textsf  {macro.file} \dotfill 53, 55
 
   \indexspace
 
-  \item {\sf  name} \dotfill 14, 15
-  \item {\sf  new.entry.type} \dotfill 19, 22
-  \item {\sf  new.field.type} \dotfill 21, 22
-  \item {\sf  new.format.type} \dotfill 44, 47
-  \item {\sf  new.long} \dotfill 29
-  \item {\sf  new.short} \dotfill 29
+  \item \textsf  {name} \dotfill 14, 15
+  \item \textsf  {new.entry.type} \dotfill 19, 22
+  \item \textsf  {new.field.type} \dotfill 21, 22
+  \item \textsf  {new.format.type} \dotfill 45, 48
+  \item \textsf  {new.long} \dotfill 30
+  \item \textsf  {new.short} \dotfill 30
 
   \indexspace
 
   \item {\tt  -o} \dotfill 10, 18
-  \item {\sf  off} \dotfill 15, 51
-  \item {\sf  off } \dotfill 15
-  \item {\sf  on} \dotfill 15, 49
-  \item {\sf  output.file} \dotfill 18
+  \item \textsf  {off} \dotfill 15, 52
+  \item \textsf  {off } \dotfill 15
+  \item \textsf  {on} \dotfill 15, 50
+  \item \textsf  {output.file} \dotfill 18
 
   \indexspace
 
-  \item {\sf  pass.comments} \dotfill 19, 22, 51
-  \item {\sf  preserve.key.case} \dotfill 21, 22, 30--32
-  \item {\sf  preserve.keys} \dotfill 29--32
-  \item {\sf  print} \dotfill 15, 16
-  \item {\sf  print.align} \dotfill 20--22
-  \item {\sf  print.align.comment} \dotfill 20, 22
-  \item {\sf  print.align.key} \dotfill 20--22
-  \item {\sf  print.align.preamble} \dotfill 20
-  \item {\sf  print.align.string} \dotfill 20--22
-  \item {\sf  print.all.strings} \dotfill 19, 25, 53, 54
-  \item {\sf  print.braces} \dotfill 53, 54
-  \item {\sf  print.comma.at.end} \dotfill 20, 22
-  \item {\sf  print.deleted.entries} \dotfill 51
-  \item {\sf  print.deleted.prefix} \dotfill 51
-  \item {\sf  print.entry.types} \dotfill 19
-  \item {\sf  print.equal.right} \dotfill 20
-  \item {\sf  print.indent} \dotfill 20--22
-  \item {\sf  print.line.length} \dotfill 20--22
-  \item {\sf  print.newline} \dotfill 20
-  \item {\sf  print.parentheses} \dotfill 53, 54
-  \item {\sf  print.print.newline} \dotfill 22
-  \item {\sf  print.use.tab} \dotfill 20, 22
-  \item {\sf  print.wide.equal} \dotfill 20, 22
+  \item \textsf  {pass.comments} \dotfill 19, 22, 52
+  \item \textsf  {preserve.key.case} \dotfill 21--23, 31--33
+  \item \textsf  {preserve.keys} \dotfill 30--33
+  \item \textsf  {print} \dotfill 15, 16
+  \item \textsf  {print.align} \dotfill 20--22
+  \item \textsf  {print.align.comment} \dotfill 20, 22
+  \item \textsf  {print.align.key} \dotfill 20--22
+  \item \textsf  {print.align.preamble} \dotfill 20
+  \item \textsf  {print.align.string} \dotfill 20--22
+  \item \textsf  {print.all.strings} \dotfill 19, 26, 54, 55
+  \item \textsf  {print.braces} \dotfill 54, 55
+  \item \textsf  {print.comma.at.end} \dotfill 20, 22
+  \item \textsf  {print.deleted.entries} \dotfill 52
+  \item \textsf  {print.deleted.prefix} \dotfill 52
+  \item \textsf  {print.entry.types} \dotfill 19
+  \item \textsf  {print.equal.right} \dotfill 20
+  \item \textsf  {print.indent} \dotfill 20--22
+  \item \textsf  {print.line.length} \dotfill 20--22
+  \item \textsf  {print.newline} \dotfill 20
+  \item \textsf  {print.parentheses} \dotfill 54, 55
+  \item \textsf  {print.print.newline} \dotfill 22
+  \item \textsf  {print.use.tab} \dotfill 20, 22
+  \item \textsf  {print.wide.equal} \dotfill 20, 22
 
   \indexspace
 
   \item {\tt  -q} \dotfill 18
-  \item {\sf  quiet} \dotfill 18
+  \item \textsf  {quiet} \dotfill 18
 
   \indexspace
 
   \item {\tt  -R} \dotfill 14, 16
   \item {\tt  -r} \dotfill 11, 13, 15, 16
-  \item {\sf  resource} \dotfill 15, 16
-  \item {\sf  resource.search.path} \dotfill 14, 16
-  \item {\sf  rewrite.case.sensitive} \dotfill 49, 50
-  \item {\sf  rewrite.limit} \dotfill 49
-  \item {\sf  rewrite.rule} \dotfill 48--52
+  \item \textsf  {resource} \dotfill 15, 16
+  \item \textsf  {resource.search.path} \dotfill 14, 16
+  \item \textsf  {rewrite.case.sensitive} \dotfill 50, 51
+  \item \textsf  {rewrite.limit} \dotfill 50
+  \item \textsf  {rewrite.rule} \dotfill 49--53
 
   \indexspace
 
   \item {\tt  -S} \dotfill 7, 22, 23
   \item {\tt  -s} \dotfill 7, 22, 23
-  \item {\sf  select} \dotfill 27, 28
-  \item {\sf  select.by.string} \dotfill 26, 28
-  \item {\sf  select.by.string.ignored} \dotfill 26, 28
-  \item {\sf  select.case.sensitive} \dotfill 26--28
-  \item {\sf  select.fields} \dotfill 27, 28
-  \item {\sf  short} \dotfill 29, 31, 32
-  \item {\sf  sort} \dotfill 22, 23
-  \item {\sf  sort.format} \dotfill 23, 51
-  \item {\sf  sort.macros} \dotfill 23
-  \item {\sf  sort.order} \dotfill 50
-  \item {\sf  sort.reverse} \dotfill 22, 23
-  \item {\sf  symbol.type} \dotfill 21, 22, 53
+  \item \textsf  {select} \dotfill 27, 28
+  \item \textsf  {select.by.non.string} \dotfill 27, 28
+  \item \textsf  {select.by.string} \dotfill 26--28
+  \item \textsf  {select.by.string.ignored} \dotfill 27, 28
+  \item \textsf  {select.case.sensitive} \dotfill 26--28
+  \item \textsf  {select.fields} \dotfill 28
+  \item \textsf  {select.non} \dotfill 27, 28
+  \item \textsf  {short} \dotfill 29, 30, 32
+  \item \textsf  {sort} \dotfill 22, 23
+  \item \textsf  {sort.cased} \dotfill 23
+  \item \textsf  {sort.format} \dotfill 23, 52
+  \item \textsf  {sort.macros} \dotfill 23
+  \item \textsf  {sort.order} \dotfill 51
+  \item \textsf  {sort.reverse} \dotfill 22, 23
+  \item \textsf  {suppress.initial.newline} \dotfill 21, 22
+  \item \textsf  {symbol.type} \dotfill 21, 22, 54
 
   \indexspace
 
-  \item {\sf  t} \dotfill 15
-  \item {\sf  tex.define} \dotfill 43, 44, 47
-  \item {\sf  true} \dotfill 15
+  \item \textsf  {t} \dotfill 15
+  \item \textsf  {tex.define} \dotfill 44, 48
+  \item \textsf  {true} \dotfill 15
 
   \indexspace
 
-  \item {\sf  upper} \dotfill 31
+  \item \textsf  {upper} \dotfill 31, 32
 
   \indexspace
 
   \item {\tt  -v} \dotfill 18
-  \item {\sf  verbose} \dotfill 18
+  \item \textsf  {verbose} \dotfill 18
 
   \indexspace
 
   \item {\tt  -X} \dotfill 10, 27, 28
-  \item {\tt  -x} \dotfill 10, 25, 28
+  \item {\tt  -x} \dotfill 10, 26, 28
 
   \indexspace
 
-  \item {\sf  yes} \dotfill 15
+  \item \textsf  {yes} \dotfill 15
 
 \end{theindex}

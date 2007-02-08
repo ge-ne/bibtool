@@ -1,12 +1,12 @@
 %%*****************************************************************************
-%% $Id: ref_card.tex,v 1.2 2007-02-08 05:27:32 gene Exp $
+%% $Id: ref_card.tex,v 1.3 2007-02-08 05:35:57 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
 %% It is distributed under the GNU General Public License.
 %% See the file COPYING for details.
 %%
-%% (c) 1996-2001 Gerd Neugebauer
+%% (c) 1996-2002 Gerd Neugebauer
 %%
 %% Net: gene@gerd-neugebauer@sdm
 %%
@@ -16,12 +16,12 @@
 
 \newif\ifAfour \Afourtrue
 
-\ifx\documentclass\undefined
-\documentstyle[multicol]{article}
+\ifAfour
+\documentclass[a4paper]{article}
 \else
 \documentclass{article}
-\usepackage{multicol}
 \fi
+\usepackage{multicol}
 
 \input version
 
@@ -75,9 +75,9 @@
   \Large \BibTool{} Quick Reference Card
   \\
   \scriptsize for \BibTool{} version \Version{}
-%  --- see also \tt http://www.uni-koblenz.de/\~{}gerd/ftp/BibTool/
+  --- see also \tt http://www.gerd.neugebauer.de/software/TeX/BibTool/
   \\
-  \copyright\Year{} Gerd Neugebauer (\mailto{gerd.neugebauer@sdm.de})
+  \copyright\Year{} Gerd Neugebauer (\mailto{gene@gerd-neugebauer.de})
   \\
   \rule{.80\textwidth}{.1pt}
 \end{center}
@@ -139,44 +139,46 @@
   \end{tabular}
   \Section{General}
   \begin{FlatList}
-  \item [resource.search.path	= \Arg{dir$_1$:dir$_2$\ldots }]
+  \item [resource.search.path  	  = \Arg{dir$_1$:dir$_2$\ldots }]
   \item [resource \Arg{file}]
-  \item [bibtex.search.path	= \Arg{dir$_1$:dir$_2$\ldots }]
-  \item [bibtex.env.name	= \Arg{ENV\_NAME}]
-  \item [env.separator		= \Arg{c}]
-  \item [dir.file.separator	= \Arg{c}]
+  \item [bibtex.search.path	  = \Arg{dir$_1$:dir$_2$\ldots }]
+  \item [bibtex.env.name	  = \Arg{ENV\_NAME}]
+  \item [env.separator		  = \Arg{c}]
+  \item [dir.file.separator	  = \Arg{c}]
   \item [print \Arg{message}]
-  \item [quiet			= \OnOff]
-  \item [verbose		= \OnOff]
-  \item [crossref.limit		= \Arg{n}]
+  \item [quiet			  = \OnOff]
+  \item [verbose		  = \OnOff]
+  \item [crossref.limit		  = \Arg{n}]
   \end{FlatList}
   \Section{Reading and Printing}
   \begin{FlatList}
   \item [input \Arg{bib\_file}]
-  \item [output.file		= \Arg{file}]
-  \item [pass.comments		= \OnOff]
+  \item [output.file		  = \Arg{file}]
+  \item [pass.comments		  = \OnOff]
   \item [new.entry.type \Arg{type}]
-  \item [print.line.length	= \Num]
-  \item [print.indent		= \Num]
-  \item [print.align		= \Num]
-  \item [print.align.key	= \Num]
-  \item [print.align.preamble	= \Num] 
-  \item [print.deleted.entries  = \OnOff]
-  \item [print.deleted.prefix   = \Arg{prefix}]
-  \item [print.align.comment	= \Num]
-  \item [print.newline		= \Num]
-  \item [print.use.tab		= \OnOff]
-  \item [print.braces		= \OnOff]
-  \item [print.parentheses	= \OnOff]
-  \item [print.comma.at.end 	= \OnOff]
-  \item [print.wide.equal 	= \OnOff]
+  \item [print.line.length	  = \Num]
+  \item [print.indent		  = \Num]
+  \item [print.align		  = \Num]
+  \item [print.align.key	  = \Num]
+  \item [print.align.preamble	  = \Num] 
+  \item [print.deleted.entries    = \OnOff]
+  \item [print.deleted.prefix     = \Arg{prefix}]
+  \item [print.align.comment	  = \Num]
+  \item [print.newline		  = \Num]
+  \item [print.use.tab		  = \OnOff]
+  \item [print.braces		  = \OnOff]
+  \item [print.parentheses	  = \OnOff]
+  \item [print.comma.at.end 	  = \OnOff]
+  \item [print.wide.equal 	  = \OnOff]
+  \item [suppress.initial.newline = \OnOff]
   \item [new.field.type \Arg{new=old}]
-  \item [symbol.type		= \ARG{type}]\ \\
+  \item [symbol.type		  = \ARG{type}]\ \\
     upper, lower, cased
   \end{FlatList}
   \Section{Sorting}
   \begin{FlatList}
   \item [sort = \OnOff]
+  \item [sort.cased = \OnOff]
   \item [sort.reverse = \OnOff]
   \item [sort.format = \Arg{format}]
   \item [sort.order \Arg{\ldots }]
@@ -258,7 +260,7 @@
     format ``junior'' part.
   \end{FlatList}
   \Section{Format Specifications}
-  {\bf Pseudo fields:} 
+  \textbf{Pseudo fields:} 
   \begin{FlatList}
   \item [\$key]
   \item [\$default.key]
@@ -276,7 +278,7 @@
   \item [\$user]
   \item [\$hostname]
   \end{FlatList}
-  {\bf Formatting Fields:} 
+  \textbf{Formatting Fields:} 
   \begin{FlatList}
   \item [\%$\pm ${\it x}.{\it y}\/ n({\it field}\/)]\ \\
     format {\it y}\/ characters of {\it x}\/ last names.

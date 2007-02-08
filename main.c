@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: main.c,v 1.2 2007-02-08 05:27:32 gene Exp $
+** $Id: main.c,v 1.3 2007-02-08 05:35:57 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2001 Gerd Neugebauer
+** (c) 1996-2002 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -84,7 +84,9 @@
  static int do_keys _ARG((DB db,Record rec));	   /* main.c                 */
  static int do_no_keys _ARG((DB db,Record rec));   /* main.c                 */
  static int rec_gt _ARG((Record r1,Record r2));	   /* main.c                 */
+ static int rec_gt_cased _ARG((Record r1,Record r2));/* main.c               */
  static int rec_lt _ARG((Record r1,Record r2));	   /* main.c                 */
+ static int rec_lt_cased _ARG((Record r1,Record r2));/* main.c               */
  static int update_crossref _ARG((DB db,Record rec));/* main.c               */
  static void usage _ARG((int fullp));		   /* main.c                 */
  void save_input_file _ARG((char *file));	   /* main.c                 */
@@ -150,7 +152,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2007-02-08 05:27:32 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2007-02-08 05:35:57 $",
     "gerd@informatik.uni-koblenz.de"
   };
 
@@ -480,9 +482,16 @@ int main(argc,argv)				   /*			     */
     db_forall(the_db,do_no_keys);		   /*                        */
   }						   /*                        */
  						   /*                        */
-  if ( rsc_sort ) {				   /*                        */
-    if ( rsc_sort_reverse ) fct = rec_lt;	   /*                        */
-    else		    fct = rec_gt;	   /*                        */
+  if ( rsc_sort )				   /*                        */
+  {				   		   /*                        */
+    if ( rsc_sort_cased )			   /*                        */
+    { if ( rsc_sort_reverse ) fct = rec_lt_cased;  /*                        */
+      else		      fct = rec_gt_cased;  /*                        */
+    }						   /*                        */
+    else					   /*                        */
+    { if ( rsc_sort_reverse ) fct = rec_lt;	   /*                        */
+      else		      fct = rec_gt;	   /*                        */
+    }						   /*                        */
     db_sort(the_db,fct);			   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -571,6 +580,40 @@ static int rec_lt(r1,r2)			   /*                        */
   Record r2;					   /*                        */
 { return (strcmp((char*)RecordSortkey(r1),	   /*                        */
 		 (char*)RecordSortkey(r2)) > 0);   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	rec_gt_cased()
+** Type:	static int
+** Purpose:	
+**		
+** Arguments:
+**	r1	
+**	r2	
+** Returns:	
+**___________________________________________________			     */
+static int rec_gt_cased(r1,r2)			   /*                        */
+  Record r1;					   /*                        */
+  Record r2;					   /*                        */
+{ return (strcmp((char*)get_key_name(RecordSortkey(r1)),/*                   */
+		 (char*)get_key_name(RecordSortkey(r2))) < 0);/*             */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	rec_lt_cased()
+** Type:	static int
+** Purpose:	
+**		
+** Arguments:
+**	r1	
+**	r2	
+** Returns:	
+**___________________________________________________			     */
+static int rec_lt_cased(r1,r2)			   /*                        */
+  Record r1;					   /*                        */
+  Record r2;					   /*                        */
+{ return (strcmp((char*)get_key_name(RecordSortkey(r1)),/*                   */
+		 (char*)get_key_name(RecordSortkey(r2))) > 0);/*             */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
