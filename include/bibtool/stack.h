@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: stack.h,v 1.5 2007-02-08 19:47:16 gene Exp $
+** $Id: stack.h,v 1.6 2010-01-05 14:14:21 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2004 Gerd Neugebauer
+** (c) 1996-2010 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 

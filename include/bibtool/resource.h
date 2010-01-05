@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: resource.h,v 1.6 2007-02-08 20:42:40 gene Exp $
+** $Id: resource.h,v 1.7 2010-01-05 14:14:21 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2007 Gerd Neugebauer
+** (c) 1996-2010 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
