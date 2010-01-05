@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: key.c,v 1.7 2010-01-05 14:06:06 gene Exp $
+** $Id: key.c,v 1.8 2010-01-05 23:00:05 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -1038,25 +1038,21 @@ static int fmt_c_string(s,min,max,not)		   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function:	start_key_gen()
-** Purpose:	
-**		
-**		
+** Purpose:	Start the key generation.
+**		Any recorded keys are discarded.
 ** Arguments:
-**		
 ** Returns:	nothing
 **___________________________________________________			     */
 void start_key_gen()				   /*                        */
 {						   /*                        */
-  free_words(&old_keys,sym_unlink);		   /*                        */
+  free_words(&old_keys, sym_unlink);		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	end_key_gen()
-** Purpose:	
-**		
-**		
+** Purpose:	Finalize the key generation.
+**		Any previously recorded keys are discarded.
 ** Arguments:
-**		
 ** Returns:	nothing
 **___________________________________________________			     */
 void end_key_gen()				   /*                        */

@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: names.c,v 1.6 2010-01-05 14:06:06 gene Exp $
+** $Id: names.c,v 1.7 2010-01-05 23:00:14 gene Exp $
 *******************************************************************************
 ** 
 ** This file is part of BibTool.
@@ -32,7 +32,7 @@
  NameNode name_format _ARG((Uchar *s));		   /* names.c                */
  Uchar * pp_list_of_names _ARG((char **wa,NameNode format,char *trans,int max,char *comma,char *and,char *namesep,char *etal));/* names.c*/
  char * pp_names _ARG((char *s,NameNode format,char *trans,int max,char *namesep,char *etal));/* names.c*/
- static NameNode new_name_node _ARG((int type,int strip,Uchar *pre,Uchar *mid,Uchar *post));/* names.c*/
+ static NameNode new_name_node _ARG((int type,int strip,int trim,Uchar *pre,Uchar *mid,Uchar *post));/* names.c*/
  static int is_jr _ARG((char * s));		   /* names.c                */
  static int is_lower_word _ARG((char *s));	   /* names.c                */
  static void initial _ARG((char *s,char *trans,int len,StringBuffer *sb));/* names.c*/
@@ -59,28 +59,31 @@
 ** Arguments:
 **	type	
 **	strip	
+**	trim	
 **	pre	
 **	mid	
 **	post	
 ** Returns:	The new instance of a node.
 **___________________________________________________			     */
-static NameNode new_name_node(type,strip,pre,mid,post)/*                     */
+static NameNode new_name_node(type,strip,trim,pre,mid,post)/*                */
   int      type;				   /*                        */
   int      strip;				   /*                        */
+  int      trim;				   /*                        */
   Uchar    *pre;				   /*                        */
   Uchar    *mid;				   /*                        */
   Uchar    *post;				   /*                        */
-{ NameNode new;					   /*                        */
+{ NameNode node;				   /*                        */
  						   /*                        */
-  if ( (new = (NameNode)malloc(sizeof(SNameNode))) == NameNULL )/*           */
+  if ( (node = (NameNode)malloc(sizeof(SNameNode))) == NameNULL )/*          */
   { OUT_OF_MEMORY("NameNode"); }	   	   /*                        */
-  NameType(new)  = type;			   /*                        */
-  NameStrip(new) = strip;			   /*                        */
-  NamePre(new)   = pre;				   /*                        */
-  NameMid(new)   = mid;				   /*                        */
-  NamePost(new)  = post;			   /*                        */
-  NextName(new)  = NameNULL;			   /*                        */
-  return new;					   /*                        */
+  NameType(node)  = type;			   /*                        */
+  NameStrip(node) = strip;			   /*                        */
+  NameTrim(node) = trim;			   /*                        */
+  NamePre(node)   = pre;			   /*                        */
+  NameMid(node)   = mid;			   /*                        */
+  NamePost(node)  = post;			   /*                        */
+  NextName(node)  = NameNULL;			   /*                        */
+  return node;					   /*                        */
 }						   /*------------------------*/
 
 #ifdef UNUSED
@@ -127,6 +130,8 @@ static void dump_name_node(n)			   /*                        */
   }						   /*                        */
   if ( NameStrip(n) >= 0 )			   /*                        */
   { fprintf(err_file,"%d",NameStrip(n)); }	   /*                        */
+  if ( NameTrim(n) >= 0 )			   /*                        */
+  { fprintf(err_file,".%d",NameTrim(n)); }	   /*                        */
   switch ( NameType(n) & NameTypeMask)		   /*                        */
   { case NameFirst:  fputc('f',err_file); break;   /*                        */
     case NameLast:   fputc('l',err_file); break;   /*                        */
@@ -142,7 +147,6 @@ static void dump_name_node(n)			   /*                        */
 	  (NamePost(n)?(char*)NamePost(n):""));	   /*                        */
 }						   /*------------------------*/
 #endif
-
 
 
 #ifdef BIBTEX_SYNTAX
@@ -194,14 +198,15 @@ void set_name_format(nodep,s)			   /*                        */
   char     *s;					   /*                        */
 { int      n,					   /*                        */
 	   type,				   /*                        */
-    	   strip;				   /*                        */
+    	   strip,				   /*                        */
+    	   trim;				   /*                        */
   Uchar    *mid,				   /*                        */
 	   *pre,				   /*                        */
 	   *post,				   /*                        */
 	   c;					   /*                        */
   Uchar    *space;				   /*                        */
   char     buffer[256];				   /*                        */
-#define UseBuffer(S) strcpy(buffer,S);s=buffer
+#define UseBuffer(S) strcpy(buffer,S); s = buffer
  						   /*                        */
   space = symbol(" ");				   /*                        */
   free_name_node(*nodep);			   /*                        */
@@ -221,6 +226,7 @@ void set_name_format(nodep,s)			   /*                        */
       *s = c;					   /*                        */
       *nodep = new_name_node(NameString,	   /*                        */
 			     -1,		   /*                        */
+			     -1,		   /*                        */
 			     (Uchar*)NULL,	   /*                        */
 			     mid,		   /*                        */
 			     (Uchar*)NULL));	   /*                        */
@@ -233,7 +239,7 @@ void set_name_format(nodep,s)			   /*                        */
     type  = NoName;				   /*                        */
     mid   = space;				   /*                        */
     strip = 1;					   /*                        */
-    for(n=1 ;n>0; ++s )				   /*                        */
+    for ( n = 1 ; n > 0; ++s )			   /*                        */
     { switch (*s)				   /*                        */
       { case '{': n++; break;			   /*                        */
 	case '}': n--; break;			   /*                        */
@@ -245,15 +251,12 @@ void set_name_format(nodep,s)			   /*                        */
       }						   /*                        */
     }						   /*                        */
  						   /*                        */
-    if ( type == NoName ) 			   /*                        */
-    {
-    }
-    else					   /*                        */
+    if ( type != NoName ) 			   /*                        */
     { c = *(s-1);				   /*                        */
       *(s-1) = '\0';				   /*                        */
       post = symbol(post);			   /*                        */
       *(s-1) = c;				   /*                        */
-      *nodep = new_name_node(type,strip,pre,mid,post);/*                     */
+      *nodep = new_name_node(type, strip, trim, pre, mid, post);/*           */
 #ifdef DEBUG
       dump_name_node(*nodep);			   /*                        */
 #endif
@@ -276,7 +279,8 @@ void set_name_format(nodep,s)			   /*                        */
 NameNode name_format(s)				   /*                        */
   Uchar	   *s;					   /*                        */
 { int	   type,				   /*                        */
-	   strip;				   /*                        */
+	   strip,				   /*                        */
+	   trim;				   /*                        */
   Uchar	   *pre,				   /*                        */
      	   *mid,				   /*                        */
      	   *post;				   /*                        */
@@ -298,17 +302,25 @@ NameNode name_format(s)				   /*                        */
   while (*cp)					   /*                        */
   {						   /*                        */
     if ( *cp == '%' )				   /*                        */
-    {
-      switch ( *++cp )
-      { case '+': type = NameUpper;    cp++; break;
-        case '-': type = NameLower;    cp++; break;
-        case '*': type = NameExternal; cp++; break;
-	default:  type = NameNone;
-      }
+    {						   /*                        */
+      switch ( *++cp )				   /*                        */
+      { case '+': type = NameUpper;    cp++; break;/*                        */
+        case '-': type = NameLower;    cp++; break;/*                        */
+        case '*': type = NameExternal; cp++; break;/*                        */
+	default:  type = NameNone;		   /*                        */
+      }						   /*                        */
       if ( is_digit(*cp) )			   /*                        */
       { strip = 0;				   /*                        */
-        while(is_digit(*cp)) { strip = strip*10 + (*cp++)-'0';}/*            */
+        while(is_digit(*cp))			   /*                        */
+        { strip = strip*10 + (*cp++) - '0';}	   /*                        */
       } else { strip = -1; }			   /*                        */
+ 						   /*                        */
+      if ( *cp == '.' )			   	   /*                        */
+      { trim = 0;				   /*                        */
+        cp++;					   /*                        */
+        while(is_digit(*cp))			   /*                        */
+        { trim = trim*10 + (*cp++) - '0';}	   /*                        */
+      } else { trim = -1; }			   /*                        */
  						   /*                        */
       switch ( *cp )				   /*                        */
       { case 'f': type |= NameFirst; break;	   /*                        */
@@ -331,17 +343,23 @@ NameNode name_format(s)				   /*                        */
     else 					   /*                        */
     { mid = cp;					   /*                        */
       while ( *cp && *cp != '%' ) { cp++; }	   /*                        */
-      c   = *cp;				   /*                        */
-      *cp = '\0';				   /*                        */
-      mid = symbol(mid);			   /*                        */
-      *cp = c;					   /*                        */
+      c     = *cp;				   /*                        */
+      *cp   = '\0';				   /*                        */
+      mid   = symbol(mid);			   /*                        */
+      *cp   = c;				   /*                        */
       type  = NameString;			   /*                        */
       pre   = NULL;				   /*                        */
       post  = NULL;				   /*                        */
       strip = -1;				   /*                        */
+      trim  = -1;				   /*                        */
     }						   /*                        */
     if ( type != NoName )			   /*                        */
-    { *nnp = new_name_node(type,strip,pre,mid,post);/*                       */
+    { *nnp = new_name_node(type,		   /*                        */
+                           strip,		   /*                        */
+                           trim,		   /*                        */
+                           pre,			   /*                        */
+                           mid,			   /*                        */
+                           post);		   /*                        */
       nnp = &NextName(*nnp);			   /*                        */
     }						   /*                        */
   }						   /*                        */
@@ -426,7 +444,7 @@ Uchar * pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
 **	commas
 ** Returns:	nothing
 **___________________________________________________			     */
-static void pp_one_name(sb,w,format,trans,len,comma,commas)/*                */
+static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   StringBuffer *sb;				   /*                        */
   char         **w;				   /*                        */
   NameNode     format;				   /*                        */
@@ -438,8 +456,8 @@ static void pp_one_name(sb,w,format,trans,len,comma,commas)/*                */
   char         t;				   /*                        */
   char         *type;				   /*                        */
   char         *tr;				   /*                        */
-  int          i,j,again;			   /*                        */
-  int	       first,last,von,jr;		   /*                        */
+  int          i, j, again;			   /*                        */
+  int	       first, last, von, jr;		   /*                        */
  						   /*                        */
   first = last = von = jr = 0;			   /*                        */
   if ( len < 1 ) return;			   /*                        */
@@ -448,72 +466,74 @@ static void pp_one_name(sb,w,format,trans,len,comma,commas)/*                */
   { OUT_OF_MEMORY("name type"); }   		   /*                        */
  						   /*                        */
 #ifdef DEBUG
-  for (i=0;i<len;i++) { printf("/%s/ ",w[i]); }
-  puts("");
+  for (i = 0; i < len; i++)			   /*                        */
+  { printf("/%s/ ",w[i]); }			   /*                        */
+  puts("");					   /*                        */
 #endif
  						   /*                        */
   if ( commas == 0 )				   /*------------------------*/
   {						   /* ff vv ll               */
-    j = len-1;				   	   /* ff vv ll jr            */
+    j = len - 1;				   /* ff vv ll jr            */
     if ( is_jr(w[j]) ) { type[j--] = 'j'; jr++; }  /*                        */
     if ( j >= 0 )      { type[j] = 'l'; last++; }  /*                        */
     i = 0;					   /*                        */
-    while ( i<j && !is_lower_word(w[i]) )	   /*                        */
+    while ( i < j && !is_lower_word(w[i]) )	   /*                        */
     { type[i++] = 'f'; first++; }		   /*                        */
-    while ( i<j && is_lower_word(w[i]) )	   /*                        */
+    while ( i < j && is_lower_word(w[i]) )	   /*                        */
     { type[i++] = 'v'; von++; }			   /*                        */
-    while ( i<j )				   /*                        */
+    while ( i < j )				   /*                        */
     { type[i++] = 'l'; last++; }		   /*                        */
   }						   /*                        */
   else if (   commas == 1			   /*------------------------*/
 	   && len > 2				   /* ff vv ll, jj           */
 	   && w[len-2] == comma			   /*                        */
 	   && is_jr(w[len-1]) )			   /*                        */
-  { j = len-1;					   /*                        */
+  { j = len - 1;				   /*                        */
     type[j--] = 'j'; jr++;			   /*                        */
     type[j--] = ',';				   /*                        */
     if ( j >= 0 ) { type[j--] = 'l'; last++; }	   /*                        */
     i = 0;					   /*                        */
-    while ( i<j && !is_lower_word(w[i]) )	   /*                        */
+    while ( i < j && !is_lower_word(w[i]) )	   /*                        */
     { type[i++] = 'f'; first++; }		   /*                        */
-    while ( i<j && is_lower_word(w[i]) )	   /*                        */
+    while ( i < j && is_lower_word(w[i]) )	   /*                        */
     { type[i++] = 'v'; von++; }			   /*                        */
-    while ( i<j )				   /*                        */
+    while ( i < j )				   /*                        */
     { type[i++] = 'l'; last++; }		   /*                        */
   }						   /*                        */
   else						   /*                        */
-  {						   /*                        */
-    i = 0;			   		   /*------------------------*/
+  { i = 0;			   		   /*------------------------*/
     if ( is_lower_word(w[i]) )		   	   /* vv ll, ff              */
-    { while ( i<len && w[i]!=comma && is_lower_word(w[i]) )/*                */
+    { while ( i < len && w[i] != comma && is_lower_word(w[i]) )/*            */
       { type[i++] = 'v'; von++; }		   /*                        */
     }						   /*                        */
 			   			   /*------------------------*/
-    while ( i<len && w[i]!=comma )		   /* ll, ff vv              */
+    while ( i < len && w[i] != comma )		   /* ll, ff vv              */
     { type[i++] = 'l'; last++; }		   /*                        */
     type[i++] = ',';				   /*                        */
 			   			   /*------------------------*/
-    if ( commas == 2 && i<len && is_jr(w[i]) )	   /* ll, jj, ff vv          */
+    if ( commas == 2 && i < len && is_jr(w[i]) )   /* ll, jj, ff vv          */
     { type[i] = 'j'; jr++;			   /*                        */
       type[++i] = ',';				   /*                        */
     }						   /*                        */
-    while ( i<len && !is_lower_word(w[i]) )	   /*                        */
+    while ( i < len && !is_lower_word(w[i]) )	   /*                        */
     { type[i++] = 'f'; first++; }		   /*                        */
-    while ( i<len && is_lower_word(w[i]) )	   /*                        */
+    while ( i < len && is_lower_word(w[i]) )	   /*                        */
     { type[i++] = 'v'; von++; }			   /*                        */
   }						   /*                        */
  						   /*                        */
 #ifdef NAMES_DEBUG
-  for (i=0;i<len;i++) { printf("%c ",type[i]); }
-  puts("");
+  for ( i = 0; i < len; i++)			   /*                        */
+  { printf("%c ",type[i]); }			   /*                        */
+  puts("");					   /*                        */
 #endif
  						   /*                        */
   for ( nn = format;				   /*                        */
         nn != NameNULL;				   /*                        */
         nn = NextName(nn) )			   /*                        */
-  { int strip = NameStrip(nn);
+  { int strip = NameStrip(nn);			   /*                        */
+    int trim  = NameTrim(nn);			   /*                        */
 #ifdef DEBUG
-    dump_name_node(nn);
+    dump_name_node(nn);				   /*                        */
 #endif
     switch( NameType(nn) & NameTypeMask )	   /*                        */
     { case NameFirst:	t = 'f'; j = first; break; /*                        */
@@ -531,17 +551,19 @@ static void pp_one_name(sb,w,format,trans,len,comma,commas)/*                */
     }						   /*                        */
  						   /*                        */
     if ( j > 0 )				   /*                        */
-    { sbputs(NamePre(nn),sb);			   /*                        */
+    { sbputs(NamePre(nn), sb);			   /*                        */
       again = FALSE;				   /*                        */
-      for ( i=0; i<len; i++ )			   /*                        */
+      for ( i = 0; i < len; i++ )		   /*                        */
       { if ( type[i] == t )			   /*                        */
-	{ if ( again ) sbputs(NameMid(nn),sb);	   /*                        */
+	{					   /*                        */
+	  if ( trim-- == 0 ) { break; }
+	  if ( again ) sbputs(NameMid(nn), sb);	   /*                        */
 	  else again = TRUE;			   /*                        */
  						   /*                        */
-	  initial(w[i],tr,strip,sb);	   	   /*                        */
+	  initial(w[i], tr, strip, sb);	   	   /*                        */
 	}					   /*                        */
       }						   /*                        */
-      sbputs(NamePost(nn),sb);			   /*                        */
+      sbputs(NamePost(nn), sb);			   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -641,7 +663,8 @@ static int is_jr(s)				   /*                        */
 	       strcmp(s,"XVII")  == 0 ||	   /*                        */
 	       strcmp(s,"XVIII") == 0 ||	   /*                        */
 	       strcmp(s,"XIX")   == 0 ||	   /*                        */
-	       strcmp(s,"XX")    == 0 );	   /*                        */
+	       strcmp(s,"XX")    == 0 ||	   /*                        */
+	       strcmp(s,"XXX")   == 0 );	   /*                        */
     case 'e':					   /*                        */
       return ( case_cmp(++s,"sc") ||	   	   /*                        */
 	       case_cmp(s,"sc.")  );		   /*                        */

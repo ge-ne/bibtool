@@ -1,18 +1,19 @@
 ##*****************************************************************************
-## $Id: Makefile,v 1.4 2007-02-08 19:47:16 gene Exp $
+## $Id: Makefile,v 1.5 2010-01-05 23:00:14 gene Exp $
 ##=============================================================================
 ## 
 ## This file is part of BibTool.
 ## It is distributed under the GNU General Public License.
 ## See the file COPYING for details.
 ## 
-## (c) 1997-2004 Gerd Neugebauer
+## (c) 1997-2010 Gerd Neugebauer
 ## 
 ## Net: gene@gerd-neugebauer.de
 ## 
 ##*****************************************************************************
 
 LATEX     = latex
+PDFLATEX  = pdflatex
 BIBTEX    = bibtex
 MAKEINDEX = makeindex
 
@@ -20,6 +21,8 @@ DIR_SEP   = /
 
 .SUFFIXES: .tex .toc .dvi .aux .bbl .ind .idx $(SUFFIXES)
 
+.tex.pdf:
+	$(PDFLATEX) $<
 .tex.dvi:
 	$(LATEX) $<
 .tex.toc:
@@ -111,7 +114,7 @@ c_lib:
 	$(MAKEINDEX) -s bibtool.ist c_lib
 	$(LATEX) c_lib.tex
 
-c_lib.dvi: c_lib.tex c_main.tex c.tex
+c_lib.dvi: c_lib.tex c_main.tex c.tex config.tex
 	$(LATEX) c_lib.tex
 	$(MAKEINDEX) -s bibtool.ist c_lib
 	$(LATEX) c_lib.tex

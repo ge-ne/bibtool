@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: macros.c,v 1.6 2010-01-05 14:06:06 gene Exp $
+** $Id: macros.c,v 1.7 2010-01-05 23:00:08 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -47,16 +47,16 @@ Macro new_macro(name,val,next,count)		   /*                        */
   Uchar		 *val;				   /*                        */
   int		 count;				   /*                        */
   Macro          next;				   /*                        */
-{ register Macro new;				   /*                        */
+{ register Macro macro;				   /*                        */
  						   /*                        */
-  if ( (new=(Macro)malloc(sizeof(SMacro))) == MacroNULL )/*                  */
+  if ( (macro=(Macro)malloc(sizeof(SMacro))) == MacroNULL )/*                */
   { OUT_OF_MEMORY("Macro"); }      		   /*                        */
  						   /*                        */
-  MacroName(new)  = name;			   /*                        */
-  MacroValue(new) = val ;			   /*                        */
-  MacroCount(new) = count;			   /*                        */
-  NextMacro(new)  = next;			   /*                        */
-  return(new);					   /*                        */
+  MacroName(macro)  = name;			   /*                        */
+  MacroValue(macro) = val ;			   /*                        */
+  MacroCount(macro) = count;			   /*                        */
+  NextMacro(macro)  = next;			   /*                        */
+  return(macro);				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -107,11 +107,11 @@ int def_macro(name,val,count)			   /*                        */
     {						   /*                        */
       if ( val )				   /*                        */
       { MacroValue(*mp) = val; }		   /*                        */
-      else
-      { Macro mac = *mp;
-        *mp = NextMacro(*mp);
-	free(mac);
-      }
+      else					   /*                        */
+      { Macro mac = *mp;			   /*                        */
+        *mp = NextMacro(*mp);			   /*                        */
+	free(mac);				   /*                        */
+      }						   /*                        */
       return 1;					   /*                        */
     }						   /*                        */
   }						   /*                        */
@@ -209,7 +209,7 @@ void dump_mac(fname,allp)			   /*                        */
   if ( *fname == '-' && *(fname+1) == '\0' ) 	   /*                        */
   { file = stdout; }				   /*                        */
   else if ( (file=fopen(fname,"w")) == NULL )      /*                        */
-  { ERROR2("File could not be opened: ",fname);	   /*                        */
+  { ERROR2("File could not be opened: ", fname);   /*                        */
     return;					   /*                        */
   }					   	   /*                        */
  						   /*                        */
@@ -259,9 +259,9 @@ void init_macros()				   /*                        */
   static char *word_list[] =			   /*                        */
   { INITIALIZE_MACROS, NULL };			   /*                        */
  						   /*                        */
-  for ( wp=word_list; *wp!=NULL; ++wp )		   /*                        */
+  for ( wp = word_list; *wp != NULL; ++wp )	   /*                        */
   { name = symbol((Uchar*)*wp);			   /*                        */
-    def_macro(name,name,-1);			   /*                        */
+    def_macro(name, name, -1);			   /*                        */
   }		   				   /*			     */
 #endif
 }						   /*------------------------*/
@@ -275,20 +275,19 @@ void init_macros()				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	def_item()
-** Purpose:	
-**		
+** Purpose:	Define a macro. The arguments are interned as symbols.
 ** Arguments:
-**	name
-**	value
+**	name	the name of the item
+**	value	the value of the item
 ** Returns:	nothing
 **___________________________________________________			     */
-static void def_item(name,value)		   /*                        */
+static void def_item(name, value)		   /*                        */
   register Uchar * name;			   /*                        */
   register Uchar * value;			   /*                        */
 {						   /*                        */
   name  = symbol(name);				   /*                        */
   value = symbol(value);			   /*                        */
-  items = new_macro(name,value,items,0);	   /*                        */
+  items = new_macro(name, value, items, 0);	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -332,7 +331,7 @@ void def_field_type(s)				   /*                        */
   while ( is_allowed(*s) ) ++s;			   /*                        */
   c = *s; *s = '\0'; val = symbol(val); *s = c;	   /*                        */
  						   /*                        */
-  def_item(name,val);				   /*                        */
+  def_item(name, val);				   /*                        */
 }						   /*------------------------*/
 
 
@@ -357,7 +356,7 @@ static Uchar * get_mapped_or_cased(name,mac,type)  /*                        */
   register Macro mac;				   /*                        */
 { static StringBuffer* sb = (StringBuffer*)NULL;   /*                        */
  						   /*                        */
-  for ( ; mac != MacroNULL; mac=NextMacro(mac) )   /*                        */
+  for ( ; mac != MacroNULL; mac = NextMacro(mac) ) /*                        */
   { if ( name == MacroName(mac) )		   /*                        */
       return MacroValue(mac);			   /*                        */
   }						   /*                        */
@@ -367,9 +366,9 @@ static Uchar * get_mapped_or_cased(name,mac,type)  /*                        */
   { OUT_OF_MEMORY("get_item()"); } 		   /*                        */
   sbrewind(sb);					   /*                        */
   if ( type == SYMBOL_TYPE_LOWER ) 	   	   /*                        */
-  { sbputs((char*)name,sb);
-  }
-  else
+  { sbputs((char*)name,sb);			   /*                        */
+  }						   /*                        */
+  else						   /*                        */
   { 						   /*                        */
     switch ( type )			   	   /*                        */
     { case SYMBOL_TYPE_CASED:			   /*                        */
@@ -417,7 +416,7 @@ static Uchar * get_mapped_or_cased(name,mac,type)  /*                        */
 Uchar * get_item(name,type)			   /*                        */
   Uchar *name;				   	   /*                        */
   int   type;				   	   /*                        */
-{ return get_mapped_or_cased(name,items,type);	   /*                        */
+{ return get_mapped_or_cased(name, items, type);   /*                        */
 }						   /*------------------------*/
 
 
@@ -431,29 +430,29 @@ Uchar * get_item(name,type)			   /*                        */
 ** Function:	save_key()
 ** Purpose:	
 **		
-**
 ** Arguments:
-**	s
-**	key
+**	name	the name of the key
+**	key	the key
 ** Returns:	nothing
 **___________________________________________________			     */
-void save_key(s,key)			   	   /*                        */
-  char * s;				   	   /*                        */
+void save_key(name, key)			   /*                        */
+  char * name;				   	   /*                        */
   char * key;					   /*                        */
 {						   /*                        */
-  keys = new_macro(s,key,keys,1);		   /*                        */
+  keys = new_macro(name, key, keys, 1);		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	get_key_name()
 ** Purpose:	
 **		
-**
 ** Arguments:
-**	s
+**	name	the name of the key to find
 ** Returns:	
 **___________________________________________________			     */
-Uchar * get_key_name(s)		   	   	   /*                        */
-  Uchar *s;			   	   	   /*                        */
-{ return get_mapped_or_cased(s,keys,SYMBOL_TYPE_LOWER);/*                    */
+Uchar * get_key_name(name)			   /*                        */
+  Uchar *name;			   	   	   /*                        */
+{ return get_mapped_or_cased(s,			   /*                        */
+			     keys,		   /*                        */
+			     SYMBOL_TYPE_LOWER);   /*                        */
 }						   /*------------------------*/

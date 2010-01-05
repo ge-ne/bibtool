@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.7 2010-01-05 14:06:06 gene Exp $
+%% $Id: bibtool.tex,v 1.8 2010-01-05 23:00:14 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -503,10 +503,11 @@ pattern---which is enclosed in double quotes is matched against the contents
 of the field. If a match is found then the matching substring is replaced by
 the replacement text in the second string.
 
-The pattern is a regular expression like the ones used in Emacs. The first
-character is the hat (\verb|^|). This character anchors the match at the
-beginning of the line. The last character is the dollar sign which anchors the
-end at the end of the field value. Thus only complete matches are considered.
+The pattern is a regular expression\index{regular expression} like the ones
+used in Emacs\index{Emacs}. The first character is the hat (\verb|^|). This
+character anchors the match at the beginning of the line. The last character
+is the dollar sign which anchors the end at the end of the field value. Thus
+only complete matches are considered.
 
 Since we want to find those fields whose values are enclosed in double quotes
 they are given after the hat and before the dollar. To avoid a
@@ -521,10 +522,10 @@ Now we come to the point where we have to specify the contents of the
 string. For this purpose we use a character class---written as
 \verb|[|\ldots\verb|]|. Since the first character in this class specification
 is a hat this class consists of all characters but those given after the
-hat. Thus all characters but the hash sign (\verb|#|) are allowed.
+hat. Thus all characters but the hash sign (\verb|#|\index{\#}) are allowed.
 
-The star (\verb|*|) after the character class indicates that an arbitrary
-number of characters of this class are allowed.
+The star (\verb|*|\index{*}) after the character class indicates that an
+arbitrary number of characters of this class are allowed.
 
 We have used the complicated construction with a character class to avoid
 wrong results which would have resulted when this rewrite rule is applied to a
@@ -903,7 +904,8 @@ form of a resource command is of the form
 
 \rsc{name} is the resource name which conforms the rules of \BibTeX{}
 reference keys. Thus \rsc{name} can be composed of all characters but
-whitespace characters and
+whitespace characters and\index{\#}\index{"}\index{\%}\index{=}\index{,}%
+\index{'}\index{\{}\index{\}}\index{(}\index{)}
 \begin{verbatim}
     "  #  %  '  (  )  ,  =  {  }
 \end{verbatim}
@@ -2974,7 +2976,7 @@ several words. More on names can be found in \cite{lamport:latex} and
 
 \BibTool{} provides a means to specify how the various parts of a name
 should be used to construct a string. This string can be used as part
-of a key with the \verb|%p| format specifier (see above).
+of a key with the \texttt{\%p}\index{p@\%p} format specifier (see above).
 
 \BibTool{} uses a small number of name format specifiers.\footnote{The exact
   number can be changed in the configuration file before compilation. The
@@ -2985,9 +2987,9 @@ initially set to the value
 \verb|%*l[|\emph{fmt.inter.name}\/\verb|]%*1f[|\emph{fmt.inter.name}\/\verb|]|. 
 
 The name format specifiers 0 and 1 are used by the formatting instructions
-\verb|%N| and \verb|%n|. Thus you should be careful when redefining them. To
-help you keep an eye on these two name format specifiers \BibTool{} issues a
-warning when they are modified.
+\verb|%N|\index{N@\%N} and \verb|%n|\index{n@\%n}. Thus you should be careful
+when redefining them. To help you keep an eye on these two name format
+specifiers \BibTool{} issues a warning when they are modified.
 
 The resource \rsc{new.format.type} can be used to assign values to those name
 format specifiers:\index{f@\%f}\index{v@\%v}\index{l@\%l}
@@ -3005,7 +3007,8 @@ optional arguments enclosed in brackets.
 Thus the general form looks as follows:
 
 \begin{itemize}
-  \item [] \texttt{\%}\textit{sign len letter}
+  \item [] \texttt{\%}\textit{sign} \textit{len}\texttt{.}\textit{number}
+           \textit{letter}
            \texttt{[}\textit{mid}\texttt{][}%
            \textit{pre}\texttt{][}\textit{post}\texttt{]} 
 \end{itemize}
@@ -3025,6 +3028,10 @@ used. Each word is truncated to at most \textit{len} characters if
 \textit{len} is greater than 0. Otherwise no truncation is performed. Thus a
 value of \(0\) acts like \(\infty\). Note that the length of the name format
 specifiers 0 and 1 are automatically inherited from the calling format.
+
+The fractional number \textit{number} after the period denotes the number of
+name parts to be taken into account. This can be used to just show the one
+first name if more are given.
 
 If \texttt{[}\textit{mid}\texttt{]} is given then this string is used between
 several words of the given part. If none is given then the empty string is

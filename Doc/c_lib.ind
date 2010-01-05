@@ -1,294 +1,314 @@
 \begin{theindex}\footnotesize
 
-  \item add\_check\_rule() \dotfill \tt{44}
-  \item add\_db\_record() \dotfill \tt{11}
-  \item add\_extract() \dotfill \tt{44}
-  \item add\_field() \dotfill \tt{45}
-  \item add\_format() \dotfill \tt{24}
-  \item add\_ignored\_word() \dotfill \tt{25}
-  \item add\_rewrite\_rule() \dotfill \tt{45}
-  \item add\_s\_extract() \dotfill \tt{45}
-  \item add\_sort\_format() \dotfill \tt{25}
-  \item add\_sort\_order() \dotfill \tt{42}
-  \item add\_word() \dotfill \tt{62}
-  \item apply\_aux() \dotfill \tt{55}
-  \item apply\_fmt() \dotfill \tt{25}
-  \item aux\_used() \dotfill \tt{55}
+  \item add\_check\_rule() \dotfill \tt{47}
+  \item add\_extract() \dotfill \tt{48}
+  \item add\_field() \dotfill \tt{48}
+  \item add\_format() \dotfill \tt{27}
+  \item add\_ignored\_word() \dotfill \tt{28}
+  \item add\_rewrite\_rule() \dotfill \tt{48}
+  \item add\_sort\_format() \dotfill \tt{28}
+  \item add\_sort\_order() \dotfill \tt{45}
+  \item add\_word() \dotfill \tt{65}
+  \item add\_word\_sep() \dotfill \tt{63}
+  \item apply\_aux() \dotfill \tt{58}
+  \item apply\_fmt() \dotfill \tt{28}
+  \item aux\_used() \dotfill \tt{59}
 
   \indexspace
 
-  \item BIBALIAS \dotfill \sf{15}
-  \item BIBCOMMENT \dotfill \sf{15}
-  \item BIBEOF \dotfill \sf{15}
-  \item BIBINCLUDE \dotfill \sf{15}
-  \item BIBMODIFY \dotfill \sf{15}
-  \item BIBNOOP \dotfill \sf{15}
-  \item BIBPREAMBLE \dotfill \sf{15}
-  \item BIBSTRING \dotfill \sf{15}
-  \item bibtoolversion \dotfill \tt{61}
+  \item BIBALIAS \dotfill \sf{18}
+  \item BIBCOMMENT \dotfill \sf{18}
+  \item BIBEOF \dotfill \sf{17}
+  \item BIBINCLUDE \dotfill \sf{18}
+  \item BIBMODIFY \dotfill \sf{18}
+  \item BIBNOOP \dotfill \sf{17}
+  \item BIBPREAMBLE \dotfill \sf{18}
+  \item BIBSTRING \dotfill \sf{17}
+  \item bibtoolversion \dotfill \tt{64}
 
   \indexspace
 
-  \item case\_cmp() \dotfill \tt{60}
-  \item clear\_addlist() \dotfill \tt{45}
-  \item clear\_aux() \dotfill \tt{55}
-  \item clear\_ignored\_words() \dotfill \tt{26}
-  \item ClearRecordDELETED() \dotfill \sf{40}
-  \item ClearRecordMARK() \dotfill \sf{41}
-  \item ClearRecordXREF() \dotfill \sf{40}
-  \item copy\_record() \dotfill \tt{43}
+  \item case\_cmp() \dotfill \tt{64}
+  \item clear\_addlist() \dotfill \tt{48}
+  \item clear\_aux() \dotfill \tt{59}
+  \item clear\_ignored\_words() \dotfill \tt{28}
+  \item ClearRecordDELETED() \dotfill \sf{43}
+  \item ClearRecordMARK() \dotfill \sf{44}
+  \item ClearRecordXREF() \dotfill \sf{43}
+  \item copy\_record() \dotfill \tt{46}
 
   \indexspace
 
-  \item db\_count() \dotfill \tt{11}
-  \item db\_find() \dotfill \tt{11}
-  \item db\_forall() \dotfill \tt{12}
-  \item db\_mac\_sort() \dotfill \tt{12}
-  \item db\_new\_key() \dotfill \tt{12}
-  \item db\_rewind() \dotfill \tt{12}
-  \item db\_sort() \dotfill \tt{12}
-  \item db\_string() \dotfill \tt{13}
-  \item DBalias() \dotfill \sf{10}
-  \item DBcomment() \dotfill \sf{10}
-  \item DBinclude() \dotfill \sf{11}
-  \item DBmodify() \dotfill \sf{10}
-  \item DBnormal() \dotfill \sf{10}
-  \item DBpreamble() \dotfill \sf{10}
-  \item DBstring() \dotfill \sf{10}
-  \item DebugPrint1() \dotfill \sf{21}
-  \item DebugPrint2() \dotfill \sf{21}
-  \item DebugPrint3() \dotfill \sf{21}
-  \item def\_entry\_type() \dotfill \tt{16}
-  \item def\_field\_type() \dotfill \tt{30}
-  \item def\_format\_type() \dotfill \tt{26}
-  \item def\_macro() \dotfill \tt{30}
-  \item delete\_record() \dotfill \tt{13}
-  \item delete\_word() \dotfill \tt{62}
-  \item dump\_mac() \dotfill \tt{30}
+  \item db\_count() \dotfill \tt{13}
+  \item db\_find() \dotfill \tt{13}
+  \item db\_forall() \dotfill \tt{13}
+  \item db\_insert() \dotfill \tt{14}
+  \item db\_mac\_sort() \dotfill \tt{14}
+  \item db\_new\_key() \dotfill \tt{14}
+  \item db\_rewind() \dotfill \tt{14}
+  \item db\_search() \dotfill \tt{14}
+  \item db\_sort() \dotfill \tt{15}
+  \item db\_string() \dotfill \tt{15}
+  \item db\_xref\_undelete() \dotfill \tt{15}
+  \item DBalias() \dotfill \sf{12}
+  \item DBcomment() \dotfill \sf{12}
+  \item DBinclude() \dotfill \sf{13}
+  \item DBmodify() \dotfill \sf{12}
+  \item DBnormal() \dotfill \sf{12}
+  \item DBpreamble() \dotfill \sf{12}
+  \item DBstring() \dotfill \sf{12}
+  \item DebugPrint1() \dotfill \sf{23}
+  \item DebugPrint2() \dotfill \sf{24}
+  \item DebugPrint3() \dotfill \sf{24}
+  \item def\_entry\_type() \dotfill \tt{19}
+  \item def\_field\_type() \dotfill \tt{33}
+  \item def\_format\_type() \dotfill \tt{29}
+  \item def\_macro() \dotfill \tt{33}
+  \item delete\_record() \dotfill \tt{15}
+  \item delete\_word() \dotfill \tt{66}
+  \item dump\_mac() \dotfill \tt{33}
 
   \indexspace
 
-  \item EntryName() \dotfill \sf{14}
-  \item entrytype \dotfill \tt{14}
-  \item Err() \dotfill \sf{19}
-  \item ErrC() \dotfill \sf{19}
-  \item ERRERROR \dotfill \sf{17}
-  \item ERREXIT \dotfill \sf{18}
-  \item ERRFILE \dotfill \sf{17}
-  \item ERROR() \dotfill \sf{18}
-  \item error() \dotfill \tt{21}
-  \item ERROR2() \dotfill \sf{18}
-  \item ERROR3() \dotfill \sf{18}
-  \item ERROREXIT() \dotfill \sf{18}
-  \item ERRPOINT \dotfill \sf{17}
-  \item ErrPrint() \dotfill \sf{19}
-  \item ErrPrintF() \dotfill \sf{19}
-  \item ErrPrintF2() \dotfill \sf{20}
-  \item ERRWARNING \dotfill \sf{17}
-  \item expand\_rhs() \dotfill \tt{23}
+  \item end\_key\_gen() \dotfill \tt{29}
+  \item EntryName() \dotfill \sf{17}
+  \item entrytype \dotfill \tt{17}
+  \item Err() \dotfill \sf{22}
+  \item ErrC() \dotfill \sf{22}
+  \item ERRERROR \dotfill \sf{20}
+  \item ERREXIT \dotfill \sf{20}
+  \item ERRFILE \dotfill \sf{20}
+  \item ERROR() \dotfill \sf{21}
+  \item error() \dotfill \tt{24}
+  \item ERROR2() \dotfill \sf{21}
+  \item ERROR3() \dotfill \sf{21}
+  \item ERROREXIT() \dotfill \sf{20}
+  \item ERRPOINT \dotfill \sf{20}
+  \item ErrPrint() \dotfill \sf{22}
+  \item ErrPrintF() \dotfill \sf{22}
+  \item ErrPrintF2() \dotfill \sf{22}
+  \item ErrPrintF3() \dotfill \sf{22}
+  \item ERRWARNING \dotfill \sf{20}
+  \item expand\_env() \dotfill \tt{41}
+  \item expand\_rhs() \dotfill \tt{26}
 
   \indexspace
 
-  \item find\_entry\_type() \dotfill \tt{16}
-  \item find\_word() \dotfill \tt{62}
-  \item FlushErr \dotfill \sf{20}
-  \item fmt\_expand() \dotfill \tt{26}
-  \item foreach\_aux() \dotfill \tt{55}
-  \item foreach\_ignored\_word() \dotfill \tt{26}
-  \item foreach\_macro() \dotfill \tt{30}
-  \item foreach\_word() \dotfill \tt{62}
-  \item fput\_record() \dotfill \tt{36}
-  \item free\_1\_record() \dotfill \tt{43}
-  \item free\_db() \dotfill \tt{13}
-  \item free\_key\_node() \dotfill \tt{26}
-  \item free\_macro() \dotfill \tt{30}
-  \item free\_record() \dotfill \tt{43}
-  \item free\_words() \dotfill \tt{63}
+  \item find\_entry\_type() \dotfill \tt{19}
+  \item find\_word() \dotfill \tt{66}
+  \item FlushErr \dotfill \sf{23}
+  \item fmt\_expand() \dotfill \tt{29}
+  \item foreach\_aux() \dotfill \tt{59}
+  \item foreach\_ignored\_word() \dotfill \tt{29}
+  \item foreach\_macro() \dotfill \tt{33}
+  \item foreach\_word() \dotfill \tt{66}
+  \item fput\_record() \dotfill \tt{39}
+  \item free\_1\_record() \dotfill \tt{46}
+  \item free\_db() \dotfill \tt{15}
+  \item free\_key\_node() \dotfill \tt{29}
+  \item free\_macro() \dotfill \tt{33}
+  \item free\_record() \dotfill \tt{46}
+  \item free\_words() \dotfill \tt{66}
 
   \indexspace
 
-  \item get\_entry\_type() \dotfill \tt{16}
-  \item get\_field() \dotfill \tt{26}
-  \item get\_item() \dotfill \tt{31}
-  \item get\_key\_name() \dotfill \tt{31}
+  \item get\_entry\_type() \dotfill \tt{19}
+  \item get\_field() \dotfill \tt{29}
+  \item get\_item() \dotfill \tt{34}
+  \item get\_key\_name() \dotfill \tt{34}
 
   \indexspace
 
-  \item init\_bibtool() \dotfill \tt{23}
-  \item init\_entries() \dotfill \tt{17}
-  \item init\_macros() \dotfill \tt{31}
-  \item init\_read() \dotfill \tt{34}
-  \item init\_symbols() \dotfill \tt{53}
-  \item init\_type() \dotfill \tt{60}
-  \item is\_selected() \dotfill \tt{45}
-  \item isallowed() \dotfill \sf{58}
-  \item isalpha() \dotfill \sf{59}
-  \item isdigit() \dotfill \sf{59}
-  \item isextended() \dotfill \sf{59}
-  \item islower() \dotfill \sf{58}
-  \item IsNormalRecord() \dotfill \sf{16}
-  \item isspace() \dotfill \sf{59}
-  \item IsSpecialRecord() \dotfill \sf{15}
-  \item isupper() \dotfill \sf{58}
-  \item iswordsep() \dotfill \sf{59}
+  \item init\_bibtool() \dotfill \tt{26}
+  \item init\_entries() \dotfill \tt{19}
+  \item init\_error() \dotfill \tt{25}
+  \item init\_macros() \dotfill \tt{34}
+  \item init\_read() \dotfill \tt{37}
+  \item init\_symbols() \dotfill \tt{57}
+  \item init\_type() \dotfill \tt{64}
+  \item is\_selected() \dotfill \tt{48}
+  \item isallowed() \dotfill \sf{62}
+  \item isalpha() \dotfill \sf{62}
+  \item isdigit() \dotfill \sf{62}
+  \item isextended() \dotfill \sf{63}
+  \item islower() \dotfill \sf{62}
+  \item IsNormalRecord() \dotfill \sf{18}
+  \item isspace() \dotfill \sf{62}
+  \item IsSpecialRecord() \dotfill \sf{18}
+  \item isupper() \dotfill \sf{62}
+  \item iswordsep() \dotfill \sf{63}
 
   \indexspace
 
-  \item load\_rsc() \dotfill \tt{47}
-  \item look\_macro() \dotfill \tt{31}
-  \item lower() \dotfill \tt{60}
+  \item keep\_selected() \dotfill \tt{8}
+  \item keep\_xref() \dotfill \tt{8}
 
   \indexspace
 
-  \item MacroCount() \dotfill \sf{29}
-  \item MacroName() \dotfill \sf{29}
-  \item MacroNULL \dotfill \sf{29}
-  \item MacroValue() \dotfill \sf{29}
+  \item load\_rsc() \dotfill \tt{50}
+  \item look\_macro() \dotfill \tt{34}
+  \item lower() \dotfill \tt{64}
+
+  \indexspace
+
+  \item MacroCount() \dotfill \sf{32}
+  \item MacroName() \dotfill \sf{32}
+  \item MacroNULL \dotfill \sf{32}
+  \item MacroValue() \dotfill \sf{32}
   \item main() \dotfill \tt{8}
-  \item make\_key() \dotfill \tt{27}
-  \item make\_sort\_key() \dotfill \tt{27}
-  \item mark\_key() \dotfill \tt{27}
+  \item make\_key() \dotfill \tt{30}
+  \item make\_sort\_key() \dotfill \tt{30}
+  \item mark\_key() \dotfill \tt{30}
 
   \indexspace
 
-  \item name\_format() \dotfill \tt{33}
-  \item NameMid() \dotfill \sf{33}
-  \item NameNULL \dotfill \sf{32}
-  \item NamePost() \dotfill \sf{33}
-  \item NamePre() \dotfill \sf{33}
-  \item NameStrip() \dotfill \sf{32}
-  \item NameType() \dotfill \sf{32}
-  \item new\_db() \dotfill \tt{13}
-  \item new\_macro() \dotfill \tt{32}
-  \item new\_record() \dotfill \tt{43}
-  \item new\_string() \dotfill \tt{53}
-  \item new\_wordlist() \dotfill \tt{43}
-  \item NextMacro() \dotfill \sf{29}
-  \item NextName() \dotfill \sf{33}
-  \item NextRecord() \dotfill \sf{42}
-  \item NextWord() \dotfill \sf{61}
-  \item NoDB \dotfill \sf{10}
+  \item name\_format() \dotfill \tt{36}
+  \item NameMid() \dotfill \sf{36}
+  \item NameNULL \dotfill \sf{35}
+  \item NamePost() \dotfill \sf{36}
+  \item NamePre() \dotfill \sf{36}
+  \item NameStrip() \dotfill \sf{35}
+  \item NameTrim() \dotfill \sf{36}
+  \item NameType() \dotfill \sf{35}
+  \item new\_db() \dotfill \tt{16}
+  \item new\_macro() \dotfill \tt{35}
+  \item new\_record() \dotfill \tt{46}
+  \item new\_string() \dotfill \tt{57}
+  \item new\_wordlist() \dotfill \tt{46}
+  \item NextMacro() \dotfill \sf{32}
+  \item NextName() \dotfill \sf{36}
+  \item NextRecord() \dotfill \sf{45}
+  \item NextWord() \dotfill \sf{65}
+  \item NoDB \dotfill \sf{12}
 
   \indexspace
 
-  \item OUTOFMEMORY() \dotfill \sf{18}
+  \item OUTOFMEMORY() \dotfill \sf{21}
 
   \indexspace
 
-  \item parse\_bib() \dotfill \tt{34}
-  \item pop\_string() \dotfill \tt{49}
-  \item pp\_list\_of\_names() \dotfill \tt{33}
-  \item PrevRecord() \dotfill \sf{42}
-  \item print\_db() \dotfill \tt{13}
-  \item push\_string() \dotfill \tt{50}
-  \item push\_to\_record() \dotfill \tt{43}
-  \item put\_record() \dotfill \tt{36}
-  \item px\_fopen() \dotfill \tt{38}
-  \item px\_s2p() \dotfill \tt{38}
-  \item pxfilename \dotfill \tt{38}
+  \item parse\_bib() \dotfill \tt{37}
+  \item pop\_string() \dotfill \tt{53}
+  \item pp\_list\_of\_names() \dotfill \tt{36}
+  \item PrevRecord() \dotfill \sf{45}
+  \item print\_db() \dotfill \tt{16}
+  \item print\_segment() \dotfill \tt{16}
+  \item print\_strings() \dotfill \tt{16}
+  \item provide\_to\_record() \dotfill \tt{46}
+  \item push\_string() \dotfill \tt{53}
+  \item push\_to\_record() \dotfill \tt{47}
+  \item put\_record() \dotfill \tt{39}
+  \item px\_fopen() \dotfill \tt{41}
+  \item px\_s2p() \dotfill \tt{41}
+  \item pxfilename \dotfill \tt{41}
 
   \indexspace
 
-  \item read\_aux() \dotfill \tt{56}
-  \item read\_db() \dotfill \tt{14}
-  \item read\_rsc() \dotfill \tt{34}
-  \item record\_gc() \dotfill \tt{44}
-  \item RecordComment() \dotfill \sf{42}
-  \item RecordFlagDELETED \dotfill \sf{40}
-  \item RecordFlagMARKED \dotfill \sf{39}
-  \item RecordFlags() \dotfill \sf{39}, \sf{42}
-  \item RecordFlagXREF \dotfill \sf{39}
-  \item RecordHeap() \dotfill \sf{41}
-  \item RecordIsDELETED() \dotfill \sf{41}
-  \item RecordIsMARKED() \dotfill \sf{41}
-  \item RecordIsXREF() \dotfill \sf{40}
-  \item RecordNULL \dotfill \sf{39}
-  \item RecordOldKey() \dotfill \sf{41}
-  \item RecordSortkey() \dotfill \sf{41}
-  \item RecordSource() \dotfill \sf{42}
-  \item RecordType() \dotfill \sf{39}
-  \item ReleaseSymbol() \dotfill \sf{53}
-  \item remove\_field() \dotfill \tt{45}
-  \item rewrite\_record() \dotfill \tt{46}
-  \item rsc\_print() \dotfill \tt{47}
+  \item read\_aux() \dotfill \tt{59}
+  \item read\_db() \dotfill \tt{17}
+  \item read\_rsc() \dotfill \tt{37}
+  \item rec\_gt\_cased() \dotfill \tt{8}
+  \item rec\_lt\_cased() \dotfill \tt{8}
+  \item record\_gc() \dotfill \tt{47}
+  \item RecordComment() \dotfill \sf{45}
+  \item RecordFlagDELETED \dotfill \sf{43}
+  \item RecordFlagMARKED \dotfill \sf{42}
+  \item RecordFlags() \dotfill \sf{42}, \sf{45}
+  \item RecordFlagXREF \dotfill \sf{42}
+  \item RecordHeap() \dotfill \sf{44}
+  \item RecordIsDELETED() \dotfill \sf{44}
+  \item RecordIsMARKED() \dotfill \sf{44}
+  \item RecordIsXREF() \dotfill \sf{43}
+  \item RecordNULL \dotfill \sf{42}
+  \item RecordOldKey() \dotfill \sf{44}
+  \item RecordSortkey() \dotfill \sf{44}
+  \item RecordSource() \dotfill \sf{45}
+  \item RecordType() \dotfill \sf{42}
+  \item ReleaseSymbol() \dotfill \sf{56}
+  \item remove\_field() \dotfill \tt{49}
+  \item resource() \dotfill \tt{50}
+  \item rewrite\_record() \dotfill \tt{49}
+  \item rsc\_print() \dotfill \tt{50}
 
   \indexspace
 
-  \item s\_parse() \dotfill \tt{48}
-  \item save\_input\_file() \dotfill \tt{8}
-  \item save\_key() \dotfill \tt{32}
-  \item save\_macro\_file() \dotfill \tt{8}
-  \item save\_output\_file() \dotfill \tt{8}
-  \item save\_regex() \dotfill \tt{46}
-  \item sbclose() \dotfill \tt{51}
-  \item sbflush() \dotfill \tt{51}
-  \item sbopen() \dotfill \tt{51}
-  \item sbputc() \dotfill \tt{51}
-  \item sbputchar() \dotfill \sf{50}
-  \item sbputs() \dotfill \tt{51}
-  \item sbrewind() \dotfill \tt{52}
-  \item sbseek() \dotfill \tt{52}
-  \item sbtell() \dotfill \tt{52}
-  \item search\_rsc() \dotfill \tt{47}
-  \item see\_bib() \dotfill \tt{35}
-  \item seen() \dotfill \tt{35}
-  \item set\_base() \dotfill \tt{27}
-  \item set\_field() \dotfill \tt{28}
-  \item set\_name\_format() \dotfill \tt{34}
-  \item set\_rsc() \dotfill \tt{47}
-  \item set\_rsc\_path() \dotfill \tt{35}
-  \item set\_separator() \dotfill \tt{28}
-  \item set\_symbol\_type() \dotfill \tt{37}
-  \item SetRecordDELETED() \dotfill \sf{40}
-  \item SetRecordMARK() \dotfill \sf{41}
-  \item SetRecordXREF() \dotfill \sf{40}
-  \item show\_version() \dotfill \tt{61}
-  \item sort\_record() \dotfill \tt{44}
-  \item sp\_open() \dotfill \tt{49}
-  \item sput\_record() \dotfill \tt{37}
-  \item sym\_add() \dotfill \tt{54}
-  \item sym\_dump() \dotfill \tt{54}
-  \item sym\_flag() \dotfill \tt{54}
-  \item sym\_set\_flag() \dotfill \tt{54}
-  \item sym\_unlink() \dotfill \tt{55}
-  \item symbol() \dotfill \sf{52}
-  \item symcrossref \dotfill \tt{53}
-  \item symempty \dotfill \tt{53}
+  \item s\_parse() \dotfill \tt{51}
+  \item save\_input\_file() \dotfill \tt{9}
+  \item save\_key() \dotfill \tt{35}
+  \item save\_macro\_file() \dotfill \tt{9}
+  \item save\_output\_file() \dotfill \tt{9}
+  \item save\_regex() \dotfill \tt{49}
+  \item sbclose() \dotfill \tt{54}
+  \item sbflush() \dotfill \tt{54}
+  \item sbopen() \dotfill \tt{55}
+  \item sbputc() \dotfill \tt{55}
+  \item sbputchar() \dotfill \sf{53}
+  \item sbputs() \dotfill \tt{55}
+  \item sbrewind() \dotfill \tt{55}
+  \item sbseek() \dotfill \tt{55}
+  \item sbtell() \dotfill \tt{55}
+  \item search\_rsc() \dotfill \tt{50}
+  \item see\_bib() \dotfill \tt{38}
+  \item seen() \dotfill \tt{38}
+  \item set\_base() \dotfill \tt{30}
+  \item set\_field() \dotfill \tt{31}
+  \item set\_name\_format() \dotfill \tt{37}
+  \item set\_regex\_syntax() \dotfill \tt{49}
+  \item set\_rsc() \dotfill \tt{51}
+  \item set\_rsc\_path() \dotfill \tt{38}
+  \item set\_separator() \dotfill \tt{31}
+  \item set\_symbol\_type() \dotfill \tt{40}
+  \item SetRecordDELETED() \dotfill \sf{43}
+  \item SetRecordMARK() \dotfill \sf{44}
+  \item SetRecordXREF() \dotfill \sf{43}
+  \item show\_version() \dotfill \tt{64}
+  \item sort\_record() \dotfill \tt{47}
+  \item sp\_open() \dotfill \tt{52}
+  \item sput\_record() \dotfill \tt{40}
+  \item start\_key\_gen() \dotfill \tt{31}
+  \item sym\_add() \dotfill \tt{57}
+  \item sym\_dump() \dotfill \tt{57}
+  \item sym\_flag() \dotfill \tt{58}
+  \item sym\_set\_flag() \dotfill \tt{58}
+  \item sym\_unlink() \dotfill \tt{58}
+  \item symbol() \dotfill \sf{56}
+  \item symcrossref \dotfill \tt{56}
+  \item symempty \dotfill \tt{56}
 
   \indexspace
 
-  \item TeX\_active() \dotfill \tt{56}
-  \item TeX\_close() \dotfill \tt{56}
-  \item TeX\_def() \dotfill \tt{57}
-  \item TeX\_define() \dotfill \tt{57}
-  \item TeX\_open\_file() \dotfill \tt{57}
-  \item TeX\_open\_string() \dotfill \tt{57}
-  \item TeX\_read() \dotfill \tt{57}
-  \item TeX\_reset() \dotfill \tt{57}
-  \item ThisWord() \dotfill \sf{61}
-  \item ToLower() \dotfill \sf{59}
-  \item ToUpper() \dotfill \sf{60}
-  \item transid \dotfill \tt{58}
-  \item translower \dotfill \tt{58}
-  \item transupper \dotfill \tt{58}
+  \item TeX\_active() \dotfill \tt{60}
+  \item TeX\_close() \dotfill \tt{60}
+  \item TeX\_def() \dotfill \tt{60}
+  \item TeX\_define() \dotfill \tt{60}
+  \item TeX\_open\_file() \dotfill \tt{60}
+  \item TeX\_open\_string() \dotfill \tt{61}
+  \item TeX\_read() \dotfill \tt{61}
+  \item TeX\_reset() \dotfill \tt{61}
+  \item ThisWord() \dotfill \sf{65}
+  \item ToLower() \dotfill \sf{63}
+  \item ToUpper() \dotfill \sf{63}
+  \item transid \dotfill \tt{62}
+  \item translower \dotfill \tt{61}
+  \item transupper \dotfill \tt{61}
 
   \indexspace
 
-  \item unlink\_record() \dotfill \tt{44}
-  \item use\_rsc() \dotfill \tt{47}
+  \item unlink\_record() \dotfill \tt{47}
+  \item use\_rsc() \dotfill \tt{51}
 
   \indexspace
 
-  \item VerbosePrint1() \dotfill \sf{20}
-  \item VerbosePrint2() \dotfill \sf{20}
-  \item VerbosePrint3() \dotfill \sf{20}
-  \item VerbosePrint4() \dotfill \sf{20}
+  \item VerbosePrint1() \dotfill \sf{23}
+  \item VerbosePrint2() \dotfill \sf{23}
+  \item VerbosePrint3() \dotfill \sf{23}
+  \item VerbosePrint4() \dotfill \sf{23}
 
   \indexspace
 
-  \item WARNING() \dotfill \sf{18}
-  \item WARNING2() \dotfill \sf{19}
-  \item WARNING3() \dotfill \sf{19}
-  \item WordNULL \dotfill \sf{61}
+  \item WARNING() \dotfill \sf{21}
+  \item WARNING2() \dotfill \sf{21}
+  \item WARNING3() \dotfill \sf{21}
+  \item WordNULL \dotfill \sf{65}
 
 \end{theindex}

@@ -1,6 +1,14 @@
 \begin{theindex}\footnotesize
 
+  \item ' \dotfill 17
+  \item ( \dotfill 17
+  \item ) \dotfill 17
+  \item * \dotfill 10
+  \item , \dotfill 17
   \item {\tt  --} \dotfill 8, 11, 18, 30
+  \item = \dotfill 17
+  \item \# \dotfill 10, 17
+  \item \% \dotfill 17
 
   \indexspace
 
@@ -38,6 +46,7 @@
 
   \indexspace
 
+  \item Emacs \dotfill 9
   \item \textsf  {empty} \dotfill 33, 34
   \item \textsf  {env.separator} \dotfill 19
   \item \textsf  {expand.macros} \dotfill 57, 58
@@ -96,10 +105,10 @@
 
   \indexspace
 
-  \item \%N \dotfill 8, 25, 37--38, 46
+  \item \%N \dotfill 8, 25, 37--38, 46, 48
   \item \%\#N \dotfill 42
   \item \%\#n \dotfill 42
-  \item \%n \dotfill 9, 37--38, 45
+  \item \%n \dotfill 9, 37--38, 45, 48
   \item \textsf  {name} \dotfill 17
   \item \textsf  {new.entry.type} \dotfill 21, 24
   \item \textsf  {new.field.type} \dotfill 23, 24
@@ -117,7 +126,7 @@
   \indexspace
 
   \item \%\#p \dotfill 41--42
-  \item \%p \dotfill 37
+  \item \%p \dotfill 37, 48
   \item \textsf  {pass.comments} \dotfill 21, 24, 55
   \item \textsf  {preserve.key.case} \dotfill 24, 25, 34, 36
   \item \textsf  {preserve.keys} \dotfill 33, 34, 36
@@ -152,6 +161,7 @@
 
   \item {\tt  -R} \dotfill 16, 18
   \item {\tt  -r} \dotfill 11, 15, 17, 18
+  \item regular expression \dotfill 9
   \item \textsf  {resource} \dotfill 17, 18
   \item \textsf  {resource.search.path} \dotfill 16, 18
   \item \textsf  {rewrite.case.sensitive} \dotfill 53, 55

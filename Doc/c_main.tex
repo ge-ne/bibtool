@@ -32,6 +32,22 @@ several years and it contains the full complexity of the
 drastically if you start playing around with the \BibTool{} C
 library. 
 
+\begin{Function}{static int \Mac{keep\_selected}}{keep\_selected}
+  \begin{Result}
+    
+  \end{Result}
+\end{Function}
+\begin{Function}{int \Fct{keep\_xref}}{keep\_xref}
+  \begin{Arguments}
+    DB \ 	&\Var{db};	&\\
+    Record \ 	&\Var{rec};	&
+  \end{Arguments}%
+  Undelete crossreferenced entries
+  
+  \begin{Result}
+    
+  \end{Result}
+\end{Function}
 \begin{Function}{int \Fct{main}}{main}
   \begin{Arguments}
     int \ 	&\Var{argc};	&Number of arguments\\
@@ -46,6 +62,16 @@ library.
     0 upon success. Usually a failure raises an exception
     which leads to an |exit()|. Thus this function does
     not need to signal an error to the calling environment.
+  \end{Result}
+\end{Function}
+\begin{Function}{static int \Mac{rec\_gt\_cased}}{rec\_gt\_cased}
+  \begin{Result}
+    
+  \end{Result}
+\end{Function}
+\begin{Function}{static int \Mac{rec\_lt\_cased}}{rec\_lt\_cased}
+  \begin{Result}
+    
   \end{Result}
 \end{Function}
 \begin{Function}{void \Fct{save\_input\_file}}{save\_input\_file}

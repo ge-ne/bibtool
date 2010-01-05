@@ -8,6 +8,10 @@
 \indexentry{K@{\tt  -K}}{9}
 \indexentry{n@\%n}{9}
 \indexentry{f@{\tt  -f}}{9}
+\indexentry{regular expression}{9}
+\indexentry{Emacs}{9}
+\indexentry{\#}{10}
+\indexentry{*}{10}
 \indexentry{x@{\tt  -x}}{10}
 \indexentry{x@{\tt  -x}}{10}
 \indexentry{o@{\tt  -o}}{10}
@@ -43,6 +47,15 @@
 \indexentry{name@\textsf  {name}}{17}
 \indexentry{name@\textsf  {name}}{17}
 \indexentry{name@\textsf  {name}}{17}
+\indexentry{\#}{17}
+\indexentry{"}{17}
+\indexentry{\%}{17}
+\indexentry{=}{17}
+\indexentry{,}{17}
+\indexentry{'}{17}
+\indexentry{\{}\index{\}}{17}
+\indexentry{(}{17}
+\indexentry{)}{17}
 \indexentry{on@\textsf  {on}}{17}
 \indexentry{off@\textsf  {off}}{17}
 \indexentry{on@\textsf  {on}}{17}
@@ -384,6 +397,9 @@
 \indexentry{tex.define@\textsf  {tex.define}}{47}
 \indexentry{tex.define@\textsf  {tex.define}}{48}
 \indexentry{tex.define@\textsf  {tex.define}}{48}
+\indexentry{p@\%p}{48}
+\indexentry{N@\%N}{48}
+\indexentry{n@\%n}{48}
 \indexentry{new.format.type@\textsf  {new.format.type}}{48}
 \indexentry{f@\%f}{48}
 \indexentry{v@\%v}{48}

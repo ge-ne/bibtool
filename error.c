@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: error.c,v 1.6 2010-01-05 14:06:06 gene Exp $
+** $Id: error.c,v 1.7 2010-01-05 23:00:00 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -48,14 +48,16 @@
 ** Function:	init_error()
 ** Type:	void
 ** Purpose:	
-**		
+**		Initialize the error reporting.
 ** Arguments:
+**	file	the output file to write error messages to
 **		
 ** Returns:	nothing
 **___________________________________________________			     */
 void init_error(file)				   /*                        */
   FILE * file;					   /*                        */
-{ err_file = file;
+{						   /*                        */
+  err_file = file;				   /*                        */
 }						   /*------------------------*/
 
 

@@ -116,19 +116,7 @@ This module contains functions which deal with databases.
 Databases are stored in an abstract datatype |DB| which is defined
 in |database.h|. Methods are provided to query and modify a database.
 
-\begin{Function}{void \Fct{db\_add\_record}}{add\_db\_record}
-  \begin{Arguments}
-    DB \ 	&\Var{db};	&Database to insert the record into.\\
-    Record \ 	&\Var{rec};	&Record to add to the database.
-  \end{Arguments}%
-  Add a record to a database.
-  The record can be any kind of record. It is added to the
-  appropriate category.
-  \begin{Result}
-    nothing
-  \end{Result}
-\end{Function}
-\begin{Function}{int *\Fct{db\_count}}{db\_count}
+\begin{Function}{int * \Fct{db\_count}}{db\_count}
   \begin{Arguments}
     DB \ 	&\Var{db};	&Database to count.\\
     int *\ 	&\Var{lp};	&pointer to an integer for the length.
@@ -153,7 +141,7 @@ in |database.h|. Methods are provided to query and modify a database.
 \begin{Function}{Record \Fct{db\_find}}{db\_find}
   \begin{Arguments}
     DB \ 	&\Var{db};	&Database to search in.\\
-    char *\ 	&\Var{key};	&
+    Uchar *\ 	&\Var{key};	&
   \end{Arguments}%
   Search the database for a record with a given key.
   If |RecordOldKey| is set for the record then use this value.
@@ -182,6 +170,18 @@ processing. It takes two arguments a |DB| and a |Record|.
     nothing
   \end{Result}
 \end{Function}
+\begin{Function}{void \Fct{db\_insert}}{db\_insert}
+  \begin{Arguments}
+    DB \ 	&\Var{db};	&Database to insert the record into.\\
+    Record \ 	&\Var{rec};	&Record to add to the database.
+  \end{Arguments}%
+  Add a record to a database.
+  The record can be any kind of record. It is added to the
+  appropriate category.
+  \begin{Result}
+    nothing
+  \end{Result}
+\end{Function}
 \begin{Function}{void \Fct{db\_mac\_sort}}{db\_mac\_sort}
   \begin{Arguments}
     DB \ 	&\Var{db};	&Database to sort.
@@ -195,10 +195,10 @@ processing. It takes two arguments a |DB| and a |Record|.
     nothing
   \end{Result}
 \end{Function}
-\begin{Function}{char * \Fct{db\_new\_key}}{db\_new\_key}
+\begin{Function}{Uchar * \Fct{db\_new\_key}}{db\_new\_key}
   \begin{Arguments}
     DB \ 	&\Var{db};	&Database to search in.\\
-    char *\ 	&\Var{key};	&Key to find.
+    Uchar *\ 	&\Var{key};	&Key to find.
   \end{Arguments}%
   Search the database for a record with a given old key and
   return the new one.
@@ -213,6 +213,23 @@ processing. It takes two arguments a |DB| and a |Record|.
   Rewind the normal records of a database to point to the first
   record if at least one records exists. Otherwise nothing is
   done.
+  \begin{Result}
+    nothing
+  \end{Result}
+\end{Function}
+\begin{Function}{Record \Fct{db\_search}}{db\_search}
+  \begin{Arguments}
+    DB \ 	&\Var{db};	&Database to search in.\\
+    Uchar *\ 	&\Var{key};	&
+  \end{Arguments}%
+  Search the database for a record with a given key.
+  If |RecordOldKey| is set for the record then use this value.
+  Otherwise use |*Heap|. |*Heap| contains the reference
+  key of normal records.
+  
+  Deleted records are not ignored! An arbitrary matching
+  record is returned. Thus if more than one record have
+  the same key then the behaviour is nondeterministic. 
   \begin{Result}
     nothing
   \end{Result}
@@ -232,10 +249,10 @@ is less than the second one.
     nothing
   \end{Result}
 \end{Function}
-\begin{Function}{char * \Fct{db\_string}}{db\_string}
+\begin{Function}{Uchar * \Fct{db\_string}}{db\_string}
   \begin{Arguments}
     DB \ 	&\Var{db};	&Database\\
-    char *\ 	&\Var{s};	&Name of the \BibTeX{} macro to expand.\\
+    Uchar *\ 	&\Var{s};	&Name of the \BibTeX{} macro to expand.\\
     int \ 	&\Var{localp};	&Boolean determining whether the search is only local to the db.
   \end{Arguments}%
   Try to find the definition of a macro.
@@ -244,6 +261,18 @@ is less than the second one.
   is searched aswell. If all fails |NULL| is returned.
   \begin{Result}
     The macro expansion or |NULL| upon failure.
+  \end{Result}
+\end{Function}
+\begin{Function}{void \Fct{db\_xref\_undelete}}{db\_xref\_undelete}
+  \begin{Arguments}
+    DB \ 	&\Var{db};	&Database to treat
+  \end{Arguments}%
+  Scan through the database and undelete all entries
+  which are in the transitive closure wrt the crossref
+  relation. Initially all not deleted entries are in the
+  set to consider.
+  \begin{Result}
+    nothing
   \end{Result}
 \end{Function}
 \begin{Function}{void \Fct{delete\_record}}{delete\_record}
@@ -311,11 +340,20 @@ is less than the second one.
     nothing
   \end{Result}
 \end{Function}
+\begin{Function}{static void \Mac{print\_segment}}{print\_segment}
+  \begin{Result}
+    nothing
+  \end{Result}
+\end{Function}
+\begin{Function}{static void \Mac{print\_strings}}{print\_strings}
+  \begin{Result}
+    nothing
+  \end{Result}
+\end{Function}
 \begin{Function}{int \Fct{read\_db}}{read\_db}
   \begin{Arguments}
     DB \ 	&\Var{db};	&Database to augment.\\
     char *\ 	&\Var{file};	&File name to read from.\\
-    int (*\ 	&\Var{fct})(DB,Record); 	&Function to determine whether to store a given record.\\
     int \ 	&\Var{verbose};	&Boolean to determine whether progress should be reported.
   \end{Arguments}%
   Read records from a file and add them to a database.
@@ -341,14 +379,14 @@ of this file for details.
 
 This header file automatically includes |symbols.h|.
 
-\begin{Variable}{char ** \Mac{entry\_type}}{entrytype}
+\begin{Variable}{Uchar ** \Mac{entry\_type}}{entrytype}
   This is an array of strings which represent entry
   types. They are either built-in or user defined. Use
   the function |def_entry_type()| to allocate a new
   entry type and the function |get_entry_type()| to find
   a certain entry type.
 \end{Variable}
-\begin{Macro}{char * \Mac{EntryName}}{EntryName}
+\begin{Macro}{Uchar * \Mac{EntryName}}{EntryName}
   \begin{Arguments}
     & \Var{Entry} & Index of the entry.\\
   \end{Arguments}%
@@ -447,7 +485,7 @@ additional record types.
 Part of this module is likely to be integrated into databases.
 \begin{Function}{void \Fct{def\_entry\_type}}{def\_entry\_type}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&String containing the name of the entry.
+    Uchar *\ 	&\Var{s};	&String containing the name of the entry.
   \end{Arguments}%
   Dynamically define an entry type. If the entry type
   already exists then a new printing representation is
@@ -461,14 +499,14 @@ Part of this module is likely to be integrated into databases.
 \end{Function}
 \begin{Function}{int \Fct{find\_entry\_type}}{find\_entry\_type}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&String of the potential entry name.
+    Uchar *\ 	&\Var{s};	&String of the potential entry name.
   \end{Arguments}%
   Look up an entry type in the array of defined entries.
   \begin{Result}
     The index in the array or |NOOP|.
   \end{Result}
 \end{Function}
-\begin{Function}{char * \Fct{get\_entry\_type}}{get\_entry\_type}
+\begin{Function}{Uchar * \Fct{get\_entry\_type}}{get\_entry\_type}
   \begin{Arguments}
     int \ 	&\Var{idx};	&Index of entry type.
   \end{Arguments}%
@@ -686,6 +724,20 @@ defined in |error.c|.
     nothing
   \end{Result}
 \end{Macro}
+\begin{Macro}{void \Mac{ErrPrintF3}}{ErrPrintF3}
+  \begin{Arguments}
+    & \Var{F} & Format\\
+    & \Var{A} & First argument.\\
+    & \Var{B} & Second argument.\\
+    & \Var{C} & Third argument.\\
+  \end{Arguments}%
+  Apply a formatting instruction (with |printf()|). This
+  macro takes a format string and three additional arguments
+  which are determined by the formatting string.
+  \begin{Result}
+    nothing
+  \end{Result}
+\end{Macro}
 \begin{Constant}{void \Mac{FlushErr}}{FlushErr}
   Flush the error stream. This can be useful when single
   characters are written to an error stream which does
@@ -844,6 +896,17 @@ defined in |error.h|. \\
     nothing
   \end{Result}
 \end{Function}
+\begin{Function}{void \Fct{init\_error}}{init\_error}
+  \begin{Arguments}
+    FILE * \ 	&\Var{file};	&the output file to write error messages to
+
+  \end{Arguments}%
+  
+  Initialize the error reporting.
+  \begin{Result}
+    nothing
+  \end{Result}
+\end{Function}
 
 \Header{bibtool/expand.h}{bibtoolexpand.h}
 
@@ -856,9 +919,9 @@ This module contains functions to expand macros as they are
 appearing in right hand sides of equations. This can be used
 to get rid of additional macro definitions.
 
-\begin{Function}{char * \Fct{expand\_rhs}}{expand\_rhs}
+\begin{Function}{Uchar * \Fct{expand\_rhs}}{expand\_rhs}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&String to expand\\
+    Uchar *\ 	&\Var{s};	&String to expand\\
     char *\ 	&\Var{pre};	&This is the opening brace character to be used. For
 \BibTeX{} the valid values are |{| or |"|. This value
 has to match to |post|.\\
@@ -919,9 +982,9 @@ should not be visible outside.
     short int	  \ 	&\Member{kn\_type};	& \\
     short int      \ 	&\Member{kn\_pre};	& \\
     short int      \ 	&\Member{kn\_post};	& \\
-    char           *\ 	&\Member{kn\_string};	& \\
-    char           *\ 	&\Member{kn\_from};	& \\
-    char		  *\ 	&\Member{kn\_to};	& \\
+    Uchar	  *\ 	&\Member{kn\_string};	& \\
+    Uchar	  *\ 	&\Member{kn\_from};	& \\
+    Uchar	  *\ 	&\Member{kn\_to};	& \\
     struct kEYnODE *\ 	&\Member{kn\_next};	& \\
     struct kEYnODE *\ 	&\Member{kn\_then};	& \\
     struct kEYnODE *\ 	&\Member{kn\_else};	& 
@@ -976,7 +1039,7 @@ required.
 \end{Function}
 \begin{Function}{void \Fct{add\_ignored\_word}}{add\_ignored\_word}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&Word to add.
+    Uchar *\ 	&\Var{s};	&Word to add.
   \end{Arguments}%
   Add a new word to the list of ignored words for title
   key generation.
@@ -1051,10 +1114,16 @@ required.
     nothing
   \end{Result}
 \end{Function}
-\begin{Function}{char* \Fct{fmt\_expand}}{fmt\_expand}
+\begin{Function}{void \Fct{end\_key\_gen}}{end\_key\_gen}  Finalize the key generation.
+  Any previously recorded keys are discarded.
+  \begin{Result}
+    nothing
+  \end{Result}
+\end{Function}
+\begin{Function}{Uchar* \Fct{fmt\_expand}}{fmt\_expand}
   \begin{Arguments}
     StringBuffer *\ 	&\Var{sb};	&destination string buffer\\
-    char *\ 	&\Var{cp};	&format\\
+    Uchar *\ 	&\Var{cp};	&format\\
     DB \ 	&\Var{db};	&Datrabase containing |rec|.\\
     Record \ 	&\Var{rec};	&Record to consider.
   \end{Arguments}%
@@ -1067,7 +1136,7 @@ required.
 \end{Function}
 \begin{Function}{int \Fct{foreach\_ignored\_word}}{foreach\_ignored\_word}
   \begin{Arguments}
-    int (*\ 	&\Var{fct})(char*); 	&Function to apply.
+    int (*\ 	&\Var{fct})(Uchar*); 	&Function to apply.
   \end{Arguments}%
   Iterator a given function |fct| is applied to each
   ignored word in turn. If the function returns 0 then
@@ -1089,11 +1158,11 @@ required.
     nothing
   \end{Result}
 \end{Function}
-\begin{Function}{char *\Fct{get\_field}}{get\_field}
+\begin{Function}{Uchar *\Fct{get\_field}}{get\_field}
   \begin{Arguments}
     DB \ 	&\Var{db};	&Datrabase containing |rec|.\\
     Record \ 	&\Var{rec};	&Record to analyze.\\
-    char *\ 	&\Var{name};	&Field name to search for. This has to be a symbol if a
+    Uchar *\ 	&\Var{name};	&Field name to search for. This has to be a symbol if a
 normal field is sought. For pseudo fields it can be an
 arbitrary string.
   \end{Arguments}%
@@ -1139,7 +1208,7 @@ arbitrary string.
 \end{Function}
 \begin{Function}{void \Fct{set\_base}}{set\_base}
   \begin{Arguments}
-    char *\ 	&\Var{value};	&String representation of the new value.
+    Uchar *\ 	&\Var{value};	&String representation of the new value.
   \end{Arguments}%
   Define the key base. This value determines the format
   of the disambiguation string added to a key if
@@ -1168,8 +1237,8 @@ arbitrary string.
   \begin{Arguments}
     DB \ 	&\Var{db};	&Datrabase containing |rec|.\\
     Record \ 	&\Var{rec};	&Record to receive the value.\\
-    char *\ 	&\Var{name};	&Field name to add.\\
-    char *\ 	&\Var{value};	&String representation of the new value.
+    Uchar *\ 	&\Var{name};	&Field name to add.\\
+    Uchar *\ 	&\Var{value};	&String representation of the new value.
   \end{Arguments}%
   Store the given field or pseudo-field in a record.
   If the field is present then the old value is
@@ -1189,12 +1258,12 @@ arbitrary string.
 \begin{Function}{void \Fct{set\_separator}}{set\_separator}
   \begin{Arguments}
     int \ 	&\Var{n};	&Array index to modify.\\
-    char *\ 	&\Var{s};	&New value for the given separator. The new value is
+    Uchar *\ 	&\Var{s};	&New value for the given separator. The new value is
 stored as a symbol. Thus the memory of |s| need not to
 be preserved after this function is completed.
 The characters which are not allowed are silently sypressed.
   \end{Arguments}%
-  Modify the key\_seps array. This array contains the
+  Modify the |key\_seps| array. This array contains the
   different separators used during key formatting. The
   elements of the array have the following meaning:
   \begin{description}
@@ -1219,6 +1288,12 @@ The characters which are not allowed are silently sypressed.
     nothing
   \end{Result}
 \end{Function}
+\begin{Function}{void \Fct{start\_key\_gen}}{start\_key\_gen}  Start the key generation.
+  Any recorded keys are discarded.
+  \begin{Result}
+    nothing
+  \end{Result}
+\end{Function}
 
 \Header{bibtool/macros.h}{bibtoolmacros.h}
 
@@ -1233,8 +1308,8 @@ structure itself is used in the allocation function only.
   string to another string.  This mapping is accompanied
   by a counter which can be used as a reference count.
   \STRUCT{mACRO}
-    char		*\ 	&\Member{mc\_name};	& Name of the macro.     \\
-    char		*\ 	&\Member{mc\_value};	& Value of the macro.    \\
+    Uchar	*\ 	&\Member{mc\_name};	& Name of the macro.     \\
+    Uchar	*\ 	&\Member{mc\_value};	& Value of the macro.    \\
     int		\ 	&\Member{mc\_used};	& Reference count.	     \\
     struct mACRO *\ 	&\Member{mc\_next};	& Pointer the next macro.
   \EndSTRUCT{\Type{SMacro}, \Type{*Macro}}
@@ -1243,7 +1318,7 @@ structure itself is used in the allocation function only.
   This is the |NULL| pointer for the |Macro| type. It
   can be used as a special or illlegal macro.
 \end{Constant}
-\begin{Macro}{char * \Mac{MacroName}}{MacroName}
+\begin{Macro}{Uchar * \Mac{MacroName}}{MacroName}
   \begin{Arguments}
     & \Var{M} & |Macro| to consider\\
   \end{Arguments}%
@@ -1251,7 +1326,7 @@ structure itself is used in the allocation function only.
   component of a |Macro|. It can be used to extract this
   information. It can also be used as a lvalue.
 \end{Macro}
-\begin{Macro}{char * \Mac{MacroValue}}{MacroValue}
+\begin{Macro}{Uchar * \Mac{MacroValue}}{MacroValue}
   \begin{Arguments}
     & \Var{M} & |Macro| to consider\\
   \end{Arguments}%
@@ -1280,7 +1355,7 @@ structure itself is used in the allocation function only.
 
 \begin{Function}{void \Fct{def\_field\_type}}{def\_field\_type}
   \begin{Arguments}
-    char * \ 	&\Var{s};	&String containing an equation.	
+    Uchar * \ 	&\Var{s};	&String containing an equation.	
   \end{Arguments}%
   This function adds a printing representation for a
   field name to the used list. The argument is an
@@ -1297,8 +1372,8 @@ structure itself is used in the allocation function only.
 \end{Function}
 \begin{Function}{int \Fct{def\_macro}}{def\_macro}
   \begin{Arguments}
-    char *\ 	&\Var{name};	&name of the macro.\\
-    char *\ 	&\Var{val};	&NULL or the value of the new macro\\
+    Uchar *\ 	&\Var{name};	&name of the macro.\\
+    Uchar *\ 	&\Var{val};	&NULL or the value of the new macro\\
     int \ 	&\Var{count};	&initial count for the macro.
   \end{Arguments}%
   Define or undefine a macro.
@@ -1318,7 +1393,7 @@ structure itself is used in the allocation function only.
 \end{Function}
 \begin{Function}{void \Fct{foreach\_macro}}{foreach\_macro}
   \begin{Arguments}
-    int (*fct) (char *,char *);
+    int (*fct) (Uchar *,Uchar *);
   \end{Arguments}%
   Apply a function to each macro in turn. The function
   is called with the name and the value of the macro. If
@@ -1348,9 +1423,9 @@ structure itself is used in the allocation function only.
     nothing
   \end{Result}
 \end{Function}
-\begin{Function}{char * \Fct{get\_item}}{get\_item}
+\begin{Function}{Uchar * \Fct{get\_item}}{get\_item}
   \begin{Arguments}
-    char * \ 	&\Var{name};	&Symbol to get the print representation for.\\
+    Uchar *\ 	&\Var{name};	&Symbol to get the print representation for.\\
     int \ 	&\Var{type};	&One of the values |SYMBOL\_TYPE\_UPPER|, |SYMBOL\_TYPE\_LOWER|, or
 |SYMBOL\_TYPE\_CASED| as they are defined in |type.h|.
   \end{Arguments}%
@@ -1364,11 +1439,10 @@ structure itself is used in the allocation function only.
     upon the next invocation of this function.
   \end{Result}
 \end{Function}
-\begin{Function}{char * \Fct{get\_key\_name}}{get\_key\_name}
+\begin{Function}{Uchar * \Fct{get\_key\_name}}{get\_key\_name}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&
+    Uchar *\ 	&\Var{name};	&the name of the key to find
   \end{Arguments}%
-  
   
   
   \begin{Result}
@@ -1387,9 +1461,9 @@ structure itself is used in the allocation function only.
     nothing
   \end{Result}
 \end{Function}
-\begin{Function}{char * \Fct{look\_macro}}{look\_macro}
+\begin{Function}{Uchar * \Fct{look\_macro}}{look\_macro}
   \begin{Arguments}
-    char *\ 	&\Var{name};	&The name of the macros to find. This needs not to be a symbol.\\
+    Uchar *\ 	&\Var{name};	&The name of the macros to find. This needs not to be a symbol.\\
     int \ 	&\Var{add};	&Initial reference count or indicator that no new macro
 is required.
   \end{Arguments}%
@@ -1407,8 +1481,8 @@ is required.
 \end{Function}
 \begin{Function}{Macro \Fct{new\_macro}}{new\_macro}
   \begin{Arguments}
-    char *\ 	&\Var{name};	&Name of the macro. This must be a symbol.\\
-    char *\ 	&\Var{val};	&The value of the macro. This must be a symbol.\\
+    Uchar *\ 	&\Var{name};	&Name of the macro. This must be a symbol.\\
+    Uchar *\ 	&\Var{val};	&The value of the macro. This must be a symbol.\\
     int \ 	&\Var{count};	&The initial reference count.\\
     Macro \ 	&\Var{next};	&The next pointer of the |Macro| structure.
   \end{Arguments}%
@@ -1420,10 +1494,9 @@ is required.
 \end{Function}
 \begin{Function}{void \Fct{save\_key}}{save\_key}
   \begin{Arguments}
-    char * \ 	&\Var{s};	&\\
-    char * \ 	&\Var{key};	&
+    char * \ 	&\Var{name};	&the name of the key\\
+    char * \ 	&\Var{key};	&the key
   \end{Arguments}%
-  
   
   
   \begin{Result}
@@ -1441,9 +1514,10 @@ is required.
   \STRUCT{nameNODE}
     int		   \ 	&\Member{nn\_type};	& \\
     int		   \ 	&\Member{nn\_strip};	& \\
-    char		   *\ 	&\Member{nn\_pre};	& \\
-    char		   *\ 	&\Member{nn\_mid};	& \\
-    char		   *\ 	&\Member{nn\_post};	& \\
+    int		   \ 	&\Member{nn\_trim};	& \\
+    Uchar	   *\ 	&\Member{nn\_pre};	& \\
+    Uchar	   *\ 	&\Member{nn\_mid};	& \\
+    Uchar	   *\ 	&\Member{nn\_post};	& \\
     struct nameNODE *\ 	&\Member{nn\_next};	& Pointer to the next    
 			name node             
   \EndSTRUCT{\Type{SNameNode}, \Type{*NameNode}}
@@ -1475,7 +1549,7 @@ is required.
     
   \end{Result}
 \end{Macro}
-\begin{Macro}{char* \Mac{NamePre}}{NamePre}
+\begin{Macro}{int \Mac{NameTrim}}{NameTrim}
   \begin{Arguments}
     & \Var{NN} & \\
   \end{Arguments}%
@@ -1486,7 +1560,7 @@ is required.
     
   \end{Result}
 \end{Macro}
-\begin{Macro}{char* \Mac{NameMid}}{NameMid}
+\begin{Macro}{Uchar* \Mac{NamePre}}{NamePre}
   \begin{Arguments}
     & \Var{NN} & \\
   \end{Arguments}%
@@ -1497,7 +1571,18 @@ is required.
     
   \end{Result}
 \end{Macro}
-\begin{Macro}{char* \Mac{NamePost}}{NamePost}
+\begin{Macro}{Uchar* \Mac{NameMid}}{NameMid}
+  \begin{Arguments}
+    & \Var{NN} & \\
+  \end{Arguments}%
+  
+  
+  
+  \begin{Result}
+    
+  \end{Result}
+\end{Macro}
+\begin{Macro}{Uchar* \Mac{NamePost}}{NamePost}
   \begin{Arguments}
     & \Var{NN} & \\
   \end{Arguments}%
@@ -1523,7 +1608,7 @@ is required.
 
 \begin{Function}{NameNode \Fct{name\_format}}{name\_format}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&
+    Uchar *\ 	&\Var{s};	&
   \end{Arguments}%
   
   
@@ -1532,7 +1617,7 @@ is required.
     
   \end{Result}
 \end{Function}
-\begin{Function}{char * \Fct{pp\_list\_of\_names}}{pp\_list\_of\_names}
+\begin{Function}{Uchar * \Fct{pp\_list\_of\_names}}{pp\_list\_of\_names}
   \begin{Arguments}
     char **\ 	&\Var{wa};	&Word array of name constituents\\
     NameNode \ 	&\Var{format};	&\\
@@ -1692,7 +1777,7 @@ of this file for details.
     FILE *\ 	&\Var{file};	&Stream to print onto.\\
     DB \ 	&\Var{db};	&Database containing the record.\\
     Record \ 	&\Var{rec};	&Record to print.\\
-    char *\ 	&\Var{start};	&Initial string used before the type. Should be "@" normally.
+    Uchar *\ 	&\Var{start};	&Initial string used before the type. Should be "@" normally.
   \end{Arguments}%
   Format and print a complete record onto a given stream.
   for further details see |put_record()|.
@@ -1705,7 +1790,7 @@ of this file for details.
     int (*\ 	&\Var{fct})(int); 	&function to use for writing a character.\\
     Record \ 	&\Var{rec};	&Record to print.\\
     DB \ 	&\Var{db};	&Database containing the record.\\
-    char *\ 	&\Var{start};	&Initial string used before the type. Should be "@" normally.
+    Uchar *\ 	&\Var{start};	&Initial string used before the type. Should be "@" normally.
   \end{Arguments}%
   Format and print a complete record.
   The record type and several resources are taken into
@@ -1776,7 +1861,7 @@ of this file for details.
   \begin{Arguments}
     DB \ 	&\Var{db};	&Database containing the record.\\
     Record \ 	&\Var{rec};	&Record to print.\\
-    char *\ 	&\Var{start};	&Initial string used before the type. Should be "@" normally.
+    Uchar *\ 	&\Var{start};	&Initial string used before the type. Should be "@" normally.
   \end{Arguments}%
   Format and print a complete record into a string and return it.
   The string returned points to static memory which is
@@ -1815,6 +1900,11 @@ it from a string specification.
   private copy immediately after the call to the
   function |px_fopen()|.
 \end{Variable}
+\begin{Function}{static char * \Mac{expand\_env}}{expand\_env}
+  \begin{Result}
+    
+  \end{Result}
+\end{Function}
 \begin{Function}{FILE * \Fct{px\_fopen}}{px\_fopen}
   \begin{Arguments}
     char * \ 	&\Var{name};	&(base) name of the file to open.\\
@@ -1830,10 +1920,10 @@ it from a string specification.
     A file pointer refering to the file or |NULL|.
   \end{Result}
 \end{Function}
-\begin{Function}{char **\Fct{px\_s2p}}{px\_s2p}
+\begin{Function}{char ** \Fct{px\_s2p}}{px\_s2p}
   \begin{Arguments}
-    char * \ 	&\Var{s};	&\\
-    int \ 	&\Var{sep};	&
+    char * \ 	&\Var{s};	&String to analyze\\
+    int \ 	&\Var{sep};	&Separator
   \end{Arguments}%
   Translate a path string specification into an array of the 
   components.
@@ -1866,19 +1956,19 @@ This module contains functions which deal with records in databases.
   |rc_type|. 
   
   \STRUCT{rECORD}
-    char	  * \ 	&\Member{rc\_key};	& The sort key.             \\
-    char	  * \ 	&\Member{rc\_old\_key};	& The old sort key.         \\
-    int		    \ 	&\Member{rc\_type};	& The type of the record.   \\
-    int		    \ 	&\Member{rc\_flags};	& Some bits; e.g. used      
+    Uchar	  * \ 	&\Member{rc\_key};	& The sort key.             \\
+    Uchar	  * \ 	&\Member{rc\_old\_key};	& The old sort key.         \\
+    int		  \ 	&\Member{rc\_type};	& The type of the record.   \\
+    int		  \ 	&\Member{rc\_flags};	& Some bits; e.g. used      
 			during selecting aux     
 			records.                 \\
-    int		    \ 	&\Member{rc\_free};	& The size of the heap. This
+    int		  \ 	&\Member{rc\_free};	& The size of the heap. This
 			is purely internal and   
 			must not be modified.    \\
-    char	  **\ 	&\Member{rc\_heap};	& The heap.                 \\
-    char          * \ 	&\Member{rc\_comment};	& The comment following     
+    Uchar	  **\ 	&\Member{rc\_heap};	& The heap.                 \\
+    Uchar	  * \ 	&\Member{rc\_comment};	& The comment following     
 			the given record.        \\
-    char	  * \ 	&\Member{rc\_source};	& The source of the record. 
+    Uchar	  * \ 	&\Member{rc\_source};	& The source of the record. 
 			I.e. the file name it    
 			has been read from.      \\
     struct rECORD * \ 	&\Member{rc\_next};	& Pointer to the next       
@@ -2039,7 +2129,7 @@ This module contains functions which deal with records in databases.
     |FALSE| iff the |DELETED| flag is not set.
   \end{Result}
 \end{Macro}
-\begin{Macro}{char * \Mac{RecordOldKey}}{RecordOldKey}
+\begin{Macro}{Uchar * \Mac{RecordOldKey}}{RecordOldKey}
   \begin{Arguments}
     & \Var{R} & Record to consider\\
   \end{Arguments}%
@@ -2047,7 +2137,7 @@ This module contains functions which deal with records in databases.
   
   
 \end{Macro}
-\begin{Macro}{char * \Mac{RecordSortkey}}{RecordSortkey}
+\begin{Macro}{Uchar * \Mac{RecordSortkey}}{RecordSortkey}
   \begin{Arguments}
     & \Var{R} & Record to consider.\\
   \end{Arguments}%
@@ -2058,7 +2148,7 @@ This module contains functions which deal with records in databases.
   Note that the reference key of a normal record is
   stored in the heap at position 0.
 \end{Macro}
-\begin{Macro}{char ** \Mac{RecordHeap}}{RecordHeap}
+\begin{Macro}{Uchar ** \Mac{RecordHeap}}{RecordHeap}
   \begin{Arguments}
     & \Var{R} & Record to consider.\\
   \end{Arguments}%
@@ -2085,7 +2175,7 @@ This module contains functions which deal with records in databases.
   record of a record. It can be used to get this value
   as well as an lvalue to set it.
 \end{Macro}
-\begin{Macro}{char * \Mac{RecordComment}}{RecordComment}
+\begin{Macro}{Uchar * \Mac{RecordComment}}{RecordComment}
   \begin{Arguments}
     & \Var{R} & Record to consider\\
   \end{Arguments}%
@@ -2093,7 +2183,7 @@ This module contains functions which deal with records in databases.
   component of a record. It can be used to get this value
   as well as an lvalue to set it.
 \end{Macro}
-\begin{Macro}{char * \Mac{RecordSource}}{RecordSource}
+\begin{Macro}{Uchar * \Mac{RecordSource}}{RecordSource}
   \begin{Arguments}
     & \Var{R} & Record to consider\\
   \end{Arguments}%
@@ -2122,7 +2212,7 @@ This module contains functions which deal with records in databases.
 
 \begin{Function}{void \Fct{add\_sort\_order}}{add\_sort\_order}
   \begin{Arguments}
-    char *\ 	&\Var{val};	&string resource of the order.
+    Uchar *\ 	&\Var{val};	&string resource of the order.
   \end{Arguments}%
   Insert the sort order into the order list.
   
@@ -2177,23 +2267,40 @@ This module contains functions which deal with records in databases.
 \end{Function}
 \begin{Function}{WordList \Fct{new\_wordlist}}{new\_wordlist}
   \begin{Arguments}
-    char * \ 	&\Var{s};	&Initial string to fill in the WordList structure
+    Uchar * \ 	&\Var{s};	&Initial string to fill in the WordList structure
   \end{Arguments}%
   Allocate a WordList and fill its slots.
   \begin{Result}
     
   \end{Result}
 \end{Function}
+\begin{Function}{void \Fct{provide\_to\_record}}{provide\_to\_record}
+  \begin{Arguments}
+    Record \ 	&\Var{rec};	&Pointer to any entry in the chain.\\
+    Uchar *\ 	&\Var{s};	&Left hand side of the equation.\\
+    Uchar *\ 	&\Var{t};	&Right hand side of the equation.
+  \end{Arguments}%
+  Put an equation s=t onto the heap of a record if the key s
+  is not defined already.
+  If a field s is already there then the value is
+  ignored.  The arguments are expected to be
+  symbols. Thus it is not necessary to make private
+  copies and it is possible to avoid expensive string
+  comparisons. 
+  \begin{Result}
+    nothing
+  \end{Result}
+\end{Function}
 \begin{Function}{void \Fct{push\_to\_record}}{push\_to\_record}
   \begin{Arguments}
     Record \ 	&\Var{rec};	&Pointer to any entry in the chain.\\
-    char *\ 	&\Var{s};	&Left hand side of the equation.\\
-    char *\ 	&\Var{t};	&Right hand side of the equation.
+    Uchar *\ 	&\Var{s};	&Left hand side of the equation.\\
+    Uchar *\ 	&\Var{t};	&Right hand side of the equation.
   \end{Arguments}%
   Put an equation s=t onto the heap of a record.
   If a field s is already there then the value is
   overwritten.  The arguments are expected to be
-  synbols. Thus it is not necessary to make private
+  symbols. Thus it is not necessary to make private
   copies and it is possible to avoid expensive string
   comparisons. 
   \begin{Result}
@@ -2206,7 +2313,7 @@ This module contains functions which deal with records in databases.
   \end{Arguments}%
   Garbage collecting a record list. The entries marked
   as deleted are unlinked and the memory is freed. Any
-  pointers to such a deleted entry become invalid.
+  pointer to such a deleted entry becomes invalid.
   
   Be careful when using this function!
   \begin{Result}
@@ -2250,7 +2357,7 @@ This module contains functions which deal with records in databases.
 
 \begin{Function}{void \Fct{add\_check\_rule}}{add\_check\_rule}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&Rule to save.
+    Uchar *\ 	&\Var{s};	&Rule to save.
   \end{Arguments}%
   Save a check rule for later use.
   \begin{Result}
@@ -2259,7 +2366,12 @@ This module contains functions which deal with records in databases.
 \end{Function}
 \begin{Function}{void \Fct{add\_extract}}{add\_extract}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&Rule to save.
+    Uchar *\ 	&\Var{s};	&Rule to save.\\
+    int \ 	&\Var{regexp};	&Boolean value indicating whether regular expressions
+should be used. If not set then plain string matching
+is performed. \\
+    int \ 	&\Var{notp};	&Boolean value indicating whether the result should be
+negated. 
   \end{Arguments}%
   Save an extraction rule for later use. The argument is
   interpreted as regular expression to be matched
@@ -2274,7 +2386,7 @@ This module contains functions which deal with records in databases.
 \end{Function}
 \begin{Function}{void \Fct{add\_field}}{add\_field}
   \begin{Arguments}
-    char *\ 	&\Var{spec};	&A string of the form
+    Uchar *\ 	&\Var{spec};	&A string of the form
   token=value
   \end{Arguments}%
   Save a token and value for addition.
@@ -2284,23 +2396,10 @@ This module contains functions which deal with records in databases.
 \end{Function}
 \begin{Function}{void \Fct{add\_rewrite\_rule}}{add\_rewrite\_rule}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&Rule to save.
+    Uchar *\ 	&\Var{s};	&Rule to save.
   \end{Arguments}%
   Save a rewrite rule for later use.
   The main task is performed by |add_rule()|.
-  \begin{Result}
-    nothing
-  \end{Result}
-\end{Function}
-\begin{Function}{void \Fct{add\_s\_extract}}{add\_s\_extract}
-  \begin{Arguments}
-    char *\ 	&\Var{s};	&Rule to save.
-  \end{Arguments}%
-  Save an extraction rule for later use. The argument is
-  interpreted as string to be found in the field value.
-  The value of |rsc_case_select| at the search time
-  determines whether the matching is performed case
-  sensitive or not.
   \begin{Result}
     nothing
   \end{Result}
@@ -2326,7 +2425,7 @@ This module contains functions which deal with records in databases.
 \end{Function}
 \begin{Function}{void \Fct{remove\_field}}{remove\_field}
   \begin{Arguments}
-    char *\ 	&\Var{field};	&This is a symbol containing the name of the field to remove.\\
+    Uchar *\ 	&\Var{field};	&This is a symbol containing the name of the field to remove.\\
     Record \ 	&\Var{rec};	&Record in which the field should be removed.
   \end{Arguments}%
   Remove the given field from record.
@@ -2347,11 +2446,21 @@ This module contains functions which deal with records in databases.
 \end{Function}
 \begin{Function}{void \Fct{save\_regex}}{save\_regex}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&Regular expression to search for.
+    Uchar *\ 	&\Var{s};	&Regular expression to search for.
   \end{Arguments}%
   Save an extraction rule for later use.
   Only the regular expression of the rule is given as argument.
   The fields are taken from the resource select.fields.
+  \begin{Result}
+    nothing
+  \end{Result}
+\end{Function}
+\begin{Function}{int \Fct{set\_regex\_syntax}}{set\_regex\_syntax}
+  \begin{Arguments}
+    char* \ 	&\Var{name};	&
+  \end{Arguments}%
+  experimental
+  
   \begin{Result}
     nothing
   \end{Result}
@@ -2370,8 +2479,8 @@ file. Another task is the execution of the commands associated
 with a command name.
 
 This is one place where the power and the beauty of the C
-preprocessor make live easy. It should also be fun to find the
-three ways in which this file is used. Read the sources and
+preprocessor makes live easy. It should also be fun to figure out
+the three ways in which this file is used.  Read the sources and
 enjoy it! 
 
 For the normal user this file is consulted automatically when
@@ -2408,6 +2517,16 @@ for \BibTeX{} files. See the user's guide for details of the syntax.
   in |parse.c| since it shares subroutines with the parser.
   \begin{Result}
     |FALSE| iff the reading failed.
+  \end{Result}
+\end{Function}
+\begin{Function}{int \Fct{resource}}{resource}
+  \begin{Arguments}
+    char *\ 	&\Var{name};	&
+  \end{Arguments}%
+  
+  
+  \begin{Result}
+    
   \end{Result}
 \end{Function}
 \begin{Function}{void \Fct{rsc\_print}}{rsc\_print}
@@ -2447,8 +2566,8 @@ for \BibTeX{} files. See the user's guide for details of the syntax.
 \end{Function}
 \begin{Function}{int \Fct{set\_rsc}}{set\_rsc}
   \begin{Arguments}
-    char * \ 	&\Var{name};	&Name of the resource to set.\\
-    char * \ 	&\Var{val};	&The new value of the resource.
+    Uchar *\ 	&\Var{name};	&Name of the resource to set.\\
+    Uchar *\ 	&\Var{val};	&The new value of the resource.
   \end{Arguments}%
   Set the resource to a given value. Here the assignment
   is divided into two parts: the name and the value.
@@ -2459,7 +2578,7 @@ for \BibTeX{} files. See the user's guide for details of the syntax.
 \end{Function}
 \begin{Function}{int \Fct{use\_rsc}}{use\_rsc}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&String containg a resource command.
+    Uchar *\ 	&\Var{s};	&String containg a resource command.
   \end{Arguments}%
   This function can be used to evaluate a single
   resource instruction. The argument is a string which
@@ -2478,10 +2597,10 @@ for \BibTeX{} files. See the user's guide for details of the syntax.
 
 \Module{s\_parse.c}{sparse.c}
 
-\begin{Function}{char * \Fct{s\_parse}}{s\_parse}
+\begin{Function}{Uchar * \Fct{s\_parse}}{s\_parse}
   \begin{Arguments}
     int \ 	&\Var{type};	&is the type of construct to parse. it is defined in s\_parse.h\\
-    char **\ 	&\Var{sp};	&is a pointer to the string which is parsed. The value is
+    Uchar **\ 	&\Var{sp};	&is a pointer to the string which is parsed. The value is
 changed to hold the remaining characters at the end.\\
     int \ 	&\Var{errp};	&this boolean indicated whether or not a verbose error
 message should be created in case of an error.
@@ -2546,7 +2665,7 @@ message should be created in case of an error.
 \end{Function}
 \begin{Function}{int \Fct{sp\_open}}{sp\_open}
   \begin{Arguments}
-    char * \ 	&\Var{s};	&String to open for parsing.
+    Uchar *\ 	&\Var{s};	&String to open for parsing.
   \end{Arguments}%
   Open a string for parsing. The argument string is used
   for the parsing process.  Thus this string should not
@@ -2579,7 +2698,7 @@ operating system. This seems to be not problemeatic since this
 memory is not assumed to be really large. Normally just a few
 strings are pushed to the stack at any time.
 
-\begin{Function}{char * \Fct{pop\_string}}{pop\_string}  Pop a string from the stack. It the stack is empty
+\begin{Function}{Uchar * \Fct{pop\_string}}{pop\_string}  Pop a string from the stack. It the stack is empty
   then |NULL| is returned. Thus the |NULL| value should
   not be pushed to the stack since this can be confused
   with the end of the stack.
@@ -2589,7 +2708,7 @@ strings are pushed to the stack at any time.
 \end{Function}
 \begin{Function}{void \Fct{push\_string}}{push\_string}
   \begin{Arguments}
-    char * \ 	&\Var{s};	&String to push to the stack.
+    Uchar *\ 	&\Var{s};	&String to push to the stack.
   \end{Arguments}%
   Push a string onto the stack. Only the memory for the
   stack is allocated. The string is stored as pointer to
@@ -2677,7 +2796,7 @@ operating system and is not available any more.
   Close a string buffer with a trailing |\0| and reset the
   current pointer to the beginning.
   The next write operation starts right at the end. Thus
-  additional write operations will overwirte the
+  additional write operations will overwrite the
   terminating byte.
   \begin{Result}
     The string contained in the string buffer as a proper
@@ -2799,12 +2918,12 @@ header file aswell.
     nothing
   \end{Result}
 \end{Macro}
-\begin{Variable}{char * \Mac{sym\_empty}}{symempty}
+\begin{Variable}{Uchar * \Mac{sym\_empty}}{symempty}
   The empty symbol. This is a symbol pointing
   immediately to a |\0| byte.  This needs
   |init_symbols()| to be called first.
 \end{Variable}
-\begin{Variable}{char * \Mac{sym\_crossref}}{symcrossref}
+\begin{Variable}{Uchar * \Mac{sym\_crossref}}{symcrossref}
   The symbol |crossref|. This variable needs
   |init_symbols()| to be called first.
 \end{Variable}
@@ -2852,10 +2971,10 @@ initialization.
     duplicate of the argument string.
   \end{Result}
 \end{Function}
-\begin{Function}{char * \Fct{sym\_add}}{sym\_add}
+\begin{Function}{Uchar * \Fct{sym\_add}}{sym\_add}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&String which should be translated into a symbol.\\
-    int \ 	&\Var{count};	&The use count which should be added t the symbol
+    Uchar *\ 	&\Var{s};	&String which should be translated into a symbol.\\
+    int \ 	&\Var{count};	&The use count which should be added to the symbol
   \end{Arguments}%
   Add a symbol to the global symbol table. If the string
   already has a symbol assigned to it then this symbol
@@ -2890,7 +3009,7 @@ initialization.
 \end{Function}
 \begin{Function}{int \Fct{sym\_flag}}{sym\_flag}
   \begin{Arguments}
-    char * \ 	&\Var{s};	&Symbol
+    Uchar * \ 	&\Var{s};	&Symbol
   \end{Arguments}%
   Get the flags of the symbol given as argument.
   \begin{Result}
@@ -2899,7 +3018,7 @@ initialization.
 \end{Function}
 \begin{Function}{void \Fct{sym\_set\_flag}}{sym\_set\_flag}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&Symbol to augment.\\
+    Uchar *\ 	&\Var{s};	&Symbol to augment.\\
     int \ 	&\Var{flags};	&New flags to add.
   \end{Arguments}%
   Add the flags to the symbol corresponding to the
@@ -2911,7 +3030,7 @@ initialization.
 \end{Function}
 \begin{Function}{void \Fct{sym\_unlink}}{sym\_unlink}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&Symbol to be released.
+    Uchar *\ 	&\Var{s};	&Symbol to be released.
   \end{Arguments}%
   Free a symbol since it is no longer used.
   This does not mean that the memory is also freed. The
@@ -2969,7 +3088,7 @@ initialization.
 \end{Function}
 \begin{Function}{int \Fct{foreach\_aux}}{foreach\_aux}
   \begin{Arguments}
-    int (\ 	&\Var{fct})(char*); 	&funtion to apply
+    int (\ 	&\Var{fct})(Uchar*); 	&funtion to apply
   \end{Arguments}%
   Apply the function to all words in the citation list of the
   aux file.
@@ -3024,7 +3143,7 @@ apparatus of \TeX{}. Macro expansion can be performed.
   \begin{Arguments}
     int \ 	&\Var{c};	&Character to make active.\\
     int \ 	&\Var{arity};	&Arity of the macro assigned to the active character.\\
-    char * \ 	&\Var{s};	&Body of the definition as string.
+    Uchar *\ 	&\Var{s};	&Body of the definition as string.
   \end{Arguments}%
   Assign a macro to an active character. If the
   character is not active then the catcode is changed.  
@@ -3041,7 +3160,7 @@ apparatus of \TeX{}. Macro expansion can be performed.
 \end{Function}
 \begin{Function}{void \Fct{TeX\_def}}{TeX\_def}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&
+    Uchar *\ 	&\Var{s};	&
   \end{Arguments}%
   Define a macro.
   The argument is a string specification of the following form:
@@ -3056,9 +3175,9 @@ apparatus of \TeX{}. Macro expansion can be performed.
 \end{Function}
 \begin{Function}{void \Fct{TeX\_define}}{TeX\_define}
   \begin{Arguments}
-    char *\ 	&\Var{name};	&\\
+    Uchar *\ 	&\Var{name};	&\\
     int \ 	&\Var{arity};	&\\
-    char *\ 	&\Var{body};	&
+    Uchar *\ 	&\Var{body};	&
   \end{Arguments}%
   Add a new \TeX{} macro definition.
   
@@ -3078,7 +3197,7 @@ apparatus of \TeX{}. Macro expansion can be performed.
 \end{Function}
 \begin{Function}{void \Fct{TeX\_open\_string}}{TeX\_open\_string}
   \begin{Arguments}
-    char * \ 	&\Var{s};	&String to read from.
+    unsigned char * \ 	&\Var{s};	&String to read from.
   \end{Arguments}%
   Prepare things to parse from a string.
   \begin{Result}
@@ -3087,8 +3206,8 @@ apparatus of \TeX{}. Macro expansion can be performed.
 \end{Function}
 \begin{Function}{int \Fct{TeX\_read}}{TeX\_read}
   \begin{Arguments}
-    char * \ 	&\Var{cp};	&Pointer to position where the character is stored.\\
-    char **\ 	&\Var{sp};	&Pointer to position where the string is stored.
+    Uchar * \ 	&\Var{cp};	&Pointer to position where the character is stored.\\
+    Uchar **\ 	&\Var{sp};	&Pointer to position where the string is stored.
   \end{Arguments}%
   Read a single Token and return it as a pair consisting
   of an ASCII code and possibly a string in case of a
@@ -3109,10 +3228,10 @@ apparatus of \TeX{}. Macro expansion can be performed.
 \Header{bibtool/type.h}{bibtooltype.h}
 
 This module is a replacement for the system header file
-|ctype.h|. in contrast to some implemetations of the |isalpha|
+|ctype.h|. In contrast to some implemetations of the |isalpha|
 and friends the macros in this header are stable. This means
 that the argument is evaluated exactely once and each macro
-consistes of execately one C statement. Thus these macros can
+consistes of exacetely one C statement. Thus these macros can
 be used even at those places where only a single statement is
 allowed (conditionals without braces) or with arguments
 containing side effects.
@@ -3120,8 +3239,8 @@ containing side effects.
 In addition this is a starting point to implement an xord
 array like \TeX{} has one (some day\dots)
 
-This header file requires the initializaation function
-|init_type()| to be called before all macros will work as
+This header file requires the initialization function
+|init_type()| to be called before the macros will work as
 described. 
 
 This header file also provides the functions and varaibles
@@ -3264,6 +3383,16 @@ properly.
 See also the documentation of the header file |type.h| for
 further information.
 
+\begin{Function}{void \Fct{add\_word\_sep}}{add\_word\_sep}
+  \begin{Arguments}
+    char *\ 	&\Var{s};	&
+  \end{Arguments}%
+  
+  
+  \begin{Result}
+    nothing
+  \end{Result}
+\end{Function}
 \begin{Function}{int \Fct{case\_cmp}}{case\_cmp}
   \begin{Arguments}
     char * \ 	&\Var{s};	&First string to consider.\\
@@ -3294,7 +3423,7 @@ further information.
   \end{Arguments}%
   Function to translate all letters in a string to lower case.
   \begin{Result}
-    The converted string
+    The converted string.
   \end{Result}
 \end{Function}
 
@@ -3325,7 +3454,7 @@ further information.
   strings. This list only provides a next pointer. and
   is prety generic.
   \STRUCT{wORDlIST}
-    char            *\ 	&\Member{wl\_word};	& String value of	     
+    Uchar	   *\ 	&\Member{wl\_word};	& String value of	     
 			this node.            \\
     struct wORDlIST *\ 	&\Member{wl\_next};	& Pointer to the next    
 			node.                 
@@ -3335,7 +3464,7 @@ further information.
   This is the |NULL| value for a |WordList|. It
   terminates the list and represents the empty node.
 \end{Constant}
-\begin{Macro}{char * \Mac{ThisWord}}{ThisWord}
+\begin{Macro}{Uchar * \Mac{ThisWord}}{ThisWord}
   \begin{Arguments}
     & \Var{WL} & |WordList| to consider which is not |WordNULL|.\\
   \end{Arguments}%
@@ -3364,7 +3493,7 @@ strings and the associated methods.
 
 \begin{Function}{void \Fct{add\_word}}{add\_word}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&String to add to the wordlist.\\
+    Uchar *\ 	&\Var{s};	&String to add to the wordlist.\\
     WordList *\ 	&\Var{wlp};	&Pointer to a wordlist.
   \end{Arguments}%
   Put a string into a word list. The string itself is
@@ -3386,9 +3515,9 @@ strings and the associated methods.
 \end{Function}
 \begin{Function}{int \Fct{delete\_word}}{delete\_word}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&Word to remove.\\
+    Uchar *\ 	&\Var{s};	&Word to remove.\\
     WordList *\ 	&\Var{wlp};	&Pointer to the wordlist to modify.\\
-    void (*\ 	&\Var{fct})(char*); 	&Function to call to free the memory occupied by the word.
+    void (*\ 	&\Var{fct})(Uchar*); 	&Function to call to free the memory occupied by the word.
   \end{Arguments}%
   Remove a word from a |WordList|. Only the first
   appearance of such a word is removed. I a word is
@@ -3404,7 +3533,7 @@ strings and the associated methods.
 \end{Function}
 \begin{Function}{int \Fct{find\_word}}{find\_word}
   \begin{Arguments}
-    char *\ 	&\Var{s};	&String to find.\\
+    Uchar *\ 	&\Var{s};	&String to find.\\
     WordList \ 	&\Var{wl};	&Word list to search in.
   \end{Arguments}%
   Look up a word in a word list. The comparison is done
@@ -3416,7 +3545,7 @@ strings and the associated methods.
 \begin{Function}{int \Fct{foreach\_word}}{foreach\_word}
   \begin{Arguments}
     WordList \ 	&\Var{wl};	&WordList to traverse.\\
-    int (*\ 	&\Var{fct})(char*); 	&function to apply.
+    int (*\ 	&\Var{fct})(Uchar*); 	&function to apply.
   \end{Arguments}%
   Applies the given function |fct| to all elements in
   the |WordList| as long as the function does not return
@@ -3432,7 +3561,7 @@ strings and the associated methods.
 \begin{Function}{void \Fct{free\_words}}{free\_words}
   \begin{Arguments}
     WordList *\ 	&\Var{wlp};	&Pointer to the |WordList|.\\
-    void (*\ 	&\Var{fct})(char*); 	&Function to be called to free the memory of the word itself.
+    void (*\ 	&\Var{fct})(Uchar*); 	&Function to be called to free the memory of the word itself.
 If it is |NULL| then no function is called.
   \end{Arguments}%
   Release the memory allocated for a list of words.
