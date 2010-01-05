@@ -1,12 +1,12 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.6 2007-02-08 20:52:32 gene Exp $
+%% $Id: bibtool.tex,v 1.7 2010-01-05 14:06:06 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
 %% It is distributed under the GNU General Public License.
 %% See the file COPYING for details.
 %%
-%% (c) 1995-2004 Gerd Neugebauer
+%% (c) 1995-2010 Gerd Neugebauer
 %%
 %% Net: gene@gerd-neugebauer@sdm
 %%
@@ -384,7 +384,7 @@ order.
 \sh[S]{file1.bib file2.bib}
 
 If you want to sort the \BibTeX{} files according to the authors then the
-following invocation should do the trick:
+following invocation should do the trick:\index{N@\%N}
 
 \sh[-]{sort.format="\%N(author)" file1.bib file2.bib}
 
@@ -468,7 +468,7 @@ will (hopefully) bring together the publications of the same first author.
 Another alternative is to use the author and the year. This can be achieved
 with the following command:\footnote{Note that some command line interpreters
 (like the UN*X shells) require the format string to be quoted (enclosed in
-single quotes).}
+single quotes).}\index{n@\%n}
 
 \sh[f]{\texttt{\%n(author):\%2d(year) sample.bib -o sample1.bib}}
 
@@ -643,7 +643,7 @@ referencing entry. This can be achieved by putting all entries containing a
 field ``crossref'' before those containing none. As second sorting criterion
 we want to use the reference key.
 
-This can be achieved with a resource file containing the following
+This can be achieved with a resource file containing the following\index{l@\%l}
 
 \Rsc{sort.format}{\{\{\%1.\#s(crossref)a\#z\}\$key\}}
 \vspace*{-1.6\baselineskip}
@@ -654,7 +654,7 @@ This can be achieved with a resource file containing the following
 The magic is contained in the first instruction. Thus we will examine it in
 detail: 
 \begin{description}
-\item [\texttt{\%1.\#s(crossref)}]\ \\
+\item [\texttt{\%1.\#s(crossref)}]\index{l@\%l}\ \\
   This formatting instruction does not produce any output but simply acts as
   condition to determine whether or not to include the following string. The
   condition counts the allowed characters (\texttt{\#s}) of the field
@@ -662,17 +662,17 @@ detail:
   $[1,\infty]$ (\texttt{1.}).
 
   Thus it detects those entries containing a non empty crossref field.
-\item [\texttt{\%1.\#s(crossref)}a]\ \\
+\item [\texttt{\%1.\#s(crossref)}a]\index{l@\%l}\ \\
   If the condition holds then the string \texttt{a} is used as part of the
   sort key.
-\item [\texttt{\{\%1.\#s(crossref)a\#z\}}]\ \\
+\item [\texttt{\{\%1.\#s(crossref)a\#z\}}]\index{l@\%l}\ \\
   If the first condition fails then the next alteranative after the hash mark
   (\texttt{\#}) is considered. This is the string \texttt{z} which will always
   succeed and thus be included into the sort key.
 
   Thus this construction will produce \texttt{a} if a crossref field is
   present and not empty or \texttt{z} otherwise.
-\item [\texttt{\{\%1.\#s(crossref)a\#z\}\$key}]\ \\
+\item [\texttt{\{\%1.\#s(crossref)a\#z\}\$key}]\index{l@\%l}\ \\
   Finally the reference key (\texttt{\$key}) is appended to the characterizing
   initial letter.
 \end{description}
@@ -1461,12 +1461,12 @@ generation. This is described in section \ref{sec:key.gen} in detail.
 The associated resource name is \rsc{sort.format}. Several formats are
 combined as alternatives. 
 
-\RSC{sort.format}{\%N(author)}\vspace{-4ex}
+\RSC{sort.format}{\%N(author)}\vspace{-4ex}\index{N@\%N}
 \RSC{sort.format}{\%N(editor)}
 
 Those two lines are equivalent with the single resource
 
-\RSC{sort.format}{\textit{\%N(author) \# \%N(editor)}}
+\RSC{sort.format}{\textit{\%N(author) \# \%N(editor)}}\index{N@\%N}
 
 This means that the sort key is set to the (normalized) author names if an
 author is given. Otherwise it tries to use the normalized editor name. If
@@ -2199,7 +2199,7 @@ The next component of formats are made up formating instructions which are
 starting with a \texttt{\%} character. The general idea has been inspired by
 formating facilities of C. Since there are several different types of
 information in a \BibTeX{} entry we provide several primitives for formating.
-The simplest form is for instance
+The simplest form is for instance\index{N@\%N}
 \begin{verbatim}
   %N(author)
 \end{verbatim}
@@ -2227,7 +2227,7 @@ the qualifier \verb|#|. Possible values are as described in the following
 list:
 
 \begin{itemize}
-  \item [\texttt{p}] Format names according to the format specifier number
+  \item [\texttt{p}] \index{p@\%p|(}Format names according to the format specifier number
         \textit{post}. In a list of names at most \textit{pre} names are
         used. If there are more names they are treated as given as
         \texttt{and others}.
@@ -2247,9 +2247,9 @@ list:
             \texttt{\%-2p(author)}	& \texttt{thor.meone.ea}	\\
             \texttt{\%+1p(author)}	& \texttt{THOR.EA}		
           \end{tabular}
-        \end{Example}
+        \end{Example}\index{p@\%p|)}
 
-  \item [\texttt{n}] Format last names only.\\
+  \item [\texttt{n}] \index{n@\%n|(}Format last names only.\\
         In a list of names at most \textit{pre} last names are used. If there
         are more names they are treated as given as \texttt{and others}.
         If \textit{post} is greater than 0 then at most \textit{post}
@@ -2274,9 +2274,10 @@ list:
             \texttt{\%+1n(author)}	& \texttt{THOR.EA}		\\
             \texttt{\%.3n(author)}	& \texttt{Tho.Meo.ea}		
           \end{tabular}
-        \end{Example}
+        \end{Example}\index{n@\%n|)}
 
-  \item [\texttt{N}] Format names with last names and initials.\\
+  \item [\texttt{N}] \index{N@\%N|(}Format names with last names and 
+        initials.\\
         In a list of names at most \textit{pre} last names are used. If there
         are more names they are treated as given as \texttt{and others}.
         If \textit{post} is greater than 0 then at most \textit{post}
@@ -2301,9 +2302,9 @@ list:
             \texttt{\%+1N(author)}	& \texttt{THOR.AU.EA}		\\
             \texttt{\%.3N(author)}	& \texttt{Tho.AU.Meo.SO.ea}	
           \end{tabular}
-        \end{Example}
+        \end{Example}\index{N@\%N|)}
 
-  \item [\texttt{d}] Format a number, e.g.\ a year.\\
+  \item [\texttt{d}] \index{d@\%d|(}Format a number, e.g.\ a year.\\
     
     The \textit{post}$^{th}$ number in the field is searched. At most
     \textit{pre} digits --- counted from the right --- are used. E.g.\ the
@@ -2344,9 +2345,9 @@ list:
             \texttt{\%+.3d(pages)}	& \texttt{0}			\\
             \texttt{\%0d(pages)}	& \textit{succeeds with empty result}
           \end{tabular}
-        \end{Example}
+        \end{Example}\index{d@\%d|)}
 
-  \item [\texttt{D}] Format a number.\\
+  \item [\texttt{D}] \index{D@\%D|(}Format a number.\\
         This format specifier acts like the \texttt{d} specifier except
         that the number is not truncated. Thus a large number comes
         out complete and not only the last few digits.
@@ -2366,10 +2367,10 @@ list:
             \texttt{\%+.3D(pages)}	& \texttt{0}		\\
             \texttt{\%0D(pages)}	& \texttt{89}
           \end{tabular}
-        \end{Example}
+        \end{Example}\index{D@\%D|)}
 
 
-  \item [\texttt{s}] Take a field as is (after translation of special
+  \item [\texttt{s}] \index{s@\%s|(}Take a field as is (after translation of special
         characters).\\ 
         At most \textit{pre} characters are used.
 
@@ -2386,9 +2387,10 @@ list:
             \texttt{\%+8s(author)}	& \texttt{A.-U.-TH}	\\
             \texttt{\%0s(author)}	& \textit{succeeds with empty result}
           \end{tabular}
-        \end{Example}
+        \end{Example}\index{s@\%s|)}
 
-  \item [\texttt{T}] Format sentences. Certain words are ignored.\\
+  \item [\texttt{T}] \index{T@\%T|(}Format sentences. Certain words are 
+        ignored.\\
         At most \textit{pre} words are used. The other words are ignored. If
         \textit{pre} is 0 then no artificial limit is forced. If \textit{post}
         is positive then at most \textit{post} letters of each word are
@@ -2424,9 +2426,10 @@ list:
 
         Note that the effect of \rsc{fmt.word.separator} is accumulating more
         characters. It is not possible to define a character not to be a word
-        separator once it has this property.
+        separator once it has this property.\index{T@\%T|)}
 
-  \item [\texttt{t}] Format sentences. In contrast to the format letter
+  \item [\texttt{t}] \index{t@\%t|(}Format sentences. In contrast to the
+        format letter
         \texttt{T} no words are ignored.\\
         At most \textit{pre} words are used. The other words are ignored. If
         \textit{pre} is 0 then no artificial limit is forced. If \textit{post}
@@ -2445,9 +2448,9 @@ list:
             \texttt{\%-t(title)}	& \texttt{the}		\\
             \texttt{\%+t(title)}	& \texttt{THE}
           \end{tabular}
-        \end{Example}
+        \end{Example}\index{t@\%t|)}
 
-  \item [\texttt{W}] Format word lists.\\
+  \item [\texttt{W}] \index{W@\%W|(}Format word lists.\\
         This specifier acts like \texttt{T} except that nothing is inserted
         between words.
 
@@ -2462,9 +2465,9 @@ list:
             \texttt{\%-W(title)}	& \texttt{whole}		\\
             \texttt{\%+W(title)}	& \texttt{WHOLE}	
           \end{tabular}
-        \end{Example}
+        \end{Example}\index{W@\%W|)}
 
-  \item [\texttt{w}] Format word lists.\\
+  \item [\texttt{w}] \index{w@\%w|(}Format word lists.\\
         This specifier acts like \texttt{t} except that nothing is inserted
         between words.
 
@@ -2479,9 +2482,9 @@ list:
             \texttt{\%-w(title)}	& \texttt{the}		\\
             \texttt{\%+w(title)}	& \texttt{THE}
           \end{tabular}
-        \end{Example}
+        \end{Example}\index{w@\%w|)}
 
-  \item [\texttt{\#p}] Count the number of names.
+  \item [\texttt{\#p}] \index{p@\%\#p|(}Count the number of names.
 
     If no \textit{sign} is given or the \textit{sign} is \verb|+| then
     the following rules apply. If the count is less than \textit{pre}
@@ -2516,13 +2519,13 @@ list:
             \texttt{\%3.4\#p(author)}	& \textit{succeeds with empty result}	\\
             \texttt{\%-3.4\#p(author)}	& \textit{fails}
           \end{tabular}
-        \end{Example}
+        \end{Example}\index{p@\%\#p|)}
     
-  \item [\texttt{\#n}] Is the same as \texttt{\#p}.
+  \item [\texttt{\#n}] Is the same as \texttt{\#p}\index{n@\%\#n}.
 
-  \item [\texttt{\#N}] Is the same as \texttt{\#p}.
+  \item [\texttt{\#N}] Is the same as \texttt{\#p}\index{N@\%\#N}.
 
-  \item [\texttt{\#s}] Count the number of allowed characters.
+  \item [\texttt{\#s}] \index{s@\%\#s|(}Count the number of allowed characters.
 
     If no \textit{sign} is given or the \textit{sign} is \verb|+| then
     the following rules apply. If the count is less than \textit{pre}
@@ -2553,9 +2556,9 @@ list:
             \texttt{\%10,16\#s(title)}	& \textit{succeeds with empty result}\\
             \texttt{\%-10,16\#s(title)}	& \textit{fails}
           \end{tabular}
-        \end{Example}
+        \end{Example}\index{s@\%\#s|)}
  
-  \item [\texttt{\#w}] Count the number of words. All words are considered
+  \item [\texttt{\#w}] \index{w@\%\#w|(}Count the number of words. All words are considered
     as valid. The division into words is performed after de\TeX{}ing
     the field.
 
@@ -2588,12 +2591,12 @@ list:
             \texttt{\%1,6\#w(title)}	& \textit{succeeds with empty result}\\
             \texttt{\%-1,1\#w(title)}	& \textit{fails}
           \end{tabular}
-        \end{Example}
+        \end{Example}\index{w@\%\#w|)}
 
-   \item [\texttt{\#t}] Is the same as \texttt{\#w}.
-
-   \item [\texttt{\#W}] Count the number of words. Certain words are
-     ignored. The ignored words are determined by the resource
+   \item [\texttt{\#t}] \index{t@\%\#t}Is the same as \texttt{\#w}.
+     
+   \item [\texttt{\#W}] \index{W@\%\#W|(}Count the number of words. Certain
+     words are ignored. The ignored words are determined by the resource
      \rsc{ignored.word}. The division into words is performed after
      de\TeX{}ing the field.
 
@@ -2627,16 +2630,17 @@ list:
             \texttt{\%1,6\#W(title)}	& \textit{succeeds with empty result}\\
             \texttt{\%-1,6\#W(title)}	& \textit{fails}
           \end{tabular}
-        \end{Example}
+        \end{Example}\index{w@\%\#w|)}
 
-   \item [\texttt{\#T}] Is the same as \texttt{\#W}.
+   \item [\texttt{\#T}] \index{T@\%\#T}Is the same as \texttt{\#W}.
 
 \end{itemize}
 
 If some words are enclosed in brace, they are considered as one composed 
-word. For example, with the format \verb|%t(title)|, and this field:
+word. For example, with the format \verb|%t(title)|\index{t@\%t}, and 
+this field:
 \begin{itemize}
-  \item [] {\verb|title = "{The Whole Title}"|}
+\item [] {\verb|title = "{The Whole Title}"|}
 \end{itemize}
 We obtain \verb|The-Whole-Title|.
 
@@ -2698,9 +2702,10 @@ fields. They are listed below.
   This pseudo field is matched against the type of the entry. If they are
   identical (ignoring cases) then the type is returned. Otherwise the access
   fails.
-
-  In an article item the specification \texttt{\%s(@Article)} succeeds and
-  returns \texttt{Article} whereas \texttt{\%s(@Book)} fails.
+  
+  In an article item the specification \texttt{\%s(@Article)}\index{s@\%s}
+  succeeds and returns \texttt{Article} whereas
+  \texttt{\%s(@Book)}\index{s@\%s} fails.
 
 \item [\texttt{\$day}]
   This pseudo field contains the current day as a two digit number or the
@@ -2758,7 +2763,7 @@ Suppose an \BibTeX{} entry contains fields for \texttt{editor} and
 \texttt{year}.  Then the following conjunction succeeds:
 
 \begin{itemize}
-  \item [] \texttt{\%-3n(editor) : \%2d(year)}
+\item [] \texttt{\%-3n(editor) : \%2d(year)} \index{n@\%n}\index{d@\%d}
 \end{itemize}
 
 If the value of the \texttt{editor} field is \verb|"|\verb|E.D. Itor"| and the
@@ -2786,7 +2791,8 @@ Let us look at an example. The following construction can be used to format a
 field \texttt{author} if it is present or print a constant string.
 
 \begin{itemize}
-  \item [] \verb|(author){|\texttt{\%}\verb|N(author)}{--no-author--}|
+\item [] \verb|(author){|\texttt{\%}\verb|N(author)}{--no-author--}|
+  \index{N@\%N}
 \end{itemize}
 
 
@@ -2812,7 +2818,7 @@ effect.
 The example given in subsection \ref{ssec:if-then-else} can be also written as
 
 \begin{itemize}
-  \item [] \texttt{\%}\verb|N(author) # --no-author--|
+  \item [] \texttt{\%}\verb|N(author) # --no-author--|\index{N@\%N}
 \end{itemize}
 
 If the author field is accessible the first alternative succeeds and
@@ -2831,8 +2837,8 @@ accomplished as follows.
 
 
 \begin{itemize}
-  \item [] \verb|{|\texttt{\%}\verb|N(author) # --no-author-- } |
-           \verb|{|\texttt{\%}\verb|T(title) # --no-title-- } |
+  \item [] \verb|{|\texttt{\%}\verb|N(author) # --no-author-- } |\index{N@\%N}
+           \verb|{|\texttt{\%}\verb|T(title) # --no-title-- } |\index{T@\%T}
 \end{itemize}
 
 The grouping allows to restrict the range of the alternative operator \verb|#|
@@ -2842,17 +2848,17 @@ Another example shows how the alternative together with grouping can be
 used to share a format specification for certain types of entries:
 
 \begin{itemize}
-  \item [] \verb|{|\texttt{\%}\verb|0s(@book) # |\texttt{\%}\verb|0s(@proceedings)} --book-or-proc--|
+  \item [] \verb|{|\texttt{\%}\verb|0s(@book) # |\texttt{\%}\verb|0s(@proceedings)} --book-or-proc--|\index{s@\%s}
 \end{itemize}
 
-The \texttt{\%}\verb|0s| specifier is used to check for the existence of a
-certain field without actually adding anything to the output. Other constructs
-may serve for the same purpose. This construct is applied to the pseudo-fields
-\texttt{@book} and \texttt{@proceedings}. The access to the pseudo-field fails
-if requested in another type of entry. Those two checks are combined to form a
-disjunction.  Thus the following code---the constant in this example---is
-reached only if we are in a book or in a proceedings entry. It is not reached
-in an article.
+The \texttt{\%}\verb|0s|\index{s@\%s} specifier is used to check for the
+existence of a certain field without actually adding anything to the output.
+Other constructs may serve for the same purpose. This construct is applied to
+the pseudo-fields \texttt{@book} and \texttt{@proceedings}. The access to the
+pseudo-field fails if requested in another type of entry. Those two checks are
+combined to form a disjunction.  Thus the following code---the constant in
+this example---is reached only if we are in a book or in a proceedings entry.
+It is not reached in an article.
 
 
 \subsection{Ignored Words}
@@ -2984,7 +2990,7 @@ help you keep an eye on these two name format specifiers \BibTool{} issues a
 warning when they are modified.
 
 The resource \rsc{new.format.type} can be used to assign values to those name
-format specifiers:
+format specifiers:\index{f@\%f}\index{v@\%v}\index{l@\%l}
 
 \RSC{new.format.type}{17="\%f\%v\%l"}
 
@@ -2992,8 +2998,9 @@ This instruction sets the name format specifier number 17 to the given value.
 This value is a string of characters to be used directly.  There is only one
 construct which is not used literally. This construct is started by a \% sign
 optionally followed by a \verb|+| or a \verb|-| and a number. Next comes one
-of the letters \texttt{f}, \texttt{v}, \texttt{l}, or \texttt{j}. Finally
-there are three optional arguments enclosed in brackets.
+of the letters \texttt{f}\index{f@\%f}, \texttt{v}\index{v@\%v},
+\texttt{l}\index{f@\%f}, or \texttt{j}\index{j@\%j}. Finally there are three
+optional arguments enclosed in brackets.
 
 Thus the general form looks as follows:
 
@@ -3003,9 +3010,10 @@ Thus the general form looks as follows:
            \textit{pre}\texttt{][}\textit{post}\texttt{]} 
 \end{itemize}
 
-The letter \texttt{f} denotes all first names.  The letter \texttt{l} denotes
-all last names.  The letter \texttt{v} denotes all words in the von part.  The
-letter \texttt{j} denotes all words in the junior part.
+The letter \texttt{f}\index{f@\%f} denotes all first names.  The letter
+\texttt{l}\index{l@\%l} denotes all last names.  The letter
+\texttt{v}\index{v@\%v} denotes all words in the von part.  The letter
+\texttt{j}\index{j@\%j} denotes all words in the junior part.
 
 If \textit{sign} is \verb|+| then the words are translated to upper case.  If
 \textit{sign} is \verb|-| then the words are translated to lower case.  If no
@@ -3031,8 +3039,6 @@ the given part, but only if the part is not empty. If none is given then the
 empty string is used.
 
 
-
-
 Now we can come to an example. Suppose the name field contains the value
 \texttt{Cervantes Saavedra, Miguel de}\footnote{This is the author of ``Don
   Quixote''}. This name has two last names, one first name and one word in the
@@ -3041,7 +3047,7 @@ von part.
 We want to apply the following name format specifier
 
 \begin{itemize}
-  \item [] \verb|%1f[.][][.]|\verb|%1v[.][][.]|\verb|%3l[-]|\verb|%1j| 
+  \item [] \verb|%1f[.][][.]|\verb|%1v[.][][.]|\verb|%3l[-]|\verb|%1j| \index{f@\%f}\index{v@\%v}\index{l@\%l}
 \end{itemize}
 
 This means we want to use abbreviation of first name, von and junior part to
@@ -3192,12 +3198,13 @@ instructions
 
 If you want to update all time fields to contain the current date the
 following instruction can be used. It makes use of the pseudo fields (see
-page~\pageref{pseudo:key}). 
+page~\pageref{pseudo:key}).\index{s@\%s}
 
 \RSC{add.field}{time="\%s(\$mon) \%s(\$day), \%s(\$year)"}
 
 If you want to strip the month to three leading letters and the year to two
-trailing digits this can be achieved with the following instruction:
+trailing digits this can be achieved with the following
+instruction:\index{s@\%s}\index{d@\%d}
 
 \RSC{add.field}{time="\%3s(\$mon) \%s(\$day), \%2d(\$year)"}
 
@@ -3286,7 +3293,7 @@ instructions are replaced by their respective values. Thus we could exploit
 again the time stamp example from above. The following rewrite rule will
 update an existing timestamp without adding one if none is present:
 
-\RSc{rewrite.rule}{\(\{\) time ".*" = "\%3s(\$mon) \%s(\$day), \%2d(\$year)"\(\}\)}
+\RSc{rewrite.rule}{\(\{\) time ".*" = "\%3s(\$mon) \%s(\$day), \%2d(\$year)"\(\}\)}\index{s@\%s}\index{d@\%d}
 
 The pattern \verb|.*| matches any sequence of arbitrary characters. Thus the
 old contents of the field is a match.  In this example the value is not reused
@@ -3766,7 +3773,7 @@ select.crossrefs	 = off
 select.field             = "\$key"
 sort                     = off
 sort.cased               = off
-sort.format              = "\%s(\$key)"
+sort.format              = "\%s(\$key)"\index{s@\%s}
 sort.macros              = on
 sort.reverse             = off
 suppress.initial.newline = off

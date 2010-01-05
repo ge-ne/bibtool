@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: crossref.c,v 1.1 2007-02-08 20:31:51 gene Exp $
+** $Id: crossref.c,v 1.2 2010-01-05 14:06:06 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 2007 Gerd Neugebauer
+** (c) 2007-2010 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 

@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: main.c,v 1.6 2007-02-08 20:54:48 gene Exp $
+** $Id: main.c,v 1.7 2010-01-05 14:06:06 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2007 Gerd Neugebauer
+** (c) 1996-2010 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -157,7 +157,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2007-02-08 20:54:48 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2010-01-05 14:06:06 $",
     "gerd@informatik.uni-koblenz.de"
   };
 

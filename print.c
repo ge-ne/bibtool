@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: print.c,v 1.6 2007-02-08 20:44:35 gene Exp $
+** $Id: print.c,v 1.7 2010-01-05 14:06:06 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2004 Gerd Neugebauer
+** (c) 1996-2010 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
