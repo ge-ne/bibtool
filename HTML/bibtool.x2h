@@ -1,0 +1,20 @@
+
+newcommand ('BibTool',
+	    text => '<span style="font-variant:small-caps;">BibTool</span>');
+
+newcommand ('Desc',
+	    arity => 3,
+	    text  => "<tr><td><i>#1</i></td><td><i>#2</i></td><td>#3</td></tr>\n" );
+
+newcommand ('FTP',
+	    arity => 2,
+	    text  => '<a href="ftp://#1/#2"><tt>#1</tt></a>');
+
+newcommand ('Hat',
+	    text => '&#094;');
+
+
+#------------------------------------------------------------------------------
+# Local Variables: 
+# mode: perl
+# End: 

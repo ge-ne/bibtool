@@ -1,0 +1,1176 @@
+#!/usr/local/bin/perl
+##*****************************************************************************
+## $Id: bibtool2html,v 1.1 2010-01-05 23:09:56 gene Exp $
+##*****************************************************************************
+## Author: Gerd Neugebauer
+##=============================================================================
+
+use strict;
+use FileHandle;
+
+#------------------------------------------------------------------------------
+# Variable:	$verbose
+# Description:	Command line option enableing verbose messages.
+#
+my $verbose     = 0;
+
+#------------------------------------------------------------------------------
+# Variable:	$debug
+# Description:	
+#
+my $debug       = 0;
+
+#------------------------------------------------------------------------------
+# Variable:	$opt_dirname
+# Description:	Command line option deterimining the directory to
+#		create the files in.
+#
+my $opt_dirname = '.';
+
+#------------------------------------------------------------------------------
+# Variable:	$opt_prefix
+# Description:	Command line option determining a unique prefix for
+#		(nearly) all generated files.
+#
+my $opt_prefix  = 'm';
+
+#------------------------------------------------------------------------------
+# Variable:	$opt_title
+# Description:	Command line option determining the title of the whole
+#		document unless otherwise specified.
+#
+my $opt_title   = 'BibTool Manual';
+
+#------------------------------------------------------------------------------
+# Variable:	$opt_main
+# Description:	Command line option determining the name of the main
+#		document containing the titlepage. This is the only
+#		one which micht not have the given prefix.
+#
+my $opt_main    = 'index.html';
+
+#------------------------------------------------------------------------------
+# Variable:	$opt_author
+# Description:	Command line option containing the name of the author.
+#		This is used for the HTML header and the copyright
+#		information. 
+#
+my $opt_author  = 'Gerd Neugebauer';
+
+#------------------------------------------------------------------------------
+# Variable:	$opt_email
+# Description:	Command line option containing the email address of the
+#		author. This is used for the HTML header and the copyright
+#		information. 
+#
+my $opt_email   = 'gerd.neugebauer@sdm.de';
+
+#------------------------------------------------------------------------------
+# Variable:	$opt_year
+# Description:	Command line option containing the year of
+#		publication.  This is used for the copyright
+#		information.
+#
+my $opt_year	= '1999';
+
+#------------------------------------------------------------------------------
+# Variable:	$opt_ext
+# Description:	Command line option containing the extension of the generated
+#		files.
+#
+my $opt_ext     = '.html';
+
+my %State           = ();
+my $Title           = '';
+my %SectionTitle;
+my %NextSection;
+my %PreviousSection;
+my $Page            = '';
+my $LastPage        = '';
+my $Head;
+my $Footnotes       = '';
+my $Children;
+my $FootnoteNumber;
+my %LabelURL;
+my %ShortLabelText;
+my $LabelNumber     = 1;
+my @SectionNumber;
+my $TableOfContents = '';
+
+my @Context         = ();
+my $Context         = 'text';
+
+my @Group = ();
+my $Group = '';
+
+my %cite;
+
+my $IndexNumber = 1;
+
+my $result;
+
+
+#------------------------------------------------------------------------------
+# Function:	button
+# Description:	
+#		
+# Returns:	
+#
+#
+sub button
+{ my $url  = shift;
+  my $alt  = shift;
+  my $name = shift;
+  my $img1 = shift;
+  my $img2 = shift;
+
+  return '' if (!defined($url));
+  return <<_EOF_;
+<A HREF="$url"
+   onMouseOver="document.$name\$\$.src='$img2'"
+   onMouseOut="document.$name\$\$.src='$img1'"><IMG
+   SRC="$img1" BORDER="0" ALT="$alt"
+		NAME="$name\$\$"></A>
+_EOF_
+}
+
+#------------------------------------------------------------------------------
+# Variable:	%Navigation
+# Description:	
+#
+my %Navigation;
+
+#------------------------------------------------------------------------------
+# Variable:	$out
+# Description:	
+#
+my $out = undef;
+
+#------------------------------------------------------------------------------
+# Function:	out
+# Description:	
+# Returns:	
+#
+sub out (@)
+{ return if ( !defined($out) );
+  s/\&\#095;/_/go;
+#  print STDERR @_;
+  print $out @_;
+}
+
+#------------------------------------------------------------------------------
+# Function:	redirect
+# Description:	
+#		
+# Returns:	
+#
+#
+sub redirect
+{ my $name = shift;
+  my $n    = shift;
+
+  $Navigation{$n} = $name;
+
+  print STDERR "redirect $Page -> $name\n" if ( $debug );
+  $FootnoteNumber = 1;
+
+  if ( defined($out) )
+  { local $_ = '';
+    $_ = "<HR WIDTH='15%' ALIGN='left' NOSHADE>$Footnotes<BR>"
+	if ( $Footnotes ne '' );
+    $Head =~ s/\$\$/2/go;
+
+    print $out <<_EOF_;
+$Children
+$_
+<BR><BR>
+$Head
+<FONT FACE="helvetica,geneva,arial" SIZE="1">&copy; $opt_year
+<A HREF="mailto:$opt_email">$opt_author</A></FONT>
+</BODY>
+</HTML>
+_EOF_
+    $out->close;
+  }
+  $Footnotes = '';
+  if ( !defined($name) )
+  { $out = undef;
+    $Page = '';
+    return;
+  }
+
+  $out = new FileHandle(">$opt_dirname/$name");
+  return undef if ( !defined($out) );
+  if ( $verbose ) { print STDERR $name,"\n" ; } else { print STDERR '_'; }
+
+  my $in;
+  my $Cat = '';
+  for (my $i=0; $i<$n; $i++ )
+  { my $s = $Navigation{$i};
+    $in = $i*16;
+    $Cat .= "<IMG SRC=\"space.gif\" HEIGHT=\"1\" WIDTH=\"$in\">" if( $in>0 );
+    $Cat .= "<A HREF=\"$s\">$SectionTitle{$s}</A><BR>\n";
+  }
+  $in = $n*16;
+  $Cat .= "<IMG SRC=\"space.gif\" HEIGHT=\"1\" WIDTH=\"$in\">" if( $in>0 );
+  $Cat .= "<B>$SectionTitle{$Navigation{$n}}</B>\n";
+
+  $Children = '';
+
+  if ( $name =~ m/$opt_ext$/ )
+  { local $_ = $`;
+    for (my $i=1;defined($SectionTitle{"$_\_$i$opt_ext"});$i++)
+    { $Children .= <<_EOF_;
+<DD> <A HREF="$_\_$i$opt_ext">$SectionTitle{"$_\_$i$opt_ext"}</A>
+_EOF_
+    }
+  }
+  $Children = "<HR><P><DL>$Children</DL></P>" if ( $Children ne '');
+
+  my $Back = button($PreviousSection{$name},'Back','Back','back.gif','back2.gif');
+  my $Next = button($NextSection{$name},'Next','Next','next.gif','next2.gif');
+  my $Toc  = button("$opt_prefix\_toc$opt_ext",'TOC','TOC','toc.gif','toc2.gif');
+  my $Idx  = button("$opt_prefix\_idx$opt_ext",'Index','IDX','idx.gif','idx2.gif');
+
+  $Head = <<_EOF_;
+<TABLE WIDTH="100%" BGCOLOR="#eeeeee" CELLSPACING="0" CELLPADDING="3" BORDER="0">
+ <TR>
+  <TD WIDTH="160">
+   <FONT FACE="helvetica,geneva,arial">
+    $Back
+    $Toc
+    $Idx
+    $Next
+   </FONT>
+  </TD>
+  <TD WIDTH="70%">
+   <FONT FACE="helvetica,geneva,arial">
+     $Cat
+   </FONT>
+  </TD>
+ </TR>
+</TABLE>
+_EOF_
+  my $tophead = $Head;
+  $tophead =~ s/\$\$//go;
+
+  my $Title = '';
+  $Title = "<H$n>$SectionTitle{$name}</H$n>" if ( $n>0 );
+  print $out <<_EOF_;
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML//3.2//EN">
+<HTML>
+<HEAD>
+  <TITLE>$SectionTitle{$name}</TITLE>
+  <LINK REV="made" HREF="mailto:$opt_email">
+  <META NAME="Author" CONTENT="$opt_author">
+  <META HTTP_EQUIV="Content-Type" CONTENT="text/html;CHARSET=iso-8859-1">
+  <BASE TARGET="_top">
+</HEAD>
+<BODY BGCOLOR="white" TARGET="_top">
+$tophead
+$Title
+_EOF_
+
+  return;
+}
+
+#------------------------------------------------------------------------------
+# Variable:	%IDX
+# Description:	Hash containing the index entries.
+#
+my %IDX;
+
+my %SectionLevel =
+  ( 'part'		=> 1,
+    'chapter'		=> 1,
+    'section'		=> 2,
+    'subsection'	=> 3,
+    'subsubsection'	=> 4,
+    'paragraph'		=> 5,
+    'subparagraph'	=> 6,
+    'subsubparagraph'	=> 7,
+    'Summary'		=> 3,
+  );
+#------------------------------------------------------------------------------
+# Variable:	%accented
+# Description:	
+#
+my %accented =
+  ( '"a' => 'ä',
+    '"A' => 'Ä',
+    '"o' => 'ö',
+    '"O' => 'Ö',
+    '"u' => 'ü',
+    '"U' => 'Ü',
+    '"i' => 'ï',
+    '"I' => 'Ï',
+    '"e' => 'ë',
+    '"E' => 'Ë',
+    '"y' => 'ÿ',
+    '"Y' => 'ÿ',
+    '~n' => 'ñ',
+    '~N' => 'Ñ',
+    '~a' => 'ã',
+    '~A' => 'Ã',
+    '~o' => 'õ',
+    '~O' => 'Õ',
+    '`a' => 'à',
+    '`A' => 'À',
+    '`o' => 'ò',
+    '`O' => 'Ò',
+    '`e' => 'è',
+    '`E' => 'È',
+    '`i' => 'ì',
+    '`I' => 'Ì',
+    '`a' => 'à',
+    '`A' => 'À',
+    'cc' => 'ç',
+    'cC' => 'Ç',
+    '^a' => 'â',
+    '^A' => 'Â',
+    '^e' => 'ê',
+    '^E' => 'Ê',
+    '^i' => 'î',
+    '^I' => 'Î',
+    '^o' => 'ô',
+    '^O' => 'Ô',
+    '^u' => 'û',
+    '^U' => 'Û',
+  );
+
+#------------------------------------------------------------------------------
+# Variable:	%symbol
+# Description:	
+#
+my %symbol = 
+  ( '32' => ' ',
+    '"5B' => '[',
+    '"5C' => '&#092;',
+    '"5D' => ']',
+    '"5E' => '&#094;',
+    '"7B' => '&#123',
+    '"7D' => '&#125',
+  );
+
+#------------------------------------------------------------------------------
+# Variable:	%Macro
+# Description:	Hash of array containing the defined macros.
+#		The first element is the array is the arity of the macro.
+#		The second argument is a modifier for the context. The value
+#		undef leaves the context unchanged. The value '/' pos a value
+#		from the context stack. All aotehr values are pushed to the
+#		context stack.
+#		The third element is the replacement text. The strings
+#		#1, #2,..., #9 are replaced by the actual parameters. If it is
+#		undef then the next element is taken into account.
+#		The fourth element is a piece of code (anonymous subroutine)
+#		to be evaluated when no replacement text is given. The
+#		parameters of the macro are passed to this code in the array
+#		@_. The return value is used as replacement text.
+#
+my %Macro = 
+  ( ' '			  => [0,undef,' '],
+    "\n"		  => [0,undef,' '],
+    "\t"		  => [0,undef,' '],
+    '#'			  => [0,undef,'#'],
+    '!'			  => [0,undef,''],
+    "\$"		  => [0,undef,'&#036;'],
+    '%'			  => [0,undef,'&#037;'],
+    '&'			  => [0,undef,'&amp;'],
+    ','			  => [0,undef,' '],
+    '/'			  => [0,undef,''],
+    '('			  => [0,'math','<I>'],
+    ')'			  => [0,'/','</I>'],
+    '"'			  => [1,undef,undef,
+			      sub
+			      { local $_ = '"'.shift;
+				return $accented{$_} if ( defined($accented{$_}) );
+				return $_;
+			      }],
+    '@'			  => [0,undef,'@'],
+    'AA'		  => [0,undef,'Å'],
+    'AE'		  => [0,undef,'Æ'],
+    'ascii'		  => [0,undef,'<SMALL>ASCII</SMALL>'],
+    'BibTeX'		  => [0,undef,'BibTeX'],
+#    'BibTool'		  => [0,undef,'BibTool'],
+#    'Desc'		  => [3,undef,"<TR><TD><I>#1</I></TD><TD><I>#2</I></TD><TD>#3</TD></TR>\n"],    
+#    'Hat'		  => [0,undef,'&#094;'],
+#    'FTP'		  => [2,undef,'<A HREF="ftp://#1/#2"><TT>#1</TT></A>'],
+    'LaTeX'		  => [0,undef,'LaTeX'],
+    'Link'		  => [2,undef,'<A HREF=\"#1\">#2</A>'],
+    'O'			  => [0,undef,'Ø'],
+    'P'			  => [0,undef,'§'],
+    'RSC'		  => [2,undef,undef,
+			      sub { my ($a,$b)=@_;
+				    return RSc($a," = \\{$b\\}"); }
+			     ],
+    'RSc'		  => [2,undef,undef,
+			      sub { my ($a,$b)=@_; return RSc($a,$b); }
+			     ],
+    'Rsc'		  => [2,undef,undef,
+			      sub { my ($a,$b)=@_; return RSc($a," = $b"); }
+			     ],
+    'TeX'		  => [0,undef,'TeX'],
+    '['			  => [0,undef,'['],
+    '\\'       		  => ['[]0',undef,undef,
+	sub { return '<BR>' if ( !$State{'table'} );
+	      return '</TD></TR><TR><TD>';
+	}],
+    ']'			  => [0,undef,']'],
+    '^'			  => [0,undef,undef,
+			      sub
+			      { local $_ = '^'.shift;
+				return $accented{$_} if (defined( $accented{$_}));
+				return $_;
+			      }],
+    '_'			  => [0,undef,'&#095;'],
+    'aa'		  => [0,undef,'å'],
+    'ae'		  => [0,undef,'æ'],
+    'appendix'		  => [0,undef,''],
+    'author'		  => [1,undef,'<P ALIGN="center"><LARGE><I>#1</I></LARGE></P>'],
+    'backslash'		  => [0,undef,'&#092;'],
+    'begingroup'	  => [0,undef,undef,sub{begingroup(); return '';}],
+    'begin{Abstract}'	  => [0,undef,'<BR><TABLE ALIGN="center" WIDTH="80%"><TR><TD>'],
+    'begin{Disclaimer}'   => [0,undef,'<P ALIGN="center"><FONT FACE="helvetica,geneva,arial" SIZE="1">'],
+    'begin{Example}'	  => [0,undef,"\n<BLOCKQUOTE><I>Example</I><BR>"],
+    'begin{Resource}'	  => [0,undef,'<PRE>'], 
+    'Summary'		  => [0,undef,undef,
+	sub{section(undef,3,'Summary',"<HR SIZE=\"1\" NOSHADOW><TABLE><TR><TD>");}],
+    'begin{center}'	  => [0,'center','<CENTER>'],
+    'begin{description}'  => [0,'description','<DL>'],
+    'begin{document}'     => [0,'document',undef,sub {$State{'ignore'} = 0; return '';}],
+    'begin{enumerate}'    => [0,'enumerate','<OL>'],
+    'begin{itemize}'	  => [0,'itemize','<UL>'],
+    'begin{list}'	  => [2,'list','<UL>'],
+    'begin{tabular}'	  => [1,'tabular','<TABLE><TR><TD>'],
+    'begin{tabular*}'	  => [1,'tabular','<TABLE><TR><TD>'],
+    'begin{thebibliography}'=> [1,undef,undef,
+	sub{section($opt_prefix.'_bib'.$opt_ext,1,'Bibliography','<DL>',1);
+	    $State{'ignore'} = 0;
+	    return '';
+	   }],
+    'bf'		  => [0,undef,'<B>',sub {atendgroup('</B>'); return '';}],
+    'bibitem'		  => ['[]1',undef,undef,sub{return citedef(@_)}],
+    'bibliography'	  => [0,undef,undef,
+	sub{section($opt_prefix.'_bib'.$opt_ext,1,'Bibliography','');}],
+    'bibliographystyle'   => [1,undef,''],
+    'bigskip'		  => [0,undef,''],
+    'bs'		  => [0,undef,'&#092;'],
+    'c'			  => ['1',undef,undef,
+			     sub
+			     { local $_ = 'c'.shift;
+			       return ($accented{$_} || $_);
+			     }],
+    'cal'		  => [0,undef,''],
+    'cdot'		  => [0,undef,'·'],
+    'chapter'		  => [1,undef,undef,
+	sub{local $_ = shift; section(undef,$SectionLevel{'chapter'},$_,'');}],
+    'cite'		  => ['[]1',undef,undef,
+			     sub
+			     { return cite(@_);
+			     }],
+    'copyright'		  => [0,undef,'©'],
+    'documentclass'	  => ['[]1',undef,undef],
+    'documentstyle'	  => ['[]1',undef,undef],
+    'dots'		  => [0,undef,'...'],
+    'em'		  => [0,undef,'<EM>',sub {atendgroup('</EM>'); return '';}],
+    'email'		  => [1,undef,'<A HREF="mailto:#1"><TT>#1</TT></A>'],
+    'emph'		  => [1,undef,'<EM>#1</EM>'],
+    'endgroup'		  => [0,undef,undef,sub{return endgroup();}],
+    'endinput'		  => [0,undef,undef,sub{$State{'ignore'}= 1; return '';}],
+    'end{Abstract}'	  => [0,undef,'</TD></TR></TABLE><BR>'],
+    'end{Disclaimer}'	  => [0,undef,'</FONT></P>'], 
+    'end{Example}'	  => [0,undef,'</BLOCKQUOTE>'], 
+    'end{Resource}'	  => [0,undef,'</PRE>'], 
+    'end{Summary}'	  => [0,undef,'</TABLE><HR SIZE="1" NOSHADOW>'],
+    'end{center}'	  => [0,'/','</CENTER>'],
+    'end{description}'    => [0,'/','</DL>'],
+    'end{document}'       => [0,'/',undef,sub {$State{'ignore'} = 1; return '';}],
+    'end{enumerate}'	  => [0,'/','</OL>'],
+    'end{itemize}'	  => [0,'/','</UL>'],
+    'end{list}'		  => [0,'/','</UL>'], 
+    'end{tabular}'	  => [0,'/','</TD></TR></TABLE>'],
+    'end{tabular*}'	  => [0,'/','</TD></TR></TABLE>'],
+    'end{thebibliography}'=> [0,undef,'</DL>',
+	sub{$State{'ignore'} = 1; return ''; }],
+    'env'		  => [1,undef,'<TT>#1</TT>'],
+    'file'		  => [1,undef,'<FONT FACE="helvetica,geneva,arial">#1</FONT>'],
+    'footnote'		  => [1,undef,undef,
+			      sub
+			      { local $_ = shift;
+				my $no = $FootnoteNumber++;
+				$_ = TeX2html($_);
+				$Footnotes .= "<SMALL><SUP><A NAME='FN$no'>$no</A></SUP> $_</SMALL><BR>";
+				return "<SUP><SMALL><A HREF='#FN$no'>$no</A></SMALL></SUP>";
+			      } ],
+    'footnotesize'	  => [0,undef,'<FONT SIZE="-2">',sub {atendgroup('</FONT>'); return '';}],
+    'geq'		  => [0,undef,' &gt;= '],
+    'hspace'		  => [1,undef,undef],
+    'hline'		  => [0,undef,''],
+    'item'		  => ['[]0',undef,undef,
+			      sub
+			      { local $_ = shift;
+				return "<DT>$_<DD>" if (defined($_) );
+				return '<LI>';
+			      } ],
+    'label'		  => [1,undef,undef, sub { return label(@_,1); } ],
+    'large'		  => [0,undef,'<FONT SIZE="+1">',sub {atendgroup('</FONT>'); return '';}],
+    'ldots'		  => [0,undef,'...'],
+    'leq'		  => [0,undef,' &lt;= '],
+    'maketitle'		  => [0,undef,''],
+    'mbox'		  => [0,undef,''],
+    'medskip'		  => [0,undef,''],
+    'mid'		  => [0,undef,'|'],
+    'neg'		  => [0,undef,'¬'],
+    'newblock'		  => [0,undef,''],
+    'newcommand'	  => ['1[]1',undef,undef,
+			      sub
+			      { my ($name,$arity,$text) = @_;
+				$arity = 0 if (!defined($arity));
+				newcommand($name,
+					   'arity' => $arity,
+					   'text'  => $text);
+				return '';
+			      } ],
+    'newenvironment'	  => ['1[]2',undef,undef,
+			      sub
+			      { my ($name,$arity,$text) = @_;
+#				$arity = 0 if (!defined($arity));
+#				newcommand($name,
+#					   'arity' => $arity,
+#					   'text'  => $text);
+				return '';
+			      } ],
+    'newpage'		  => [0,undef,'<BR><HR><BR>'],
+    'noindent'		  => [0,undef,''],
+    'null'		  => [0,undef,''],
+    'o'			  => [0,undef,'ø'],
+    'opt'		  => [1,undef,undef,
+			      sub
+			      { local $_ = shift;
+				return '<TT>'.Index("-$_")."-$_</TT>";
+			      } ],
+    'pageref'		  => [1,undef,undef,
+			      sub
+			      { local $_ = shift;
+				return "<A HREF=\"$LabelURL{$_}\">$ShortLabelText{$_}</A>";
+			      } ],
+    'pagestyle'		  => [1,undef,''],
+    'par'		  => [0,undef,'<P>'],
+    'paragraph'		  => [1,undef,undef,
+	sub{local $_ = shift; section(undef,$SectionLevel{'paragraph'},$_,'');}],
+    'part'		  => [1,undef,undef,
+	sub{local $_ = shift; section(undef,$SectionLevel{'part'},$_,'');}],
+    'pm'		  => [0,undef,'±'],
+    'pounds'		  => [0,undef,'£'],
+    'ref'		  => [1,undef,undef,
+			      sub
+			      { local $_ = shift;
+				$_ = $LabelURL{$_};
+				return "<A HREF=\"$_\">$SectionTitle{$_}</A>";
+			      } ],
+    'rfill'		  => [0,undef,''],
+    'rsc'		  => [1,undef,undef,
+			      sub
+			      { local $_=shift; return sf(Index($_),$_); } ],
+    'rule'		  => [2,undef,'<HR>'],
+    'scriptsize'	  => [0,undef,'<FONT SIZE="-3">',sub {atendgroup('</FONT>'); return '';}],
+    'section'		  => [1,undef,undef,
+	sub{local $_ = shift; section(undef,$SectionLevel{'section'},$_,'');}],
+    'setlength'		  => [2,undef,undef],
+    'sf'		  => [0,undef,'<FONT FACE="helvetica,geneva,arial">',sub {atendgroup('</FONT>'); return '';}],
+    'sh'		  => ['[]1',undef,undef,
+			      sub
+			      { my ($a,$b) = @_;
+				return "\n<BLOCKQUOTE><CODE>bibtool -$a $b<\/CODE></BLOCKQUOTE>\n" if (defined($a));
+				return "\n<BLOCKQUOTE><CODE>bibtool $b<\/CODE></BLOCKQUOTE>\n"
+			      } ],
+    'small'		  => [0,undef,'<FONT SIZE="-1">',sub {atendgroup('</FONT>'); return '';}],
+    'smallskip'		  => [0,undef,''],
+    'subsection'	  => [1,undef,undef,
+	sub{local $_ = shift; section(undef,$SectionLevel{'subsection'},$_,'');}],
+    'subsubsection'	  => [1,undef,undef,
+	sub{local $_ = shift; section(undef,$SectionLevel{'subsubsection'},$_,'');}],
+    'symbol'		  => [1,undef,undef,
+			      sub { local $_ = shift; return $symbol{$_}; }
+			     ],
+    'ss'		  => [0,undef,'ß'],
+    'tableofcontents'	  => [0,undef,undef,
+	sub{section($opt_prefix.'_toc'.$opt_ext,1,'Table of contents',$TableOfContents);}],
+    'textbf'		  => [1,undef,'<b>#1</b>'],
+    'textit'		  => [1,undef,'<i>#1</i>'],
+    'textrm'		  => [1,undef,'#1'],
+    'textsc'		  => [1,undef,'#1',
+			      sub
+			      {
+			      }],
+    'textsf'		  => [1,undef,'<font face="helvetica,geneva,arial">#1</font>'],
+    'texttt'		  => [1,undef,'<tt>#1</tt>'],
+    'thispagestyle'	  => [1,undef,''],
+    'tiny'		  => [0,undef,'<FONT SIZE="-4">',sub {atendgroup('</FONT>'); return '';}],
+    'title'		  => [1,undef,'<BR><P ALIGN="center"><IMG SRC="BibTool-title.gif" ALT="BibTool" ALIGN="center"><BR><BR>A Tool to Manipulate BibTeX Files<BR>#1</P>'],
+    'tt'		  => [0,undef,'<tt>',sub {atendgroup('</tt>'); return '';}],
+    'vfill'		  => [0,undef,'<br><br>'],
+    'vspace'		  => ['*',undef],
+    '{'			  => [0,undef,'&#0123;'],
+    '|'			  => [0,undef,''],
+    '}'			  => [0,undef,'&#0125;'],
+    '~'			  => [1,undef,undef,
+			      sub
+			      { local $_ = '~'.shift;
+				return $accented{$_} if (defined( $accented{$_}));
+				return $_;
+			      }],
+    );
+
+#------------------------------------------------------------------------------
+# Function:	newcommand
+# Description:	
+# Returns:	
+#
+sub newcommand
+{ my ($macro,%arg) = @_;
+  my $arity = ( $arg{arity} || 0 );
+  if ( defined($Macro{$macro}) )
+  {
+  }
+  else
+  { $Macro{$macro} = [$arity,$arg{context},$arg{text},$arg{code}];
+  }  
+}
+
+sub newenvironment
+{ my ($macro,%arg) = @_;
+  my $arity = ( $arg{arity} || 0 );
+  local $_;
+  if ( defined($Macro{$macro}) )
+  {
+  }
+  else
+  {
+#    $Macro{$macro} = [$arity,$context,$text,$code];
+  }  
+}
+
+my $flush = 0;
+
+
+#------------------------------------------------------------------------------
+# Function:	TeX2html
+# Description:	
+# Returns:	
+#
+sub TeX2html
+{ local $_ = shift;
+  my $res = $result;
+  $result = '';
+
+#  print STDERR '>';
+
+  s|\\ifx.*?\\fi||go;
+
+  while ( m/[\~\{\}\^_\%\&]|(\\([^a-z]|[a-z]+\s*))/oi )
+  { my $token = $&;
+    my $pre = $`;
+    $_ =  $';
+    $pre =~ s|\n[ ]*\n|\n<P>|go;
+    $result .= $pre;
+#    print STDERR "===> '$token' $State{ignore}\n" if ($token ne '%');
+#    print STDERR "===> '$token'\n";
+#    print STDERR "-------------------------\n",$_ if ($token ne '%');
+    if ( $token eq '\\verb' )
+    { s/^\s*//o;
+      my $c = substr($_,0,1);
+      $_ = substr($_,1);
+      my $i = index($_,$c);
+      if ( $i>=0 )
+      { my $v = substr($_,0,$i-1);
+	$_ = substr($_,$i+1);
+#	print STDERR "===> '$1'\n";
+	$v =~ s/\&/\&amp;/go;
+	$v =~ s/$/&\#036;/go;
+	$v =~ s/%/&\#037;/go;
+	$v =~ s/\\/&\#092;/go;
+	$v =~ s/[\\^]/&\#094;/go;
+	$v =~ s/_/&\#095;/go;
+	$result .= "<CODE>$v</CODE>";
+      }
+      else
+      { print STDERR "*** \verb$c without closing $c\n";
+      }
+    }
+    elsif ( substr($token,0,1) eq '\\' )
+    { $token = substr($token,1);
+      $token =~ s/\s//go if ( $token =~ m/^[a-z]/oi );
+#    print STDERR "'$token'";
+      if ( ($token eq 'begin' || $token eq 'end') && m/^{[a-z\*]+}/oi )
+      { $_ = $';
+	$token .= $&;
+      }
+      my $arity = $Macro{$token}[0];
+      if ( defined($arity) )
+      { my @a     = ();
+	my $start = 1;
+#      print STDERR "\\$token [$arity] -> $text\n";
+	if ( $arity =~ m/^\[\](\d)/o )
+	{ $start = 2;
+	  $arity = $1+1;
+	  ($a[1],$_) = get_optarg($_);
+	}
+	elsif ( $arity =~ m/^1\[\](\d)/o )
+	{ $start = 3;
+	  $arity = $1+2;
+	  ($a[1],$_) = get_arg($token,$_);
+	  ($a[2],$_) = get_optarg($_);
+	}
+	elsif ( $arity =~ m/^\*(\d)/o )
+	{ $start = 2;
+	  $arity = $1+1;
+	  s/^\s//go;
+	  if ( substr($_,0,1) eq '*' )
+	  { $a[1] = '*';
+	    $_ = substr($_,1);
+	  }
+	}
+	for (my $i=$start;$i<=$arity;$i++)
+	{ ($a[$i],$_) = get_arg($token,$_); }
+
+	my $text = '';
+	if ( !$State{'ignore'} )
+	{ my $mac = $Macro{$token}[2];
+      	  if ( defined($mac) )
+	  { for (my $i=1;$i<=$arity;$i++) { $mac =~ s/\#$i/$a[$i]/g; }
+	    $text = $mac;
+	  }
+	}
+	$flush = 0;
+	if ( defined($Macro{$token}[3]) )
+	{ shift @a;
+	  $text .= &{$Macro{$token}[3]}(@a);
+	}
+	$_ = $text.$_ if ( !$State{'ignore'} );
+	if ($flush)
+	{ out $result;
+	  $result = '';
+	}
+      }
+      else
+      { print STDERR "'\\$token' is undefined.\n" if( $verbose );
+	$result .= '\\'.$token.' ' if ( !$State{'ignore'} );
+      }
+    }
+    elsif ( $token eq '%' ) # comments
+    { s/^.*\n[ \t]*//o;
+    }
+    elsif ( $token eq '&' ) # comments
+    { $result .= '</TD><TD>';
+    }
+    elsif ( $token eq '^' )
+    { my $a;
+      ($a,$_) = get_arg('^',$_);
+      $result .= "<SUP>$a</SUP>";
+    }
+    elsif ( $token eq '_' )
+    { my $a;
+      ($a,$_) = get_arg('_',$_);
+      $result .= "<SUB>$a</SUB>";
+    }
+    elsif ( $token eq '~' )
+    { $result .= '&nbsp;';
+    }
+    elsif ( $token eq '{' )
+    { begingroup();
+    }
+    elsif ( $token eq '}' )
+    { $result .= endgroup();
+    }
+  }
+  $_ = $result.$_;
+  
+  s/<\/BLOCKQUOTE><BR>/<\/BLOCKQUOTE>/go;
+  s/<P>\n<BLOCKQUOTE>/<BLOCKQUOTE>/go;
+  s/<\/BLOCKQUOTE>\n*<BLOCKQUOTE>/<BR>/go;
+  s/<P><DT>/<DT>/go;
+
+  $result = $res;
+#  print STDERR '<';
+  return $_;
+}
+
+#------------------------------------------------------------------------------
+# Function:	get_arg
+# Description:	
+#		
+# Returns:	
+#
+#
+sub get_arg
+{ my $mac  = shift;
+  my $arg  = shift;
+
+  return ($&,$') if ( $arg =~ m/^[^{}\\]/oi );
+  return ($&,$') if ( $arg =~ m/^\\([^a-z]|[a-z]*)/oi );
+  die "wrong start of args: $arg\n" if (substr($arg,0,1)ne '{');
+  $arg     = substr($arg,1);
+  my $n    = 1;
+  local $_ = '';
+  while ( $n>0 && $arg =~ m/(\\.|[\{\}])/o )
+  { if    ( $& eq '{' ) { $n++; }
+    elsif ( $& eq '}' ) { $n--; }
+    $_ .= $`;
+    $_ .= $&;
+    $arg = $';
+  } 
+  die "missing paren for $mac\n" if ($n>0);
+  return (substr($_,0,length($_)-1),$arg);
+}
+
+#------------------------------------------------------------------------------
+# Function:	get_optarg
+# Description:	
+#		
+# Returns:	
+#
+#
+sub get_optarg
+{ my $arg  = shift;
+  local $_ = '';
+  return (undef,$arg) if ( substr($arg,0,1) ne '[' );
+  $arg     = substr($arg,1);
+  my $n    = 1;
+  while ( $n>0 && $arg =~ m/(\\.|[\[\]\{\}])/o )
+  { if    ( $& eq '[' ) { $n++; }
+    elsif ( $& eq ']' ) { $n--; }
+    elsif ( $& eq '{' ) { $n++; }
+    elsif ( $& eq '}' ) { $n--; }
+    $_ .= $`;
+    $_ .= $&;
+    $arg = $';
+  } 
+  die "missing paren\n" if ($n>0);
+  return (substr($_,0,length($_)-1),$arg);
+}
+
+#------------------------------------------------------------------------------
+# Function:	get_dimen
+# Description:	
+# Returns:	
+#
+sub get_dimen
+{ local $_ = shift;
+  s/^\s*//go;
+  while ( s/^%.*//go ) { s/^\s*//go; }
+  die "missing data" if ( $_ eq '' );
+  return ($1,$') if ( m/^([-]?\s*(\d+|\d+\.\d*|\.\d+)\s*(pt|mm|cm|dd|sp|in))\s*/o );
+  die "syntax error";
+}
+
+#------------------------------------------------------------------------------
+# Function:	section
+# Description:	
+#		
+# Returns:	
+#
+#
+sub section
+{ my $name   = shift;
+  my $level  = shift;
+  my $title  = shift;
+  my $post   = shift;
+  my $nolink = shift;
+
+  print STDERR '.';
+  if ( !defined($name) )
+  {
+    $SectionNumber[$level]++;
+    for ( my $i=$level+1; $i<5; $i++ ) { $SectionNumber[$i] = 0}
+    $name = $opt_prefix;
+    for ( my $i=1; $i<=$level; $i++ ) { $name .= '_'.$SectionNumber[$i]; }
+    $name .= $opt_ext;
+  }
+  $LastPage = $Page;
+  $Page     = $name;
+  if ( !$nolink )
+  { $NextSection{$LastPage} = $Page;
+    $PreviousSection{$Page} = $LastPage;
+  }
+  $title = TeX2html($title);
+  $SectionTitle{$Page} = $title;
+  
+  if ( $out ne '' )
+  { $flush = 1;
+    redirect($Page,$level);
+    out $post;
+  }
+  elsif ( !$nolink )
+  {
+    my $in = ($level-1) * 32;
+    my $add = '';
+    if ( $level > 1 )
+    { $TableOfContents .= "<IMG SRC=\"space.gif\" HEIGHT=\"1\" WIDTH=\"$in\">";
+    }
+    else
+    { $TableOfContents .= "<P><B>";
+      $add = "</B>";
+    }
+    $TableOfContents .= "<A HREF=\"$Page\">$title</A>$add<BR>\n";
+    redirect(undef,0);
+  }
+  else
+  { redirect(undef,0);
+  }
+}
+
+#------------------------------------------------------------------------------
+# Function:	process
+# Description:	
+#		
+# Returns:	
+#
+#
+sub process 
+{ my $pass       = shift;
+  my $verbatim   = 0;
+  my $ifhtml     = 0;
+  my $i;
+  @SectionNumber = (0,0,0,0,0,0,0);
+  $LastPage      = '';
+  $Page          = '';
+  $SectionTitle{$opt_main} = $opt_title;
+  redirect($opt_main,0) if ( $pass > 0 );
+#  section($opt_main,0,$opt_title,1);
+
+  foreach my $file (@_)
+  { my $fd = new FileHandle($file);
+    local $/ = undef;
+    die "\n*** $file: $!\n" if ( !defined($fd) );
+    print STDERR "[$file" if ( $pass == 0 );
+
+    $State{'ignore'}   = 1;
+    $State{'table'}    = 0;
+    $State{'verbatim'} = 0;
+    
+    while (<$fd>)
+    {
+      s/</&lt;/go;
+      s/>/&gt;/go;
+
+#      if    ( m/^\\ifHTML$/o )
+#      { $ifhtml = 1;
+#      }
+#      elsif ( m/^\\else$/o && $ifhtml > 0 )
+#      { $ifhtml = 2;
+#	$State{'ignore'} = 1; 
+#      }
+#      elsif ( m/^\\fi$/o && $ifhtml > 0 )
+#      { $ifhtml = 0;
+#	$State{'ignore'} = 0; 
+#      }
+#      elsif ( $State{'ignore'} ) { }
+
+#      elsif ( m/\\printindex/o )
+#      { 
+#	section($opt_prefix.'_idx'.$opt_ext,1,'Index', "<DL>\n");
+#	foreach $_ (sort(keys(%IDX)))
+#	{ out '<DT>',$_,"\n\t<DD><SMALL>",$IDX{$_},"</SMALL>\n"; }
+#	out "</DL>\n";
+#      }
+
+#      elsif ( !defined($out) )
+#      { }
+#      elsif ( $_ eq "\n" )
+#      { out "<P>"; }
+
+#      if ( m/\\begin{verbatim}/o )
+#      { $verbatim = 1;
+#	s/\\begin{verbatim}/<PRE>/go;
+#	out $_;
+#	$save = '';
+#      }
+#      elsif ( m/\\end{verbatim}/o )
+#      { $verbatim = 0;
+#	s/\\end{verbatim}/<\/PRE>/go;
+#	s/%.*//go;
+#	out $_;
+#	$save = '';
+#      }
+#      elsif ( $verbatim )
+#      { out $_;
+#	$save = '';
+#      }
+#      elsif ( m/\\def\\/o )
+#      { $save = '';
+#      }
+#      else
+      out TeX2html($_);
+    }
+    print STDERR "]" if ( $pass == 0 );
+    $fd->close;
+  }
+  redirect(undef,1);
+  print STDERR "\n";
+}
+
+#------------------------------------------------------------------------------
+# Function:	cite
+# Description:	
+#		
+# Returns:	
+#
+#
+sub cite 
+{ my $opt  = shift;
+  my $keys = shift;
+  my $ret = '';
+  local $_;
+  foreach $_ (split /,/,$keys)
+  { $ret .= ',' if ($ret ne '');
+    $ret .= "<A HREF='$opt_prefix\_bib$opt_ext#$_'>$cite{$_}</A>"
+  }
+  $ret .= ", $opt" if (defined($opt)&&$opt ne '');
+  return '['.$ret.']';
+}
+
+#------------------------------------------------------------------------------
+# Function:	citedef
+# Description:	
+#		
+# Returns:	
+#
+#
+sub citedef
+{ my $label = shift;
+  my $key   = shift;
+  $cite{$key} = $label; 
+  return "<DT><A NAME='$key'>[$label]<DD>";
+}
+
+#------------------------------------------------------------------------------
+# Function:	label
+# Description:	
+#		
+# Returns:	
+#
+#
+sub label
+{ my $label = shift;
+  my $tag   = shift;
+  $ShortLabelText{$label} = $Page;
+  $ShortLabelText{$label} =~ s/\.html$//o;
+  $ShortLabelText{$label} =~ s/_/\&\#095;/go;
+  if ( $tag )
+  { local $_ = 'tag'.($LabelNumber++);
+    $LabelURL{$label} = $Page.'#'.$_;
+    $LabelURL{$label} =~ s/_/\&\#095;/go;
+    return "<A NAME=\"$_\">";
+  }
+  $LabelURL{$label} = $Page;
+  $LabelURL{$label} =~ s/_/\&\#095;/go;
+  return '';
+}
+
+#------------------------------------------------------------------------------
+# Function:	Index
+# Description:	
+#		
+# Returns:	
+#
+#
+sub Index
+{ local $_ = shift;
+  my $i = $IndexNumber++;
+
+  $IDX{$_} .= ", " if ( $IDX{$_} ne '' );
+  $IDX{$_} .= "<A HREF='$Page#IDX$i'>$SectionTitle{$Page}</A>";
+  return "<A NAME='IDX$i'>";
+}
+
+#------------------------------------------------------------------------------
+# Function:	begingroup
+# Description:	
+# Returns:	
+#
+sub begingroup
+{
+  unshift @Group,$Group;
+  $Group = '';
+}
+
+#------------------------------------------------------------------------------
+# Function:	endgroup
+# Description:	
+# Returns:	
+#
+sub endgroup
+{ local $_ = $Group;
+  $Group = shift @Group;
+  return $_;
+}
+
+#------------------------------------------------------------------------------
+# Function:	atendgroup
+# Description:	
+# Returns:	
+#
+sub atendgroup
+{ local $_ = shift;
+  $Group = $_.$Group;
+}
+
+#------------------------------------------------------------------------------
+# Function:	RSc
+# Description:	
+#		
+# Returns:	
+#
+#
+sub RSc
+{ my ($rsc,$val) = @_;
+  return sf(Index($rsc),'<BLOCKQUOTE>',$rsc,' ',$val,'</BLOCKQUOTE>');
+}
+
+#------------------------------------------------------------------------------
+# Function:	sf
+# Description:	
+#		
+# Returns:	
+#
+#
+sub sf
+{ return '<FONT FACE="helvetica,geneva,arial">'.join('',@_).'</FONT>';
+}
+
+#------------------------------------------------------------------------------
+# Function:	load
+# Description:	
+# Returns:	
+#
+sub load
+{ shift;
+  my $file = shift;
+  do "$file";
+}
+
+#------------------------------------------------------------------------------
+use Getopt::Long;
+GetOptions ('author=s'	=> \$opt_author,
+	    'debug=s'	=> \$debug,
+	    'dir=s'	=> \$opt_dirname,
+	    'email=s'	=> \$opt_email,
+	    'ext=s'	=> \$opt_ext,
+	    'load=s'	=> \&load,
+	    'main=s'	=> \$opt_main,
+	    'prefix=s'	=> \$opt_prefix,
+	    'title=s'	=> \$opt_title,
+	    'v'		=> \$verbose,
+	    'verbose'	=> \$verbose,
+	    'year'	=> \$opt_year,
+	   );
+
+process(0,@ARGV);
+process(1,@ARGV);
+
+#------------------------------------------------------------------------------
+# Local Variables: 
+# mode: perl
+# End: 

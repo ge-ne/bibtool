@@ -1,0 +1,676 @@
+
+use L2H;
+
+#------------------------------------------------------------------------------
+# Variable:	%symbol
+# Description:	
+#
+my %symbol = 
+  ( '32'  => ' ',
+    '"20' => ' ',
+    '"5B' => '[',
+    '"5C' => '&#092;',
+    '"5D' => ']',
+    '"5E' => '&#094;',
+    '"7B' => '&#123;',
+    '"7D' => '&#125;',
+  );
+
+
+#------------------------------------------------------------------------------
+# Variable:	%accented
+# Description:	
+#
+my %accented =
+  ( '"a' => 'ä',    '"A' => 'Ä',
+    '"o' => 'ö',    '"O' => 'Ö',
+    '"u' => 'ü',    '"U' => 'Ü',
+    '"i' => 'ï',    '"I' => 'Ï',
+    '"e' => 'ë',    '"E' => 'Ë',
+    '"y' => 'ÿ',    '"Y' => 'ÿ',
+    '~n' => 'ñ',    '~N' => 'Ñ',
+    '~a' => 'ã',    '~A' => 'Ã',
+    '~o' => 'õ',    '~O' => 'Õ',
+    '`a' => 'à',    '`A' => 'À',
+    '`o' => 'ò',    '`O' => 'Ò',
+    '`e' => 'è',    '`E' => 'È',
+    '`i' => 'ì',    '`I' => 'Ì',
+    '`a' => 'à',    '`A' => 'À',
+    'cc' => 'ç',    'cC' => 'Ç',
+    '^a' => 'â',    '^A' => 'Â',
+    '^e' => 'ê',    '^E' => 'Ê',
+    '^i' => 'î',    '^I' => 'Î',
+    '^o' => 'ô',    '^O' => 'Ô',
+    '^u' => 'û',    '^U' => 'Û',
+  );
+
+newcommand('ptt', text => '\\tt');
+newcommand('psf', text => '\\sf');
+newcommand('pdollar', text => '\\$');#'
+newcommand('undefined');
+newcommand('global');
+newcommand('ifx');
+newcommand('ifnum');
+newcommand('else');
+newcommand('fi');
+newcommand('usepackage',arity=>'[]1');
+newcommand('input',arity=>'1');
+newcommand('hss');
+newcommand('vss');
+newcommand('rm');
+newcommand('thepage');
+newcommand('leftmark');
+newcommand('rightmark');
+newcommand('ignorespaces');
+newcommand('makeindex');
+newcommand('hline');
+newcommand('chaptername');
+newcommand('obeyspaces');
+newcommand('obeylines');
+newcommand('thesection');
+newcommand('textwidth');
+newcommand('z@');
+newcommand('c@secnumdepth');
+newcommand('newfont',arity => 2);
+
+newcommand('DeclareFontShape',arity=>5);
+newcommand('DeclareRobustCommand',arity=>2);
+
+
+newcommand('let',
+	   arity => 1,
+	   code => sub
+	   { my $self = shift;
+#	     my $tag = shift;
+	     s/^=//o;
+	     my $a;
+	     ($a,$_) = get_arg('let',$_);
+	     return '';
+	   });
+
+newcommand('def',
+	   arity => 1,
+	   code => sub
+	   { my $self = shift;
+#	     my $tag = shift;
+	     my $i = index($_,'{');
+#	     my $pattern = substr($_,0,$i-1);
+	     my $a;
+	     ($a,$_) = get_arg('def',substr($_,$i));
+	     return '';
+	   });
+
+
+#newcommand('@author',			text => '');
+#newcommand('@title',			text => '');
+
+newcommand(' ',			text => ' ');
+newcommand("\t",		text => ' ');
+newcommand("\n",		text => ' ');
+newcommand('#'	,		text => '#');
+newcommand('!',			text => '');
+newcommand('-',			text => '');
+newcommand("\$",		text => '&#036;');
+newcommand('%',			text => '&#037;');
+newcommand('&',			text => '&amp;');
+newcommand(',',			text => ' ');
+newcommand('/',			text => '');
+newcommand('(',			text => '<I>', 		context => 'math');
+newcommand(')',			text => '</I>',		context => '/');
+newcommand('"',
+	   arity => 1,
+	   code => sub
+	   { shift;
+	     local $_ = '"'.shift;
+	     return ( exists $accented{$_}
+		      ? $accented{$_}
+		      : $_ );
+	   });
+newcommand('@',
+	   text => '@');
+newcommand('AA',
+	   text => 'Å');
+newcommand('AE',
+	   text => 'Æ');
+newcommand('BibTeX',
+	   text => 'B<small>IB</small><span class="t">T</span><span class="e">e</span>X');
+newcommand('huge',
+	   text => '<font size="7">',
+	   code => sub{ return shift->atendgroup('</font>'); });
+newcommand('Huge',
+	   text => '<font size="7">',
+	   code => sub{ return shift->atendgroup('</font>'); });
+newcommand('LaTeX',
+	   text => 'L<span class="a">a</span><span class="t">T</span><span class="e">e</span>X');
+newcommand('Large',
+	   text => '<font size="5">',
+	   code => sub{ return shift->atendgroup('</font>'); });
+newcommand('LARGE',
+	   text => '<font size="6">',
+	   code => sub{ return shift->atendgroup('</font>'); });
+newcommand('O',
+	   text => 'Ø');
+newcommand('P',
+	   text => '§');
+newcommand('TeX',
+	   text => '<span class="t">T</span><span class="e">e</span>X');
+newcommand('[',
+	   text => '[');
+newcommand('\\',
+	   arity => '[]0',
+	   code => sub
+	   { my $self = shift;
+#	     print STDERR '--- ',$self->{'context'},"\n";
+	     return '</TD></TR><TR><TD>' if ($self->{'context'} eq 'tabular');
+	     return '<BR>';
+	   });
+newcommand(']',
+	   text => ']');
+newcommand('^',
+	   arity => 1,
+	   code => sub
+	   { shift;
+	     local $_ = shift;
+#	     print STDERR $_,"\n";
+	     return ( $L2H::accented{'^'.$_} || '&#094;'.$_ );
+	   });
+newcommand('_',
+	   text => '&#095;');
+newcommand('aa',
+	   text => 'å');
+newcommand('ae',
+	   text => 'æ');
+newcommand('addtolength',
+	   arity => 2);
+newcommand('appendix');
+newcommand('author',
+	   arity => 1,
+	   code => sub
+	   { my ($self,$author) = @_;
+	     renewcommand('@author','text'=>$author);
+	     if ( $self->opt('author') eq '' )
+	     { my $trans = new L2H();
+	       set_opt('author',$trans->LaTeX2HTML($author));
+	     }
+	     return '';
+	   });
+newcommand('backslash',
+	   text => '&#092;');
+newcommand('begingroup',
+	   code => sub { return shift->begingroup(); });
+newcommand('bf',
+	   text => '<b>',
+	   code => sub{ return shift->atendgroup('</b>'); });
+newcommand('bibitem',
+	   arity => '[]1',
+	   code => sub{
+	     my $self  = shift;
+	     my $label = shift;
+	     my $key   = shift;
+	     $self->{"cite:$key"} = $label; 
+	     return "<DT><A NAME='$key'>[$label]<DD>";
+	   });
+newcommand('bibliography',
+	   arity => 1,
+	   code => sub
+	   { my $self = shift;
+	     return $self->section($self->opt('prefix').'&#095;bib'.$self->opt('ext'),
+				   'bibliography',
+				   'Bibliography',
+				   $self->{BIB});
+	   });
+newcommand('bibliographystyle',
+	   arity => 1);
+newcommand('bigskip');
+newcommand('c',
+	   arity => 1,
+	   code => sub
+	   { shift;
+	     local $_ = 'c'.shift;
+	     return ( $L2H::accented{$_} || $_ );
+	   });
+newcommand('cal');
+newcommand('cdot',
+	   text => '·');
+newcommand('chapter',
+	   arity => 1,
+	   code => sub
+	   { my $self = shift;
+	     local $_ = shift;
+	     return $self->section(undef,'chapter',$_,'');
+	   });
+newcommand('cite',
+	   arity => '[]1',
+	   code => sub
+	   { my $self = shift;
+	     my $add  = shift;
+	     my $keys = shift;
+	     my $ret  = '';
+	     local $_;
+	     my $bibfile = $self->opt('prefix').'&#095;bib'.$self->opt('ext');
+	     foreach $_ (split /,/,$keys)
+	     { $ret .= ',' if ($ret ne '');
+	       $ret .= "<A HREF='$bibfile#$_'>";
+#	       print STDERR "---> $_ >".$self->{"cite:$_"}."<\n";
+	       if ( defined ($self->{"cite:$_"}) )
+	       { $ret .= $self->{"cite:$_"}; }
+	       else
+	       { print STDERR "*** Missing citation `$_'\n"
+		     if ( $self->{'message:p'} );
+		 $ret .= '???';
+	       }
+	       $ret .= '</A>';
+	     }
+	     $ret .= ", $add" if ( defined($add) and $add ne '' );
+	     return '['.$ret.']';
+	   });
+newcommand('copyright',
+	   text => '©');
+newcommand('documentclass',
+	   arity => '[]1');
+newcommand('documentstyle',
+	   arity => '[]1');
+newcommand('dots',
+	   text => '...');
+newcommand('em',
+	   text => '<EM>',
+	   code => sub{ return shift->atendgroup('</EM>'); });
+newcommand('emph',
+	   arity => 1,
+	   text => '<EM>#1</EM>');
+newcommand('endgroup',
+	   code => sub{return shift->endgroup;});
+newcommand('endinput',		
+	   code => sub{ $_ = ''; return ''; });
+newcommand('footnote',
+	   arity => 1,
+	   code => sub { my ($self,$fntext) = @_;
+			 return $self->footnote($fntext);
+		       });
+newcommand('footnotesize',
+	   text => '<FONT SIZE="-2">',
+	   code => sub{ return shift->atendgroup('</FONT>'); });
+newcommand('geq',		text => ' &gt;= ');
+newcommand('hspace',
+	   code => sub
+	   { my $self = shift;
+	     my $a;
+	     if ( m/^\s*\*\s*/o ) { $_ = $'; }
+	     ($a,$_) = get_arg('hspace',$_);
+	     s/^\s//go;
+	     return '';
+	   });
+newcommand('hss',		);
+newcommand('index',
+	   arity=>'1',
+	   code => sub
+	   { my ($self,$key) = @_;
+	     return $self->Index($key);
+	   }
+	  );
+newcommand('item',
+	   arity=>'[]0',
+	   code => sub
+	   { shift;
+	     local $_ = shift;
+	     return "<DT>$_<DD>" if (defined($_) );
+	     return '<LI>';
+	   }
+	  );
+newcommand('label',
+	   arity => 1,
+	   code => sub{ return shift->label(@_,1); });
+newcommand('large',
+	   text => '<font size="4">',
+	   code => sub{ return shift->atendgroup('</font>'); });
+newcommand('ldots',
+	   text => '...');
+newcommand('leq',
+	   text => ' &lt;= ');
+newcommand('makeatletter',
+	   text => '');
+newcommand('makeatother',
+	   text => '');
+newcommand('maketitle',
+	   text => '');
+newcommand('markboth',
+	   arity => 2);
+newcommand('markright',
+	   arity => 1);
+newcommand('mbox');
+newcommand('medskip');
+newcommand('mid',
+	   text => '|');
+newcommand('neg',
+	   text => '¬');
+newcommand('newblock');
+newcommand('newcommand',
+	   arity => '1[]1',
+	   code => sub
+	   { my ($self,$name,$arity,$text) = @_;
+	     $name =~ s/^\\//o;
+	     return newcommand($name,'arity' => $arity,'text' => $text);
+	   });
+newcommand('newenvironment',
+	   arity => '3',
+	   code => sub
+	   { my ($self,$name,$text,$endtext) = @_;
+	     my $arity = 0; # Needs to be fixed.
+	     $name =~ s/^\\//o;
+	     newcommand("end{$name}",'endtext' => $endtext);
+	     return newcommand("begin{$name}",'arity' => $arity,'text' => $text);
+	   });
+newcommand('newif',
+	   arity => 1,
+	   code => sub
+	   { my ($self,$name) = @_;
+	     $name = substr($name,1);
+	     newcommand($name,text=>'');
+	     $name = substr($name,2);
+	     $self->{'if:'.$name} = 0;
+	     newcommand($name.'true',code=>sub{shift->{"if:$name"}=1});
+	     newcommand($name.'false',code=>sub{shift->{"if:$name"}=0});
+	     return '';
+	   });
+newcommand('newpage',
+	   text => '<br><hr><br>');
+newcommand('noindent');
+newcommand('normalsize',
+	   text => '<font size="3">',
+	   code => sub{ return shift->atendgroup('</font>'); });
+newcommand('null');
+newcommand('o',
+	   text => 'ø');
+newcommand('pageref',
+	   arity => 1,
+	   code => sub
+	   { my ($self,$label) = @_;
+	     if ( defined($self->{'label_url:'.$label}) )
+	     { return '<A HREF="'.$self->{'label_url:'.$label}.
+		   '">'.$self->{'label_text:'.$label}.'</A>';
+	     }
+	     else
+	     { if ( $self->{'message:p'} )
+	       { print STDERR "*** Missing label `$label'\n"; }
+	       return '???';
+	     }
+	   });
+newcommand('pagestyle');
+newcommand('par',
+	   text => "\n<p>\n");
+newcommand('paragraph',
+	   arity => 1,
+	   code => sub
+	   { my $self = shift;
+	     local $_ = shift;
+	     return $self->section(undef,'paragraph',$_,'');
+	   });
+newcommand('part',
+	   arity => 1,
+	   code => sub
+	   { my $self = shift;
+	     local $_ = shift;
+	     return $self->section(undef,'part',$_,'');
+	   });
+newcommand('pm',
+	   text => '±');
+newcommand('pounds',
+	   text => '£');
+newcommand('printindex',
+	   code => sub
+	   { my $self = shift;
+	     my $res  = '<small><dl>';
+	     my $trans = new L2H;
+	     local $_;
+	     foreach $_ (sort keys %{$self->{'INDEX'}})
+	     { my $key = $trans->LaTeX2HTML($self->{'index_name:'.$_});
+	       $res .= '<DT>'.$key.'<DD>'.$self->{'INDEX'}{$_};
+	     }
+	     $res .= '</dl></small>';
+	     $self->section($self->opt('prefix').'&#095;idx'.$self->opt('ext'),
+			    'index',
+			    'Index',
+			    $res);
+	     return '';
+	   });
+newcommand('ref',
+	   arity => 1,
+	   code => sub
+	   { my ($self,$label) = @_;
+	     if ( defined($self->{'label_url:'.$label}) )
+	     { return '<a href="'.$self->{'label_url:'.$label}.
+		      '">'.$self->{'label_text:'.$label}.'</a>';
+	     }
+	     else
+	     { if ( $self->{'message:p'} )
+	       { print STDERR "*** Missing label `$label'\n"; }
+	       return '???';
+	     }
+	   });
+newcommand('relax');
+newcommand('renewcommand',
+	   arity => '1[]1',
+	   code => sub
+	   { my ($self,$name,$arity,$text) = @_;
+	     $name =~ s/^\\//o;
+	     return renewcommand($name,
+				 'arity'   => $arity,
+				 'text'    => $text,
+				 'noredef' => 1);
+	   });
+newcommand('rule',
+	   arity => 2,
+	   text => '<hr>');
+newcommand('sc');
+newcommand('scriptsize',
+	   text => '<font size="-3">',
+	   code => sub{ return shift->atendgroup('</font>'); });
+newcommand('section',
+	   arity => 1,
+	   code => sub
+	   { my $self = shift;
+	     local $_ = shift;
+	     return $self->section(undef,'section',$_,'');
+	   });
+newcommand('setlength',
+	   arity => 2);
+newcommand('sf',
+	   text => '<font face="sans-serif">',
+	   code => sub{ return shift->atendgroup('</font>'); });
+newcommand('small',
+	   text => '<font size="-1">',
+	   code => sub{ return shift->atendgroup('</font>'); });
+newcommand('smallskip');
+newcommand('ss',
+	   text => 'ß');
+newcommand('subsection',
+	   arity => 1,
+	   code => sub
+	   { my $self = shift;
+	     local $_ = shift;
+	     return $self->section(undef,'subsection',$_,'');
+	   });
+newcommand('subsubsection',
+	   arity => 1,
+	   code => sub
+	   { my $self = shift;
+	     local $_ = shift;
+	     return $self->section(undef,'subsubsection',$_,'');
+	   });
+newcommand('symbol',
+	   arity => 1,
+	   code => sub
+	   { shift;
+	     local $_ = shift;
+	     return $symbol{$_}; });
+newcommand('tableofcontents',
+	   code => sub
+	   { my $self = shift;
+	     return $self->section($self->opt('prefix').'_toc'.$self->opt('ext'),
+				   'tableofcontents',
+				   'Table of contents',
+				   $self->{TOC});
+	   });
+newcommand('textbf',
+	   arity => 1,
+	   text => '<b>#1</b>');
+newcommand('textit',
+	   arity => 1,
+	   text => '<i>#1</i>');
+newcommand('textrm',
+	   arity => 1,
+	   text => '#1');
+newcommand('textsc',
+	   arity => 1,
+	   code => sub
+	   { my ($self,$t) = @_;
+	     $t =~ s/[^A-Z]+/'<small>'.uc($&).'<\/small>'/eg;
+	     return $t;
+	   });
+newcommand('textsf',
+	   arity => 1,
+	   text => '<font face="sans-serif">#1</font>');
+newcommand('texttt',
+	   arity => 1,
+	   text => '<tt>#1</tt>');
+newcommand('thispagestyle');
+newcommand('tiny',
+	   text => '<font size="1">',
+	   code => sub{ return shift->atendgroup('</font>'); });
+newcommand('title',		arity => 1,
+	   code => sub {
+	     my ($self,$title) = @_;
+	     newcommand('@title','text'=>$title);
+	     if ( $self->opt('title') eq '' )
+	     { my $trans = new L2H();
+	       set_opt('title',$trans->LaTeX2HTML($title));
+	     }
+	     return '';
+	   });
+newcommand('tt',
+	   text => '<tt>',
+	   code => sub { return shift->atendgroup('</tt>'); });
+newcommand('verb',
+	   code => sub {
+	     s/^\s*//o;
+	     my $e = index($_,substr($_,0,1),1);
+	     if ( $e < 0 )
+	     { $e = substr($_,0,1);
+	       print STDERR "*** \\verb$e without closing `$e'\n";
+	     }
+	     else
+	     { my $v = substr($_,1,$e-1);
+	       $_ = substr($_,$e+1);
+	       $v =~ s/\&/\&amp;/go;
+	       $v =~ s/"/\&quot;/go;#"
+	       $v =~ s/\$/\&\#036;/go;
+	       $v =~ s/%/\&\#037;/go;
+	       $v =~ s/\\/\&\#092;/go;
+	       $v =~ s/[\\^]/\&\#094;/go;
+	       $v =~ s/_/\&\#095;/go;
+	       $v =~ s/\{/\&\#123;/go;
+	       $v =~ s/\}/\&\#125;/go;
+	       return "<CODE>$v</CODE>";
+	     }
+	     return '';
+	   });
+newcommand('begin{verbatim}',
+	   code => sub {
+	     my $e = index($_,'\\end{verbatim}');
+	     if ( $e < 0 )
+	     { print STDERR "*** \\begin{verbatim} without matching end\n"; }
+	     else
+	     { my $v = substr($_,1,$e-1);
+	       $_ = substr($_,$e+14);
+	       $v =~ s/\&/\&amp;/go;
+	       $v =~ s/"/\&quot;/go;#"
+	       $v =~ s/\\$/\&\#036;/go;
+	       $v =~ s/%/\&\#037;/go;
+	       $v =~ s/\\/\&\#092;/go;
+	       $v =~ s/[\\^]/\&\#094;/go;
+	       $v =~ s/_/\&\#095;/go;
+	       $v =~ s/\{/\&\#123;/go;
+	       $v =~ s/\}/\&\#125;/go;
+	       return "<PRE>$v</PRE>";
+	     }
+	     return '';
+	   });
+newcommand('vfill',
+	   text => '<br><br>');
+newcommand('vspace',
+	   code => sub
+	   { my $self = shift;
+	     my $a;
+	     if ( m/^\s*\*\s*/o ) { $_ = $'; }
+	     ($a,$_) = get_arg('hspace',$_);
+	     s/^\s//go;
+	     return '';
+	   } );
+newcommand('{',			 text => '&#123;');
+newcommand('|',			 text => '');
+newcommand('}',			 text => '&#125;');
+newcommand('~',
+	   arity => 1,
+	   code => sub
+	   { shift;
+	     local $_ = '~'.shift;
+	     return ( $L2H::accented{$_} || $_ );
+	   });
+
+newenvironment('center',
+	       text    => '<center>',
+	       endtext => '</center>');
+newenvironment('description',
+	       text    => '<dl>',
+	       endtext => '</dl>');
+newenvironment('document',
+	       code    => sub {my $self = shift;
+			       $self->{'ignore:p'} = 0;
+			       return '';},
+	       endcode => sub {shift->{'ignore:p'} = 1; return '';});
+newenvironment('enumerate',
+	       text    => '<ol>',
+	       endtext => '</ol>');
+newenvironment('itemize',
+	       text    => '<ul>',
+	       endtext => '</ul>');
+newenvironment('list',
+	       arity   => 2,
+	       text    => '<ul>',
+	       endtext => '</ul>');
+newenvironment('tabular',
+	       arity   => 1,
+	       text    => '<table><tr><td>',
+	       code    => sub { return shift->push_context('tabular'); },
+	       endtext => '</td></tr></table>',
+	       endcode    => sub { return shift->pop_context; }
+	       );
+newenvironment('tabular*',
+	       arity   => 1,
+	       text    => '<table><tr><td>',
+	       code    => sub { return shift->push_context('tabular'); },
+	       endtext => '</td></tr></table>',
+	       endcode    => sub { return shift->pop_context; }
+	       );
+newcommand('begin{thebibliography}',
+	       arity   => 1,
+	       code    =>  sub
+	       { my $self = shift;
+		 m/\\end{thebibliography}/o;
+		 my $bib = $`;
+		 $_ = $';
+		 my $trans = new L2H();
+		 $self->{'BIB'} = "\n<DL>\n".$trans->LaTeX2HTML($bib)."\n</DL>\n";
+		 my %hash = %$trans;
+		 while ( my ($key,$value) = each %hash )
+		 { $self->{$key} = $value if ( $key =~ m/^cite:/o );
+		 }
+		 return '';
+	       },
+	       );
+
+1;
+#------------------------------------------------------------------------------
+# Local Variables: 
+# mode: perl
+# End: 
