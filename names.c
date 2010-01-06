@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: names.c,v 1.7 2010-01-05 23:00:14 gene Exp $
+** $Id: names.c,v 1.8 2010-01-06 18:44:11 gene Exp $
 *******************************************************************************
 ** 
 ** This file is part of BibTool.
@@ -33,7 +33,7 @@
  Uchar * pp_list_of_names _ARG((char **wa,NameNode format,char *trans,int max,char *comma,char *and,char *namesep,char *etal));/* names.c*/
  char * pp_names _ARG((char *s,NameNode format,char *trans,int max,char *namesep,char *etal));/* names.c*/
  static NameNode new_name_node _ARG((int type,int strip,int trim,Uchar *pre,Uchar *mid,Uchar *post));/* names.c*/
- static int is_jr _ARG((char * s));		   /* names.c                */
+ static int is_jr _ARG((char * s, int eager));	   /* names.c                */
  static int is_lower_word _ARG((char *s));	   /* names.c                */
  static void initial _ARG((char *s,char *trans,int len,StringBuffer *sb));/* names.c*/
  static void pp_one_name _ARG((StringBuffer *sb,char **w,NameNode format,char *trans,int len,char *comma,int commas));/* names.c*/
@@ -146,6 +146,8 @@ static void dump_name_node(n)			   /*                        */
 	  (NameMid(n)?(char*)NameMid(n):""),	   /*                        */
 	  (NamePost(n)?(char*)NamePost(n):""));	   /*                        */
 }						   /*------------------------*/
+#else
+#define dump_name_node(N)
 #endif
 
 
@@ -212,8 +214,8 @@ void set_name_format(nodep,s)			   /*                        */
   free_name_node(*nodep);			   /*                        */
   *nodep = NameNULL;				   /*                        */
  						   /*                        */
-  if      (strcmp(s,"short")==0) { UseBuffer("{ll{-}}"); }
-  else if (strcmp(s,"med")  ==0) { UseBuffer("{f{}}{ll{-}}"); }
+  if      (strcmp(s,"short")==0) { UseBuffer("{ll{-}}"); }/*                 */
+  else if (strcmp(s,"med")  ==0) { UseBuffer("{f{}}{ll{-}}"); }/*            */
  						   /*                        */
   while ( *s  )					   /*                        */
   {						   /*                        */
@@ -257,9 +259,7 @@ void set_name_format(nodep,s)			   /*                        */
       post = symbol(post);			   /*                        */
       *(s-1) = c;				   /*                        */
       *nodep = new_name_node(type, strip, trim, pre, mid, post);/*           */
-#ifdef DEBUG
       dump_name_node(*nodep);			   /*                        */
-#endif
       nodep  = &NextName(*nodep);		   /*                        */
     }						   /*                        */
   }						   /*                        */
@@ -466,16 +466,19 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   { OUT_OF_MEMORY("name type"); }   		   /*                        */
  						   /*                        */
 #ifdef DEBUG
+  printf("Name parts");				   /*                        */
   for (i = 0; i < len; i++)			   /*                        */
   { printf("/%s/ ",w[i]); }			   /*                        */
-  puts("");					   /*                        */
+  putchar('\n');				   /*                        */
 #endif
  						   /*                        */
   if ( commas == 0 )				   /*------------------------*/
   {						   /* ff vv ll               */
     j = len - 1;				   /* ff vv ll jr            */
-    if ( is_jr(w[j]) ) { type[j--] = 'j'; jr++; }  /*                        */
-    if ( j >= 0 )      { type[j] = 'l'; last++; }  /*                        */
+    if ( is_jr(w[j], TRUE) )			   /*                        */
+    { type[j--] = 'j'; jr++; }			   /*                        */
+    if ( j >= 0 )				   /*                        */
+    { type[j] = 'l'; last++; }  		   /*                        */
     i = 0;					   /*                        */
     while ( i < j && !is_lower_word(w[i]) )	   /*                        */
     { type[i++] = 'f'; first++; }		   /*                        */
@@ -487,7 +490,7 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   else if (   commas == 1			   /*------------------------*/
 	   && len > 2				   /* ff vv ll, jj           */
 	   && w[len-2] == comma			   /*                        */
-	   && is_jr(w[len-1]) )			   /*                        */
+	   && is_jr(w[len-1], FALSE) )		   /*                        */
   { j = len - 1;				   /*                        */
     type[j--] = 'j'; jr++;			   /*                        */
     type[j--] = ',';				   /*                        */
@@ -511,7 +514,7 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
     { type[i++] = 'l'; last++; }		   /*                        */
     type[i++] = ',';				   /*                        */
 			   			   /*------------------------*/
-    if ( commas == 2 && i < len && is_jr(w[i]) )   /* ll, jj, ff vv          */
+    if ( commas == 2 && i < len && is_jr(w[i], TRUE) )/* ll, jj, ff vv       */
     { type[i] = 'j'; jr++;			   /*                        */
       type[++i] = ',';				   /*                        */
     }						   /*                        */
@@ -521,10 +524,11 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
     { type[i++] = 'v'; von++; }			   /*                        */
   }						   /*                        */
  						   /*                        */
-#ifdef NAMES_DEBUG
+#ifdef DEBUG
+  printf("Classified parts: ");			   /*                        */
   for ( i = 0; i < len; i++)			   /*                        */
-  { printf("%c ",type[i]); }			   /*                        */
-  puts("");					   /*                        */
+  { printf("%c/%s/ ",type[i], w[i]); }		   /*                        */
+  putchar('\n');				   /*                        */
 #endif
  						   /*                        */
   for ( nn = format;				   /*                        */
@@ -532,9 +536,7 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
         nn = NextName(nn) )			   /*                        */
   { int strip = NameStrip(nn);			   /*                        */
     int trim  = NameTrim(nn);			   /*                        */
-#ifdef DEBUG
-    dump_name_node(nn);				   /*                        */
-#endif
+    dump_name_node(nn);				   /* only in debug mode     */
     switch( NameType(nn) & NameTypeMask )	   /*                        */
     { case NameFirst:	t = 'f'; j = first; break; /*                        */
       case NameLast:	t = 'l'; j = last;  break; /*                        */
@@ -556,7 +558,7 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
       for ( i = 0; i < len; i++ )		   /*                        */
       { if ( type[i] == t )			   /*                        */
 	{					   /*                        */
-	  if ( trim-- == 0 ) { break; }
+  	  if ( trim-- == 0 ) break;		   /*                        */
 	  if ( again ) sbputs(NameMid(nn), sb);	   /*                        */
 	  else again = TRUE;			   /*                        */
  						   /*                        */
@@ -605,10 +607,13 @@ static void initial(s,trans,len,sb)		   /*                        */
 **
 ** Arguments:
 **	s	string to consider
+**      eager   indicator whether single letters should be classified as
+**		Roman numbers
 ** Returns:	
 **___________________________________________________			     */
-static int is_jr(s)				   /*                        */
+static int is_jr(s, eager)			   /*                        */
   char * s;					   /*                        */
+  int  eager;					   /*                        */
 {						   /*                        */
   switch ( ToLower(*s) )			   /*                        */
   { case 'j':					   /*                        */
@@ -630,20 +635,20 @@ static int is_jr(s)				   /*                        */
 	       case_cmp(s,"hD.")  );	   	   /*                        */
     case 'i':					   /*                        */
       s++;					   /*                        */
-      return ( *s == '\0' ||			   /*                        */
+      return ( (*s == '\0' && eager) ||		   /*                        */
 	       strcmp(s,"I")    == 0 ||	   	   /*                        */
 	       strcmp(s,"II")   == 0 ||	   	   /*                        */
 	       strcmp(s,"V")    == 0 ||	   	   /*                        */
 	       strcmp(s,"X")    == 0 );	   	   /*                        */
     case 'v':					   /*                        */
       s++;					   /*                        */
-      return ( *s == '\0' ||			   /*                        */
+      return ( (*s == '\0' && eager) ||		   /*                        */
 	       strcmp(s,"I")    == 0 ||	   	   /*                        */
 	       strcmp(s,"II")   == 0 ||	   	   /*                        */
 	       strcmp(s,"III")  == 0 );	   	   /*                        */
     case 'x':					   /*                        */
       s++;					   /*                        */
-      return ( *s == '\0' ||			   /*                        */
+      return ( (*s == '\0' && eager) ||		   /*                        */
 	       strcmp(s,"I")     == 0 ||	   /*                        */
 	       strcmp(s,"II")    == 0 ||	   /*                        */
 	       strcmp(s,"III") 	 == 0 ||	   /*                        */
@@ -663,8 +668,7 @@ static int is_jr(s)				   /*                        */
 	       strcmp(s,"XVII")  == 0 ||	   /*                        */
 	       strcmp(s,"XVIII") == 0 ||	   /*                        */
 	       strcmp(s,"XIX")   == 0 ||	   /*                        */
-	       strcmp(s,"XX")    == 0 ||	   /*                        */
-	       strcmp(s,"XXX")   == 0 );	   /*                        */
+	       strcmp(s,"XX")    == 0 );	   /*                        */
     case 'e':					   /*                        */
       return ( case_cmp(++s,"sc") ||	   	   /*                        */
 	       case_cmp(s,"sc.")  );		   /*                        */

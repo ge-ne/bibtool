@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!-- ====================================================================== -->
-<!--  $Id: Changes.xml,v 1.3 2010-01-05 22:59:55 gene Exp $                -->
+<!--  $Id: Changes.xml,v 1.4 2010-01-06 18:44:07 gene Exp $                -->
 <!-- ====================================================================== -->
 
 <changes>
@@ -10,14 +10,19 @@
  </developers>
 
  <!-- ===================================================================== -->
+ <release version="2.49" date="January 6, 2010">
+  <action dev="gene" type="fix">
+	Bugfix in names.c: The classification of name parts erroursely has
+	considered the initials V., I., and X. to be Roman numerals belonging
+	to the jr part under special circumstances. This has been improved.
+  </action>
+ </release>
+
+ <!-- ===================================================================== -->
  <release version="2.49" date="January 5, 2010">
   <action dev="gene" type="add">
 	Name formatting now uses a fractional part to restrict the number
 	of name parts considered.
-  </action>
-  <action dev="gene" type="fix">
-	Bugfix in names.c: The roman numeral XXX has not been recognized as
-	indicated in the documentation.
   </action>
  </release>
 
