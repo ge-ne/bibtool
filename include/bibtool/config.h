@@ -1,6 +1,6 @@
-/* include/bibtool/config.h.  Generated automatically by configure.  */
+/* include/bibtool/config.h.  Generated from config.h.in by configure.  */
 /******************************************************************************
-** $Id: config.h,v 1.4 2010-01-05 14:14:21 gene Exp $
+** $Id: config.h,v 1.5 2010-01-06 13:57:42 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -9,7 +9,7 @@
 ** 
 ** (c) 1996-2010 Gerd Neugebauer
 ** 
-** Net: gerd.neugebauer@sdm.de
+** Net: gene@gerd-neugebauer.de
 ** 
 ******************************************************************************/
 

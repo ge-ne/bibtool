@@ -1,6 +1,6 @@
 #!d:/Programme/Perl/bin/perl -w
 ##*****************************************************************************
-## $Id: L2H.pl,v 1.1 2010-01-05 23:09:56 gene Exp $
+## $Id: L2H.pl,v 1.2 2010-01-06 13:57:42 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -51,21 +51,21 @@ my %debug_map = ( all     => 255,
 		);
 
 use Getopt::Long;
-GetOptions ('author=s'	=> \$L2H::opt{author},
+GetOptions ('author=s'	=> \$trans::opt{author},
 	    'd=s'	=> \@debug,
 	    'debug=s'	=> \@debug,
-	    'dir=s'	=> \$L2H::opt{'dirname'},
-	    'email=s'	=> \$L2H::opt{email},
-	    'ext=s'	=> \$L2H::opt{ext},
+	    'dir=s'	=> \$trans::opt{'dirname'},
+	    'email=s'	=> \$trans::opt{email},
+	    'ext=s'	=> \$trans::opt{ext},
 	    'h'		=> \&usage,
 	    'help'	=> \&usage,
 	    'load=s'	=> \&load,
-	    'main=s'	=> \$L2H::opt{main},
-	    'prefix=s'	=> \$L2H::opt{prefix},
-	    'title=s'	=> \$L2H::opt{title},
+	    'main=s'	=> \$trans::opt{main},
+	    'prefix=s'	=> \$trans::opt{prefix},
+	    'title=s'	=> \$trans::opt{title},
 	    'v'		=> \$verbose,
 	    'verbose'	=> \$verbose,
-	    'year'	=> \$L2H::opt{year},
+	    'year'	=> \$trans::opt{year},
 	   );
 
 foreach $_ (@debug)

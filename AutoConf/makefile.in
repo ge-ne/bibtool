@@ -1,5 +1,5 @@
 # *****************************************************************************
-#  $Id: makefile.in,v 1.6 2010-01-05 14:06:06 gene Exp $
+#  $Id: makefile.in,v 1.7 2010-01-06 13:57:42 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -298,7 +298,7 @@ C_FLAGS	      = $(CFLAGS) $(C_INCLUDE) $(FILE_TYPES)
 
 CFILES	      = main.c				\
 		$(CLIBFILES)
-CLIBFILES     = crossref.c
+CLIBFILES     = crossref.c			\
 		database.c			\
 		entry.c				\
 		error.c				\

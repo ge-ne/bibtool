@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H_file.pm,v 1.1 2010-01-05 23:09:56 gene Exp $
+## $Id: L2H_file.pm,v 1.2 2010-01-06 13:57:42 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -19,7 +19,7 @@ require Exporter;
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.1 $'; #'
+  my $VERSION = '$Revision: 1.2 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
 
@@ -85,7 +85,7 @@ sub put_footnotes
 { my $self = shift;
 
   $self->put("<hr width='15%' align='left' noshade/>$self->{footnotes}<br />")
-      if ( $self->{footnotes} ne '' );
+      if $self->{footnotes} ne '';
 }
 
 #------------------------------------------------------------------------------
@@ -131,12 +131,12 @@ sub redirect
     $self->{page_head} =~ s/\$\$/2/go;
 
     $self->put(<<_EOF_);
-<BR><BR>
+<br><br>
 $self->{page_head}
-<FONT FACE="helvetica,geneva,arial" SIZE="1">\&copy; $opt_year
-<A HREF="mailto:$opt_email">$opt_author</A></FONT>
-</BODY>
-</HTML>
+<font face="sans-serif" size="1">\&copy; $opt_year
+<a href="mailto:$opt_email">$opt_author</a></font>
+</body>
+</html>
 _EOF_
     $self->{out}->close;
   }
@@ -151,7 +151,8 @@ _EOF_
 
   $self->{out} = new FileHandle(">$opt_dirname/$fname");
   return undef if ( !defined($self->{out}) );
-#  print STDERR "--- Output to $opt_dirname/$fname\n" if ( $self->{debug} & 2 );
+  print STDERR "--- Output to $opt_dirname/$fname\n" if ( $self->{debug} & 2 );
+  print STDERR "--- Output to $opt_dirname/$fname\n";
 
   my $in;
   my $Cat = '';
@@ -160,13 +161,13 @@ _EOF_
     next if ( not defined($s) );
     my $st = $self->{'title:'.$s};
     $in = $i*16;
-    $Cat .= "<IMG SRC=\"space.gif\" HEIGHT=\"1\" WIDTH=\"$in\">" if( $in>0 );
-    $Cat .= "<A HREF=\"$s\">$st</A><BR>\n";
+    $Cat .= "<img src=\"space.gif\" height=\"1\" width=\"$in\">" if( $in>0 );
+    $Cat .= "<a href=\"$s\">$st</a><br>\n";
   }
   $in = $n*16;
-  $Cat .= "<IMG SRC=\"space.gif\" HEIGHT=\"1\" WIDTH=\"$in\">" if( $in>0 );
+  $Cat .= "<img src=\"space.gif\" height=\"1\" width=\"$in\">" if( $in>0 );
   { my $s = $self->{"nav:$n"};
-    $Cat .= '<B>'.$self->{"title:$s"}."</B>\n";
+    $Cat .= '<b>'.$self->{"title:$s"}."</b>\n";
   }
 
   $self->{children} = '';
@@ -179,7 +180,7 @@ _EOF_
     { $self->{children} .= "\n<DD> <A HREF=\"$_\_$i$opt_ext\">$st</A>\n";
     }
   }
-  $self->{children} = '<HR><P><DL>'.$self->{children}.'</DL></P>'
+  $self->{children} = '<hr /><p /><dl>'.$self->{children}.'</dl></p>'
       if ( $self->{children} ne '');
 
   my $Back = button($self->{'prev:'.$fname},'Back','Back','back.gif','back2.gif');

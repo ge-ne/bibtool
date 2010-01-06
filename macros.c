@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: macros.c,v 1.7 2010-01-05 23:00:08 gene Exp $
+** $Id: macros.c,v 1.8 2010-01-06 13:57:42 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -452,7 +452,7 @@ void save_key(name, key)			   /*                        */
 **___________________________________________________			     */
 Uchar * get_key_name(name)			   /*                        */
   Uchar *name;			   	   	   /*                        */
-{ return get_mapped_or_cased(s,			   /*                        */
+{ return get_mapped_or_cased(name,		   /*                        */
 			     keys,		   /*                        */
 			     SYMBOL_TYPE_LOWER);   /*                        */
 }						   /*------------------------*/
