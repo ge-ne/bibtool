@@ -1,5 +1,5 @@
 ##*****************************************************************************
-## $Id: Makefile,v 1.5 2010-01-05 23:00:14 gene Exp $
+## $Id: Makefile,v 1.6 2010-01-06 19:23:38 gene Exp $
 ##=============================================================================
 ## 
 ## This file is part of BibTool.
@@ -36,13 +36,17 @@ DIR_SEP   = /
 
 ##-----------------------------------------------------------------------------
 
-all: bibtool.dvi ref_card.dvi c_lib
+all: bibtool.pdf ref_card.pdf c_lib.pdf
 
 ##-----------------------------------------------------------------------------
 
 bibtool.dvi: bibtool.tex bibtool.bbl bibtool.ind
 	$(LATEX) bibtool
 	$(LATEX) bibtool
+
+bibtool.pdf: bibtool.tex bibtool.bbl bibtool.ind
+	$(PDFLATEX) bibtool
+	$(PDFLATEX) bibtool
 
 bibtool.ind ind index: bibtool.idx
 	$(MAKEINDEX) -s bibtool.ist bibtool
@@ -54,6 +58,9 @@ config.tex: ..$(DIR_SEP)Makefile ..$(DIR_SEP)config.h
 
 ref_card.dvi: ref_card.tex
 	$(LATEX) ref_card.tex
+
+ref_card.pdf: ref_card.tex
+	$(PDFLATEX) ref_card.tex
 
 ##-----------------------------------------------------------------------------
 
@@ -118,6 +125,11 @@ c_lib.dvi: c_lib.tex c_main.tex c.tex config.tex
 	$(LATEX) c_lib.tex
 	$(MAKEINDEX) -s bibtool.ist c_lib
 	$(LATEX) c_lib.tex
+
+c_lib.pdf: c_lib.tex c_main.tex c.tex config.tex
+	$(PDFLATEX) c_lib.tex
+	$(MAKEINDEX) -s bibtool.ist c_lib
+	$(PDFLATEX) c_lib.tex
 
 c_main.tex: $(CDIR)main.c c_get.pl
 	c_get.pl $(CDIR)main.c > $@

@@ -1,5 +1,5 @@
 # *****************************************************************************
-#  $Id: makefile.in,v 1.7 2010-01-06 13:57:42 gene Exp $
+#  $Id: makefile.in,v 1.8 2010-01-06 19:23:33 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -386,10 +386,6 @@ OLIBFILES     = crossref$(OBJ)			\
 DOCFILES      = Doc$(DIR_SEP)bibtool.1		\
 		Doc$(DIR_SEP)bibtool.tex	\
 		Doc$(DIR_SEP)bibtool.bib	\
-		Doc$(DIR_SEP)bibtool.bbl	\
-		Doc$(DIR_SEP)bibtool.aux	\
-		Doc$(DIR_SEP)bibtool.ind	\
-		Doc$(DIR_SEP)bibtool.idx	\
 		Doc$(DIR_SEP)bibtool.ist	\
 		Doc$(DIR_SEP)dina4.sty		\
 		Doc$(DIR_SEP)ref_card.tex	\

@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: ref_card.tex,v 1.7 2010-01-05 14:06:06 gene Exp $
+%% $Id: ref_card.tex,v 1.8 2010-01-06 19:23:38 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -251,15 +251,17 @@
   \item [new.format.type	= \Arg{n="spec"}]
   \end{FlatList}
   \Section{Name Formatting Specification}
-  \begin{FlatList}
-  \item [\%{\it n}\/f{[{\it mid}][{\it pre}][{\it post}]}]\ \\
-    format first names. Use {\it n}\/ letters. Insert {\it pre}\/
+    Use {\it n}\/ letters. Use {\it m} name parts.  Insert {\it pre}\/
     before, {\it mid} between, and {\it post} after the words.
-  \item [\%{\it n}\/v{[{\it mid}][{\it pre}][{\it post}]}]\ \\
+    Translate according to the s parameter ('+', '-', '*').
+  \begin{FlatList}
+  \item [\%{\it s}{\it n}.{\it m}\/f{[{\it mid}][{\it pre}][{\it post}]}]\ \\
+    format first names. 
+  \item [\%{\it s}{\it n}.{\it m}\/v{[{\it mid}][{\it pre}][{\it post}]}]\ \\
     format ``von'' part.
-  \item [\%{\it n}\/l{[{\it mid}][{\it pre}][{\it post}]}]\ \\
+  \item [\%{\it s}{\it n}.{\it m}\/l{[{\it mid}][{\it pre}][{\it post}]}]\ \\
     format last name.
-  \item [\%{\it n}\/j{[{\it mid}][{\it pre}][{\it post}]}]\ \\
+  \item [\%{\it s}{\it n}.{\it m}\/j{[{\it mid}][{\it pre}][{\it post}]}]\ \\
     format ``junior'' part.
   \end{FlatList}
   \Section{Format Specifications}

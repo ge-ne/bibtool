@@ -64,8 +64,8 @@ support a broad variety of systems/compilers.
 
 
 	Gerd Neugebauer
-	Mainzer Str. 8
-	56321 Rhens (Germany)
+	Im Lerchelsböhl 5
+	64521 Groß-Gerau (Germany)
 
 	Net: gene@gerd-neugebauer.de
 
@@ -190,6 +190,13 @@ To install BibTool you can try to apply the following instructions:
 	latex   bibtool
 	latex   bibtool
 
+	latex   ref_card
+	latex   ref_card
+	bibtex  ref_card
+	makeidx ref_card
+	latex   ref_card
+	latex   ref_card
+
     The makeidx program  may be named differently on  your system or missing
     at all. In this case you can omit this step and do without the index.
 
@@ -197,7 +204,11 @@ To install BibTool you can try to apply the following instructions:
 
 	make doc
 
-    which tries to perform the steps given above.
+    in the main directory or
+
+        make
+
+    in the Doc directory which tries to perform the steps given above.
 
     The documentation is written in a way that either LaTeX or LaTeX2.09 can
     be used to compile it. I had a bug report about a real ancient LaTeX2.09

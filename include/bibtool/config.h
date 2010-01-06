@@ -1,6 +1,6 @@
 /* include/bibtool/config.h.  Generated from config.h.in by configure.  */
 /******************************************************************************
-** $Id: config.h,v 1.5 2010-01-06 13:57:42 gene Exp $
+** $Id: config.h,v 1.6 2010-01-06 19:23:38 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
