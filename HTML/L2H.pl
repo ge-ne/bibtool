@@ -1,6 +1,6 @@
 #!d:/Programme/Perl/bin/perl -w
 ##*****************************************************************************
-## $Id: L2H.pl,v 1.4 2010-01-10 11:30:28 gene Exp $
+## $Id: L2H.pl,v 1.5 2010-01-10 15:52:15 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -50,11 +50,14 @@ my %debug_map = ( all     => 255,
 		  files   => 2,
 		  passes  => 128,
 		);
+my $profile = 'profile';
 my $dirname = $trans->opt('dirname');
 my $author  = $trans->opt('author');
+my $title   = $trans->opt('title');
+my $prefix  = $trans->opt('prefix');
 
 use Getopt::Long;
-GetOptions ('author=s'	=> \$L2H::opt->{author},
+GetOptions ('author=s'	=> \$author,
 	    'd=s'	=> \@debug,
 	    'debug=s'	=> \@debug,
 	    'dir=s'	=> \$dirname,
@@ -64,8 +67,9 @@ GetOptions ('author=s'	=> \$L2H::opt->{author},
 	    'help'	=> \&usage,
 	    'load=s'	=> \&load,
 	    'main=s'	=> \$L2H::opt->{main},
-	    'prefix=s'	=> \$L2H::opt->{prefix},
-	    'title=s'	=> \$L2H::opt->{title},
+	    'prefix=s'	=> \$prefix,
+	    'profile=s'	=> \$profile,
+	    'title=s'	=> \$title,
 	    'v'		=> \$verbose,
 	    'verbose'	=> \$verbose,
 	    'year'	=> \$L2H::opt->{year},
@@ -73,6 +77,8 @@ GetOptions ('author=s'	=> \$L2H::opt->{author},
 
 $trans->set_opt('author', $author);
 $trans->set_opt('dirname', $dirname);
+$trans->set_opt('title', $title);
+$trans->set_opt('prefix', $prefix);
 
 foreach $_ (@debug)
 { my $k;
