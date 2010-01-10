@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H.pm,v 1.1 2010-01-10 11:30:28 gene Exp $
+## $Id: L2H.pm,v 1.2 2010-01-10 15:22:36 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -31,7 +31,7 @@ require Exporter;
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.1 $'; #'
+  my $VERSION = '$Revision: 1.2 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
 
@@ -87,6 +87,7 @@ sub restart
   $self->{'label_number'}  = 1;
   $self->{'page'}          = '';
   $self->{'ignore:p'}      = 1;
+  $self->{'NAV'}           = '';
   while ( my($key,$value) = each %args)
   { $self->{$key} = $value; }
   $self->redirect($opt{'main'},0);
@@ -316,10 +317,10 @@ sub finish
   $self->put($_);
   $_ = $self->{result};
   $self->{result} = '';
-  s/<\/BLOCKQUOTE><BR>/<\/BLOCKQUOTE>/go;
-  s/<P>\n<BLOCKQUOTE>/<BLOCKQUOTE>/go;
-  s/<\/BLOCKQUOTE>\n*<BLOCKQUOTE>/<BR>/go;
-  s/<P><DT>/<DT>/go;
+  s/<\/blockquote><br>/<\/blockquote>/go;
+  s/<p>\n<blockquote>/<blockquote>/go;
+  s/<\/blockquote>\n*<blockquote>/<br>/go;
+  s/<p><dt>/<dt>/go;
   return $_;
 }
 
@@ -525,13 +526,13 @@ sub section
   my $post   = shift;
 
   $level = $SectionLevel{$level} || 1;
-  print STDERR '.' if ( $self->{debug} & 1 );
+  print STDERR '.' if $self->{debug} & 1;
   if ( not defined($name) )
   { $self->{'SectionNumber'}[$level]++;
     for ( my $i=$level+1; $i<10; $i++ )
     { $self->{'SectionNumber'}[$i] = 0}
     $name = $opt{'prefix'};
-    for ( my $i=$self->{'SectionMinNo'}; $i<=$level; $i++ )
+    for ( my $i = $self->{'SectionMinNo'}; $i <= $level; $i++ )
     { $name .= '_'.$self->{'SectionNumber'}[$i]; }
     $name .= $opt{'ext'};
   }
@@ -539,7 +540,7 @@ sub section
 
   { my $tr = new L2H();
     $title = $tr->LaTeX2HTML($title);
-    $self->{'title:'.$name}  = $title;
+    $self->{'title:'. $name} = $title;
     $self->{'current_label'} = $title;
   }
 
@@ -548,10 +549,10 @@ sub section
     $level = 0
   }
 
-  my $in = ($level-1) * 32;
   $self->{TOC} .= "<div class=\"toc$level\"><a href=\"$self->{page}\">$title</a></div>\n";
+  $self->{NAV} .= "<div class=\"toc$level\"><a href=\"$self->{page}\" target=\"content\">$title</a></div>\n";
 
-  $self->redirect($name,$level);
+  $self->redirect($name, $level);
   $self->put($post) if defined $post;
   return '';
 }

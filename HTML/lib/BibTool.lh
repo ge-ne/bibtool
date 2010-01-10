@@ -39,7 +39,7 @@ newcommand('email',
 	   text => '<a href="mailto:#1"><tt>#1</tt></a>');
 renewcommand('maketitle',
 	   text => '<br><p align="center"><img src="BibTool-title.gif"><br><br>
-		{\small A Tool to Manipulate \BibTeX Files}<br><br>
+		{\small A Tool to Manipulate \BibTeX\ Files}<br><br>
 		{\Large\textbf{\@title}}<br><br>
 		{\small Version \Version}<br><br>
 		{\Large\textit{\@author}}

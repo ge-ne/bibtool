@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H_file.pm,v 1.1 2010-01-10 11:30:28 gene Exp $
+## $Id: L2H_file.pm,v 1.2 2010-01-10 15:22:36 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -20,7 +20,7 @@ require Exporter;
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.1 $'; #'
+  my $VERSION = '$Revision: 1.2 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
 
@@ -60,7 +60,7 @@ sub button
    onMouseOver="document.$name\$\$.src='$img2'"
    onMouseOut="document.$name\$\$.src='$img1'"><img
    src="$img1" border="0" alt="$alt"
-   name="$name\$\$" /></A>
+   name="$name\$\$" /></a>
 _EOF_
 }
 
@@ -179,23 +179,27 @@ _EOF_
   $self->{children} = '<ul class="subtoc">'.$self->{children}.'</ul>'
       if $self->{children} ne '';
 
-  my $Back = button($self->{'prev:'.$fname},'Back','Back','back.gif','back2.gif');
-  my $Next = button($self->{'next:'.$fname},'Next','Next','next.gif','next2.gif');
-  my $Toc  = button("$opt_prefix\_toc$opt_ext",'TOC','TOC','toc.gif','toc2.gif');
-  my $Idx  = button("$opt_prefix\_idx$opt_ext",'Index','IDX','idx.gif','idx2.gif');
+  my $Back = button($self->{'prev:'.$fname},'Back','Back',
+		    'prev-normal.gif','prev-active.gif');
+  my $Next = button($self->{'next:'.$fname},'Next','Next',
+		    'next-normal.gif','next-active.gif');
+  my $Toc  = button("$opt_prefix\_toc$opt_ext",'TOC','TOC',
+		    'toc-normal.gif','toc-active.gif');
+  my $Idx  = button("$opt_prefix\_idx$opt_ext",'Index','IDX',
+		    'index-normal.gif','index-active.gif');
 
   $self->{page_head} = <<_EOF_;
 <div class="top">
 <table width="100%" cellspacing="0" cellpadding="3" border="0">
  <tr>
-  <td width="160" style="font-face:sans-serif;">
+  <td width="160">
     $Back
     $Toc
     $Idx
     $Next
     &nbsp;
   </td>
-  <td style="font-face:sans-serif;font-size:70%;">
+  <td style="font-size:70%;">
      $Cat
   </td>
  </tr>
@@ -212,152 +216,11 @@ _EOF_
 <html>
 <head>
   <title>$st</title>
-  <link rev="made" href="mailto:$opt_email">
   <meta name="Author" content="$opt_author">
   <meta http_equiv="Content-Type" content="text/html;CHARSET=iso-8859-1">
-  <style>
-body {
-  background-color:white;
-  font-family:sans-serif;
-  margin-top:6em;
-  margin-left:4em;
-  margin-right:4em;
-}
-.top {
-  background:url(top-bg.png) repeat-x #cccccc;
-  position:fixed;
-  top:0pt;
-  left:0pt;
-  width:100%;
-  border-top:solid 3pt white;
-  border-left:solid 3pt white;
-  border-right:solid 3pt gray;
-  border-bottom:solid 3px gray;
-  font-size:80%;
-}
-.e {
-  text-transform:uppercase;
-  font-size:85%;
-  vertical-align: -0.5ex;
-  margin-left: -0.2em;
-  margin-right: -0.1em;
-  line-height: 0;
-}
-.a {
-  text-transform:uppercase;
-  font-size:75%;
-  vertical-align: 0.45ex;
-  margin-left: -0.36em;
-  margin-right: -0.05em;
-}
-.t {
-  margin-left: -0.15em;
-}
-.left {
-  position:absolute;
-  top:0;
-  left:0;
-}
-.dir {
-  text-indent:-32px;
-  margin-left:32px;
-  margin-right:32px;
-}
-h1,h2,h3 {
-  color:firebrick;
-}
-address {
-  font-size:70%;
-  margin-top:2.5em;
-  padding-top:.5em;
-  border-top:1px solid gray;
-}
-pre {
-  background-color:#eeeeee;
-  border: 1px solid #999999;
-  padding:.15em;
-}
-.subtoc {
-  font-size:90%;
-  background-color:#ffeeee;
-  border-top:solid 3pt #663333;
-  border-left:dotted 1px #663333;
-  border-right:dotted 1px #663333;
-  border-bottom:dotted 1px #663333;
-  padding:2em;
-  margin-top:4em;
-  margin-left:4em;
-  margin-right:4em;
-}
-.toc1 {
-  font-size:90%;
-  padding-left:0pt;
-}
-.toc2 {
-  font-size:90%;
-  padding-left:2em;
-}
-.toc3 {
-  font-size:90%;
-  padding-left:4em;
-}
-.toc4 {
-  font-size:90%;
-  padding-left:6em;
-}
-.toc5 {
-  font-size:90%;
-  padding-left:8em;
-}
-.toc6 {
-  font-size:90%;
-  padding-left:10em;
-}
-.cat0 {
-}
-.cat1 {
-  padding-left:2em;
-}
-.cat2 {
-  padding-left:4em;
-}
-.cat3 {
-  padding-left:6em;
-}
-.cat4 {
-  padding-left:8em;
-}
-.cat5 {
-  padding-left:10em;
-}
-.cat6 {
-  padding-left:12em;
-}
-  </style>
-  <script type="text/javascript">
-function keyPressed (ev) {
-  if (!ev)
-    ev = window.event;
-  if (ev.which) {
-    code = ev.which;
-  } else if (ev.keyCode) {
-    code = ev.keyCode;
-  }
-  var name;
-  if (code == 37) {
-    var el = document.getElementById("ABack");
-    if (el != null) {
-      location.href = el.href;
-    }
-  } else if (code == 39) {
-    var el = document.getElementById("ANext");
-    if (el != null) {
-      location.href = el.href;
-    }
-  }
-}
-document.onkeydown = keyPressed;
-  </script>
+  <link rev="made" href="mailto:$opt_email">
+  <link rel="stylesheet" type="text/css" href="site.css">
+  <script src="site.js" type="text/javascript"></script>
 </head>
 <body>
 $tophead
