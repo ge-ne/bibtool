@@ -104,6 +104,8 @@ newcommand('def',
 #newcommand('@author',			text => '');
 #newcommand('@title',			text => '');
 
+newcommand('\infty',		text => '&infin;');
+
 newcommand(' ',			text => ' ');
 newcommand("\t",		text => ' ');
 newcommand("\n",		text => ' ');
@@ -115,8 +117,8 @@ newcommand('%',			text => '&#037;');
 newcommand('&',			text => '&amp;');
 newcommand(',',			text => ' ');
 newcommand('/',			text => '');
-newcommand('(',			text => '<I>', 		context => 'math');
-newcommand(')',			text => '</I>',		context => '/');
+newcommand('(',			text => '<i>', 		context => 'math');
+newcommand(')',			text => '</i>',		context => '/');
 newcommand('"',
 	   arity => 1,
 	   code => sub
@@ -134,14 +136,14 @@ newcommand('AE',
 	   text => 'Æ');
 newcommand('BibTeX',
 	   text => 'B<small>IB</small><span class="t">T</span><span class="e">e</span>X');
+newcommand('LaTeX',
+	   text => 'L<span class="a">a</span>T<span class="e">e</span>X');
 newcommand('huge',
 	   text => '<font size="7">',
 	   code => sub{ return shift->atendgroup('</font>'); });
 newcommand('Huge',
 	   text => '<font size="7">',
 	   code => sub{ return shift->atendgroup('</font>'); });
-newcommand('LaTeX',
-	   text => 'L<span class="a">a</span><span class="t">T</span><span class="e">e</span>X');
 newcommand('Large',
 	   text => '<font size="5">',
 	   code => sub{ return shift->atendgroup('</font>'); });
@@ -160,9 +162,8 @@ newcommand('\\',
 	   arity => '[]0',
 	   code => sub
 	   { my $self = shift;
-#	     print STDERR '--- ',$self->{'context'},"\n";
-	     return '</TD></TR><TR><TD>' if ($self->{'context'} eq 'tabular');
-	     return '<BR>';
+	     return '</td></tr><tr><td>' if ($self->{'context'} eq 'tabular');
+	     return '<br />';
 	   });
 newcommand(']',
 	   text => ']');
@@ -171,7 +172,6 @@ newcommand('^',
 	   code => sub
 	   { shift;
 	     local $_ = shift;
-#	     print STDERR $_,"\n";
 	     return ( $L2H::accented{'^'.$_} || '&#094;'.$_ );
 	   });
 newcommand('_',
@@ -208,7 +208,7 @@ newcommand('bibitem',
 	     my $label = shift;
 	     my $key   = shift;
 	     $self->{"cite:$key"} = $label; 
-	     return "<DT><A NAME='$key'>[$label]<DD>";
+	     return "<dt><a name='$key'>[$label]<dd>";
 	   });
 newcommand('bibliography',
 	   arity => 1,
@@ -250,8 +250,7 @@ newcommand('cite',
 	     my $bibfile = $self->opt('prefix').'&#095;bib'.$self->opt('ext');
 	     foreach $_ (split /,/,$keys)
 	     { $ret .= ',' if ($ret ne '');
-	       $ret .= "<A HREF='$bibfile#$_'>";
-#	       print STDERR "---> $_ >".$self->{"cite:$_"}."<\n";
+	       $ret .= "<a href='$bibfile#$_'>";
 	       if ( defined ($self->{"cite:$_"}) )
 	       { $ret .= $self->{"cite:$_"}; }
 	       else
@@ -259,7 +258,7 @@ newcommand('cite',
 		     if ( $self->{'message:p'} );
 		 $ret .= '???';
 	       }
-	       $ret .= '</A>';
+	       $ret .= '</a>';
 	     }
 	     $ret .= ", $add" if ( defined($add) and $add ne '' );
 	     return '['.$ret.']';
@@ -273,11 +272,11 @@ newcommand('documentstyle',
 newcommand('dots',
 	   text => '...');
 newcommand('em',
-	   text => '<EM>',
-	   code => sub{ return shift->atendgroup('</EM>'); });
+	   text => '<em>',
+	   code => sub{ return shift->atendgroup('</em>'); });
 newcommand('emph',
 	   arity => 1,
-	   text => '<EM>#1</EM>');
+	   text => '<em>#1</em>');
 newcommand('endgroup',
 	   code => sub{return shift->endgroup;});
 newcommand('endinput',		
@@ -288,8 +287,8 @@ newcommand('footnote',
 			 return $self->footnote($fntext);
 		       });
 newcommand('footnotesize',
-	   text => '<FONT SIZE="-2">',
-	   code => sub{ return shift->atendgroup('</FONT>'); });
+	   text => '<font size="-2">',
+	   code => sub{ return shift->atendgroup('</font>'); });
 newcommand('geq',		text => ' &gt;= ');
 newcommand('hspace',
 	   code => sub
@@ -313,8 +312,8 @@ newcommand('item',
 	   code => sub
 	   { shift;
 	     local $_ = shift;
-	     return "<DT>$_<DD>" if (defined($_) );
-	     return '<LI>';
+	     return "<dt>$_<dd>" if defined($_);
+	     return '<li>';
 	   }
 	  );
 newcommand('label',
@@ -373,7 +372,7 @@ newcommand('newif',
 	     return '';
 	   });
 newcommand('newpage',
-	   text => '<br><hr><br>');
+	   text => '<br /><hr /><br />');
 newcommand('noindent');
 newcommand('normalsize',
 	   text => '<font size="3">',
@@ -386,8 +385,8 @@ newcommand('pageref',
 	   code => sub
 	   { my ($self,$label) = @_;
 	     if ( defined($self->{'label_url:'.$label}) )
-	     { return '<A HREF="'.$self->{'label_url:'.$label}.
-		   '">'.$self->{'label_text:'.$label}.'</A>';
+	     { return '<a href="'.$self->{'label_url:'.$label}.
+		   '">'.$self->{'label_text:'.$label}.'</a>';
 	     }
 	     else
 	     { if ( $self->{'message:p'} )
@@ -424,7 +423,7 @@ newcommand('printindex',
 	     local $_;
 	     foreach $_ (sort keys %{$self->{'INDEX'}})
 	     { my $key = $trans->LaTeX2HTML($self->{'index_name:'.$_});
-	       $res .= '<DT>'.$key.'<DD>'.$self->{'INDEX'}{$_};
+	       $res .= '<dt>'.$key.'<dd>'.$self->{'INDEX'}{$_};
 	     }
 	     $res .= '</dl></small>';
 	     $self->section($self->opt('prefix').'&#095;idx'.$self->opt('ext'),
@@ -433,6 +432,12 @@ newcommand('printindex',
 			    $res);
 	     return '';
 	   });
+newenvironment('quote',
+	       text    => "\n<blockquote>\n",
+	       endtext => '</blockquote>');
+newenvironment('quotation',
+	       text    => "\n<blockquote>\n",
+	       endtext => '</blockquote>');
 newcommand('ref',
 	   arity => 1,
 	   code => sub
@@ -570,7 +575,7 @@ newcommand('verb',
 	       $v =~ s/_/\&\#095;/go;
 	       $v =~ s/\{/\&\#123;/go;
 	       $v =~ s/\}/\&\#125;/go;
-	       return "<CODE>$v</CODE>";
+	       return "<code>$v</code>";
 	     }
 	     return '';
 	   });
@@ -591,7 +596,7 @@ newcommand('begin{verbatim}',
 	       $v =~ s/_/\&\#095;/go;
 	       $v =~ s/\{/\&\#123;/go;
 	       $v =~ s/\}/\&\#125;/go;
-	       return "<PRE>$v</PRE>";
+	       return "<pre>$v</pre>";
 	     }
 	     return '';
 	   });
@@ -660,10 +665,10 @@ newcommand('begin{thebibliography}',
 		 my $bib = $`;
 		 $_ = $';
 		 my $trans = new L2H();
-		 $self->{'BIB'} = "\n<DL>\n".$trans->LaTeX2HTML($bib)."\n</DL>\n";
+		 $self->{'BIB'} = "\n<dl>\n".$trans->LaTeX2HTML($bib)."\n</dl>\n";
 		 my %hash = %$trans;
 		 while ( my ($key,$value) = each %hash )
-		 { $self->{$key} = $value if ( $key =~ m/^cite:/o );
+		 { $self->{$key} = $value if $key =~ m/^cite:/o;
 		 }
 		 return '';
 	       },

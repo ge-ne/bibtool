@@ -1,6 +1,6 @@
 #!d:/Programme/Perl/bin/perl -w
 ##*****************************************************************************
-## $Id: L2H.pl,v 1.2 2010-01-06 13:57:42 gene Exp $
+## $Id: L2H.pl,v 1.3 2010-01-10 09:38:20 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -49,30 +49,35 @@ my %debug_map = ( all     => 255,
 		  files   => 2,
 		  passes  => 128,
 		);
+my $dirname = $trans->opt('dirname');
+my $author  = $trans->opt('author');
 
 use Getopt::Long;
-GetOptions ('author=s'	=> \$trans::opt{author},
+GetOptions ('author=s'	=> \$L2H::opt->{author},
 	    'd=s'	=> \@debug,
 	    'debug=s'	=> \@debug,
-	    'dir=s'	=> \$trans::opt{'dirname'},
-	    'email=s'	=> \$trans::opt{email},
-	    'ext=s'	=> \$trans::opt{ext},
+	    'dir=s'	=> \$dirname,
+	    'email=s'	=> \$L2H::opt->{email},
+	    'ext=s'	=> \$L2H::opt->{ext},
 	    'h'		=> \&usage,
 	    'help'	=> \&usage,
 	    'load=s'	=> \&load,
-	    'main=s'	=> \$trans::opt{main},
-	    'prefix=s'	=> \$trans::opt{prefix},
-	    'title=s'	=> \$trans::opt{title},
+	    'main=s'	=> \$L2H::opt->{main},
+	    'prefix=s'	=> \$L2H::opt->{prefix},
+	    'title=s'	=> \$L2H::opt->{title},
 	    'v'		=> \$verbose,
 	    'verbose'	=> \$verbose,
-	    'year'	=> \$trans::opt{year},
+	    'year'	=> \$L2H::opt->{year},
 	   );
+
+$trans->set_opt('author', $author);
+$trans->set_opt('dirname', $dirname);
 
 foreach $_ (@debug)
 { my $k;
   foreach $k (split(/,/,$_)) { $debug |= $debug_map{$k}; }
 }
-$debug |= 1 if ($verbose);
+$debug |= 1 if $verbose;
 
 $trans->{'debug'} = $debug;
 
@@ -82,21 +87,21 @@ $trans->{'debug'} = $debug;
   $_ = $contents;
 }
 
-print STDERR "--- Pass 1\n" if ( $debug > 1 );
+print STDERR "--- Pass 1\n" if $debug > 1;
 
 $trans->restart();
 $trans->LaTeX2HTML($_);
-$trans->redirect(undef,1);
+$trans->redirect(undef, 1);
 
-print STDERR "--- Pass 2\n" if ( $debug > 1 );
-print STDERR "\n"           if ( $debug == 1 );
+print STDERR "--- Pass 2\n" if $debug >  1;
+print STDERR "\n"           if $debug == 1;
 
-$trans->{'debug'} &= 1 if ( ($debug & 128) == 0);
-$trans->restart('message:p'=>1);
+$trans->{'debug'} &= 1 if ($debug & 128) == 0;
+$trans->restart('message:p' => 1);
 $trans->LaTeX2HTML($_);
-$trans->redirect(undef,1);
+$trans->redirect(undef, 1);
 
-print STDERR "\n" if ($debug&1);
+print STDERR "\n" if $debug & 1;
 
 exit(0);
 

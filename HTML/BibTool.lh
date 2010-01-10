@@ -15,28 +15,28 @@ newcommand('BS@',		 text => '&#092;@');
 newcommand('rfill');
 
 newcommand('ASCII',
-	   text => '<SMALL>ASCII</SMALL>');
+	   text => '<small>ASCII</small>');
 newcommand('BibTool',
 	   text => '<span style="font-variant:small-caps;">BibTool</span>');
 newcommand('BibTeX',
 	   text => 'B<small>IB</small><span class="t">T</span><span class="e">e</span>X');
 newcommand('FTP',
 	   arity=>2,
-	   text => '<TT><A HREF="ftp://#1/#2">#1</A><TT>');
+	   text => '<tt><a href="ftp://#1/#2">#1</a></tt>');
 newcommand('Link',
 	   arity=>2,
-	   text => '<A HREF="#1">#2</A>');
+	   text => '<a href="#1">#2</a>');
 newcommand('RSc',
 	   arity => '2',
 	   code => sub
 	   { my ($self,$rsc,$val) = @_;
-	     return sf($self->Index($rsc),'<BLOCKQUOTE>',$rsc,' ',$val,'</BLOCKQUOTE>');
+	     return sf($self->Index($rsc),'<blockquote>',$rsc,' ',$val,'</blockquote>');
 	   });
 newcommand('bs',
 	   text => '&#092;');
 newcommand('email',
 	   arity=>1,
-	   text => '<A HREF="mailto:#1"><TT>#1</TT></A>');
+	   text => '<a href="mailto:#1"><tt>#1</tt></a>');
 renewcommand('maketitle',
 	   text => '<br><p align="center"><img src="BibTool-title.gif"><br><br>
 		{\small A Tool to Manipulate \BibTeX Files}<br><br>

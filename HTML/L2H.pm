@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H.pm,v 1.1 2010-01-05 23:09:56 gene Exp $
+## $Id: L2H.pm,v 1.2 2010-01-10 09:38:20 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -16,13 +16,13 @@ my %opt = (
 	   'title'   => '',
 	   'main'    => 'index.html',
 	   'author'  => '',
-	   'email'   => 'gerd.neugebauer@sdm.de',
-	   'year'    => '1999',
+	   'email'   => 'gene@gerd.neugebauer.de',
+	   'year'    => '2010',
 	   'ext'     => '.html'
 	  );
 {
   my ($sec,$min,$hour,$day,$mon,$year,$wday,$yday,$isdst) = localtime;
-  $opt{year} = $year+1900;
+  $opt{year} = $year + 1900;
 }
 
 require Exporter;
@@ -31,7 +31,7 @@ require Exporter;
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.1 $'; #'
+  my $VERSION = '$Revision: 1.2 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
 
@@ -46,6 +46,7 @@ sub new
   { 'ignore:p'		=> 0,
     'footnotes'		=> '',
     'footnote_number'	=> 0,
+    'NAV'		=> '',
     'TOC'		=> '',
     'IDX'		=> '',
     'BIB'		=> '',
@@ -137,7 +138,8 @@ sub opt
 # Returns:	
 #
 sub set_opt
-{ my ($key,$value) = @_;
+{ shift;
+  my ($key,$value) = @_;
   $opt{$key} = $value;
 }
 
@@ -223,7 +225,7 @@ sub atendgroup
 sub load
 { my $self = shift;
   my $file = shift;
-  print STDERR "--- Loading $file\n" if ( $self->{'debug'} & 1 );
+  print STDERR "--- Loading $file\n" if $self->{'debug'} & 1;
   do "$file" ;
   die $@ if $@;
 }
@@ -393,7 +395,6 @@ sub LaTeX2HTML
 	  { for (my $i=1;$i<=$arity;$i++) { $mac =~ s/\#$i/$a[$i]/g; }
 	    $text = $mac;
 	  }
-#	  print STDERR "\\$token [$arity] -> $text\n";
 	}
 	if ( defined($L2H::Macro{$token}[3]) )
 	{ shift @a;
@@ -548,18 +549,10 @@ sub section
   }
 
   my $in = ($level-1) * 32;
-  my $add = '';
-  if ( $level > 1 )
-  { $self->{TOC} .= "<IMG SRC=\"space.gif\" HEIGHT=\"1\" WIDTH=\"$in\">";
-  }
-  else
-  { $self->{TOC} .= "<P><B>";
-    $add = "</B>";
-  }
-  $self->{TOC} .= "<A HREF=\"$self->{page}\">$title</A>$add<BR>\n";
+  $self->{TOC} .= "<div class=\"toc$level\"><a href=\"$self->{page}\">$title</a></div>\n";
 
   $self->redirect($name,$level);
-  $self->put($post) if ( defined $post );
+  $self->put($post) if defined $post;
   return '';
 }
 
@@ -574,8 +567,8 @@ sub footnote
   my $no = $self->{'footnote_number'}++;
 
   $text = $l2h->LaTeX2HTML($text);
-  $self->{footnotes} .= "<SMALL><SUP><A NAME='FN$no'>$no</A></SUP> $text</SMALL><BR>";
-  return "<SUP><SMALL><A HREF='#FN$no'>$no</A></SMALL></SUP>";
+  $self->{footnotes} .= "<small><sup><a name='FN$no'>$no</a></sup> $text</small><br />";
+  return "<sup><small><a href='#FN$no'>$no</a></small></sup>";
 }
 
 #------------------------------------------------------------------------------
@@ -598,7 +591,7 @@ sub label
   { local $_ = 'tag'.($self->{'label_number'}++);
     $self->{'label_url:'.$label} = $self->{'page'}.'#'.$_;
     $self->{'label_url:'.$label} =~ s/_/\&\#095;/go;
-    return "<A NAME=\"$_\">";
+    return "<a name=\"$_\">";
   }
   $self->{'label_url:'.$label} = $self->{'page'};
   $self->{'label_url:'.$label} =~ s/_/\&\#095;/go;
@@ -632,8 +625,8 @@ sub Index
   $self->{'index_name:'.$_} = $key;
   $self->{'INDEX'}{$_} .= ", " if ( defined ($self->{'INDEX'}{$_}) and
 				    $self->{'INDEX'}{$_} ne '' );
-  $self->{'INDEX'}{$_} .= "<A HREF='$page#IDX$i'>$title</A>";
-  return "<A NAME='IDX$i'>";
+  $self->{'INDEX'}{$_} .= "<a href='$page#IDX$i'>$title</a>";
+  return "<a name='IDX$i'>";
 }
 
 #------------------------------------------------------------------------------
@@ -644,7 +637,7 @@ sub Index
 #
 #
 sub sf
-{ return '<FONT FACE="helvetica,geneva,arial">'.join('',@_).'</FONT>';
+{ return '<font face="sans-serif">'.join('',@_).'</font>';
 }
 
 1;

@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H_file.pm,v 1.2 2010-01-06 13:57:42 gene Exp $
+## $Id: L2H_file.pm,v 1.3 2010-01-10 09:38:20 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -10,6 +10,7 @@ package L2H_file;
 use vars qw ( @ISA @EXPORT @EXPORT_OK $VERSION );
 use strict;
 use FileHandle;
+use File::Path;
 
 use L2H;
 
@@ -19,7 +20,7 @@ require Exporter;
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.2 $'; #'
+  my $VERSION = '$Revision: 1.3 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
 
@@ -30,8 +31,8 @@ BEGIN{
 # Returns:	
 #
 sub new
-{ my $class  = shift;
-  my $self   = new L2H;
+{ my $class          = shift;
+  my $self           = new L2H;
   $self->{out}	     = undef;
   $self->{page}      = '';
   $self->{last_page} = '';
@@ -55,11 +56,11 @@ sub button
 
   return '' if ( not defined($url) or $url eq '' or not -e $url);
   return <<_EOF_;
-<a href="$url"
+<a href="$url" id="A$name"
    onMouseOver="document.$name\$\$.src='$img2'"
    onMouseOut="document.$name\$\$.src='$img1'"><img
    src="$img1" border="0" alt="$alt"
-		name="$name\$\$"></A>
+   name="$name\$\$" /></A>
 _EOF_
 }
 
@@ -103,16 +104,16 @@ sub redirect
   s/\&\#095;/_/go;
 
   print STDERR "--- redirect output $self->{page} -> $_\n"
-      if ( $self->{debug} & 2 );
+      if $self->{debug} & 2;
 
   $self->{"nav:$n"} = $fname;
 
   $self->{'last_page'} = $self->{'page'};
   $self->{'page'}      = $_;
   $self->{'next:'.$self->{'last_page'}} = $self->{'page'}
-    if ( defined($self->{'last_page'}) );
+    if defined($self->{'last_page'});
   $self->{'prev:'.$self->{'page'}} = $self->{'last_page'}
-    if ( defined($self->{'page'}) );
+    if defined($self->{'page'});
 
   $self->{footnote_number} = 1;
 
@@ -123,6 +124,8 @@ sub redirect
   my $opt_prefix  = $self->opt('prefix');
   my $opt_dirname = $self->opt('dirname');
 
+  mkpath($opt_dirname) if not -e $opt_dirname;
+
   if ( defined($self->{out}) )
   {
     $self->put($self->{children});
@@ -131,8 +134,7 @@ sub redirect
     $self->{page_head} =~ s/\$\$/2/go;
 
     $self->put(<<_EOF_);
-<br><br>
-$self->{page_head}
+<br /><hr />
 <font face="sans-serif" size="1">\&copy; $opt_year
 <a href="mailto:$opt_email">$opt_author</a></font>
 </body>
@@ -149,25 +151,19 @@ _EOF_
     return;
   }
 
-  $self->{out} = new FileHandle(">$opt_dirname/$fname");
-  return undef if ( !defined($self->{out}) );
-  print STDERR "--- Output to $opt_dirname/$fname\n" if ( $self->{debug} & 2 );
-  print STDERR "--- Output to $opt_dirname/$fname\n";
+  $self->{out} = new FileHandle(">$opt_dirname/$fname") || die "$opt_dirname/$fname: $!\n";
+  return undef if not defined($self->{out});
+  print STDERR "--- Output to $opt_dirname/$fname\n" if $self->{debug} & 2;
 
-  my $in;
   my $Cat = '';
-  for (my $i=0; $i<$n; $i++ )
-  { my $s  = $self->{'nav:'.$i};
-    next if ( not defined($s) );
-    my $st = $self->{'title:'.$s};
-    $in = $i*16;
-    $Cat .= "<img src=\"space.gif\" height=\"1\" width=\"$in\">" if( $in>0 );
-    $Cat .= "<a href=\"$s\">$st</a><br>\n";
+  for (my $i = 0; $i < $n; $i++ )
+  { my $s = $self->{'nav:'.$i};
+    next if not defined($s);
+    my $st	       = $self->{'title:'.$s};
+    $Cat .= "<div class=\"cat$i\"><a href=\"$s\">$st</a></div>\n";
   }
-  $in = $n*16;
-  $Cat .= "<img src=\"space.gif\" height=\"1\" width=\"$in\">" if( $in>0 );
   { my $s = $self->{"nav:$n"};
-    $Cat .= '<b>'.$self->{"title:$s"}."</b>\n";
+    $Cat .= "<div class=\"cat$n\"><b>".$self->{"title:$s"}."</b></div>\n";
   }
 
   $self->{children} = '';
@@ -176,12 +172,12 @@ _EOF_
   { local $_ = $`;
     my $st;
 
-    for (my $i=1;defined($st=$self->{'title:'."$_\_$i$opt_ext"});$i++)
-    { $self->{children} .= "\n<DD> <A HREF=\"$_\_$i$opt_ext\">$st</A>\n";
+    for (my $i = 1; defined($st=$self->{'title:'."$_\_$i$opt_ext"}); $i++)
+    { $self->{children} .= "\n<li> <a href=\"$_\_$i$opt_ext\">$st</a>\n";
     }
   }
-  $self->{children} = '<hr /><p /><dl>'.$self->{children}.'</dl></p>'
-      if ( $self->{children} ne '');
+  $self->{children} = '<ul class="subtoc">'.$self->{children}.'</ul>'
+      if $self->{children} ne '';
 
   my $Back = button($self->{'prev:'.$fname},'Back','Back','back.gif','back2.gif');
   my $Next = button($self->{'next:'.$fname},'Next','Next','next.gif','next2.gif');
@@ -189,30 +185,28 @@ _EOF_
   my $Idx  = button("$opt_prefix\_idx$opt_ext",'Index','IDX','idx.gif','idx2.gif');
 
   $self->{page_head} = <<_EOF_;
-<table width="100%" bgcolor="#eeeeee" cellspacing="0" cellpadding="3" border="0">
+<div class="top">
+<table width="100%" cellspacing="0" cellpadding="3" border="0">
  <tr>
-  <td width="160">
-   <font face="helvetica,geneva,arial,sans-serif">
+  <td width="160" style="font-face:sans-serif;">
     $Back
     $Toc
     $Idx
     $Next
     &nbsp;
-   </font>
   </td>
-  <td width="70%">
-   <font face="helvetica,geneva,arial,sans-serif">
+  <td style="font-face:sans-serif;font-size:70%;">
      $Cat
-   </font>
   </td>
  </tr>
 </table>
+</div>
 _EOF_
   my $tophead = $self->{page_head};
   $tophead =~ s/\$\$//go;
 
   my $st = $self->{'title:'.$fname} ;
-  my $Title = ( $n<=0 ? '' : "<H$n>$st</H$n>" );
+  my $Title = ( $n<=0 ? '' : "<h$n>$st</h$n>" );
   put($self,<<_EOF_);
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML//3.2//EN">
 <html>
@@ -221,13 +215,25 @@ _EOF_
   <link rev="made" href="mailto:$opt_email">
   <meta name="Author" content="$opt_author">
   <meta http_equiv="Content-Type" content="text/html;CHARSET=iso-8859-1">
-  <base target="_top">
   <style>
 body {
   background-color:white;
   font-family:sans-serif;
-  margin-left:150px;
-  margin-right:2em;
+  margin-top:6em;
+  margin-left:4em;
+  margin-right:4em;
+}
+.top {
+  background:url(top-bg.png) repeat-x #cccccc;
+  position:fixed;
+  top:0pt;
+  left:0pt;
+  width:100%;
+  border-top:solid 3pt white;
+  border-left:solid 3pt white;
+  border-right:solid 3pt gray;
+  border-bottom:solid 3px gray;
+  font-size:80%;
 }
 .e {
   text-transform:uppercase;
@@ -271,9 +277,89 @@ pre {
   border: 1px solid #999999;
   padding:.15em;
 }
+.subtoc {
+  font-size:90%;
+  background-color:#ffeeee;
+  border-top:solid 3pt #663333;
+  border-left:dotted 1px #663333;
+  border-right:dotted 1px #663333;
+  border-bottom:dotted 1px #663333;
+  padding:2em;
+  margin-top:4em;
+  margin-left:4em;
+  margin-right:4em;
+}
+.toc1 {
+  font-size:90%;
+  padding-left:0pt;
+}
+.toc2 {
+  font-size:90%;
+  padding-left:2em;
+}
+.toc3 {
+  font-size:90%;
+  padding-left:4em;
+}
+.toc4 {
+  font-size:90%;
+  padding-left:6em;
+}
+.toc5 {
+  font-size:90%;
+  padding-left:8em;
+}
+.toc6 {
+  font-size:90%;
+  padding-left:10em;
+}
+.cat0 {
+}
+.cat1 {
+  padding-left:2em;
+}
+.cat2 {
+  padding-left:4em;
+}
+.cat3 {
+  padding-left:6em;
+}
+.cat4 {
+  padding-left:8em;
+}
+.cat5 {
+  padding-left:10em;
+}
+.cat6 {
+  padding-left:12em;
+}
   </style>
+  <script type="text/javascript">
+function keyPressed (ev) {
+  if (!ev)
+    ev = window.event;
+  if (ev.which) {
+    code = ev.which;
+  } else if (ev.keyCode) {
+    code = ev.keyCode;
+  }
+  var name;
+  if (code == 37) {
+    var el = document.getElementById("ABack");
+    if (el != null) {
+      location.href = el.href;
+    }
+  } else if (code == 39) {
+    var el = document.getElementById("ANext");
+    if (el != null) {
+      location.href = el.href;
+    }
+  }
+}
+document.onkeydown = keyPressed;
+  </script>
 </head>
-<body bgcolor="white" target="_top">
+<body>
 $tophead
 $Title
 _EOF_
