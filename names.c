@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: names.c,v 1.8 2010-01-06 18:44:11 gene Exp $
+** $Id: names.c,v 1.9 2010-01-10 09:39:33 gene Exp $
 *******************************************************************************
 ** 
 ** This file is part of BibTool.
@@ -466,7 +466,7 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   { OUT_OF_MEMORY("name type"); }   		   /*                        */
  						   /*                        */
 #ifdef DEBUG
-  printf("Name parts");				   /*                        */
+  printf("Name parts: ");			   /*                        */
   for (i = 0; i < len; i++)			   /*                        */
   { printf("/%s/ ",w[i]); }			   /*                        */
   putchar('\n');				   /*                        */
@@ -512,12 +512,13 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
 			   			   /*------------------------*/
     while ( i < len && w[i] != comma )		   /* ll, ff vv              */
     { type[i++] = 'l'; last++; }		   /*                        */
-    type[i++] = ',';				   /*                        */
+    if (i < len) { type[i++] = ','; }		   /*                        */
 			   			   /*------------------------*/
-    if ( commas == 2 && i < len && is_jr(w[i], TRUE) )/* ll, jj, ff vv       */
-    { type[i] = 'j'; jr++;			   /*                        */
-      type[++i] = ',';				   /*                        */
-    }						   /*                        */
+    if ( commas == 2 )				   /* ll, jj, ff vv          */
+    { while ( i < len && w[i] != comma )	   /*                        */
+      { type[i++] = 'j'; jr++; }		   /*                        */
+      if (i < len) { type[i++] = ','; }		   /*                        */
+    }
     while ( i < len && !is_lower_word(w[i]) )	   /*                        */
     { type[i++] = 'f'; first++; }		   /*                        */
     while ( i < len && is_lower_word(w[i]) )	   /*                        */

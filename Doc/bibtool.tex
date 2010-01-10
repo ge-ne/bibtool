@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.8 2010-01-05 23:00:14 gene Exp $
+%% $Id: bibtool.tex,v 1.9 2010-01-10 09:39:33 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -660,10 +660,10 @@ detail:
   condition to determine whether or not to include the following string. The
   condition counts the allowed characters (\texttt{\#s}) of the field
   \texttt{crossref} and compares this number with the given interval
-  $[1,\infty]$ (\texttt{1.}).
+  \([1,\infty]\) (\texttt{1.}).
 
   Thus it detects those entries containing a non empty crossref field.
-\item [\texttt{\%1.\#s(crossref)}a]\index{l@\%l}\ \\
+\item [\texttt{\%1.\#s(crossref)a}]\index{l@\%l}\ \\
   If the condition holds then the string \texttt{a} is used as part of the
   sort key.
 \item [\texttt{\{\%1.\#s(crossref)a\#z\}}]\index{l@\%l}\ \\
@@ -726,7 +726,14 @@ following major sites (and many mirrors):
 \item \texttt{tex-archive/biblio/bibtex/utils/bibtool}
 \end{list}
 
-I have set up a WWW page for BibTool. It contains a short description of the
+\BibTool\ is hosted in a public repoository at Sarovar. The repository
+contains the released sources as well as the development versions. The
+repository can be found at
+\begin{quote}
+  \Link{http://sarovar.org/projects/bibtool/}{http://sarovar.org/projects/bibtool/}
+\end{quote}
+
+I have set up a WWW page for \BibTool. It contains a short description of the
 features and links to the documentation and the current downloadable version
 in source form. The URL is:
 
@@ -783,7 +790,7 @@ program I have the following suggestions.
 \item Provide additional contributed pieces to \BibTool. E.g. useful resource
   files which could be included into the library.
 \item Write a useful program and release it to the public without making
-  profit, preferably under the\ Link{GPL.html}{GNU General Public License} or
+  profit, preferably under the \Link{GPL.html}{GNU General Public License} or
   the GNU artistic license.
 \end{itemize}
 
