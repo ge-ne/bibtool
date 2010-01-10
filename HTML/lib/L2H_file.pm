@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H_file.pm,v 1.2 2010-01-10 15:22:36 gene Exp $
+## $Id: L2H_file.pm,v 1.3 2010-01-10 18:15:12 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -20,7 +20,7 @@ require Exporter;
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.2 $'; #'
+  my $VERSION = '$Revision: 1.3 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
 
@@ -151,7 +151,7 @@ _EOF_
     return;
   }
 
-  $self->{out} = new FileHandle(">$opt_dirname/$fname") || die "$opt_dirname/$fname: $!\n";
+  $self->{out} = new FileHandle("$opt_dirname/$fname", 'w') || die "$opt_dirname/$fname: $!\n";
   return undef if not defined($self->{out});
   print STDERR "--- Output to $opt_dirname/$fname\n" if $self->{debug} & 2;
 
@@ -228,6 +228,35 @@ $Title
 _EOF_
 
   return;
+}
+
+#------------------------------------------------------------------------------
+# Method:	make_nav
+# Arguments:	
+# Returns:	
+# Description:	
+#
+sub make_nav 
+{ my $self = shift;
+  local $_ = $self->opt('dirname').'/'.
+             $self->opt('prefix').'_nav.'.$self->opt('ext');
+  my $fd   = new FileHandle($_, 'w') || die "$_: $!\n";
+  print $fd <<__EOF__;
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML//3.2//EN">
+<html>
+<head>
+  <title>$st</title>
+  <meta name="Author" content="$opt_author">
+  <meta http_equiv="Content-Type" content="text/html;CHARSET=iso-8859-1">
+  <link rev="made" href="mailto:$opt_email">
+  <link rel="stylesheet" type="text/css" href="nav.css">
+  <script src="nav.js" type="text/javascript"></script>
+</head>
+<body>
+$self->{NAV}
+</body>
+__EOF__
+  $fd->close();
 }
 
 1;
