@@ -1,11 +1,12 @@
 #!d:/Programme/Perl/bin/perl -w
 ##*****************************************************************************
-## $Id: L2H.pl,v 1.5 2010-01-10 15:52:15 gene Exp $
+## $Id: L2H.pl,v 1.6 2010-01-10 16:58:54 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
 
 use File::Basename;
+use File::Copy;
 use lib dirname($0);
 use lib dirname($0).'/lib';
 
@@ -55,30 +56,36 @@ my $dirname = $trans->opt('dirname');
 my $author  = $trans->opt('author');
 my $title   = $trans->opt('title');
 my $prefix  = $trans->opt('prefix');
+my $email   = $trans->opt('email');
+my $main    = $trans->opt('main');
+my $year    = $trans->opt('year');
+my $ext     = $trans->opt('ext');
 
 use Getopt::Long;
 GetOptions ('author=s'	=> \$author,
 	    'd=s'	=> \@debug,
 	    'debug=s'	=> \@debug,
 	    'dir=s'	=> \$dirname,
-	    'email=s'	=> \$L2H::opt->{email},
-	    'ext=s'	=> \$L2H::opt->{ext},
-	    'h'		=> \&usage,
-	    'help'	=> \&usage,
+	    'email=s'	=> \$email,
+	    'ext=s'	=> \$ext,
+	    'h|help'	=> \&usage,
 	    'load=s'	=> \&load,
-	    'main=s'	=> \$L2H::opt->{main},
+	    'main=s'	=> \$main,
 	    'prefix=s'	=> \$prefix,
 	    'profile=s'	=> \$profile,
 	    'title=s'	=> \$title,
-	    'v'		=> \$verbose,
-	    'verbose'	=> \$verbose,
-	    'year'	=> \$L2H::opt->{year},
+	    'v|verbose'	=> \$verbose,
+	    'year'	=> \$year,
 	   );
 
-$trans->set_opt('author', $author);
 $trans->set_opt('dirname', $dirname);
-$trans->set_opt('title', $title);
+$trans->set_opt('author', $author);
 $trans->set_opt('prefix', $prefix);
+$trans->set_opt('title', $title);
+$trans->set_opt('email', $email);
+$trans->set_opt('main', $main);
+$trans->set_opt('year', $year);
+$trans->set_opt('ext', $ext);
 
 foreach $_ (@debug)
 { my $k;
@@ -109,6 +116,12 @@ $trans->LaTeX2HTML($_);
 $trans->redirect(undef, 1);
 
 print STDERR "\n" if $debug & 1;
+
+foreach $_ (glob("$profile/*.*"))
+{ my $f = $_;
+  s|.*/||;
+  copy($f, $dirname.'/'.$_);
+}
 
 exit(0);
 

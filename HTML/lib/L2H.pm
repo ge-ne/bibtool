@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H.pm,v 1.2 2010-01-10 15:22:36 gene Exp $
+## $Id: L2H.pm,v 1.3 2010-01-10 16:58:54 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -15,7 +15,7 @@ my %opt = (
 	   'prefix'  => 'm',
 	   'title'   => '',
 	   'main'    => 'index.html',
-	   'author'  => '',
+	   'author'  => 'Gerd Neugebauer',
 	   'email'   => 'gene@gerd.neugebauer.de',
 	   'year'    => '2010',
 	   'ext'     => '.html'
@@ -31,7 +31,7 @@ require Exporter;
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.2 $'; #'
+  my $VERSION = '$Revision: 1.3 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
 
@@ -90,7 +90,7 @@ sub restart
   $self->{'NAV'}           = '';
   while ( my($key,$value) = each %args)
   { $self->{$key} = $value; }
-  $self->redirect($opt{'main'},0);
+  $self->redirect($opt{'main'}, 0);
 }
 
 #------------------------------------------------------------------------------
