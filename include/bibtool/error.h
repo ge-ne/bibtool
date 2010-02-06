@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: error.h,v 1.6 2010-01-05 14:14:21 gene Exp $
+** $Id: error.h,v 1.7 2010-02-06 10:03:06 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -351,7 +351,7 @@
 **		undefining the macro |DEBUG| when compiling.
 ** Arguments:
 **	A	Debug message.
-**	B	Conitnuation of the debug message.
+**	B	Continuation of the debug message.
 ** Returns:	nothing
 **___________________________________________________			     */
 #define DebugPrint2(A,B)	(void)fprintf(err_file,"+++ BibTool: %s%s\n",A,B)
@@ -366,15 +366,61 @@
 **		undefining the macro |DEBUG| when compiling.
 ** Arguments:Debug message.
 **	A	Debug message.
-**	B	Conitnuation of the debug message.
-**	C	Second conitnuation of the debug message.
+**	B	Continuation of the debug message.
+**	C	Second continuation of the debug message.
 ** Returns:	nothing
 **___________________________________________________			     */
 #define DebugPrint3(A,B,C)	(void)fprintf(err_file,"+++ BibTool: %s%s%s\n",A,B,C)
+
+/*-----------------------------------------------------------------------------
+** Macro:	DebugPrintF1()
+** Type:	void
+** Purpose:	This Macro is for debugging purposes. The compilation
+**		determines whether this macro prints its argument or
+**		simply ignores it. This is achieved by defining or
+**		undefining the macro |DEBUG| when compiling.
+** Arguments:
+**	A	Debug message.
+** Returns:	nothing
+**___________________________________________________			     */
+#define DebugPrinFt1(A)		(void)fprintf(err_file,A)
+
+/*-----------------------------------------------------------------------------
+** Macro:	DebugPrintF2()
+** Type:	void
+** Purpose:	This Macro is for debugging purposes. The compilation
+**		determines whether this macro prints its arguments or
+**		simply ignores them. This is achieved by defining or
+**		undefining the macro |DEBUG| when compiling.
+** Arguments:
+**	F	The format for the debug message.
+**	A	Debug message.
+** Returns:	nothing
+**___________________________________________________			     */
+#define DebugPrintF2(F,A)	(void)fprintf(err_file,F,A)
+
+/*-----------------------------------------------------------------------------
+** Macro:	DebugPrintF3()
+** Type:	void
+** Purpose:	
+** Purpose:	This Macro is for debugging purposes. The compilation
+**		determines whether this macro prints its arguments or
+**		simply ignores them. This is achieved by defining or
+**		undefining the macro |DEBUG| when compiling.
+** Arguments:Debug message.
+**	F	The format for the debug message.
+**	A	Debug message.
+**	B	Continuation of the debug message.
+** Returns:	nothing
+**___________________________________________________			     */
+#define DebugPrintF3(F,A,B)	(void)fprintf(err_file,F,A,B)
 #else
 #define DebugPrint1(A)	      
 #define DebugPrint2(A,B)      
-#define DebugPrint3(A,B,C)    
+#define DebugPrint3(A,B,C)  
+#define DebugPrintF1(A)	      
+#define DebugPrintF2(A,B)      
+#define DebugPrintF3(A,B,C)    
 #endif
 
 
