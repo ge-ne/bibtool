@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 ##*****************************************************************************
-## $Id: make_version.pl,v 1.1 2010-02-06 09:52:08 gene Exp $
+## $Id: make_version.pl,v 1.2 2010-02-06 10:50:25 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -61,17 +61,16 @@ GetOptions("h|help"	=> \&usage,
 
 my $version = undef;
 @_ 	    = localtime;
-my $year    = 1900 + $_[4];
+my $year    = 1900 + $_[5];
 
 while(<>) {
   $version = $1 if m/bibtool_version *= *"([0-9.]*)";/;
-  $year = $1 if m/\$Id: make_version.pl,v 1.1 2010-02-06 09:52:08 gene Exp $/;
+  $year = $1 if m/\$Id: make_version.pl,v 1.2 2010-02-06 10:50:25 gene Exp $/;
 }
 
 die "Missing version" if not defined $version;
 
 print <<__EOF__;
-
 %%********************************************************
 %%
 %% This file is part of BibTool.
@@ -80,7 +79,7 @@ print <<__EOF__;
 %%
 %% (c) 1995-$year Gerd Neugebauer
 %%
-%% Net: gene@gerd-neugebauer@sdm
+%% Net: gene\@gerd-neugebauer.de
 %%
 %%********************************************************
 \\newcommand\\Year{$year}
