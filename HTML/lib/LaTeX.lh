@@ -546,10 +546,9 @@ newcommand('title',		arity => 1,
 	   code => sub {
 	     my ($self,$title) = @_;
 	     newcommand('@title','text'=>$title);
-	     if ( $self->opt('title') eq '' )
-	     { my $trans = new L2H();
-	       set_opt('title',$trans->LaTeX2HTML($title));
-	     }
+	     my $t = (new L2H())->LaTeX2HTML($title);
+	     $self->{'title'} = $title;
+	     set_opt('title', $t) if $self->opt('title') eq '';
 	     return '';
 	   });
 newcommand('tt',

@@ -2,7 +2,7 @@
 body {
   background-color:#eeeeee;
   font-family:sans-serif;
-  font-size:70%;
+  font-size:75%;
   margin-left:2pt;
 }
 .e {
@@ -29,6 +29,11 @@ address {
   padding-top:.5em;
   border-top:1px solid gray;
 }
+.toc0 {
+  font-size:120%;
+  font-weight:bold;
+  padding-left:0pt;
+}
 .toc1 {
   padding-left:1em;
 }
@@ -46,4 +51,11 @@ address {
 }
 .toc6 {
   padding-left:6em;
+}
+a {
+  text-decoration:none;
+}
+a:hover {
+  background-color:gray;
+  color:white;
 }

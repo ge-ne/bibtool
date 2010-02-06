@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H_file.pm,v 1.3 2010-01-10 18:15:12 gene Exp $
+## $Id: L2H_file.pm,v 1.4 2010-02-06 10:09:28 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -20,7 +20,7 @@ require Exporter;
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.3 $'; #'
+  my $VERSION = '$Revision: 1.4 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
 
@@ -54,13 +54,13 @@ sub button
   my $img1 = shift;
   my $img2 = shift;
 
-  return '' if ( not defined($url) or $url eq '' or not -e $url);
+  return '' if not defined($url) or $url eq ''; # or not -e $url;
   return <<_EOF_;
 <a href="$url" id="A$name"
-   onMouseOver="document.$name\$\$.src='$img2'"
-   onMouseOut="document.$name\$\$.src='$img1'"><img
-   src="$img1" border="0" alt="$alt"
-   name="$name\$\$" /></a>
+       onMouseOver="document.$name\$\$.src='$img2'"
+       onMouseOut="document.$name\$\$.src='$img1'"><img
+       src="$img1" border="0" alt="$alt"
+       name="$name\$\$" /></a>
 _EOF_
 }
 
@@ -151,7 +151,8 @@ _EOF_
     return;
   }
 
-  $self->{out} = new FileHandle("$opt_dirname/$fname", 'w') || die "$opt_dirname/$fname: $!\n";
+  $self->{out} = new FileHandle("$opt_dirname/$fname", 'w')
+      || die "$opt_dirname/$fname: $!\n";
   return undef if not defined($self->{out});
   print STDERR "--- Output to $opt_dirname/$fname\n" if $self->{debug} & 2;
 
@@ -159,11 +160,11 @@ _EOF_
   for (my $i = 0; $i < $n; $i++ )
   { my $s = $self->{'nav:'.$i};
     next if not defined($s);
-    my $st	       = $self->{'title:'.$s};
-    $Cat .= "<div class=\"cat$i\"><a href=\"$s\">$st</a></div>\n";
+    my $st = $self->{'title:'.$s};
+    $Cat  .= "\n     <div class=\"cat$i\"><a href=\"$s\">$st</a></div>";
   }
   { my $s = $self->{"nav:$n"};
-    $Cat .= "<div class=\"cat$n\"><b>".$self->{"title:$s"}."</b></div>\n";
+    $Cat .= "\n     <div class=\"cat$n\">".$self->{"title:$s"}."</div>";
   }
 
   $self->{children} = '';
@@ -190,20 +191,19 @@ _EOF_
 
   $self->{page_head} = <<_EOF_;
 <div class="top">
-<table width="100%" cellspacing="0" cellpadding="3" border="0">
- <tr>
-  <td width="160">
-    $Back
-    $Toc
-    $Idx
-    $Next
-    &nbsp;
-  </td>
-  <td style="font-size:70%;">
-     $Cat
-  </td>
- </tr>
-</table>
+ <table width="100%" cellspacing="0" cellpadding="3" border="0">
+  <tr>
+   <td width="160">
+     $Back
+     $Toc
+     $Idx
+     $Next
+     &nbsp;
+   </td>
+   <td>$Cat
+   </td>
+  </tr>
+ </table>
 </div>
 _EOF_
   my $tophead = $self->{page_head};
@@ -238,14 +238,21 @@ _EOF_
 #
 sub make_nav 
 { my $self = shift;
-  local $_ = $self->opt('dirname').'/'.
-             $self->opt('prefix').'_nav.'.$self->opt('ext');
+
+  my $opt_ext     = $self->opt('ext');
+  my $opt_year    = $self->opt('year');
+  my $opt_email   = $self->opt('email');
+  my $opt_author  = $self->opt('author');
+  my $opt_prefix  = $self->opt('prefix');
+  my $opt_dirname = $self->opt('dirname');
+
+  local $_ = $opt_dirname.'/'.$opt_prefix.'_nav'.$opt_ext;
   my $fd   = new FileHandle($_, 'w') || die "$_: $!\n";
   print $fd <<__EOF__;
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML//3.2//EN">
 <html>
 <head>
-  <title>$st</title>
+  <title></title>
   <meta name="Author" content="$opt_author">
   <meta http_equiv="Content-Type" content="text/html;CHARSET=iso-8859-1">
   <link rev="made" href="mailto:$opt_email">

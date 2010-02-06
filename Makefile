@@ -1,5 +1,5 @@
 #******************************************************************************
-#* $Id: Makefile,v 1.1 2007-02-08 20:31:51 gene Exp $
+#* $Id: Makefile,v 1.2 2010-02-06 10:08:10 gene Exp $
 #******************************************************************************
 #* Author: Gerd Neugebauer
 #*=============================================================================
@@ -30,6 +30,7 @@ DISTFILES += 	AutoConf/config.h.in 	\
 		Doc/config.tex		\
 		Doc/version.tex		\
 		Doc/c_get.pl		\
+		Doc/make_version.pl	\
 		MSDOS/link.dj		\
 		MSDOS/link.msc		\
 		MSDOS/link.wat		\

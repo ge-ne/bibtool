@@ -803,7 +803,7 @@ defined in |error.c|.
 \begin{Macro}{void \Mac{DebugPrint2}}{DebugPrint2}
   \begin{Arguments}
     & \Var{A} & Debug message.\\
-    & \Var{B} & Conitnuation of the debug message.\\
+    & \Var{B} & Continuation of the debug message.\\
   \end{Arguments}%
   This Macro is for debugging purposes. The compilation
   determines whether this macro prints its arguments or
@@ -816,8 +816,47 @@ defined in |error.c|.
 \begin{Macro}{void \Mac{DebugPrint3}}{DebugPrint3}
   \begin{Arguments}
     & \Var{A} & Debug message.\\
-    & \Var{B} & Conitnuation of the debug message.\\
-    & \Var{C} & Second conitnuation of the debug message.\\
+    & \Var{B} & Continuation of the debug message.\\
+    & \Var{C} & Second continuation of the debug message.\\
+  \end{Arguments}%
+  This Macro is for debugging purposes. The compilation
+  determines whether this macro prints its arguments or
+  simply ignores them. This is achieved by defining or
+  undefining the macro |DEBUG| when compiling.
+  \begin{Result}
+    nothing
+  \end{Result}
+\end{Macro}
+\begin{Macro}{void \Mac{DebugPrintF1}}{DebugPrintF1}
+  \begin{Arguments}
+    & \Var{A} & Debug message.\\
+  \end{Arguments}%
+  This Macro is for debugging purposes. The compilation
+  determines whether this macro prints its argument or
+  simply ignores it. This is achieved by defining or
+  undefining the macro |DEBUG| when compiling.
+  \begin{Result}
+    nothing
+  \end{Result}
+\end{Macro}
+\begin{Macro}{void \Mac{DebugPrintF2}}{DebugPrintF2}
+  \begin{Arguments}
+    & \Var{F} & The format for the debug message.\\
+    & \Var{A} & Debug message.\\
+  \end{Arguments}%
+  This Macro is for debugging purposes. The compilation
+  determines whether this macro prints its arguments or
+  simply ignores them. This is achieved by defining or
+  undefining the macro |DEBUG| when compiling.
+  \begin{Result}
+    nothing
+  \end{Result}
+\end{Macro}
+\begin{Macro}{void \Mac{DebugPrintF3}}{DebugPrintF3}
+  \begin{Arguments}
+    & \Var{F} & The format for the debug message.\\
+    & \Var{A} & Debug message.\\
+    & \Var{B} & Continuation of the debug message.\\
   \end{Arguments}%
   This Macro is for debugging purposes. The compilation
   determines whether this macro prints its arguments or

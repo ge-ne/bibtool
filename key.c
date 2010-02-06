@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: key.c,v 1.8 2010-01-05 23:00:05 gene Exp $
+** $Id: key.c,v 1.9 2010-02-06 10:09:28 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -840,11 +840,10 @@ static void fmt_names(sb,line,maxname,post,trans)  /*		             */
   wp = deTeX(*line=='{'?line+1:line,push_word,DETEX_FLAG_COMMA);/*	     */
   words[wp] = NULL;				   /*                        */
  						   /*                        */
-  for ( i=0; i<wp; i++)			   	   /*			     */
+  for (i = 0; i < wp; i++)			   /*			     */
   {						   /*                        */
-#ifdef DEBUG
-    printf("%3d '%s'\n",i,words[i]);		   /*                        */
-#endif
+    DebugPrintF3("+++ %3d '%s'\n", i, words[i]);   /*                        */
+ 						   /*                        */
     if ( strcmp(words[i],"and") == 0 )		   /*                        */
     { words[i] = and; }				   /*                        */
     else if ( strcmp(words[i],",") == 0 )	   /*                        */

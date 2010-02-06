@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: names.c,v 1.9 2010-01-10 09:39:33 gene Exp $
+** $Id: names.c,v 1.10 2010-02-06 10:09:28 gene Exp $
 *******************************************************************************
 ** 
 ** This file is part of BibTool.
@@ -466,10 +466,10 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   { OUT_OF_MEMORY("name type"); }   		   /*                        */
  						   /*                        */
 #ifdef DEBUG
-  printf("Name parts: ");			   /*                        */
+  ErrPrint("+++ BibTool: Name parts: ");	   /*                        */
   for (i = 0; i < len; i++)			   /*                        */
-  { printf("/%s/ ",w[i]); }			   /*                        */
-  putchar('\n');				   /*                        */
+  { ErrPrintF("\n\t/%s/ ",w[i]); }		   /*                        */
+  ErrC('\n');				   	   /*                        */
 #endif
  						   /*                        */
   if ( commas == 0 )				   /*------------------------*/
@@ -518,18 +518,23 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
     { while ( i < len && w[i] != comma )	   /*                        */
       { type[i++] = 'j'; jr++; }		   /*                        */
       if (i < len) { type[i++] = ','; }		   /*                        */
-    }
+    }						   /*                        */
     while ( i < len && !is_lower_word(w[i]) )	   /*                        */
-    { type[i++] = 'f'; first++; }		   /*                        */
+    { if (w[i] == comma) {	   		   /*                        */
+        type[i++] = ',';			   /*                        */
+      } else {					   /*                        */
+        type[i++] = 'f'; first++;		   /*                        */
+      }						   /*                        */
+    }		   				   /*                        */
     while ( i < len && is_lower_word(w[i]) )	   /*                        */
     { type[i++] = 'v'; von++; }			   /*                        */
   }						   /*                        */
  						   /*                        */
 #ifdef DEBUG
-  printf("Classified parts: ");			   /*                        */
+  ErrPrint("+++ BibTool: Classified name parts: ");/*                        */
   for ( i = 0; i < len; i++)			   /*                        */
-  { printf("%c/%s/ ",type[i], w[i]); }		   /*                        */
-  putchar('\n');				   /*                        */
+  { ErrPrintF2("\n\t%c/%s/ ",type[i], w[i]); }	   /*                        */
+  ErrC('\n');				   	   /*                        */
 #endif
  						   /*                        */
   for ( nn = format;				   /*                        */

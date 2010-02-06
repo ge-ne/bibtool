@@ -1,5 +1,5 @@
 #******************************************************************************
-#* $Id: Makefile,v 1.4 2010-01-10 16:58:54 gene Exp $
+#* $Id: Makefile,v 1.5 2010-02-06 10:09:28 gene Exp $
 #******************************************************************************
 #* Author: Gerd Neugebauer
 #*=============================================================================
@@ -9,7 +9,7 @@ INFILES = 	../Doc/config.tex	\
 	  	../Doc/bibtool.tex
 
 
-FLAGS   =	-v -dir=target -prefix=doc
+FLAGS   =	-v -dir=target -prefix=doc -main=doc.html
 
 all:
 	perl L2H.pl ${FLAGS} ${INFILES}

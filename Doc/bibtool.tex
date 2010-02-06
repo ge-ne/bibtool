@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.9 2010-01-10 09:39:33 gene Exp $
+%% $Id: bibtool.tex,v 1.10 2010-02-06 10:09:28 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -3858,10 +3858,11 @@ appropriate directory.
 \bibliographystyle{alpha}
 \bibliography{bibtool}
 
+\ifHTML\else
 \ifx\ptt\undefined\global\let\ptt\tt\fi
 \ifx\psf\undefined\global\let\psf\sf\fi
 \ifx\pdollar\undefined\global\let\pdollar\$\fi
-
+\fi
 \printindex
 
 \end{document} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

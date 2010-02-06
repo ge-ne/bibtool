@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H.pm,v 1.3 2010-01-10 16:58:54 gene Exp $
+## $Id: L2H.pm,v 1.4 2010-02-06 10:09:28 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -31,7 +31,7 @@ require Exporter;
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.3 $'; #'
+  my $VERSION = '$Revision: 1.4 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
 
@@ -77,8 +77,8 @@ sub new
 sub restart
 { my $self = shift;
   my %args = @_;
-
-  $self->{'title:'.$opt{'main'}} = $opt{'title'};
+  local $_ = new L2H()->LaTeX2HTML($opt{'title'} || $self->{'title'} || '');
+  $self->{'title:'.$opt{'main'}} = $_;
   $self->{'Context'}       = [];
   $self->{'context'}       = 'text';
   $self->{'SectionNumber'} = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
@@ -87,7 +87,8 @@ sub restart
   $self->{'label_number'}  = 1;
   $self->{'page'}          = '';
   $self->{'ignore:p'}      = 1;
-  $self->{'NAV'}           = '';
+  $self->{'NAV'}           = "<div class=\"toc0\"><a href=\"doc.html\" target=\"content\">$_</a></div>\n";
+  $self->{'TOC'}           = '';
   while ( my($key,$value) = each %args)
   { $self->{$key} = $value; }
   $self->redirect($opt{'main'}, 0);
@@ -244,7 +245,6 @@ sub newcommand
   }
   else
   { $L2H::Macro{$macro} = [$arity,$arg{context},$arg{text},$arg{code}];
-#    print STDERR "$macro \[$arity] -> $arg{text}\n";
   }
   return '';
 }
@@ -338,19 +338,10 @@ sub LaTeX2HTML
   { my $token = $&;
     my $pre = $`;
     $_ =  $';
-    $pre =~ s|\n[ ]*\n|\n<P>|go;
-    $self->put($pre) if ( not $self->{'ignore:p'} );
-#    print STDERR "===> '$token' $self->{'ignore:p'}\n" if ($token ne '%');
-#    print STDERR "===> '$token'\n";
-#    print STDERR "-------------------------\n",$_ if ($token ne '%');
+    $pre =~ s|\n[ ]*\n|\n<p>|go;
+    $self->put($pre) if not $self->{'ignore:p'};
 
-    if ($token eq '---')
-    { $self->put('&mdash;');
-    }
-    elsif ($token eq '--')
-    { $self->put('&ndash;');
-    }
-    elsif ( substr($token,0,1) eq '\\' )
+    if ( substr($token,0,1) eq '\\' )
     { $token = substr($token,1);
       $token =~ s/\s//go if ( $token =~ m/^[a-z@]/oi );
       if ( ($token eq 'begin' || $token eq 'end') && m/^{[a-z\*]+}/oi )
@@ -408,6 +399,12 @@ sub LaTeX2HTML
 	    if( $self->{'debug'} & 128 );
 	$self->put('\\'.$token.' ') if ( not $self->{'ignore:p'});
       }
+    }
+    elsif ($token eq '---')
+    { $self->put('&mdash;');
+    }
+    elsif ($token eq '--')
+    { $self->put('&ndash;');
     }
     elsif ( $token eq '%' ) # comments
     { s/^.*\n[ \t]*//o;
@@ -529,7 +526,7 @@ sub section
   print STDERR '.' if $self->{debug} & 1;
   if ( not defined($name) )
   { $self->{'SectionNumber'}[$level]++;
-    for ( my $i=$level+1; $i<10; $i++ )
+    for ( my $i = $level + 1; $i < 10; $i++ )
     { $self->{'SectionNumber'}[$i] = 0}
     $name = $opt{'prefix'};
     for ( my $i = $self->{'SectionMinNo'}; $i <= $level; $i++ )
@@ -549,11 +546,12 @@ sub section
     $level = 0
   }
 
+  $self->redirect($name, $level);
+  $self->put($post) if defined $post;
+
   $self->{TOC} .= "<div class=\"toc$level\"><a href=\"$self->{page}\">$title</a></div>\n";
   $self->{NAV} .= "<div class=\"toc$level\"><a href=\"$self->{page}\" target=\"content\">$title</a></div>\n";
 
-  $self->redirect($name, $level);
-  $self->put($post) if defined $post;
   return '';
 }
 
@@ -587,7 +585,6 @@ sub label
   s/\.html?$//o;
   s/_/\&\#095;/go;
   $self->{'label_text:'.$label} = $self->{'current_label'};
-#  print STDERR "--- defining label `$label'\n";
   if ( $tag )
   { local $_ = 'tag'.($self->{'label_number'}++);
     $self->{'label_url:'.$label} = $self->{'page'}.'#'.$_;
