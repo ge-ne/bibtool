@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.10 2010-02-06 10:09:28 gene Exp $
+%% $Id: bibtool.tex,v 1.11 2010-02-28 09:44:33 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -35,6 +35,7 @@
 \else
 \documentclass[11pt]{book}
 \usepackage{makeidx}
+\usepackage{hyperref}
 \ifAfour
 \makeatletter
 \input{dina4.sty}
@@ -106,7 +107,11 @@
 
 \newenvironment{Summary}{\subsection*{Summary}
   \begin{center}\small
-    \begin{tabular}{|p{.08\textwidth}|p{.35\textwidth}|p{.48\textwidth}|}
+    \begin{tabular}{p{.08\textwidth}p{.35\textwidth}p{.48\textwidth}}
+      \hline
+      \textit{\scriptsize Option}&
+      \textit{\scriptsize Resource command}&
+      \textit{\scriptsize Description}\\
       \hline
 }{\end{tabular}\end{center}}
 

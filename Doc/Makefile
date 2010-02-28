@@ -1,5 +1,5 @@
 ##*****************************************************************************
-## $Id: Makefile,v 1.8 2010-02-06 10:50:25 gene Exp $
+## $Id: Makefile,v 1.9 2010-02-28 09:44:33 gene Exp $
 ##=============================================================================
 ## 
 ## This file is part of BibTool.
@@ -19,24 +19,26 @@ MAKEINDEX = makeindex
 
 DIR_SEP   = /
 
-.SUFFIXES: .tex .toc .dvi .aux .bbl .ind .idx $(SUFFIXES)
+.SUFFIXES: .tex .toc .dvi .pdf .aux .bbl .ind .idx $(SUFFIXES)
 
 .tex.pdf:
 	$(PDFLATEX) $<
 .tex.dvi:
 	$(LATEX) $<
 .tex.toc:
-	$(LATEX) $<
+	$(PDFLATEX) $<
 .tex.idx:
-	$(LATEX) $<
+	$(PDFLATEX) $<
 .tex.aux:
-	$(LATEX) $<
+	$(PDFLATEX) $<
 .aux.bbl:
 	$(BIBTEX) $*
 
+TARGETS = bibtool.pdf ref_card.pdf c_lib.pdf
+
 ##-----------------------------------------------------------------------------
 
-all: bibtool.pdf ref_card.pdf c_lib.pdf
+all: $(TARGETS)
 
 ##-----------------------------------------------------------------------------
 
@@ -146,7 +148,10 @@ c.tex: $(CFILES) c_get.pl
 clean:
 	$(RM) *.bak *.BAK *~ *.log *.ilg *.blg
 
-veryclean:
-	$(RM) *.bak *.BAK *~ *.log *.toc *.aux *.idx *.ind *.ilg *.bbl *.blg
+veryclean: clean
+	$(RM) *.toc *.aux *.idx *.ind *.ilg *.bbl
+
+distclean: veryclean
+	$(RM) $(TARGETS)
 
 

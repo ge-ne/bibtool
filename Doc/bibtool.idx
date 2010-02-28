@@ -1,517 +1,517 @@
-\indexentry{s@{\tt  -s}}{7}
-\indexentry{s@{\tt  -s}}{7}
-\indexentry{S@{\tt  -S}}{8}
-\indexentry{N@\%N}{8}
-\indexentry{-@{\tt  --}}{8}
-\indexentry{sort.format@\textsf  {sort.format}}{8}
-\indexentry{k@{\tt  -k}}{8}
-\indexentry{K@{\tt  -K}}{9}
-\indexentry{n@\%n}{9}
-\indexentry{f@{\tt  -f}}{9}
-\indexentry{regular expression}{9}
-\indexentry{Emacs}{9}
-\indexentry{\#}{10}
-\indexentry{*}{10}
-\indexentry{x@{\tt  -x}}{10}
-\indexentry{x@{\tt  -x}}{10}
-\indexentry{o@{\tt  -o}}{10}
-\indexentry{X@{\tt  -X}}{11}
-\indexentry{o@{\tt  -o}}{11}
-\indexentry{-@{\tt  --}}{11}
-\indexentry{-@{\tt  --}}{11}
-\indexentry{-@{\tt  --}}{11}
-\indexentry{-@{\tt  --}}{11}
-\indexentry{-@{\tt  --}}{11}
-\indexentry{r@{\tt  -r}}{11}
-\indexentry{l@\%l}{12}
-\indexentry{sort.format@\textsf  {sort.format}}{12}
-\indexentry{sort.reverse@\textsf  {sort.reverse}}{12}
-\indexentry{sort@\textsf  {sort}}{12}
-\indexentry{l@\%l}{12}
-\indexentry{l@\%l}{12}
-\indexentry{l@\%l}{12}
-\indexentry{l@\%l}{12}
-\indexentry{h@{\tt  -h}}{15}
-\indexentry{h@{\tt  -h}}{15}
-\indexentry{r@{\tt  -r}}{15}
-\indexentry{r@{\tt  -r}}{15}
-\indexentry{BIBTOOLRSC@{\tt  BIBTOOLRSC}}{16}
-\indexentry{HOME@{\tt  HOME}}{16}
-\indexentry{BIBTOOL@{\tt  BIBTOOL}}{16}
-\indexentry{resource.search.path@\textsf  {resource.search.path}}{16}
-\indexentry{resource.search.path@\textsf  {resource.search.path}}{16}
-\indexentry{R@{\tt  -R}}{16}
-\indexentry{R@{\tt  -R}}{16}
-\indexentry{R@{\tt  -R}}{16}
-\indexentry{R@{\tt  -R}}{16}
-\indexentry{name@\textsf  {name}}{17}
-\indexentry{name@\textsf  {name}}{17}
-\indexentry{name@\textsf  {name}}{17}
-\indexentry{\#}{17}
-\indexentry{"}{17}
-\indexentry{\%}{17}
-\indexentry{=}{17}
-\indexentry{,}{17}
-\indexentry{'}{17}
-\indexentry{\{}\index{\}}{17}
-\indexentry{(}{17}
-\indexentry{)}{17}
-\indexentry{on@\textsf  {on}}{17}
-\indexentry{off@\textsf  {off}}{17}
-\indexentry{on@\textsf  {on}}{17}
-\indexentry{t@\textsf  {t}}{17}
-\indexentry{true@\textsf  {true}}{17}
-\indexentry{yes@\textsf  {yes}}{17}
-\indexentry{off@\textsf  {off}}{17}
-\indexentry{resource@\textsf  {resource}}{17}
-\indexentry{r@{\tt  -r}}{17}
-\indexentry{print@\textsf  {print}}{17}
-\indexentry{print@\textsf  {print}}{18}
-\indexentry{print@\textsf  {print}}{18}
-\indexentry{-@{\tt  --}}{18}
-\indexentry{-@{\tt  --}}{18}
-\indexentry{print@\textsf  {print}}{18}
-\indexentry{-@{\tt  --}}{18}
-\indexentry{h@{\tt  -h}}{18}
-\indexentry{R@{\tt  -R}}{18}
-\indexentry{print@\textsf  {print}}{18}
-\indexentry{r@{\tt  -r}}{18}
-\indexentry{resource@\textsf  {resource}}{18}
-\indexentry{resource.search.path@\textsf  {resource.search.path}}{18}
-\indexentry{-@{\tt  --}}{18}
-\indexentry{i@{\tt  -i}}{18}
-\indexentry{i@{\tt  -i}}{18}
-\indexentry{input@\textsf  {input}}{18}
-\indexentry{input@\textsf  {input}}{18}
-\indexentry{bibtex.search.path@\textsf  {bibtex.search.path}}{19}
-\indexentry{bibtex.search.path@\textsf  {bibtex.search.path}}{19}
-\indexentry{BIBINPUTS@{\tt  BIBINPUTS}}{19}
-\indexentry{bibtex.search.path@\textsf  {bibtex.search.path}}{19}
-\indexentry{bibtex.env.name@\textsf  {bibtex.env.name}}{19}
-\indexentry{BIBINPUTS@{\tt  BIBINPUTS}}{19}
-\indexentry{bibtex.env.name@\textsf  {bibtex.env.name}}{19}
-\indexentry{env.separator@\textsf  {env.separator}}{19}
-\indexentry{bibtex.search.path@\textsf  {bibtex.search.path}}{19}
-\indexentry{bibtex.env.name@\textsf  {bibtex.env.name}}{19}
-\indexentry{env.separator@\textsf  {env.separator}}{19}
-\indexentry{dir.file.separator@\textsf  {dir.file.separator}}{19}
-\indexentry{dir.file.separator@\textsf  {dir.file.separator}}{19}
-\indexentry{env.separator@\textsf  {env.separator}}{19}
-\indexentry{dir.file.separator@\textsf  {dir.file.separator}}{19}
-\indexentry{env.separator@\textsf  {env.separator}}{19}
-\indexentry{dir.file.separator@\textsf  {dir.file.separator}}{19}
-\indexentry{bibtex.env.name@\textsf  {bibtex.env.name}}{19}
-\indexentry{bibtex.search.path@\textsf  {bibtex.search.path}}{19}
-\indexentry{dir.file.separator@\textsf  {dir.file.separator}}{19}
-\indexentry{env.separator@\textsf  {env.separator}}{19}
-\indexentry{i@{\tt  -i}}{19}
-\indexentry{input.file@\textsf  {input.file}}{19}
-\indexentry{o@{\tt  -o}}{20}
-\indexentry{o@{\tt  -o}}{20}
-\indexentry{output.file@\textsf  {output.file}}{20}
-\indexentry{output.file@\textsf  {output.file}}{20}
-\indexentry{q@{\tt  -q}}{20}
-\indexentry{q@{\tt  -q}}{20}
-\indexentry{quiet@\textsf  {quiet}}{20}
-\indexentry{quiet@\textsf  {quiet}}{20}
-\indexentry{v@{\tt  -v}}{20}
-\indexentry{v@{\tt  -v}}{20}
-\indexentry{verbose@\textsf  {verbose}}{20}
-\indexentry{verbose@\textsf  {verbose}}{20}
-\indexentry{o@{\tt  -o}}{20}
-\indexentry{output.file@\textsf  {output.file}}{20}
-\indexentry{q@{\tt  -q}}{20}
-\indexentry{quiet@\textsf  {quiet}}{20}
-\indexentry{v@{\tt  -v}}{20}
-\indexentry{verbose@\textsf  {verbose}}{20}
-\indexentry{pass.comments@\textsf  {pass.comments}}{21}
-\indexentry{pass.comments@\textsf  {pass.comments}}{21}
-\indexentry{new.entry.type@\textsf  {new.entry.type}}{21}
-\indexentry{new.entry.type@\textsf  {new.entry.type}}{21}
-\indexentry{new.entry.type@\textsf  {new.entry.type}}{21}
-\indexentry{print.entry.types@\textsf  {print.entry.types}}{21}
-\indexentry{print.all.strings@\textsf  {print.all.strings}}{21}
-\indexentry{print.entry.types@\textsf  {print.entry.types}}{21}
-\indexentry{print.line.length@\textsf  {print.line.length}}{22}
-\indexentry{print.indent@\textsf  {print.indent}}{22}
-\indexentry{print.align@\textsf  {print.align}}{22}
-\indexentry{print.align.key@\textsf  {print.align.key}}{22}
-\indexentry{print.align.string@\textsf  {print.align.string}}{22}
-\indexentry{print.align.preamble@\textsf  {print.align.preamble}}{22}
-\indexentry{print.align.comment@\textsf  {print.align.comment}}{22}
-\indexentry{print.comma.at.end@\textsf  {print.comma.at.end}}{22}
-\indexentry{print.align@\textsf  {print.align}}{22}
-\indexentry{print.equal.right@\textsf  {print.equal.right}}{22}
-\indexentry{print.newline@\textsf  {print.newline}}{22}
-\indexentry{print.terminal.comma@\textsf  {print.terminal.comma}}{22}
-\indexentry{print.use.tab@\textsf  {print.use.tab}}{22}
-\indexentry{print.wide.equal@\textsf  {print.wide.equal}}{23}
-\indexentry{suppress.initial.newline@\textsf  {suppress.initial.newline}}{23}
-\indexentry{print.line.length@\textsf  {print.line.length}}{23}
-\indexentry{print.align.string@\textsf  {print.align.string}}{23}
-\indexentry{print.align.key@\textsf  {print.align.key}}{23}
-\indexentry{print.line.length@\textsf  {print.line.length}}{23}
-\indexentry{print.align@\textsf  {print.align}}{23}
-\indexentry{print.indent@\textsf  {print.indent}}{23}
-\indexentry{new.field.type@\textsf  {new.field.type}}{23}
-\indexentry{new.field.type@\textsf  {new.field.type}}{23}
-\indexentry{new.field.type@\textsf  {new.field.type}}{23}
-\indexentry{symbol.type@\textsf  {symbol.type}}{23}
-\indexentry{symbol.type@\textsf  {symbol.type}}{23}
-\indexentry{preserve.key.case@\textsf  {preserve.key.case}}{24}
-\indexentry{preserve.key.case@\textsf  {preserve.key.case}}{24}
-\indexentry{preserve.key.case@\textsf  {preserve.key.case}}{24}
-\indexentry{new.entry.type@\textsf  {new.entry.type}}{24}
-\indexentry{new.field.type@\textsf  {new.field.type}}{24}
-\indexentry{pass.comments@\textsf  {pass.comments}}{24}
-\indexentry{preserve.key.case@\textsf  {preserve.key.case}}{24}
-\indexentry{print.align.comment@\textsf  {print.align.comment}}{24}
-\indexentry{print.align.key@\textsf  {print.align.key}}{24}
-\indexentry{print.align.string@\textsf  {print.align.string}}{24}
-\indexentry{print.align@\textsf  {print.align}}{24}
-\indexentry{print.comma.at.end@\textsf  {print.comma.at.end}}{24}
-\indexentry{print.indent@\textsf  {print.indent}}{24}
-\indexentry{print.line.length@\textsf  {print.line.length}}{24}
-\indexentry{print.print.newline@\textsf  {print.print.newline}}{24}
-\indexentry{print.use.tab@\textsf  {print.use.tab}}{24}
-\indexentry{print.wide.equal@\textsf  {print.wide.equal}}{24}
-\indexentry{suppress.initial.newline@\textsf  {suppress.initial.newline}}{24}
-\indexentry{symbol.type@\textsf  {symbol.type}}{24}
-\indexentry{s@{\tt  -s}}{24}
-\indexentry{S@{\tt  -S}}{24}
-\indexentry{s@{\tt  -s}}{24}
-\indexentry{S@{\tt  -S}}{25}
-\indexentry{sort@\textsf  {sort}}{25}
-\indexentry{sort.reverse@\textsf  {sort.reverse}}{25}
-\indexentry{sort@\textsf  {sort}}{25}
-\indexentry{sort.reverse@\textsf  {sort.reverse}}{25}
-\indexentry{sort@\textsf  {sort}}{25}
-\indexentry{sort.reverse@\textsf  {sort.reverse}}{25}
-\indexentry{sort.format@\textsf  {sort.format}}{25}
-\indexentry{sort.format@\textsf  {sort.format}}{25}
-\indexentry{N@\%N}{25}
-\indexentry{sort.format@\textsf  {sort.format}}{25}
-\indexentry{sort.format@\textsf  {sort.format}}{25}
-\indexentry{N@\%N}{25}
-\indexentry{sort.format@\textsf  {sort.format}}{25}
-\indexentry{sort.format@\textsf  {sort.format}}{25}
-\indexentry{preserve.key.case@\textsf  {preserve.key.case}}{25}
-\indexentry{sort.cased@\textsf  {sort.cased}}{25}
-\indexentry{preserve.key.case@\textsf  {preserve.key.case}}{25}
-\indexentry{sort.cased@\textsf  {sort.cased}}{25}
-\indexentry{sort.macros@\textsf  {sort.macros}}{25}
-\indexentry{sort.macros@\textsf  {sort.macros}}{25}
-\indexentry{S@{\tt  -S}}{26}
-\indexentry{s@{\tt  -s}}{26}
-\indexentry{sort@\textsf  {sort}}{26}
-\indexentry{sort.cased@\textsf  {sort.cased}}{26}
-\indexentry{sort.format@\textsf  {sort.format}}{26}
-\indexentry{sort.macros@\textsf  {sort.macros}}{26}
-\indexentry{sort.reverse@\textsf  {sort.reverse}}{26}
-\indexentry{x@{\tt  -x}}{28}
-\indexentry{x@{\tt  -x}}{28}
-\indexentry{extract.file@\textsf  {extract.file}}{28}
-\indexentry{extract.file@\textsf  {extract.file}}{28}
-\indexentry{print.all.strings@\textsf  {print.all.strings}}{28}
-\indexentry{select.by.string@\textsf  {select.by.string}}{28}
-\indexentry{select.by.string@\textsf  {select.by.string}}{29}
-\indexentry{select.by.string@\textsf  {select.by.string}}{29}
-\indexentry{select.by.string@\textsf  {select.by.string}}{29}
-\indexentry{select.case.sensitive@\textsf  {select.case.sensitive}}{29}
-\indexentry{select.by.string.ignored@\textsf  {select.by.string.ignored}}{29}
-\indexentry{select.by.string.ignored@\textsf  {select.by.string.ignored}}{29}
-\indexentry{select.case.sensitive@\textsf  {select.case.sensitive}}{29}
-\indexentry{select.by.string.ignored@\textsf  {select.by.string.ignored}}{29}
-\indexentry{select.by.non.string@\textsf  {select.by.non.string}}{29}
-\indexentry{select.by.string@\textsf  {select.by.string}}{29}
-\indexentry{select.by.non.string@\textsf  {select.by.non.string}}{29}
-\indexentry{select.crossrefs@\textsf  {select.crossrefs}}{29}
-\indexentry{select@\textsf  {select}}{29}
-\indexentry{select@\textsf  {select}}{29}
-\indexentry{select.non@\textsf  {select.non}}{30}
-\indexentry{select.non@\textsf  {select.non}}{30}
-\indexentry{select.case.sensitive@\textsf  {select.case.sensitive}}{30}
-\indexentry{select.case.sensitive@\textsf  {select.case.sensitive}}{30}
-\indexentry{select.case.sensitive@\textsf  {select.case.sensitive}}{30}
-\indexentry{X@{\tt  -X}}{30}
-\indexentry{X@{\tt  -X}}{30}
-\indexentry{select.fields@\textsf  {select.fields}}{30}
-\indexentry{select.fields@\textsf  {select.fields}}{30}
-\indexentry{select.fields@\textsf  {select.fields}}{30}
-\indexentry{-@{\tt  --}}{30}
-\indexentry{select.case.sensitive@\textsf  {select.case.sensitive}}{30}
-\indexentry{select.fields@\textsf  {select.fields}}{30}
-\indexentry{extract.regex@\textsf  {extract.regex}}{30}
-\indexentry{extract.regex@\textsf  {extract.regex}}{30}
-\indexentry{select.crossrefs@\textsf  {select.crossrefs}}{30}
-\indexentry{select.crossrefs@\textsf  {select.crossrefs}}{31}
-\indexentry{select.crossrefs@\textsf  {select.crossrefs}}{31}
-\indexentry{crossref.limit@\textsf  {crossref.limit}}{31}
-\indexentry{x@{\tt  -x}}{31}
-\indexentry{extract.file@\textsf  {extract.file}}{31}
-\indexentry{extract.regexp@\textsf  {extract.regexp}}{31}
-\indexentry{X@{\tt  -X}}{31}
-\indexentry{select@\textsf  {select}}{31}
-\indexentry{select.by.non.string@\textsf  {select.by.non.string}}{31}
-\indexentry{select.by.string@\textsf  {select.by.string}}{31}
-\indexentry{select.by.string.ignored@\textsf  {select.by.string.ignored}}{31}
-\indexentry{select.case.sensitive@\textsf  {select.case.sensitive}}{31}
-\indexentry{c@{\tt  -c}}{31}
-\indexentry{select.crossrefs@\textsf  {select.crossrefs}}{31}
-\indexentry{select.fields@\textsf  {select.fields}}{31}
-\indexentry{X@{\tt  -X}}{31}
-\indexentry{select.non@\textsf  {select.non}}{31}
-\indexentry{f@{\tt  -f}}{31}
-\indexentry{f@{\tt  -f}}{31}
-\indexentry{key.format@\textsf  {key.format}}{31}
-\indexentry{key.format@\textsf  {key.format}}{31}
-\indexentry{short@\textsf  {short}}{32}
-\indexentry{fmt.name.title@\textsf  {fmt.name.title}}{32}
-\indexentry{default.key@\textsf  {default.key}}{32}
-\indexentry{key.base@\textsf  {key.base}}{32}
-\indexentry{long@\textsf  {long}}{32}
-\indexentry{new.short@\textsf  {new.short}}{33}
-\indexentry{short@\textsf  {short}}{33}
-\indexentry{preserve.keys@\textsf  {preserve.keys}}{33}
-\indexentry{new.long@\textsf  {new.long}}{33}
-\indexentry{long@\textsf  {long}}{33}
-\indexentry{preserve.keys@\textsf  {preserve.keys}}{33}
-\indexentry{empty@\textsf  {empty}}{33}
-\indexentry{F@{\tt  -F}}{33}
-\indexentry{F@{\tt  -F}}{33}
-\indexentry{key.generation@\textsf  {key.generation}}{33}
-\indexentry{key.generation@\textsf  {key.generation}}{34}
-\indexentry{preserve.keys@\textsf  {preserve.keys}}{34}
-\indexentry{preserve.keys@\textsf  {preserve.keys}}{34}
-\indexentry{preserve.key.case@\textsf  {preserve.key.case}}{34}
-\indexentry{key.format@\textsf  {key.format}}{34}
-\indexentry{empty@\textsf  {empty}}{34}
-\indexentry{key.number.separator@\textsf  {key.number.separator}}{34}
-\indexentry{key.base@\textsf  {key.base}}{34}
-\indexentry{upper@\textsf  {upper}}{34}
-\indexentry{lower@\textsf  {lower}}{34}
-\indexentry{digit@\textsf  {digit}}{34}
-\indexentry{digit@\textsf  {digit}}{34}
-\indexentry{lower@\textsf  {lower}}{34}
-\indexentry{upper@\textsf  {upper}}{34}
-\indexentry{preserve.keys@\textsf  {preserve.keys}}{34}
-\indexentry{preserve.key.case@\textsf  {preserve.key.case}}{34}
-\indexentry{default.key@\textsf  {default.key}}{35}
-\indexentry{key.base@\textsf  {key.base}}{35}
-\indexentry{upper@\textsf  {upper}}{35}
-\indexentry{lower@\textsf  {lower}}{35}
-\indexentry{digit@\textsf  {digit}}{35}
-\indexentry{key.number.separator@\textsf  {key.number.separator}}{35}
-\indexentry{key.expand.macros@\textsf  {key.expand.macros}}{35}
-\indexentry{fmt.name.title@\textsf  {fmt.name.title}}{35}
-\indexentry{short@\textsf  {short}}{35}
-\indexentry{long@\textsf  {long}}{35}
-\indexentry{fmt.title.title@\textsf  {fmt.title.title}}{35}
-\indexentry{fmt.name.name@\textsf  {fmt.name.name}}{35}
-\indexentry{fmt.inter.name@\textsf  {fmt.inter.name}}{35}
-\indexentry{fmt.name.pre@\textsf  {fmt.name.pre}}{35}
-\indexentry{fmt.et.al@\textsf  {fmt.et.al}}{35}
-\indexentry{fmt.word.separator@\textsf  {fmt.word.separator}}{35}
-\indexentry{short@\textsf  {short}}{35}
-\indexentry{preserve.keys@\textsf  {preserve.keys}}{36}
-\indexentry{preserve.key.case@\textsf  {preserve.key.case}}{36}
-\indexentry{default.key@\textsf  {default.key}}{36}
-\indexentry{fmt.et.al@\textsf  {fmt.et.al}}{36}
-\indexentry{fmt.inter.name@\textsf  {fmt.inter.name}}{36}
-\indexentry{fmt.name.name@\textsf  {fmt.name.name}}{36}
-\indexentry{fmt.name.pre@\textsf  {fmt.name.pre}}{36}
-\indexentry{fmt.name.title@\textsf  {fmt.name.title}}{36}
-\indexentry{fmt.title.title@\textsf  {fmt.title.title}}{36}
-\indexentry{key.base@\textsf  {key.base}}{36}
-\indexentry{key.expand.macros@\textsf  {key.expand.macros}}{36}
-\indexentry{f@{\tt  -f}}{36}
-\indexentry{key.format@\textsf  {key.format}}{36}
-\indexentry{F@{\tt  -F}}{36}
-\indexentry{key.generation@\textsf  {key.generation}}{36}
-\indexentry{key.number.separator@\textsf  {key.number.separator}}{36}
-\indexentry{N@\%N}{37}
-\indexentry{p@\%p|(}{37}
-\indexentry{p@\%p|)}{37}
-\indexentry{n@\%n|(}{37}
-\indexentry{n@\%n|)}{38}
-\indexentry{N@\%N|(}{38}
-\indexentry{N@\%N|)}{38}
-\indexentry{d@\%d|(}{38}
-\indexentry{d@\%d|)}{39}
-\indexentry{D@\%D|(}{39}
-\indexentry{D@\%D|)}{39}
-\indexentry{s@\%s|(}{39}
-\indexentry{s@\%s|)}{40}
-\indexentry{T@\%T|(}{40}
-\indexentry{ignored.word@\textsf  {ignored.word}}{40}
-\indexentry{fmt.word.separator@\textsf  {fmt.word.separator}}{40}
-\indexentry{fmt.word.separator@\textsf  {fmt.word.separator}}{40}
-\indexentry{fmt.word.separator@\textsf  {fmt.word.separator}}{40}
-\indexentry{T@\%T|)}{40}
-\indexentry{t@\%t|(}{40}
-\indexentry{t@\%t|)}{41}
-\indexentry{W@\%W|(}{41}
-\indexentry{W@\%W|)}{41}
-\indexentry{w@\%w|(}{41}
-\indexentry{w@\%w|)}{41}
-\indexentry{p@\%\#p|(}{41}
-\indexentry{p@\%\#p|)}{42}
-\indexentry{n@\%\#n}{42}
-\indexentry{N@\%\#N}{42}
-\indexentry{s@\%\#s|(}{42}
-\indexentry{s@\%\#s|)}{42}
-\indexentry{w@\%\#w|(}{42}
-\indexentry{w@\%\#w|)}{43}
-\indexentry{t@\%\#t}{43}
-\indexentry{W@\%\#W|(}{43}
-\indexentry{ignored.word@\textsf  {ignored.word}}{43}
-\indexentry{w@\%\#w|)}{43}
-\indexentry{T@\%\#T}{43}
-\indexentry{t@\%t}{43}
-\indexentry{crossref.limit@\textsf  {crossref.limit}}{44}
-\indexentry{crossref.limit@\textsf  {crossref.limit}}{44}
-\indexentry{default.key@\textsf  {default.key}}{44}
-\indexentry{fmt.name.title@\textsf  {fmt.name.title}}{44}
-\indexentry{fmt.title.title@\textsf  {fmt.title.title}}{44}
-\indexentry{fmt.name.name@\textsf  {fmt.name.name}}{44}
-\indexentry{fmt.inter.name@\textsf  {fmt.inter.name}}{44}
-\indexentry{fmt.name.pre@\textsf  {fmt.name.pre}}{44}
-\indexentry{fmt.et.al@\textsf  {fmt.et.al}}{44}
-\indexentry{s@\%s}{44}
-\indexentry{s@\%s}{44}
-\indexentry{n@\%n}{45}
-\indexentry{d@\%d}{45}
-\indexentry{N@\%N}{46}
-\indexentry{N@\%N}{46}
-\indexentry{N@\%N}{46}
-\indexentry{T@\%T}{46}
-\indexentry{s@\%s}{46}
-\indexentry{s@\%s}{46}
-\indexentry{ignored.word@\textsf  {ignored.word}}{47}
-\indexentry{ignored.word@\textsf  {ignored.word}}{47}
-\indexentry{clear.ignored.words@\textsf  {clear.ignored.words}}{47}
-\indexentry{clear.ignored.words@\textsf  {clear.ignored.words}}{47}
-\indexentry{tex.define@\textsf  {tex.define}}{47}
-\indexentry{tex.define@\textsf  {tex.define}}{47}
-\indexentry{tex.define@\textsf  {tex.define}}{47}
-\indexentry{tex.define@\textsf  {tex.define}}{47}
-\indexentry{tex.define@\textsf  {tex.define}}{48}
-\indexentry{tex.define@\textsf  {tex.define}}{48}
-\indexentry{p@\%p}{48}
-\indexentry{N@\%N}{48}
-\indexentry{n@\%n}{48}
-\indexentry{new.format.type@\textsf  {new.format.type}}{48}
-\indexentry{f@\%f}{48}
-\indexentry{v@\%v}{48}
-\indexentry{l@\%l}{48}
-\indexentry{new.format.type@\textsf  {new.format.type}}{49}
-\indexentry{f@\%f}{49}
-\indexentry{v@\%v}{49}
-\indexentry{f@\%f}{49}
-\indexentry{j@\%j}{49}
-\indexentry{f@\%f}{49}
-\indexentry{l@\%l}{49}
-\indexentry{v@\%v}{49}
-\indexentry{j@\%j}{49}
-\indexentry{f@\%f}{49}
-\indexentry{v@\%v}{49}
-\indexentry{l@\%l}{49}
-\indexentry{clear.ignored.words@\textsf  {clear.ignored.words}}{51}
-\indexentry{new.format.type@\textsf  {new.format.type}}{51}
-\indexentry{ignored.word@\textsf  {ignored.word}}{51}
-\indexentry{tex.define@\textsf  {tex.define}}{51}
-\indexentry{tex.define@\textsf  {tex.define}}{51}
-\indexentry{add.field@\textsf  {add.field}}{51}
-\indexentry{delete.field@\textsf  {delete.field}}{51}
-\indexentry{add.field@\textsf  {add.field}}{51}
-\indexentry{add.field@\textsf  {add.field}}{52}
-\indexentry{s@\%s}{52}
-\indexentry{add.field@\textsf  {add.field}}{52}
-\indexentry{s@\%s}{52}
-\indexentry{d@\%d}{52}
-\indexentry{add.field@\textsf  {add.field}}{52}
-\indexentry{delete.field@\textsf  {delete.field}}{52}
-\indexentry{rewrite.rule@\textsf  {rewrite.rule}}{52}
-\indexentry{rewrite.rule@\textsf  {rewrite.rule}}{52}
-\indexentry{rewrite.rule@\textsf  {rewrite.rule}}{52}
-\indexentry{delete.field@\textsf  {delete.field}}{53}
-\indexentry{rewrite.rule@\textsf  {rewrite.rule}}{53}
-\indexentry{rewrite.rule@\textsf  {rewrite.rule}}{53}
-\indexentry{rewrite.rule@\textsf  {rewrite.rule}}{53}
-\indexentry{rewrite.rule@\textsf  {rewrite.rule}}{53}
-\indexentry{rewrite.rule@\textsf  {rewrite.rule}}{53}
-\indexentry{rewrite.rule@\textsf  {rewrite.rule}}{53}
-\indexentry{s@\%s}{53}
-\indexentry{d@\%d}{53}
-\indexentry{rewrite.case.sensitive@\textsf  {rewrite.case.sensitive}}{53}
-\indexentry{on@\textsf  {on}}{53}
-\indexentry{rewrite.case.sensitive@\textsf  {rewrite.case.sensitive}}{53}
-\indexentry{rewrite.limit@\textsf  {rewrite.limit}}{53}
-\indexentry{rewrite.limit@\textsf  {rewrite.limit}}{53}
-\indexentry{rewrite.limit@\textsf  {rewrite.limit}}{53}
-\indexentry{rewrite.rule@\textsf  {rewrite.rule}}{54}
-\indexentry{rewrite.rule@\textsf  {rewrite.rule}}{54}
-\indexentry{rewrite.rule@\textsf  {rewrite.rule}}{54}
-\indexentry{rewrite.rule@\textsf  {rewrite.rule}}{54}
-\indexentry{sort.order@\textsf  {sort.order}}{54}
-\indexentry{sort.order@\textsf  {sort.order}}{54}
-\indexentry{sort.order@\textsf  {sort.order}}{54}
-\indexentry{sort.order@\textsf  {sort.order}}{55}
-\indexentry{add.field@\textsf  {add.field}}{55}
-\indexentry{delete.field@\textsf  {delete.field}}{55}
-\indexentry{rewrite.case.sensitive@\textsf  {rewrite.case.sensitive}}{55}
-\indexentry{rewrite.rule@\textsf  {rewrite.rule}}{55}
-\indexentry{sort.order@\textsf  {sort.order}}{55}
-\indexentry{sort.format@\textsf  {sort.format}}{55}
-\indexentry{pass.comments@\textsf  {pass.comments}}{55}
-\indexentry{off@\textsf  {off}}{55}
-\indexentry{print.deleted.entries@\textsf  {print.deleted.entries}}{55}
-\indexentry{off@\textsf  {off}}{55}
-\indexentry{print.deleted.prefix@\textsf  {print.deleted.prefix}}{55}
-\indexentry{check.double.delete@\textsf  {check.double.delete}}{55}
-\indexentry{check.double.delete@\textsf  {check.double.delete}}{56}
-\indexentry{check.double@\textsf  {check.double}}{56}
-\indexentry{check.double@\textsf  {check.double}}{56}
-\indexentry{d@{\tt  -d}}{56}
-\indexentry{d@{\tt  -d}}{56}
-\indexentry{check.rule@\textsf  {check.rule}}{56}
-\indexentry{check.rule@\textsf  {check.rule}}{56}
-\indexentry{rewrite.rule@\textsf  {rewrite.rule}}{56}
-\indexentry{check.rule@\textsf  {check.rule}}{56}
-\indexentry{rewrite.rule@\textsf  {rewrite.rule}}{56}
-\indexentry{check.case.sensitive@\textsf  {check.case.sensitive}}{56}
-\indexentry{check.case.sensitive@\textsf  {check.case.sensitive}}{56}
-\indexentry{check.rule@\textsf  {check.rule}}{56}
-\indexentry{check.rule@\textsf  {check.rule}}{56}
-\indexentry{check.rule@\textsf  {check.rule}}{56}
-\indexentry{check.case.sensitive@\textsf  {check.case.sensitive}}{57}
-\indexentry{d@{\tt  -d}}{57}
-\indexentry{check.double@\textsf  {check.double}}{57}
-\indexentry{check.double.delete@\textsf  {check.double.delete}}{57}
-\indexentry{check.rule@\textsf  {check.rule}}{57}
-\indexentry{macro.file@\textsf  {macro.file}}{57}
-\indexentry{macro.file@\textsf  {macro.file}}{57}
-\indexentry{print.all.strings@\textsf  {print.all.strings}}{57}
-\indexentry{print.all.strings@\textsf  {print.all.strings}}{57}
-\indexentry{symbol.type@\textsf  {symbol.type}}{57}
-\indexentry{expand.macros@\textsf  {expand.macros}}{57}
-\indexentry{expand.macros@\textsf  {expand.macros}}{57}
-\indexentry{expand.macros@\textsf  {expand.macros}}{57}
-\indexentry{print.braces@\textsf  {print.braces}}{58}
-\indexentry{print.braces@\textsf  {print.braces}}{58}
-\indexentry{print.parentheses@\textsf  {print.parentheses}}{58}
-\indexentry{print.parentheses@\textsf  {print.parentheses}}{58}
-\indexentry{macro.file@\textsf  {macro.file}}{58}
-\indexentry{print.all.strings@\textsf  {print.all.strings}}{58}
-\indexentry{expand.macros@\textsf  {expand.macros}}{58}
-\indexentry{print.braces@\textsf  {print.braces}}{58}
-\indexentry{print.parentheses@\textsf  {print.parentheses}}{58}
-\indexentry{count.all@\textsf  {count.all}}{58}
-\indexentry{count.used@\textsf  {count.used}}{58}
-\indexentry{count.all@\textsf  {count.all}}{58}
-\indexentry{count.used@\textsf  {count.used}}{58}
-\indexentry{count.all@\textsf  {count.all}}{58}
-\indexentry{count.used@\textsf  {count.used}}{58}
-\indexentry{count.all@\textsf  {count.all}}{59}
-\indexentry{count.used@\textsf  {count.used}}{59}
-\indexentry{s@\%s}{64}
+\indexentry{s@{\tt  -s}|hyperpage}{7}
+\indexentry{s@{\tt  -s}|hyperpage}{7}
+\indexentry{S@{\tt  -S}|hyperpage}{8}
+\indexentry{N@\%N|hyperpage}{8}
+\indexentry{-@{\tt  --}|hyperpage}{8}
+\indexentry{sort.format@\textsf  {sort.format}|hyperpage}{8}
+\indexentry{k@{\tt  -k}|hyperpage}{8}
+\indexentry{K@{\tt  -K}|hyperpage}{9}
+\indexentry{n@\%n|hyperpage}{9}
+\indexentry{f@{\tt  -f}|hyperpage}{9}
+\indexentry{regular expression|hyperpage}{9}
+\indexentry{Emacs|hyperpage}{9}
+\indexentry{\#|hyperpage}{10}
+\indexentry{*|hyperpage}{10}
+\indexentry{x@{\tt  -x}|hyperpage}{10}
+\indexentry{x@{\tt  -x}|hyperpage}{10}
+\indexentry{o@{\tt  -o}|hyperpage}{10}
+\indexentry{X@{\tt  -X}|hyperpage}{11}
+\indexentry{o@{\tt  -o}|hyperpage}{11}
+\indexentry{-@{\tt  --}|hyperpage}{11}
+\indexentry{-@{\tt  --}|hyperpage}{11}
+\indexentry{-@{\tt  --}|hyperpage}{11}
+\indexentry{-@{\tt  --}|hyperpage}{11}
+\indexentry{-@{\tt  --}|hyperpage}{11}
+\indexentry{r@{\tt  -r}|hyperpage}{11}
+\indexentry{l@\%l|hyperpage}{12}
+\indexentry{sort.format@\textsf  {sort.format}|hyperpage}{12}
+\indexentry{sort.reverse@\textsf  {sort.reverse}|hyperpage}{12}
+\indexentry{sort@\textsf  {sort}|hyperpage}{12}
+\indexentry{l@\%l|hyperpage}{12}
+\indexentry{l@\%l|hyperpage}{12}
+\indexentry{l@\%l|hyperpage}{12}
+\indexentry{l@\%l|hyperpage}{12}
+\indexentry{h@{\tt  -h}|hyperpage}{15}
+\indexentry{h@{\tt  -h}|hyperpage}{15}
+\indexentry{r@{\tt  -r}|hyperpage}{15}
+\indexentry{r@{\tt  -r}|hyperpage}{15}
+\indexentry{BIBTOOLRSC@{\tt  BIBTOOLRSC}|hyperpage}{16}
+\indexentry{HOME@{\tt  HOME}|hyperpage}{16}
+\indexentry{BIBTOOL@{\tt  BIBTOOL}|hyperpage}{16}
+\indexentry{resource.search.path@\textsf  {resource.search.path}|hyperpage}{16}
+\indexentry{resource.search.path@\textsf  {resource.search.path}|hyperpage}{16}
+\indexentry{R@{\tt  -R}|hyperpage}{16}
+\indexentry{R@{\tt  -R}|hyperpage}{16}
+\indexentry{R@{\tt  -R}|hyperpage}{16}
+\indexentry{R@{\tt  -R}|hyperpage}{16}
+\indexentry{name@\textsf  {name}|hyperpage}{17}
+\indexentry{name@\textsf  {name}|hyperpage}{17}
+\indexentry{name@\textsf  {name}|hyperpage}{17}
+\indexentry{\#|hyperpage}{17}
+\indexentry{"|hyperpage}{17}
+\indexentry{\%|hyperpage}{17}
+\indexentry{=|hyperpage}{17}
+\indexentry{,|hyperpage}{17}
+\indexentry{'|hyperpage}{17}
+\indexentry{\{}\index{\}|hyperpage}{17}
+\indexentry{(|hyperpage}{17}
+\indexentry{)|hyperpage}{17}
+\indexentry{on@\textsf  {on}|hyperpage}{17}
+\indexentry{off@\textsf  {off}|hyperpage}{17}
+\indexentry{on@\textsf  {on}|hyperpage}{17}
+\indexentry{t@\textsf  {t}|hyperpage}{17}
+\indexentry{true@\textsf  {true}|hyperpage}{17}
+\indexentry{yes@\textsf  {yes}|hyperpage}{17}
+\indexentry{off@\textsf  {off}|hyperpage}{17}
+\indexentry{resource@\textsf  {resource}|hyperpage}{17}
+\indexentry{r@{\tt  -r}|hyperpage}{17}
+\indexentry{print@\textsf  {print}|hyperpage}{17}
+\indexentry{print@\textsf  {print}|hyperpage}{18}
+\indexentry{print@\textsf  {print}|hyperpage}{18}
+\indexentry{-@{\tt  --}|hyperpage}{18}
+\indexentry{-@{\tt  --}|hyperpage}{18}
+\indexentry{print@\textsf  {print}|hyperpage}{18}
+\indexentry{-@{\tt  --}|hyperpage}{18}
+\indexentry{h@{\tt  -h}|hyperpage}{18}
+\indexentry{R@{\tt  -R}|hyperpage}{18}
+\indexentry{print@\textsf  {print}|hyperpage}{18}
+\indexentry{r@{\tt  -r}|hyperpage}{18}
+\indexentry{resource@\textsf  {resource}|hyperpage}{18}
+\indexentry{resource.search.path@\textsf  {resource.search.path}|hyperpage}{18}
+\indexentry{-@{\tt  --}|hyperpage}{18}
+\indexentry{i@{\tt  -i}|hyperpage}{18}
+\indexentry{i@{\tt  -i}|hyperpage}{18}
+\indexentry{input@\textsf  {input}|hyperpage}{18}
+\indexentry{input@\textsf  {input}|hyperpage}{18}
+\indexentry{bibtex.search.path@\textsf  {bibtex.search.path}|hyperpage}{19}
+\indexentry{bibtex.search.path@\textsf  {bibtex.search.path}|hyperpage}{19}
+\indexentry{BIBINPUTS@{\tt  BIBINPUTS}|hyperpage}{19}
+\indexentry{bibtex.search.path@\textsf  {bibtex.search.path}|hyperpage}{19}
+\indexentry{bibtex.env.name@\textsf  {bibtex.env.name}|hyperpage}{19}
+\indexentry{BIBINPUTS@{\tt  BIBINPUTS}|hyperpage}{19}
+\indexentry{bibtex.env.name@\textsf  {bibtex.env.name}|hyperpage}{19}
+\indexentry{env.separator@\textsf  {env.separator}|hyperpage}{19}
+\indexentry{bibtex.search.path@\textsf  {bibtex.search.path}|hyperpage}{19}
+\indexentry{bibtex.env.name@\textsf  {bibtex.env.name}|hyperpage}{19}
+\indexentry{env.separator@\textsf  {env.separator}|hyperpage}{19}
+\indexentry{dir.file.separator@\textsf  {dir.file.separator}|hyperpage}{19}
+\indexentry{dir.file.separator@\textsf  {dir.file.separator}|hyperpage}{19}
+\indexentry{env.separator@\textsf  {env.separator}|hyperpage}{19}
+\indexentry{dir.file.separator@\textsf  {dir.file.separator}|hyperpage}{19}
+\indexentry{env.separator@\textsf  {env.separator}|hyperpage}{19}
+\indexentry{dir.file.separator@\textsf  {dir.file.separator}|hyperpage}{19}
+\indexentry{bibtex.env.name@\textsf  {bibtex.env.name}|hyperpage}{20}
+\indexentry{bibtex.search.path@\textsf  {bibtex.search.path}|hyperpage}{20}
+\indexentry{dir.file.separator@\textsf  {dir.file.separator}|hyperpage}{20}
+\indexentry{env.separator@\textsf  {env.separator}|hyperpage}{20}
+\indexentry{i@{\tt  -i}|hyperpage}{20}
+\indexentry{input.file@\textsf  {input.file}|hyperpage}{20}
+\indexentry{o@{\tt  -o}|hyperpage}{20}
+\indexentry{o@{\tt  -o}|hyperpage}{20}
+\indexentry{output.file@\textsf  {output.file}|hyperpage}{20}
+\indexentry{output.file@\textsf  {output.file}|hyperpage}{20}
+\indexentry{q@{\tt  -q}|hyperpage}{20}
+\indexentry{q@{\tt  -q}|hyperpage}{20}
+\indexentry{quiet@\textsf  {quiet}|hyperpage}{20}
+\indexentry{quiet@\textsf  {quiet}|hyperpage}{20}
+\indexentry{v@{\tt  -v}|hyperpage}{20}
+\indexentry{v@{\tt  -v}|hyperpage}{20}
+\indexentry{verbose@\textsf  {verbose}|hyperpage}{20}
+\indexentry{verbose@\textsf  {verbose}|hyperpage}{20}
+\indexentry{o@{\tt  -o}|hyperpage}{21}
+\indexentry{output.file@\textsf  {output.file}|hyperpage}{21}
+\indexentry{q@{\tt  -q}|hyperpage}{21}
+\indexentry{quiet@\textsf  {quiet}|hyperpage}{21}
+\indexentry{v@{\tt  -v}|hyperpage}{21}
+\indexentry{verbose@\textsf  {verbose}|hyperpage}{21}
+\indexentry{pass.comments@\textsf  {pass.comments}|hyperpage}{21}
+\indexentry{pass.comments@\textsf  {pass.comments}|hyperpage}{21}
+\indexentry{new.entry.type@\textsf  {new.entry.type}|hyperpage}{21}
+\indexentry{new.entry.type@\textsf  {new.entry.type}|hyperpage}{21}
+\indexentry{new.entry.type@\textsf  {new.entry.type}|hyperpage}{21}
+\indexentry{print.entry.types@\textsf  {print.entry.types}|hyperpage}{21}
+\indexentry{print.all.strings@\textsf  {print.all.strings}|hyperpage}{22}
+\indexentry{print.entry.types@\textsf  {print.entry.types}|hyperpage}{22}
+\indexentry{print.line.length@\textsf  {print.line.length}|hyperpage}{22}
+\indexentry{print.indent@\textsf  {print.indent}|hyperpage}{22}
+\indexentry{print.align@\textsf  {print.align}|hyperpage}{22}
+\indexentry{print.align.key@\textsf  {print.align.key}|hyperpage}{22}
+\indexentry{print.align.string@\textsf  {print.align.string}|hyperpage}{22}
+\indexentry{print.align.preamble@\textsf  {print.align.preamble}|hyperpage}{22}
+\indexentry{print.align.comment@\textsf  {print.align.comment}|hyperpage}{22}
+\indexentry{print.comma.at.end@\textsf  {print.comma.at.end}|hyperpage}{22}
+\indexentry{print.align@\textsf  {print.align}|hyperpage}{22}
+\indexentry{print.equal.right@\textsf  {print.equal.right}|hyperpage}{23}
+\indexentry{print.newline@\textsf  {print.newline}|hyperpage}{23}
+\indexentry{print.terminal.comma@\textsf  {print.terminal.comma}|hyperpage}{23}
+\indexentry{print.use.tab@\textsf  {print.use.tab}|hyperpage}{23}
+\indexentry{print.wide.equal@\textsf  {print.wide.equal}|hyperpage}{23}
+\indexentry{suppress.initial.newline@\textsf  {suppress.initial.newline}|hyperpage}{23}
+\indexentry{print.line.length@\textsf  {print.line.length}|hyperpage}{23}
+\indexentry{print.align.string@\textsf  {print.align.string}|hyperpage}{23}
+\indexentry{print.align.key@\textsf  {print.align.key}|hyperpage}{23}
+\indexentry{print.line.length@\textsf  {print.line.length}|hyperpage}{23}
+\indexentry{print.align@\textsf  {print.align}|hyperpage}{23}
+\indexentry{print.indent@\textsf  {print.indent}|hyperpage}{23}
+\indexentry{new.field.type@\textsf  {new.field.type}|hyperpage}{23}
+\indexentry{new.field.type@\textsf  {new.field.type}|hyperpage}{24}
+\indexentry{new.field.type@\textsf  {new.field.type}|hyperpage}{24}
+\indexentry{symbol.type@\textsf  {symbol.type}|hyperpage}{24}
+\indexentry{symbol.type@\textsf  {symbol.type}|hyperpage}{24}
+\indexentry{preserve.key.case@\textsf  {preserve.key.case}|hyperpage}{24}
+\indexentry{preserve.key.case@\textsf  {preserve.key.case}|hyperpage}{24}
+\indexentry{preserve.key.case@\textsf  {preserve.key.case}|hyperpage}{24}
+\indexentry{new.entry.type@\textsf  {new.entry.type}|hyperpage}{25}
+\indexentry{new.field.type@\textsf  {new.field.type}|hyperpage}{25}
+\indexentry{pass.comments@\textsf  {pass.comments}|hyperpage}{25}
+\indexentry{preserve.key.case@\textsf  {preserve.key.case}|hyperpage}{25}
+\indexentry{print.align.comment@\textsf  {print.align.comment}|hyperpage}{25}
+\indexentry{print.align.key@\textsf  {print.align.key}|hyperpage}{25}
+\indexentry{print.align.string@\textsf  {print.align.string}|hyperpage}{25}
+\indexentry{print.align@\textsf  {print.align}|hyperpage}{25}
+\indexentry{print.comma.at.end@\textsf  {print.comma.at.end}|hyperpage}{25}
+\indexentry{print.indent@\textsf  {print.indent}|hyperpage}{25}
+\indexentry{print.line.length@\textsf  {print.line.length}|hyperpage}{25}
+\indexentry{print.print.newline@\textsf  {print.print.newline}|hyperpage}{25}
+\indexentry{print.use.tab@\textsf  {print.use.tab}|hyperpage}{25}
+\indexentry{print.wide.equal@\textsf  {print.wide.equal}|hyperpage}{25}
+\indexentry{suppress.initial.newline@\textsf  {suppress.initial.newline}|hyperpage}{25}
+\indexentry{symbol.type@\textsf  {symbol.type}|hyperpage}{25}
+\indexentry{s@{\tt  -s}|hyperpage}{25}
+\indexentry{S@{\tt  -S}|hyperpage}{25}
+\indexentry{s@{\tt  -s}|hyperpage}{25}
+\indexentry{S@{\tt  -S}|hyperpage}{25}
+\indexentry{sort@\textsf  {sort}|hyperpage}{25}
+\indexentry{sort.reverse@\textsf  {sort.reverse}|hyperpage}{25}
+\indexentry{sort@\textsf  {sort}|hyperpage}{25}
+\indexentry{sort.reverse@\textsf  {sort.reverse}|hyperpage}{25}
+\indexentry{sort@\textsf  {sort}|hyperpage}{25}
+\indexentry{sort.reverse@\textsf  {sort.reverse}|hyperpage}{25}
+\indexentry{sort.format@\textsf  {sort.format}|hyperpage}{25}
+\indexentry{sort.format@\textsf  {sort.format}|hyperpage}{25}
+\indexentry{N@\%N|hyperpage}{26}
+\indexentry{sort.format@\textsf  {sort.format}|hyperpage}{26}
+\indexentry{sort.format@\textsf  {sort.format}|hyperpage}{26}
+\indexentry{N@\%N|hyperpage}{26}
+\indexentry{sort.format@\textsf  {sort.format}|hyperpage}{26}
+\indexentry{sort.format@\textsf  {sort.format}|hyperpage}{26}
+\indexentry{preserve.key.case@\textsf  {preserve.key.case}|hyperpage}{26}
+\indexentry{sort.cased@\textsf  {sort.cased}|hyperpage}{26}
+\indexentry{preserve.key.case@\textsf  {preserve.key.case}|hyperpage}{26}
+\indexentry{sort.cased@\textsf  {sort.cased}|hyperpage}{26}
+\indexentry{sort.macros@\textsf  {sort.macros}|hyperpage}{26}
+\indexentry{sort.macros@\textsf  {sort.macros}|hyperpage}{26}
+\indexentry{S@{\tt  -S}|hyperpage}{26}
+\indexentry{s@{\tt  -s}|hyperpage}{26}
+\indexentry{sort@\textsf  {sort}|hyperpage}{26}
+\indexentry{sort.cased@\textsf  {sort.cased}|hyperpage}{26}
+\indexentry{sort.format@\textsf  {sort.format}|hyperpage}{26}
+\indexentry{sort.macros@\textsf  {sort.macros}|hyperpage}{26}
+\indexentry{sort.reverse@\textsf  {sort.reverse}|hyperpage}{26}
+\indexentry{x@{\tt  -x}|hyperpage}{29}
+\indexentry{x@{\tt  -x}|hyperpage}{29}
+\indexentry{extract.file@\textsf  {extract.file}|hyperpage}{29}
+\indexentry{extract.file@\textsf  {extract.file}|hyperpage}{29}
+\indexentry{print.all.strings@\textsf  {print.all.strings}|hyperpage}{29}
+\indexentry{select.by.string@\textsf  {select.by.string}|hyperpage}{29}
+\indexentry{select.by.string@\textsf  {select.by.string}|hyperpage}{29}
+\indexentry{select.by.string@\textsf  {select.by.string}|hyperpage}{29}
+\indexentry{select.by.string@\textsf  {select.by.string}|hyperpage}{29}
+\indexentry{select.case.sensitive@\textsf  {select.case.sensitive}|hyperpage}{29}
+\indexentry{select.by.string.ignored@\textsf  {select.by.string.ignored}|hyperpage}{30}
+\indexentry{select.by.string.ignored@\textsf  {select.by.string.ignored}|hyperpage}{30}
+\indexentry{select.case.sensitive@\textsf  {select.case.sensitive}|hyperpage}{30}
+\indexentry{select.by.string.ignored@\textsf  {select.by.string.ignored}|hyperpage}{30}
+\indexentry{select.by.non.string@\textsf  {select.by.non.string}|hyperpage}{30}
+\indexentry{select.by.string@\textsf  {select.by.string}|hyperpage}{30}
+\indexentry{select.by.non.string@\textsf  {select.by.non.string}|hyperpage}{30}
+\indexentry{select.crossrefs@\textsf  {select.crossrefs}|hyperpage}{30}
+\indexentry{select@\textsf  {select}|hyperpage}{30}
+\indexentry{select@\textsf  {select}|hyperpage}{30}
+\indexentry{select.non@\textsf  {select.non}|hyperpage}{30}
+\indexentry{select.non@\textsf  {select.non}|hyperpage}{30}
+\indexentry{select.case.sensitive@\textsf  {select.case.sensitive}|hyperpage}{30}
+\indexentry{select.case.sensitive@\textsf  {select.case.sensitive}|hyperpage}{30}
+\indexentry{select.case.sensitive@\textsf  {select.case.sensitive}|hyperpage}{30}
+\indexentry{X@{\tt  -X}|hyperpage}{31}
+\indexentry{X@{\tt  -X}|hyperpage}{31}
+\indexentry{select.fields@\textsf  {select.fields}|hyperpage}{31}
+\indexentry{select.fields@\textsf  {select.fields}|hyperpage}{31}
+\indexentry{select.fields@\textsf  {select.fields}|hyperpage}{31}
+\indexentry{-@{\tt  --}|hyperpage}{31}
+\indexentry{select.case.sensitive@\textsf  {select.case.sensitive}|hyperpage}{31}
+\indexentry{select.fields@\textsf  {select.fields}|hyperpage}{31}
+\indexentry{extract.regex@\textsf  {extract.regex}|hyperpage}{31}
+\indexentry{extract.regex@\textsf  {extract.regex}|hyperpage}{31}
+\indexentry{select.crossrefs@\textsf  {select.crossrefs}|hyperpage}{31}
+\indexentry{select.crossrefs@\textsf  {select.crossrefs}|hyperpage}{31}
+\indexentry{select.crossrefs@\textsf  {select.crossrefs}|hyperpage}{31}
+\indexentry{crossref.limit@\textsf  {crossref.limit}|hyperpage}{31}
+\indexentry{x@{\tt  -x}|hyperpage}{32}
+\indexentry{extract.file@\textsf  {extract.file}|hyperpage}{32}
+\indexentry{extract.regexp@\textsf  {extract.regexp}|hyperpage}{32}
+\indexentry{X@{\tt  -X}|hyperpage}{32}
+\indexentry{select@\textsf  {select}|hyperpage}{32}
+\indexentry{select.by.non.string@\textsf  {select.by.non.string}|hyperpage}{32}
+\indexentry{select.by.string@\textsf  {select.by.string}|hyperpage}{32}
+\indexentry{select.by.string.ignored@\textsf  {select.by.string.ignored}|hyperpage}{32}
+\indexentry{select.case.sensitive@\textsf  {select.case.sensitive}|hyperpage}{32}
+\indexentry{c@{\tt  -c}|hyperpage}{32}
+\indexentry{select.crossrefs@\textsf  {select.crossrefs}|hyperpage}{32}
+\indexentry{select.fields@\textsf  {select.fields}|hyperpage}{32}
+\indexentry{X@{\tt  -X}|hyperpage}{32}
+\indexentry{select.non@\textsf  {select.non}|hyperpage}{32}
+\indexentry{f@{\tt  -f}|hyperpage}{32}
+\indexentry{f@{\tt  -f}|hyperpage}{32}
+\indexentry{key.format@\textsf  {key.format}|hyperpage}{32}
+\indexentry{key.format@\textsf  {key.format}|hyperpage}{32}
+\indexentry{short@\textsf  {short}|hyperpage}{33}
+\indexentry{fmt.name.title@\textsf  {fmt.name.title}|hyperpage}{33}
+\indexentry{default.key@\textsf  {default.key}|hyperpage}{33}
+\indexentry{key.base@\textsf  {key.base}|hyperpage}{33}
+\indexentry{long@\textsf  {long}|hyperpage}{33}
+\indexentry{new.short@\textsf  {new.short}|hyperpage}{33}
+\indexentry{short@\textsf  {short}|hyperpage}{33}
+\indexentry{preserve.keys@\textsf  {preserve.keys}|hyperpage}{33}
+\indexentry{new.long@\textsf  {new.long}|hyperpage}{34}
+\indexentry{long@\textsf  {long}|hyperpage}{34}
+\indexentry{preserve.keys@\textsf  {preserve.keys}|hyperpage}{34}
+\indexentry{empty@\textsf  {empty}|hyperpage}{34}
+\indexentry{F@{\tt  -F}|hyperpage}{34}
+\indexentry{F@{\tt  -F}|hyperpage}{34}
+\indexentry{key.generation@\textsf  {key.generation}|hyperpage}{34}
+\indexentry{key.generation@\textsf  {key.generation}|hyperpage}{34}
+\indexentry{preserve.keys@\textsf  {preserve.keys}|hyperpage}{34}
+\indexentry{preserve.keys@\textsf  {preserve.keys}|hyperpage}{35}
+\indexentry{preserve.key.case@\textsf  {preserve.key.case}|hyperpage}{35}
+\indexentry{key.format@\textsf  {key.format}|hyperpage}{35}
+\indexentry{empty@\textsf  {empty}|hyperpage}{35}
+\indexentry{key.number.separator@\textsf  {key.number.separator}|hyperpage}{35}
+\indexentry{key.base@\textsf  {key.base}|hyperpage}{35}
+\indexentry{upper@\textsf  {upper}|hyperpage}{35}
+\indexentry{lower@\textsf  {lower}|hyperpage}{35}
+\indexentry{digit@\textsf  {digit}|hyperpage}{35}
+\indexentry{digit@\textsf  {digit}|hyperpage}{35}
+\indexentry{lower@\textsf  {lower}|hyperpage}{35}
+\indexentry{upper@\textsf  {upper}|hyperpage}{35}
+\indexentry{preserve.keys@\textsf  {preserve.keys}|hyperpage}{35}
+\indexentry{preserve.key.case@\textsf  {preserve.key.case}|hyperpage}{35}
+\indexentry{default.key@\textsf  {default.key}|hyperpage}{35}
+\indexentry{key.base@\textsf  {key.base}|hyperpage}{35}
+\indexentry{upper@\textsf  {upper}|hyperpage}{35}
+\indexentry{lower@\textsf  {lower}|hyperpage}{35}
+\indexentry{digit@\textsf  {digit}|hyperpage}{35}
+\indexentry{key.number.separator@\textsf  {key.number.separator}|hyperpage}{35}
+\indexentry{key.expand.macros@\textsf  {key.expand.macros}|hyperpage}{35}
+\indexentry{fmt.name.title@\textsf  {fmt.name.title}|hyperpage}{36}
+\indexentry{short@\textsf  {short}|hyperpage}{36}
+\indexentry{long@\textsf  {long}|hyperpage}{36}
+\indexentry{fmt.title.title@\textsf  {fmt.title.title}|hyperpage}{36}
+\indexentry{fmt.name.name@\textsf  {fmt.name.name}|hyperpage}{36}
+\indexentry{fmt.inter.name@\textsf  {fmt.inter.name}|hyperpage}{36}
+\indexentry{fmt.name.pre@\textsf  {fmt.name.pre}|hyperpage}{36}
+\indexentry{fmt.et.al@\textsf  {fmt.et.al}|hyperpage}{36}
+\indexentry{fmt.word.separator@\textsf  {fmt.word.separator}|hyperpage}{36}
+\indexentry{short@\textsf  {short}|hyperpage}{36}
+\indexentry{preserve.keys@\textsf  {preserve.keys}|hyperpage}{37}
+\indexentry{preserve.key.case@\textsf  {preserve.key.case}|hyperpage}{37}
+\indexentry{default.key@\textsf  {default.key}|hyperpage}{37}
+\indexentry{fmt.et.al@\textsf  {fmt.et.al}|hyperpage}{37}
+\indexentry{fmt.inter.name@\textsf  {fmt.inter.name}|hyperpage}{37}
+\indexentry{fmt.name.name@\textsf  {fmt.name.name}|hyperpage}{37}
+\indexentry{fmt.name.pre@\textsf  {fmt.name.pre}|hyperpage}{37}
+\indexentry{fmt.name.title@\textsf  {fmt.name.title}|hyperpage}{37}
+\indexentry{fmt.title.title@\textsf  {fmt.title.title}|hyperpage}{37}
+\indexentry{key.base@\textsf  {key.base}|hyperpage}{37}
+\indexentry{key.expand.macros@\textsf  {key.expand.macros}|hyperpage}{37}
+\indexentry{f@{\tt  -f}|hyperpage}{37}
+\indexentry{key.format@\textsf  {key.format}|hyperpage}{37}
+\indexentry{F@{\tt  -F}|hyperpage}{37}
+\indexentry{key.generation@\textsf  {key.generation}|hyperpage}{37}
+\indexentry{key.number.separator@\textsf  {key.number.separator}|hyperpage}{37}
+\indexentry{N@\%N|hyperpage}{38}
+\indexentry{p@\%p|(hyperpage}{38}
+\indexentry{p@\%p|)hyperpage}{38}
+\indexentry{n@\%n|(hyperpage}{38}
+\indexentry{n@\%n|)hyperpage}{39}
+\indexentry{N@\%N|(hyperpage}{39}
+\indexentry{N@\%N|)hyperpage}{39}
+\indexentry{d@\%d|(hyperpage}{39}
+\indexentry{d@\%d|)hyperpage}{40}
+\indexentry{D@\%D|(hyperpage}{40}
+\indexentry{D@\%D|)hyperpage}{40}
+\indexentry{s@\%s|(hyperpage}{40}
+\indexentry{s@\%s|)hyperpage}{41}
+\indexentry{T@\%T|(hyperpage}{41}
+\indexentry{ignored.word@\textsf  {ignored.word}|hyperpage}{41}
+\indexentry{fmt.word.separator@\textsf  {fmt.word.separator}|hyperpage}{41}
+\indexentry{fmt.word.separator@\textsf  {fmt.word.separator}|hyperpage}{41}
+\indexentry{fmt.word.separator@\textsf  {fmt.word.separator}|hyperpage}{41}
+\indexentry{T@\%T|)hyperpage}{41}
+\indexentry{t@\%t|(hyperpage}{41}
+\indexentry{t@\%t|)hyperpage}{42}
+\indexentry{W@\%W|(hyperpage}{42}
+\indexentry{W@\%W|)hyperpage}{42}
+\indexentry{w@\%w|(hyperpage}{42}
+\indexentry{w@\%w|)hyperpage}{42}
+\indexentry{p@\%\#p|(hyperpage}{42}
+\indexentry{p@\%\#p|)hyperpage}{43}
+\indexentry{n@\%\#n|hyperpage}{43}
+\indexentry{N@\%\#N|hyperpage}{43}
+\indexentry{s@\%\#s|(hyperpage}{43}
+\indexentry{s@\%\#s|)hyperpage}{43}
+\indexentry{w@\%\#w|(hyperpage}{43}
+\indexentry{w@\%\#w|)hyperpage}{44}
+\indexentry{t@\%\#t|hyperpage}{44}
+\indexentry{W@\%\#W|(hyperpage}{44}
+\indexentry{ignored.word@\textsf  {ignored.word}|hyperpage}{44}
+\indexentry{w@\%\#w|)hyperpage}{44}
+\indexentry{T@\%\#T|hyperpage}{44}
+\indexentry{t@\%t|hyperpage}{44}
+\indexentry{crossref.limit@\textsf  {crossref.limit}|hyperpage}{45}
+\indexentry{crossref.limit@\textsf  {crossref.limit}|hyperpage}{45}
+\indexentry{default.key@\textsf  {default.key}|hyperpage}{45}
+\indexentry{fmt.name.title@\textsf  {fmt.name.title}|hyperpage}{45}
+\indexentry{fmt.title.title@\textsf  {fmt.title.title}|hyperpage}{45}
+\indexentry{fmt.name.name@\textsf  {fmt.name.name}|hyperpage}{45}
+\indexentry{fmt.inter.name@\textsf  {fmt.inter.name}|hyperpage}{45}
+\indexentry{fmt.name.pre@\textsf  {fmt.name.pre}|hyperpage}{45}
+\indexentry{fmt.et.al@\textsf  {fmt.et.al}|hyperpage}{45}
+\indexentry{s@\%s|hyperpage}{45}
+\indexentry{s@\%s|hyperpage}{45}
+\indexentry{n@\%n|hyperpage}{46}
+\indexentry{d@\%d|hyperpage}{46}
+\indexentry{N@\%N|hyperpage}{47}
+\indexentry{N@\%N|hyperpage}{47}
+\indexentry{N@\%N|hyperpage}{47}
+\indexentry{T@\%T|hyperpage}{47}
+\indexentry{s@\%s|hyperpage}{47}
+\indexentry{s@\%s|hyperpage}{47}
+\indexentry{ignored.word@\textsf  {ignored.word}|hyperpage}{48}
+\indexentry{ignored.word@\textsf  {ignored.word}|hyperpage}{48}
+\indexentry{clear.ignored.words@\textsf  {clear.ignored.words}|hyperpage}{48}
+\indexentry{clear.ignored.words@\textsf  {clear.ignored.words}|hyperpage}{48}
+\indexentry{tex.define@\textsf  {tex.define}|hyperpage}{48}
+\indexentry{tex.define@\textsf  {tex.define}|hyperpage}{48}
+\indexentry{tex.define@\textsf  {tex.define}|hyperpage}{48}
+\indexentry{tex.define@\textsf  {tex.define}|hyperpage}{48}
+\indexentry{tex.define@\textsf  {tex.define}|hyperpage}{49}
+\indexentry{tex.define@\textsf  {tex.define}|hyperpage}{49}
+\indexentry{p@\%p|hyperpage}{49}
+\indexentry{N@\%N|hyperpage}{49}
+\indexentry{n@\%n|hyperpage}{49}
+\indexentry{new.format.type@\textsf  {new.format.type}|hyperpage}{49}
+\indexentry{f@\%f|hyperpage}{49}
+\indexentry{v@\%v|hyperpage}{49}
+\indexentry{l@\%l|hyperpage}{49}
+\indexentry{new.format.type@\textsf  {new.format.type}|hyperpage}{50}
+\indexentry{f@\%f|hyperpage}{50}
+\indexentry{v@\%v|hyperpage}{50}
+\indexentry{f@\%f|hyperpage}{50}
+\indexentry{j@\%j|hyperpage}{50}
+\indexentry{f@\%f|hyperpage}{50}
+\indexentry{l@\%l|hyperpage}{50}
+\indexentry{v@\%v|hyperpage}{50}
+\indexentry{j@\%j|hyperpage}{50}
+\indexentry{f@\%f|hyperpage}{50}
+\indexentry{v@\%v|hyperpage}{50}
+\indexentry{l@\%l|hyperpage}{50}
+\indexentry{clear.ignored.words@\textsf  {clear.ignored.words}|hyperpage}{52}
+\indexentry{new.format.type@\textsf  {new.format.type}|hyperpage}{52}
+\indexentry{ignored.word@\textsf  {ignored.word}|hyperpage}{52}
+\indexentry{tex.define@\textsf  {tex.define}|hyperpage}{52}
+\indexentry{tex.define@\textsf  {tex.define}|hyperpage}{52}
+\indexentry{add.field@\textsf  {add.field}|hyperpage}{52}
+\indexentry{delete.field@\textsf  {delete.field}|hyperpage}{52}
+\indexentry{add.field@\textsf  {add.field}|hyperpage}{53}
+\indexentry{add.field@\textsf  {add.field}|hyperpage}{53}
+\indexentry{s@\%s|hyperpage}{53}
+\indexentry{add.field@\textsf  {add.field}|hyperpage}{53}
+\indexentry{s@\%s|hyperpage}{53}
+\indexentry{d@\%d|hyperpage}{53}
+\indexentry{add.field@\textsf  {add.field}|hyperpage}{53}
+\indexentry{delete.field@\textsf  {delete.field}|hyperpage}{53}
+\indexentry{rewrite.rule@\textsf  {rewrite.rule}|hyperpage}{53}
+\indexentry{rewrite.rule@\textsf  {rewrite.rule}|hyperpage}{53}
+\indexentry{rewrite.rule@\textsf  {rewrite.rule}|hyperpage}{53}
+\indexentry{delete.field@\textsf  {delete.field}|hyperpage}{54}
+\indexentry{rewrite.rule@\textsf  {rewrite.rule}|hyperpage}{54}
+\indexentry{rewrite.rule@\textsf  {rewrite.rule}|hyperpage}{54}
+\indexentry{rewrite.rule@\textsf  {rewrite.rule}|hyperpage}{54}
+\indexentry{rewrite.rule@\textsf  {rewrite.rule}|hyperpage}{54}
+\indexentry{rewrite.rule@\textsf  {rewrite.rule}|hyperpage}{54}
+\indexentry{rewrite.rule@\textsf  {rewrite.rule}|hyperpage}{54}
+\indexentry{s@\%s|hyperpage}{54}
+\indexentry{d@\%d|hyperpage}{54}
+\indexentry{rewrite.case.sensitive@\textsf  {rewrite.case.sensitive}|hyperpage}{54}
+\indexentry{on@\textsf  {on}|hyperpage}{54}
+\indexentry{rewrite.case.sensitive@\textsf  {rewrite.case.sensitive}|hyperpage}{54}
+\indexentry{rewrite.limit@\textsf  {rewrite.limit}|hyperpage}{54}
+\indexentry{rewrite.limit@\textsf  {rewrite.limit}|hyperpage}{54}
+\indexentry{rewrite.limit@\textsf  {rewrite.limit}|hyperpage}{54}
+\indexentry{rewrite.rule@\textsf  {rewrite.rule}|hyperpage}{55}
+\indexentry{rewrite.rule@\textsf  {rewrite.rule}|hyperpage}{55}
+\indexentry{rewrite.rule@\textsf  {rewrite.rule}|hyperpage}{55}
+\indexentry{rewrite.rule@\textsf  {rewrite.rule}|hyperpage}{55}
+\indexentry{sort.order@\textsf  {sort.order}|hyperpage}{55}
+\indexentry{sort.order@\textsf  {sort.order}|hyperpage}{55}
+\indexentry{sort.order@\textsf  {sort.order}|hyperpage}{55}
+\indexentry{sort.order@\textsf  {sort.order}|hyperpage}{56}
+\indexentry{add.field@\textsf  {add.field}|hyperpage}{56}
+\indexentry{delete.field@\textsf  {delete.field}|hyperpage}{56}
+\indexentry{rewrite.case.sensitive@\textsf  {rewrite.case.sensitive}|hyperpage}{56}
+\indexentry{rewrite.rule@\textsf  {rewrite.rule}|hyperpage}{56}
+\indexentry{sort.order@\textsf  {sort.order}|hyperpage}{56}
+\indexentry{sort.format@\textsf  {sort.format}|hyperpage}{56}
+\indexentry{pass.comments@\textsf  {pass.comments}|hyperpage}{56}
+\indexentry{off@\textsf  {off}|hyperpage}{56}
+\indexentry{print.deleted.entries@\textsf  {print.deleted.entries}|hyperpage}{56}
+\indexentry{off@\textsf  {off}|hyperpage}{56}
+\indexentry{print.deleted.prefix@\textsf  {print.deleted.prefix}|hyperpage}{56}
+\indexentry{check.double.delete@\textsf  {check.double.delete}|hyperpage}{56}
+\indexentry{check.double.delete@\textsf  {check.double.delete}|hyperpage}{57}
+\indexentry{check.double@\textsf  {check.double}|hyperpage}{57}
+\indexentry{check.double@\textsf  {check.double}|hyperpage}{57}
+\indexentry{d@{\tt  -d}|hyperpage}{57}
+\indexentry{d@{\tt  -d}|hyperpage}{57}
+\indexentry{check.rule@\textsf  {check.rule}|hyperpage}{57}
+\indexentry{check.rule@\textsf  {check.rule}|hyperpage}{57}
+\indexentry{rewrite.rule@\textsf  {rewrite.rule}|hyperpage}{57}
+\indexentry{check.rule@\textsf  {check.rule}|hyperpage}{57}
+\indexentry{rewrite.rule@\textsf  {rewrite.rule}|hyperpage}{57}
+\indexentry{check.case.sensitive@\textsf  {check.case.sensitive}|hyperpage}{57}
+\indexentry{check.case.sensitive@\textsf  {check.case.sensitive}|hyperpage}{57}
+\indexentry{check.rule@\textsf  {check.rule}|hyperpage}{57}
+\indexentry{check.rule@\textsf  {check.rule}|hyperpage}{57}
+\indexentry{check.rule@\textsf  {check.rule}|hyperpage}{57}
+\indexentry{check.case.sensitive@\textsf  {check.case.sensitive}|hyperpage}{58}
+\indexentry{d@{\tt  -d}|hyperpage}{58}
+\indexentry{check.double@\textsf  {check.double}|hyperpage}{58}
+\indexentry{check.double.delete@\textsf  {check.double.delete}|hyperpage}{58}
+\indexentry{check.rule@\textsf  {check.rule}|hyperpage}{58}
+\indexentry{macro.file@\textsf  {macro.file}|hyperpage}{58}
+\indexentry{macro.file@\textsf  {macro.file}|hyperpage}{58}
+\indexentry{print.all.strings@\textsf  {print.all.strings}|hyperpage}{58}
+\indexentry{print.all.strings@\textsf  {print.all.strings}|hyperpage}{58}
+\indexentry{symbol.type@\textsf  {symbol.type}|hyperpage}{58}
+\indexentry{expand.macros@\textsf  {expand.macros}|hyperpage}{58}
+\indexentry{expand.macros@\textsf  {expand.macros}|hyperpage}{58}
+\indexentry{expand.macros@\textsf  {expand.macros}|hyperpage}{58}
+\indexentry{print.braces@\textsf  {print.braces}|hyperpage}{59}
+\indexentry{print.braces@\textsf  {print.braces}|hyperpage}{59}
+\indexentry{print.parentheses@\textsf  {print.parentheses}|hyperpage}{59}
+\indexentry{print.parentheses@\textsf  {print.parentheses}|hyperpage}{59}
+\indexentry{macro.file@\textsf  {macro.file}|hyperpage}{59}
+\indexentry{print.all.strings@\textsf  {print.all.strings}|hyperpage}{59}
+\indexentry{expand.macros@\textsf  {expand.macros}|hyperpage}{59}
+\indexentry{print.braces@\textsf  {print.braces}|hyperpage}{59}
+\indexentry{print.parentheses@\textsf  {print.parentheses}|hyperpage}{59}
+\indexentry{count.all@\textsf  {count.all}|hyperpage}{59}
+\indexentry{count.used@\textsf  {count.used}|hyperpage}{59}
+\indexentry{count.all@\textsf  {count.all}|hyperpage}{59}
+\indexentry{count.used@\textsf  {count.used}|hyperpage}{59}
+\indexentry{count.all@\textsf  {count.all}|hyperpage}{59}
+\indexentry{count.used@\textsf  {count.used}|hyperpage}{59}
+\indexentry{count.all@\textsf  {count.all}|hyperpage}{60}
+\indexentry{count.used@\textsf  {count.used}|hyperpage}{60}
+\indexentry{s@\%s|hyperpage}{64}
