@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!-- ====================================================================== -->
-<!--  $Id: Changes.xml,v 1.5 2010-02-06 10:08:10 gene Exp $                -->
+<!--  $Id: Changes.xml,v 1.6 2010-03-14 08:30:13 gene Exp $                -->
 <!-- ====================================================================== -->
 
 <changes>
@@ -22,6 +21,12 @@
  </release>
 
  <!-- ===================================================================== -->
+ <release version="2.49" date="February 8, 2007">
+  <action dev="gene" type="add">
+	New resource <code>expand.crossref</code> introduced. This resource
+	enables the expansion of fields inherited via the crossref
+	mechanism.
+  </action>
  <release version="2.49" date="January 6, 2010">
   <action dev="gene" type="fix">
 	Bugfix in names.c: The classification of name parts erroursely has
