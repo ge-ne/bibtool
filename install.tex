@@ -1,0 +1,623 @@
+%%*****************************************************************************
+%% $Id: install.tex,v 1.1 2010-03-14 09:24:03 gene Exp $
+%%=============================================================================
+%% 
+%% This file is part of BibTool.
+%% It is distributed under the GNU General Public License.
+%% See the file COPYING for details.
+%% 
+%% (c) 2010 Gerd Neugebauer
+%% 
+%% Net: gene@gerd-neugebauer.de
+%% 
+%%*****************************************************************************
+\documentclass[11pt,a4paper]{scrartcl}
+
+\usepackage[latin1]{inputenc}
+\usepackage{hyperref}
+
+\newcommand\code[1]{\texttt{#1}}
+\newcommand\file[1]{\textsf{#1}}
+
+\newcommand\BS{\(\backslash\)}
+
+\newcommand\BibTool{{\sc Bib\hskip-.1em\-%
+        \mbox{T\hskip-.15emo\hskip-.05emo\hskip-.05eml}}}
+\newcommand\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+        T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\date{}
+
+\begin{document}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{\BibTool{} Installation}
+\author{Gerd Neugebauer}
+\maketitle
+
+\BibTeX{} provides an easy to use means to integrate citations and
+bibliographies into \LaTeX{} documents.  But the user is left alone
+with the management of the \BibTeX{} files. The program BibTool is
+intended to fill this gap.  \BibTool{} allows the manipulation of
+\BibTeX{} files which goes beyond the possibilities --- and intentions
+--- of \BibTeX{}.  The possibilities of \BibTool{} include
+
+\begin{itemize}
+  
+\item Pretty-printing \BibTeX{} data bases adjustable by lots of
+  parameters.
+  
+\item Syntactic checks with error recovery superior to \BibTeX{} and
+  helpful error messages.
+
+\item Semantic checks can be specified by the user.
+  
+\item Sorting and merging of \BibTeX{} data bases according to a free
+  definable sort key.
+  
+\item Generation of uniform reference keys according to predefined
+  rules or according to an own specification.
+  
+\item Selecting references used in one publication which are found by
+  analyzing an .aux file.
+  
+\item Selecting references by a set of criteria (regular expressions).
+  
+\item Controlled rewriting of fields utilizing regular expressions to
+  specify the rewriting rules.
+  
+\item Macro (String) expansion to eliminate the need of extra string
+  definitions.
+  
+\item Collecting statistics about one or more \BibTeX{} data bases.
+\end{itemize}
+
+\BibTool{} contains a documentation written in \LaTeX{} of more than
+60 pages (and still growing).
+
+\BibTool{} is written in C and has been compiled on various operating
+systems like flavors of UN*X and MSDOG machines.  It is distributed in
+source code.  No compiled versions are available from the author
+(Useless to ask!).
+
+\BibTool{} can be obtained from the CTAN archives:
+
+\begin{itemize}
+\item
+  \url{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibtool}
+\end{itemize}
+
+Get  the  file BibTool-x.xx.tar.gz  where  x.xx is the version number.
+Unpack it with the command (on UN*X)
+
+\begin{verbatim}
+	gunzip < BibTool-x.xx.tar.gz | tar -xvf -
+\end{verbatim}
+
+It will create a directory named BibTool-x.xx which contains the
+installation instructions in the file \file{install.tex} and
+\file{INSTALL}.
+
+
+
+%This file contains instructions and hints for the compilation of \BibTool{}.
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+\BibTool{} is known to work on the following operating systems/C
+compilers: (At least an earlier version has been compiled successfully
+on them.)
+
+\begin{description}
+\item[Linux]			gcc
+\item[Windows XP]		gcc
+\item[Sun4/SunOS4.1.*]		cc, gcc
+\item[SparcStation/Solaris2.4 gcc
+]	SparcStation/Solaris2.5 gcc
+\item[Sun3/SunOS4.1.1]		cc
+\item[HP 9000/4??/HP UX ??]	cc
+\item[Atari ST/TOS 1.2]	Laser C, Pure C
+\end{description}
+        
+I have been informed that \BibTool{} has been compiled on the
+following machines/operating systems (and maybe some more that I have
+forgotten to add to this list;-):
+
+\begin{description}
+\item[AIX 3.2.5]		gcc
+\item[AIX 4.1.4]
+\item[Amiga]			SAS/C
+\item[DEC Alpha/OSF/1]		
+\item[HP 9000/778/HP-UX 10.20] gcc 2.7.2.3
+\item[MIPS/Ultrix4.4]		gcc 2.4.5
+\item[MIPS/RISCos 4.52]		gcc
+\item[MSDOS,OS/2,Win32,WinNT]  emx, dj, Watcom C, MSC
+\item[MS-Windows 4.0, Sp 6]	Cygwin
+\item[IBM PC] 486DX2-66, OS/2 Merlin 4.0 FixPack \#5. EMX v.0.9c+GCC+dmake 4.0
+\item[NeXT]			
+\item[SGI Indigo2/IRIX 6.2]	cc
+\end{description}
+
+If you compile \BibTool{} on other systems drop me a mail. I'm
+interested to support a broad variety of systems/compilers.
+
+\begin{quote}
+  Gerd Neugebauer\\
+  Im Lerchelsböhl 5\\
+  64521 Groß-Gerau (Germany)
+  
+  Net: \url{gene@gerd-neugebauer.de}
+\end{quote}
+
+You can also send me a mail if you encounter problems in compiling
+\BibTool{}, or crashes, or shows unexpected (contradicting the
+documentation) behavior of the final program.
+
+Please enclose a precise description what went wrong.  Include the
+version numbers of \BibTool{}, your computer, your operating system,
+and your C compiler.
+
+If you encounter unexpected behavior of \BibTool{} enclose your
+resource file(s) and a \emph{small} \BibTeX{} file demonstrating the
+problem. Describe how you have invoked \BibTool{} (arguments) and
+justify why you think that there is a problem.
+
+I know that this sounds like work.  But otherwise I will not be able
+to give you proper advice or find a bug in the sources.
+
+
+\section{Prerequisites}
+
+To install \BibTool{} you need:
+
+\begin{itemize}
+\item A C compiler. ANSI-C is not required but highly recommended.
+  Several library functions are expected. You will see if your linker
+  complains.
+\item A running version of make is recommended.
+\end{itemize}
+
+
+\section{Generic Installation Procedure}\label{generic}
+
+See if there is a special section for your computer/C compiler and
+follow the instructions given there.  Most probably you will be
+directed back into this section after some initial actions.
+
+See section~\ref{kpathsea} and see if it applies to your setting.
+
+To install \BibTool{} you can try to apply the following instructions:
+
+\begin{enumerate}
+\item Copy one of the prepared makefiles to \file{makefile} and adjust
+  it according to your C compiler.  The following makefiles should be
+  present in the distribution:
+
+  \begin{description}
+  \item[makefile.unx] This is the generic makefile. Especially it is
+    for all UN*X systems and may provide a basis for compilation on
+    systems not explicitly mentioned here.
+  \item[makefile.dos]	This is the makefile for MSDOS based machines.
+  \item[makefile.ata]	This is the makefile for Atari ST/TT
+    computers.
+  \item[makefile.ami]	This is the makefile for Amiga computers (with
+    SAS/C).        
+  \end{description}
+  
+  Edit the \file{makefile} and adjust the settings in the
+  configuration section according to your needs.
+  
+  Maybe you have to adapt the name and options for your C compiler.
+  (Most of the time I prefer the GNU C compiler)
+  
+  Maybe you want to change the location for the installation target,
+  even though reasonable defaults are provided.
+
+\item Look into the file \file{include/bibtool/config.h} to see if it
+  fits your operating system and C compiler.  Adjust things as
+  required.  Most probably you do not have to change anything in this
+  file.  This file is mainly for those with an old C compiler
+  (non-ANSI).
+  
+\item If you want to configure some of the internals of \BibTool{} you
+  can have a look into \file{include/bibtool/bibtool.h.}  It contains
+  the internal configuration options which used to be in
+  \file{config.h } prior to release 2.39.  Most probably there is no
+  need to change the defaults given there.  One exception is the
+  support for another language by specifying additional words to be
+  ignored.  (Maybe I could include them into the distribution; thus
+  drop me a mail if you do so)
+  
+\item If you have a working makedepend command run
+\begin{verbatim}
+	make depend 
+\end{verbatim}
+  
+  Otherwise just skip this step. It is only helpful if you compile
+  \BibTool{} more than once.
+  
+  This might cause problems if the makedepend command does not fit the
+  C compiler used (e.g.  proprietary makedpend together with gcc).
+  This results in unknown files to show up.  In this case also skip
+  this step and revert to the original makefile.
+  
+\item Afterwards run
+
+\begin{verbatim}
+	make
+\end{verbatim}
+  
+  Most probably this should produce the executable \file{bibtool} (or
+  \file{bibtool.exe}, or \file{bibtool.ttp}, or \ldots) in the current
+  directory.
+  
+\item If you have tried the command bibtool in the current directory
+  you can install it with
+
+\begin{verbatim}
+	make install
+\end{verbatim}
+    
+  to install the executable and the libraries and
+
+\begin{verbatim}
+	make install.man
+\end{verbatim}
+    
+  to install the UN*X man pages. This is only useful if you can make
+  use of them, i.e. on a UN*X-like system.
+    
+\item To get rid of all intermediate files run
+
+\begin{verbatim}
+	make clean
+\end{verbatim}
+  
+\item To prepare the documentation contained in the subdirectory
+  \file{Doc} go into the \file{Doc} subdirectory and run
+
+\begin{verbatim}
+	latex   bibtool
+	latex   bibtool
+	bibtex  bibtool
+	makeidx bibtool
+	latex   bibtool
+	latex   bibtool
+\end{verbatim}
+
+\begin{verbatim}
+	latex   ref_card
+	latex   ref_card
+	bibtex  ref_card
+	makeidx ref_card
+	latex   ref_card
+	latex   ref_card
+\end{verbatim}
+  
+  The makeidx program may be named differently on your system or
+  missing at all. In this case you can omit this step and do without
+  the index.
+  
+  On UN*X you can try
+
+\begin{verbatim}
+	make doc
+\end{verbatim}
+  
+  in the main directory or
+
+\begin{verbatim}
+        make
+\end{verbatim}
+  
+  in the \file{Doc} directory which tries to perform the steps given
+  above.
+  
+  The documentation is written in a way that either \LaTeX{} or
+  \LaTeX2.09 can be used to compile it. I had a bug report about a
+  real ancient \LaTeX2.09 and I am not sure I have completely fixed
+  it.  Thus the best is to use an up-to-date \LaTeX.
+  
+  There might be problems when files produced by \LaTeX2.09 should be
+  read by \LaTeXe{} and vice versa.  In this case you can try to
+  remove the intermediate files
+
+\begin{verbatim}
+	bibtool.toc
+	bibtool.ind
+\end{verbatim}
+  
+  and follow the instruction for making the documentation from the
+  beginning.
+
+\end{enumerate}
+
+
+\section{Installation on UNIX}
+
+Some special preparations have been made for UNIX systems.  autoconf scripts
+are  provided which  try  to find  out the   characteristics  of  the system
+automatically.
+
+General instructions:
+
+\begin{enumerate}
+\item 
+    Run the configure script with the command:
+
+\begin{verbatim}
+	./configure
+\end{verbatim}
+
+    The following options are useful for configure:
+
+    \begin{description}
+    \item [--with-kpathsea]	 try to find the kpathsea library
+      either in the current directory or in the previous directory.
+      Thus you can place the \BibTool{} directory in the same
+      directory where the directory kpathsea resides or you can put
+      the kpathsea directory in in the \BibTool{} directory.
+      (default) (See also section~\ref{kpathsea})
+    \item [--without-kpathsea]	 disable the search for the kpathsea
+      library.
+    \item [--prefix=PREFIX] install architecture-independent files in
+      PREFIX [/usr/local]
+    \item [--exec-prefix=EPREFIX] install architecture-dependent files
+      in EPREFIX [same as prefix]
+    \item [--bindir=DIR] the bibtool executable is stored in DIR
+      [EPREFIX/bin]
+    \item [--libdir=DIR] the \BibTool{} directory containing certain
+      resource files are stored in DIR [EPREFIX/lib]
+    \item [--mandir=DIR] the manual pages bibtool.1 is stored in DIR
+      [PREFIX/man]
+    \end{description}
+
+\item 
+    Continue with the item C in section \ref{generic}.
+\end{enumerate}
+
+
+\section{Installation on MSDOS-like Computers}
+
+This  section some hints on  the compilation of  \BibTool{} on MSDOS computers.
+These adaptions   are  mainly  due   to  the   efforts  of   Josef  Spangler
+(JS@rphnw3.ngate.uni-regensburg.de). All credits  go to him.  Any  remaining
+problems should be blamed on my ignorance.
+
+General instructions:
+
+\begin{enumerate}
+\item Copy \file{makefile.dos} to \file{makefile} and adjust it
+  according to your C compiler.
+  
+\item Edit \file{include/bibtool/config.h} and
+  \file{include/bibtool/bibtool.h} to adjust it to your needs.
+  Normally you should be interested only in the support of em\TeX{} at
+  the end of \file{include/bibtool/bibtool.h}.
+  
+\item Copy MSDOS\BS link.* to the source directory.
+  
+\item Depending on the C compiler do the following:
+
+    \begin{itemize}
+    \item dj (GNU C port)
+
+\begin{verbatim}
+	make dj
+\end{verbatim}
+
+    \item emx (GNU C port)
+
+\begin{verbatim}
+	make emx
+\end{verbatim}
+
+      Maybe you have to set the environment variable EMX to point to the 
+      installed EMX directory.
+
+    \item Watcom C 386 (32 Bit Compiler for Dos, OS/2 2.x, Win32 and WinNT)
+
+\begin{verbatim}
+	make wat
+\end{verbatim}
+
+    \item Microsoft C 6.00A (16 Bit Dos and OS/2 1.x)
+
+\begin{verbatim}
+	make msc
+\end{verbatim}
+
+    \item Borland C++ 3.1 (16 Bit Dos)
+
+	Go and get another compiler. 
+	Or, even better do the port and send me the diffs :-)
+    \end{itemize}
+
+\item 
+    If you have tried the command bibtool in the current directory
+    you can install it with
+
+\begin{verbatim}
+	make install
+\end{verbatim}
+
+\item 
+    Make the documentation according to step H in section \ref{generic}.
+\end{enumerate}
+
+
+\section{Installation on Amiga}
+
+This section contains some hints on the compilation of \BibTool{} on
+Amiga computers. These adaptions are mainly due to the efforts of
+Andreas Scherer (SCHERER@genesis.informatik.rwth-aachen.de).  All
+credits go to him.  Any remaining problems should be blamed on my
+ignorance.
+
+This section describes the installation procedure if you are using the
+SAS/C compiler on Amiga.
+
+General instructions:
+
+\begin{enumerate}
+\item Copy \file{makefile.ami} to \file{SMakefile} and adjust it
+  accordingly.
+    
+\item Edit the file \file{include/bibtool/config.h} and
+  \file{include/bibtool/bibtool.h} and adjust it to your needs.  There
+  should not be much for you to change.
+
+\item 
+\begin{verbatim}
+    	make
+\end{verbatim}
+
+\item 
+    If you have tried the command bibtool in the current directory
+    you can install it with
+
+\begin{verbatim}
+	make install
+\end{verbatim}
+
+\item 
+    Make the documentation according to step H in section \ref{generic}.
+\end{enumerate}
+ 
+
+\section{Installation without make}
+
+\begin{enumerate}
+\item Adjust the settings in the files \file{include/bibtool/config.h}
+  and \file{include/bibtool/bibtool.h} to fit your C compiler and
+  operating system.
+  
+\item Compile all .c files in the base directory.  The macros REGEX
+  and maybe MSDOS should be defined.  The subdirectory
+  \file{regex-0.12} should be included in the include search path.  A
+  typical compile command looks like
+
+\begin{verbatim}
+	cc main.c -c -o main.o -DREGEX -DMSDOS -Iregex-0.12 -I.
+\end{verbatim}
+        
+\item Compile \file{regex.c} in the regex-0.12 subdirectory and move
+  the object file into the base directory (The one containing this
+  file).
+  
+\item Link together all object files to get the executable bibtool.
+  (maybe include the kpathsea library; see section \ref{kpathsea})
+  
+\item Run \LaTeX{} on \file{bibtool.tex} in the \file{Doc}
+  subdirectory to produce the documentation.  (see step H in section
+  \ref{generic} for details)
+\end{enumerate}
+
+
+\section{Using the kpathsea library}\label{kpathsea}
+
+The kpathsea library provides a very flexible way to specify the
+search path for files.  This library is already used by the web2c
+distribution of Karl Berry and the te\TeX{} distribution.  To achieve
+compatibility with those \TeX{} systems you can try to make \BibTool{}
+use the same library.
+
+
+The kpathsea library is currently NOT CONTAINED in the distribution of
+\BibTool{} since this is an experimental feature.  You can get
+kpathsea from the same location where you got \BibTool{}.  Fetch the
+file \file{kpse2-6.tar.gz} or \file{kpse2-6.zip}.
+
+Unpack this file.  Enter the directory kpse2-6 and use the commands
+`./configure' and `make' to create the library. This works at least on
+Unix platforms. For porting to other platforms I would like to get
+some feedback.
+
+ATTENTION: The kpathsea library has to exists before \BibTool{} is
+made!
+
+If you are using configure then the option \texttt{--with-kpathsea}
+enables the inclusion of the kpathsea routines if the library is
+found.
+
+To use the library you can just provide three definitions in the
+makefile. See the section about kpathsea in \file{makefile} for
+explanations. Alternatively you have to provide the appropriate
+options to the C compiler yourself.
+
+Note: the searching for \BibTeX{} files with the kpathsea library is
+different from the \BibTool{} built-in searching. Some resources are
+no longer taken into account when this library is used.
+
+Note: kpathsea is only used to search for \BibTeX{} files.  All other
+files are still searched with the traditional \BibTool{} searching
+mechanism.  This might change soon.
+
+
+\section{Problems and Porting}
+
+Well, if the procedures described above don't work I have some hints.
+These hints may also be useful if you plan to port \BibTool{} to other
+operating systems or C compilers.
+
+First of all a small list of assumptions that I use.
+
+\begin{itemize}
+\item On ANSI systems there should be no problem at all. There is some
+  support for non-ANSI systems.  This support can be improved.  (I
+  don't know if it's worthwhile to do so).
+  
+\item \BibTool{} has been developed on UN*X (SunOS) and UN*X-like
+  systems (Atari).  Such file/directory naming conventions found their
+  way into the code.  Single character delimiters between directories
+  and files can be modified in a resource file.
+  
+\item ASCII encoding is assumed.  I role my own \file{type.h} instead
+  of using \file{ctypes.h}.  This has mainly historical reasons. Maybe
+  this code should be rewritten to be adapted at make time.
+  
+  If you port \BibTool{} to a non-ASCII machine the table of
+  characters (allowed[]) in \file{type.h} has to be adapted -- at
+  least (please send me the diffs).
+  
+\item Maybe some BSD-isms found their way into the code even if I am
+  not aware of it.
+\end{itemize}
+
+
+\section{The C Interface}
+
+The C interface to \BibTool{} is described in the document
+\file{Doc/c\_lib.dvi}.  To create this document run \LaTeX{} and
+makeindex on the file \file{c\_lib.tex} in the \file{Doc}
+subdirectory:
+
+\begin{verbatim}
+	latex c_lib
+	makeindex c_lib
+	latex c_lib
+	latex c_lib
+\end{verbatim}
+
+Read this document. I would like some kind of feedback for this attempt.
+
+Attention: This documentation is experimental.  Some things are likely to be
+	   changed soon.
+
+
+\section{ The Tcl/Tk Interface}
+
+The Tcl/Tk interface is called BibTcl.  It is contained in the BibTcl
+subdirectory. See the file \file{README} in this directory for
+details.
+
+
+
+\end{document}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Local Variables: 
+% mode: latex
+% TeX-master: nil
+% End: 
