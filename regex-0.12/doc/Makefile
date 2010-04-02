@@ -1,4 +1,3 @@
-# Generated automatically from Makefile.in by configure.
 # Makefile for regex documentation.
 # 
 # Copyright (C) 1992 Free Software Foundation, Inc.
@@ -22,10 +21,10 @@ prefix = /usr/local
 infodir = $(prefix)/info
 
 srcdir = .
-VPATH = .:../.
+VPATH = ../.
 
-INSTALL = /bin/install -c
-INSTALL_DATA = $(INSTALL) -m 644
+INSTALL = /usr/bin/install -c
+INSTALL_DATA = ${INSTALL} -m 644
 
 MAKEINFO = makeinfo --no-split
 SHELL = /bin/sh
