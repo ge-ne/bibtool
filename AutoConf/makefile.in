@@ -1,5 +1,5 @@
 # *****************************************************************************
-#  $Id: makefile.in,v 1.9 2010-02-06 10:08:10 gene Exp $
+#  $Id: makefile.in,v 1.10 2010-04-02 15:47:35 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -190,6 +190,8 @@ CXREF		= cxref
 # -------------------------------------------------------
 #  Defines to support (non-ANSI) C compilers.
 #  For Solaris 2 you may have to define HAVE_STRING_H
+#  For some versions of Cygwin you may have to define
+#  STD_HEADERS.
 #  For ANSI C compilers they should be empty.
 #  Mostly needed for the GNU regex library.
 #  Include
