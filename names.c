@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: names.c,v 1.10 2010-02-06 10:09:28 gene Exp $
+** $Id: names.c,v 1.11 2010-05-12 10:49:15 gene Exp $
 *******************************************************************************
 ** 
 ** This file is part of BibTool.
@@ -551,7 +551,7 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
       case NameString:	sbputs(NameMid(nn),sb);	   /*                        */
       default:		t = ' '; j = 0; 	   /*                        */
     }						   /*                        */
-    switch( NameType(nn) & NameTypeMask )	   /*                        */
+    switch( NameType(nn) & NameTranslationMask )   /*                        */
     { case NameLower:   tr = trans_lower;   break; /*                        */
       case NameUpper:   tr = trans_upper;   break; /*                        */
       case NameNone:    tr = trans_id;      break; /*                        */
