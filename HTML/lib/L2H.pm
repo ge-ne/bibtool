@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H.pm,v 1.4 2010-02-06 10:09:28 gene Exp $
+## $Id: L2H.pm,v 1.5 2010-05-31 04:02:43 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -27,13 +27,16 @@ my %opt = (
 
 require Exporter;
 @ISA       = qw(Exporter);
-@EXPORT    = qw(newcommand newenvironment sf set_opt);
+@EXPORT    = qw(newcommand newenvironment sf set_opt hyphenate);
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.4 $'; #'
+  my $VERSION = '$Revision: 1.5 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
+
+use hyph_en;
+
 
 #------------------------------------------------------------------------------
 # Function:	new
@@ -64,6 +67,7 @@ sub new
     'debug'		=> 0,		# bitfield determining the verbosity
     'message:p'		=> 0,		# indicator for the last pass
 					# for which messages should be issued.
+    'hyphenate'		=> 1,		# indicator to turn on hyphenation
   };
   bless $self,$class;
   return $self;
@@ -293,7 +297,7 @@ sub newenvironment
 sub put (@)
 { my $self = shift;
   my $s = shift;
-  return if (not defined($s));
+  return if not defined($s);
   $self->{result} .= $s;
 }
 
@@ -321,6 +325,40 @@ sub finish
   s/<p>\n<blockquote>/<blockquote>/go;
   s/<\/blockquote>\n*<blockquote>/<br>/go;
   s/<p><dt>/<dt>/go;
+  if (defined $self->{hyphenate}) {
+    $_ = hyphenate($self->{hyphenate}, $_);
+  }
+  return $_;
+}
+
+#------------------------------------------------------------------------------
+# Method:	hyphenate
+# Arguments:	
+# Returns:	
+# Description:	
+#
+sub hyphenate
+{ my $h  = shift;
+  my $s = shift;
+  my ($t, $a);
+  local $_ = '';
+
+  while ($s =~ m/^([a-z_.\-]*)([^a-z_.\-]+)/is) {
+    $t = $2;
+    $s = $';
+    $a = $1;
+    if (length($a) > 4) {
+#      print STDERR "  '$a'\t=> '$a',\n";
+      $a = hyph($a);
+    }
+    $_	.= $a;
+    $_	.= $t;
+  }
+  if (length($s) > 4) {
+#    print STDERR "  ==>$s<<<\n" if $s =~ m/poss/;
+    $s = hyph($s);
+  }
+  $_  .= $s;
   return $_;
 }
 
@@ -611,7 +649,7 @@ sub Index
 
   my $i     = $self->{'index_number'}++;
   my $page  = $self->{'page'};
-  my $title = $self->{'title:'.$page};
+  my $title = $self->{'title:'.$page} || '';
   local $_  = $key;
 
   if ( $key =~ m/@/o )

@@ -1,18 +1,33 @@
 #******************************************************************************
-#* $Id: Makefile,v 1.5 2010-02-06 10:09:28 gene Exp $
+#* $Id: Makefile,v 1.6 2010-05-31 04:02:43 gene Exp $
 #******************************************************************************
 #* Author: Gerd Neugebauer
 #*=============================================================================
 
-INFILES = 	../Doc/config.tex	\
+DOCFILES      = ../Doc/version.tex	\
 	  	../Doc/bibtool.bbl	\
 	  	../Doc/bibtool.tex
 
+INSTFILES     = ../Doc/version.tex	\
+	  	../install.tex
 
-FLAGS   =	-v -dir=target -prefix=doc -main=doc.html
+CHANGESFILES  =	../Doc/version.tex	\
+	  	../Changes.tex
 
-all:
-	perl L2H.pl ${FLAGS} ${INFILES}
+FLAGS         =	-v -dir=target
+DOC_FLAGS     =	${FLAGS} -prefix=doc -main=doc.html
+INST_FLAGS    =	${FLAGS} -prefix=install -main=install.html
+CHANGES_FLAGS =	${FLAGS} -prefix=changes -main=changes.html
 
+all:	doc inst changelog
+
+doc:
+	perl L2H.pl ${DOC_FLAGS} ${DOCFILES}
+
+inst:
+	perl L2H.pl ${INST_FLAGS} ${INSTFILES}
+
+changelog changes:
+	perl L2H.pl ${CHANGES_FLAGS} ${CHANGESFILES}
 
 #

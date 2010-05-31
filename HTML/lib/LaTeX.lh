@@ -104,7 +104,7 @@ newcommand('def',
 #newcommand('@author',			text => '');
 #newcommand('@title',			text => '');
 
-newcommand('\infty',		text => '&infin;');
+newcommand('infty',		text => '&infin;');
 
 newcommand(' ',			text => ' ');
 newcommand("\t",		text => ' ');
@@ -135,9 +135,11 @@ newcommand('AA',
 newcommand('AE',
 	   text => 'Æ');
 newcommand('BibTeX',
-	   text => 'B<small>IB</small><span class="t">T</span><span class="e">e</span>X');
+	   text => '<span class="sc">Bib</span>\-<span class="t">T</span><span class="e">e</span>X');
 newcommand('LaTeX',
 	   text => 'L<span class="a">a</span>T<span class="e">e</span>X');
+newcommand('LaTeXe',
+	   text => 'L<span class="a">a</span>T<span class="e">e</span>X2&epsilon;');
 newcommand('huge',
 	   text => '<font size="7">',
 	   code => sub{ return shift->atendgroup('</font>'); });
@@ -672,6 +674,35 @@ newcommand('begin{thebibliography}',
 		 return '';
 	       },
 	       );
+
+newcommand('url',
+	   arity => 1,
+	   code => sub
+	   { shift;
+	     local $_ = shift;
+	     return "<a href=\"$_\">$_</a>";
+	   });
+newcommand('char',
+	   code => sub {
+	     s/^\s*//o;
+	     my $e = substr($_,0,1);
+	     if ( m/^"[0-9a-f][0-9a-f]/i )
+	     { my $a = $&;
+               $_    = $';
+               return "\&#x$a;";
+	     }
+	     elsif ( m/^`(.)/i )
+	     { my $a = sprintf("%x",ord($1));
+               $_    = $';
+               return "\&#x$a;";
+	     }
+	     else
+	     { $e = substr($_,0,1);
+	       print STDERR "*** \\char$e could not be parsed'\n";
+	     }
+	     return '';
+	   });
+
 
 1;
 #------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: bibtool2html,v 1.1 2010-01-05 23:09:56 gene Exp $
+## $Id: bibtool2html,v 1.2 2010-05-31 04:02:43 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -176,19 +176,19 @@ sub redirect
 
   if ( defined($out) )
   { local $_ = '';
-    $_ = "<HR WIDTH='15%' ALIGN='left' NOSHADE>$Footnotes<BR>"
-	if ( $Footnotes ne '' );
+    $_ = "<hr width='15%' align='left' noshade>$Footnotes<br>"
+	if $Footnotes ne '';
     $Head =~ s/\$\$/2/go;
 
     print $out <<_EOF_;
 $Children
 $_
-<BR><BR>
+<br><br>
 $Head
-<FONT FACE="helvetica,geneva,arial" SIZE="1">&copy; $opt_year
-<A HREF="mailto:$opt_email">$opt_author</A></FONT>
-</BODY>
-</HTML>
+<font face="sans-serif" size="1">&copy; $opt_year
+<a href="mailto:$opt_email">$opt_author</a></font>
+</body>
+</html>
 _EOF_
     $out->close;
   }
@@ -200,7 +200,7 @@ _EOF_
   }
 
   $out = new FileHandle(">$opt_dirname/$name");
-  return undef if ( !defined($out) );
+  return undef if !defined($out);
   if ( $verbose ) { print STDERR $name,"\n" ; } else { print STDERR '_'; }
 
   my $in;
@@ -208,12 +208,12 @@ _EOF_
   for (my $i=0; $i<$n; $i++ )
   { my $s = $Navigation{$i};
     $in = $i*16;
-    $Cat .= "<IMG SRC=\"space.gif\" HEIGHT=\"1\" WIDTH=\"$in\">" if( $in>0 );
-    $Cat .= "<A HREF=\"$s\">$SectionTitle{$s}</A><BR>\n";
+    $Cat .= "<img src=\"space.gif\" height=\"1\" width=\"$in\">" if $in > 0;
+    $Cat .= "<a href=\"$s\">$SectionTitle{$s}</a><br>\n";
   }
   $in = $n*16;
-  $Cat .= "<IMG SRC=\"space.gif\" HEIGHT=\"1\" WIDTH=\"$in\">" if( $in>0 );
-  $Cat .= "<B>$SectionTitle{$Navigation{$n}}</B>\n";
+  $Cat .= "<img src=\"space.gif\" height=\"1\" width=\"$in\">" if $in > 0;
+  $Cat .= "<b>$SectionTitle{$Navigation{$n}}</b>\n";
 
   $Children = '';
 
@@ -221,7 +221,7 @@ _EOF_
   { local $_ = $`;
     for (my $i=1;defined($SectionTitle{"$_\_$i$opt_ext"});$i++)
     { $Children .= <<_EOF_;
-<DD> <A HREF="$_\_$i$opt_ext">$SectionTitle{"$_\_$i$opt_ext"}</A>
+<dd> <a href="$_\_$i$opt_ext">$SectionTitle{"$_\_$i$opt_ext"}</a>
 _EOF_
     }
   }
@@ -233,23 +233,23 @@ _EOF_
   my $Idx  = button("$opt_prefix\_idx$opt_ext",'Index','IDX','idx.gif','idx2.gif');
 
   $Head = <<_EOF_;
-<TABLE WIDTH="100%" BGCOLOR="#eeeeee" CELLSPACING="0" CELLPADDING="3" BORDER="0">
- <TR>
-  <TD WIDTH="160">
-   <FONT FACE="helvetica,geneva,arial">
+<table width="100%" bgcolor="#eeeeee" cellspacing="0" cellpadding="3" border="0">
+ <tr>
+  <td width="160">
+   <font face="sans-serif">
     $Back
     $Toc
     $Idx
     $Next
-   </FONT>
-  </TD>
-  <TD WIDTH="70%">
-   <FONT FACE="helvetica,geneva,arial">
+   </font>
+  </td>
+  <td width="70%">
+   <font face="sans-serif">
      $Cat
-   </FONT>
-  </TD>
- </TR>
-</TABLE>
+   </font>
+  </td>
+ </tr>
+</table>
 _EOF_
   my $tophead = $Head;
   $tophead =~ s/\$\$//go;

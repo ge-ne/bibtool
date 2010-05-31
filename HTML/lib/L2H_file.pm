@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H_file.pm,v 1.4 2010-02-06 10:09:28 gene Exp $
+## $Id: L2H_file.pm,v 1.5 2010-05-31 04:02:43 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -20,7 +20,7 @@ require Exporter;
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.4 $'; #'
+  my $VERSION = '$Revision: 1.5 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
 
@@ -74,6 +74,9 @@ sub put (@)
   return if not defined($self->{out});
   local $_ = join("",@_);
   s/\&\#095;/_/go;
+  if (defined $self->{hyphenate}) {
+    $_ = hyphenate($self->{hyphenate}, $_);
+  }
   print {$self->{out}} $_;
 }
 
@@ -206,11 +209,14 @@ _EOF_
  </table>
 </div>
 _EOF_
-  my $tophead = $self->{page_head};
-  $tophead =~ s/\$\$//go;
+  my $tophead  = $self->{page_head};
+  $tophead     =~ s/\$\$//go;
 
-  my $st = $self->{'title:'.$fname} ;
-  my $Title = ( $n<=0 ? '' : "<h$n>$st</h$n>" );
+  my $basename = $self->opt('prefix').'_nav'.$self->opt('ext');
+
+  my $st       = $self->{'title:'.$fname} ;
+  my $Title    = ( $n<=0 ? '' : "<h$n>$st</h$n>" );
+  $st	       =~ s/<[^>]*>//g;
   put($self,<<_EOF_);
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML//3.2//EN">
 <html>
@@ -219,10 +225,12 @@ _EOF_
   <meta name="Author" content="$opt_author">
   <meta http_equiv="Content-Type" content="text/html;CHARSET=iso-8859-1">
   <link rev="made" href="mailto:$opt_email">
-  <link rel="stylesheet" type="text/css" href="site.css">
+  <link rel="stylesheet" media="screen" type="text/css" href="site.css">
+  <link rel="stylesheet" media="print" type="text/css" href="print.css">
   <script src="site.js" type="text/javascript"></script>
 </head>
 <body>
+<div class="toc"><iframe src="${basename}" class="toc"></iframe></div>
 $tophead
 $Title
 _EOF_

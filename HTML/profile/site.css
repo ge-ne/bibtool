@@ -3,18 +3,18 @@ body {
   background-color:white;
   font-family:sans-serif;
   margin-top:6em;
-  margin-left:4em;
-  margin-right:4em;
+  margin-left:24%;
+  margin-right:4%;
 }
 .top {
   background:url(top-bg.png) repeat-x #cccccc;
   font-family:sans-serif;
   position:fixed;
-  top:0pt;
-  left:0pt;
-  width:100%;
+  top:1pt;
+  left:20%;
+  width:80%;
   border-top:solid 3pt white;
-  border-left:solid 3pt white;
+  border-left:solid 1pt white;
   border-right:solid 3pt gray;
   border-bottom:solid 3px gray;
   font-size:80%;
@@ -36,6 +36,9 @@ body {
 }
 .t {
   margin-left: -0.15em;
+}
+.sc {
+  font-variant:small-caps;
 }
 .left {
   position:absolute;
@@ -121,3 +124,15 @@ pre {
 .cat6 {
   padding-left:12em;
 }
+div.toc {
+  position:fixed;
+  top:0;
+  left:0;
+  width:20%;
+  height:100%;
+}
+iframe.toc {
+  width:99%;
+  height:100%;
+}
+

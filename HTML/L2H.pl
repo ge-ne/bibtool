@@ -1,6 +1,6 @@
 #!d:/Programme/Perl/bin/perl -w
 ##*****************************************************************************
-## $Id: L2H.pl,v 1.7 2010-01-10 18:15:12 gene Exp $
+## $Id: L2H.pl,v 1.8 2010-05-31 04:02:43 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -17,7 +17,7 @@ use L2H_file;
 sub usage
 { print STDERR <<__EOF__;
 $0 [options] [files]
-	Translate (La)Tex to HTML.
+	Translate (La)TeX to HTML.
 	The following options are supported:
 	-author=<s>	Set the author information.
 	-debug <s>	Set the debug flags.
@@ -42,6 +42,7 @@ my $trans = new L2H_file;
 
 $trans->load('LaTeX.lh');
 $trans->load('BibTool.lh');
+$trans->load('Changes.lh');
 
 my $verbose = 0;
 my $debug   = 0;
@@ -59,7 +60,8 @@ my $prefix  = $trans->opt('prefix');
 my $email   = $trans->opt('email');
 my $main    = $trans->opt('main');
 my $year    = $trans->opt('year');
-my $ext     = $trans->opt('ext');
+my $ext	    = $trans->opt('ext');
+my $nocopy  = 0;
 
 use Getopt::Long;
 GetOptions ('author=s'	=> \$author,
@@ -71,6 +73,7 @@ GetOptions ('author=s'	=> \$author,
 	    'h|help'	=> \&usage,
 	    'load=s'	=> \&load,
 	    'main=s'	=> \$main,
+	    'nocopy'	=> \$nocopy,
 	    'prefix=s'	=> \$prefix,
 	    'profile=s'	=> \$profile,
 	    'title=s'	=> \$title,
@@ -118,10 +121,16 @@ $trans->make_nav();
 
 print STDERR "\n" if $debug & 1;
 
-foreach $_ (glob("$profile/*.*"))
-{ my $f = $_;
-  s|.*/||;
-  copy($f, $dirname.'/'.$_);
+if (not $nocopy)
+{
+  foreach $_ (glob("$profile/*.*"))
+  { my $f = $_;
+    s|.*/||;
+    copy($f, $dirname.'/'.$_);
+    print STDERR "+" if $verbose;
+  }
+  
+  print STDERR "\n" if $verbose;
 }
 
 exit(0);
