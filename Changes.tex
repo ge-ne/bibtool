@@ -1,0 +1,1199 @@
+%%*****************************************************************************
+%% $Id: Changes.tex,v 1.1 2010-05-31 16:15:40 gene Exp $
+%%*****************************************************************************
+%% Author: Gerd Neugebauer
+%%-----------------------------------------------------------------------------
+\documentclass[11pt,a4paper]{scrartcl}
+
+\newenvironment{Developers}{}{}
+\newcommand\Developer[3]{}
+\newcommand\Arg[1]{\texttt{#1}}
+\newcommand\rsc[1]{\texttt{#1}}
+\newcommand\File[1]{\textsf{#1}}
+\newcommand\BibTool{\textsc{BibTool}}
+\newcommand\BibTcl{\textsc{BibTcl}}
+\newcommand\BibTeX{\textsc{Bib}\TeX}
+\newenvironment{Release}[2]{\section*{Release #1}\begin{itemize}}{\end{itemize}}
+\newenvironment{Fix}{\item }{}
+\newenvironment{New}{\item }{}
+\newenvironment{Doc}{\item }{}
+\newenvironment{Update}{\item }{}
+\newcommand\BS{\char`\\}
+
+\begin{document}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\title{\BibTool{} Change Log}
+\author{Gerd Neugebauer}
+%\date{}
+\maketitle
+
+\begin{Developers}
+  \Developer{gene}{Gerd Neugebauer}{gene@gerd-neugebauer.de}
+\end{Developers}
+ % ===================================================================== -->
+ \begin{Release}{2.50}{May 12, 2010}
+  \begin{Fix}{gene}
+    Bugfix in \File{names.c}: The classification of name parts erroursely has
+    used a wrong translation under certain circumstances.
+  \end{Fix}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.50}{February 6, 2010}
+  \begin{Fix}{gene}
+    Bugfix in \File{key.c}: The classification of name parts erroursely has
+    considered, to be a first name under certain circumstances. This has been
+    improved.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Improvement in \File{names.c} and \File{key.c} concerning printing in
+    debug mode.
+  \end{Fix}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.49}{February 8, 2007}
+  \begin{New}{gene}
+    New resource \rsc{expand.crossref} introduced. This resource
+    enables the expansion of fields inherited via the crossref mechanism.
+  \end{New}
+  \begin{Fix}{gene}
+    Bugfix in \File{names.c}: The classification of name parts erroursely has
+    considered the initials V., I., and X. to be Roman numerals belonging to
+    the jr part under special circumstances. This has been improved.
+  \end{Fix}
+
+ % ===================================================================== -->
+ %\begin{Release}{2.49}{January 5, 2010}
+  \begin{New}{gene}
+    Name formatting now uses a fractional part to restrict the number of name
+    parts considered.
+  \end{New}
+
+ % ===================================================================== -->
+ %\begin{Release}{2.49}{February 8, 2007}
+  \begin{New}{gene}
+    New resource \rsc{expand.crossref} introduced. This resource
+    enables the expansion of fields inherited via the crossref mechanism.
+  \end{New}
+  \begin{Fix}{gene}
+    Bugfix in \File{print.c}: Some national characters have been lost. It was
+    necessary to use an unsigned character as elsewhere.
+  \end{Fix}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.48}{August 6, 2004}
+  \begin{New}{gene}
+    Resource \rsc{print.terminal.comma} introduced. This resource can
+    be used to request commas after the last record even if it contradicts the
+    rules of \BibTeX.
+  \end{New}
+  \begin{New}{gene}
+    \File{makefile.in} for configure extended to support the variable
+    \texttt{INSTALLPREFIX} to be prepended to installation
+    directories.
+  \end{New}
+  \begin{Fix}{gene}
+    Bugfix in \File{main.c}: Some compilers didn't like the method true().
+  \end{Fix}
+  \begin{Fix}{gene}
+    Bugfix for kpathsea under Suse 9.1.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Bugfixes in expansion.
+  \end{Fix}
+ %\end{Release}
+
+ % ===================================================================== -->
+ %\begin{Release}{2.48}{February 8, 2004}
+   \begin{Update}{gene}
+     \BibTcl{} has been taken out of the default making since it has
+     caused troubles on several maschines.
+   \end{Update}
+   \begin{Update}{gene}
+     The printing of Strings honors now the dependencies that
+     \BibTeX{} relies on. This has been accomplished by a change in
+     the printing routine for databases. No new resource is involved.
+   \end{Update}
+   \begin{Update}{gene}
+     Minor modification to the C API.
+   \end{Update}
+  \begin{New}{gene}
+    Feature: When searching for an aux file and none is found then
+    \texttt{.aux} is appended and a reopen is tried with the new name.
+  \end{New}
+  \begin{Update}{gene}
+    Feature: When <code>expand.macros</code< is set the macros will be
+    suppressed automatically. No need to set \rsc{print.entry.types}
+    any more.
+  \end{Update}
+  \begin{New}{gene}
+    The boolean resource \rsc{select.crossrefs} has been introduced.
+    This resource can be used to force crossreferenced entries for
+    selected entrie to be included in the output.
+  \end{New}
+  \begin{Update}{gene}
+    Feature: deleted entries are not reported as "`written"' by the
+    statistics any more.
+  \end{Update}
+  \begin{Fix}{gene}
+    Bugfix: Bug in extracting by aux file. Crossrefed entires where
+    sometimes ignored.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Bugfix: Bug in parsing of backslashes in resources has been fixed.
+    Unfortunately this bug appeared in one of the examples in the manual.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Bugfix: Bug in expansion introduced in 2.47 has been fixed. An error
+    occured when expanding macros.
+  \end{Fix}
+  \begin{New}{gene}
+    The resource loading with \rsc{resource} now issues a warning when
+    the file could not be found.
+  \end{New}
+  \begin{Doc}{gene}
+    The meaning of post for the format specifiers \%d and \%D has been
+    documented.
+  \end{Doc}
+  \begin{Fix}{gene}
+    Bugfix: \BibTool{} has misinterpreted pre for the format specifier \%t and
+  \%T due to an over-optimization. This has been fixed.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Bugfix: \BibTool{} has ignored \rsc{preserve.key.case} for
+    crossreferenced keys. This has been fixed.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Bugfix: Some compilers don't like it if static strings are modified. Thus
+    I have made them dynamic.
+  \end{Fix}
+  \begin{New}{gene}
+    Experimental feature \rsc{regexp.syntax} added.
+  \end{New}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.47}{January 16, 2003}
+  \begin{Fix}{gene}
+    Bugfix: \BibTool{} looped when parsing unbalanced blocks due to a
+    too short type in \File{parse.c}. This has been fixed and some
+    error messages have been improved.
+  \end{Fix}
+  \begin{Doc}{gene}
+    Some additions to the documentation due to Patrice Dumas.
+  \end{Doc}
+  \begin{New}{gene}
+    Resource \rsc{fmt.word.separator} introduced. This resource can be
+    used to mark additional characters to be considered as word separators.
+  \end{New}
+  \begin{Fix}{gene}
+    Bugfix: \BibTool{} looped when a malformed string of some kind was
+    given to expansion. This has been fixed in \verb|expand()|.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Bugfix: \BibTool{} crashed when called with empty format string due to an
+    uninitialized variable. This has been fixed in \verb|parse_fmt()|.
+  \end{Fix}
+  \begin{Doc}{gene}
+    Bugfix: Documentation bug fixed. The default for
+    \rsc{sort.key} should be \verb|%s($key)|. This
+    has been fixed in \File{Lib/default.rsc} and the manual.
+  \end{Doc}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.46}{February 12 2002}
+  \begin{New}{gene}
+    Resource \rsc{sort.cased} introduced to allow the sorting order to
+    take advantage of upper and lower case characters. The default is false
+    which is the previous behaviour.
+  \end{New}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.45}{October 22 2001}
+  \begin{New}{gene}
+    Resource \rsc{suppress.initial.newline} introduced to suppress the
+    empty line at the beginning of the output file.
+  \end{New}
+  \begin{Fix}{gene}
+    Bugfix: Some C compilers don't like the initialization of static variables
+    with \texttt{stderr}. The code has been moved to a initialization routine.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Bugfix: \texttt{-R} disables the reading of the resource at the end of
+    processing of command line arguments.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Bugfix: Parsing of select arguments with backslashes were not treated
+    correctly.
+  \end{Fix}
+  \begin{Doc}{gene}
+    Minor documentation bugs fixed.
+  \end{Doc}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.44}{April 7 1999}
+  \begin{Fix}{gene}
+    Key generation fixed to expand \BibTeX{} strings. The current behaviour is
+    likely to change again in a future release.
+  \end{Fix}
+  \begin{Update}{gene}
+    Updated to work with kpathsea 3.1 (partially).
+  \end{Update}
+  \begin{New}{gene}
+    Searching for the kpathsea library is now the default in the configure
+    script. Thus it is possible to simply place \BibTool{} in a web2c tree.
+    This only requires that the directory is named bibtool and bibtool is
+    added to the filelists in Makefile, configure, and configure.in of the
+    web2c main directory.
+  \end{New}
+  \begin{Fix}{gene}
+    \rsc{check.double} message improved.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Initialization bug for kpathsea fixed.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Bugfix for cross referencing: normalization to lowercase was missing
+    twice.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Bugfix in the \TeX{} reading routines: spaces after active characters are
+    not ignored. All characters are treated as unsigned. This seems to be
+    preferrable for extended ASCII characters.
+  \end{Fix}
+  \begin{Update}{gene}
+    Key generation routines adapted to work with multiple databases. The
+    symbol table is no longer abused to store information for the key
+    generation. This may slow down the key generation a little bit. If it
+    turns out to be a problem I will use a better algorithm.
+  \end{Update}
+  \begin{Update}{gene}
+    Minor modifications in makefiles.
+  \end{Update}
+  \begin{New}{gene}
+    The configuration of \BibTcl{} is now done automatically.
+  \end{New}
+  \begin{New}{gene}
+    New datatype introduced: \verb|Uchar| will hold UniCode characters in a
+    future release. I just have to find regexp routines to work with UTF-8.
+  \end{New}
+  \begin{Update}{gene}
+    Extraction extended to allow negation of the regular
+    expression/string matching result. New resources \rsc{select.non}
+    and \rsc{select.by.non.string} to specify such a request. C
+    function \verb|add_extract()| extended to cover negated values and
+    the former function \verb|add_s_extract()|.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.43}{}
+  \begin{New}{gene}
+    Additional library \rsc{braces.rsc} to translate quotes as field
+    delimiters into braces.
+  \end{New}
+  \begin{Update}{gene}
+    \verb|bibtool -h| reports now also the library path. This can be
+    used by external scripts to find the installation directory of
+    \BibTool.
+  \end{Update}
+  \begin{Fix}{gene}
+    Bugfix: comments are no longer crippled.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Minor bugfix in rewriting code: empty pattern works again.
+  \end{Fix}
+  \begin{Fix}{gene}
+    The regression tests have revealed a bugfix in the key generation code. I
+    am not aware of the change that has let to this effect but the new
+    behaviour is correct. Before, the macro expansion was suppressed under
+    certain circumstances.
+  \end{Fix}
+  \begin{New}{gene}
+    \BibTcl: \verb|bibtool count db| added.
+  \end{New}
+  \begin{Fix}{gene}
+    \BibTcl{}: \verb|bibtool missing| ignores the case of the field
+    name.
+  \end{Fix}
+  \begin{Update}{gene}
+    \BibTcl: consistently renaming \verb|record| to \verb|entry|.
+  \end{Update}
+  \begin{Fix}{gene}
+    Minor modifications of makefile to correctly generate
+    \File{libbib.a} and install the header files.
+  \end{Fix}
+  \begin{Update}{gene}
+    Reorganization of the code; header files are now in their own directory. I
+    don't have the appropriate information for some DOS compilers yet.
+    Thus minor modifications in the makefile might be required.
+  \end{Update}
+  \begin{New}{gene}
+    C function \verb|entry_statistics()| removed. The functionality
+    can be modeled with the new C function \verb|db_count()|. This
+    takes into account that several databases can be managed
+    internally.
+  \end{New}
+  \begin{Update}{gene}
+    C function \verb|save_word()| renamed to \verb|add_word()|.
+    \verb|list_words()| removed since it has been used for debugging
+    only.
+  \end{Update}
+  \begin{Update}{gene}
+    EntryTypes implementation changed. The API doesn't change.
+    Datatype \verb|StringTab| is now local to \File{symbols.c}.
+    Datatype \verb|Rule| is now local to \File{rewrite.c}.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.42}{}
+  \begin{New}{gene}
+    New selection operation introduced. The selection with regular expressions
+    is complemented by a selection according to simple substrings. This
+    selection is initiated with the new resource \rsc{select.string}
+    which takes the same arguments as the resource \rsc{select} but
+    does comparison for a substring instead of regular expression matching.
+    The value of \rsc{select.case.sensitive} is taken into account but
+    at runtime and not at specification time. Certain characters can be
+    ignored for the comparison. Those are contained in the new string resource
+    \rsc{select.ignored}.
+  \end{New}
+  \begin{New}{gene}
+    New resource \rsc{print.entry.types} introduced. This resource
+    controlls the entry types and the order in which they are printed.
+    In fact the macro printing facility is obsolete with this new
+    resource.
+  \end{New}
+  \begin{New}{gene}
+    New resource \rsc{clear.ignored.words} introduced. In fact this is
+    a function which deletes all ignored words. Thus it is possible to
+    determine all ignored words at runtime--even the compiled in
+    defaults.
+  \end{New}
+  \begin{Fix}{gene}
+    Bug fixed: selection honours the resource \rsc{print.all.strings}
+    now.
+  \end{Fix}
+  \begin{Update}{gene}
+    Makefiles slightly improved. Less manual adaption. Installation of all
+    library files -- even on Solaris.
+  \end{Update}
+  \begin{Fix}{gene}
+    Name formatting omission fixed: Translation and length are taken
+    into account correctly. The new name format sign * has been
+    introduced to denote the inheritance of the translation from the
+    calling format.
+  \end{Fix}
+  \begin{Update}{gene}
+    Restriction relaxed. Now it is possible to declare up to MAXINT
+    entry types and not only 4096. The \verb|Record| data structure
+    and the associated macros have been modified slightly to
+    accomplish this.
+  \end{Update}
+  \begin{Fix}{gene}
+    Bug in the aux file selection mechanism fixed. This bug caused some cross
+    referenced entries to be missing under special circumstances.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Bug in \File{key.c} fixed which caused a crash because an
+    initialization was missing under certain circumstances.
+  \end{Fix}
+  \begin{New}{gene}
+    Make target \File{libbib.a} added. This is known to work on UNIX. I would
+    like to get feedback for other systems.
+  \end{New}
+  \begin{Fix}{gene}
+    Minor bug in \File{names.c} fixed.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Minor bug in \File{print.c} fixed. \rsc{print.wide.equal} does not
+    have exceptions any more.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Minor bug in \File{print.c} fixed. Deleted fields are treated better.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Bug in \File{database.c} fixed which caused macro expansion to fail under
+    certain circumstances.
+  \end{Fix}
+  \begin{Update}{gene}
+    \BibTcl: \verb|bibtool format| allows to use the full power of
+    format specifications.
+  \end{Update}
+  \begin{New}{gene}
+    \BibTcl: \verb|bibtool sprint| added which returns the formatted
+    string representation of an entry.
+  \end{New}
+  \begin{Fix}{gene}
+    \BibTcl: Bug in \verb|$rec set \$key ...| fixed.
+  \end{Fix}
+  \begin{Update}{gene}
+    Minor changes in the C interface (Just wait for the compiler or
+    linker to complain about different arguments:-).
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.41}{}
+  \begin{New}{gene}
+    New boolean resource \rsc{print.equal.right} which controls whether
+    the = in normal entries is aligned right or left.
+  \end{New}
+  \begin{New}{gene}
+    New boolean \rsc{resource print.wide.equal} which controlls whether
+    the equal sign is surrounded by spaces even if the alignment forces a
+    narrower layout.
+  \end{New}
+  \begin{New}{gene}
+    New boolean resource \rsc{print.comma.at.end} which controlls
+    whether the comma between fields is printed at the end or at the beginning
+    of a field/value pair.
+  \end{New}
+  \begin{New}{gene}
+    New boolean resource \rsc{print.deleted.entries} which controls the
+    treatment of deleted entries. If this resource is true then delete entries
+    are put as comments into the output. This is the old behavior and thus it
+    is the default.
+  \end{New}
+  \begin{New}{gene}
+    Pseudo field \rsc{sortkey} added.
+  \end{New}
+  \begin{New}{gene}
+    Pseudo field \rsc{source} added which contains the filename the
+    record has been read from or the empty string if this can not be
+    determined.
+  \end{New}
+  \begin{Fix}{gene}
+    Makefile adapted to meet the description.
+  \end{Fix}
+  \begin{New}{gene}
+	configure creates \File{./config.h} aswell.
+  \end{New}
+  \begin{New}{gene}
+    Strings can be either local to a database or global. The output of macros
+    does include local macros only. This is a point of incompatibility with
+    previous versions.
+  \end{New}
+  \begin{New}{gene}
+    Massive extensions to \BibTcl.
+  \end{New}
+  \begin{Doc}{gene}
+    Cleaning of the sources and massive addition of documentation. Now the
+    documentation of the C functions is present. Thus it becomes possible to
+    use the \BibTool{} routines to write C programs. BibTcl is a first
+    application of this technique. Nevertheless a few changes seem possible
+    before things are cut in stone.
+  \end{Doc}
+  \begin{Doc}{gene}
+    According to a suggestion by Oren Patashnik the term entry is used instead
+    of record -- at least in the documentation.
+  \end{Doc}
+  \begin{Fix}{gene}
+    Minor bug in \File{print.c} fixed which caused looping when small values
+    for line length and alignment column was given.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Minor bugfix in \File{key.c}. The resource \rsc{crossref.limit} was
+    off by 1.
+  \end{Fix}
+  \begin{New}{gene}
+    Some additions have been made to support new features in the forthcoming
+    \BibTeX{} 1.0. They do not really work right now but just restrict the
+    accepted input files.
+  \end{New}
+  \begin{New}{gene}
+    Flag \texttt{--with-kpathsea} added to configure.
+  \end{New}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.40}{}
+  \begin{New}{gene}
+    Sorting uses the new key instead of the old one as before. This has not
+    been specified, but the new behaviour might be more intuitive.
+  \end{New}
+  \begin{Fix}{gene}
+    \rsc{key.format=empty} fixed. \rsc{key.format} \rsc{short.need}
+    and \rsc{long.need} are aliases for \rsc{new.short} and
+    \rsc{new.long} resp.
+  \end{Fix}
+  \begin{Update}{gene}
+    Some error messages slightly improved.
+  \end{Update}
+  \begin{Fix}{gene}
+    Minor print bug fixed: additional commas appeared when the last field was
+    deleted.
+  \end{Fix}
+  \begin{Doc}{gene}
+    Typo in documentation: I had typed \rsc{preserve.key} instead of
+    \rsc{preserve.keys}. Shame on me:-) Some additional examples in the
+    documentation.
+  \end{Doc}
+  \begin{Update}{gene}
+    Field deletetion completely covered by the rewriting mechanism.
+    \rsc{delete.field} is kept for backward compatibility as an alias.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.39}{}
+  \begin{Update}{gene}
+    The default for the pattern in the select resource is now '.'.
+    Thus it is easier to select entries with a given type.
+  \end{Update}
+  \begin{New}{gene}
+    New resource \rsc{preserve.keys} introduced. If this resource is on
+    then key generation touches only entries with empty keys. The keys of
+    other entries are left unchanged. Initially this resource is off.
+  \end{New}
+  \begin{Update}{gene}
+    The disambiguation now respects the order of the entries. Previously it
+    used the reverse order which was contra-intuitive.
+  \end{Update}
+  \begin{Update}{gene}
+    Formating names: Names connected by ~ or tight initials (A.U. Thor) are
+    now treated better.
+  \end{Update}
+  \begin{Fix}{gene}
+    Nasty little bug in the key specification parser fixed. This has
+    (sometimes) let to a wrong evaluation of disjunctions.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Minor bug in verbose messages fixed.
+  \end{Fix}
+  \begin{New}{gene}
+    AutoConf scripts added.
+  \end{New}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.38}{}
+  \begin{New}{gene}
+    Format specifier \%d enhanced. It can fail now if no number is found in
+    the field. The minus sign means padding to a fixed length. The plus sign
+    means not to fail but use 0. The post specifier can be used to select
+    another but the first number. E.g. \%.2d means to use the second number.
+  \end{New}
+  \begin{New}{gene}
+    Format specifier \%D introduced. It acts like \%d but does not truncate
+    the number. Thus larger numbers are used completetly.
+  \end{New}
+  \begin{Fix}{gene}
+    Bug fixed. If the key format failed then the key was left empty. Now the
+    default key is used as written in the documentation. Somehow the bugfix
+    for the select statement has not made it into the last release. Now it
+    should be in.
+  \end{Fix}
+  \begin{Doc}{gene}
+    Several mistakes in the documentation corrected.
+  \end{Doc}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.37}{}
+  \begin{New}{gene}
+    kpathsea support for searching \BibTeX{} files added.
+  \end{New}
+  \begin{Fix}{gene}
+    Bugs fixed: Searching/key generation combination and aux file evaluation.
+  \end{Fix}
+  \begin{New}{gene}
+    The distribution is now availlable in two forms: as a gzipped tar file and
+    as a zip archive.
+  \end{New}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.36}{}
+  \begin{New}{gene}
+    Added sample file for interfacing \BibTool{} with Tcl:
+    \File{Tcl/bibtool.tcl}.
+  \end{New}
+  \begin{New}{gene}
+    Added sample file for interfacing \BibTool{} with Perl:
+    \File{Perl/bibtool.pl}.
+  \end{New}
+  \begin{Fix}{gene}
+    Minor bug fix in string parsing routines. E.g. select from command line
+    was not evaluated properly.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Minor bug fixed. \rsc{add.field} now works again as described in
+    the documentation.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Minor bug fixed. Command line argument \Arg{-r} issued a warning
+    when everything was ok.
+  \end{Fix}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.35}{}
+  \begin{Update}{gene}
+    Inheritance via crossref can be used to access fields in another
+    entry when creating keys. E.g. this means that crossreferencing
+    inproceedings can access the booktitle of the proceedings. The new
+    resource \rsc{crossref.limit} restricts the number of crossrefs
+    followed. E.g. 0 means do not follow crossrefs (as it has been in
+    previous releases). The default is 32.
+  \end{Update}
+  \begin{New}{gene}
+    New boolean resource \rsc{check.do.delete} introduced. If this
+    resource is on then the double entries are not only preceeded by
+    \#\#\# instead of @ but deleted completely.
+  \end{New}
+  \begin{New}{gene}
+    New boolean resource \rsc{sort.macros} introduced. If this is on
+    then the macro definitions are sorted alphabetically. Default: on
+  \end{New}
+  \begin{Update}{gene}
+    The handling of comments has been changed completely. Comments are
+    now attached to the preamble/string/normal entry following them.
+    Especially during sorting the comments are rearranged as well.
+    This seems useful to keep comments on macro definitions and the
+    definitions together. The last comment always stays at the end.
+  \end{Update}
+  \begin{Fix}{gene}
+    Minor bug fixed. The searching for \File{.bibtoolrsc} went wrong.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Minor bug fixed. \rsc{output.file} resource acted incorrect.
+  \end{Fix}
+  \begin{New}{gene}
+    \rsc{print.all.strings} acts like described in the documentation.
+  \end{New}
+  \begin{Update}{gene}
+    Resource arguments in the command line can have unbalanced braces in
+    strings now. Still there is no escape character defined.
+  \end{Update}
+  \begin{Update}{gene}
+    Internally \BibTool{} can handle more than one database simultaneously.
+    This is needed for the SQL interface. Let's see how this can be used
+    otherwise.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.34}{}
+  \begin{Update}{gene}
+    Default value of \rsc{key.expand.macros} changed to on. This seems
+    to be a more sensible default value. (Possible incomatibility to old
+    version)
+  \end{Update}
+  \begin{New}{gene}
+    \rsc{new.format.type} introduced. This command can be used to
+    specify formatting rules for names. It is used in conjunction with the \%p
+    format specification which has been added.
+  \end{New}
+  \begin{New}{gene}
+    The format specifiers for counting names/words/characters have been added.
+    Those act as booleans which force backtracking if they fail. The qualifier
+    \# is used to enable counting.
+  \end{New}
+  \begin{Update}{gene}
+    When writing macro files undefined macros are written as
+    \verb|_string| instead of \verb|@STRING|. Thus they are
+    comments to \BibTeX{}.
+  \end{Update}
+  \begin{Update}{gene}
+    The command line options \Arg{-x} and \Arg{-X} now also set
+    \rsc{print.all.strings} to off. (This has no effect yet)
+  \end{Update}
+  \begin{Doc}{gene}
+    The documentation has been updated.
+  \end{Doc}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.33}{}
+  \begin{New}{gene}
+    Reference card added (prepared for A4 paper).
+  \end{New}
+  \begin{Fix}{gene}
+    Bugfix in \File{rewrite.c}. \rsc{add.field} no longer crashes.
+  \end{Fix}
+  \begin{Update}{gene}
+    Format specifiers \%n and \%N now also use the post argument. This
+    argument is used to restrict the number of characters transferred.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.32}{}
+  \begin{New}{gene}
+    New resource \rsc{select.fields} introduced. This resource
+    controlls which fields are considered when selecting with
+    \Arg{-X}.
+  \end{New}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.31}{}
+  \begin{Update}{gene}
+    I have moved to a new job. My email address has been changed in
+    all files (maybe I have missed some?).
+  \end{Update}
+  \begin{Fix}{gene}
+    The resource \rsc{select.case.sensitive} behaved
+    contra-intuitive. This has been fixed. This means that old scripts
+    might need adaption.
+  \end{Fix}
+  \begin{Update}{gene}
+    \rsc{select} and 
+\rsc{rewrite.rule} can take several
+    fields now. Thus you can specify several selections or rewrites
+    more compact.
+  \end{Update}
+  \begin{Doc}{gene}
+    The survey of related programs in the documentation has been
+    enlarged.
+  \end{Doc}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.30}{}
+  \begin{Fix}{gene}
+    Minor bugfix in \File{s\_parse.c}. Resource specifications in
+    the command line may have let to an overflow of an array. This has
+    been fixed.
+  \end{Fix}
+  \begin{New}{gene}
+    New resource \rsc{print.parentheses} introduced. This
+    resource allows the user to specify whether {} or () should be
+    used to delimit each entry.
+  \end{New}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.29}{}
+  \begin{Update}{gene}
+    Support for compilation without the GNU Regular Expression Library
+    improved.
+  \end{Update}
+  \begin{Update}{gene}
+    The \verb|@comment| is really more liberal than I thought. This
+    prefix is simply ignored (As I have read in the \BibTeX{}
+    sources). This behaviour is now also performed by \BibTool{}.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.28}{}
+  \begin{Update}{gene}
+    Some additional updates for the new makefiles.
+  \end{Update}
+  \begin{Fix}{gene}
+    Bugfix in \File{print.c} which let to additional strings after the
+    regular end of an entry.
+  \end{Fix}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.27}{}
+  \begin{Update}{gene}
+    Reorganization of the files. Slight corrections of function
+    protptypes in various files. Change of the \File{Makefile} to
+    support Amiga SAS/C.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.26}{}
+  \begin{Fix}{gene}
+    Minor bug in \File{key.c} fixed. One step further to a 8-bit clean
+    program. I wonder which 8-bit traps are still hidden in \BibTool.
+  \end{Fix}
+  \begin{Update}{gene}
+    The \TeX{} macro mechnism has been enhanced to allow one to define
+    single character macros. This means \rsc{tex.define}
+    automatically makes a character active if it is encountered as
+    macro name of a definition.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.25}{}
+  \begin{Update}{gene}
+    Finally all separators can be arbitrary strings. Only allowed
+    characters are used (as it has been done in version 1.*). I hope
+    this finally fixes the bug in key.c which I had troubles with in
+    the previous versions.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.24}{}
+  \begin{Doc}{gene}
+    Documentation for regular expressions added.
+  \end{Doc}
+  \begin{New}{gene}
+    Resource \rsc{select} and
+    \rsc{select.case.sensitive} added. The selection allows to
+    specify a regular expression for arbitrary fields. This subsumes
+    the old \rsc{extract.regex} which is kept for backward
+    compatibility.
+  \end{New}
+  \begin{Fix}{gene}
+    A bugfix in 2.23 corrected.
+  \end{Fix}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.23}{}
+  \begin{Update}{gene}
+    Some minor modifications for DEC-Alpha.
+  \end{Update}
+  \begin{Update}{gene}
+    Some minor modifications for the native HP C compiler.
+  \end{Update}
+  \begin{Fix}{gene}
+    Some bugs in \File{key.c} fixed.
+  \end{Fix}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.22}{}
+  \begin{Update}{gene}
+    \BS par (double newlines) is preserved now. \rsc{parse.c}
+    has been modified. The line breaking algorithm in \File{print.c}
+    has been adapted.
+  \end{Update}
+  \begin{Fix}{gene}
+    Allocation bug in \File{stack.c} fixed.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Bug in \File{expand.c} which added garbage to expanded strings.
+  \end{Fix}
+  \begin{Update}{gene}
+    Some improvements for non-ANSI C compilers (I really don't know
+    why I continue this).
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.21}{}
+  \begin{New}{gene}
+    Preserving of case of keys introduced. For this purpose the
+    resource \rsc{preserve.key.case} has been introduced. The
+    management of the list of old keys is done in \File{macros.c}
+    mainly. Minor change in \File{print.c} and \File{parse.c}.
+  \end{New}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.20}{}
+  \begin{Fix}{gene}
+    Minor bug fix in \rsc{sort.order}.
+  \end{Fix}
+  \begin{Update}{gene}
+    Compression method changed to gzip.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.19}{}
+  \begin{New}{gene}
+    Key format specifiers t, w, W introduced. w, W, t and T take a
+    post argument to limit the number of characters to use.
+  \end{New}
+  \begin{New}{gene}
+    \rsc{sort.order} introduced to sort fields in an entry.
+  \end{New}
+  \begin{Update}{gene}
+    Wrong mail addresses in many files corrected.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.18}{}
+  \begin{Fix}{gene}
+    Rewriting missed some multiply occurring patterns.
+    (\File{rewrite.c})
+  \end{Fix}
+  \begin{New}{gene}
+    Resource \rsc{rewrite.limit} added.
+  \end{New}
+  \begin{Fix}{gene}
+    Problem with recursive resources fixed. (\File{parse.c})
+  \end{Fix}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.17}{}
+  \begin{Doc}{gene}
+    The documentation is now compatible with \LaTeXe.
+  \end{Doc}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.16}{}
+  \begin{New}{gene}
+    New resource \rsc{print.newline} introduced to control the
+    number of empty lines between entries.
+  \end{New}
+  \begin{New}{gene}
+    MSDOS support: Imitating emtex search path initialization as
+    option.
+  \end{New}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.15}{}
+  \begin{Fix}{gene}
+    Some problems with 8-bit characters fixed.
+  \end{Fix}
+  \begin{New}{gene}
+    String expansion before key generation added:
+    \rsc{key.expand.macro}
+  \end{New}
+  \begin{Fix}{gene}
+    Hashindex was computed wrong for some strings with ASCII values >
+    127.
+  \end{Fix}
+  \begin{Update}{gene}
+    Hashtable enlarged and new algorithm for hashindex
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.14}{}
+  \begin{Fix}{gene}
+    \rsc{delete.field} bug fixed. The deletion of the last
+    field lead to the deletion of all fields. (\File{rewrite.c})
+  \end{Fix}
+  \begin{Update}{gene}
+    Comments added to \File{print.c}.
+  \end{Update}
+  \begin{New}{gene}
+    Target zip in \File{Makefile}.
+  \end{New}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.13}{}
+  \begin{New}{gene}
+    Yet more modifications for the MSDOS port. What a brain-dead OS.
+  \end{New}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.12}{}
+  \begin{Update}{gene}
+    Version 2.12 of GNU regex library integrated.
+  \end{Update}
+  \begin{Update}{gene}
+    \File{alloca.c} is no longer needed.
+  \end{Update}
+  \begin{Fix}{gene}
+    Some improvements for the MSDOS port.
+  \end{Fix}
+  \begin{Fix}{gene}
+    \File{aux.[ch]} renamed to \File{tex\_aux.[ch]} resp.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Resource search path seems to work now.
+  \end{Fix}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.11}{}
+  \begin{Fix}{gene}
+    Some typos fixed.
+  \end{Fix}
+  \begin{Update}{gene}
+	Redefinition of entry types enabled.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.10}{}
+  \begin{New}{gene}
+    String/Macro expansion added: \rsc{expand.macros}.
+  \end{New}
+  \begin{Update}{gene}
+    Case in-sensitive treatment of ignored words.
+  \end{Update}
+  \begin{Update}{gene}
+    Some additional targets in \File{Makefile}.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.09}{}
+  \begin{Update}{gene}
+    \File{Makefile} enhanced.
+  \end{Update}
+  \begin{Update}{gene}
+    Error/verbose/debug messages improved.
+  \end{Update}
+  \begin{Fix}{gene}
+    Hell, I forgot to remove trace statements.
+  \end{Fix}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.08}{}
+  \begin{Update}{gene}
+    Comment parsing and printing improved.
+  \end{Update}
+  \begin{New}{gene}
+    \rsc{symbol.type} introduced.
+  \end{New}
+  \begin{Update}{gene}
+    Minor improvement of non-ANSI support.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.07}{}
+  \begin{Update}{gene}
+    Printing improved. Rewriting of macro names completed and
+    documented.
+  \end{Update}
+  \begin{Fix}{gene}
+    Truncating bug in \File{print.c} fixed.
+  \end{Fix}
+  \begin{Update}{gene}
+    Minor improvement of non-ANSI support.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.06}{}
+  \begin{New}{gene}
+    UN*X man pages for \verb|sbuffer()|, \verb|pxfile()|
+  \end{New}
+  \begin{Update}{gene}
+    Absolute path name use improved.
+  \end{Update}
+  \begin{Fix}{gene}
+    Minor bug fixed.
+  \end{Fix}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.05}{}
+  \begin{New}{gene}
+    Semantic checks with regular expressions.
+  \end{New}
+  \begin{Update}{gene}
+    Crossref modification when key generation is enabled.
+  \end{Update}
+  \begin{Fix}{gene}
+    Preference bug for search path building fixed.
+  \end{Fix}
+  \begin{Update}{gene}
+    Rewriting enhanced.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.04}{}
+  \begin{New}{gene}
+    String parser introduced. Error checking/messages improved.
+  \end{New}
+  \begin{Update}{gene}
+    Undocumented command line options changed.
+  \end{Update}
+  \begin{New}{gene}
+    Command line specification of resources introduced.
+  \end{New}
+  \begin{Fix}{gene}
+    Minor bug fixes.
+  \end{Fix}
+  \begin{Update}{gene}
+    Code slightly reorganized. (I really found a static array)
+  \end{Update}
+  \begin{Update}{gene}
+    Samples directory renamed to \File{Lib}.
+  \end{Update}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.03}{}
+  \begin{New}{gene}
+    Field rewriting introduced.
+  \end{New}
+  \begin{Update}{gene}
+    Resource \rsc{optimize} is obsolete. The functionality can
+    be achieved by field rewriting.
+  \end{Update}
+  \begin{New}{gene}
+    Resource search path introduced.
+  \end{New}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.02}{}
+  \begin{Fix}{gene}
+    Minor bug fixes.
+  \end{Fix}
+  \begin{Update}{gene}
+    Static array in key generation routine made dynamic. There is
+    still a limit which can be reached when a short \TeX{} macro
+    expands into very long text.
+  \end{Update}
+  \begin{New}{gene}
+    Checking double entries feature introduced.
+  \end{New}
+  \begin{New}{gene}
+    Printing TABs can be emulated by SPACEs.
+  \end{New}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.01}{}
+  \begin{Fix}{gene}
+    Bug fixes.
+  \end{Fix}
+  \begin{New}{gene}
+    Print representation for items introduced.
+  \end{New}
+  \begin{Update}{gene}
+    Distribution improved.
+  \end{Update}
+  \begin{New}{gene}
+    Resource samples added.
+  \end{New}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.0}{}
+  \begin{New}{gene}
+    Major revision.
+  \end{New}
+  \begin{New}{gene}
+    Sorting integrated.
+  \end{New}
+  \begin{New}{gene}
+    Resources introduced.
+  \end{New}
+  \begin{Update}{gene}
+    Several command line options deleted.
+  \end{Update}
+  \begin{Update}{gene}
+    Key formatting improved.
+  \end{Update}
+  \begin{Doc}{gene}
+    Draft Documentation.
+  \end{Doc}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{1.7}{}
+  \item[]
+ \end{Release}
+
+
+\end{document}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Local Variables: 
+% mode: latex
+% TeX-master: nil
+% End: 
