@@ -1,0 +1,20 @@
+
+use L2H;
+
+newcommand('Developer',
+	   arity => 3,
+	   text  => '');
+newcommand('BibTcl',
+	   text  => 'BibTcl');
+
+newenvironment('Release',
+	       arity => 2,
+	       text    => '<h2>#1</h2><ul>',
+	       endtext => '</ul>');
+
+
+1;
+#------------------------------------------------------------------------------
+# Local Variables: 
+# mode: perl
+# End: 
