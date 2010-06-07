@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: hyph_en.pm,v 1.1 2010-05-31 04:01:54 gene Exp $
+## $Id: hyph_en.pm,v 1.2 2010-06-07 07:59:27 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -48,7 +48,7 @@ our @EXPORT_OK = qw(hyph);
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.1 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.2 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 my %hyph	  = (
   'abbreviate'	=> 'abbre&shy;vi&shy;ate',
@@ -532,10 +532,24 @@ my %hyph	  = (
   'writing'	=> 'wri&shy;ting',
     );
 
+#------------------------------------------------------------------------------
+# Function:	hyph
+# Arguments:	
+# Returns:	
+# Description:	
+#
 sub hyph
-{ my $_ = shift;
+{ local $_ = shift;
 
-  return $hyph{$_} || $_;
+  if ( m/^[A-Z]/ ) {
+    my $a = $hyph{lcfirst($_)};
+    return ucfirst($a) if defined $a;
+  } else {
+    print STDERR "  '$_'\t=> '$_',\n" if not defined $hyph{$_};
+    return $hyph{$_} || $_;
+  }
+
+  return $_;
 }
 
 1;

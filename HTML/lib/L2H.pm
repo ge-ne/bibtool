@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H.pm,v 1.5 2010-05-31 04:02:43 gene Exp $
+## $Id: L2H.pm,v 1.6 2010-06-07 07:59:27 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -31,7 +31,7 @@ require Exporter;
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.5 $'; #'
+  my $VERSION = '$Revision: 1.6 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
 
@@ -298,6 +298,21 @@ sub put (@)
 { my $self = shift;
   my $s = shift;
   return if not defined($s);
+  if (defined $self->{hyphenate}) {
+    $s = hyphenate($self->{hyphenate}, $s);
+  }
+  $self->{result} .= $s;
+}
+
+#------------------------------------------------------------------------------
+# Function:	put_raw
+# Description:	
+# Returns:	
+#
+sub put_raw (@)
+{ my $self = shift;
+  my $s = shift;
+  return if not defined($s);
   $self->{result} .= $s;
 }
 
@@ -325,9 +340,6 @@ sub finish
   s/<p>\n<blockquote>/<blockquote>/go;
   s/<\/blockquote>\n*<blockquote>/<br>/go;
   s/<p><dt>/<dt>/go;
-  if (defined $self->{hyphenate}) {
-    $_ = hyphenate($self->{hyphenate}, $_);
-  }
   return $_;
 }
 
@@ -343,22 +355,22 @@ sub hyphenate
   my ($t, $a);
   local $_ = '';
 
-  while ($s =~ m/^([a-z_.\-]*)([^a-z_.\-]+)/is) {
-    $t = $2;
-    $s = $';
-    $a = $1;
-    if (length($a) > 4) {
-#      print STDERR "  '$a'\t=> '$a',\n";
-      $a = hyph($a);
+  while(not $s eq '') {
+    if ($s =~ m/^<[^>]*>/ or $s =~ m/^&[^;]*;/ or $s =~ m/^[^a-z]+/is) {
+      $s  = $';
+      $_ .= $&;
+    } elsif ($s =~ m/^([\w\-]+)/s) {
+      $s = $';
+      $a = $1;
+      if (length($a) > 4) {
+	$a = hyph($a);
+      }
+      $_ .= $a;
+    } else {
+      die $s;
     }
-    $_	.= $a;
-    $_	.= $t;
   }
-  if (length($s) > 4) {
-#    print STDERR "  ==>$s<<<\n" if $s =~ m/poss/;
-    $s = hyph($s);
-  }
-  $_  .= $s;
+
   return $_;
 }
 
@@ -435,14 +447,14 @@ sub LaTeX2HTML
       else
       { print STDERR "'\\$token' is undefined.\n"
 	    if( $self->{'debug'} & 128 );
-	$self->put('\\'.$token.' ') if ( not $self->{'ignore:p'});
+	$self->put_raw('\\'.$token.' ') if ( not $self->{'ignore:p'});
       }
     }
     elsif ($token eq '---')
-    { $self->put('&mdash;');
+    { $self->put_raw('&mdash;');
     }
     elsif ($token eq '--')
-    { $self->put('&ndash;');
+    { $self->put_raw('&ndash;');
     }
     elsif ( $token eq '%' ) # comments
     { s/^.*\n[ \t]*//o;
@@ -450,29 +462,29 @@ sub LaTeX2HTML
     elsif ( $token eq '&' ) # next column
     { if ( m/^((#[0-9][0-9][0-9])|amp|quot|lt|gt);/o )
       { $_ = $';
-	$self->put('&'.$&);
+	$self->put_raw('&'.$&);
       }
       else
-      { $self->put('</td><td>'); }
+      { $self->put_raw('</td><td>'); }
     }
     elsif ( $token eq '^' ) # superscript
     { my $a;
       ($a,$_) = get_arg('^',$_);
-      $self->put("<sup>$a</sup>");
+      $self->put_raw("<sup>$a</sup>");
     }
     elsif ( $token eq '_' ) # subscript
     { my $a;
       ($a,$_) = get_arg('_',$_);
-      $self->put("<sub>$a</sub>");
+      $self->put_raw("<sub>$a</sub>");
     }
     elsif ( $token eq '~' )
-    { $self->put('&nbsp;');
+    { $self->put_raw('&nbsp;');
     }
     elsif ( $token eq '{' )
     { $self->begingroup();
     }
     elsif ( $token eq '}' )
-    { $self->put($self->endgroup());
+    { $self->put_raw($self->endgroup());
     }
   }
   return $self->finish($_);

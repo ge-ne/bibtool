@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H_file.pm,v 1.5 2010-05-31 04:02:43 gene Exp $
+## $Id: L2H_file.pm,v 1.6 2010-06-07 07:59:27 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -20,7 +20,7 @@ require Exporter;
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.5 $'; #'
+  my $VERSION = '$Revision: 1.6 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
 
@@ -81,6 +81,19 @@ sub put (@)
 }
 
 #------------------------------------------------------------------------------
+# Function:	put_raw
+# Description:	
+# Returns:	
+#
+sub put_raw (@)
+{ my $self = shift;
+  return if not defined($self->{out});
+  local $_ = join("",@_);
+  s/\&\#095;/_/go;
+  print {$self->{out}} $_;
+}
+
+#------------------------------------------------------------------------------
 # Function:	put_footnotes
 # Description:	
 # Returns:	
@@ -136,7 +149,7 @@ sub redirect
 
     $self->{page_head} =~ s/\$\$/2/go;
 
-    $self->put(<<_EOF_);
+    $self->put_raw(<<_EOF_);
 <br /><hr />
 <font face="sans-serif" size="1">\&copy; $opt_year
 <a href="mailto:$opt_email">$opt_author</a></font>
@@ -217,7 +230,7 @@ _EOF_
   my $st       = $self->{'title:'.$fname} ;
   my $Title    = ( $n<=0 ? '' : "<h$n>$st</h$n>" );
   $st	       =~ s/<[^>]*>//g;
-  put($self,<<_EOF_);
+  put_raw($self,<<_EOF_);
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML//3.2//EN">
 <html>
 <head>
