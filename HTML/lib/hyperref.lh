@@ -1,0 +1,23 @@
+#
+
+newcommand('url',
+	   arity => 1,
+	   text  => sub
+	   { shift;
+	     local $_ = shift;
+	     return "<a href=\"$_\">$_</a>";
+	   });
+newcommand('link',
+ 	   arity => 2,
+ 	   text  => sub
+ 	   { shift;
+ 	     my $url  = shift;
+ 	     local $_ = shift;
+ 	     return "<a href=\"$url\">$_</a>";
+ 	   });
+
+1;
+#------------------------------------------------------------------------------
+# Local Variables: 
+# mode: perl
+# End: 

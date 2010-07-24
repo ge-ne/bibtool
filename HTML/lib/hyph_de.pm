@@ -1,17 +1,17 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: hyph_en.pm,v 1.3 2010-07-24 05:21:10 gene Exp $
+## $Id: hyph_de.pm,v 1.1 2010-07-24 05:21:10 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
 
 =head1 NAME
 
-hyph_en.pm - ...
+hyph_de.pm - ...
 
 =head1 SYNOPSIS
 
-hyph_en.pm
+hyph_de.pm
 
 =head1 DESCRIPTION
 
@@ -36,7 +36,7 @@ Gerd Neugebauer
 =cut
 
 #------------------------------------------------------------------------------
-package hyph_en;
+package hyph_de;
 
 use strict;
 use Exporter;
@@ -50,7 +50,7 @@ use FileHandle;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.3 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.1 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 my %hyph;
 my @learned;
@@ -153,9 +153,9 @@ __EOF__
   $fd->close();
 }
 
-load(locate('lang.en'),1);
-load('langUser.en');
-load('lang.en');
+load(locate('lang.de'),1);
+load('langUser.de');
+load('lang.de');
 
 1;
 ##-----------------------------------------------------------------------------

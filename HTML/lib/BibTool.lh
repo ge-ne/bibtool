@@ -2,14 +2,15 @@
 use L2H;
 
 newcommand('ifHTML',
-	   code => sub
+	   text => sub
 	   { my $self = shift;
 	     s/\\else.*?\\fi//so;
 	     return '';
 	   }
 	  );
+newcommand('BibTcl',
+ 	   text  => 'BibTcl');
 
-newcommand('vbox',		 arity => 1);
 newcommand('BS@',		 text => '&#092;@');
 
 newcommand('rfill');
@@ -26,7 +27,7 @@ newcommand('Link',
 	   text => '<a href="#1">#2</a>');
 newcommand('RSc',
 	   arity => '2',
-	   code => sub
+	   text => sub
 	   { my ($self,$rsc,$val) = @_;
 	     return sf($self->Index($rsc),'<blockquote>',$rsc,' ',$val,'</blockquote>');
 	   });
@@ -44,21 +45,21 @@ renewcommand('maketitle',
 		</p>');
 newcommand('opt',
 	   arity => '1',
-	   code => sub
+	   text => sub
 	   { my $self = shift;
 	     local $_ = shift;
 	     return '<tt>'.$self->Index("-$_")."-$_</tt>";
 	   });
 newcommand('rsc',
 	   arity => '1',
-	   code => sub
+	   text => sub
 	   { my $self = shift;
 	     local $_ = shift;
 	     return sf($self->Index($_),$_);
 	   });
 newcommand('sh',
 	   arity => '[]1',
-	   code => sub
+	   text => sub
 	   { my ($self,$a,$b) = @_;
 	     return "\n<blockquote><code>bibtool -$a $b<\/code></blockquote>\n"
 		 if ( defined($a) );
@@ -78,17 +79,28 @@ newenvironment('Resource',
 	       text    => '<pre>',
 	       endtext => '</pre>');
 newenvironment('Summary',
-	       code    => sub
+	       text    => sub
 	       { my $self = shift;
 		 $self->section(undef,
 				'Summary',
 				'Summary',
-				"<hr size=\"1\" noshadow/><table><tr><td>");
+				'<hr size="1" noshadow/><table><tr><td>');
 		 $self->push_context('tabular');
 	       },
-	       endtext => '</table><hr size="1" noshadow>',
-	       endcode => sub { return shift->pop_context; }
+	       endtext => sub { shift->pop_context;
+				return '</table><hr size="1" noshadow/>'; }
 	       );
+
+#------------------------------------------------------------------------------
+# Function:	sf
+# Description:	
+#		
+# Returns:	
+#
+#
+sub sf
+{ return '<span style="font-family:sans-serif;">'.join('',@_).'</span>';
+}
 
 1;
 #------------------------------------------------------------------------------

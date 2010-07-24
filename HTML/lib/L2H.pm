@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H.pm,v 1.6 2010-06-07 07:59:27 gene Exp $
+## $Id: L2H.pm,v 1.7 2010-07-24 05:21:10 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -27,16 +27,13 @@ my %opt = (
 
 require Exporter;
 @ISA       = qw(Exporter);
-@EXPORT    = qw(newcommand newenvironment sf set_opt hyphenate);
+@EXPORT    = qw(newcommand newenvironment getMacro set_opt hyphenate);
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.6 $'; #'
+  my $VERSION = '$Revision: 1.7 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
-
-use hyph_en;
-
 
 #------------------------------------------------------------------------------
 # Function:	new
@@ -45,7 +42,7 @@ use hyph_en;
 #
 sub new
 { my $class = shift;
-  my $self  =
+  my $this  =
   { 'ignore:p'		=> 0,
     'footnotes'		=> '',
     'footnote_number'	=> 0,
@@ -67,10 +64,11 @@ sub new
     'debug'		=> 0,		# bitfield determining the verbosity
     'message:p'		=> 0,		# indicator for the last pass
 					# for which messages should be issued.
-    'hyphenate'		=> 1,		# indicator to turn on hyphenation
+    'hyphenate'		=> 0,		# indicator to turn on hyphenation
+    'hyphenate:skip'	=> 0,		# internal
   };
-  bless $self,$class;
-  return $self;
+  bless $this,$class;
+  return $this;
 }
 
 #------------------------------------------------------------------------------
@@ -79,23 +77,23 @@ sub new
 # Returns:	
 #
 sub restart
-{ my $self = shift;
+{ my $this = shift;
   my %args = @_;
-  local $_ = new L2H()->LaTeX2HTML($opt{'title'} || $self->{'title'} || '');
-  $self->{'title:'.$opt{'main'}} = $_;
-  $self->{'Context'}       = [];
-  $self->{'context'}       = 'text';
-  $self->{'SectionNumber'} = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
-  $self->{'current_label'} = '';
-  $self->{'index_number'}  = 1;
-  $self->{'label_number'}  = 1;
-  $self->{'page'}          = '';
-  $self->{'ignore:p'}      = 1;
-  $self->{'NAV'}           = "<div class=\"toc0\"><a href=\"doc.html\" target=\"content\">$_</a></div>\n";
-  $self->{'TOC'}           = '';
+  local $_ = new L2H()->LaTeX2HTML($opt{'title'} || $this->{'title'} || '');
+  $this->{'title:'.$opt{'main'}} = $_;
+  $this->{'Context'}       = [];
+  $this->{'context'}       = 'text';
+  $this->{'SectionNumber'} = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+  $this->{'current_label'} = '';
+  $this->{'index_number'}  = 1;
+  $this->{'label_number'}  = 1;
+  $this->{'page'}          = '';
+  $this->{'ignore:p'}      = 1;
+  $this->{'NAV'}           = "<div class=\"toc0\"><a href=\"doc.html\" target=\"content\">$_</a></div>\n";
+  $this->{'TOC'}           = '';
   while ( my($key,$value) = each %args)
-  { $self->{$key} = $value; }
-  $self->redirect($opt{'main'}, 0);
+  { $this->{$key} = $value; }
+  $this->redirect($opt{'main'}, 0);
 }
 
 #------------------------------------------------------------------------------
@@ -104,12 +102,12 @@ sub restart
 # Returns:	
 #
 sub push_context
-{ my $self    = shift;
+{ my $this    = shift;
   my $context = shift;
-  my @a = $self->{'Context'};
+  my @a = $this->{'Context'};
   unshift @a,$context;
-  $self->{'Context'} = @a;
-  $self->{'context'} = $context;
+  $this->{'Context'} = @a;
+  $this->{'context'} = $context;
   return '';
 }
 
@@ -119,11 +117,11 @@ sub push_context
 # Returns:	
 #
 sub pop_context
-{ my $self    = shift;
-  my @a = $self->{'Context'};
+{ my $this    = shift;
+  my @a = $this->{'Context'};
   my $context = shift @a;
-  $self->{'Context'} = @a;
-  $self->{'context'} = $context;
+  $this->{'Context'} = @a;
+  $this->{'context'} = $context;
   return '';
 }
 
@@ -193,9 +191,9 @@ my %Macro;
 # Returns:	
 #
 sub begingroup
-{ my $self = shift;
-  unshift @{$self->{Group}},$self->{group};
-  $self->{group} = '';
+{ my $this = shift;
+  unshift @{$this->{Group}},$this->{group};
+  $this->{group} = '';
   return '';
 }
 
@@ -205,9 +203,9 @@ sub begingroup
 # Returns:	
 #
 sub endgroup
-{ my $self = shift;
-  local $_ = $self->{group};
-  $self->{group} = shift @{$self->{Group}};
+{ my $this = shift;
+  local $_ = $this->{group};
+  $this->{group} = shift @{$this->{Group}};
   return $_;
 }
 
@@ -217,10 +215,23 @@ sub endgroup
 # Returns:	
 #
 sub atendgroup
-{ my $self = shift;
+{ my $this = shift;
   local $_ = shift;
-  $self->{group} = $_.$self->{group};
+  $this->{group} = $_.$this->{group};
   return '';
+}
+
+#------------------------------------------------------------------------------
+# Function:	in_group
+# Description:	
+# Returns:	
+#
+sub in_group
+{ my $this = shift;
+  my $s    = shift;
+  local $_ = shift;
+  $this->{group} = $_.$this->{group};
+  return $s;
 }
 
 #------------------------------------------------------------------------------
@@ -229,11 +240,31 @@ sub atendgroup
 # Returns:	
 #
 sub load
-{ my $self = shift;
-  my $file = shift;
-  print STDERR "--- Loading $file\n" if $self->{'debug'} & 1;
-  do "$file" ;
-  die $@ if $@;
+{ my $this   = shift;
+  my $file   = shift;
+  my $ignore = shift;
+  warn "--- Loading $file\n" if $this->{'debug'} & 1;
+  if (not defined do $file) {
+    if ($@) {
+      die "$file: $@\n" if not $ignore;
+      warn "Warning for $file: $@\n";
+    }
+    if ($!) {
+      die "$file: $!\n" if not $ignore;
+      warn "Warning for $file: $!\n";
+    }
+  }
+}
+
+#------------------------------------------------------------------------------
+# Method:	getMacro
+# Arguments:	
+# Returns:	
+# Description:	
+#
+sub getMacro {
+  my $macro = shift;
+  return $L2H::Macro{$macro};
 }
 
 #------------------------------------------------------------------------------
@@ -245,10 +276,10 @@ sub newcommand
 { my ($macro,%arg) = @_;
   my $arity = ( $arg{arity} || 0 );
   if ( exists $L2H::Macro{$macro} )
-  { # print STDERR "*** `$macro' is already defined.\n";
+  { # warn "*** `$macro' is already defined.\n";
   }
   else
-  { $L2H::Macro{$macro} = [$arity,$arg{context},$arg{text},$arg{code}];
+  { $L2H::Macro{$macro} = [$arity,$arg{context},$arg{text}];
   }
   return '';
 }
@@ -262,7 +293,7 @@ sub renewcommand
 { my ($macro,%arg) = @_;
   my $arity = ( $arg{arity} || 0 );
   if ( not defined $arg{noredef} )
-  { $L2H::Macro{$macro} = [$arity,$arg{context},$arg{text},$arg{code},$arg{redef}];
+  { $L2H::Macro{$macro} = [$arity,$arg{context},$arg{text},$arg{redef}];
   }
   return '';
 }
@@ -272,19 +303,37 @@ sub renewcommand
 # Description:	
 # Returns:	
 #
-sub newenvironment
+sub newenvironment ($@)
 { my ($macro,%arg) = @_;
   newcommand("begin{$macro}",
 	     context => $macro,
 	     arity   => $arg{arity},
 	     text    => $arg{text},
-	     code    => $arg{code},
 	    );
   newcommand("end{$macro}",
 	     context => '/',
 	     arity   => 0,
 	     text    => $arg{endtext},
-	     code    => $arg{endcode},
+	    );
+  return '';
+}
+
+#------------------------------------------------------------------------------
+# Function:	renewenvironment
+# Description:	
+# Returns:	
+#
+sub renewenvironment ($@)
+{ my ($macro,%arg) = @_;
+  renewcommand("begin{$macro}",
+	     context => $macro,
+	     arity   => $arg{arity},
+	     text    => $arg{text},
+	    );
+  renewcommand("end{$macro}",
+	     context => '/',
+	     arity   => 0,
+	     text    => $arg{endtext},
 	    );
   return '';
 }
@@ -295,13 +344,15 @@ sub newenvironment
 # Returns:	
 #
 sub put (@)
-{ my $self = shift;
-  my $s = shift;
-  return if not defined($s);
-  if (defined $self->{hyphenate}) {
-    $s = hyphenate($self->{hyphenate}, $s);
+{ my $this = shift;
+  return if $this->{'ignore:p'};
+
+  my $s = join('',@_);
+  return if $s eq '';
+  if ($this->{hyphenate}) {
+    $s = $this->hyphenate($s);
   }
-  $self->{result} .= $s;
+  $this->{result} .= $s;
 }
 
 #------------------------------------------------------------------------------
@@ -310,10 +361,9 @@ sub put (@)
 # Returns:	
 #
 sub put_raw (@)
-{ my $self = shift;
-  my $s = shift;
-  return if not defined($s);
-  $self->{result} .= $s;
+{ my $this = shift;
+  return if $this->{'ignore:p'};
+  $this->{result} .= join('',@_);
 }
 
 #------------------------------------------------------------------------------
@@ -331,11 +381,11 @@ sub redirect (@)
 # Returns:	
 #
 sub finish
-{ my $self = shift;
+{ my $this = shift;
   local $_ = shift;
-  $self->put($_);
-  $_ = $self->{result};
-  $self->{result} = '';
+  $this->put($_);
+  $_ = $this->{result};
+  $this->{result} = '';
   s/<\/blockquote><br>/<\/blockquote>/go;
   s/<p>\n<blockquote>/<blockquote>/go;
   s/<\/blockquote>\n*<blockquote>/<br>/go;
@@ -350,28 +400,57 @@ sub finish
 # Description:	
 #
 sub hyphenate
-{ my $h  = shift;
-  my $s = shift;
-  my ($t, $a);
-  local $_ = '';
-
-  while(not $s eq '') {
-    if ($s =~ m/^<[^>]*>/ or $s =~ m/^&[^;]*;/ or $s =~ m/^[^a-z]+/is) {
-      $s  = $';
-      $_ .= $&;
-    } elsif ($s =~ m/^([\w\-]+)/s) {
-      $s = $';
-      $a = $1;
-      if (length($a) > 4) {
-	$a = hyph($a);
-      }
-      $_ .= $a;
+{ my $this = shift;
+  local $_ = shift;
+  my $h	   = $this->{hyphenate};
+  eval "require hyph_$h;" || die "hyph_$h.pm: $!$@\n";
+  my $hyphenator = "hyph_${h}::hyph";
+  my $result 	 = '';
+  if ($this->{'hyphenate:skip'}) {
+    if ( m/>/ ) {
+      $result = $`.$&;
+      $_      = $';
     } else {
-      die $s;
+      return $_;
+    }
+  }
+  $this->{'hyphenate:skip'} = 0;
+
+  while( m/[^a-zäöüßA-ZÄÖÜ]/s ) {
+    my $sep = $&;
+    $_ = $';
+    if ($& eq '<') {
+      no strict 'refs';
+      $result .= &$hyphenator($`).$sep;
+      if ( m/>/ ) {
+	$result .= $`.$&;
+	$_ 	 = $';
+      } else {
+	$this->{'hyphenate:skip'} = 1;
+	return $result.$_;
+      }
+    } elsif ($sep eq '&') {
+      $result .= $`.$sep;
+      if ($_ =~ m/;/) {
+	$result = $`.$&;
+	$_	= $';
+      } else {
+	die "unparsable HTML entity: \&$_\n";
+      }
+    } elsif (length($`)	< 4) {
+      $result .= $`.$sep;
+    } else {
+      no strict 'refs';
+#      print "»$`«\n";
+      $result .= &$hyphenator($`).$sep;
     }
   }
 
-  return $_;
+  return $result.$_ if length($_) < 4;
+
+  no strict 'refs';
+#    print "»$_«\n";
+  return $result.&$hyphenator($_);
 }
 
 #------------------------------------------------------------------------------
@@ -380,114 +459,124 @@ sub hyphenate
 # Returns:	
 #
 sub LaTeX2HTML
-{ my $self = shift;
+{ my $this = shift;
   local $_ = shift;
-  $self->{result} = '';
+  $this->{result} = '';
 
-  while ( m/[\~\{\}\^_\%\&]|(\\([^a-z@]|[a-z@]+\s*))|---?/oi )
+  while ( m/[\~\{\}\^_\%\&'`]|(\\([^a-z@]|[a-z@]+\s*))|---?/oi ) #`'
   { my $token = $&;
     my $pre = $`;
     $_ =  $';
     $pre =~ s|\n[ ]*\n|\n<p>|go;
-    $self->put($pre) if not $self->{'ignore:p'};
+    $this->put($pre) if not $this->{'ignore:p'};
 
-    if ( substr($token,0,1) eq '\\' )
-    { $token = substr($token,1);
+    if ( substr($token,0,1) eq '\\' ) {
+      $token = substr($token,1);
       $token =~ s/\s//go if ( $token =~ m/^[a-z@]/oi );
-      if ( ($token eq 'begin' || $token eq 'end') && m/^{[a-z\*]+}/oi )
-      { $_ = $';
-	$token .= $&;
+      if ( ($token eq 'begin' || $token eq 'end') ) {
+	if (m/^{[a-z\*]+}/oi) {
+	  $_ = $';
+	  $token .= $&;
+	} else {
+	  warn "Missing environment name for $token: $_\n";
+	}
       }
-      my $arity = $L2H::Macro{$token}[0];
-      if ( defined($arity) )
-      { my @a     = ();
+      my $macro = $L2H::Macro{$token};
+      if (not defined $macro) {
+	warn "*** $token undefined\n";
+	next;
+      }
+      my @macro	= @$macro;
+      my $arity	= $macro[0];
+      my @a     = ();
+      if ( $arity ) {
 	my $start = 1;
 	my $pre   = '\\'.$token;
-	if ( $arity =~ m/^\[\](\d)/o )
-	{ $start = 2;
+	if ( $arity =~ m/^\[\](\d)/o ) {
+	  $start = 2;
 	  $arity = $1+1;
 	  ($a[1],$_) = get_optarg($_);
-	}
-	elsif ( $arity =~ m/^1\[\](\d)/o )
-	{ $start = 3;
-	  $arity = $1+2;
+	} elsif ( $arity =~ m/^1\[\](\d)/o ) {
+	  $start = 3;
+	  $arity = $1 + 2;
 	  ($a[1],$_) = get_arg($token,$_);
 	  ($a[2],$_) = get_optarg($_);
 	  $pre .= "{$a[1]}";
-	}
-	elsif ( $arity =~ m/^\*(\d)/o )
-	{ $start = 2;
-	  $arity = $1+1;
+	} elsif ( $arity =~ m/^\*(\d)/o ) {
+	  $start = 2;
+	  $arity = $1 + 1;
 	  s/^\s//go;
-	  if ( substr($_,0,1) eq '*' )
-	  { $a[1] = '*';
+	  if ( substr($_,0,1) eq '*' ) {
+	    $a[1] = '*';
 	    $_ = substr($_,1);
 	    $pre .= '*';
 	  }
+	} elsif ( not $arity =~ m/^\d$/o ) {
+	  warn "Arity could not be parsed: $arity\n";
 	}
-	for ( my $i=$start; $i<=$arity; $i++ )
-	{ ($a[$i],$_) = get_arg($pre,$_);
+	for ( my $i=$start; $i<=$arity; $i++ ) {
+	  ($a[$i],$_) = get_arg($pre,$_);
 	  $pre .= "{$a[$i]}";
 	}
-
-	my $text = '';
-	if ( not $self->{'ignore:p'} )
-	{ my $mac = $L2H::Macro{$token}[2];
-      	  if ( defined($mac) )
-	  { for (my $i=1;$i<=$arity;$i++) { $mac =~ s/\#$i/$a[$i]/g; }
-	    $text = $mac;
-	  }
-	}
-	if ( defined($L2H::Macro{$token}[3]) )
-	{ shift @a;
-	  $text .= &{$L2H::Macro{$token}[3]}($self,@a);
-	}
+      }
+      
+      my $text = $macro[2];
+      if (ref($text) eq 'CODE') {
+	shift @a;
+	$text = &{$text}($this,@a);
+	print STDERR "+++ $macro[3]\n" if not defined $text;
 	$_ = $text.$_;
+      } elsif ( defined($text) and not $this->{'ignore:p'} ) {
+	for (my $i=1; $i<=$arity; $i++) { $text =~ s/\#$i/$a[$i]/g; }
+	$_ = $text.$_;
+#      } else {
+#	print ">>> ",$this->{'ignore:p'}," $text\n";
       }
-      else
-      { print STDERR "'\\$token' is undefined.\n"
-	    if( $self->{'debug'} & 128 );
-	$self->put_raw('\\'.$token.' ') if ( not $self->{'ignore:p'});
+    } elsif ($token eq '---') {
+      $this->put('&mdash;');
+    } elsif ($token eq '--') {
+      $this->put_raw('&ndash;');
+    }
+    elsif ( $token eq '%' ) { # comments
+      s/^.*\n[ \t]*//o;
+    } elsif ( $token eq '&' ) { # next column or special character
+      if ( m/^((#x?[0-9]{1,3})|[a-z]+);/o ) {
+	$_ = $';
+	$this->put_raw('&',$&);
+      } else {
+	$this->put_raw('</td><td>');
       }
-    }
-    elsif ($token eq '---')
-    { $self->put_raw('&mdash;');
-    }
-    elsif ($token eq '--')
-    { $self->put_raw('&ndash;');
-    }
-    elsif ( $token eq '%' ) # comments
-    { s/^.*\n[ \t]*//o;
-    }
-    elsif ( $token eq '&' ) # next column
-    { if ( m/^((#[0-9][0-9][0-9])|amp|quot|lt|gt);/o )
-      { $_ = $';
-	$self->put_raw('&'.$&);
-      }
-      else
-      { $self->put_raw('</td><td>'); }
-    }
-    elsif ( $token eq '^' ) # superscript
-    { my $a;
+    } elsif ( $token eq '^' ) { # superscript
+      my $a;
       ($a,$_) = get_arg('^',$_);
-      $self->put_raw("<sup>$a</sup>");
-    }
-    elsif ( $token eq '_' ) # subscript
-    { my $a;
+      $_ = "<sup>$a</sup>$_";
+    } elsif ( $token eq '_' ) { # subscript
+      my $a;
       ($a,$_) = get_arg('_',$_);
-      $self->put_raw("<sub>$a</sub>");
-    }
-    elsif ( $token eq '~' )
-    { $self->put_raw('&nbsp;');
-    }
-    elsif ( $token eq '{' )
-    { $self->begingroup();
-    }
-    elsif ( $token eq '}' )
-    { $self->put_raw($self->endgroup());
+      $_ = "<sub>$a</sub>$_";
+    } elsif ( $token eq '~' ) {
+      $this->put_raw('&nbsp;');
+    } elsif ( $token eq '{' ) {
+      $this->begingroup();
+    } elsif ( $token eq '}' ) {
+      $this->put_raw($this->endgroup());
+    } elsif ( $token eq '\'' ) {
+      if (m/^'/) { #'
+	$_ = $';
+	$this->put_raw('&rdquo;');
+      } else {
+	$this->put_raw('&rsquo;');
+      }
+    } elsif ( $token eq '`' ) {
+      if (m/^`/) { #`
+	$_ = $';
+	$this->put_raw('&ldquo;');
+      } else {
+	$this->put_raw('&lsquo;');
+      }
     }
   }
-  return $self->finish($_);
+  return $this->finish($_);
 }
 
 #------------------------------------------------------------------------------
@@ -503,7 +592,8 @@ sub get_arg
 
   return ($&,$') if ( $arg =~ m/^[^{}\\]/oi );
   return ($&,$') if ( $arg =~ m/^\\([^a-z@]|[a-z@]+)/oi );
-  die "wrong start of args: $arg\n" if (substr($arg,0,1)ne '{');
+  die "Wrong start of args for $mac: $arg\n" if substr($arg,0,1) ne '{';
+
   $arg     = substr($arg,1);
   my $n    = 1;
   local $_ = '';
@@ -555,7 +645,7 @@ sub get_dimen
   while ( s/^%.*//go ) { s/^\s*//go; }
   die "missing data" if ( $_ eq '' );
   return ($1,$') if ( m/^([-]?\s*(\d+|\d+\.\d*|\.\d+)\s*(pt|mm|cm|dd|sp|in))\s*/o );
-  die "syntax error";
+  die "syntax error\n";
 }
 
 #------------------------------------------------------------------------------
@@ -566,43 +656,43 @@ sub get_dimen
 #
 #
 sub section
-{ my $self   = shift;
+{ my $this   = shift;
   my $name   = shift;
   my $level  = shift;
   my $title  = shift;
   my $post   = shift;
 
   $level = $SectionLevel{$level} || 1;
-  print STDERR '.' if $self->{debug} & 1;
+  print STDERR '.' if $this->{debug} & 1;
   if ( not defined($name) )
-  { $self->{'SectionNumber'}[$level]++;
+  { $this->{'SectionNumber'}[$level]++;
     for ( my $i = $level + 1; $i < 10; $i++ )
-    { $self->{'SectionNumber'}[$i] = 0}
+    { $this->{'SectionNumber'}[$i] = 0}
     $name = $opt{'prefix'};
-    for ( my $i = $self->{'SectionMinNo'}; $i <= $level; $i++ )
-    { $name .= '_'.$self->{'SectionNumber'}[$i]; }
+    for ( my $i = $this->{'SectionMinNo'}; $i <= $level; $i++ )
+    { $name .= '_'.$this->{'SectionNumber'}[$i]; }
     $name .= $opt{'ext'};
   }
   $name =~ s/&#095;/_/go;
 
   { my $tr = new L2H();
     $title = $tr->LaTeX2HTML($title);
-    $self->{'title:'. $name} = $title;
-    $self->{'current_label'} = $title;
+    $this->{'title:'. $name} = $title;
+    $this->{'current_label'} = $title;
   }
 
-  if ( $self->{'ignore:p'} )
+  if ( $this->{'ignore:p'} )
   { $name  = undef;
     $level = 0
   }
 
-  $self->redirect($name, $level);
-  $self->put($post) if defined $post;
+  $this->redirect($name, $level);
+  $this->put($post) if defined $post;
 
-  $self->{TOC} .= "<div class=\"toc$level\"><a href=\"$self->{page}\">$title</a></div>\n";
-  $self->{NAV} .= "<div class=\"toc$level\"><a href=\"$self->{page}\" target=\"content\">$title</a></div>\n";
+  $this->{TOC} .= "<div class=\"toc$level\"><a href=\"$this->{page}\">$title</a></div>\n";
+  $this->{NAV} .= "<div class=\"toc$level\"><a href=\"$this->{page}\" target=\"content\">$title</a></div>\n";
 
-  return '';
+  return "<h$level>$title</h$level>";
 }
 
 #------------------------------------------------------------------------------
@@ -611,12 +701,12 @@ sub section
 # Returns:	
 #
 sub footnote
-{ my ($self,$text) = @_;
+{ my ($this,$text) = @_;
   my $l2h = new L2H();
-  my $no = $self->{'footnote_number'}++;
+  my $no = $this->{'footnote_number'}++;
 
   $text = $l2h->LaTeX2HTML($text);
-  $self->{footnotes} .= "<small><sup><a name='FN$no'>$no</a></sup> $text</small><br />";
+  $this->{footnotes} .= "<small><sup><a name='FN$no'>$no</a></sup> $text</small><br />";
   return "<sup><small><a href='#FN$no'>$no</a></small></sup>";
 }
 
@@ -628,21 +718,21 @@ sub footnote
 #
 #
 sub label
-{ my    $self  = shift;
+{ my    $this  = shift;
   my    $label = shift;
   my    $tag   = shift;
-  local $_     = $self->{'page'};
+  local $_     = $this->{'page'};
   s/\.html?$//o;
   s/_/\&\#095;/go;
-  $self->{'label_text:'.$label} = $self->{'current_label'};
+  $this->{'label_text:'.$label} = $this->{'current_label'};
   if ( $tag )
-  { local $_ = 'tag'.($self->{'label_number'}++);
-    $self->{'label_url:'.$label} = $self->{'page'}.'#'.$_;
-    $self->{'label_url:'.$label} =~ s/_/\&\#095;/go;
-    return "<a name=\"$_\">";
+  { local $_ = 'tag'.($this->{'label_number'}++);
+    $this->{'label_url:'.$label} = $this->{'page'}.'#'.$_;
+    $this->{'label_url:'.$label} =~ s/_/\&\#095;/go;
+    return "<a name=\"$_\"/>";
   }
-  $self->{'label_url:'.$label} = $self->{'page'};
-  $self->{'label_url:'.$label} =~ s/_/\&\#095;/go;
+  $this->{'label_url:'.$label} = $this->{'page'};
+  $this->{'label_url:'.$label} =~ s/_/\&\#095;/go;
   return '';
 }
 
@@ -654,14 +744,14 @@ sub label
 #
 #
 sub Index
-{ my $self  = shift;
+{ my $this  = shift;
   my $key   = shift;
 
-  return '' if ( $self->{'message:p'} or $key eq '' );
+  return '' if ( $this->{'message:p'} or $key eq '' );
 
-  my $i     = $self->{'index_number'}++;
-  my $page  = $self->{'page'};
-  my $title = $self->{'title:'.$page} || '';
+  my $i     = $this->{'index_number'}++;
+  my $page  = $this->{'page'};
+  my $title = $this->{'title:'.$page} || '';
   local $_  = $key;
 
   if ( $key =~ m/@/o )
@@ -670,22 +760,11 @@ sub Index
   }
   $_ = lc($_);
 
-  $self->{'index_name:'.$_} = $key;
-  $self->{'INDEX'}{$_} .= ", " if ( defined ($self->{'INDEX'}{$_}) and
-				    $self->{'INDEX'}{$_} ne '' );
-  $self->{'INDEX'}{$_} .= "<a href='$page#IDX$i'>$title</a>";
+  $this->{'index_name:'.$_} = $key;
+  $this->{'INDEX'}{$_} .= ", " if ( defined ($this->{'INDEX'}{$_}) and
+				    $this->{'INDEX'}{$_} ne '' );
+  $this->{'INDEX'}{$_} .= "<a href='$page#IDX$i'>$title</a>";
   return "<a name='IDX$i'>";
-}
-
-#------------------------------------------------------------------------------
-# Function:	sf
-# Description:	
-#		
-# Returns:	
-#
-#
-sub sf
-{ return '<font face="sans-serif">'.join('',@_).'</font>';
 }
 
 1;

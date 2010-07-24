@@ -1,0 +1,228 @@
+
+use L2H;
+
+#------------------------------------------------------------------------------
+# Variable:	%accented
+# Description:	
+#
+my %accented =
+  ( '"a' => 'ä',    '"A' => 'Ä',
+    '"o' => 'ö',    '"O' => 'Ö',
+    '"u' => 'ü',    '"U' => 'Ü',
+    '"i' => 'ï',    '"I' => 'Ï',
+    '"e' => 'ë',    '"E' => 'Ë',
+    '"y' => 'ÿ',    '"Y' => 'ÿ',
+    '~n' => 'ñ',    '~N' => 'Ñ',
+    '~a' => 'ã',    '~A' => 'Ã',
+    '~o' => 'õ',    '~O' => 'Õ',
+    '`a' => 'à',    '`A' => 'À',
+    '`o' => 'ò',    '`O' => 'Ò',
+    '`e' => 'è',    '`E' => 'È',
+    '`i' => 'ì',    '`I' => 'Ì',
+    '`a' => 'à',    '`A' => 'À',
+    'cc' => 'ç',    'cC' => 'Ç',
+    '^a' => 'â',    '^A' => 'Â',
+    '^e' => 'ê',    '^E' => 'Ê',
+    '^i' => 'î',    '^I' => 'Î',
+    '^o' => 'ô',    '^O' => 'Ô',
+    '^u' => 'û',    '^U' => 'Û',
+  );
+
+sub findFile {
+  my $dir      = shift;
+  my $basename = shift;
+  my $file     = "$dir/$basename";
+  die ("file not found: $basename\n") if not -e $file;
+  return $file;
+}
+
+newcommand('TeX',
+	   text => '<span class="t">T</span><span class="e">e</span>X');
+
+newcommand('input',
+	   arity      => '1',
+	   text	      => sub {
+	     my $this = shift;
+	     my $file = shift;
+	     my $dir  = "src/".$L2H::Macro{'CURRENTDIR'}[2]; # TODO
+	     $file    = findFile($dir,$file);
+	     local $/ = undef;
+	     my $fd = new FileHandle($file, 'r') || die "$file: $!\n";
+	     local $_ = <$fd>;
+	     $fd-> close();
+	     return $_;
+	   });
+newcommand('endinput',		
+	   text => sub{ $_ = ''; return ''; });
+
+newcommand('par',
+	   text => "\n<p>\n");
+newcommand('begingroup',
+	   text => sub { return shift->begingroup(); });
+newcommand('endgroup',
+	   text => sub{return shift->endgroup;});
+
+newcommand('relax');
+newcommand('global');
+newcommand('ifx');
+newcommand('ifnum');
+newcommand('else');
+newcommand('fi');
+newcommand('char',
+	   text => sub {
+	     s/^\s*//o;
+	     my $e = substr($_,0,1);
+	     if ( m/^"[0-9a-f][0-9a-f]/i )
+	     { my $a = $&;
+               $_    = $';
+               return "\&#x$a;";
+	     }
+	     elsif ( m/^`(.)/i ) #`
+	     { my $a = sprintf("%x",ord($1));
+               $_    = $';
+               return "\&#x$a;";
+	     }
+	     else
+	     { $e = substr($_,0,1);
+	       print STDERR "*** \\char$e could not be parsed\n";
+	     }
+	     return '';
+	   });
+
+newcommand('def',
+	   arity => 1,
+	   text => sub
+	   { my $self = shift;
+#	     my $tag = shift;
+	     my $i = index($_,'{');
+#	     my $pattern = substr($_,0,$i-1);
+	     my $a;
+	     ($a,$_) = get_arg('def',substr($_,$i));
+	     #TODO make \def work
+	     return '';
+	   });
+
+newcommand('let',
+	   arity => 1,
+	   text => sub
+	   { my $self = shift;
+#	     my $tag = shift;
+	     s/^=//o;
+	     my $a;
+	     ($a,$_) = get_arg('let',$_);
+	     #TODO make \let work
+	     return '';
+	   });
+
+
+newcommand('footnotesize',
+	   text => sub{ return shift->in_group('<font size="-2">',
+					       '</font>'); });
+
+newcommand('-',			text => '&shy;');
+newcommand("\$",		text => '&#036;');
+newcommand('&',			text => '&amp;');
+newcommand(',',			text => '&thinsp;');
+newcommand('/',			text => '');
+newcommand('{',			text => '&#123;');
+newcommand('|',			text => '');
+newcommand('}',			text => '&#125;');
+newcommand('%',			text => '&#037;');
+newcommand('~',
+	   arity => 1,
+	   text => sub
+	   { local $_ = '~'.$_[1];
+	     return ( $accented{$_} || $_ );
+	   });
+newcommand('\'',
+	   arity => 1,
+	   text => sub
+	   { local $_ = '\''.$_[1];
+	     return ( $accented{$_} || $_ );
+	   });
+
+newcommand('"',
+	   arity => 1,
+	   text => sub
+	   { local $_ = '"'.$_[1];
+	     return ( $accented{$_} || $_ );
+	   });
+newcommand('^',
+	   arity => 1,
+	   text => sub
+	   { local $_ = $_[1];
+	     return ( $accented{'^'.$_} || '&#094;'.$_ );
+	   });
+newcommand('c',
+	   arity => 1,
+	   text => sub
+	   { local $_ = $_[1];
+	     return ( $accented{'c'.$_[1]} || $_ );
+	   });
+
+newcommand('i',
+	   text => 'i');
+newcommand('geq',	text => ' &ge; ');
+newcommand('leq',       text => ' &le; ');
+newcommand('copyright', text => '&copy;');
+newcommand('dots',      text => '&hellip;');
+
+newcommand('cdot',	text => '·');
+newcommand('AA',        text => 'Å');
+newcommand('AE',	text => 'Æ');
+newcommand('o',         text => '&oslash;');
+newcommand('O',         text => '&Oslash;');
+newcommand('ss',	text => 'ß');
+newcommand('_',  	text => '&#095;');
+newcommand('aa',	text => 'å');
+newcommand('ae',	text => 'æ');
+newcommand('infty',	text => '&infin;');
+newcommand('mid',	text => '|');
+newcommand('neg',	text => '¬');
+newcommand('pm',	text => '±');
+newcommand('pounds',	text => '£');
+newcommand('heartsuit',	text => '&hearts;');
+newcommand('spadesuit',	text => '&spades;');
+newcommand('clubsuit',	text => '&clubss;');
+newcommand('diamondsuit',	text => '&diams;');
+
+newcommand('hss');
+newcommand('vss');
+newcommand('vfill',
+	   text => '<br><br>');
+newcommand('vspace',
+	   text => sub
+	   { my $self = shift;
+	     my $a;
+	     if ( m/^\s*\*\s*/o ) { $_ = $'; }
+	     ($a,$_) = get_arg('hspace',$_);
+	     s/^\s//go;
+	     return '';
+	   } );
+
+newcommand('vbox',		 arity => 1);
+
+
+newcommand('setlanguage',  arity => 1, text	 => '\def\language{#1}');
+newcommand('selectlanguage',
+	   arity		   => 1,
+	   text	 => sub { shift;
+			  local $_ = shift;
+			  $_ = $languageMapping{$_} if exists
+			      $languageMapping{$_};
+			  return "\\def\\language{$_}";
+	   });
+newcommand('english',	   text	 => 'en');
+newcommand('american',	   text	 => 'en-us');
+newcommand('british',	   text	 => 'en-gb');
+newcommand('german',	   text	 => 'de');
+newcommand('ngerman',	   text	 => 'de');
+newcommand('french',	   text	 => 'fr');
+
+
+	   
+1;
+#------------------------------------------------------------------------------
+# Local Variables: 
+# mode: perl
+# End: 

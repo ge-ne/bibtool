@@ -1,0 +1,35 @@
+
+newcommand('printindex',
+	   code => sub
+	   { my $self = shift;
+	     my $res  = '<small><dl>';
+	     my $trans = new L2H;
+	     local $_;
+	     foreach $_ (sort keys %{$self->{'INDEX'}})
+	     { my $key = $trans->LaTeX2HTML($self->{'index_name:'.$_});
+	       $res .= '<dt>'.$key.'<dd>'.$self->{'INDEX'}{$_};
+	     }
+	     $res .= '</dl></small>';
+	     $self->section($self->opt('prefix').'&#095;idx'.$self->opt('ext'),
+			    'index',
+			    'Index',
+			    $res);
+	     return '';
+	   });
+
+
+newcommand('see',
+	   arity => 2,
+	   text => '\emph{\seename} #1');
+newcommand('seealso',
+	   arity => 2,
+	   text => '\emph{\alsoname} #1');
+newcommand('seename',
+	   text => 'see');
+newcommand('alsoname',
+	   text => 'see also');
+1;
+#------------------------------------------------------------------------------
+# Local Variables: 
+# mode: perl
+# End: 

@@ -1,0 +1,11 @@
+
+newcommand('glqq',
+  text => '»');
+newcommand('grqq',
+  text => '«');
+
+1;
+#------------------------------------------------------------------------------
+# Local Variables: 
+# mode: perl
+# End: 
