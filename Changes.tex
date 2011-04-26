@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: Changes.tex,v 1.1 2010-05-31 16:15:40 gene Exp $
+%% $Id: Changes.tex,v 1.2 2011-04-26 18:01:18 gene Exp $
 %%*****************************************************************************
 %% Author: Gerd Neugebauer
 %%-----------------------------------------------------------------------------
@@ -30,10 +30,26 @@
 \begin{Developers}
   \Developer{gene}{Gerd Neugebauer}{gene@gerd-neugebauer.de}
 \end{Developers}
+
+ % ===================================================================== -->
+ \begin{Release}{2.52}{April 26, 2011}
+  \begin{Fix}{gene}
+    A few compiler warnings have been fixed.
+  \end{Fix}
+ \end{Release}
+
+ % ===================================================================== -->
+ \begin{Release}{2.52}{May 12, 2010}
+  \begin{Fix}{gene}
+    Bugfix in \File{names.c}: The classification of name parts
+    erroneously has used a wrong translation under certain circumstances.
+  \end{Fix}
+ \end{Release}
+
  % ===================================================================== -->
  \begin{Release}{2.50}{May 12, 2010}
   \begin{Fix}{gene}
-    Bugfix in \File{names.c}: The classification of name parts erroursely has
+    Bugfix in \File{names.c}: The classification of name parts erroneously has
     used a wrong translation under certain circumstances.
   \end{Fix}
  \end{Release}
@@ -41,7 +57,7 @@
  % ===================================================================== -->
  \begin{Release}{2.50}{February 6, 2010}
   \begin{Fix}{gene}
-    Bugfix in \File{key.c}: The classification of name parts erroursely has
+    Bugfix in \File{key.c}: The classification of name parts erroneously has
     considered, to be a first name under certain circumstances. This has been
     improved.
   \end{Fix}
@@ -58,7 +74,7 @@
     enables the expansion of fields inherited via the crossref mechanism.
   \end{New}
   \begin{Fix}{gene}
-    Bugfix in \File{names.c}: The classification of name parts erroursely has
+    Bugfix in \File{names.c}: The classification of name parts erroneously has
     considered the initials V., I., and X. to be Roman numerals belonging to
     the jr part under special circumstances. This has been improved.
   \end{Fix}
@@ -109,7 +125,7 @@
  %\begin{Release}{2.48}{February 8, 2004}
    \begin{Update}{gene}
      \BibTcl{} has been taken out of the default making since it has
-     caused troubles on several maschines.
+     caused troubles on several machines.
    \end{Update}
    \begin{Update}{gene}
      The printing of Strings honors now the dependencies that
@@ -130,15 +146,15 @@
   \end{Update}
   \begin{New}{gene}
     The boolean resource \rsc{select.crossrefs} has been introduced.
-    This resource can be used to force crossreferenced entries for
-    selected entrie to be included in the output.
+    This resource can be used to force cross-referenced entries for
+    selected entries to be included in the output.
   \end{New}
   \begin{Update}{gene}
     Feature: deleted entries are not reported as "`written"' by the
     statistics any more.
   \end{Update}
   \begin{Fix}{gene}
-    Bugfix: Bug in extracting by aux file. Crossrefed entires where
+    Bugfix: Bug in extracting by aux file. Crossrefed entries where
     sometimes ignored.
   \end{Fix}
   \begin{Fix}{gene}
@@ -147,7 +163,7 @@
   \end{Fix}
   \begin{Fix}{gene}
     Bugfix: Bug in expansion introduced in 2.47 has been fixed. An error
-    occured when expanding macros.
+    occurred when expanding macros.
   \end{Fix}
   \begin{New}{gene}
     The resource loading with \rsc{resource} now issues a warning when
@@ -163,7 +179,7 @@
   \end{Fix}
   \begin{Fix}{gene}
     Bugfix: \BibTool{} has ignored \rsc{preserve.key.case} for
-    crossreferenced keys. This has been fixed.
+    cross-referenced keys. This has been fixed.
   \end{Fix}
   \begin{Fix}{gene}
     Bugfix: Some compilers don't like it if static strings are modified. Thus
@@ -208,7 +224,7 @@
   \begin{New}{gene}
     Resource \rsc{sort.cased} introduced to allow the sorting order to
     take advantage of upper and lower case characters. The default is false
-    which is the previous behaviour.
+    which is the previous behavior.
   \end{New}
  \end{Release}
 
@@ -238,7 +254,7 @@
  % ===================================================================== -->
  \begin{Release}{2.44}{April 7 1999}
   \begin{Fix}{gene}
-    Key generation fixed to expand \BibTeX{} strings. The current behaviour is
+    Key generation fixed to expand \BibTeX{} strings. The current behavior is
     likely to change again in a future release.
   \end{Fix}
   \begin{Update}{gene}
@@ -366,7 +382,7 @@
   \end{New}
   \begin{New}{gene}
     New resource \rsc{print.entry.types} introduced. This resource
-    controlls the entry types and the order in which they are printed.
+    controls the entry types and the order in which they are printed.
     In fact the macro printing facility is obsolete with this new
     resource.
   \end{New}
