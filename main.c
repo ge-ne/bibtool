@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: main.c,v 1.7 2010-01-05 14:06:06 gene Exp $
+** $Id: main.c,v 1.8 2011-04-26 17:09:50 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -157,7 +157,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2010-01-05 14:06:06 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2011-04-26 17:09:50 $",
     "gerd@informatik.uni-koblenz.de"
   };
 
@@ -249,7 +249,7 @@ static void usage(fullp)			   /*			     */
 **		files to be processed by \BibTool.
 **
 **		This function is called to push an string into the pipe.
-**		If neccesary the array has to be allocated or enlarged.
+**		If necessary the array has to be allocated or enlarged.
 **		This is done in larger junks to avoid lots of calls to
 **		|realloc()|.
 ** Arguments:
