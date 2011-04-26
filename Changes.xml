@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!--  $Id: Changes.xml,v 1.7 2010-05-12 10:49:15 gene Exp $                -->
+<!--  $Id: Changes.xml,v 1.8 2011-04-26 17:43:35 gene Exp $                -->
 <!-- ====================================================================== -->
 
 <changes>
@@ -9,22 +9,30 @@
  </developers>
 
  <!-- ===================================================================== -->
+ <release version="2.52" date="April 26, 2011">
+  <action dev="gene" type="fix">
+	A few compiler warnings have been fixed.
+  </action>
+ </release>
+
+ <!-- ===================================================================== -->
  <release version="2.51" date="May 12, 2010">
   <action dev="gene" type="fix">
-	Bugfix in names.c: The classification of name parts erroursely has
-	used a wrong translation under certain circumstances.
+        Bugfix in <code>names.c</code>: The classification of name parts
+        erroneously has used a wrong translation under certain circumstances.
   </action>
  </release>
 
  <!-- ===================================================================== -->
  <release version="2.50" date="February 6, 2010">
   <action dev="gene" type="fix">
-	Bugfix in key.c: The classification of name parts erroursely has
-	considered , to be a first name under certain circumstances. This has
-	been improved.
+	Bugfix in <code>key.c</code>: The classification of name parts
+	erroneously has considered , to be a first name under certain
+	circumstances. This has	been improved.
   </action>
   <action dev="gene" type="fix">
-	Improvement in names.c and key.c concerning printing in debug mode.
+	Improvement in <code>names.c</code> and <code>key.c</code> concerning
+	printing in debug mode.
   </action>
  </release>
 
@@ -35,13 +43,14 @@
 	enables the expansion of fields inherited via the crossref
 	mechanism.
   </action>
- <release version="2.49" date="January 6, 2010">
   <action dev="gene" type="fix">
-	Bugfix in names.c: The classification of name parts erroursely has
-	considered the initials V., I., and X. to be Roman numerals belonging
-	to the jr part under special circumstances. This has been improved.
+	Bugfix in <code>names.c</code>: The classification of name parts 
+	erroneously has considered the initials V., I., and X. to be Roman
+	numerals belonging to the jr part under special circumstances.
+	This has been improved.
   </action>
  </release>
+
 
  <!-- ===================================================================== -->
  <release version="2.49" date="January 5, 2010">
@@ -59,8 +68,8 @@
 	mechanism.
   </action>
   <action dev="gene" type="fix">
-	Bugfix in print.c: Some national characters have been lost. It
-	was necessary to use an unsigned character as elsewhere.
+	Bugfix in <code>print.c</code>: Some national characters have been lost.
+	It was necessary to use an unsigned character as elsewhere.
   </action>
  </release>
 
@@ -72,11 +81,12 @@
 	even if it contradicts the rules of BibTeX.
   </action>
   <action dev="gene" type="add">
-	makefile.in for configure extended to support the variable
+	<code>makefile.in</code> for configure extended to support the variable
 	<tt>INSTALLPREFIX</tt> to be prepended to installation directories.
   </action>
   <action dev="gene" type="fix">
-	Bugfix in main.c: Some compilers didn't like the method true().
+	Bugfix in <code>main.c</code>: Some compilers didn't like the method
+	<code>true()</code>.
   </action>
   <action dev="gene" type="fix">
 	Bugfix for kpathsea under Suse 9.1.
@@ -90,7 +100,7 @@
  <release version="2.48" date="February 8, 2004">
   <action dev="gene" type="change">
 	BibTcl has been taken out of the default making since it has
-	caused troubles on several maschines.
+	caused troubles on several machines.
   </action>
   <action dev="gene" type="change">
 	The printing of Strings honors now the dependencies that
@@ -113,15 +123,15 @@
   </action>
   <action dev="gene" type="add">
         The boolean resource <code>select.crossrefs</code> has been
-        introduced. This resource can be used to force crossreferenced
-        entries for selected entrie to be included in the output.
+        introduced. This resource can be used to force cross-referenced
+        entries for selected entry to be included in the output.
   </action>
   <action dev="gene" type="change">
 	Feature: deleted entries are not reported as "written" by the
 	statistics any more.
   </action>
   <action dev="gene" type="fix">
-	Bugfix: Bug in extracting by aux file. Crossrefed entires
+	Bugfix: Bug in extracting by aux file. Crossrefed entries
 	where sometimes ignored.
   </action>
   <action dev="gene" type="fix">
@@ -131,7 +141,7 @@
   </action>
   <action dev="gene" type="fix">
 	Bugfix: Bug in expansion introduced in 2.47 has been fixed. An
-	error occured when expanding macros.
+	error occurred when expanding macros.
   </action>
   <action dev="gene" type="add">
 	The resource loading with <code>resource</code> now issues a
@@ -148,7 +158,7 @@
   </action>
   <action dev="gene" type="fix">
 	Bugfix: BibTool has ignored <code>preserve.key.case</code> for
-	crossreferenced keys. This has been fixed.
+	cross-referenced keys. This has been fixed.
   </action>
   <action dev="gene" type="fix">
 	Bugfix: Some compilers don't like it if static strings are
@@ -176,8 +186,7 @@
   </action>
   <action dev="gene" type="fix">
 	Bugfix: BibTool looped when a malformed string of some kind
-	was given to expansion. This has been fixed in
-	<code>expand()</code>.
+	was given to expansion. This has been fixed in <code>expand()</code>.
   </action>
   <action dev="gene" type="fix">
 	Bugfix: BibTool crashed when called with empty format string
@@ -197,7 +206,7 @@
 	Resource <code>sort.cased</code> introduced to allow the
 	sorting order to take advantage of upper and lower case
 	characters. The default is false which is the previous
-	behaviour.
+	behavior.
   </action>
  </release>
 
@@ -229,7 +238,7 @@
  <release version="2.44" date="April 7 1999">
   <action dev="gene" type="fix">
 	Key generation fixed to expand BibTeX strings. The current
-	behaviour is likely to change again in a future release.
+	behavior is likely to change again in a future release.
   </action>
   <action dev="gene" type="update">
 	Updated to work with kpathsea 3.1 (partially).
@@ -255,7 +264,7 @@
   <action dev="gene" type="fix">
 	Bugfix in the TeX reading routines: spaces after active
 	characters are not ignored. All characters are treated as
-	unsigned. This seems to be preferrable for extended ASCII
+	unsigned. This seems to be preferable for extended ASCII
 	characters.
   </action>
   <action dev="gene" type="update">
@@ -272,7 +281,7 @@
 	The configuration of BibTcl is now done automatically.
   </action>
   <action dev="gene" type="add">
-	New datatype introduced: <code>Uchar</code> will hold UniCode
+	New data type introduced: <code>Uchar</code> will hold UniCode
 	characters in a future release. I just have to find regexp
 	routines to work with UTF-8.
   </action>
