@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: parse.c,v 1.7 2010-01-05 14:06:06 gene Exp $
+** $Id: parse.c,v 1.8 2011-04-26 17:43:01 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2010 Gerd Neugebauer
+** (c) 1996-2011 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -535,7 +535,7 @@ static void parse_number()			   /*			     */
 **___________________________________________________"			     */
 static int parse_string(quotep)			   /*			     */
   int   quotep;				   	   /*			     */
-{ Uchar c;					   /*                        */
+{ char  c;					   /*                        */
   int   left;				   	   /*			     */
   int   start_flno = flno;			   /*                        */
 						   /*			     */
@@ -559,7 +559,7 @@ static int parse_string(quotep)			   /*			     */
     }						   /*			     */
   } while ( c != '"' );				   /*			     */
 						   /*			     */
-  if ( left ) Warning("Unbalenced parenthesis");   /*			     */
+  if ( left ) Warning("Unbalanced parenthesis");   /*			     */
   return(TRUE);					   /*			     */
 }						   /*------------------------*/
 

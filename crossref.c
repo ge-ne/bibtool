@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: crossref.c,v 1.2 2010-01-05 14:06:06 gene Exp $
+** $Id: crossref.c,v 1.3 2011-04-26 17:43:01 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 2007-2010 Gerd Neugebauer
+** (c) 2007-2011 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -75,7 +75,7 @@ int expand_crossref(db,rec)		   	   /*                        */
     t = *++hp;					   /*                        */
     t++;				   	   /*			     */
     (void)sp_open(t);				   /* Try to extract	     */
-    if ( (s = SParseSymbol(&t)) == (Uchar)NULL )   /*  the crossref as symbol*/
+    if ( (s = SParseSymbol(&t)) == (Uchar*)NULL )  /*  the crossref as symbol*/
     { return FALSE; }				   /*			     */
 						   /*			     */
     if ( (r = db_find(db,s)) == (Record)NULL )	   /*			     */
@@ -87,11 +87,11 @@ int expand_crossref(db,rec)		   	   /*                        */
 	  i>0;		   			   /*			     */
 	  i-=2 )			   	   /*			     */
     {						   /*                        */
-      s	= *hp++;
-      t	= *hp++;
-      if (t != (Uchar)NULL)
-      { provide_to_record(rec,s,t);
-      }
+      s	= *hp++;                                   /*                        */
+      t	= *hp++;                                   /*                        */
+      if (t != (Uchar*)NULL)                       /*                        */
+      { provide_to_record(rec,s,t);                /*                        */
+      }                                            /*                        */
     }						   /*			     */
     						   /*                        */
   }						   /*                        */

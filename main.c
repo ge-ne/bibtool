@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: main.c,v 1.8 2011-04-26 17:09:50 gene Exp $
+** $Id: main.c,v 1.9 2011-04-26 17:43:01 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2010 Gerd Neugebauer
+** (c) 1996-2011 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -30,7 +30,7 @@
 **	  \texttt{save\_macro\_file()}\\
 **	  \texttt{save\_output\_file()}\\
 **	\end{quote}
-**	The arguments and the expected behaviour of these functions is
+**	The arguments and the expected behavior of these functions is
 **	described below.
 **
 **	If you are trying to understand the implementation of
@@ -157,7 +157,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2011-04-26 17:09:50 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2011-04-26 17:43:01 $",
     "gerd@informatik.uni-koblenz.de"
   };
 
@@ -787,10 +787,10 @@ static int update_crossref(db,rec)		   /*			     */
 						   /*			     */
   t = *++hp; t++;				   /*			     */
   (void)sp_open(t);				   /* Try to extract	     */
-  if ( (s = SParseSymbol(&t)) == (Uchar)NULL )	   /*  the crossref as symbol*/
+  if ( (s = SParseSymbol(&t)) == (Uchar*)NULL )	   /*  the crossref as symbol*/
   { return 0; }					   /*			     */
 						   /*			     */
-  if ( (s = db_new_key(db,s)) == (Uchar)NULL )	   /*			     */
+  if ( (s = db_new_key(db,s)) == (Uchar*)NULL )	   /*			     */
   { ERROR2("Crossref not found: ",(char*)s);	   /*			     */
     return 0;					   /*			     */
   }						   /*			     */
