@@ -41,6 +41,7 @@ least an earlier version has been compiled successfully on them.)
 	Sun3/SunOS4.1.1		cc
 	HP 9000/4??/HP UX ??	cc
 	Atari ST/TOS 1.2	Laser C, Pure C
+	Windows 7               Cygwin
 
 I   have been informed  that   BibTool has  been  compiled  on the following
 machines/operating systems (and maybe some more that I have forgotten to add
@@ -51,11 +52,12 @@ to this list;-):
 	Amiga			SAS/C
 	DEC Alpha/OSF/1		
 	HP 9000/778/HP-UX 10.20 gcc 2.7.2.3
+	IBM PC 486DX2-66, OS/2 Merlin 4.0 FixPack #5. EMX v.0.9c+GCC+dmake 4.0
+        MacOs X
 	MIPS/Ultrix4.4		gcc 2.4.5
 	MIPS/RISCos 4.52	gcc
 	MSDOS,OS/2,Win32,WinNT  emx, dj, Watcom C, MSC
 	MS-Windows 4.0, Sp 6	Cygwin
-	IBM PC 486DX2-66, OS/2 Merlin 4.0 FixPack #5. EMX v.0.9c+GCC+dmake 4.0
 	NeXT			
 	SGI Indigo2/IRIX 6.2	cc
 
@@ -153,7 +155,7 @@ To install BibTool you can try to apply the following instructions:
     more than once.
 
     This might cause  problems if the makedepend  command does not fit the C
-    compiler used  (e.g.  proprietary  makedpend  together  with gcc).  This
+    compiler used  (e.g. proprietary  makedepend  together  with gcc).  This
     results in unknown files to  show up.  In  this case also skip this step
     and revert to the original makefile.
 
@@ -180,8 +182,8 @@ To install BibTool you can try to apply the following instructions:
 
 	make clean
 
- H  To prepare the documentation contained  in the subdirectory Doc  go into
-    the Doc subdirectory and run
+ H  To prepare the documentation contained  in the sub-directory Doc go into
+    the Doc sub-directory and run
 
 	latex   bibtool
 	latex   bibtool
@@ -352,18 +354,18 @@ General instructions:
     include/bibtool/bibtool.h to fit your C compiler and operating system.
 
  B  Compile all .c files in  the base directory.  The macros REGEX and maybe
-    MSDOS should be defined.  The subdirectory regex-0.12 should be included
+    MSDOS should be defined. The sub-directory regex-0.12 should be included
     in the include search path.  A typical compile command looks like
 
 	cc main.c -c -o main.o -DREGEX -DMSDOS -Iregex-0.12 -I.
 
- C  Compile regex.c in the regex-0.12 subdirectory  and move the object file
+ C  Compile regex.c in the regex-0.12 sub-directory  and move the object file
     into the base directory (The one containing this file).
 
  D  Link together all object files to get the executable bibtool.
     (maybe include the kpathsea library; see section 6)
 
- E  Run  LaTeX  on  bibtool.tex  in  the  Doc  subdirectory  to  produce the
+ E  Run  LaTeX  on  bibtool.tex  in  the Doc  sub-directory  to  produce the
     documentation.  (see step H in section 2 for details)
 
 
@@ -439,7 +441,7 @@ First of all a small list of assumptions that I use.
 
 The C interface to  BibTool is described in the  document Doc/c_lib.dvi.  To
 create this  document run LaTeX and makeindex  on the  file c_lib.tex in the
-Doc subdirectory:
+Doc sub-directory:
 
 	latex c_lib
 	makeindex c_lib
@@ -456,5 +458,5 @@ Attention: This documentation is experimental.  Some things are likely to be
 ========================
 
 The  Tcl/Tk interface  is  called  BibTcl.  It is  contained  in  the BibTcl
-subdirectory. See the file README in this directory for details.
+sub-directory. See the file README in this directory for details.
 
