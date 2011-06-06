@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: crossref.c,v 1.3 2011-04-26 17:43:01 gene Exp $
+** $Id: crossref.c,v 1.4 2011-06-06 18:47:35 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -75,7 +75,7 @@ int expand_crossref(db,rec)		   	   /*                        */
     t = *++hp;					   /*                        */
     t++;				   	   /*			     */
     (void)sp_open(t);				   /* Try to extract	     */
-    if ( (s = SParseSymbol(&t)) == (Uchar*)NULL )  /*  the crossref as symbol*/
+    if ( (s = SParseSymbol(&t)) == (Uchar*)0 )     /*  the crossref as symbol*/
     { return FALSE; }				   /*			     */
 						   /*			     */
     if ( (r = db_find(db,s)) == (Record)NULL )	   /*			     */
@@ -89,7 +89,7 @@ int expand_crossref(db,rec)		   	   /*                        */
     {						   /*                        */
       s	= *hp++;                                   /*                        */
       t	= *hp++;                                   /*                        */
-      if (t != (Uchar*)NULL)                       /*                        */
+      if (t != (Uchar*)0)                          /*                        */
       { provide_to_record(rec,s,t);                /*                        */
       }                                            /*                        */
     }						   /*			     */

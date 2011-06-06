@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: main.c,v 1.9 2011-04-26 17:43:01 gene Exp $
+** $Id: main.c,v 1.10 2011-06-06 18:47:35 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -157,7 +157,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2011-04-26 17:43:01 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2011-06-06 18:47:35 $",
     "gerd@informatik.uni-koblenz.de"
   };
 
@@ -787,10 +787,10 @@ static int update_crossref(db,rec)		   /*			     */
 						   /*			     */
   t = *++hp; t++;				   /*			     */
   (void)sp_open(t);				   /* Try to extract	     */
-  if ( (s = SParseSymbol(&t)) == (Uchar*)NULL )	   /*  the crossref as symbol*/
+  if ( (s = SParseSymbol(&t)) == (Uchar*)0 )	   /*  the crossref as symbol*/
   { return 0; }					   /*			     */
 						   /*			     */
-  if ( (s = db_new_key(db,s)) == (Uchar*)NULL )	   /*			     */
+  if ( (s = db_new_key(db,s)) == (Uchar*)0 )	   /*			     */
   { ERROR2("Crossref not found: ",(char*)s);	   /*			     */
     return 0;					   /*			     */
   }						   /*			     */

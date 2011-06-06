@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: parse.c,v 1.8 2011-04-26 17:43:01 gene Exp $
+** $Id: parse.c,v 1.9 2011-06-06 18:47:35 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -534,10 +534,10 @@ static void parse_number()			   /*			     */
 ** Returns:	Success status
 **___________________________________________________"			     */
 static int parse_string(quotep)			   /*			     */
-  int   quotep;				   	   /*			     */
-{ char  c;					   /*                        */
-  int   left;				   	   /*			     */
-  int   start_flno = flno;			   /*                        */
+  int quotep;				   	   /*			     */
+{ int c;					   /*                        */
+  int left;				   	   /*			     */
+  int start_flno = flno;			   /*                        */
 						   /*			     */
   left = 0;					   /*			     */
   if ( quotep ) (void)sbputchar('"',parse_sb);	   /*"			     */
@@ -547,15 +547,16 @@ static int parse_string(quotep)			   /*			     */
 	UnterminatedError("Unterminated double quote",
 			  start_flno);
 	return(FALSE);	   			   /*			     */
-      case '{':	 left++; (void)sbputchar(c,parse_sb); break;/*		     */
+      case '{':	 left++; (void)sbputchar((char)c,parse_sb); break;/*	     */
       case '}':	 if ( left--<0 )		   /*			     */
 		 { Warning("Expecting \" here"); } /*			     */
-		 (void)sbputchar(c,parse_sb); break;/*			     */
-      case '\\': (void)sbputchar(c,parse_sb); c = NextC;/*		     */
-		 (void)sbputchar(c,parse_sb); c = ' ';/*		     */
+		 (void)sbputchar((char)c,parse_sb);/*                        */
+		 break;                            /*                        */
+      case '\\': (void)sbputchar((char)c,parse_sb); c = NextC;/*	     */
+		 (void)sbputchar((char)c,parse_sb); c = ' ';/*		     */
 		 break;				   /*			     */
       case '"':	 if ( !quotep ) break;		   /*			     */
-      default:	 (void)sbputchar(c,parse_sb);	   /*			     */
+      default:	 (void)sbputchar((char)c,parse_sb);/*			     */
     }						   /*			     */
   } while ( c != '"' );				   /*			     */
 						   /*			     */
