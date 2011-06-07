@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: version.c,v 1.9 2011-06-07 20:01:06 gene Exp $
+** $Id: version.c,v 1.10 2011-06-07 20:08:19 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -24,7 +24,7 @@
 **		numbers.  In addition a postfix like |alpha| or a
 **		patchlevel like |p1| can be present.
 **___________________________________________________			     */
- char * bibtool_version = "2.52-beta";
+ char * bibtool_version = "2.52";
 
 /*-----------------------------------------------------------------------------
 ** Function:	show_version()
