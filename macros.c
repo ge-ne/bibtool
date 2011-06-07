@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: macros.c,v 1.8 2010-01-06 13:57:42 gene Exp $
+** $Id: macros.c,v 1.9 2011-06-07 20:01:06 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2010 Gerd Neugebauer
+** (c) 1996-2011 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 

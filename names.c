@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: names.c,v 1.11 2010-05-12 10:49:15 gene Exp $
+** $Id: names.c,v 1.12 2011-06-07 20:01:06 gene Exp $
 *******************************************************************************
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2010 Gerd Neugebauer
+** (c) 1996-2011 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -33,8 +33,8 @@
  Uchar * pp_list_of_names _ARG((char **wa,NameNode format,char *trans,int max,char *comma,char *and,char *namesep,char *etal));/* names.c*/
  char * pp_names _ARG((char *s,NameNode format,char *trans,int max,char *namesep,char *etal));/* names.c*/
  static NameNode new_name_node _ARG((int type,int strip,int trim,Uchar *pre,Uchar *mid,Uchar *post));/* names.c*/
- static int is_jr _ARG((char * s, int eager));	   /* names.c                */
- static int is_lower_word _ARG((char *s));	   /* names.c                */
+ static int is_jr _ARG((Uchar * s, int eager));	   /* names.c                */
+ static int is_lower_word _ARG((Uchar *s));	   /* names.c                */
  static void initial _ARG((char *s,char *trans,int len,StringBuffer *sb));/* names.c*/
  static void pp_one_name _ARG((StringBuffer *sb,char **w,NameNode format,char *trans,int len,char *comma,int commas));/* names.c*/
 
@@ -618,7 +618,7 @@ static void initial(s,trans,len,sb)		   /*                        */
 ** Returns:	
 **___________________________________________________			     */
 static int is_jr(s, eager)			   /*                        */
-  char * s;					   /*                        */
+  Uchar * s;					   /*                        */
   int  eager;					   /*                        */
 {						   /*                        */
   switch ( ToLower(*s) )			   /*                        */
@@ -693,7 +693,7 @@ static int is_jr(s, eager)			   /*                        */
 ** Returns:	TRUE or FALSE
 **___________________________________________________			     */
 static int is_lower_word(s)			   /*                        */
-  register char *s;				   /*                        */
+  register Uchar *s;				   /*                        */
 { 						   /*                        */
   while(*s)					   /*                        */
   { if ( is_lower(*s) ) return TRUE;		   /*                        */

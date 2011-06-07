@@ -1,22 +1,22 @@
 /******************************************************************************
-** $Id: type.h,v 1.6 2010-01-05 14:14:21 gene Exp $
+** $Id: type.h,v 1.7 2011-06-07 20:01:06 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2010 Gerd Neugebauer
+** (c) 1996-2011 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
 **	This module is a replacement for the system header file
-**	|ctype.h|. In contrast to some implemetations of the |isalpha|
+**	|ctype.h|. In contrast to some implementations of the |isalpha|
 **	and friends the macros in this header are stable. This means
-**	that the argument is evaluated exactely once and each macro
-**	consistes of exacetely one C statement. Thus these macros can
+**	that the argument is evaluated exactly once and each macro
+**	consists of exactly one C statement. Thus these macros can
 **	be used even at those places where only a single statement is
 **	allowed (conditionals without braces) or with arguments
 **	containing side effects.
@@ -315,7 +315,7 @@
 **		case. Such a translation table can be used as argument
 **		to the regular expression functions.
 **___________________________________________________			     */
- char trans_lower[256];				   /*                        */
+unsigned char trans_lower[256];			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Variable:	trans_upper
@@ -324,7 +324,7 @@
 **		case. Such a translation table can be used as argument
 **		to the regular expression functions.
 **___________________________________________________			     */
- char trans_upper[256];				   /*                        */
+unsigned char trans_upper[256];			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Variable:	trans_id
@@ -333,7 +333,7 @@
 **		implements the identity a translation table can be
 **		used as argument to the regular expression functions.
 **___________________________________________________			     */
- char trans_id[256];				   /*                        */
+unsigned char trans_id[256];			   /*                        */
 
 #else
 
@@ -352,7 +352,7 @@
 **	C	Character to consider
 ** Returns:	|TRUE| iff the argument is an allowed character.
 **___________________________________________________			     */
-#define is_allowed(C)	  (type__allowed[(unsigned int)C]&T__Allowed)
+#define is_allowed(C)	  (type__allowed[(unsigned char)C]&T__Allowed)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_upper()
@@ -365,7 +365,7 @@
 **	C	Character to consider
 ** Returns:	|TRUE| iff the character is an uppercase letter.
 **___________________________________________________			     */
-#define is_upper(C)	  (type__allowed[(unsigned int)C]&T__Upper)
+#define is_upper(C)	  (type__allowed[(unsigned char)C]&T__Upper)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_lower()
@@ -378,7 +378,7 @@
 **	C	Character to consider
 ** Returns:	|TRUE| iff the character is a lowercase letter.
 **___________________________________________________			     */
-#define is_lower(C)	  (type__allowed[(unsigned int)C]&T__Lower)
+#define is_lower(C)	  (type__allowed[(unsigned char)C]&T__Lower)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_alpha()
@@ -391,7 +391,7 @@
 **	C	Character to consider
 ** Returns:	|TRUE| iff the character is a letter.
 **___________________________________________________			     */
-#define is_alpha(C)	  (type__allowed[(unsigned int)C]&(T__Upper|T__Lower))
+#define is_alpha(C)	  (type__allowed[(unsigned char)C]&(T__Upper|T__Lower))
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_digit()
@@ -404,7 +404,7 @@
 **	C	Character to consider
 ** Returns:	|TRUE| iff the character is a digit.
 **___________________________________________________			     */
-#define is_digit(C)	  (type__allowed[(unsigned int)C]&T__Number)
+#define is_digit(C)	  (type__allowed[(unsigned char)C]&T__Number)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_space()
@@ -415,7 +415,7 @@
 **	C	Character to consider
 ** Returns:	|TRUE| iff the character is a space character.
 **___________________________________________________			     */
-#define is_space(C)	  (type__allowed[(unsigned int)C]&T__Space)
+#define is_space(C)	  (type__allowed[(unsigned char)C]&T__Space)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_extended()
@@ -426,7 +426,7 @@
 **	C	Character to consider
 ** Returns:	|TRUE| iff the character is an extended character.
 **___________________________________________________			     */
-#define is_extended(C)	  (type__allowed[(unsigned int)C]&T__Extended)
+#define is_extended(C)	  (type__allowed[(unsigned char)C]&T__Extended)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_wordsep()
@@ -437,7 +437,7 @@
 **	C	Character to consider
 ** Returns:	|TRUE| iff the character is a word separator.
 **___________________________________________________			     */
-#define is_wordsep(C)	  (type__allowed[(unsigned int)C]&T__WordSep)
+#define is_wordsep(C)	  (type__allowed[(unsigned char)C]&T__WordSep)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ToLower()
@@ -449,7 +449,7 @@
 **	C	Character to translate
 ** Returns:	The lower case letter or the character itself.
 **___________________________________________________			     */
-#define ToLower(C)	  trans_lower[(unsigned int)(C)]
+#define ToLower(C)	  trans_lower[(unsigned char)(C)]
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ToUpper()
@@ -461,7 +461,7 @@
 **	C	Character to translate
 ** Returns:	The upper case letter or the character itself.
 **___________________________________________________			     */
-#define ToUpper(C)	  trans_upper[(unsigned int)(C)]
+#define ToUpper(C)	  trans_upper[(unsigned char)(C)]
 
 
 #define SYMBOL_TYPE_LOWER 0
@@ -477,8 +477,8 @@
 #else
 #define _ARG(A) ()
 #endif
- char * lower _ARG((char * s));			   /* type.c                 */
- int case_cmp _ARG((char * s,char * t));	   /* type.c                 */
- void add_word_sep _ARG((char *s));		   /* type.c                 */
+ char * lower _ARG((Uchar * s));		   /* type.c                 */
+ int case_cmp _ARG((Uchar * s,Uchar * t));	   /* type.c                 */
+ void add_word_sep _ARG((Uchar *s));		   /* type.c                 */
  void init_type _ARG((void));			   /* type.c                 */
 

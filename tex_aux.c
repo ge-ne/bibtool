@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: tex_aux.c,v 1.6 2010-01-05 14:06:06 gene Exp $
+** $Id: tex_aux.c,v 1.7 2011-06-07 20:01:06 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2010 Gerd Neugebauer
+** (c) 1996-2011 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -154,18 +154,18 @@ int read_aux(fname,fct,verbose)			   /*                        */
   void		(*fct)_ARG((char*));		   /*                        */
   int           verbose;			   /*                        */
 { FILE 	        *file;				   /*                        */
-  int           c;				   /*                        */
+  int           c;                                 /*                        */
   register char *s;				   /*                        */
  						   /*                        */
   cite_star  = FALSE;				   /*                        */
   rsc_select = TRUE; 				   /*                        */
   					   	   /*                        */
   if ( (file=fopen(fname,"r") ) == NULL )	   /*                        */
-  { StringBuffer *sb = sbopen();
-    sbputs(fname,sb);
-    sbputs(".aux",sb);
-    file = fopen(sbflush(sb),"r");
-    sbclose(sb);
+  { StringBuffer *sb = sbopen();                   /*                        */
+    sbputs(fname,sb);                              /*                        */
+    sbputs(".aux",sb);                             /*                        */
+    file = fopen(sbflush(sb),"r");                 /*                        */
+    sbclose(sb);                                   /*                        */
   }			   			   /*                        */
   if ( file == NULL ) { return TRUE; }		   /*                        */
  						   /*                        */
@@ -177,16 +177,16 @@ int read_aux(fname,fct,verbose)			   /*                        */
   if ( aux_sb == (StringBuffer*)0 )		   /*                        */
   { aux_sb = sbopen(); }			   /*                        */
  						   /*                        */
-  while ( (c=getc(file)) != EOF )		   /*                        */
+  for(c = getc(file); c != EOF; c = getc(file))    /*                        */
   { if ( c == '\\' ) 				   /*                        */
-    {						   /*                        */
-      c = getc(file);				   /*                        */
-      while (is_alpha(c) || c == '@')		   /*                        */
-      { (void)sbputchar(c,aux_sb); c = getc(file); }/*                       */
+    { for(c = getc(file);                          /*                        */
+          c != EOF && (is_alpha(c&0xff) || c == '@');
+          c = getc(file))
+      { (void)sbputchar(c, aux_sb); }              /*                        */
       s = sbflush(aux_sb);			   /*                        */
       sbrewind(aux_sb);				   /*                        */
  						   /*                        */
-      if ( strcmp(s,"citation" )==0 )	   	   /*                        */
+      if ( strcmp(s, "citation" ) == 0 )   	   /*                        */
       { do					   /* Save a cite key.       */
 	{ switch ( c=getc(file) )		   /*                        */
 	  { case EOF: break;			   /*                        */
@@ -197,17 +197,16 @@ int read_aux(fname,fct,verbose)			   /*                        */
 	      save_ref(s);	   		   /*                        */
 	      break;				   /*                        */
 	    default:				   /*                        */
-	      c = ToLower(c);  			   /*                        */
-	      (void)sbputchar(c,aux_sb);	   /*                        */
+	      (void)sbputchar(ToLower(c&0xff),aux_sb);/*                     */
 	  }	   				   /*                        */
 	} while ( c != '}' && c != EOF );	   /*                        */
       }						   /*                        */
-      else if ( strcmp(s,"bibdata" )==0 )	   /*                        */
+      else if ( strcmp(s,"bibdata" ) == 0 )	   /*                        */
       { c = getc(file);				   /* Save a bib file name   */
-	(void)sbputchar(c,aux_sb);		   /*                        */
+	(void)sbputchar((Uchar)c, aux_sb);	   /*                        */
 	while ( c != '}' && c != EOF )		   /*                        */
 	{ c = getc(file);			   /*                        */
-	  if ( c == ',' ||  c == '}' )		   /*                        */
+	  if ( c == ',' || c == '}' )		   /*                        */
 	  { s = sbflush(aux_sb);		   /*                        */
 	    sbrewind(aux_sb);			   /*                        */
 	    (*fct)(symbol(s));		   	   /*                        */

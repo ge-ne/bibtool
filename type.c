@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: type.c,v 1.6 2010-01-05 14:06:06 gene Exp $
+** $Id: type.c,v 1.7 2011-06-07 20:01:06 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2010 Gerd Neugebauer
+** (c) 1996-2011 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -73,9 +73,9 @@ void init_type()				   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void add_word_sep(s)				   /*                        */
-  char *s;					   /*                        */
+  register Uchar *s;				   /*                        */
 {						   /*                        */
-  if ( s == (char *)NULL ) return;		   /*                        */
+  if ( s == (Uchar *)0 ) return;		   /*                        */
   for ( ; *s ; s++ )				   /*                        */
   { type__allowed[*s] |= T__WordSep; }		   /*                        */
 }						   /*------------------------*/
@@ -94,9 +94,9 @@ void add_word_sep(s)				   /*                        */
 **	t	Second string to consider.
 ** Returns:	|FALSE| iff the strings differ.
 **___________________________________________________			     */
-int case_cmp(s,t)				   /*                        */
-  register char * s;				   /*                        */
-  register char * t;				   /*                        */
+int case_cmp(s, t)				   /*                        */
+  register unsigned char * s;			   /*                        */
+  register unsigned char * t;			   /*                        */
 {						   /*                        */
 #ifdef DEBUG
   assert(s!=NULL);
@@ -120,8 +120,8 @@ int case_cmp(s,t)				   /*                        */
 ** Returns:	The converted string.
 **___________________________________________________			     */
 char * lower(s)			   		   /*                        */
-  register char * s;				   /*                        */
-{ char *t = s;					   /*                        */
+  register unsigned char * s;			   /*                        */
+{ unsigned char *t = s;				   /*                        */
   while ( *s ) { *s = ToLower(*s); ++s; }	   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/

@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: version.c,v 1.8 2010-05-12 10:49:15 gene Exp $
+** $Id: version.c,v 1.9 2011-06-07 20:01:06 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2010 Gerd Neugebauer
+** (c) 1996-2011 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -24,7 +24,7 @@
 **		numbers.  In addition a postfix like |alpha| or a
 **		patchlevel like |p1| can be present.
 **___________________________________________________			     */
- char * bibtool_version = "2.51";
+ char * bibtool_version = "2.52-beta";
 
 /*-----------------------------------------------------------------------------
 ** Function:	show_version()

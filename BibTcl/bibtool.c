@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: bibtool.c,v 1.2 2007-02-08 05:27:32 gene Exp $
+** $Id: bibtool.c,v 1.3 2011-06-07 20:01:06 gene Exp $
 *******************************************************************************
 ** Author: Gerd Neugebauer
 **===========================================================================*/
@@ -1530,7 +1530,7 @@ static int bt_str_get(interp,argc,argv)	   	   /*                        */
   int	     argc;				   /*                        */
   char	     *argv[];				   /*                        */
 { DB db;					   /*                        */
-  char * s;					   /*                        */
+  Uchar * s;	        			   /*                        */
  						   /*                        */
   NeedArgs(2);					   /*                        */
   GetDB(db,argv[2]);			   	   /*                        */
@@ -1560,7 +1560,7 @@ static int bt_str_missing(interp,argc,argv)	   /*                        */
   int	     argc;				   /*                        */
   char	     *argv[];				   /*                        */
 { DB db;					   /*                        */
-  char * s;					   /*                        */
+  Uchar * s;			        	   /*                        */
  						   /*                        */
   NeedArgs(2);					   /*                        */
   GetDB(db,argv[2]);			   	   /*                        */

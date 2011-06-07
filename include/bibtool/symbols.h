@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: symbols.h,v 1.6 2010-01-05 14:14:21 gene Exp $
+** $Id: symbols.h,v 1.7 2011-06-07 20:01:06 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2010 Gerd Neugebauer
+** (c) 1996-2011 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -16,13 +16,13 @@
 **
 **	\BibTool{} uses symbols as the basic representation for
 **	strings.  Symbols are stored in a symbol table and shared
-**	amoung different instances. Thus the same string occurring at
+**	among different instances. Thus the same string occurring at
 **	different places has to be stored only once.
 **
 **	Another advantage of symbols is that once you have got two
 **	symbols at hand it is rather easy to compare them for
 **	equality.  A simple pointer comparison is enough. It is not
-**	neccesary to compare them character by character.
+**	necessary to compare them character by character.
 **
 **	The disadvantage of a symbol is that you can not simply modify
 **	it temporarily since it is part of the symbol table. This
@@ -30,7 +30,7 @@
 **	always have to make a copy if you want to modify a symbol.
 **
 **	The functions defined in |symbols.c| are exported with this
-**	header file aswell.
+**	header file as well.
 **
 ******************************************************************************/
 
