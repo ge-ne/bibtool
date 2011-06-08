@@ -1,12 +1,12 @@
 ##*****************************************************************************
-## $Id: Makefile,v 1.10 2011-06-08 17:26:03 gene Exp $
+## $Id: Makefile,v 1.11 2011-06-08 17:35:56 gene Exp $
 ##=============================================================================
 ## 
 ## This file is part of BibTool.
 ## It is distributed under the GNU General Public License.
 ## See the file COPYING for details.
 ## 
-## (c) 1997-2010 Gerd Neugebauer
+## (c) 1997-2011 Gerd Neugebauer
 ## 
 ## Net: gene@gerd-neugebauer.de
 ## 
@@ -42,11 +42,11 @@ all: $(TARGETS)
 
 ##-----------------------------------------------------------------------------
 
-bibtool.dvi: bibtool.tex bibtool.bbl bibtool.ind version.tex
+bibtool.dvi: bibtool.tex bibtool.bbl bibtool.ind config.tex
 	$(LATEX) bibtool
 	$(LATEX) bibtool
 
-bibtool.pdf: bibtool.tex bibtool.bbl bibtool.ind version.tex
+bibtool.pdf: bibtool.tex bibtool.bbl bibtool.ind config.tex
 	$(PDFLATEX) bibtool
 	$(PDFLATEX) bibtool
 
@@ -63,10 +63,10 @@ version.tex: ../version.c
 
 ##-----------------------------------------------------------------------------
 
-ref_card.dvi: ref_card.tex version.tex
+ref_card.dvi: ref_card.tex config.tex
 	$(LATEX) ref_card.tex
 
-ref_card.pdf: ref_card.tex version.tex
+ref_card.pdf: ref_card.tex config.tex
 	$(PDFLATEX) ref_card.tex
 
 ##-----------------------------------------------------------------------------
@@ -149,7 +149,7 @@ clean:
 	$(RM) *.bak *.BAK *~ *.log *.ilg *.blg
 
 veryclean: clean
-	$(RM) *.toc *.aux *.idx *.ind *.ilg *.bbl
+	$(RM) *.toc *.aux *.idx *.ind *.ilg *.bbl c.tex c_main.tex
 
 distclean: veryclean
 	$(RM) $(TARGETS)
