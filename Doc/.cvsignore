@@ -6,3 +6,7 @@
 *.pdf
 *.toc
 *~
+*.log
+*.out
+*.ilg
+*.blg

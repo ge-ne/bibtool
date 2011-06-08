@@ -1,5 +1,5 @@
 ##*****************************************************************************
-## $Id: Makefile,v 1.9 2010-02-28 09:44:33 gene Exp $
+## $Id: Makefile,v 1.10 2011-06-08 17:26:03 gene Exp $
 ##=============================================================================
 ## 
 ## This file is part of BibTool.
@@ -53,8 +53,13 @@ bibtool.pdf: bibtool.tex bibtool.bbl bibtool.ind version.tex
 bibtool.ind ind index: bibtool.idx
 	$(MAKEINDEX) -s bibtool.ist bibtool
 
+##-----------------------------------------------------------------------------
+
 config.tex: ..$(DIR_SEP)Makefile ..$(DIR_SEP)config.h
 	cd ..; $(MAKE) Doc$(DIR_SEP)config.tex
+
+version.tex: ../version.c
+	./make_version.pl ../version.c > version.tex
 
 ##-----------------------------------------------------------------------------
 
@@ -63,11 +68,6 @@ ref_card.dvi: ref_card.tex version.tex
 
 ref_card.pdf: ref_card.tex version.tex
 	$(PDFLATEX) ref_card.tex
-
-##-----------------------------------------------------------------------------
-
-version.tex: ../version.c
-	./make_version.pl ../version.c > version.tex
 
 ##-----------------------------------------------------------------------------
 
@@ -139,9 +139,9 @@ c_lib.pdf: c_lib.tex c_main.tex c.tex config.tex
 	$(PDFLATEX) c_lib.tex
 
 c_main.tex: $(CDIR)main.c c_get.pl
-	c_get.pl $(CDIR)main.c > $@
+	perl c_get.pl $(CDIR)main.c > $@
 c.tex: $(CFILES) c_get.pl
-	c_get.pl $(CFILES) >  $@
+	perl c_get.pl $(CFILES) >  $@
 
 ##-----------------------------------------------------------------------------
 
