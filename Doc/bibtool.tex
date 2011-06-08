@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.13 2011-06-07 20:01:06 gene Exp $
+%% $Id: bibtool.tex,v 1.14 2011-06-08 16:22:33 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -499,9 +499,9 @@ desirable to use one style only. For this purpose the rewriting facility of
 
 Since this seems to be rather cryptic we will have a closer look at this
 example. First we have to mention that the outer quotes are there because the
-UN*X shell (csh) treats some characters special and we want to avoid this to
-happen to the rewrite rule given. A similar quoting mechanism might be
-required for all command line interpreters.
+UN*X shell (csh, sh, bash,...) treats some characters special and we want to
+avoid this to happen to the rewrite rule given. A similar quoting mechanism
+might be required for all command line interpreters.
 
 The rewrite rule is applied to any field. The first string---called
 pattern---which is enclosed in double quotes is matched against the contents
@@ -813,6 +813,24 @@ features may be present in your executable. Thus watch out and complain to the
 \emph{installer} if something is missing.
 
 %------------------------------------------------------------------------------
+\section{Beware of the Command Line}
+
+Be aware that command line interpreters have different ideas about what to do
+with a command line before passing the arguments to a program.  Thus it might
+be necessary to carefully quote the arguments.  Especially if the command
+contains spaces it is very likely that quoting is needed.
+
+E.g. in UN*X shells it is in general a good strategy to enclose command line
+arguments in single quotes (\verb|'|) if they contain whitespace or special
+characters like \texttt{\symbol{"5C}}, \texttt{\$}, \texttt{\&},
+\verb|!|, or \verb|#|.´
+
+Instead of excessively using command line arguments it is referrable and less
+error prome to put the major configuration into a resource file and just
+include this resource file on the command line. Details on this are described
+in the next section.
+
+%------------------------------------------------------------------------------
 \section{Command Line Usage and Resource Files}
 
 \BibTool{} can be controlled either by arguments given in the command line or
@@ -989,16 +1007,6 @@ be used from the command line with the following
 
 \sh[-]{print\{hello\_world\}}
 \medskip
-
-Be aware that command line interpreters have different ideas about what to do
-with a command line before passing the arguments to a program.  Thus it might
-be necessary to carefully quote the arguments.  Especially if the command
-contains spaces it is very likely that quoting is needed.
-
-E.g. in UN*X shells it is in general a good strategy to enclose command line
-arguments in single quotes (\verb|'|) if they contain whitespace or special
-characters like \texttt{\symbol{"5C}}, \texttt{\$}, \texttt{\&},
-\verb|!|, or \verb|#|.
 
 \begin{Summary}
   \Desc{\opt{h}}{}{Show a list of command line options.}
