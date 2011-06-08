@@ -10,3 +10,5 @@
 *.out
 *.ilg
 *.blg
+c.tex
+c_main.tex
