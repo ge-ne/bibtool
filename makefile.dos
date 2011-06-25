@@ -1,12 +1,12 @@
 # *****************************************************************************
-#  $Id: makefile.dos,v 1.6 2010-01-05 14:06:06 gene Exp $
+#  $Id: makefile.dos,v 1.7 2011-06-25 08:21:34 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 1996-2010 Gerd Neugebauer
+#  (c) 1996-2011 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -289,6 +289,7 @@ C_FLAGS	      = $(C_INCLUDE) $(CFLAGS) $(FILE_TYPES)
 CFILES	      = main.c		\
 		$(CLIBFILES)
 CLIBFILES     = database.c	\
+		crossref.c	\
 		entry.c		\
 		error.c		\
 		expand.c	\
@@ -315,6 +316,7 @@ CLIBFILES     = database.c	\
 HPATH	      = include${DIR_SEP}bibtool${DIR_SEP}
 HFILES	      = config.h		\
 		${HPATH}database.h	\
+		${HPATH}crossref.h	\
 		${HPATH}bibtool.h	\
 		${HPATH}config.h	\
 		${HPATH}entry.h		\
@@ -347,6 +349,7 @@ HFILES	      = config.h		\
 OFILES	      = main$(OBJ)	\
 		$(OLIBFILES)
 OLIBFILES     = database$(OBJ)	\
+		crossref$(OBJ)	\
 		entry$(OBJ)	\
 		error$(OBJ)	\
 		expand$(OBJ)	\
