@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: symbols.c,v 1.7 2011-06-07 20:01:06 gene Exp $
+** $Id: symbols.c,v 1.8 2011-07-26 15:12:13 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -319,15 +319,14 @@ Uchar * sym_add(s,count)			   /*			     */
       return SymbolName(*stp);			   /*			     */
     }						   /*			     */
   }						   /*			     */
-  if ( count<0 )				   /*                        */
-  { count = 0;					   /*                        */
-    SymbolFlags(*stp) != SYMBOL_STATIC;		   /*                        */
-  }	   					   /*			     */
-  else						   /*                        */
+  if ( count >= 0 )				   /*                        */
   { s = new_Ustring(s); }		   	   /*			     */
-  *stp	   = new_string_tab(s,count,0);		   /*			     */
+  *stp	   = new_string_tab(s,count<0?0:count,0);  /*			     */
   last_stp = *stp;				   /*			     */
   SymbolUsed(*stp)++;				   /*                        */
+  if ( count < 0 )				   /*                        */
+  { SymbolFlags(*stp) != SYMBOL_STATIC;		   /*                        */
+  }	   					   /*			     */
   return SymbolName(*stp);			   /*			     */
 }						   /*------------------------*/
 
