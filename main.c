@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: main.c,v 1.10 2011-06-06 18:47:35 gene Exp $
+** $Id: main.c,v 1.11 2011-09-25 13:42:49 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -126,7 +126,7 @@ char * getenv(name)				   /*			     */
  static char *use[] =
   { "bibtool [options] [%co outfile] [[%ci] infile] ...\n",
     "\n\tOptions:\n",
-    "\t%cA<c>\t\tKind of disambiguating keystrings: <c>=0|a|A\n",
+    "\t%cA<c>\t\tKind of disambiguating key strings: <c>=0|a|A\n",
     "\t%cc\t\tInclude crossreferenced entries into the output (toggle)\n",
     "\t%cd\t\tCheck double entries (toggle)\n",
     "\t%cf <format>\tKey generation enabled (formated key)\n",
@@ -157,8 +157,8 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2011-06-06 18:47:35 $",
-    "gerd@informatik.uni-koblenz.de"
+    "Copyright (C) Gerd Neugebauer $Date: 2011-09-25 13:42:49 $",
+    "gene@gerd-neugebauer.de"
   };
 
 /*-----------------------------------------------------------------------------

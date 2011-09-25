@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: tex_read.c,v 1.6 2011-06-07 20:01:06 gene Exp $
+** $Id: tex_read.c,v 1.7 2011-09-25 13:42:49 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -661,13 +661,13 @@ void TeX_def(s)					   /*			     */
 { Uchar	*name,				   	   /*			     */
 	*ep   = NULL;			   	   /*			     */
   char	c;				   	   /*			     */
-  int		arity = 0;			   /*			     */
+  int	arity = 0;				   /*			     */
 						   /*			     */
   while( isspace(*s) ) s++;			   /*                        */
   name = s;					   /*			     */
   while ( *s && *s != '=' )			   /*			     */
   { if ( *s == '[' )				   /*			     */
-    { arity = *(s+1) -'0'; ep = s; }		   /*			     */
+    { arity = *(s+1) - '0'; ep = s; }		   /*			     */
     ++s;					   /*			     */
   }						   /*			     */
 						   /*			     */
@@ -675,14 +675,19 @@ void TeX_def(s)					   /*			     */
 						   /*			     */
   if ( *name == '\\' )				   /*                        */
   {  						   /*                        */
+    while (ep > name + 2 &&			   /*                        */
+	   (*(ep-1)  == ' ' || *(ep-1) =='\t'))	   /*                        */
+    { ep--; }					   /*                        */
     c = *ep; *ep = '\0';			   /*			     */
-    TeX_define(new_Ustring(name+1),	   	   /*			     */
+    TeX_define(new_Ustring(name + 1),	   	   /*			     */
 	       arity,				   /*			     */
-	       new_Ustring(s+1));		   /*			     */
+	       new_Ustring(s + 1));		   /*			     */
     *ep = c;					   /*			     */
   }						   /*                        */
   else						   /*                        */
-  { TeX_active((unsigned int)*name,arity,new_Ustring(s+1));/*                */
+  { TeX_active((unsigned int)*name,		   /*                        */
+	       arity,				   /*                        */
+	       new_Ustring(s+1));		   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 

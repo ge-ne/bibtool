@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: Changes.tex,v 1.4 2011-06-25 08:32:50 gene Exp $
+%% $Id: Changes.tex,v 1.5 2011-09-25 13:42:49 gene Exp $
 %%*****************************************************************************
 %% Author: Gerd Neugebauer
 %%-----------------------------------------------------------------------------
@@ -32,10 +32,21 @@
 \end{Developers}
 
  % ===================================================================== -->
- \begin{Release}{2.53}{June 25, 2011}
+ \begin{Release}{2.53}{September 25, 2011}
+  \begin{Update}{gene}
+    In \texttt{tex.define} spaces before the = are ignored instead of
+    leading to unwanted definitions.
+  \end{Update}
   \begin{Fix}{gene}
-    The prepared makefiles for various operating 
-  \end{Fix}ystems missed an entry for \texttt{crossref.[cho]}
+    An intialization error showed up on MacOS. This has been fixed.
+  \end{Fix}
+  \begin{Fix}{gene}
+    The prepared makefiles for various operating systems missed an
+    entry for \texttt{crossref.[cho]}.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Typo in help text and copyright year fixed.
+  \end{Fix}
  \end{Release}
 
  % ===================================================================== -->
