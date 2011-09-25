@@ -1,5 +1,5 @@
 #******************************************************************************
-#* $Id: Makefile,v 1.2 2010-02-06 10:08:10 gene Exp $
+#* $Id: Makefile,v 1.3 2011-09-25 15:31:28 gene Exp $
 #******************************************************************************
 #* Author: Gerd Neugebauer
 #*=============================================================================
@@ -37,7 +37,11 @@ DISTFILES += 	AutoConf/config.h.in 	\
 		configure		\
 		configure.in		\
 		install-sh		\
-		mkdirchain
+		mkdirchain		\
+		Test/BUnit.pm		\
+		Test/makefile		\
+		Test/*.bib		\
+		Test/*.pl
 
 dist:
 	@( cd ..; rm -f $(DIR).tar.gz; tar -cvf - $(DISTFILES:%=$(DIR)/%) | gzip > $(DIR).tar.gz )
