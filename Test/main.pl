@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: main.pl,v 1.1 2011-09-25 13:41:53 gene Exp $
+# $Id: main.pl,v 1.2 2011-10-17 17:38:44 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -504,7 +504,7 @@ Special configuration options: xxx
 EOF
 	 fct_err =>
 		 sub{local $_	 = shift;
-		     s/Vers. 2.[0-9]+/Vers. 2.xxx/;
+		     s/Vers. 2.[0-9]+[-a-z]*/Vers. 2.xxx/;
 		     s/1996-2.../1996-2xxx/;
 		     s/Library path: .*/Library path: xxx/;
 		     s/Special configuration options: .*/Special configuration options: xxx/;
@@ -524,7 +524,7 @@ Special configuration options: xxx
 EOF
 	 fct_err =>
 		 sub{local $_ = shift;
-		     s/Vers. 2.[0-9]+/Vers. 2.xxx/;
+		     s/Vers. 2.[0-9]+[-a-z]*/Vers. 2.xxx/;
 		     s/1996-2.../1996-2xxx/;
 		     s/Library path: .*/Library path: xxx/;
 		     s/Special configuration options: .*/Special configuration options: xxx/;
