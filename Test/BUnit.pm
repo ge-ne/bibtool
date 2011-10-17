@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: BUnit.pm,v 1.1 2011-09-25 13:41:53 gene Exp $
+# $Id: BUnit.pm,v 1.2 2011-10-17 17:38:21 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -54,6 +54,7 @@ our @EXPORT_OK = qw();
 use FileHandle;
 
 use constant TEST_RSC =>'_test.rsc';
+use constant TEST_BIB =>'_test.bib';
 
 #------------------------------------------------------------------------------
 # Variable:	$verbose
@@ -65,7 +66,7 @@ our $verbose = undef;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.1 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.2 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -88,7 +89,6 @@ sub run {
   my %a		   = @_;
   my $name	   = $a{name};
   my $prepare      = $a{prepare};
-  my $resource     = $a{resource};
 
   &{$prepare}($name) if defined $prepare;
 
@@ -98,8 +98,9 @@ sub run {
   my $err  = "$name.err";
   my $null = "/dev/null";
 
-  local $_ = store_resource(TEST_RSC, $resource);
-  $_	   = `$BIBTOOL $_ $a{args} <$null 1>$out 2>$err`;
+  my $rsc = store_resource(TEST_RSC, $a{resource});
+  my $bib = store_bib(TEST_BIB, $a{bib});
+  local $_ = `$BIBTOOL $rsc $a{args} $bib <$null 1>$out 2>$err`;
 
   if ( run_check($name, $a{check}) +
        check($a{expected_out}, $out, 'out', $a{fct_out}) +
@@ -109,6 +110,20 @@ sub run {
     out "\tok\n"
   }
   unlink(TEST_RSC) if -e TEST_RSC;
+  unlink(TEST_BIB) if -e TEST_BIB;
+}
+
+#------------------------------------------------------------------------------
+# Function:	store_bib
+#
+sub store_bib  {
+  my ($file,$content) = @_;
+  return '' if not defined $content;
+
+  local $_ = new FileHandle($file,'w') || die "$file: $!\n";
+  print $_ $content;
+  $_->close();
+  return $file;
 }
 
 #------------------------------------------------------------------------------
