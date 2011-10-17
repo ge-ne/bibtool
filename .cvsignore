@@ -7,6 +7,8 @@ autom4te.cache
 *.orig
 *.log
 makefile
+*.gcov
+*.gcno
 *.bak
 .project
 bibtool
