@@ -1,5 +1,5 @@
 #******************************************************************************
-#* $Id: makefile,v 1.1 2011-09-25 13:41:53 gene Exp $
+#* $Id: makefile,v 1.2 2011-10-18 16:57:15 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -34,6 +34,7 @@ SUITES   = database.test	 \
 	   key.test 		 \
 	   macros.test 		 \
 	   main.test 		 \
+	   print.test 		 \
 	   rewrite.test 	 \
 	   rsc.test 		 \
 	   tex_aux.test
