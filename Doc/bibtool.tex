@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.17 2011-06-08 17:35:56 gene Exp $
+%% $Id: bibtool.tex,v 1.18 2011-10-18 16:55:43 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -1297,7 +1297,7 @@ by specifying resources on the command line.
     	which means that no spaces are required around the equality sign and
     	they can be omitted if the alignment forces it.
   \item [\rsc{suppress.initial.newline}]
-        Thgis boolean resource suppresses the initial newline before normal
+        This boolean resource suppresses the initial newline before normal
         records since this migh be distracting under certain circumstances.
 \end{description}
 
@@ -2936,9 +2936,9 @@ by writing \texttt{\#}\textit{n}, where \textit{n} is the number of the argument
 
 For instance, this feature can be used to ignore certain arguments of macros.
 
-Note that there should be no spaces between the macro head and the equality
-sign (\verb|=|). Similarly any unwanted spaces after the equality sign may
-have strange effects.
+Note that spaces between the macro head and the equality sign (\verb|=|) are
+ignored.  Any unwanted spaces after the equality sign may have strange
+effects.
 
 Usually the macro name starts with a backslash (\verb|\|). If the macro name
 starts with another character then this character is made active
