@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: BUnit.pm,v 1.3 2011-10-21 18:51:40 gene Exp $
+# $Id: BUnit.pm,v 1.4 2011-10-21 19:10:42 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -66,7 +66,7 @@ our $verbose = undef;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.3 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.4 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -93,6 +93,11 @@ sub run {
   &{$prepare}($name) if defined $prepare;
 
   out sprintf("%-23s","$name");
+
+  if ($a{ignore}) {
+    out "\tignored\n";
+    return;
+  }
 
   my $out  = "$name.out";
   my $err  = "$name.err";
@@ -165,37 +170,42 @@ sub check {
 # Function:	summary
 #
 sub summary {
-  my $quiet = 0;
-  local $_;
-  my $g_ok   = 0;
-  my $g_fail = 0;
+  my $quiet    = 0;
+  my $g_ok     = 0;
+  my $g_ignore = 0;
+  my $g_fail   = 0;
 
   print "\n";
 
   foreach my $f (@_) {
     my $file = $f;
-    $file    =~ s/\.[a-z]*$//;
-    $file   .= '.log';
-    my $ok   = 0;
-    my $fail = 0;
-    my $fd   = new FileHandle($file) || die "$file: $!\n";
+    $file      =~ s/\.[a-z]*$//;
+    $file     .= '.log';
+    my $ok     = 0;
+    my $fail   = 0;
+    my $ignore = 0;
+    my $fd     = new FileHandle($file) || die "$file: $!\n";
     while(<$fd>) {
       if (m/\tok/) { $ok++; }
       elsif (m/\tfail/) { $fail++; }
+      elsif (m/\tignore/) { $ignore++; }
     }
     $fd->close();
     if (not $quiet) {
-      $_ = $file;
+      local $_ = $file;
       s/\.[a-z]*$//g;
-      printf("%-14ssuccess: %3d\tfailure: %3d\n", $_, $ok, $fail);
+      printf("%-14ssuccess: %3d\tignored: %3d\tfailure: %3d\n", $_,
+	     $ok, $ignore, $fail);
     }
-    $g_ok   += $ok;
-    $g_fail += $fail;
+    $g_ok     += $ok;
+    $g_fail   += $fail;
+    $g_ignore += $ignore;
   }
-  printf("\nTOTAL         success: %3d\tfailure: %3d\t sucess rate: %3.1f%%\n",
+  printf("\nTOTAL         success: %3d\tignored: %3d\tfailure: %3d\t sucess rate: %3.1f%%\n",
 	 $g_ok,
+	 $g_ignore,
 	 $g_fail,
-	 100.*$g_ok/($g_ok+$g_fail)) if not $quiet;
+	 100.*$g_ok/($g_ok+$g_ignore+$g_fail)) if not $quiet;
   return $g_fail;
 }
 

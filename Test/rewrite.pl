@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: rewrite.pl,v 1.2 2011-10-21 18:52:03 gene Exp $
+# $Id: rewrite.pl,v 1.3 2011-10-21 19:10:42 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -278,8 +278,9 @@ EOF
 
 #------------------------------------------------------------------------------
 BUnit::run(name  => 'select_by_string_11',
-    args	 => '--select.by.string=\'\{ \"Kn\"\}\` xampl.bib',
-    expected_err => '',
+    ignore	 => 1,
+    args	 => '--select.by.string=\'\{note \"Kn\"\}\' xampl.bib',
+#    expected_err => '',
     expected_out => <<EOF);
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -289,19 +290,7 @@ BUnit::run(name  => 'select_by_string_11',
 \@STRING{stoc	= " Symposium on the Theory of Computing" }
 \@STRING{stoc-key= "OX{\\singleletter{stoc}}" }
 
-\@Misc{		  misc-minimal,
-  key		= "Missilany",
-  note		= "This is a minimal MISC entry"
-}
-
-\@Misc{		  misc-full,
-  author	= "Joe-Bob Missilany",
-  title		= "Handing out random pamphlets in airports",
-  howpublished	= "Handed out at O'Hare",
-  month		= oct,
-  year		= 1984,
-  note		= "This is a full MISC entry"
-}
+???
 EOF
 
 #------------------------------------------------------------------------------
