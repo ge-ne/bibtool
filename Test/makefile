@@ -1,5 +1,5 @@
 #******************************************************************************
-#* $Id: makefile,v 1.2 2011-10-18 16:57:15 gene Exp $
+#* $Id: makefile,v 1.3 2011-10-21 18:52:03 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -54,7 +54,7 @@ distclean: clean
 
 .SUFFIXES: .pl .test $(SUFFIXES)
 
-.pl.test:
+.pl.test: $(BIBTOOL)
 	@${PERL} -I. $< >$*.log
 
 #
