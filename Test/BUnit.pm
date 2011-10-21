@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: BUnit.pm,v 1.2 2011-10-17 17:38:21 gene Exp $
+# $Id: BUnit.pm,v 1.3 2011-10-21 18:51:40 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -14,11 +14,11 @@
 #*=============================================================================
 
 =head1 NAME
-BUnit.pm - ...
+BUnit.pm - Driver for BibTool test cases
 
 =head1 SYNOPSIS
 
-BUnit.pm
+perl -MBUnit -e "exit summary(qw(a b c))"
 
 =head1 DESCRIPTION
 
@@ -66,7 +66,7 @@ our $verbose = undef;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.2 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.3 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -98,8 +98,8 @@ sub run {
   my $err  = "$name.err";
   my $null = "/dev/null";
 
-  my $rsc = store_resource(TEST_RSC, $a{resource});
-  my $bib = store_bib(TEST_BIB, $a{bib});
+  my $rsc = store_file(TEST_RSC, $a{resource}, "-r ".TEST_RSC);
+  my $bib = store_file(TEST_BIB, $a{bib}, TEST_BIB);
   local $_ = `$BIBTOOL $rsc $a{args} $bib <$null 1>$out 2>$err`;
 
   if ( run_check($name, $a{check}) +
@@ -114,29 +114,16 @@ sub run {
 }
 
 #------------------------------------------------------------------------------
-# Function:	store_bib
+# Function:	store_file
 #
-sub store_bib  {
-  my ($file,$content) = @_;
+sub store_file  {
+  my ($file,$content, $ret) = @_;
   return '' if not defined $content;
 
   local $_ = new FileHandle($file,'w') || die "$file: $!\n";
   print $_ $content;
   $_->close();
-  return $file;
-}
-
-#------------------------------------------------------------------------------
-# Function:	store_resource
-#
-sub store_resource  {
-  my ($file,$content) = @_;
-  return '' if not defined $content;
-
-  local $_ = new FileHandle($file,'w') || die "$file: $!\n";
-  print $_ $content;
-  $_->close();
-  return "-r $file";
+  return $ret;
 }
 
 #------------------------------------------------------------------------------
@@ -167,7 +154,7 @@ sub check {
   $_ = &$fct($_) if defined $fct;
 
   if ($_ ne $expected) {
-    out " difference in $type;";
+    out "\n\tdifference in $type;";
     return 1;
   }
   unlink $file;
@@ -191,7 +178,7 @@ sub summary {
     $file   .= '.log';
     my $ok   = 0;
     my $fail = 0;
-    my $fd   = new FileHandle($file) ||die "$file: $!\n";
+    my $fd   = new FileHandle($file) || die "$file: $!\n";
     while(<$fd>) {
       if (m/\tok/) { $ok++; }
       elsif (m/\tfail/) { $fail++; }
