@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: rewrite.pl,v 1.3 2011-10-21 19:10:42 gene Exp $
+# $Id: rewrite.pl,v 1.4 2011-10-22 06:08:31 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -164,7 +164,7 @@ EOF
 
 #------------------------------------------------------------------------------
 BUnit::run(name  => 'select_by_string_1',
-    args	 => '--select.by.string=\{\"none\"\} xampl.bib',
+    args	 => '--select.by.string=\'{"none"}\' xampl.bib',
     expected_out => <<EOF);
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -177,7 +177,7 @@ EOF
 
 #------------------------------------------------------------------------------
 BUnit::run(name  => 'select_by_string_2',
-    args	 => '--select.by.string=\{\"anual-mi\"\} xampl.bib',
+    args	 => '--select.by.string=\'{"anual-mi"}\' xampl.bib',
     expected_out => <<EOF);
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -195,7 +195,7 @@ EOF
 
 #------------------------------------------------------------------------------
 BUnit::run(name  => 'select_by_string_3',
-    args	 => '--select.by.string=\{\"manmaker\"\} xampl.bib',
+    args	 => '--select.by.string=\'{"manmaker"}\' xampl.bib',
     expected_out => <<EOF);
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -224,7 +224,7 @@ EOF
 
 #------------------------------------------------------------------------------
 BUnit::run(name  => 'select_by_string_4',
-    args	 => '--select.by.string=\{\"MISC\"\} xampl.bib',
+    args	 => '--select.by.string=\'{"MISC"}\' xampl.bib',
     expected_out => <<EOF);
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -251,7 +251,7 @@ EOF
 
 #------------------------------------------------------------------------------
 BUnit::run(name  => 'select_by_string_10',
-    args	 => '--select.by.string=\{\"MISC\"\} xampl.bib',
+    args	 => '--select.by.string=\'{"MISC"}\' xampl.bib',
     expected_out => <<EOF);
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -278,9 +278,7 @@ EOF
 
 #------------------------------------------------------------------------------
 BUnit::run(name  => 'select_by_string_11',
-    ignore	 => 1,
-    args	 => '--select.by.string=\'\{note \"Kn\"\}\' xampl.bib',
-#    expected_err => '',
+    args	 => '--select.by.string=\'{note "Kn"}\' xampl.bib',
     expected_out => <<EOF);
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -290,7 +288,10 @@ BUnit::run(name  => 'select_by_string_11',
 \@STRING{stoc	= " Symposium on the Theory of Computing" }
 \@STRING{stoc-key= "OX{\\singleletter{stoc}}" }
 
-???
+\@Misc{		  random-note-crossref,
+  key		= {Volume-2},
+  note		= "Volume~2 is listed under Knuth \\cite{book-full}"
+}
 EOF
 
 #------------------------------------------------------------------------------
