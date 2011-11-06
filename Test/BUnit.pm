@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: BUnit.pm,v 1.4 2011-10-21 19:10:42 gene Exp $
+# $Id: BUnit.pm,v 1.5 2011-11-06 19:34:22 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -48,7 +48,7 @@ package BUnit;
 use strict;
 use Exporter;
 our @ISA       = qw(Exporter);
-our @EXPORT    = qw(run_test summary);
+our @EXPORT    = qw(all summary);
 our @EXPORT_OK = qw();
 
 use FileHandle;
@@ -60,13 +60,13 @@ use constant TEST_BIB =>'_test.bib';
 # Variable:	$verbose
 # Description:	
 #
-our $verbose = undef;
+our $verbose = 1;
 
 #------------------------------------------------------------------------------
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.4 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.5 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -75,11 +75,24 @@ our $VERSION = ('$Revision: 1.4 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 our $BIBTOOL = '../bibtool';
 
 #------------------------------------------------------------------------------
+# Variable:	%summary
+# Description:	
+#
+our %summary = ();
+
+our ($success,$ignored,$failure);
+
+#------------------------------------------------------------------------------
+# Variable:	$suite
+# Description:	
+#
+our $suite = '';
+
+#------------------------------------------------------------------------------
 # Function:	out
 #
 sub out (@) {
-  print STDOUT @_;
-  print STDERR @_;
+  print STDERR @_ if $verbose;
 }
 
 #------------------------------------------------------------------------------
@@ -95,6 +108,7 @@ sub run {
   out sprintf("%-23s","$name");
 
   if ($a{ignore}) {
+    $ignored++;
     out "\tignored\n";
     return;
   }
@@ -110,8 +124,10 @@ sub run {
   if ( run_check($name, $a{check}) +
        check($a{expected_out}, $out, 'out', $a{fct_out}) +
        check($a{expected_err}, $err, 'err', $a{fct_err}) ) {
+    $failure++;
     out "\tfail\n"
   } else {
+    $success++;
     out "\tok\n"
   }
   unlink(TEST_RSC) if -e TEST_RSC;
@@ -167,46 +183,10 @@ sub check {
 }
 
 #------------------------------------------------------------------------------
-# Function:	summary
+# Function:	all
 #
-sub summary {
-  my $quiet    = 0;
-  my $g_ok     = 0;
-  my $g_ignore = 0;
-  my $g_fail   = 0;
-
-  print "\n";
-
-  foreach my $f (@_) {
-    my $file = $f;
-    $file      =~ s/\.[a-z]*$//;
-    $file     .= '.log';
-    my $ok     = 0;
-    my $fail   = 0;
-    my $ignore = 0;
-    my $fd     = new FileHandle($file) || die "$file: $!\n";
-    while(<$fd>) {
-      if (m/\tok/) { $ok++; }
-      elsif (m/\tfail/) { $fail++; }
-      elsif (m/\tignore/) { $ignore++; }
-    }
-    $fd->close();
-    if (not $quiet) {
-      local $_ = $file;
-      s/\.[a-z]*$//g;
-      printf("%-14ssuccess: %3d\tignored: %3d\tfailure: %3d\n", $_,
-	     $ok, $ignore, $fail);
-    }
-    $g_ok     += $ok;
-    $g_fail   += $fail;
-    $g_ignore += $ignore;
-  }
-  printf("\nTOTAL         success: %3d\tignored: %3d\tfailure: %3d\t sucess rate: %3.1f%%\n",
-	 $g_ok,
-	 $g_ignore,
-	 $g_fail,
-	 100.*$g_ok/($g_ok+$g_ignore+$g_fail)) if not $quiet;
-  return $g_fail;
+sub all {
+  suites (glob '*.pl')
 }
 
 #------------------------------------------------------------------------------
@@ -214,11 +194,40 @@ sub summary {
 #
 sub suites {
   local $_;
+  my @a = sort(@_);
 
-  foreach $_ (@_) {
-    eval $_;
+  foreach $_ (@a) {
+    $success = 0;
+    $ignored = 0;
+    $failure = 0;
+    do "$_";
+    $summary{$_} = [$success, $ignored, $failure];
   }
-  return summary(@_);
+
+  $success = 0;
+  $ignored = 0;
+  $failure = 0;
+  print "\n";
+  foreach $suite (@a) {
+    $_ = $suite;
+    s/\.pl$//;
+    printf("%-10ssuccess: %3d  ignored: %3d  failure: %3d\n", $_,
+	     $summary{$suite}[0], $summary{$suite}[1], $summary{$suite}[2])
+	if $verbose;
+    $success += $summary{$suite}[0];
+    $ignored += $summary{$suite}[1];
+    $failure += $summary{$suite}[2];;
+  }
+
+  $_ = $success + $ignored + $failure;
+  if ($_ == 0) { $_ = 100 } else { $_ = 100. * $success/$_; }
+  printf("\nTOTAL:    success: %3d  ignored: %3d  failure: %3d  sucess rate: %3.1f%%\n",
+	 $success,
+	 $ignored,
+	 $failure,
+	 $_) if $verbose;
+
+  return $failure;
 }
 
 1;

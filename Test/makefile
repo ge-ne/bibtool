@@ -1,5 +1,5 @@
 #******************************************************************************
-#* $Id: makefile,v 1.3 2011-10-21 18:52:03 gene Exp $
+#* $Id: makefile,v 1.4 2011-11-06 19:34:22 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -30,17 +30,9 @@ EXT =
 # -----------------------------------------------------------------------------
 BIBTOOL  = ../bibtool$(EXT)
 PERL     = perl
-SUITES   = database.test	 \
-	   key.test 		 \
-	   macros.test 		 \
-	   main.test 		 \
-	   print.test 		 \
-	   rewrite.test 	 \
-	   rsc.test 		 \
-	   tex_aux.test
 
 default all: $(BIBTOOL) $(SUITES)
-	@${PERL} -MBUnit -e "exit summary(qw($(SUITES)))"
+	@${PERL} -MBUnit -e "exit all()"
 
 $(BIBTOOL): ../*.c
 	(cd ..; make)
@@ -55,6 +47,6 @@ distclean: clean
 .SUFFIXES: .pl .test $(SUFFIXES)
 
 .pl.test: $(BIBTOOL)
-	@${PERL} -I. $< >$*.log
+	@${PERL} -I. $<
 
 #
