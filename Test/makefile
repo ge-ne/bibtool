@@ -1,5 +1,5 @@
 #******************************************************************************
-#* $Id: makefile,v 1.4 2011-11-06 19:34:22 gene Exp $
+#* $Id: makefile,v 1.5 2011-11-06 19:48:32 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -34,7 +34,7 @@ PERL     = perl
 default all: $(BIBTOOL) $(SUITES)
 	@${PERL} -MBUnit -e "exit all()"
 
-$(BIBTOOL): ../*.c
+$(BIBTOOL): ../*.c ../*.h ../include/bibtool/*.h ../regex-0.12/*.[ch]
 	(cd ..; make)
 
 clean:
