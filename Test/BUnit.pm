@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: BUnit.pm,v 1.5 2011-11-06 19:34:22 gene Exp $
+# $Id: BUnit.pm,v 1.6 2011-11-06 20:35:45 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -66,7 +66,7 @@ our $verbose = 1;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.5 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.6 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -105,11 +105,13 @@ sub run {
 
   &{$prepare}($name) if defined $prepare;
 
-  out sprintf("%-23s","$name");
+  local $_ = '';
+  $_ 	   = ('.' x (32-length($name))) if length($name) < 32;
+  out "    ",$name,$_;
 
   if ($a{ignore}) {
     $ignored++;
-    out "\tignored\n";
+    out "ignored\n";
     return;
   }
 
@@ -125,10 +127,10 @@ sub run {
        check($a{expected_out}, $out, 'out', $a{fct_out}) +
        check($a{expected_err}, $err, 'err', $a{fct_err}) ) {
     $failure++;
-    out "\tfail\n"
+    out "fail\n"
   } else {
     $success++;
-    out "\tok\n"
+    out "ok\n"
   }
   unlink(TEST_RSC) if -e TEST_RSC;
   unlink(TEST_BIB) if -e TEST_BIB;
@@ -200,6 +202,9 @@ sub suites {
     $success = 0;
     $ignored = 0;
     $failure = 0;
+    $suite   = $_;
+    $suite   =~ s/.pl$//;
+    out "$suite:\n";
     do "$_";
     $summary{$_} = [$success, $ignored, $failure];
   }
