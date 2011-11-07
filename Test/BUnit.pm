@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: BUnit.pm,v 1.6 2011-11-06 20:35:45 gene Exp $
+# $Id: BUnit.pm,v 1.7 2011-11-07 18:26:10 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -66,7 +66,7 @@ our $verbose = 1;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.6 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.7 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -205,7 +205,13 @@ sub suites {
     $suite   = $_;
     $suite   =~ s/.pl$//;
     out "$suite:\n";
-    do "$_";
+    my $ret = do "$_";
+    unless($ret) {
+      if ($@) {                   warn "couldn't parse $_: $@\n"
+      } elsif(not defined $ret) { warn "couldn't do $_: $!\n"
+      } else {                    warn "couldn't run $_\n"
+      }
+    }
     $summary{$_} = [$success, $ignored, $failure];
   }
 
