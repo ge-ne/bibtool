@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: BUnit.pm,v 1.7 2011-11-07 18:26:10 gene Exp $
+# $Id: BUnit.pm,v 1.8 2011-11-07 18:38:24 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -18,7 +18,7 @@ BUnit.pm - Driver for BibTool test cases
 
 =head1 SYNOPSIS
 
-perl -MBUnit -e "exit summary(qw(a b c))"
+perl -MBUnit -e "exit all()"
 
 =head1 DESCRIPTION
 
@@ -66,7 +66,7 @@ our $verbose = 1;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.7 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.8 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -177,7 +177,7 @@ sub check {
   $_ = &$fct($_) if defined $fct;
 
   if ($_ ne $expected) {
-    out "\n\tdifference in $type;";
+    out "\n***\tdifference in $type; ";
     return 1;
   }
   unlink $file;
