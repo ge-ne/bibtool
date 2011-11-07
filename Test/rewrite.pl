@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: rewrite.pl,v 1.6 2011-11-07 18:25:45 gene Exp $
+# $Id: rewrite.pl,v 1.7 2011-11-07 19:07:14 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -344,9 +344,53 @@ __EOF__
 #__EOF__
 
 #------------------------------------------------------------------------------
+BUnit::run(name  => '_X_1',
+    args         => '-X aa',
+    expected_err => '',
+    bib	         => <<__EOF__,
+\@article{ aaa,
+  author = "aa",
+  title	 = "the title"
+}
+\@article{ aba,
+  author = "bb",
+  title	 = "Just another text"
+}
+__EOF__
+    expected_out => <<__EOF__);
+
+\@Article{	  aaa,
+  author	= "aa",
+  title		= "the title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name  => '_X_2',
+    args         => '-X a+a+',
+    expected_err => '',
+    bib	         => <<__EOF__,
+\@article{ aaa,
+  author = "aa",
+  title	 = "the title"
+}
+\@article{ aba,
+  author = "bb",
+  title	 = "Just another text"
+}
+__EOF__
+    expected_out => <<__EOF__);
+
+\@Article{	  aaa,
+  author	= "aa",
+  title		= "the title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
 BUnit::run(name  => 'select_1',
     args         => '--select\'{"aa"}\'',
-expected_err=>'',
+    expected_err => '',
     bib	         => <<__EOF__,
 \@article{ a,
   author = "aa",
@@ -362,6 +406,143 @@ __EOF__
 \@Article{	  a,
   author	= "aa",
   title		= "the title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name  => 'select_2',
+    args         => '--select\'{"title"}\'',
+    expected_err =>'',
+    bib	         => <<__EOF__,
+\@article{ a,
+  author = "aa",
+  title	 = "the title"
+}
+\@article{ b,
+  author = "bb",
+  title	 = "Just another text"
+}
+__EOF__
+    expected_out => <<__EOF__);
+
+\@Article{	  a,
+  author	= "aa",
+  title		= "the title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name  => 'select_3',
+    args         => '--select\'{"t.*le"}\'',
+    expected_err =>'',
+    bib	         => <<__EOF__,
+\@article{ a,
+  author = "aa",
+  title	 = "the title"
+}
+\@article{ b,
+  author = "bb",
+  title	 = "Just another text"
+}
+__EOF__
+    expected_out => <<__EOF__);
+
+\@Article{	  a,
+  author	= "aa",
+  title		= "the title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name  => 'select_crossrefs_0',
+    args         => '--select\'{"aa"}\' -- select.crossrefs=off',
+    expected_err =>'',
+    bib	         => <<__EOF__,
+\@article{ a,
+  author  = "aa",
+  title	  = "the title",
+  crossref= "b"
+}
+\@article{ b,
+  author = "bb",
+  title	 = "THE TITLE"
+}
+__EOF__
+    expected_out => <<__EOF__);
+
+\@Article{	  a,
+  author	= "aa",
+  title		= "the title",
+  crossref	= "b"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name  => 'select_crossrefs_1',
+    args         => '--select\'{"aa"}\' -- select.crossrefs=on',
+    expected_err => '',
+    bib	         => <<__EOF__,
+\@article{ a,
+  author  = "aa",
+  title	  = "the title",
+  crossref= "b"
+}
+\@article{ b,
+  author = "bb",
+  title	 = "THE TITLE"
+}
+__EOF__
+    expected_out => <<__EOF__);
+
+\@Article{	  a,
+  author	= "aa",
+  title		= "the title",
+  crossref	= "b"
+}
+
+\@Article{	  b,
+  author	= "bb",
+  title		= "THE TITLE"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name  => 'select_crossrefs_2',
+    args         => '--select\'{"aa"}\' -- select.crossrefs=on',
+    expected_err => '',
+    bib	         => <<__EOF__,
+\@article{ a,
+  author  = "aa",
+  title	  = "the title",
+  crossref= "b"
+}
+\@article{ b,
+  author  = "bb",
+  title	  = "THE title",
+  crossref= "c"
+}
+\@article{ c,
+  author = "cc",
+  title	 = "THE TITLE"
+}
+__EOF__
+    expected_out => <<__EOF__);
+
+\@Article{	  a,
+  author	= "aa",
+  title		= "the title",
+  crossref	= "b"
+}
+
+\@Article{	  b,
+  author	= "bb",
+  title		= "THE title",
+  crossref	= "c"
+}
+
+\@Article{	  c,
+  author	= "cc",
+  title		= "THE TITLE"
 }
 __EOF__
 
