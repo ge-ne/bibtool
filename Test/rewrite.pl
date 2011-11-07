@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: rewrite.pl,v 1.5 2011-11-06 19:48:02 gene Exp $
+# $Id: rewrite.pl,v 1.6 2011-11-07 18:25:45 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -343,6 +343,29 @@ __EOF__
 #    expected_out => <<__EOF__);
 #__EOF__
 
+#------------------------------------------------------------------------------
+BUnit::run(name  => 'select_1',
+    args         => '--select\'{"aa"}\'',
+expected_err=>'',
+    bib	         => <<__EOF__,
+\@article{ a,
+  author = "aa",
+  title	 = "the title"
+}
+\@article{ b,
+  author = "bb",
+  title	 = "THE TITLE"
+}
+__EOF__
+    expected_out => <<__EOF__);
+
+\@Article{	  a,
+  author	= "aa",
+  title		= "the title"
+}
+__EOF__
+
+1;
 #------------------------------------------------------------------------------
 # Local Variables: 
 # mode: perl
