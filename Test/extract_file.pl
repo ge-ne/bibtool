@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: extract_file.pl,v 1.1 2011-11-12 14:06:15 gene Exp $
+# $Id: extract_file.pl,v 1.2 2011-11-12 14:45:01 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -15,11 +15,11 @@
 
 =head1 NAME
 
-tex_aux.pl - Test suite for BibTool tex_aux.
+extract_file.pl - Test suite for BibTool extract.file.
 
 =head1 SYNOPSIS
 
-tex_aux.pl 
+extract_file.pl 
 
 =head1 DESCRIPTION
 
@@ -39,20 +39,71 @@ use BUnit;
 BUnit::run(name => '_x_1',
     args => '-x xyzzy',
     expected_out => '',
-    expected_err => <<EOF,
+    expected_err => <<__EOF__,
 
 *** BibTool ERROR: aux file xyzzy not found.
-EOF
+__EOF__
+    );
+
+#------------------------------------------------------------------------------
+BUnit::run(name => '_x_2',
+    args     => '-x _xyzzy.aux',
+    prepare  => sub {
+      my $fd = new FileHandle("_xyzzy.aux",'w') || die "_xyzzy.aux: $!\n";
+      print $fd <<__EOF__;
+\\citation{whole-collection}
+\\bibstyle{alpha}
+\\bibdata{xampl_s.bib}
+__EOF__
+      $fd->close();
+	   },
+    post         => sub {
+      unlink('_xyzzy.aux');
+	   },
+    expected_err => '',
+    expected_out => <<__EOF__,
+
+\@Book{		  whole-collection,
+  title		= ""
+}
+__EOF__
     );
 
 #------------------------------------------------------------------------------
 BUnit::run(name => 'extract_file_1',
     args => '-- \'extract.file={xyzzy}\'',
     expected_out => '',
-    expected_err => <<EOF,
+    expected_err => <<__EOF__,
 
 *** BibTool ERROR: aux file xyzzy not found.
-EOF
+__EOF__
+    );
+
+#------------------------------------------------------------------------------
+BUnit::run(name => 'extract_file_2',
+    args     => '-- \'extract.file={_xyzzy.aux}\'',
+    prepare  => sub {
+      my $fd = new FileHandle("_xyzzy.aux",'w') || die "_xyzzy.aux: $!\n";
+      print $fd <<__EOF__;
+\\citation{whole-collection}
+\\bibstyle{alpha}
+\\bibdata{xampl_s.bib}
+__EOF__
+      $fd->close();
+	   },
+    post         => sub {
+      unlink('_xyzzy.aux');
+	   },
+    expected_err => '',
+    expected_out => <<__EOF__,
+\@STRING{acm	= "The OX Association for Computing Machinery" }
+\@STRING{stoc	= " Symposium on the Theory of Computing" }
+\@STRING{stoc-key= "OX" }
+
+\@Book{		  whole-collection,
+  title		= ""
+}
+__EOF__
     );
 
 1;
