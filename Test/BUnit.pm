@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: BUnit.pm,v 1.9 2011-11-12 13:18:28 gene Exp $
+# $Id: BUnit.pm,v 1.10 2011-11-12 14:44:43 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -66,7 +66,7 @@ our $verbose = 1;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.9 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.10 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -134,6 +134,10 @@ sub run {
   }
   unlink(TEST_RSC) if -e TEST_RSC;
   unlink(TEST_BIB) if -e TEST_BIB;
+  my $post      = $a{post};
+  &{$post}($name) if defined $post;
+
+  return 1;
 }
 
 #------------------------------------------------------------------------------
