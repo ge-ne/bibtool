@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: tex_aux.pl,v 1.2 2011-11-07 18:25:45 gene Exp $
+# $Id: extract_file.pl,v 1.1 2011-11-12 14:06:15 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -36,8 +36,18 @@ use BUnit;
 
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'tex_aux_1',
+BUnit::run(name => '_x_1',
     args => '-x xyzzy',
+    expected_out => '',
+    expected_err => <<EOF,
+
+*** BibTool ERROR: aux file xyzzy not found.
+EOF
+    );
+
+#------------------------------------------------------------------------------
+BUnit::run(name => 'extract_file_1',
+    args => '-- \'extract.file={xyzzy}\'',
     expected_out => '',
     expected_err => <<EOF,
 
