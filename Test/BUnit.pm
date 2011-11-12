@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: BUnit.pm,v 1.8 2011-11-07 18:38:24 gene Exp $
+# $Id: BUnit.pm,v 1.9 2011-11-12 13:18:28 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -66,7 +66,7 @@ our $verbose = 1;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.8 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.9 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -106,8 +106,8 @@ sub run {
   &{$prepare}($name) if defined $prepare;
 
   local $_ = '';
-  $_ 	   = ('.' x (32-length($name))) if length($name) < 32;
-  out "    ",$name,$_;
+  $_ 	   = '.' x (32-length($name)) if length($name) < 32;
+  out "  ",$name,$_;
 
   if ($a{ignore}) {
     $ignored++;
@@ -169,9 +169,9 @@ sub check {
     return 0
   }
 
-  my $fd       = new FileHandle($file,'r') || die("$file: $!\n");
-  local $/     = undef;
-  local $_     = <$fd>;
+  my $fd   = new FileHandle($file,'r') || die("$file: $!\n");
+  local $/ = undef;
+  local $_ = <$fd>;
   $fd->close();
 
   $_ = &$fct($_) if defined $fct;
@@ -196,7 +196,13 @@ sub all {
 #
 sub suites {
   local $_;
-  my @a = sort(@_);
+  my @a	  = sort(@_);
+  my $len = 6;
+
+  foreach $_ (@a) {
+    my $l = length($_);
+    $len  = $l if $l> $len;
+  }
 
   foreach $_ (@a) {
     $success = 0;
@@ -204,7 +210,7 @@ sub suites {
     $failure = 0;
     $suite   = $_;
     $suite   =~ s/.pl$//;
-    out "$suite:\n";
+#    out "$suite:\n";
     my $ret = do "$_";
     unless($ret) {
       if ($@) {                   warn "couldn't parse $_: $@\n"
@@ -219,10 +225,11 @@ sub suites {
   $ignored = 0;
   $failure = 0;
   print "\n";
+
   foreach $suite (@a) {
     $_ = $suite;
     s/\.pl$//;
-    printf("%-10ssuccess: %3d  ignored: %3d  failure: %3d\n", $_,
+    printf("%-${len}ssuccess: %3d  ignored: %3d  failure: %3d\n", $_,
 	     $summary{$suite}[0], $summary{$suite}[1], $summary{$suite}[2])
 	if $verbose;
     $success += $summary{$suite}[0];
@@ -232,7 +239,8 @@ sub suites {
 
   $_ = $success + $ignored + $failure;
   if ($_ == 0) { $_ = 100 } else { $_ = 100. * $success/$_; }
-  printf("\nTOTAL:    success: %3d  ignored: %3d  failure: %3d  sucess rate: %3.1f%%\n",
+  printf("\n%-${len}ssuccess: %3d  ignored: %3d  failure: %3d  sucess rate: %3.1f%%\n",
+	 'TOTAL:',
 	 $success,
 	 $ignored,
 	 $failure,

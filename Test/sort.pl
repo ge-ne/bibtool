@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: sort.pl,v 1.1 2011-11-12 12:10:13 gene Exp $
+# $Id: sort.pl,v 1.2 2011-11-12 13:18:28 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -15,11 +15,11 @@
 
 =head1 NAME
 
-database.pl - Test suite for BibTool database.
+sort.pl - Test suite for BibTool sort.
 
 =head1 SYNOPSIS
 
-database.pl 
+sort.pl 
 
 =head1 DESCRIPTION
 
@@ -36,7 +36,7 @@ use BUnit;
 
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'database_s_1',
+BUnit::run(name => '_s_1',
     args              => '-s xampl_s.bib',
     expected_out      => <<EOF,
 \@STRING{acm	= "The OX Association for Computing Machinery" }
@@ -345,7 +345,7 @@ EOF
     expected_err => '' );
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'database_S_1',
+BUnit::run(name => '_S_1',
     args              => '-S xampl_s.bib',
     expected_out      => <<EOF,
 \@STRING{acm	= "The OX Association for Computing Machinery" }
