@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: rewrite.c,v 1.7 2011-06-07 20:01:06 gene Exp $
+** $Id: rewrite.c,v 1.8 2011-11-12 14:04:46 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -249,6 +249,7 @@ static void free_rule(rule)			   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 #endif
+
 /*-----------------------------------------------------------------------------
 ** Function:	add_rule()
 ** Purpose:	Generic addition of a rule to a list of rules.
@@ -282,14 +283,14 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
   }						   /*                        */
   stackp = 0;					   /*                        */
 						   /*			     */
-  DebugPrint2("Parsing from: ",s);		   /*			     */
+  DebugPrint2("Adding rule: Parsing from: ",s);	   /*			     */
   (void)sp_open(s);				   /*			     */
   (void)SParseSkip(&s);				   /*			     */
 						   /*			     */
   while (*s && *s != '"')			   /*                        */
   {
     DebugPrint2("\tlooking for symbol in: ",s);	   /*			     */
-    field = SParseSymbol(&s);	   /*                        */
+    field = SParseSymbol(&s);			   /*                        */
     DebugPrint2("\tok ",s);
     if ( field == NULL)	   			   /*                        */
     {						   /*                        */
@@ -311,7 +312,9 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
   if ( *s == '\0' )				   /*			     */
   { pattern = symbol((Uchar*)"."); }		   /*			     */
   else if ( (pattern=SParseUnquotedString(&s)) == NULL )/*		     */
+  { DebugPrintF1("No pattern found");		   /*                        */
     return;					   /*			     */
+  }						   /*                        */
 						   /*			     */
   DebugPrint2("pattern = ",pattern);		   /*			     */
   (void)SParseSkip(&s);				   /*			     */
@@ -323,18 +326,29 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
   else						   /*			     */
   { (void)SParseEOS(&s); }			   /*			     */
   DebugPrint2("frame  = ",frame);		   /*			     */
+#ifdef DEBUG
+  DebugPrintF1("+++ BibTool: flags   = ");	   /*			     */
+  if (flags & RULE_NOT) DebugPrintF1(" NOT"); 	   /*                        */
+  if (flags & RULE_ADD) DebugPrintF1(" ADD"); 	   /*                        */
+  if (flags & RULE_REGEXP) DebugPrintF1(" REGEXP"); /*                       */
+  DebugPrintF1("\n");		   		   /*			     */
+#endif
 						   /*			     */
   if ( stackp == 0 )				   /* No field specified.    */
   { rule = new_rule((Uchar*)0,pattern,frame,flags,casep); /*		     */
-    if ( *rp == RuleNULL ) { *rp = *rp_end = rule; }/*			     */
-    else { NextRule(*rp_end) = rule; *rp_end = rule;}/*			     */
+    if ( *rp == RuleNULL )			   /*                        */
+    { *rp = *rp_end = rule; }			   /*			     */
+    else					   /*                        */
+    { NextRule(*rp_end) = rule; *rp_end = rule;}   /*			     */
     return;					   /*                        */
   }						   /*                        */
  						   /*                        */
   for ( sp=0; sp<stackp; sp++ )			   /*                        */
   { rule = new_rule(stack[sp],pattern,frame,flags,casep);/*		     */
-    if ( *rp == RuleNULL ) { *rp = *rp_end = rule; }/*			     */
-    else { NextRule(*rp_end) = rule; *rp_end = rule;}/*			     */
+    if ( *rp == RuleNULL )			   /*                        */
+    { *rp = *rp_end = rule; }			   /*			     */
+    else					   /*                        */
+    { NextRule(*rp_end) = rule; *rp_end = rule;}   /*			     */
   }						   /*                        */
 }						   /*------------------------*/
 
@@ -951,25 +965,25 @@ int set_regex_syntax(name)			   /*                        */
   char* name;					   /*                        */
 {						   /*                        */
 #ifdef REGEX
-  if ( strcmp(name,"emacs")  == 0 )
-  { re_set_syntax(RE_SYNTAX_EMACS); }
-  else if ( strcmp(name,"awk") == 0 )
-  { re_set_syntax(RE_SYNTAX_AWK); }
-  else if ( strcmp(name,"grep") == 0 )
-  { re_set_syntax(RE_SYNTAX_GREP); }
-  else if ( strcmp(name,"egrep") == 0 )
-  { re_set_syntax(RE_SYNTAX_EGREP); }
-  else if ( strcmp(name,"posix_awk") == 0 )
-  { re_set_syntax(RE_SYNTAX_POSIX_AWK); }
-  else if ( strcmp(name,"posix_egrep") == 0 )
-  { re_set_syntax(RE_SYNTAX_POSIX_EGREP); }
-  else if ( strcmp(name,"ed") == 0 )
-  { re_set_syntax(RE_SYNTAX_ED); }
-  else if ( strcmp(name,"sed") == 0 )
-  { re_set_syntax(RE_SYNTAX_SED); }
-  else
-  { WARNING3("Unknown regexp syntax: ",name,"\n");
-    return 1;
+  if ( strcmp(name,"emacs")  == 0 )		   /*                        */
+  { re_set_syntax(RE_SYNTAX_EMACS); }		   /*                        */
+  else if ( strcmp(name,"awk") == 0 )		   /*                        */
+  { re_set_syntax(RE_SYNTAX_AWK); }		   /*                        */
+  else if ( strcmp(name,"grep") == 0 )		   /*                        */
+  { re_set_syntax(RE_SYNTAX_GREP); }		   /*                        */
+  else if ( strcmp(name,"egrep") == 0 )		   /*                        */
+  { re_set_syntax(RE_SYNTAX_EGREP); }		   /*                        */
+  else if ( strcmp(name,"posix_awk") == 0 )	   /*                        */
+  { re_set_syntax(RE_SYNTAX_POSIX_AWK); }	   /*                        */
+  else if ( strcmp(name,"posix_egrep") == 0 )	   /*                        */
+  { re_set_syntax(RE_SYNTAX_POSIX_EGREP); }	   /*                        */
+  else if ( strcmp(name,"ed") == 0 )		   /*                        */
+  { re_set_syntax(RE_SYNTAX_ED); }		   /*                        */
+  else if ( strcmp(name,"sed") == 0 )		   /*                        */
+  { re_set_syntax(RE_SYNTAX_SED); }		   /*                        */
+  else						   /*                        */
+  { WARNING3("Unknown regexp syntax: ",name,"\n"); /*                        */
+    return 1;					   /*                        */
   }						   /*                        */
 #endif
   return 0;					   /*                        */

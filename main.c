@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: main.c,v 1.11 2011-09-25 13:42:49 gene Exp $
+** $Id: main.c,v 1.12 2011-11-12 14:04:46 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -157,7 +157,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2011-09-25 13:42:49 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2011-11-12 14:04:46 $",
     "gene@gerd-neugebauer.de"
   };
 
@@ -481,9 +481,9 @@ int main(argc,argv)				   /*			     */
 	case 'x':				   /* extract		     */
 	  rsc_all_macs = FALSE;			   /*                        */
 	  if ( ++i < argc )			   /*			     */
-	  { if ( read_aux(argv[i],save_input_file,*++ap=='v') )/*            */
-	    { ERROR3("aux file ",argv[i]," not found.");/*                   */
-	    }					   /*                        */
+	  { read_aux(argv[i],			   /*                        */
+		     save_input_file,		   /*                        */
+		     *++ap=='v');  		   /*                        */
 	  }					   /*                        */
 	  else		    { NoSFileWarning; }	   /*			     */
 	  break;				   /*			     */

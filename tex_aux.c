@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: tex_aux.c,v 1.7 2011-06-07 20:01:06 gene Exp $
+** $Id: tex_aux.c,v 1.8 2011-11-12 14:04:46 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -167,7 +167,10 @@ int read_aux(fname,fct,verbose)			   /*                        */
     file = fopen(sbflush(sb),"r");                 /*                        */
     sbclose(sb);                                   /*                        */
   }			   			   /*                        */
-  if ( file == NULL ) { return TRUE; }		   /*                        */
+  if ( file == NULL )				   /*                        */
+  { ERROR3("aux file ",fname," not found.");
+    return TRUE;				   /*                        */
+  }						   /*                        */
  						   /*                        */
   rsc_del_q = FALSE;				   /*                        */
  						   /*                        */
@@ -180,8 +183,8 @@ int read_aux(fname,fct,verbose)			   /*                        */
   for(c = getc(file); c != EOF; c = getc(file))    /*                        */
   { if ( c == '\\' ) 				   /*                        */
     { for(c = getc(file);                          /*                        */
-          c != EOF && (is_alpha(c&0xff) || c == '@');
-          c = getc(file))
+          c != EOF && (is_alpha(c&0xff) || c == '@');/*                      */
+          c = getc(file))			   /*                        */
       { (void)sbputchar(c, aux_sb); }              /*                        */
       s = sbflush(aux_sb);			   /*                        */
       sbrewind(aux_sb);				   /*                        */
