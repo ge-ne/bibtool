@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: key_format.pl,v 1.1 2011-11-13 19:47:17 gene Exp $
+# $Id: key_format.pl,v 1.2 2011-11-13 20:26:06 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -1666,6 +1666,678 @@ BUnit::run(name         => 'key_format_p4',
 
 \@Misc{		  THOR.EA,
   author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_n1',
+	   resource	=> 'key.format={%n(author)}',
+	   bib		=> SAMPLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  Thor.Meone.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_n2',
+	   resource	=> 'key.format={%1n(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  Thor.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_n3',
+	   resource	=> 'key.format={%-2n(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  thor.meone.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_n4',
+	   resource	=> 'key.format={%+1n(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  THOR.EA,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_n5',
+	   resource	=> 'key.format={%.3n(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  Tho.Meo.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_p1',
+	   resource	=> 'key.format={%p(author)}',
+	   bib		=> SAMPLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  Thor.Meone.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_p2',
+	   resource	=> 'key.format={%1p(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  Thor.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_p3',
+	   resource	=> 'key.format={%-2p(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  thor.meone.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_p4',
+	   resource	=> 'key.format={%+1p(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  THOR.EA,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_n1',
+	   resource	=> 'key.format={%n(author)}',
+	   bib		=> SAMPLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  Thor.Meone.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_n2',
+	   resource	=> 'key.format={%1n(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  Thor.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_n3',
+	   resource	=> 'key.format={%-2n(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  thor.meone.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_n4',
+	   resource	=> 'key.format={%+1n(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  THOR.EA,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_n5',
+	   resource	=> 'key.format={%.3n(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  Tho.Meo.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_N1',
+	   resource	=> 'key.format={%N(author)}',
+	   bib		=> SAMPLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  Thor.AU.Meone.SO.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_N2',
+	   resource	=> 'key.format={%1N(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  Thor.AU.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_N3',
+	   resource	=> 'key.format={%-2N(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  thor.au.meone.so.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_N4',
+	   resource	=> 'key.format={%+1N(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  THOR.AU.EA,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_N5',
+	   resource	=> 'key.format={%.3N(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  Tho.AU.Meo.SO.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+use constant SAMPLE_NUM => <<__EOF__;
+\@MISC{misc,
+       pages = {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_d1',
+	   resource	=> 'key.format={x%d(pages)}',
+	   bib		=> SAMPLE_NUM,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  x89,
+  pages		= {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_d2',
+	   resource	=> 'key.format={x%1d(pages)}',
+	   bib		=> SAMPLE_NUM,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  x9,
+  pages		= {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_d3',
+	   resource	=> 'key.format={x%4d(pages)}',
+	   bib		=> SAMPLE_NUM,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  x89,
+  pages		= {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_d4',
+	   resource	=> 'key.format={x%-4d(pages)}',
+	   bib		=> SAMPLE_NUM,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  x0089,
+  pages		= {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_d5',
+	   resource	=> 'key.format={x%-5.2d(pages)}',
+	   bib		=> SAMPLE_NUM,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  x00123,
+  pages		= {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_d6',
+	   resource	=> 'key.format={x%+.3d(pages)}',
+	   bib		=> SAMPLE_NUM,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  x0,
+  pages		= {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_d7',
+	   resource	=> 'key.format={x%0d(pages)}',
+	   bib		=> SAMPLE_NUM,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  x,
+  pages		= {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_d7',
+	   resource	=> 'key.format={x%.3d(pages)}',
+	   bib		=> SAMPLE_NUM,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  **key*,
+  pages		= {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_D1',
+	   resource	=> 'key.format={x%D(pages)}',
+	   bib		=> SAMPLE_NUM,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  x89,
+  pages		= {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_D2',
+	   resource	=> 'key.format={x%1D(pages)}',
+	   bib		=> SAMPLE_NUM,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  x89,
+  pages		= {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_D3',
+	   resource	=> 'key.format={x%4D(pages)}',
+	   bib		=> SAMPLE_NUM,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  x89,
+  pages		= {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_D4',
+	   resource	=> 'key.format={x%-4D(pages)}',
+	   bib		=> SAMPLE_NUM,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  x0089,
+  pages		= {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_D5',
+	   resource	=> 'key.format={x%-5.2D(pages)}',
+	   bib		=> SAMPLE_NUM,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  x00123,
+  pages		= {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_D6',
+	   resource	=> 'key.format={x%+.3D(pages)}',
+	   bib		=> SAMPLE_NUM,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  x0,
+  pages		= {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_D7',
+	   resource	=> 'key.format={x%0D(pages)}',
+	   bib		=> SAMPLE_NUM,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  x89,
+  pages		= {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_D7',
+	   resource	=> 'key.format={x%.3D(pages)}',
+	   bib		=> SAMPLE_NUM,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  **key*,
+  pages		= {89--123}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_s1',
+	   resource	=> 'key.format={%s(author)}',
+	   bib		=> SAMPLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  A.-U.-Thor-and-S.-O.-Meone-and-others,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_s2',
+	   resource	=> 'key.format={%8s(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  A.-U.-Th,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_s3',
+	   resource	=> 'key.format={%-8s(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  a.-u.-th,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_s4',
+	   resource	=> 'key.format={%+8s(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  A.-U.-TH,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_s5',
+	   resource	=> 'key.format={x%0s(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+use constant SAMPLE_TITLE => <<__EOF__;
+\@MISC{misc,
+    title = "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_T1',
+	   resource	=> 'key.format={%T(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  Whole,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_T2',
+	   resource	=> 'key.format={%2T(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  Whole-Title,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_T3',
+	   resource	=> 'key.format={%2.1T(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  W-T,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_T4',
+	   resource	=> 'key.format={%-T(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  whole,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_T5',
+	   resource	=> 'key.format={%+T(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  WHOLE,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_t1',
+	   resource	=> 'key.format={%t(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  The,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_t2',
+	   resource	=> 'key.format={%2t(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  The-Whole,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_t3',
+	   resource	=> 'key.format={%2.1t(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  T-W,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_t4',
+	   resource	=> 'key.format={%-t(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  the,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_t5',
+	   resource	=> 'key.format={%+t(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  THE,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_W1',
+	   resource	=> 'key.format={%W(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  Whole,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_W2',
+	   resource	=> 'key.format={%2W(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  WholeTitle,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_W3',
+	   resource	=> 'key.format={%2.1W(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  WT,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_W4',
+	   resource	=> 'key.format={%-W(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  whole,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_W5',
+	   resource	=> 'key.format={%+W(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  WHOLE,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_w1',
+	   resource	=> 'key.format={%w(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  The,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_w2',
+	   resource	=> 'key.format={%2w(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  TheWhole,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_w3',
+	   resource	=> 'key.format={%2.1w(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  TW,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_w4',
+	   resource	=> 'key.format={%-w(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  the,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_w5',
+	   resource	=> 'key.format={%+w(title)}',
+	   bib		=> SAMPLE_TITLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  THE,
+  title		= "The Whole Title"
 }
 __EOF__
 
