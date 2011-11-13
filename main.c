@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: main.c,v 1.12 2011-11-12 14:04:46 gene Exp $
+** $Id: main.c,v 1.13 2011-11-13 13:51:49 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -157,7 +157,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2011-11-12 14:04:46 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2011-11-13 13:51:49 $",
     "gene@gerd-neugebauer.de"
   };
 
@@ -462,7 +462,11 @@ int main(argc,argv)				   /*			     */
 	  save_macro_file(argv[++i]);		   /*			     */
 	  break;				   /*			     */
 	case 'o':				   /* output file	     */
-	  save_output_file(argv[++i]);	    break; /*			     */
+	  if ( ++i < argc )   			   /*		             */
+	  { save_output_file(argv[i]); }	   /*                        */
+	  else					   /*                        */
+	  { WARNING("Missing output file name"); } /*                        */
+	  break; 				   /*			     */
 	case 'q': Toggle(rsc_quiet);	    break; /* quiet		     */
 	case 'r':				   /* resource file	     */
 	  if ( ++i < argc && load_rsc(argv[i]) )   /*		             */
