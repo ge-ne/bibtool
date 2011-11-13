@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: main.pl,v 1.3 2011-11-07 18:25:45 gene Exp $
+# $Id: main.pl,v 1.4 2011-11-13 09:20:57 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -65,41 +65,41 @@ BUnit::run(name => 'main_000',
 BUnit::run(name => 'main_001',
 	 args	      => 'xyzzy',
 	 expected_out => '',
-	 expected_err => <<EOF);
+	 expected_err => <<__EOF__);
 
 *** BibTool WARNING: File xyzzy not found.
-EOF
+__EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name => 'main_002',
 	 args	      => 'x1.bib',
-	 expected_out => <<EOF,
+	 expected_out => <<__EOF__,
 
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
   year		= 2011
 }
-EOF
+__EOF__
 	 expected_err => '');
 
 #------------------------------------------------------------------------------
 BUnit::run(name => 'main_003',
 	 args	      => 'x1',
-	 expected_out => <<EOF,
+	 expected_out => <<__EOF__,
 
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
   year		= 2011
 }
-EOF
+__EOF__
 	 expected_err => '');
 
 #------------------------------------------------------------------------------
 BUnit::run(name => 'main_010',
 	 args	      => 'xampl.bib',
-	 expected_out => <<EOF,
+	 expected_out => <<__EOF__,
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
 	 # "\\newcommand{\\singleletter}[1]{#1} " 
@@ -455,17 +455,17 @@ BUnit::run(name => 'main_010',
   key		= {Volume-2},
   note		= "Volume~2 is listed under Knuth \\cite{book-full}"
 }
-EOF
-	expected_err => <<EOF);
+__EOF__
+	expected_err => <<__EOF__);
 
 *** BibTool WARNING:  (line 29 in ./xampl.bib): 125 non-space characters ignored.
-EOF
+__EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name => 'main_help_1',
 	 args	      => '-h',
 	 expected_out => '',
-	 expected_err => <<EOF ,
+	 expected_err => <<__EOF__ ,
 BibTool Vers. 2.xxx (C) 1996-2xxx Gerd Neugebauer
 
 bibtool [options] [-o outfile] [[-i] infile] ...
@@ -501,7 +501,7 @@ bibtool [options] [-o outfile] [[-i] infile] ...
 
 Library path: xxx
 Special configuration options: xxx
-EOF
+__EOF__
 	 fct_err =>
 		 sub{local $_	 = shift;
 		     s/Vers. 2.[0-9]+[-a-z]*/Vers. 2.xxx/;
@@ -515,13 +515,13 @@ EOF
 BUnit::run(name => 'main_version_1',
 	 args	      => '-V',
 	 expected_out => '',
-	 expected_err => <<EOF ,
+	 expected_err => <<__EOF__ ,
 BibTool Vers. 2.xxx (C) 1996-2xxx Gerd Neugebauer
 
 
 Library path: xxx
 Special configuration options: xxx
-EOF
+__EOF__
 	 fct_err =>
 		 sub{local $_ = shift;
 		     s/Vers. 2.[0-9]+[-a-z]*/Vers. 2.xxx/;
@@ -536,100 +536,6 @@ BUnit::run(name => 'main_ressource_1',
 	 args	      => '-- xyzzy=on',
 	 expected_err => "\n*** BibTool ERROR: Resource xyzzy unknown.\n");
 
-#------------------------------------------------------------------------------
-BUnit::run(name => 'main_@_1',
-	 args	      => '-@ x1',
-	 expected_err => "\n---  Manual              1 read      1 written\n");
-
-#------------------------------------------------------------------------------
-BUnit::run(name => 'main_count_1',
-	 args	      => '-- count.used=on x1',
-	 expected_err		  => "\n---  Manual              1 read      1 written\n");
-
-#------------------------------------------------------------------------------
-BUnit::run(name => 'main_count_2',
-	 args	      => '-- count.used=off x1',
-	 expected_err => '');
-
-#------------------------------------------------------------------------------
-BUnit::run(name => 'main_@_2',
-	 args	      => '-@ xampl',
-	 expected_err => <<EOF);
-
-*** BibTool WARNING:  (line 29 in ./xampl.bib): 125 non-space characters ignored.
-
----  STRING              3 read      3 written
----  PREAMBLE            1 read      1 written
----  Article             4 read      4 written
----  Book                5 read      5 written
----  Booklet             2 read      2 written
----  InBook              3 read      3 written
----  InCollection        3 read      3 written
----  InProceedings       3 read      3 written
----  Manual              2 read      2 written
----  MastersThesis       2 read      2 written
----  Misc                3 read      3 written
----  PhDThesis           2 read      2 written
----  Proceedings         3 read      3 written
----  TechReport          2 read      2 written
----  Unpublished         2 read      2 written
-EOF
-
-#------------------------------------------------------------------------------
-BUnit::run(name => 'main_#_1',
-	 args	      => '-# x1',
-	 expected_err => <<EOF);
-
----  STRING              0 read      0 written
----  PREAMBLE            0 read      0 written
----  COMMENT             0 read      0 written
----  ALIAS               0 read      0 written
----  MODIFY              0 read      0 written
----  INCLUDE             0 read      0 written
----  Article             0 read      0 written
----  Book                0 read      0 written
----  Booklet             0 read      0 written
----  Conference          0 read      0 written
----  InBook              0 read      0 written
----  InCollection        0 read      0 written
----  InProceedings       0 read      0 written
----  Manual              1 read      1 written
----  MastersThesis       0 read      0 written
----  Misc                0 read      0 written
----  PhDThesis           0 read      0 written
----  Proceedings         0 read      0 written
----  TechReport          0 read      0 written
----  Unpublished         0 read      0 written
-EOF
-
-#------------------------------------------------------------------------------
-BUnit::run(name => 'main_#_2',
-	 args	      => '-# xampl.bib',
-	 expected_err => <<EOF);
-
-*** BibTool WARNING:  (line 29 in ./xampl.bib): 125 non-space characters ignored.
-
----  STRING              3 read      3 written
----  PREAMBLE            1 read      1 written
----  COMMENT             0 read      0 written
----  ALIAS               0 read      0 written
----  MODIFY              0 read      0 written
----  INCLUDE             0 read      0 written
----  Article             4 read      4 written
----  Book                5 read      5 written
----  Booklet             2 read      2 written
----  Conference          0 read      0 written
----  InBook              3 read      3 written
----  InCollection        3 read      3 written
----  InProceedings       3 read      3 written
----  Manual              2 read      2 written
----  MastersThesis       2 read      2 written
----  Misc                3 read      3 written
----  PhDThesis           2 read      2 written
----  Proceedings         3 read      3 written
----  TechReport          2 read      2 written
----  Unpublished         2 read      2 written
-EOF
 
 1;
 #------------------------------------------------------------------------------
