@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: key.pl,v 1.3 2011-11-12 14:44:44 gene Exp $
+# $Id: key_format.pl,v 1.1 2011-11-13 19:47:17 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -36,7 +36,7 @@ use BUnit;
 
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'key_k_1',
+BUnit::run(name => '_k_1',
 	 args	      => '-k xampl.bib',
 	 expected_out => <<EOF,
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
@@ -401,7 +401,7 @@ EOF
 EOF
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'f_short_1',
+BUnit::run(name => '_f_short_1',
 	 args	      => '-f short xampl.bib',
 	 expected_out => <<EOF,
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
@@ -766,7 +766,7 @@ EOF
 EOF
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'key_K_1',
+BUnit::run(name         => '_K_1',
 	   args	        => '-K xampl.bib',
 	   expected_put => <<EOF,
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
@@ -1131,7 +1131,7 @@ EOF
 EOF
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'f_long_1',
+BUnit::run(name         => '_f_long_1',
 	   args	        => '-f long xampl.bib',
 	   expected_put => <<EOF,
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
@@ -1538,6 +1538,136 @@ EOF
 EOF
 	expected_err => <<EOF);
 EOF
+
+
+use constant DATA => <<__EOF__;
+\@Unpublished{unpublished-key,
+  author   = "First A. U. Thor and Seco N. D. Author and Third A. Uthor
+              and others",
+  title    = "This is a rather long title of an unpublished entry which
+              exceeds one line"
+}
+\@Article{,
+  author = {L[eslie] A. Aamport},
+  title = {The Gnats and Gnus Document Preparation System}
+}
+\@BOOK{whole-collection,
+    editor = "David J. Lipcoll and D. H. Lawrie and A. H. Sameh",
+    title = "High Speed Computer and Algorithm Organization"
+}
+\@MISC{misc-minimal,
+    key = "Missilany",
+    note = "This is a minimal MISC entry"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name       => 'key_format_1',
+	   args	      => '-- key.format={short}',
+	   bib 	      => DATA,
+	   expected_out => <<__EOF__);
+
+\@Unpublished{	  thor.author.ea:this,
+  author	= "First A. U. Thor and Seco N. D. Author and Third A. Uthor
+		  and others",
+  title		= "This is a rather long title of an unpublished entry which
+		  exceeds one line"
+}
+
+\@Article{	  aamport:gnats,
+  author	= {L[eslie] A. Aamport},
+  title		= {The Gnats and Gnus Document Preparation System}
+}
+
+\@Book{		  lipcoll.lawrie.ea:high,
+  editor	= "David J. Lipcoll and D. H. Lawrie and A. H. Sameh",
+  title		= "High Speed Computer and Algorithm Organization"
+}
+
+\@Misc{		  missilany,
+  key		= "Missilany",
+  note		= "This is a minimal MISC entry"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name       => 'key_format_2',
+	   args	      => '-- key.format={long}',
+	   bib 	      => DATA,
+	   expected_out => <<__EOF__);
+
+\@Unpublished{	  thor.fau.author.snd.ea:this,
+  author	= "First A. U. Thor and Seco N. D. Author and Third A. Uthor
+		  and others",
+  title		= "This is a rather long title of an unpublished entry which
+		  exceeds one line"
+}
+
+\@Article{	  aamport.la:gnats,
+  author	= {L[eslie] A. Aamport},
+  title		= {The Gnats and Gnus Document Preparation System}
+}
+
+\@Book{		  lipcoll.dj.lawrie.dh.ea:high,
+  editor	= "David J. Lipcoll and D. H. Lawrie and A. H. Sameh",
+  title		= "High Speed Computer and Algorithm Organization"
+}
+
+\@Misc{		  missilany,
+  key		= "Missilany",
+  note		= "This is a minimal MISC entry"
+}
+__EOF__
+
+use constant SAMPLE => <<__EOF__;
+\@MISC{misc,
+    author = "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_p1',
+	   resource	=> 'key.format={%p(author)}',
+	   bib		=> SAMPLE,
+	   expected_out	=> <<__EOF__);
+
+\@Misc{		  Thor.Meone.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_p2',
+	   resource	=> 'key.format={%1p(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  Thor.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_p3',
+	   resource	=> 'key.format={%-2p(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  thor.meone.ea,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'key_format_p4',
+	   resource	=> 'key.format={%+1p(author)}',
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  THOR.EA,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
 
 1;
 #------------------------------------------------------------------------------
