@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: print.pl,v 1.2 2011-11-12 12:20:25 gene Exp $
+# $Id: print.pl,v 1.3 2011-11-13 08:26:55 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -15,11 +15,11 @@
 
 =head1 NAME
 
-rsc.pl - Test suite for BibTool rsc.
+print.pl - Test suite for BibTool print.
 
 =head1 SYNOPSIS
 
-rsc.pl 
+print.pl 
 
 =head1 DESCRIPTION
 
@@ -36,13 +36,24 @@ use BUnit;
 
 
 #------------------------------------------------------------------------------
+BUnit::run(name  => 'print_0',
+    args	 => '',
+    resource 	 => 'print',
+    expected_out => '',
+    expected_err => <<__EOF__,
+
+*** BibTool ERROR:  (line 2 in ./_test.rsc): Unterminated value
+__EOF__
+    );
+
+#------------------------------------------------------------------------------
 BUnit::run(name  => 'print_1',
     args	 => '',
     resource 	 => 'print{Hello World!}',
     expected_out => '',
-    expected_err => <<EOF,
+    expected_err => <<__EOF__,
 Hello World!
-EOF
+__EOF__
     );
 
 1;

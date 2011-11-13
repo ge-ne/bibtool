@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: select.pl,v 1.1 2011-11-12 13:18:28 gene Exp $
+# $Id: select.pl,v 1.2 2011-11-13 08:26:55 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -216,6 +216,14 @@ __EOF__
 #__EOF__
 
 #------------------------------------------------------------------------------
+BUnit::run(name  => '_X_0',
+    args         => '-X',
+    expected_err => <<__EOF__);
+
+*** BibTool WARNING: Missing pattern.
+__EOF__
+
+#------------------------------------------------------------------------------
 BUnit::run(name  => '_X_1',
     args         => '-X aa',
     expected_err => '',
@@ -417,6 +425,76 @@ __EOF__
   title		= "THE TITLE"
 }
 __EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name  => '_X_c_1',
+    args         => '-X aa -c',
+    expected_err => '',
+    bib	         => <<__EOF__,
+\@article{ aa,
+  author  = "aa",
+  title	  = "the title",
+  crossref= "b"
+}
+\@article{ b,
+  author = "bb",
+  title	 = "THE TITLE"
+}
+__EOF__
+    expected_out => <<__EOF__);
+
+\@Article{	  aa,
+  author	= "aa",
+  title		= "the title",
+  crossref	= "b"
+}
+
+\@Article{	  b,
+  author	= "bb",
+  title		= "THE TITLE"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name  => '_X_c_2',
+    args         => '-X aa -c',
+    expected_err => '',
+    bib	         => <<__EOF__,
+\@article{ aa,
+  author  = "aa",
+  title	  = "the title",
+  crossref= "b"
+}
+\@article{ b,
+  author  = "bb",
+  title	  = "THE title",
+  crossref= "c"
+}
+\@article{ c,
+  author = "cc",
+  title	 = "THE TITLE"
+}
+__EOF__
+    expected_out => <<__EOF__);
+
+\@Article{	  aa,
+  author	= "aa",
+  title		= "the title",
+  crossref	= "b"
+}
+
+\@Article{	  b,
+  author	= "bb",
+  title		= "THE title",
+  crossref	= "c"
+}
+
+\@Article{	  c,
+  author	= "cc",
+  title		= "THE TITLE"
+}
+__EOF__
+
 
 1;
 #------------------------------------------------------------------------------
