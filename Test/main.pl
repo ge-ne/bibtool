@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: main.pl,v 1.4 2011-11-13 09:20:57 gene Exp $
+# $Id: main.pl,v 1.5 2011-11-13 18:22:13 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -34,20 +34,6 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
-
-#------------------------------------------------------------------------------
-my $out = 'main_out_1.bib';
-BUnit::run(name => 'main_out_1',
-    args         => "-q -o $out x1",
-    expected_out => '',
-    expected_err => '',
-    prepare      => sub { unlink($out) if -e $out; },
-    check        => sub { if (-e $out)  {
-                            unlink($out);
-			    return 0;
-			  }
-			  print STDERR "missing $out\t";
-			  return 1});
 
 #------------------------------------------------------------------------------
 BUnit::run(name => 'main_quiet_1',
