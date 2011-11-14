@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: key_format.pl,v 1.2 2011-11-13 20:26:06 gene Exp $
+# $Id: key_format.pl,v 1.3 2011-11-14 17:35:12 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -2116,7 +2116,7 @@ BUnit::run(name         => 'key_format_s5',
 __EOF__
 
 use constant SAMPLE_TITLE => <<__EOF__;
-\@MISC{misc,
+\@MISC{csim,
     title = "The Whole Title"
 }
 __EOF__
@@ -2337,6 +2337,353 @@ BUnit::run(name         => 'key_format_w5',
 	   expected_out	=> <<__EOF__);
 
 \@Misc{		  THE,
+  title		= "The Whole Title"
+}
+__EOF__
+
+foreach $_ (qw/p n N/) {
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_${_}1",
+	   resource	=> "key.format={x%2#$_(author)}",
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_${_}2",
+	   resource	=> "key.format={x%4#$_(author)}",
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  **key*,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_${_}3",
+	   resource	=> "key.format={x%-4#$_(author)}",
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_${_}4",
+	   resource	=> "key.format={x%3.4#$_(author)}",
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_${_}5",
+	   resource	=> "key.format={x%-3.4#$_(author)}",
+	   bib 	        => SAMPLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  **key*,
+  author	= "A. U. Thor and S. O. Meone and others"
+}
+__EOF__
+
+}
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_s1",
+	   resource	=> "key.format={x%#s(title)}",
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_s2",
+	   resource	=> "key.format={x%13.13#s(title)}",
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_s3",
+	   resource	=> "key.format={x%10.16#s(title)}",
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_s4",
+	   resource	=> "key.format={x%-10.16#s(title)}",
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  **key*,
+  title		= "The Whole Title"
+}
+__EOF__
+
+
+foreach $_ (qw/w t/) {
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_${_}1",
+	   resource	=> "key.format={x%#$_(title)}",
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_${_}2",
+	   resource	=> "key.format={x%3.3#$_(title)}",
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_${_}3",
+	   resource	=> "key.format={x%1.6#$_(title)}",
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_${_}4",
+	   resource	=> "key.format={x%-1.6#$_(title)}",
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  **key*,
+  title		= "The Whole Title"
+}
+__EOF__
+}
+
+foreach $_ (qw/W T/) {
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_${_}1",
+	   resource	=> "key.format={x%#$_(title)}",
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_${_}2",
+	   resource	=> "key.format={x%2.2#$_(title)}",
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_${_}3",
+	   resource	=> "key.format={x%1.6#$_(title)}",
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_hash_${_}4",
+	   resource	=> "key.format={x%-1.6#$_(title)}",
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  **key*,
+  title		= "The Whole Title"
+}
+__EOF__
+}
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_dollar_key1",
+	   resource	=> "key.format={x%s(\$key)}",
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  xcsim,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+#BUnit::run(name         => "key_format_dollar_sortkey1",
+#	   resource	=> "key.format={x%s(\$sortkey)}",
+#	   bib 	        => SAMPLE_TITLE,
+#	   expected_out => <<__EOF__);
+#
+#\@Misc{		  xcsim,
+#  title		= "The Whole Title"
+#}
+#__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_dollar_type1",
+	   resource	=> "key.format={x%s(\$type)}",
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  xMisc,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_at_type1",
+	   resource	=> "key.format={x%s(\@Book)}",
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  **key*,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_at_type2",
+	   resource	=> "key.format={x%s(\@Misc)}",
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  xMisc,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_at_type3",
+	   resource	=> 'key.format={x%s(@MISC)}',
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  xMisc,
+  title		= "The Whole Title"
+}
+__EOF__
+
+
+my ($sec,$minute,$hour,$day,$month,$year,$wday,$yday,$isdst) = localtime(time);
+$day = "0$day" if $day <= 9;
+$month++;
+$month = "0$month" if $month <= 9;
+$year += 1900;
+$hour = "0$hour" if $hour <= 9;
+$minute = "0$minute" if $minute <= 9;
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_dollar_day1",
+	   resource	=> 'key.format={x%s($day)}',
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x$day,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_dollar_month1",
+	   resource	=> 'key.format={x%s($month)}',
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x$month,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_dollar_year1",
+	   resource	=> 'key.format={x%s($year)}',
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x$year,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_dollar_hour1",
+	   resource	=> 'key.format={x%s($hour)}',
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x$hour,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_dollar_minute1",
+	   resource	=> 'key.format={x%s($minute)}',
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x$minute,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_dollar_user1",
+	   resource	=> 'key.format={x%s($user)}',
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x$ENV{USER},
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_dollar_hostname1",
+	   resource	=> 'key.format={x%s($hostname)}',
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  x$ENV{HOSTNAME},
   title		= "The Whole Title"
 }
 __EOF__
