@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.20 2011-11-13 13:52:38 gene Exp $
+%% $Id: bibtool.tex,v 1.21 2011-11-14 18:12:32 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -2395,8 +2395,8 @@ list:
         \end{Example}\index{D@\%D|)}
 
 
-  \item [\texttt{s}] \index{s@\%s|(}Take a field as is (after translation of special
-        characters).\\ 
+  \item [\texttt{s}] \index{s@\%s|(}Take a field as is (after translation of
+    special characters).\\ 
         At most \textit{pre} characters are used.
 
         \textit{pre} defaults to a large number.
@@ -2577,9 +2577,9 @@ list:
 
           \begin{tabular}{ll}
             \texttt{\%\#s(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%13,13\#s(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%10,16\#s(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%-10,16\#s(title)}	& \textit{fails}
+            \texttt{\%13.13\#s(title)}	& \textit{succeeds with empty result}\\
+            \texttt{\%10.16\#s(title)}	& \textit{succeeds with empty result}\\
+            \texttt{\%-10.16\#s(title)}	& \textit{fails}
           \end{tabular}
         \end{Example}\index{s@\%\#s|)}
  
@@ -2612,9 +2612,9 @@ list:
 
           \begin{tabular}{ll}
             \texttt{\%\#w(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%3,3\#w(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%1,6\#w(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%-1,1\#w(title)}	& \textit{fails}
+            \texttt{\%3.3\#w(title)}	& \textit{succeeds with empty result}\\
+            \texttt{\%1.6\#w(title)}	& \textit{succeeds with empty result}\\
+            \texttt{\%-1.6\#w(title)}	& \textit{fails}
           \end{tabular}
         \end{Example}\index{w@\%\#w|)}
 
@@ -2651,9 +2651,9 @@ list:
 
           \begin{tabular}{ll}
             \texttt{\%\#W(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%2,2\#W(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%1,6\#W(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%-1,6\#W(title)}	& \textit{fails}
+            \texttt{\%2.2\#W(title)}	& \textit{succeeds with empty result}\\
+            \texttt{\%1.6\#W(title)}	& \textit{succeeds with empty result}\\
+            \texttt{\%-1.6\#W(title)}	& \textit{fails}
           \end{tabular}
         \end{Example}\index{w@\%\#w|)}
 
@@ -2707,7 +2707,7 @@ fields. They are listed below.
   This pseudo field contains the string according to which the sorting is
   performed. It defaults to the reference key.
 
-\item [\texttt{\$default}.key]
+\item [\texttt{\$default.key}]
   This pseudo field contains the value of the resource \rsc{default.key}
   similarly the resources \rsc{fmt.name.title}, \rsc{fmt.title.title},
   \rsc{fmt.name.name}, \rsc{fmt.inter.name}, \rsc{fmt.name.pre}, and
@@ -2720,7 +2720,7 @@ fields. They are listed below.
 
 \item [\texttt{\$type}]
   This pseudo field contains the type of the entry, i.e.\ the string following
-  the initial \texttt{@} of an \BibTeX{} entry. E.g.\ \texttt{article}. It is
+  the initial \texttt{@} of an \BibTeX{} entry, e.g.\ \texttt{article}. It is
   always present.
 
 \item [\texttt{@}\textit{type}]
