@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: BUnit.pm,v 1.10 2011-11-12 14:44:43 gene Exp $
+# $Id: BUnit.pm,v 1.11 2011-11-16 18:26:13 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -66,7 +66,7 @@ our $verbose = 1;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.10 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.11 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -119,9 +119,10 @@ sub run {
   my $err  = "$name.err";
   my $null = "/dev/null";
 
-  my $rsc = store_file(TEST_RSC, $a{resource}, "-r ".TEST_RSC);
-  my $bib = store_file(TEST_BIB, $a{bib}, TEST_BIB);
-  local $_ = `$BIBTOOL $rsc $a{args} $bib <$null 1>$out 2>$err`;
+  my $rsc  = store_file(TEST_RSC, $a{resource}, "-r ".TEST_RSC);
+  my $bib  = store_file(TEST_BIB, $a{bib}, TEST_BIB);
+  my $args = $a{args} || '';
+  local $_ = `$BIBTOOL $rsc $args $bib <$null 1>$out 2>$err`;
 
   if ( run_check($name, $a{check}) +
        check($a{expected_out}, $out, 'out', $a{fct_out}) +
