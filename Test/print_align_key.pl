@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 ##*****************************************************************************
-## $Id: print_align_key.pl,v 1.1 2011-11-19 06:44:09 gene Exp $
+## $Id: print_align_key.pl,v 1.2 2011-11-19 06:44:53 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -38,7 +38,7 @@ use BUnit;
 
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'print_align_key_f1',
+BUnit::run(name         => 'print_align_key_1',
 	   resource	=> <<__EOF__ ,
 print.align.key = 0
 __EOF__
@@ -57,7 +57,7 @@ __EOF__
 
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'print_align_key_f1',
+BUnit::run(name         => 'print_align_key_2',
 	   resource	=> <<__EOF__ ,
 print.align.key = 1
 __EOF__
@@ -76,7 +76,7 @@ __EOF__
 
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'print_align_key_f1',
+BUnit::run(name         => 'print_align_key_3',
 	   resource	=> <<__EOF__ ,
 print.align.key = 24
 __EOF__
