@@ -1,21 +1,28 @@
 #!/usr/bin/perl -w
 ##*****************************************************************************
-## $Id: print_indent.pl,v 1.1 2011-11-19 06:50:26 gene Exp $
+## $Id: print_indent.t,v 1.1 2011-11-20 15:22:45 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
 
 =head1 NAME
 
-print_indent.pl - Test suite for BibTool print.indent.
+print_indent.t - Test suite for BibTool print.indent.
 
 =head1 SYNOPSIS
 
-print_indent.pl
+print_indent.t
 
 =head1 DESCRIPTION
 
+This module contains some test cases. Running this module as program
+will run all test cases and print a summary for each. Optionally files
+*.out and *.err are left if the expected result does not match the
+actual result.
+
 =head1 OPTIONS
+
+none
 
 =head1 AUTHOR
 

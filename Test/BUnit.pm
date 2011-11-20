@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: BUnit.pm,v 1.11 2011-11-16 18:26:13 gene Exp $
+# $Id: BUnit.pm,v 1.12 2011-11-20 15:22:45 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -66,7 +66,7 @@ our $verbose = 1;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.11 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.12 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -79,6 +79,12 @@ our $BIBTOOL = '../bibtool';
 # Description:	
 #
 our %summary = ();
+
+#------------------------------------------------------------------------------
+# Variable:	%id
+# Description:	
+#
+our %names = ();
 
 our ($success,$ignored,$failure);
 
@@ -99,9 +105,15 @@ sub out (@) {
 # Function:	run
 #
 sub run {
-  my %a		   = @_;
-  my $name	   = $a{name};
-  my $prepare      = $a{prepare};
+  my %a	      = @_;
+  my $name    = $a{name};
+  my $prepare = $a{prepare};
+
+  if (defined $names{$name}) {
+    out "*** Warning: Multiple test cases named $name\n";
+  } else {
+    $names{$name} = 1;
+  }
 
   &{$prepare}($name) if defined $prepare;
 
@@ -112,7 +124,7 @@ sub run {
   if ($a{ignore}) {
     $ignored++;
     out "ignored\n";
-    return;
+    return 1;
   }
 
   my $out  = "$name.out";
@@ -122,7 +134,8 @@ sub run {
   my $rsc  = store_file(TEST_RSC, $a{resource}, "-r ".TEST_RSC);
   my $bib  = store_file(TEST_BIB, $a{bib}, TEST_BIB);
   my $args = $a{args} || '';
-  local $_ = `$BIBTOOL $rsc $args $bib <$null 1>$out 2>$err`;
+
+  `$BIBTOOL $rsc $args $bib <$null 1>$out 2>$err`;
 
   if ( run_check($name, $a{check}) +
        check($a{expected_out}, $out, 'out', $a{fct_out}) +
@@ -169,21 +182,18 @@ sub run_check {
 sub check {
   my ($expected, $file, $type, $fct) = @_;
 
-  if (not defined $expected) {
-    unlink $file;
-    return 0
-  }
-
-  my $fd   = new FileHandle($file,'r') || die("$file: $!\n");
-  local $/ = undef;
-  local $_ = <$fd>;
-  $fd->close();
-
-  $_ = &$fct($_) if defined $fct;
-
-  if ($_ ne $expected) {
-    out "\n***\tdifference in $type; ";
-    return 1;
+  if (defined $expected) {
+    my $fd   = new FileHandle($file,'r') || die("$file: $!\n");
+    local $/ = undef;
+    local $_ = <$fd>;
+    $fd->close();
+    
+    $_ = &$fct($_) if defined $fct;
+    
+    if ($_ ne $expected) {
+      out "\n***\tSee actual $type in $file; ";
+      return 1;
+    }
   }
   unlink $file;
   return 0;
@@ -193,7 +203,7 @@ sub check {
 # Function:	all
 #
 sub all {
-  suites (glob '*.pl')
+  suites (glob '*.t')
 }
 
 #------------------------------------------------------------------------------
@@ -214,7 +224,7 @@ sub suites {
     $ignored = 0;
     $failure = 0;
     $suite   = $_;
-    $suite   =~ s/.pl$//;
+    $suite   =~ s/\.t$//;
 #    out "$suite:\n";
     my $ret = do "$_";
     unless($ret) {
@@ -222,6 +232,7 @@ sub suites {
       } elsif(not defined $ret) { warn "couldn't do $_: $!\n"
       } else {                    warn "couldn't run $_\n"
       }
+      $failure++;
     }
     $summary{$_} = [$success, $ignored, $failure];
   }
@@ -233,7 +244,7 @@ sub suites {
 
   foreach $suite (@a) {
     $_ = $suite;
-    s/\.pl$//;
+    s/\.t$//;
     printf("%-${len}ssuccess: %3d  ignored: %3d  failure: %3d\n", $_,
 	     $summary{$suite}[0], $summary{$suite}[1], $summary{$suite}[2])
 	if $verbose;
@@ -244,14 +255,34 @@ sub suites {
 
   $_ = $success + $ignored + $failure;
   if ($_ == 0) { $_ = 100 } else { $_ = 100. * $success/$_; }
-  printf("\n%-${len}ssuccess: %3d  ignored: %3d  failure: %3d  sucess rate: %3.1f%%\n",
-	 'TOTAL:',
+  printf("%s\n%-${len}ssuccess: %3d  ignored: %3d  failure: %3d\n%${len}ssucess rate: %3.2f%%\n",
+	 ('_' x ($len+40)),
+	 'TOTAL',
 	 $success,
 	 $ignored,
 	 $failure,
+	 '',
 	 $_) if $verbose;
 
   return $failure;
+}
+
+#------------------------------------------------------------------------------
+# Function:	get_library_path
+#
+sub get_library_path {
+  my $err  = '_lib.err';
+  `$BIBTOOL -h 2>$err`;
+
+  my $library_path;
+  local $_;
+  my $fd = new FileHandle($err) || die "$err: $!\n";
+  while(<$fd>) {
+    $library_path = $1 if m/^Library path: (.*)/;
+  }
+  $fd->close();
+  unlink($err);
+  return $library_path;
 }
 
 1;

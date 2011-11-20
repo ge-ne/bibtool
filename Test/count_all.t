@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: count_all.pl,v 1.1 2011-11-13 18:22:13 gene Exp $
+# $Id: count_all.t,v 1.1 2011-11-20 15:22:45 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -15,15 +15,22 @@
 
 =head1 NAME
 
-count_used.pl - Test suite for BibTool count.used.
+count_used.t - Test suite for BibTool count.used.
 
 =head1 SYNOPSIS
 
-count_used.pl 
+count_used.t 
 
 =head1 DESCRIPTION
 
+This module contains some test cases. Running this module as program
+will run all test cases and print a summary for each. Optionally files
+*.out and *.err are left if the expected result does not match the
+actual result.
+
 =head1 OPTIONS
+
+none
 
 =head1 AUTHOR
 
@@ -37,7 +44,7 @@ use BUnit;
 
 #------------------------------------------------------------------------------
 BUnit::run(name => 'count_all_1',
-	 args	      => '--count.all=on x1',
+	 args	      => '--count.all=on bib/x1',
 	 expected_err		     => <<__EOF__);
 
 ---  STRING              0 read      0 written
@@ -64,10 +71,10 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name => 'count_all_2',
-	 args	      => '--count.all=on xampl.bib',
+	 args	      => '--count.all=on bib/xampl.bib',
 	 expected_err		     => <<__EOF__);
 
-*** BibTool WARNING:  (line 29 in ./xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING:  (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
 
 ---  STRING              3 read      3 written
 ---  PREAMBLE            1 read      1 written
@@ -93,7 +100,7 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name => '_hash_1',
-	 args	      => '-# x1',
+	 args	      => '-# bib/x1',
 	 expected_err => <<__EOF__);
 
 ---  STRING              0 read      0 written
@@ -120,10 +127,10 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name => '_hash_2',
-	 args	      => '-# xampl.bib',
+	 args	      => '-# bib/xampl.bib',
 	 expected_err => <<__EOF__);
 
-*** BibTool WARNING:  (line 29 in ./xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING:  (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
 
 ---  STRING              3 read      3 written
 ---  PREAMBLE            1 read      1 written

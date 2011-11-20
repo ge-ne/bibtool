@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: main.pl,v 1.5 2011-11-13 18:22:13 gene Exp $
+# $Id: main.t,v 1.1 2011-11-20 15:22:45 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -15,15 +15,22 @@
 
 =head1 NAME
 
-main.pl - Test suite for BibTool main.
+main.t - Test suite for BibTool main.
 
 =head1 SYNOPSIS
 
-main.pl 
+main.t 
 
 =head1 DESCRIPTION
 
+This module contains some test cases. Running this module as program
+will run all test cases and print a summary for each. Optionally files
+*.out and *.err are left if the expected result does not match the
+actual result.
+
 =head1 OPTIONS
+
+none
 
 =head1 AUTHOR
 
@@ -36,19 +43,13 @@ use BUnit;
 
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'main_quiet_1',
-	 args	      => '-q xyzzy',
-	 expected_out => '',
-	 expected_err => '');
-
-#------------------------------------------------------------------------------
-BUnit::run(name => 'main_000',
+BUnit::run(name => 'main_0',
 	 args	      => '',
 	 expected_out => '',
 	 expected_err => '');
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'main_001',
+BUnit::run(name => 'main_1',
 	 args	      => 'xyzzy',
 	 expected_out => '',
 	 expected_err => <<__EOF__);
@@ -57,8 +58,8 @@ BUnit::run(name => 'main_001',
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'main_002',
-	 args	      => 'x1.bib',
+BUnit::run(name => 'main_2',
+	 args	      => 'bib/x1.bib',
 	 expected_out => <<__EOF__,
 
 \@Manual{	  bibtool,
@@ -70,8 +71,8 @@ __EOF__
 	 expected_err => '');
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'main_003',
-	 args	      => 'x1',
+BUnit::run(name => 'main_3',
+	 args	      => 'bib/x1',
 	 expected_out => <<__EOF__,
 
 \@Manual{	  bibtool,
@@ -83,8 +84,8 @@ __EOF__
 	 expected_err => '');
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'main_010',
-	 args	      => 'xampl.bib',
+BUnit::run(name => 'main_4',
+	 args	      => 'bib/xampl.bib',
 	 expected_out => <<__EOF__,
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -444,11 +445,11 @@ BUnit::run(name => 'main_010',
 __EOF__
 	expected_err => <<__EOF__);
 
-*** BibTool WARNING:  (line 29 in ./xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING:  (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'main_help_1',
+BUnit::run(name => '_h_1',
 	 args	      => '-h',
 	 expected_out => '',
 	 expected_err => <<__EOF__ ,
@@ -498,7 +499,7 @@ __EOF__
 		 } );
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'main_version_1',
+BUnit::run(name => '_V_1',
 	 args	      => '-V',
 	 expected_out => '',
 	 expected_err => <<__EOF__ ,
@@ -518,8 +519,14 @@ __EOF__
 		 } );
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'main_ressource_1',
+BUnit::run(name => '_dash_dash_1',
 	 args	      => '-- xyzzy=on',
+	 expected_err => "\n*** BibTool ERROR: Resource xyzzy unknown.\n");
+
+
+#------------------------------------------------------------------------------
+BUnit::run(name => '_dash_dash_2',
+	 args	      => '--xyzzy=on',
 	 expected_err => "\n*** BibTool ERROR: Resource xyzzy unknown.\n");
 
 

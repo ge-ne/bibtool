@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: output_file.pl,v 1.1 2011-11-16 18:51:06 gene Exp $
+# $Id: output_file.t,v 1.1 2011-11-20 15:22:45 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -15,15 +15,22 @@
 
 =head1 NAME
 
-main.pl - Test suite for BibTool main.
+main.t - Test suite for BibTool main.
 
 =head1 SYNOPSIS
 
-main.pl 
+main.t 
 
 =head1 DESCRIPTION
 
+This module contains some test cases. Running this module as program
+will run all test cases and print a summary for each. Optionally files
+*.out and *.err are left if the expected result does not match the
+actual result.
+
 =head1 OPTIONS
+
+none
 
 =head1 AUTHOR
 
@@ -49,7 +56,7 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name => 'output_file_1',
-    args         => "-q --output.file=".OUT_FILE." x1",
+    args         => "-q --output.file=".OUT_FILE." bib/x1",
     expected_out => '',
     expected_err => '',
     prepare      => sub { unlink(OUT_FILE) if -e OUT_FILE; },
@@ -71,7 +78,7 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name => '_o_1',
-    args         => "-q -o ".OUT_FILE." x1",
+    args         => "-q -o ".OUT_FILE." bib/x1",
     expected_out => '',
     expected_err => '',
     prepare      => sub { unlink(OUT_FILE) if -e OUT_FILE; },

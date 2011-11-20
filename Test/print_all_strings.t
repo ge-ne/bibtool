@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: symbol_type.pl,v 1.1 2011-11-16 18:51:06 gene Exp $
+# $Id: print_all_strings.t,v 1.1 2011-11-20 15:22:45 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -15,15 +15,22 @@
 
 =head1 NAME
 
-print.pl - Test suite for BibTool print.
+print_all_strings.t - Test suite for BibTool print.all.strings.
 
 =head1 SYNOPSIS
 
-print.pl 
+print_all_strings.t 
 
 =head1 DESCRIPTION
 
+This module contains some test cases. Running this module as program
+will run all test cases and print a summary for each. Optionally files
+*.out and *.err are left if the expected result does not match the
+actual result.
+
 =head1 OPTIONS
+
+none
 
 =head1 AUTHOR
 
@@ -36,54 +43,45 @@ use BUnit;
 
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'symbol_type_1',
-	   args         => '-- symbol.type=xyz',
-	   bib		=> <<EOF,
-EOF
-	   expected_out => <<EOF,
-EOF
-    expected_err => <<EOF
-*** BibTool: Unknown symbol type ignored.
-EOF
-    );
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'symbol_type_2',
-	   args         => '-- symbol.type=upper',
-	   bib		=> <<EOF,
+BUnit::run(name         => 'print_all_strings_1',
+	   args         => '-- print.all.strings=on',
+	   bib		=> <<__EOF__,
 \@String{BT  ="BibTool"}
+\@String{TeX ="\\TeX"}
 
 \@Manual{BibTool,
   title = 	 BT,
   author =	 {Gerd Neugebauer},
   year =	 2011
 }
-EOF
-	   expected_out => <<EOF,
-\@STRING{BT	= "BibTool" }
+__EOF__
+	   expected_out => <<__EOF__,
+\@STRING{bt	= "BibTool" }
+\@STRING{tex	= "\\TeX" }
 
 \@Manual{	  bibtool,
-  TITLE		= BT,
-  AUTHOR	= {Gerd Neugebauer},
-  YEAR		= 2011
+  title		= bt,
+  author	= {Gerd Neugebauer},
+  year		= 2011
 }
-EOF
+__EOF__
     expected_err => ''
     );
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'symbol_type_3',
-	   args         => '-- symbol.type=lower',
-	   bib		=> <<EOF,
+BUnit::run(name         => 'print_all_strings_2',
+	   args         => '-- print.all.strings=off',
+	   bib		=> <<__EOF__,
 \@String{BT  ="BibTool"}
+\@String{TeX ="\\TeX"}
 
 \@Manual{BibTool,
-  Title = 	 BT,
-  Author =	 {Gerd Neugebauer},
-  Year =	 2011
+  title = 	 BT,
+  author =	 {Gerd Neugebauer},
+  year =	 2011
 }
-EOF
-	   expected_out => <<EOF,
+__EOF__
+	   expected_out => <<__EOF__,
 \@STRING{bt	= "BibTool" }
 
 \@Manual{	  bibtool,
@@ -91,34 +89,11 @@ EOF
   author	= {Gerd Neugebauer},
   year		= 2011
 }
-EOF
+__EOF__
     expected_err => ''
     );
 
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'symbol_type_4',
-	   args         => '-- symbol.type=cased',
-	   bib		=> <<EOF,
-\@String{BT  ="BibTool"}
-
-\@Manual{BibTool,
-  title = 	 BT,
-  author =	 {Gerd Neugebauer},
-  year =	 2011
-}
-EOF
-	   expected_out => <<EOF,
-\@STRING{Bt	= "BibTool" }
-
-\@Manual{	  bibtool,
-  Title		= Bt,
-  Author	= {Gerd Neugebauer},
-  Year		= 2011
-}
-EOF
-    expected_err => ''
-    );
-
+1;
 #------------------------------------------------------------------------------
 # Local Variables: 
 # mode: perl

@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: extract_file.pl,v 1.2 2011-11-12 14:45:01 gene Exp $
+# $Id: extract_file.t,v 1.1 2011-11-20 15:22:45 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -15,15 +15,22 @@
 
 =head1 NAME
 
-extract_file.pl - Test suite for BibTool extract.file.
+extract_file.t - Test suite for BibTool extract.file.
 
 =head1 SYNOPSIS
 
-extract_file.pl 
+extract_file.t 
 
 =head1 DESCRIPTION
 
+This module contains some test cases. Running this module as program
+will run all test cases and print a summary for each. Optionally files
+*.out and *.err are left if the expected result does not match the
+actual result.
+
 =head1 OPTIONS
+
+none
 
 =head1 AUTHOR
 
@@ -53,7 +60,7 @@ BUnit::run(name => '_x_2',
       print $fd <<__EOF__;
 \\citation{whole-collection}
 \\bibstyle{alpha}
-\\bibdata{xampl_s.bib}
+\\bibdata{bib/xampl_s.bib}
 __EOF__
       $fd->close();
 	   },
@@ -87,7 +94,7 @@ BUnit::run(name => 'extract_file_2',
       print $fd <<__EOF__;
 \\citation{whole-collection}
 \\bibstyle{alpha}
-\\bibdata{xampl_s.bib}
+\\bibdata{bib/xampl_s.bib}
 __EOF__
       $fd->close();
 	   },

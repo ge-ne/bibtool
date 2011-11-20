@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: key_format.pl,v 1.3 2011-11-14 17:35:12 gene Exp $
+# $Id: key_format.t,v 1.1 2011-11-20 15:22:45 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -15,15 +15,22 @@
 
 =head1 NAME
 
-key.pl - Test suite for BibTool key.
+key.t - Test suite for BibTool key.
 
 =head1 SYNOPSIS
 
-key.pl 
+key.t 
 
 =head1 DESCRIPTION
 
+This module contains some test cases. Running this module as program
+will run all test cases and print a summary for each. Optionally files
+*.out and *.err are left if the expected result does not match the
+actual result.
+
 =head1 OPTIONS
+
+none 
 
 =head1 AUTHOR
 
@@ -37,7 +44,7 @@ use BUnit;
 
 #------------------------------------------------------------------------------
 BUnit::run(name => '_k_1',
-	 args	      => '-k xampl.bib',
+	 args	      => '-k bib/xampl.bib',
 	 expected_out => <<EOF,
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -397,12 +404,12 @@ BUnit::run(name => '_k_1',
 EOF
 	expected_err => <<EOF);
 
-*** BibTool WARNING:  (line 29 in ./xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING:  (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
 EOF
 
 #------------------------------------------------------------------------------
 BUnit::run(name => '_f_short_1',
-	 args	      => '-f short xampl.bib',
+	 args	      => '-f short bib/xampl.bib',
 	 expected_out => <<EOF,
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -762,12 +769,12 @@ BUnit::run(name => '_f_short_1',
 EOF
 	expected_err => <<EOF);
 
-*** BibTool WARNING:  (line 29 in ./xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING:  (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
 EOF
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => '_K_1',
-	   args	        => '-K xampl.bib',
+	   args	        => '-K bib/xampl.bib',
 	   expected_put => <<EOF,
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -1127,12 +1134,12 @@ BUnit::run(name         => '_K_1',
 EOF
 	expected_err => <<EOF);
 
-*** BibTool WARNING:  (line 29 in ./xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING:  (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
 EOF
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => '_f_long_1',
-	   args	        => '-f long xampl.bib',
+	   args	        => '-f long bib/xampl.bib',
 	   expected_put => <<EOF,
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -1492,7 +1499,7 @@ BUnit::run(name         => '_f_long_1',
 EOF
 	expected_err => <<EOF);
 
-*** BibTool WARNING:  (line 29 in ./xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING:  (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
 EOF
 
 #------------------------------------------------------------------------------
@@ -1622,105 +1629,6 @@ __EOF__
 use constant SAMPLE => <<__EOF__;
 \@MISC{misc,
     author = "A. U. Thor and S. O. Meone and others"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'key_format_p1',
-	   resource	=> 'key.format={%p(author)}',
-	   bib		=> SAMPLE,
-	   expected_out	=> <<__EOF__);
-
-\@Misc{		  Thor.Meone.ea,
-  author	= "A. U. Thor and S. O. Meone and others"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'key_format_p2',
-	   resource	=> 'key.format={%1p(author)}',
-	   bib 	        => SAMPLE,
-	   expected_out => <<__EOF__);
-
-\@Misc{		  Thor.ea,
-  author	= "A. U. Thor and S. O. Meone and others"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'key_format_p3',
-	   resource	=> 'key.format={%-2p(author)}',
-	   bib 	        => SAMPLE,
-	   expected_out => <<__EOF__);
-
-\@Misc{		  thor.meone.ea,
-  author	= "A. U. Thor and S. O. Meone and others"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'key_format_p4',
-	   resource	=> 'key.format={%+1p(author)}',
-	   bib 	        => SAMPLE,
-	   expected_out => <<__EOF__);
-
-\@Misc{		  THOR.EA,
-  author	= "A. U. Thor and S. O. Meone and others"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'key_format_n1',
-	   resource	=> 'key.format={%n(author)}',
-	   bib		=> SAMPLE,
-	   expected_out	=> <<__EOF__);
-
-\@Misc{		  Thor.Meone.ea,
-  author	= "A. U. Thor and S. O. Meone and others"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'key_format_n2',
-	   resource	=> 'key.format={%1n(author)}',
-	   bib 	        => SAMPLE,
-	   expected_out => <<__EOF__);
-
-\@Misc{		  Thor.ea,
-  author	= "A. U. Thor and S. O. Meone and others"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'key_format_n3',
-	   resource	=> 'key.format={%-2n(author)}',
-	   bib 	        => SAMPLE,
-	   expected_out => <<__EOF__);
-
-\@Misc{		  thor.meone.ea,
-  author	= "A. U. Thor and S. O. Meone and others"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'key_format_n4',
-	   resource	=> 'key.format={%+1n(author)}',
-	   bib 	        => SAMPLE,
-	   expected_out => <<__EOF__);
-
-\@Misc{		  THOR.EA,
-  author	= "A. U. Thor and S. O. Meone and others"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'key_format_n5',
-	   resource	=> 'key.format={%.3n(author)}',
-	   bib 	        => SAMPLE,
-	   expected_out => <<__EOF__);
-
-\@Misc{		  Tho.Meo.ea,
-  author	= "A. U. Thor and S. O. Meone and others"
 }
 __EOF__
 
@@ -1962,7 +1870,7 @@ BUnit::run(name         => 'key_format_d7',
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'key_format_d7',
+BUnit::run(name         => 'key_format_d8',
 	   resource	=> 'key.format={x%.3d(pages)}',
 	   bib		=> SAMPLE_NUM,
 	   expected_out	=> <<__EOF__);
@@ -2050,7 +1958,7 @@ BUnit::run(name         => 'key_format_D7',
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'key_format_D7',
+BUnit::run(name         => 'key_format_D8',
 	   resource	=> 'key.format={x%.3D(pages)}',
 	   bib		=> SAMPLE_NUM,
 	   expected_out	=> <<__EOF__);
@@ -2684,6 +2592,61 @@ BUnit::run(name         => "key_format_dollar_hostname1",
 	   expected_out => <<__EOF__);
 
 \@Misc{		  x$ENV{HOSTNAME},
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_or1",
+	   resource	=> 'key.format={x%#s(abc) # fallback}',
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  fallback,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_cond1",
+	   resource	=> 'key.format={(abc){then}{else}}',
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  else,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_cond2",
+	   resource	=> 'key.format={(title){then}{else}}',
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  then,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_cond3",
+	   resource	=> 'key.format={($key){then}{else}}',
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  then,
+  title		= "The Whole Title"
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "key_format_group1",
+	   resource	=> 'key.format={{%N(author) # --no-author-- } {%T(title) # --no-title-- } x}',
+	   bib 	        => SAMPLE_TITLE,
+	   expected_out => <<__EOF__);
+
+\@Misc{		  --no-author--Wholex,
   title		= "The Whole Title"
 }
 __EOF__

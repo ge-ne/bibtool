@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: print.pl,v 1.3 2011-11-13 08:26:55 gene Exp $
+# $Id: delete_field.t,v 1.1 2011-11-20 15:22:45 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -15,15 +15,22 @@
 
 =head1 NAME
 
-print.pl - Test suite for BibTool print.
+delete_field.t - Test suite for BibTool delete.field.
 
 =head1 SYNOPSIS
 
-print.pl 
+delete_field.t 
 
 =head1 DESCRIPTION
 
+This module contains some test cases. Running this module as program
+will run all test cases and print a summary for each. Optionally files
+*.out and *.err are left if the expected result does not match the
+actual result.
+
 =head1 OPTIONS
+
+none
 
 =head1 AUTHOR
 
@@ -34,27 +41,32 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
+#------------------------------------------------------------------------------
+BUnit::run(name => 'delete_field_1',
+    args	 => 'bib/x1.bib',
+    resource 	 => 'delete.field={xyzzy}',
+    expected_out => <<__EOF__,
+
+\@Manual{	  bibtool,
+  title		= {BibTool},
+  author	= {Gerd Neugebauer},
+  year		= 2011
+}
+__EOF__
+    expected_err => '' );
 
 #------------------------------------------------------------------------------
-BUnit::run(name  => 'print_0',
-    args	 => '',
-    resource 	 => 'print',
-    expected_out => '',
-    expected_err => <<__EOF__,
+BUnit::run(name => 'delete_field_2',
+    args	 => 'bib/x1.bib',
+    resource 	 => 'delete.field={year}',
+    expected_out => <<__EOF__,
 
-*** BibTool ERROR:  (line 2 in ./_test.rsc): Unterminated value
+\@Manual{	  bibtool,
+  title		= {BibTool},
+  author	= {Gerd Neugebauer}
+}
 __EOF__
-    );
-
-#------------------------------------------------------------------------------
-BUnit::run(name  => 'print_1',
-    args	 => '',
-    resource 	 => 'print{Hello World!}',
-    expected_out => '',
-    expected_err => <<__EOF__,
-Hello World!
-__EOF__
-    );
+    expected_err => '' );
 
 1;
 #------------------------------------------------------------------------------

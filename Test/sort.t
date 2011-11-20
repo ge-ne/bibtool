@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: sort.pl,v 1.2 2011-11-12 13:18:28 gene Exp $
+# $Id: sort.t,v 1.1 2011-11-20 15:22:45 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -15,15 +15,22 @@
 
 =head1 NAME
 
-sort.pl - Test suite for BibTool sort.
+sort.t - Test suite for BibTool sort.
 
 =head1 SYNOPSIS
 
-sort.pl 
+sort.t 
 
 =head1 DESCRIPTION
 
+This module contains some test cases. Running this module as program
+will run all test cases and print a summary for each. Optionally files
+*.out and *.err are left if the expected result does not match the
+actual result.
+
 =head1 OPTIONS
+
+none
 
 =head1 AUTHOR
 
@@ -37,7 +44,7 @@ use BUnit;
 
 #------------------------------------------------------------------------------
 BUnit::run(name => '_s_1',
-    args              => '-s xampl_s.bib',
+    args              => '-s bib/xampl_s.bib',
     expected_out      => <<EOF,
 \@STRING{acm	= "The OX Association for Computing Machinery" }
 \@STRING{stoc	= " Symposium on the Theory of Computing" }
@@ -192,7 +199,7 @@ EOF
 
 #------------------------------------------------------------------------------
 BUnit::run(name => 'sort_1',
-    args              => '--sort=on xampl_s.bib',
+    args              => '--sort=on bib/xampl_s.bib',
     expected_out		=> <<EOF,
 \@STRING{acm	= "The OX Association for Computing Machinery" }
 \@STRING{stoc	= " Symposium on the Theory of Computing" }
@@ -346,7 +353,7 @@ EOF
 
 #------------------------------------------------------------------------------
 BUnit::run(name => '_S_1',
-    args              => '-S xampl_s.bib',
+    args              => '-S bib/xampl_s.bib',
     expected_out      => <<EOF,
 \@STRING{acm	= "The OX Association for Computing Machinery" }
 \@STRING{stoc	= " Symposium on the Theory of Computing" }
@@ -501,7 +508,7 @@ EOF
 
 #------------------------------------------------------------------------------
 BUnit::run(name => 'sort_reverse_1',
-    args              => '--sort=on --sort.reverse=on xampl_s.bib',
+    args              => '--sort=on --sort.reverse=on bib/xampl_s.bib',
     expected_out		=> <<EOF,
 \@STRING{acm	= "The OX Association for Computing Machinery" }
 \@STRING{stoc	= " Symposium on the Theory of Computing" }
@@ -655,7 +662,7 @@ EOF
 
 #------------------------------------------------------------------------------
 BUnit::run(name => 'sort_reverse_2',
-    args              => '--sort=on --sort.reverse=off xampl_s.bib',
+    args              => '--sort=on --sort.reverse=off bib/xampl_s.bib',
     expected_out		=> <<EOF,
 \@STRING{acm	= "The OX Association for Computing Machinery" }
 \@STRING{stoc	= " Symposium on the Theory of Computing" }

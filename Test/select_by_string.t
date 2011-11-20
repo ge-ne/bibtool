@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: select.pl,v 1.2 2011-11-13 08:26:55 gene Exp $
+# $Id: select_by_string.t,v 1.1 2011-11-20 15:22:45 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -15,15 +15,22 @@
 
 =head1 NAME
 
-select.pl - Test suite for BibTool select.
+select_by_string.t - Test suite for BibTool select.by.string.
 
 =head1 SYNOPSIS
 
-select.pl 
+select_by_string.t 
 
 =head1 DESCRIPTION
 
+This module contains some test cases. Running this module as program
+will run all test cases and print a summary for each. Optionally files
+*.out and *.err are left if the expected result does not match the
+actual result.
+
 =head1 OPTIONS
+
+none
 
 =head1 AUTHOR
 
@@ -36,7 +43,7 @@ use BUnit;
 
 #------------------------------------------------------------------------------
 BUnit::run(name  => 'select_by_string_1',
-    args	 => '--select.by.string=\'{"none"}\' xampl.bib',
+    args	 => '--select.by.string=\'{"none"}\' bib/xampl.bib',
     expected_out => <<__EOF__);
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -49,7 +56,7 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name  => 'select_by_string_2',
-    args	 => '--select.by.string=\'{"anual-mi"}\' xampl.bib',
+    args	 => '--select.by.string=\'{"anual-mi"}\' bib/xampl.bib',
     expected_out => <<__EOF__);
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -67,7 +74,7 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name  => 'select_by_string_3',
-    args	 => '--select.by.string=\'{"manmaker"}\' xampl.bib',
+    args	 => '--select.by.string=\'{"manmaker"}\' bib/xampl.bib',
     expected_out => <<__EOF__);
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -96,7 +103,7 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name  => 'select_by_string_4',
-    args	 => '--select.by.string=\'{"MISC"}\' xampl.bib',
+    args	 => '--select.by.string=\'{"MISC"}\' bib/xampl.bib',
     expected_out => <<__EOF__);
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -123,7 +130,7 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name  => 'select_by_string_10',
-    args	 => '--select.by.string=\'{"MISC"}\' xampl.bib',
+    args	 => '--select.by.string=\'{"MISC"}\' bib/xampl.bib',
     expected_out => <<__EOF__);
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -150,7 +157,7 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name  => 'select_by_string_11',
-    args	 => '--select.by.string=\'{note "Kn"}\' xampl.bib',
+    args	 => '--select.by.string=\'{note "Kn"}\' bib/xampl.bib',
     expected_out => <<__EOF__);
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -168,7 +175,7 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name  => 'select_by_string_12',
-    args	 => '--select.by.string=\'{$type "misc"}\' xampl.bib',
+    args	 => '--select.by.string=\'{$type "misc"}\' bib/xampl.bib',
     expected_out => <<__EOF__);
 \@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
 	 # "\\newcommand{\\printfirst}[2]{#1} " 
@@ -214,286 +221,6 @@ __EOF__
 #__EOF__
 #    expected_out => <<__EOF__);
 #__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name  => '_X_0',
-    args         => '-X',
-    expected_err => <<__EOF__);
-
-*** BibTool WARNING: Missing pattern.
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name  => '_X_1',
-    args         => '-X aa',
-    expected_err => '',
-    bib	         => <<__EOF__,
-\@article{ aaa,
-  author = "aa",
-  title	 = "the title"
-}
-\@article{ aba,
-  author = "bb",
-  title	 = "Just another text"
-}
-__EOF__
-    expected_out => <<__EOF__);
-
-\@Article{	  aaa,
-  author	= "aa",
-  title		= "the title"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name  => '_X_2',
-    args         => '-X a+a+',
-    expected_err => '',
-    bib	         => <<__EOF__,
-\@article{ aaa,
-  author = "aa",
-  title	 = "the title"
-}
-\@article{ aba,
-  author = "bb",
-  title	 = "Just another text"
-}
-__EOF__
-    expected_out => <<__EOF__);
-
-\@Article{	  aaa,
-  author	= "aa",
-  title		= "the title"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name  => 'select_1',
-    args         => '--select\'{"aa"}\'',
-    expected_err => '',
-    bib	         => <<__EOF__,
-\@article{ a,
-  author = "aa",
-  title	 = "the title"
-}
-\@article{ b,
-  author = "bb",
-  title	 = "THE TITLE"
-}
-__EOF__
-    expected_out => <<__EOF__);
-
-\@Article{	  a,
-  author	= "aa",
-  title		= "the title"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name  => 'select_2',
-    args         => '--select\'{"title"}\'',
-    expected_err =>'',
-    bib	         => <<__EOF__,
-\@article{ a,
-  author = "aa",
-  title	 = "the title"
-}
-\@article{ b,
-  author = "bb",
-  title	 = "Just another text"
-}
-__EOF__
-    expected_out => <<__EOF__);
-
-\@Article{	  a,
-  author	= "aa",
-  title		= "the title"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name  => 'select_3',
-    args         => '--select\'{"t.*le"}\'',
-    expected_err =>'',
-    bib	         => <<__EOF__,
-\@article{ a,
-  author = "aa",
-  title	 = "the title"
-}
-\@article{ b,
-  author = "bb",
-  title	 = "Just another text"
-}
-__EOF__
-    expected_out => <<__EOF__);
-
-\@Article{	  a,
-  author	= "aa",
-  title		= "the title"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name  => 'select_crossrefs_0',
-    args         => '--select\'{"aa"}\' -- select.crossrefs=off',
-    expected_err =>'',
-    bib	         => <<__EOF__,
-\@article{ a,
-  author  = "aa",
-  title	  = "the title",
-  crossref= "b"
-}
-\@article{ b,
-  author = "bb",
-  title	 = "THE TITLE"
-}
-__EOF__
-    expected_out => <<__EOF__);
-
-\@Article{	  a,
-  author	= "aa",
-  title		= "the title",
-  crossref	= "b"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name  => 'select_crossrefs_1',
-    args         => '--select\'{"aa"}\' -- select.crossrefs=on',
-    expected_err => '',
-    bib	         => <<__EOF__,
-\@article{ a,
-  author  = "aa",
-  title	  = "the title",
-  crossref= "b"
-}
-\@article{ b,
-  author = "bb",
-  title	 = "THE TITLE"
-}
-__EOF__
-    expected_out => <<__EOF__);
-
-\@Article{	  a,
-  author	= "aa",
-  title		= "the title",
-  crossref	= "b"
-}
-
-\@Article{	  b,
-  author	= "bb",
-  title		= "THE TITLE"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name  => 'select_crossrefs_2',
-    args         => '--select\'{"aa"}\' -- select.crossrefs=on',
-    expected_err => '',
-    bib	         => <<__EOF__,
-\@article{ a,
-  author  = "aa",
-  title	  = "the title",
-  crossref= "b"
-}
-\@article{ b,
-  author  = "bb",
-  title	  = "THE title",
-  crossref= "c"
-}
-\@article{ c,
-  author = "cc",
-  title	 = "THE TITLE"
-}
-__EOF__
-    expected_out => <<__EOF__);
-
-\@Article{	  a,
-  author	= "aa",
-  title		= "the title",
-  crossref	= "b"
-}
-
-\@Article{	  b,
-  author	= "bb",
-  title		= "THE title",
-  crossref	= "c"
-}
-
-\@Article{	  c,
-  author	= "cc",
-  title		= "THE TITLE"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name  => '_X_c_1',
-    args         => '-X aa -c',
-    expected_err => '',
-    bib	         => <<__EOF__,
-\@article{ aa,
-  author  = "aa",
-  title	  = "the title",
-  crossref= "b"
-}
-\@article{ b,
-  author = "bb",
-  title	 = "THE TITLE"
-}
-__EOF__
-    expected_out => <<__EOF__);
-
-\@Article{	  aa,
-  author	= "aa",
-  title		= "the title",
-  crossref	= "b"
-}
-
-\@Article{	  b,
-  author	= "bb",
-  title		= "THE TITLE"
-}
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name  => '_X_c_2',
-    args         => '-X aa -c',
-    expected_err => '',
-    bib	         => <<__EOF__,
-\@article{ aa,
-  author  = "aa",
-  title	  = "the title",
-  crossref= "b"
-}
-\@article{ b,
-  author  = "bb",
-  title	  = "THE title",
-  crossref= "c"
-}
-\@article{ c,
-  author = "cc",
-  title	 = "THE TITLE"
-}
-__EOF__
-    expected_out => <<__EOF__);
-
-\@Article{	  aa,
-  author	= "aa",
-  title		= "the title",
-  crossref	= "b"
-}
-
-\@Article{	  b,
-  author	= "bb",
-  title		= "THE title",
-  crossref	= "c"
-}
-
-\@Article{	  c,
-  author	= "cc",
-  title		= "THE TITLE"
-}
-__EOF__
 
 
 1;
