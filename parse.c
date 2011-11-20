@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: parse.c,v 1.9 2011-06-06 18:47:35 gene Exp $
+** $Id: parse.c,v 1.10 2011-11-20 15:24:17 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -444,7 +444,7 @@ static int skip_nl()				   /*			     */
 ** Purpose:	Parse a symbol and push it to the stack.
 **		Upon failure issue an appropriate message.
 ** Arguments:
-**	alpha
+**	alpha	indicator that the symbol has to start with an alpha character
 ** Returns:	Success status
 **___________________________________________________			     */
 static int parse_symbol(alpha)			   /*			     */
@@ -471,7 +471,7 @@ static int parse_symbol(alpha)			   /*			     */
 ** Purpose:	Parse a symbol and push it to the stack.
 **		Upon failure issue an appropriate message.
 ** Arguments:
-**	alpha
+**	alpha	indicator that the symbol has to start with an alpha character
 ** Returns:	Success status
 **___________________________________________________			     */
 static int parse_key(alpha)			   /*			     */
@@ -544,8 +544,8 @@ static int parse_string(quotep)			   /*			     */
   do						   /*			     */
   { switch ( c=skip_nl() )			   /*			     */
     { case EOF:					   /*                        */
-	UnterminatedError("Unterminated double quote",
-			  start_flno);
+	UnterminatedError("Unterminated double quote",/*                     */
+			  start_flno);		   /*                        */
 	return(FALSE);	   			   /*			     */
       case '{':	 left++; (void)sbputchar((char)c,parse_sb); break;/*	     */
       case '}':	 if ( left--<0 )		   /*			     */
@@ -585,9 +585,9 @@ static int parse_block(quotep)			   /*			     */
  						   /*                        */
   FOREVER					   /*			     */
   { switch ( c=skip_nl() )			   /*			     */
-    { case EOF:
-	UnterminatedError("Unterminated open brace",
-			  start_flno);
+    { case EOF:					   /*                        */
+	UnterminatedError("Unterminated open brace",/*                       */
+			  start_flno);		   /*                        */
 	return FALSE;		   		   /*			     */
       case '{': left++; break;			   /*			     */
       case '}':					   /*			     */

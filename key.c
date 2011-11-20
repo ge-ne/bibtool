@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: key.c,v 1.10 2011-06-07 20:01:06 gene Exp $
+** $Id: key.c,v 1.11 2011-11-20 15:24:17 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -100,14 +100,13 @@
 #define DetexLower 1
 #define DetexUpper 2
 
- static StringBuffer *key_sb = (StringBuffer*)NULL;
- static StringBuffer *tmp_sb = (StringBuffer*)NULL;
+ static StringBuffer *key_sb = (StringBuffer*)NULL;/*                        */
+ static StringBuffer *tmp_sb = (StringBuffer*)NULL;/*                        */
 
 /*---------------------------------------------------------------------------*/
 
- static KeyNode key_tree      = (KeyNode)0;
- static KeyNode sort_key_tree = (KeyNode)0;
-
+ static KeyNode key_tree      = (KeyNode)0;	   /*                        */
+ static KeyNode sort_key_tree = (KeyNode)0;	   /*                        */
 
  static NameNode format[NUMBER_OF_FORMATS];	   /*                        */
 
@@ -135,8 +134,9 @@
 #define MakeNode(KNP,TYPE,SP,CP) c = *CP; *CP = '\0';			\
 			  *KNP = new_key_node(TYPE,symbol((Uchar*)*SP));\
 			  *CP  = c;
-#define ParseOrReturn(CP,NODEP)						\
-	if ( (ret=fmt_parse(CP,NODEP)) != 0  ) return ret
+#define ParseOrReturn(CP,NODEP,MSG)					\
+  if ( (ret=fmt_parse(CP,NODEP)) != 0  )				\
+  { DebugPrintF1(MSG); return ret; }
 
 
 /*****************************************************************************/
@@ -1118,16 +1118,18 @@ void make_key(db,rec)				   /*			     */
 #ifndef NEW
 #define trans trans_id
   ResetWords;					   /*                        */
-  { char * buffer = new_string(sbflush(key_sb));
-    int nw = deTeX(*buffer=='{'?buffer+1:buffer,push_word,DETEX_FLAG_ALLOWED);
-    int i;
-    sbrewind(key_sb);
+  { char * buffer = new_string(sbflush(key_sb));   /*                        */
+    int nw = deTeX(*buffer=='{'?buffer+1 : buffer, /*                        */
+		   push_word,			   /*                        */
+		   DETEX_FLAG_ALLOWED);  	   /*                        */
+    int i;					   /*                        */
+    sbrewind(key_sb);				   /*                        */
     for ( i=0; i < nw; ++i )		   	   /*			     */
-    { if ( strcmp(words[i],"\\") )
+    { if ( strcmp(words[i],"\\") )		   /*                        */
         PushS(key_sb,words[i]);			   /*			     */
-    }
-    free(buffer);
-  }
+    }						   /*                        */
+    free(buffer);				   /*                        */
+  }						   /*                        */
 #undef trans
 #endif
   pos = sbtell(key_sb);		   		   /*			     */
@@ -1415,6 +1417,7 @@ static int fmt_parse(sp,knp)			   /*			     */
     }						   /*			     */
     else return 0;				   /*			     */
   }						   /*			     */
+  DebugPrintF1("<-format");			   /*                        */
   return ret;					   /* return the error code. */
 }						   /*------------------------*/
 
@@ -1423,8 +1426,8 @@ static int fmt_parse(sp,knp)			   /*			     */
 ** Purpose:	
 **
 ** Arguments:
-**	sp
-**	knp
+**	sp	Pointer to the string to be parsed
+**	knp	Pointer to the key node in which to store the result
 ** Returns:	Error code or 0 upon success
 **___________________________________________________			     */
 static int fmt__parse(sp,knp)			   /*			     */
@@ -1463,11 +1466,15 @@ static int fmt__parse(sp,knp)			   /*			     */
 	  }					   /*                        */
 	  if ( !is_alpha(*cp) )			   /*			     */
 	  { ErrPrintF("*** BibTool: Missing format type before: %s",cp);/*   */
-	    *sp = cp; return(1);		   /*			     */
+	    *sp = cp;				   /*                        */
+	    DebugPrintF1("<-or");		   /*                        */
+	    return 1;		   		   /*			     */
 	  }					   /*			     */
 	  if ( strchr(percent_chars,*cp) == (char*)0 )/*		     */
 	  { ErrPrintF("*** BibTool: Illegal format character: %c",*cp);/*    */
-	    *sp = cp; return 1;			   /*			     */
+	    *sp = cp;				   /*                        */
+	    DebugPrintF1("<-percent");		   /*                        */
+	    return 1;			   	   /*			     */
 	  }					   /*			     */
 	  type |= *(cp++);			   /*			     */
 	  Expect(cp,'(',1);			   /*			     */
@@ -1493,20 +1500,21 @@ static int fmt__parse(sp,knp)			   /*			     */
 	Expect(cp,')',1);			   /*			     */
 	Expect(cp,'{',1);			   /*			     */
 	*sp = cp;				   /*			     */
-	ParseOrReturn(sp,&NodeThen(*knp));	   /*			     */
+	ParseOrReturn(sp,&NodeThen(*knp),"<-then");/*			     */
 	Expect(*sp,'}',1);			   /*			     */
 	Expect(*sp,'{',1);			   /*			     */
-	ParseOrReturn(sp,&NodeElse(*knp));	   /*			     */
+	ParseOrReturn(sp,&NodeElse(*knp),"<-else");/*			     */
 	Expect(*sp,'}',1);			   /*			     */
 	knp = & NodeNext(*knp);			   /*			     */
 	cp = *sp;				   /*			     */
 	break;					   /*			     */
 						   /*			     */
       case '{':					   /*			     */
+	DebugPrintF1("--- parse block\n");	   /*                        */
 	cp++;				   	   /*			     */
 	SkipSpaces(cp);				   /*			     */
 	*sp = cp;				   /*                        */
-	ParseOrReturn(sp,knp);			   /*			     */
+	ParseOrReturn(sp,knp,"<-block");	   /*			     */
 	Expect(*sp,'}',1);			   /*			     */
 	knp = & NodeNext(*knp);			   /*			     */
 	cp  = *sp;				   /*			     */
@@ -1527,6 +1535,7 @@ static int fmt__parse(sp,knp)			   /*			     */
 	}					   /*			     */
     }						   /*			     */
   }						   /*			     */
+  DebugPrintF1("<-fmt");
   return -1;					   /* Signal end-of-string.  */
 }						   /*------------------------*/
 
@@ -1573,7 +1582,7 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
   int		pos;				   /*			     */
   char		*trans;				   /*                        */
 						   /*			     */
-  DebugPrint1("eval__fmt()");
+  DebugPrint1("eval__fmt()");			   /*                        */
   while ( kn != (KeyNode)0 )			   /*			     */
   {						   /*                        */
     switch ( NodeType(kn) )			   /*			     */
@@ -2048,34 +2057,32 @@ static void show_fmt(kn,in)			   /*			     */
   register KeyNode kn;				   /*			     */
   register int     in;				   /*                        */
 { register int     i;				   /*			     */
-#define NLin ErrC('\n');for(i=in;i>0;i--) ErrC(' ')
+#define NLin(S) ErrC('\n');for(i=in;i>0;i--) ErrC(' '); (void)fputs(S,err_file)
 #define ErrS(S) (void)fputs(S,err_file)
 						   /*			     */
   while ( kn != (KeyNode)0 )			   /*			     */
   { switch ( NodeType(kn) )			   /*			     */
     { case NodeSTRING:				   /*			     */
 	ErrPrintF(" \"%s\"",NodeSymbol(kn));	   /*			     */
-	NLin;					   /*			     */
+	NLin("");				   /*			     */
 	break;					   /*			     */
       case NodeTEST:				   /*			     */
 	ErrPrintF(" (%s)",NodeSymbol(kn));	   /*			     */
-	NLin; ErrS("{ ");			   /*			     */
+	NLin("{ ");			   	   /*			     */
 	show_fmt(NodeThen(kn),in+2);		   /*			     */
-	NLin; ErrS("}");			   /*			     */
-	NLin; ErrS("{ ");			   /*			     */
+	NLin("}");			   	   /*			     */
+	NLin("{ ");			   	   /*			     */
 	show_fmt(NodeElse(kn),in+2);		   /*			     */
-	NLin;					   /*			     */
-	ErrS("}");				   /*			     */
+	NLin("}");				   /*			     */
 	break;					   /*			     */
       case NodeOR:				   /*			     */
 	ErrS("{ ");				   /*			     */
 	show_fmt(NodeThen(kn),in+2);		   /*			     */
 	ErrS("}");			   	   /*			     */
-	NLin; ErrS("#");			   /*			     */
-	NLin; ErrS("{ ");			   /*			     */
+	NLin("#");			   	   /*			     */
+	NLin("{ ");			   	   /*			     */
 	show_fmt(NodeElse(kn),in+2);		   /*			     */
-	NLin;					   /*			     */
-	ErrS("}");				   /*			     */
+	NLin("}");				   /*			     */
 	break;					   /*			     */
       default:					   /*			     */
 	fprintf(err_file,"%%%s",	   	   /*			     */
@@ -2119,7 +2126,7 @@ Uchar *get_field(db,rec,name)		   	   /*			     */
   register Record rec;				   /*			     */
   register Uchar  *name;			   /*			     */
 { 						   /*                        */
-  DebugPrint2("get_field ",name);
+  DebugPrint2("get_field ",name);		   /*                        */
 #ifdef HAVE_TIME_H
   static struct tm *tp;				   /*                        */
   static time_t the_time = 0;			   /*                        */
