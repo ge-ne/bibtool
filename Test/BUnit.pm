@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: BUnit.pm,v 1.12 2011-11-20 15:22:45 gene Exp $
+# $Id: BUnit.pm,v 1.13 2011-11-23 18:28:39 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -66,7 +66,7 @@ our $verbose = 1;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.12 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.13 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -253,7 +253,7 @@ sub suites {
     $failure += $summary{$suite}[2];;
   }
 
-  $_ = $success + $ignored + $failure;
+  $_ = $success + $failure;
   if ($_ == 0) { $_ = 100 } else { $_ = 100. * $success/$_; }
   printf("%s\n%-${len}ssuccess: %3d  ignored: %3d  failure: %3d\n%${len}ssucess rate: %3.2f%%\n",
 	 ('_' x ($len+40)),
