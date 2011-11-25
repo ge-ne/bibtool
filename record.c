@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: record.c,v 1.8 2011-06-07 20:01:06 gene Exp $
+** $Id: record.c,v 1.9 2011-11-25 21:42:51 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -225,15 +225,15 @@ Record record_gc(rec)				   /*                        */
   while ( PrevRecord(rec) != RecordNULL )	   /* Rewind                 */
   { rec = PrevRecord(rec); }			   /*                        */
   						   /*                        */
-  while ( rec != RecordNULL )
-  {
-    if ( RecordIsDELETED(rec) )
-    { rec = unlink_record(rec);
-    }
-    else
-    { ret = rec;
-      rec = NextRecord(rec);
-    }
+  while ( rec != RecordNULL )			   /*                        */
+  {						   /*                        */
+    if ( RecordIsDELETED(rec) )			   /*                        */
+    { rec = unlink_record(rec);			   /*                        */
+    }						   /*                        */
+    else					   /*                        */
+    { ret = rec;				   /*                        */
+      rec = NextRecord(rec);			   /*                        */
+    }						   /*                        */
   }						   /*                        */
  						   /*                        */
   return ret;					   /*                        */
