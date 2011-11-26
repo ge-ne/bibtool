@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.23 2011-11-17 17:36:47 gene Exp $
+%% $Id: bibtool.tex,v 1.24 2011-11-26 12:36:58 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -64,9 +64,9 @@
 \pagestyle{headings}
 \addtolength{\headheight}{2pt}
 
-\newcommand\opt[1]{\texttt{-#1}\index{#1@{\tt-#1}}}
+\newcommand\opt[1]{\texttt{-{}#1}\index{#1@{\tt-{}#1}}}
 \newcommand\sh{\smallskip\par\hspace*{2em}\@ifnextchar[{\sh@}{\sh@@}}
-\def\sh@[#1]#2{\texttt{bibtool -#1 }\textit{#2}\index{#1@{\tt-#1}}
+\def\sh@[#1]#2{\texttt{bibtool -#1 }\textit{#2}\index{#1@{\tt-{}#1}}
         \smallskip\par\noindent\ignorespaces}
 \newcommand\sh@@[1]{\texttt{bibtool }\textit{#1}
         \smallskip\par\noindent\ignorespaces}
@@ -338,7 +338,7 @@ single tool.
 
 
 %------------------------------------------------------------------------------
-\section{Using \BibTool{} --- Some Instructive Examples}
+\section{Using \BibTool{}---Some Instructive Examples}
 
 \BibTool\ has been developed on UN*X and UN*X-like machines. This has
 influenced many of the design decisions. Version 1 was controlled using
@@ -567,7 +567,7 @@ sense that it sometimes fails but never produces a wrong result.
 purpose \BibTool{} analyzes the \verb|.aux| file and takes the information
 given there. This includes the names of the \BibTeX{} files. Thus no \BibTeX{}
 files have to be given in the command line. Instead the \verb|.aux| file has
-to specified --- preceded by the option \opt{x}.
+to specified---preceded by the option \opt{x}.
 
 \sh[x]{document.aux \texttt{-o} document.bib}
 
@@ -626,7 +626,7 @@ A similar method can also be applied for other entry types.
 
 \begin{description}
 \item[Note] Usually crossreferenced entries are not selected automatically.
-  This can result in incomplete --- and thus incorrect --- \BibTeX\ files. To
+  This can result in incomplete---and thus incorrect---\BibTeX\ files. To
   avoid this behaviour use the following command:
 
   \sh[-]{select\{\@{}book\} \texttt{-c} all.bib \texttt{-o} some.bib}
@@ -652,7 +652,8 @@ referencing entry. This can be achieved by putting all entries containing a
 field ``crossref'' before those containing none. As second sorting criterion
 we want to use the reference key.
 
-This can be achieved with a resource file containing the following\index{l@\%l}
+This can be achieved with a resource file containing the
+following\index{l@\%l}
 
 \Rsc{sort.format}{\{\{\%1.\#s(crossref)a\#z\}\$key\}}
 \vspace*{-1.6\baselineskip}
@@ -777,8 +778,7 @@ complains about problems in my software. After several questions it turned out
 that the program had not been used correctly.
 
 Oh, sure. There have been bugs and I suppose there are still some bugs in
-\BibTool. I am grateful for each hint which helps me in eliminating these
-bugs.
+\BibTool. I am grateful for each hint which helps me eliminating these bugs.
 
 
 
@@ -795,11 +795,11 @@ program I have the following suggestions.
 \begin{itemize}
 \item Proofread this documentation and report any errors you find as well as
   additional material to put in.
-\item Provide additional contributed pieces to \BibTool. E.g. useful resource
-  files which could be included into the library.
+\item Provide additional contributed pieces to \BibTool. For instance useful
+  resource files which could be included into the library.
 \item Write a useful program and release it to the public without making
-  profit, preferably under the \Link{GPL.html}{GNU General Public License} or
-  the GNU artistic license.
+  profit, preferably under an Open Source license like the \Link{GPL.html}{GNU
+    General Public License} or the GNU artistic license.
 \end{itemize}
 
 
@@ -823,9 +823,9 @@ with a command line before passing the arguments to a program.  Thus it might
 be necessary to carefully quote the arguments.  Especially if the command
 contains spaces it is very likely that quoting is needed.
 
-E.g. in UN*X shells it is in general a good strategy to enclose command line
-arguments in single quotes (\verb|'|) if they contain whitespace or special
-characters like \texttt{\symbol{"5C}}, \texttt{\$}, \texttt{\&},
+For instance in UN*X shells it is in general a good strategy to enclose
+command line arguments in single quotes (\verb|'|) if they contain whitespace
+or special characters like \texttt{\symbol{"5C}}, \texttt{\$}, \texttt{\&},
 \verb|!|, or \verb|#|.´
 
 Instead of excessively using command line arguments it is preferrable and less
@@ -1082,8 +1082,8 @@ be used to change this value.
 
 \textbf{Note} that the defaults for \rsc{env.separator} and
 \rsc{dir.file.separator} are set at compile time to a value suitable for the
-operating system.  Usually you don't have to change them at all.  E.g. for
-MSD*S machines the \rsc{env.separator} is usually set to \verb|;| and the
+operating system.  Usually you don't have to change them at all.  For instance
+for MSD*S machines the \rsc{env.separator} is usually set to \verb|;| and the
 \rsc{dir.file.separator} is usually set to \verb|\|.
 
 If the kpathsea library is used for searching \BibTeX{} files then some of the
@@ -1102,7 +1102,7 @@ documentation distributed with the kpathsea library for details.
     separate the directory from the file.} 
   \Desc{}{\rsc{env.separator}=\{c\}}{Use the character \textit{c} to separate
     directories in a path.} 
-  \Desc{\opt{i} file}{\rsc{input.file}\{file\}}{Add the \BibTeX{}
+  \Desc{\opt{i} file}{\rsc{input}\{file\}}{Add the \BibTeX{}
     file \textit{file} to the list of input files.}
 \end{Summary}
 
@@ -1210,12 +1210,12 @@ the following option:
 Each undefined entry type leads to an error message.
 
 When a database is printed the different kinds of entries are printed
-together. E.g. all normal entries are printed en block. The order of the entry
-types is determined by the resource \rsc{print.entry.types}. The value of this
-resource is a string where each character represents an entry type to be
-printed. If a letter is missing then this part of the database is omitted. The
-following letters are recognized---uppercase letters are folded to their
-lowercase counterparts if they are not mentioned explicitly:
+together. For instance all normal entries are printed en block. The order of
+the entry types is determined by the resource \rsc{print.entry.types}. The
+value of this resource is a string where each character represents an entry
+type to be printed. If a letter is missing then this part of the database is
+omitted. The following letters are recognized---uppercase letters are folded
+to their lowercase counterparts if they are not mentioned explicitly:
 \begin{description}
 \item [a] The aliases of the database.
 \item [c] The comments of the database which are not attached to an entry.
@@ -1555,19 +1555,20 @@ Note that the default regular expressions of the Emacs style are used.
   case counterpart. Any character not mentioned as special is an ordinary
   character. Among others letters and digits are ordinary characters.
 
-  E.g. the regular expression \emph{abc} matches the string \emph{abc}.  
+  For instance the regular expression \emph{abc} matches the string
+  \emph{abc}.
 
 \item[The period] (\verb|.|) matches any single character.
   
-  E.g. the regular expression \emph{a.c} matches the string \emph{abc} but
-  it does not match the string \emph{abbc}.
+  For instance the regular expression \emph{a.c} matches the string \emph{abc}
+  but it does not match the string \emph{abbc}.
   
 \item[The star] (\verb|*|) is used to denote any number of repetitions of the
   preceding regular expression. If no regular expression precedes the star then
   it is an ordinary character.
   
-  E.g. the regular expression \emph{ab*c} matches any string which starts
-  with a followed by an arbitrary number of b and ended by a c. Thus it
+  For instance the regular expression \emph{ab*c} matches any string which
+  starts with a followed by an arbitrary number of b and ended by a c. Thus it
   matches \emph{ac} and \emph{abbbc}. But it does not match the string
   \emph{abcc}.
   
@@ -1576,8 +1577,8 @@ Note that the default regular expressions of the Emacs style are used.
   star operator except that the empty string does not match. If no regular
   expression precedes the plus then it is an ordinary character.
   
-  E.g. the regular expression \emph{ab+c} matches any string which starts
-  with a followed by one or more b and ended by a c. Thus it matches
+  For instance the regular expression \emph{ab+c} matches any string which
+  starts with a followed by one or more b and ended by a c. Thus it matches
   \emph{abbbc}.  But it does not match the string \emph{ac}.
   
 \item[The question mark] (\verb|?|) is used to denote an optional regular
@@ -1585,9 +1586,9 @@ Note that the default regular expressions of the Emacs style are used.
   no regular expression precedes the question mark then it is an ordinary
   character.
   
-  E.g. the regular expression \emph{ab?c} matches any string which starts
-  with a followed by at most one b and ended by a c. Thus it matches
-  \emph{abc}. But it does not match the string \emph{abbc}. 
+  For instance the regular expression \emph{ab?c} matches any string which
+  starts with a followed by at most one b and ended by a c. Thus it matches
+  \emph{abc}. But it does not match the string \emph{abbc}.
 
 \item[The bar] (\verb/\|/) separates two regular expressions. The combined
   regular expression matches a string if one of the alternative separated by
@@ -1595,8 +1596,8 @@ Note that the default regular expressions of the Emacs style are used.
 
   Note that the bar has to be preceeded by a backslash.
   
-  E.g. the regular expression \emph{abc\(\backslash\mid\)def} matches the
-  string \emph{abc} and the string \emph{def}.
+  For instance the regular expression \emph{abc\(\backslash\mid\)def} matches
+  the string \emph{abc} and the string \emph{def}.
 
 \item[Parentheses] (\verb|\(\)|) can be used to group regular expressions. A
   group is enclosed in parentheses. It matches a string if the enclosed
@@ -1604,16 +1605,17 @@ Note that the default regular expressions of the Emacs style are used.
 
   Note that the parantheses have to be preceeded by a backslash.
   
-  E.g. the regular expression \emph{\(a\backslash(b\backslash\mid\backslash d)c\)}
-  matches the strings \emph{abc} and \emph{adc}.
+  For instance the regular expression
+  \emph{\(a\backslash(b\backslash\mid\backslash d)c\)} matches the strings
+  \emph{abc} and \emph{adc}.
   
 \item[The dollar] (\verb|$|) %$
   matches the empty string at the end of the string. It can be used to anchor
   a regular expression at the end.  If the dollar is not the end of the
   regular expression then it is an ordinary character.
 
-  E.g. the regular expression \emph{abc\$} matches the string \emph{aaaabc}
-  but does not match the string \emph{abcdef}.
+  For instance the regular expression \emph{abc\$} matches the string
+  \emph{aaaabc} but does not match the string \emph{abcdef}.
   
 \item[The hat] (\texttt{\Hat}) matches the empty string at the beginning of
   the string. It can be used to anchor a regular expression at the beginning.
@@ -1621,7 +1623,7 @@ Note that the default regular expressions of the Emacs style are used.
   ordinary character. There is one additional context in which the hat has a
   special meaning. This context is the list operator described below.
 
-  E.g. the regular expression \emph{\Hat abc} matches the strings
+  For instance the regular expression \emph{\Hat abc} matches the strings
   \emph{abcccc} but does not match the string \emph{aaaabc}.
   
 \item[The brackets] (\verb|[]|) are used to denote a list of characters. If
@@ -1629,21 +1631,21 @@ Note that the default regular expressions of the Emacs style are used.
   matches any character not contained in the list. Otherwise it matches any
   characters contained in the list.
 
-  E.g. the regular expression \emph{[abc]} matches the single letter strings
-  \emph{a}, \emph{b}, and \emph{c}. It does not match \emph{d}.
+  For instance the regular expression \emph{[abc]} matches the single letter
+  strings \emph{a}, \emph{b}, and \emph{c}. It does not match \emph{d}.
 
-  The regular expression \emph{[\Hat abc]} matches any single letter string not
-  consisting of an a, b, or c.
+  The regular expression \emph{[\Hat abc]} matches any single letter string
+  not consisting of an a, b, or c.
   
-\item[The backslash] (\texttt{\BS}) is used for several purposes. Primarily it can
-  be used to quote any special character. Thus if a special character is
+\item[The backslash] (\texttt{\BS}) is used for several purposes. Primarily it
+  can be used to quote any special character. Thus if a special character is
   preceded by the backslash then it is treated as if it were an ordinary
   character.
   
   If the backslash is followed by a digit \(d\)\/ then this construct is the
   same as the \(d^{th}\) matching group.
   
-  E.g. the regular expression \emph{(an)\BS1as} matches the string
+  For instance the regular expression \emph{(an)\BS1as} matches the string
   \emph{ananas} since the first group matches \emph{an}.
   
   If the backslash is followed by the character \texttt{n} then this is
@@ -1684,7 +1686,7 @@ automatically sets the resource \rsc{print.all.strings} to \verb|off|. This
 has to be done in the resource file manually.
 
 Note that the extraction automatically respects the crossreferences in the
-selected entries. Thus you will get a complete \BibTeX\ file --- unless some
+selected entries. Thus you will get a complete \BibTeX\ file---unless some
 references can not be resolved and an error is produced.
 
 One special feature of \BibTeX{} is supported. If the command
@@ -1697,7 +1699,7 @@ An example of extracting can be seen in section~\ref{sample:extract} on page
 
 \subsection{Extracting with Substring Matching}
 
-The simplest way of specifying an entry -- except by giving its key -- is to
+The simplest way of specifying an entry---except by giving its key---is to
 give a string which has to be present in one of the fields or pseudo-fields.
 The resource \rsc{select.by.string} can be used to store a selection rule
 which is applied at the appropriate time later on. If several rules are
@@ -2176,7 +2178,8 @@ The syntax and meaning of such format specifications is explained in section
   \Desc{\opt{f}}{\rsc{key.format}\{fmt\}}{Set the specification for
   key generation to \textit{fmt}.}
   \Desc{\opt{F}}{\rsc{key.generation}=on}{Turn on key generation.}
-  \Desc{}{\rsc{key.number.separator}=\{\}}{}
+  \Desc{}{\rsc{key.number.separator}=\{s\}}{String to be used before the
+    disambiguating number.}
 \end{Summary}
 
 
@@ -2229,9 +2232,9 @@ The simplest form is for instance\index{N@\%N}
   %N(author)
 \end{verbatim}
 
-The \texttt{\%} character is followed by a single character --- here \verb|N|
---- which indicates the way of formating and the name of the field to be
-formatted enclosed in parenthesis. The example above requests to format the
+The \texttt{\%} character is followed by a single character---here
+\verb|N|---which indicates the way of formating and the name of the field to
+be formatted enclosed in parenthesis. The example above requests to format the
 field \verb|author| according to formatting rules for names (\verb|N|).
 
 The general form is
@@ -2332,8 +2335,8 @@ list:
   \item [\texttt{d}] \index{d@\%d|(}Format a number, e.g.\ a year.\\
     
     The \textit{post}$^{th}$ number in the field is searched. At most
-    \textit{pre} digits --- counted from the right --- are used. E.g.\ the
-    field \texttt{"june 1958"} formatted with \texttt{\%2d} results in
+    \textit{pre} digits---counted from the right---are used. For instance
+    the field \texttt{"june 1958"} formatted with \texttt{\%2d} results in
     \texttt{58}.
     
     \textit{pre} defaults to a large number except in when the negative sign
@@ -2700,7 +2703,7 @@ fields. They are listed below.
 
 \begin{description}
 \item [\texttt{\$key}]\label{pseudo:key}
-  This pseudo field contains the old reference key --- before generating a new
+  This pseudo field contains the old reference key---before generating a new
   one. If none has been given then the access fails.
 
 \item [\texttt{\$sortkey}]
@@ -2979,13 +2982,15 @@ name consists of four types of components:
 \begin{itemize}
 \item The first names are any names before the last names which start
   with an upper case letter.\\
-  E.g. for the name ``Ludwig van Beethoven'' the first name is ``Ludwig''.
+  For instance for the name ``Ludwig van Beethoven'' the first name is
+  ``Ludwig''.
 \item The last name is the last word (or group of words) which does
   not belong to the junior part.\\
-  E.g. for the name ``Ludwig van Beethoven'' the last name is ``Beethoven''.
+  For instance for the name ``Ludwig van Beethoven'' the last name is
+  ``Beethoven''.
 \item The von part are the names before the last name which start with
   lower case letters.\\
-  E.g. for the name ``Ludwig van Beethoven'' the von part consists of
+  For instance for the name ``Ludwig van Beethoven'' the von part consists of
   the word ``van''.
 \item The junior part of a name is an appendix following the last
   name. \BibTool{} knows only a small number of words that can appear
@@ -3638,8 +3643,8 @@ the following instruction:
 
 
 \begin{Summary}
-  \Desc{}{\rsc{macro.file}=\{file\}}{Write the macro definitions to the file
-    \textit{file}.}
+  \Desc{\opt{m} \textit{file}}{\rsc{macro.file}=\{file\}}{Write the macro
+    definitions to the file \textit{file}.}
   \Desc{}{\rsc{print.all.strings}=off}{Print only those macro definitions
     which are used instead of all.}
   \Desc{}{\rsc{expand.macros}=on}{Turn on macro (string) expansion in fields.}
@@ -3671,6 +3676,62 @@ listed which have been found in the input files.
     types.}
   \Desc{\opt{@}}{\rsc{count.used}=on}{Print statistics about the used entry
     types only.}
+\end{Summary}
+
+%------------------------------------------------------------------------------
+\section{\BibTeX1 Support}
+
+\BibTool\ supports already some of the feature proposed for \BibTeX1.
+
+%------------------------------------------------------------------------------
+\subsection{Including Bibliographies}
+
+The bibliography file may contain an instruction of the following form:
+
+\begin{verbatim}
+@include{abc.bib}
+\end{verbatim}
+
+Such an entry is stored in the database and printed when requested.
+Nevertheless the resource  \rsc{apply.include} can be used to controll this
+behaviour. 
+
+%------------------------------------------------------------------------------
+\subsection{Aliases}
+
+The bibliography file may contain an instruction of the following form:
+
+\begin{verbatim}
+@alias{abc=def}
+\end{verbatim}
+
+This means that the key \texttt{abc} is treated as an alias for the key
+\texttt{def}. Usually this alias is stored as alias in the database. For old
+\BibTeX\ files it may be desirable to eliminate aliases and introduce copies
+of records instead. Nevertheless the resource \rsc{apply.alias} can be used to
+controll this behaviour.
+
+%------------------------------------------------------------------------------
+\subsection{Modifications}
+
+The bibliography file may contain an instruction of the following form:
+
+\begin{verbatim}
+@modify{key,
+  abc = {def}
+}
+\end{verbatim}
+
+This modification is stored in the database without being applied.
+Nevertheless the resource \rsc{apply.modify} can be used to controll this
+behaviour.
+
+
+\begin{Summary}
+  \Desc{}{\rsc{apply.alias}=on}{Expand the aliased entries in the database.}
+  \Desc{}{\rsc{apply.include}=on}{Include the entries contained in the
+    bibliography file given in \texttt{@include}.}
+  \Desc{}{\rsc{apply.modify}=on}{apply the modifies in the database.}
 \end{Summary}
 
 
@@ -3725,6 +3786,9 @@ directory \file{Lib}. Only some of them are reproduced in this section.
 \section{The Default Settings}
 
 \begin{Resource}
+apply.alias              = off
+apply.include            = off
+apply.modify             = off
 bibtex.env.name          = "BIBINPUTS"
 check.case.sensitive     = on
 check.double             = off
@@ -3817,8 +3881,8 @@ verbose                  = off
 
 The resource file \verb|tex_def| translates international characters into
 plain text representations. Especially the German umlaut sequences are
-translated. E.g.\ the letter {\"A} which is written as \verb|{\"A}| in a
-\BibTeX{} file is translated to \verb|Ae|.\footnote{Note that the short
+translated. For instance the letter {\"A} which is written as \verb|{\"A}| in
+a \BibTeX{} file is translated to \verb|Ae|.\footnote{Note that the short
   notation of \texttt{german.sty} or \texttt{babel} is not understood by
   \BibTeX{} nor by \BibTool. }
 
