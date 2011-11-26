@@ -1,18 +1,18 @@
 dnl ***************************************************************************
-dnl $Id: configure.in,v 1.7 2010-01-06 13:57:42 gene Exp $
+dnl $Id: configure.in,v 1.8 2011-11-26 12:28:24 gene Exp $
 dnl ===========================================================================
 dnl 
 dnl This file is part of BibTool.
 dnl It is distributed under the GNU General Public License.
 dnl See the file COPYING for details.
 dnl 
-dnl (c) 1996-2010 Gerd Neugebauer
+dnl (c) 1996-2011 Gerd Neugebauer
 dnl 
 dnl Net: gene@gerd-neugebauer.de
 dnl 
 dnl ***************************************************************************
-AC_REVISION($Revision: 1.7 $)dnl
-AC_PREREQ(2.12)
+AC_REVISION($Revision: 1.8 $)dnl
+AC_PREREQ(2.59)
 
 dnl ---------------------------------------------------------------------------
 dnl Process this file with autoconf to produce a configure script.
