@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: print.c,v 1.8 2011-06-07 20:01:06 gene Exp $
+** $Id: print.c,v 1.9 2011-11-26 06:00:34 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -493,12 +493,12 @@ void put_record(fct,rec,db,start)		   /*                        */
 { Uchar	       **hp;			   	   /* heap pointer	     */
   unsigned int i;			   	   /*			     */
   char	       open_brace, close_brace;		   /*			     */
-  static int   first = 1;
+  static int   first = 1;			   /*                        */
   						   /*                        */
   sort_record(rec);				   /*                        */
  						   /*                        */
   hp = RecordHeap(rec);				   /*			     */
-  if ( rsc_no_nl && first ) { first = 0; }
+  if ( rsc_no_nl && first ) { first = 0; }	   /*                        */
   else if ( IsNormalRecord(RecordType(rec)) ) { NL; }/*			     */
  						   /*                        */
   if ( *RecordComment(rec) )		   	   /*                        */
@@ -552,10 +552,15 @@ void put_record(fct,rec,db,start)		   /*                        */
       PUTC(close_brace);			   /*                        */
       NL;				   	   /*			     */
       break;					   /*			     */
-    case BIB_MODIFY:				   /*			     */
     case BIB_INCLUDE:				   /*			     */
+      PUTS(start);				   /*			     */
+      PUTS(EntryName(RecordType(rec)));	   	   /*			     */
+      PUTC(open_brace);				   /*			     */
+      PUTS(*RecordHeap(rec));      	   	   /*			     */
+      PUTC(close_brace);			   /*                        */
       NL;				   	   /*			     */
       break;					   /*			     */
+    case BIB_MODIFY:				   /*			     */
     default:					   /*			     */
       PUTS(start);				   /*			     */
       PUTS(EntryName(RecordType(rec)));	   	   /*			     */
