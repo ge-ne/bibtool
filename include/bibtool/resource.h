@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: resource.h,v 1.8 2011-06-07 20:01:06 gene Exp $
+** $Id: resource.h,v 1.9 2011-11-26 06:21:15 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -41,6 +41,9 @@
 
 RSC_FIRST('a')
   RscByFct(   "add.field"	      , r_af  ,add_field(val)		    )
+  RscBoolean( "apply.alias"	      , r_aa  ,rsc_apply_alias	  , FALSE   )
+  RscBoolean( "apply.modify"	      , r_am  ,rsc_apply_modify	  , FALSE   )
+  RscBoolean( "apply.include"	      , r_ai  ,rsc_apply_include  , FALSE   )
 RSC_NEXT('b')
   RscString(  "bibtex.env.name"	      , r_ben ,rsc_e_bibtex , RSC_BIBINPUTS ) 
   RscString(  "bibtex.search.path"    , r_bsp ,rsc_v_bibtex 

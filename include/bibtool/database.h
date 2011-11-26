@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: database.h,v 1.7 2011-06-07 20:01:06 gene Exp $
+** $Id: database.h,v 1.8 2011-11-26 06:21:15 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -155,7 +155,7 @@
  Uchar * db_string _ARG((DB db,Uchar *s,int localp));
  int *db_count _ARG((DB db,int *lp));
  int read_db _ARG((DB db,char *file,int verbose));
- void db_insert _ARG((DB db,Record rec));
+void db_insert _ARG((DB db,Record rec, int verbose));
  void db_forall _ARG((DB db,int (*fct)_ARG((DB,Record))));
  void db_mac_sort _ARG((DB db));
  void db_rewind _ARG((DB db));

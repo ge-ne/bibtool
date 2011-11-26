@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: database.c,v 1.7 2011-06-07 20:01:06 gene Exp $
+** $Id: database.c,v 1.8 2011-11-26 06:21:15 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -51,7 +51,7 @@
  static Record rec__sort _ARG((Record rec,int (*less)_ARG((Record,Record))));
  static int cmp_heap _ARG((Record r1,Record r2));
  static void mark_string _ARG((Record rec,Uchar *s));
- void db_insert _ARG((DB db,Record rec));
+ void db_insert _ARG((DB db,Record rec,int verbose));
  void db_forall _ARG((DB db,int (*fct)_ARG((DB,Record))));
  void db_mac_sort _ARG((DB db));
  void db_rewind _ARG((DB db));
@@ -121,6 +121,76 @@ void free_db(db)				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	apply_modify()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**	db	
+**	key	
+**	rec	
+** Returns:	
+**___________________________________________________			     */
+int apply_modify(db,key,rec)	   		   /*                        */
+  DB db;					   /*                        */
+  char * key;					   /*                        */
+  Record rec;					   /*                        */
+{ Uchar **hp = RecordHeap(rec);			   /*                        */
+  Uchar **ep;					   /*                        */
+  int i, j;					   /*                        */
+  Record r  = db_find(db,key);			   /*                        */
+  if (r == RecordNULL)				   /*                        */
+  { WARNING2("Entry to modify not found: ",key);   /*                        */
+    return 0;					   /*			     */
+  }						   /*			     */
+  DebugPrint2("Modify ",*RecordHeap(rec));	   /*                        */
+						   /*			     */
+  for ( i=RecordFree(rec); i>0; i-=2 )		   /*			     */
+  {		   				   /* No deleted or          */
+    if ( *hp && is_allowed(**hp) && *(hp+1) )	   /*   private entry        */
+    { DebugPrint3(*hp," => ",*(hp+1));	   	   /*                        */
+      push_to_record(r, *hp, *(hp+1));		   /*                        */
+    }						   /*			     */
+    hp += 2;					   /* Goto next pair.	     */
+  }						   /*                        */
+  return 1;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	apply_alias()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**	db	
+**	key	
+**	rec	
+**	verbose	
+** Returns:	
+**___________________________________________________			     */
+int apply_alias(db,key,rec,verbose)	   	   /*                        */
+  DB db;					   /*                        */
+  Uchar * key;					   /*                        */
+  Record rec;					   /*                        */
+  int verbose;					   /*                        */
+{ Uchar **hp = RecordHeap(rec);			   /*                        */
+  Uchar **ep;					   /*                        */
+  int i, j;					   /*                        */
+  Record r  = db_find(db,key);			   /*                        */
+  if (r == RecordNULL)				   /*                        */
+  { WARNING2("Entry to alias not found: ",key);    /*                        */
+    return 0;					   /*			     */
+  }						   /*			     */
+  DebugPrint2("Alias ",*RecordHeap(rec));	   /*                        */
+ 						   /*                        */
+  r = copy_record(r);	   	   		   /* Make a private copy.   */
+  RecordOldKey(r) = *RecordHeap(rec);		   /*                        */
+  *RecordHeap(r) = *RecordHeap(rec);		   /*                        */
+  db_insert(db,r, verbose);		   	   /*                        */
+  return 1;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	db_insert()
 ** Purpose:	Add a record to a database.
 **		The record can be any kind of record. It is added to the
@@ -128,11 +198,13 @@ void free_db(db)				   /*                        */
 ** Arguments:
 **	db	Database to insert the record into.
 **	rec	Record to add to the database.
+**	verbose	Boolean to determine whether progress should be reported.
 ** Returns:	nothing
 **___________________________________________________			     */
-void db_insert(db,rec)			   	   /*                        */
+void db_insert(db,rec,verbose)		   	   /*                        */
   DB     db;					   /*                        */
   Record rec;					   /*                        */
+  int    verbose;				   /*                        */
 { Record *rp;					   /*                        */
 						   /*                        */
   switch ( RecordType(rec) )			   /*                        */
@@ -149,16 +221,38 @@ void db_insert(db,rec)			   	   /*                        */
       DebugPrint1("Inserting Comment");	   	   /*                        */
       break;					   /*                        */
     case BIB_MODIFY:				   /*                        */
-      rp = &DBmodify(db);   			   /*                        */
-      DebugPrint1("Inserting Modify");	   	   /*                        */
+      if(rsc_apply_modify &&			   /*                        */
+	 apply_modify(db,*RecordHeap(rec), rec))   /*                        */
+      {	free_record(rec);			   /*                        */
+	return;					   /*                        */
+      } else {					   /*                        */
+	rp = &DBmodify(db);   			   /*                        */
+	DebugPrint1("Inserting Modify");   	   /*                        */
+      }						   /*                        */
       break;					   /*                        */
     case BIB_INCLUDE:				   /*                        */
-      rp = &DBinclude(db);  			   /*                        */
-      DebugPrint1("Inserting Include");	   	   /*                        */
+      if(rsc_apply_include)			   /*                        */
+      {	DebugPrint2("Including ",*RecordHeap(rec));/*                        */
+	if (read_db(db,*RecordHeap(rec),verbose))  /*                        */
+	{ ERROR2("File not found: ",*RecordHeap(rec));/*                     */
+	}					   /*                        */
+	free_record(rec);			   /*                        */
+	return;					   /*                        */
+      } else {					   /*                        */
+	rp = &DBinclude(db);  			   /*                        */
+	DebugPrint1("Inserting Include"); 	   /*                        */
+      }						   /*                        */
       break;					   /*                        */
     case BIB_ALIAS:				   /*                        */
-      rp = &DBalias(db);    			   /*                        */
-      DebugPrint1("Inserting Alias");		   /*                        */
+      if (rsc_apply_alias)			   /*                        */
+      {	DebugPrint2("Alias ",*RecordHeap(rec));	   /*                        */
+	apply_alias(db,*(RecordHeap(rec)+1), rec, verbose);/*               */
+	free_record(rec);			   /*                        */
+	return;					   /*                        */
+      } else {					   /*                        */
+	rp = &DBalias(db);    			   /*                        */
+	DebugPrint1("Inserting Alias");		   /*                        */
+      }						   /*                        */
       break;					   /*                        */
     default:	       				   /*                        */
       rp = &DBnormal(db);			   /*                        */
@@ -224,13 +318,14 @@ int read_db(db,file,verbose)		   	   /*                        */
     if ( type < 0 )				   /* Errors give rise to    */
     { SkipWarning; }				   /*  a warning.	     */
     else if ( IsSpecialRecord(type) )		   /* STRING/PREAMBLE/COMMENT*/
-    {						   /*                        */
-      db_insert(db,copy_record(master_record));	   /*                        */
+    { db_insert(db,				   /*                        */
+		copy_record(master_record),	   /*                        */
+		verbose);			   /*                        */
     }						   /*			     */
     else					   /*                        */
     { rec = copy_record(master_record);	   	   /* Make a private copy.   */
       RecordOldKey(rec) = *RecordHeap(rec);	   /*                        */
-      db_insert(db,rec);			   /*                        */
+      db_insert(db,rec, verbose);		   /*                        */
       if ( verbose ) { ErrC('+'); FlushErr; }	   /*			     */
     }						   /*			     */
   }						   /*			     */
@@ -672,7 +767,7 @@ Record db_find(db,key)				   /*                        */
   Uchar		  *key;				   /*                        */
 { register Record rec;				   /*                        */
 						   /*                        */
-  DebugPrint2("Finding... ",key); 
+  DebugPrint2("Finding... ",key); 		   /*                        */
  						   /*                        */
  if ( DBnormal(db) == RecordNULL ) return RecordNULL;/*                      */
 						   /*                        */
