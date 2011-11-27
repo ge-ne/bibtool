@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.24 2011-11-26 12:36:58 gene Exp $
+%% $Id: bibtool.tex,v 1.25 2011-11-27 14:37:00 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -211,17 +211,17 @@ Net: \email{gene@gerd-neugebauer.de}
 \chapter{Introduction}
 
 The user's manual is divided into two parts. In this first part the big
-picture on \BibTool{} is shown. The next chapter afer this one is then devoted
-to the nitty gritty details.
+picture on \BibTool{} is shown. The next chapter after this one is then
+devoted to the nitty gritty details.
 
 
 \section{Related Programs}
 
 \BibTeX{} \cite{lamport:latex,patashnik:bibtexing,patashnik:designing} is a
 system for integrating bibliographic information into \LaTeX{}
-\cite{lamport:latex} documents.  \BibTeX{} is designed to serve exactly this
-purpose.  It has shown that various tasks in relation with managing
-bibliographic databases are not covered by \BibTeX.  Usual activities on
+\cite{lamport:latex} documents. \BibTeX{} is designed to serve exactly this
+purpose. It has shown that various tasks in relation with managing
+bibliographic databases are not covered by \BibTeX. Usual activities on
 bibliographic databases include
 \begin{itemize}
   \item inserting new entries
@@ -249,7 +249,7 @@ utilities emerged to fill the gaps. We will sketch some of them shortly.
 \item
   [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/biblook/}{bibindex/biblook}]
   is a pair of programs by Nelson H.F.~Beebe to generate an index for a
-  \BibTeX{} file and use it to perform a fast lookup of certain entries. The
+  \BibTeX{} file and use it to perform a fast look-up of certain entries. The
   programs so far run only under UNIX.
     
 \item
@@ -273,8 +273,10 @@ utilities emerged to fill the gaps. We will sketch some of them shortly.
   entries to bibliographic databases. Several small programs are provided to
   perform special tasks.
     
-\item [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibview/}{bibview}] is a Perl script by Dana Jacobsen to extract entries from a
-  \BibTeX{} file which are used in a \LaTeX{} document.
+\item
+  [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibview/}{bibview}]
+  is a Perl script by Dana Jacobsen to extract entries from a \BibTeX{} file
+  which are used in a \LaTeX{} document.
     
 \item
   [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibcard/}{BibCard}]
@@ -322,15 +324,15 @@ utilities emerged to fill the gaps. We will sketch some of them shortly.
   
 \end{description}
 
-This is a selection of some programs I have heard of.  I have tested some of
-them and I have skipped through the documentation of others.  Thus the
+This is a selection of some programs I have heard of. I have tested some of
+them and I have skipped through the documentation of others. Thus the
 description may be too short or incomplete. Some additional information can be
 found in \cite[Chapter~13]{goosens.mittelbach.ea:companion}.
 
 Most of those utilities are tailored towards a particular operating system and
-thus they are not available on other platforms. Most of these program are
-made to perform a single task. Often they can not be configured to suit a
-personal taste of a user.
+thus they are not available on other platforms. Most of these program are made
+to perform a single task. Often they can not be configured to suit a personal
+taste of a user.
 
 Still there are some points not covered by the utilities mentioned above.
 \BibTool{} tries to provide the missing features and integrate others into a
@@ -356,14 +358,14 @@ you can simply issue the command
 
 Now \BibTool{} will start reading from the standard input lines obeying the
 rules of a \BibTeX{} file.\footnote{We assume that no resource file can be
-found.  Resource files will be described later.} The entries read are
-pretty-printed on the standard output.  It is obvious that this behavior is
-not very useful in itself. The origin of this kind of interface lies in the
+  found. Resource files will be described later.} The entries read are
+pretty-printed on the standard output. It is obvious that this behavior is not
+very useful in itself. The origin of this kind of interface lies in the
 concepts of UN*X where many commands can act as filters.
 
 Usually we do not intend to use \BibTool{} in this way. Thus we need a way to
-specify an input file.  This is simply done by adding the file name as
-argument after the command name like in
+specify an input file. This is simply done by adding the file name as argument
+after the command name like in
 
 \sh{file.bib}
 
@@ -373,8 +375,8 @@ the file \texttt{file.bib} is pretty printed.
 
 
 Now that we have seen the simplest case of the application of \BibTool{} we
-will see the case of a useful application of \BibTool.  This application is
-the sorting and merging of \BibTeX{} databases.
+will see the case of a useful application of \BibTool. This application is the
+sorting and merging of \BibTeX{} databases.
 
 
 %------------------------------------------------------------------------------
@@ -398,29 +400,29 @@ following invocation should do the trick:\index{N@\%N}
 
 This means that the sorting order is determined by the (normalized) author
 field. Note that single quotes encapsulating the \rsc{sort.format} are
-neccesary to prevent the command line interpreter to gobble the special
+necessary to prevent the command line interpreter to gobble the special
 characters.
 
 %------------------------------------------------------------------------------
 \subsection{Key Generation}
 
 Once you have a reference and you insert it into a \BibTeX{} file you have to
-assign a reference key to it.  The problem is to find a key which is unique
-and meaningful, i.e.\ easy to remember.  The easiest way to remember a key is
-to use an algorithm to create it and remember the algorithm---which is the
-same for all keys.
+assign a reference key to it. The problem is to find a key which is unique and
+meaningful, i.e.\ easy to remember. The easiest way to remember a key is to
+use an algorithm to create it and remember the algorithm---which is the same
+for all keys.
 
 One algorithm which comes to mind is to use the author and (an initial part)
-of the title.  Alternatively we can use the author and the year.  But the
+of the title. Alternatively we can use the author and the year. But the
 problem is with industrious authors writing more than one publication per
-year.  The necessary disambiguation of such references is not very intuitive.
+year. The necessary disambiguation of such references is not very intuitive.
 However, \BibTool{} has the capability to describe desired keys. Thus, the
 alternatives described above can be realized.
 
 
 For this section we want to use the following \BibTeX{} entry as our
 example:\footnote{Shamelessly stolen from the \BibTeX{} \file{xamples.bib}
-  file.}  Suppose it is contained in a file named \file{sample.bib}.
+  file.} Suppose it is contained in a file named \file{sample.bib}.
 
 \begingroup\footnotesize\label{sample1}%
 \begin{verbatim}
@@ -475,8 +477,8 @@ will (hopefully) bring together the publications of the same first author.
 
 Another alternative is to use the author and the year. This can be achieved
 with the following command:\footnote{Note that some command line interpreters
-(like the UN*X shells) require the format string to be quoted (enclosed in
-single quotes).}\index{n@\%n}
+  (like the UN*X shells) require the format string to be quoted (enclosed in
+  single quotes).}\index{n@\%n}
 
 \sh[f]{\texttt{\%n(author):\%2d(year) sample.bib -o sample1.bib}}
 
@@ -508,7 +510,7 @@ might be required for all command line interpreters.
 
 The rewrite rule is applied to any field. The first string---called
 pattern---which is enclosed in double quotes is matched against the contents
-of the field. If a match is found then the matching substring is replaced by
+of the field. If a match is found then the matching sub-string is replaced by
 the replacement text in the second string.
 
 The pattern is a regular expression\index{regular expression} like the ones
@@ -522,15 +524,15 @@ they are given after the hat and before the dollar. To avoid a
 misinterpretation as the end of the pattern they have to be quoted with the
 backslash (\verb|\|).
 
-Next we have the parentheses \verb|\(|\ldots\verb|\)|. They are instructions to
-memorize the matching substring in a register. Since it is the first
+Next we have the parentheses \verb|\(|\ldots\verb|\)|. They are instructions
+to memorize the matching sub-string in a register. Since it is the first
 instruction of this kind the register number~1 is used.
 
-Now we come to the point where we have to specify the contents of the
-string. For this purpose we use a character class---written as
-\verb|[|\ldots\verb|]|. Since the first character in this class specification
-is a hat this class consists of all characters but those given after the
-hat. Thus all characters but the hash sign (\verb|#|\index{\#}) are allowed.
+Now we come to the point where we have to specify the contents of the string.
+For this purpose we use a character class---written as \verb|[|\ldots\verb|]|.
+Since the first character in this class specification is a hat this class
+consists of all characters but those given after the hat. Thus all characters
+but the hash sign (\verb|#|\index{\#}) are allowed.
 
 The star (\verb|*|\index{*}) after the character class indicates that an
 arbitrary number of characters of this class are allowed.
@@ -551,7 +553,7 @@ matches any character. But this would have let to the syntactic wrong result:
 \end{verbatim}
 
 But we have to complete the explanation of the rewrite rule. The remaining
-part is the replacement text. Here we just have to note that the substring
+part is the replacement text. Here we just have to note that the sub-string
 \verb|\1| is not copied verbose but replaced with the contents of the first
 register. This register contains the contents of the field without the
 delimiting double quotes.
@@ -579,20 +581,20 @@ stream the result is written into this file.
 \subsection{Extracting Entries Matching a Regular Expression}
 
 \BibTool{} can be used to extract the references which fulfill certain
-criteria.  Those criteria can be specified utilizing regular
+criteria. Those criteria can be specified utilizing regular
 expressions.\footnote{Those features are only usable if the regular expression
   library has been enabled during the configuration of \BibTool{}---which is
   the default.} As a special case we can extract all entries containing a
-certain substring of the key:
+certain sub-string of the key:
 
 \sh[X]{tex all.bib \texttt{-o} some.bib}
 
-This instruction selects all entries containing the substring \texttt{tex} in the
-key. The second option \opt{o} followed by a file name specifies the
+This instruction selects all entries containing the sub-string \texttt{tex} in
+the key. The second option \opt{o} followed by a file name specifies the
 destination of the output. Thus instead of writing the result to the standard
 output stream the result is written into this file.
 
-Next we want to look up all entries containing a substring in some of its
+Next we want to look up all entries containing a sub-string in some of its
 fields. For this purpose we search for the string in all fields
 first:\footnote{Note that some command line interpreters (e.g the UN*X shells)
   might need additional quoting of the select instruction since it contains
@@ -603,14 +605,14 @@ first:\footnote{Note that some command line interpreters (e.g the UN*X shells)
 Note that the comparison is not done case sensitive; however this can be
 customized (see page~\pageref{sec:extract}).
 
-Finally we want to select only those entries containing the substring in
+Finally we want to select only those entries containing the sub-string in
 anyone of certain fields. For this purpose we simply specify the names of
 those fields in the \textit{select} instruction:
 
 \sh[-]{select\{title booktitle \$key "tex"\} all.bib \texttt{-o} some.bib}
 
-This example extracts all entries containing the substring \texttt{tex} in the
-title field, the booktitle field, or the reference key.
+This example extracts all entries containing the sub-string \texttt{tex} in
+the title field, the booktitle field, or the reference key.
 
 After we have come so far we can say that the first example in this section is
 in fact a short version of the following command:
@@ -625,9 +627,9 @@ bibliography. This can be done with the following command:
 A similar method can also be applied for other entry types.
 
 \begin{description}
-\item[Note] Usually crossreferenced entries are not selected automatically.
+\item[Note] Usually cross-referenced entries are not selected automatically.
   This can result in incomplete---and thus incorrect---\BibTeX\ files. To
-  avoid this behaviour use the following command:
+  avoid this behavior use the following command:
 
   \sh[-]{select\{\@{}book\} \texttt{-c} all.bib \texttt{-o} some.bib}
 
@@ -636,18 +638,18 @@ A similar method can also be applied for other entry types.
 %------------------------------------------------------------------------------
 \subsection{Translating ISO 8859-1 Characters}
 
-Sometimes you need to translate some special characters into \BibTeX\ 
-sequences.  Suppose you have edited a \BibTeX\ file and by mistake used those
+Sometimes you need to translate some special characters into \BibTeX\
+sequences. Suppose you have edited a \BibTeX\ file and by mistake used those
 nice characters that are incompatible with standard \ASCII{} as used in
-\BibTeX.  You can use \BibTool\ to do the trick:
+\BibTeX. You can use \BibTool\ to do the trick:
 
 \sh[r]{iso2tex \texttt{-i} iso.bib \texttt{-o} ascii.bib}
 
 
 %------------------------------------------------------------------------------
-\subsection{Correctly Sorting Crossreferenced Entries}
+\subsection{Correctly Sorting Cross-referenced Entries}
 
-\BibTeX\ has a restriction that a crossreferenced entry has to come after the
+\BibTeX\ has a restriction that a cross-referenced entry has to come after the
 referencing entry. This can be achieved by putting all entries containing a
 field ``crossref'' before those containing none. As second sorting criterion
 we want to use the reference key.
@@ -676,7 +678,7 @@ detail:
   If the condition holds then the string \texttt{a} is used as part of the
   sort key.
 \item [\texttt{\{\%1.\#s(crossref)a\#z\}}]\index{l@\%l}\ \\
-  If the first condition fails then the next alteranative after the hash mark
+  If the first condition fails then the next alternative after the hash mark
   (\texttt{\#}) is considered. This is the string \texttt{z} which will always
   succeed and thus be included into the sort key.
 
@@ -697,7 +699,7 @@ crossref fields to the beginning.
 \BibTool{} can be used as a means for other programming languages to access
 \BibTeX{} data bases. In this course \BibTool{} reads the \BibTeX{} file and
 prints it in a normalized form which makes it easy for the host programming
-language to parse it and get the information about the entries and fields. 
+language to parse it and get the information about the entries and fields.
 
 In addition \BibTool{} can already preselect several entries or do other
 useful transformations before the host programming language even sees the
@@ -706,16 +708,15 @@ utilizes \BibTool{} to extract certain entries from a \BibTeX{} data base and
 presents the result on a HTML page.
 
 Currently the distribution of \BibTool{} contains frames of programs in Perl
-and Tcl which can be used as a basis for further develpoments.
+and Tcl which can be used as a basis for further developments.
 
 I am working towards making \BibTool{} a linkable library of C code. As one
 step into this direction the exported functions and header information has
 been documented. This documentation is contained in the distribution.
 
-A tight integration of BibTool into another programming language is
-possible. As an experiment into this direction I have choosen Tcl as the
-target language. The result is BibTcl which is contained in the distribution
-of \BibTool. 
+A tight integration of BibTool into another programming language is possible.
+As an experiment into this direction I have chosen Tcl as the target language.
+The result is BibTcl which is contained in the distribution of \BibTool.
 
 
 %------------------------------------------------------------------------------
@@ -735,7 +736,7 @@ following major sites (and many mirrors):
 \item \texttt{tex-archive/biblio/bibtex/utils/bibtool}
 \end{list}
 
-\BibTool\ is hosted in a public repoository at Sarovar. The repository
+\BibTool\ is hosted in a public repository at Sarovar. The repository
 contains the released sources as well as the development versions. The
 repository can be found at
 \begin{quote}
@@ -786,11 +787,11 @@ Oh, sure. There have been bugs and I suppose there are still some bugs in
 
 As you might have read \BibTool{} is free software in the sense of the Free
 Software Foundation. This means that you can use it as a whole or parts of it
-as long as you do not deny anyone to have the sources and use it
-freely. See the file \Link{COPYING}{COPYING} for details.
+as long as you do not deny anyone to have the sources and use it freely. See
+the file \Link{COPYING}{COPYING} for details.
 
 If you feel morally obliged to provide compensation for the use of this
-program I have the following suggestions. 
+program I have the following suggestions.
 
 \begin{itemize}
 \item Proofread this documentation and report any errors you find as well as
@@ -819,17 +820,17 @@ features may be present in your executable. Thus watch out and complain to the
 \section{Beware of the Command Line}
 
 Be aware that command line interpreters have different ideas about what to do
-with a command line before passing the arguments to a program.  Thus it might
-be necessary to carefully quote the arguments.  Especially if the command
+with a command line before passing the arguments to a program. Thus it might
+be necessary to carefully quote the arguments. Especially if the command
 contains spaces it is very likely that quoting is needed.
 
 For instance in UN*X shells it is in general a good strategy to enclose
-command line arguments in single quotes (\verb|'|) if they contain whitespace
+command line arguments in single quotes (\verb|'|) if they contain white-space
 or special characters like \texttt{\symbol{"5C}}, \texttt{\$}, \texttt{\&},
 \verb|!|, or \verb|#|.´
 
-Instead of excessively using command line arguments it is preferrable and less
-error prome to put the major configuration into a resource file and just
+Instead of excessively using command line arguments it is preferable and less
+error-prome to put the major configuration into a resource file and just
 include this resource file on the command line. Details on this are described
 in the next section.
 
@@ -849,8 +850,8 @@ type simply
 \sh{}
 
 Now \BibTool{} is waiting for your input. As you type \BibTool{} reads what
-you type.  This input is interpreted as data conforming \BibTeX{} file rules.
-The result is printed when \BibTool{} is finished.  You can terminate the
+you type. This input is interpreted as data conforming \BibTeX{} file rules.
+The result is printed when \BibTool{} is finished. You can terminate the
 reading phase with your End-Of-File character (e.g.\ Control-D on UN*X, or
 Control-Z on MS-D*S)
 
@@ -869,12 +870,12 @@ given in the command line after the flag \opt{r}.
 \sh[r]{resource\_file}
 
 In this way an arbitrary number of resource files can be given. Those resource
-files are read in turn and the commands contained are evaluated.  If no
+files are read in turn and the commands contained are evaluated. If no
 resource file is given in the command line \BibTool{} tries to find one in
 standard places. First of all the environment variable \env{BIBTOOLRSC} is
 searched. If it is defined then the value is taken as a list of resource file
 names separated by colon (UNIX), semicolon (DOS), or comma (Amiga). All of
-them are tried in turn and loaded if they exist.  If the environment variable
+them are tried in turn and loaded if they exist. If the environment variable
 is not set or no file could be loaded successfully then the default resource
 file (usually the file \texttt{.bibtoolrsc}) is tried to be read in the home
 directory (determined by the environment variable \env{HOME}) or the current
@@ -917,10 +918,10 @@ potentially overwritten:
 \sh{\texttt{-r} my\_rsc \texttt{-R} \texttt{-i} sample}
 
 Additionally note that resource files are evaluated at once whereas input
-files are read in one chunk at the end.  Thus you can not specify one set of
+files are read in one chunk at the end. Thus you can not specify one set of
 parameters to be used for one file and another set of parameters for the next
-file.  This is impossible within one invocation of \BibTool\footnote{This
-  might be changed in the next major revision (3.0).}
+file. This is impossible within one invocation of \BibTool\footnote{This might
+  be changed in the next major revision (3.0).}
 
 As a consequence of this behavior the last example is equivalent to the
 following invocations:
@@ -937,15 +938,15 @@ form of a resource command is of the form
 
 \rsc{name} is the resource name which conforms the rules of \BibTeX{}
 reference keys. Thus \rsc{name} can be composed of all characters but
-whitespace characters and\index{\#}\index{"}\index{\%}\index{=}\index{,}%
+white-space characters and\index{\#}\index{"}\index{\%}\index{=}\index{,}%
 \index{'}\index{\{}\index{\}}\index{(}\index{)}
 \begin{verbatim}
     "  #  %  '  (  )  ,  =  {  }
 \end{verbatim}
 
-Resource names are currently composed of letters and the period.  The next
+Resource names are currently composed of letters and the period. The next
 component is an optional equality sign (\texttt{=}). The equality sign is
-recommended as it helps detecting syntax problems. Whitespace characters
+recommended as it helps detecting syntax problems. White-space characters
 surrounding the equality sign or separating resource name and resource value
 are ignored. The resource value can be of the following kind:
 \begin{itemize}
@@ -961,8 +962,8 @@ are ignored. The resource value can be of the following kind:
 
 You can think of resource names as variables or functions in a programming
 language. Resource commands simply set the variables to the given value, add
-the value to the old value, or initiate a action.  There are different types
-of resources
+the value to the old value, or initiate a action. There are different types of
+resources
 \begin{itemize}
 \item Boolean resources can take only the values \rsc{on} and \rsc{off}.
   The values \rsc{on}, \rsc{t}, \rsc{true}, 1, and \rsc{yes} are interpreted
@@ -971,7 +972,7 @@ of resources
 \item String resources can take arbitrary strings.
 \end{itemize}
 
-Usually whitespace characters are ignored. There is one exception. The
+Usually white-space characters are ignored. There is one exception. The
 characters \texttt{\%} and \texttt{\#} act as comment start characters if
 given between resource commands. All characters to the end of the line are
 ignored afterwards.
@@ -986,15 +987,15 @@ Thus the resource given above has the same functionality as the command line
 option \opt{r} described above. Path names should be specified in the normal
 manner for your operating system.
 
-One resource command useful for debugging is the \rsc{print} resource.  The
+One resource command useful for debugging is the \rsc{print} resource. The
 resource value is immediately written to the error stream. The output is
-terminated by a newline character.  Certain translations are performed during
-the reading of a resource which can be observed when printing.  Each sequence
-of whitespace characters is translated into a single space.
+terminated by a newline character. Certain translations are performed during
+the reading of a resource which can be observed when printing. Each sequence
+of white-space characters is translated into a single space.
 
-To end this subsection we give an example of the \rsc{print} resource.  In
-this sample we also see the possibility to omit the equality sign and use
-quotes as delimiters.
+To end this subsection we give an example of the \rsc{print} resource. In this
+sample we also see the possibility to omit the equality sign and use quotes as
+delimiters.
 
 \RSc{print}{"This is a stupid message."}
 
@@ -1026,7 +1027,7 @@ be used from the command line with the following
 %------------------------------------------------------------------------------
 \section{Input File Specification and Search Path}\label{sec:search}
 
-An arbitrary number of input files can be specified.  Input files can be
+An arbitrary number of input files can be specified. Input files can be
 specified in two ways. The command line option \opt{i} is immediately followed
 by a file name.
 
@@ -1041,13 +1042,13 @@ specified the standard input is used to read from.
 
 Depending on the special configuration of \BibTool{} there are two ways of
 searching for \BibTeX{} files. The native mode of \BibTool{} uses a list of
-directories and a list of extensions to find a file.  Alternatively the
+directories and a list of extensions to find a file. Alternatively the
 kpathsea library can be used which provides additional features like the
-recursive searching in subdirectories.  First we look at the native \BibTool{}
+recursive searching in sub-directories. First we look at the native \BibTool{}
 searching mechanism.
 
 The files are searched in the following way. If the file is can't be opened as
-given the extension \texttt{.bib} is appended and another read is tried.  In
+given the extension \texttt{.bib} is appended and another read is tried. In
 addition directories can be given which are searched for input files. The
 search path can be given in two different ways. First, the resource name
 \rsc{bibtex.search.path} can be set to contain a search path specification.
@@ -1055,7 +1056,7 @@ search path can be given in two different ways. First, the resource name
 \RSC{bibtex.search.path}{directory1:directory2:directory3}
 
 The elements of the search path are separated by colons. Thus colons are not
-allowed as parts of directories.  Another source of the search path is the
+allowed as parts of directories. Another source of the search path is the
 environment variable \env{BIBINPUTS}. This environment variable is usually
 used by \BibTeX{} to specify the search path. The syntax of the specification
 is the same as for the resource \rsc{bibtex.search.path}. To check the
@@ -1082,14 +1083,14 @@ be used to change this value.
 
 \textbf{Note} that the defaults for \rsc{env.separator} and
 \rsc{dir.file.separator} are set at compile time to a value suitable for the
-operating system.  Usually you don't have to change them at all.  For instance
+operating system. Usually you don't have to change them at all. For instance
 for MSD*S machines the \rsc{env.separator} is usually set to \verb|;| and the
 \rsc{dir.file.separator} is usually set to \verb|\|.
 
 If the kpathsea library is used for searching \BibTeX{} files then some of the
-resources described above have no effect.  They are replaced by their kpathsea
-counterparts.  Most probably you are using the kpathsea library already in
-other \TeX{} related programs.  Thus I just have to direct you to the
+resources described above have no effect. They are replaced by their kpathsea
+counterparts. Most probably you are using the kpathsea library already in
+other \TeX{} related programs. Thus I just have to direct you to the
 documentation distributed with the kpathsea library for details.
 
 \begin{Summary}
@@ -1111,7 +1112,7 @@ documentation distributed with the kpathsea library for details.
 \section{Output File Specification and Status Reporting}
 
 By default, the processed \BibTeX{} entries are written to the standard
-output.  This output can be redirected to a file using the command line option
+output. This output can be redirected to a file using the command line option
 \opt{o} as in
 
 \sh[o]{output\_file}
@@ -1135,7 +1136,7 @@ actions currently performed. They are suppressed by default but can be
 enabled.
 
 Warning messages can be suppressed using the command line option \opt{q}.
-This option toggles the boolean quiet value.
+This option toggles the Boolean quiet value.
 
 \sh[q]{}
 
@@ -1145,12 +1146,12 @@ The same effect can be obtained by assigning the value \textsf{on} or
 \Rsc{quiet}{on}
 
 Status reports are useful to see the operations performed. They can be enabled
-using the command line option \opt{v}. This option toggles the boolean verbose
+using the command line option \opt{v}. This option toggles the Boolean verbose
 value.
 
 \sh[v]{}
 
-The same can also be achieved with the boolean resource \rsc{verbose}:
+The same can also be achieved with the Boolean resource \rsc{verbose}:
 
 \Rsc{verbose}{on}
 
@@ -1182,10 +1183,10 @@ parsing and pretty printing. This is not superfluous since \BibTeX{} is rather
 pedantic about the accepted syntax. Thus I decided to try to be generous and
 correct as many errors as I can.
 
-Each input file is parsed and stored in an internal representation.  \BibTeX{}
+Each input file is parsed and stored in an internal representation. \BibTeX{}
 simply ignores any characters between entries. \BibTool{} stores the comments
-and attaches them to the entry immediately following them.  Normally anything
-between entries is simply discarded and a warning printed.  The boolean
+and attaches them to the entry immediately following them. Normally anything
+between entries is simply discarded and a warning printed. The Boolean
 resource \rsc{pass.comments} can be used to change this behavior.
 
 \Rsc{pass.comments}{on}
@@ -1269,36 +1270,36 @@ by specifying resources on the command line.
         since comments do not have to follow any syntactic
         restriction.} This value defaults to 10. 
   \item [\rsc{print.comma.at.end}]
-    	This boolean resource determines whether the comma between fields
+    	This Boolean resource determines whether the comma between fields
     	should be printed at the end of the line. If it is \textsf{off} then
     	the comma is printed just before the field name. In this case the
     	alignment given by \rsc{print.align} determines the column of the
     	comma.
   \item [\rsc{print.equal.right}]
-        This boolean resource specifies whether the = sign in normal entries
+        This Boolean resource specifies whether the = sign in normal entries
         is aligned right. If turned off then the = sign is flushed left to the
         field name. This value defaults to \textsf{on}.
   \item [\rsc{print.newline}]
         This numeric resource specifies the number of newlines between
         entries. This value defaults to 1.
   \item [\rsc{print.terminal.comma}]
-        This boolean resource specifies whether a comma should be printed
+        This Boolean resource specifies whether a comma should be printed
         after the last record of a normal entry. This contradicts the rules of
         \BibTeX\ but might be useful for other programs. This value defaults
         to \textsf{off}.
   \item [\rsc{print.use.tab}]
-        This boolean resource specifies if the \texttt{TAB} character should be
+        This Boolean resource specifies if the \texttt{TAB} character should be
         used for indenting. This use is said to cause portability problems.
         Thus it can be disabled. If disabled then the appropriate number of
         spaces are inserted instead. This value defaults to \textsf{on}.
   \item [\rsc{print.wide.equal}]
-    	This boolean resource determines whether the euqality sign should be
+    	This Boolean resource determines whether the equality sign should be
     	forced to be surrounded by spaces. Usually this resource is \off{}
     	which means that no spaces are required around the equality sign and
     	they can be omitted if the alignment forces it.
   \item [\rsc{suppress.initial.newline}]
-        This boolean resource suppresses the initial newline before normal
-        records since this migh be distracting under certain circumstances.
+        This Boolean resource suppresses the initial newline before normal
+        records since this might be distracting under certain circumstances.
 \end{description}
 
 The resource values described above are illustrated by the following examples.
@@ -1415,7 +1416,7 @@ The reference key is usually translated to lower case letters unless a new key
 is generated (see section~\ref{sec:key.gen}). In this case the chosen format
 determines the case of the key. Sometimes it can be desirable to preserve the
 case of the key as given (even so \BibTeX{} does not mind). This can be
-achieved with the boolean resource \rsc{preserve.key.case}. Usually it is
+achieved with the Boolean resource \rsc{preserve.key.case}. Usually it is
 turned off (because of backward compatibility and the memory used for this
 feature). You can turn it on as in
 
@@ -1468,16 +1469,16 @@ default the reference key. Sorting can enabled with the command line switches
 
 The first variant sorts in ascending \ASCII{} order (including differentiation
 of upper and lower case). The second form sorts in descending \ASCII{} order.
-The same effect can be achieved with the boolean resource values \rsc{sort}
+The same effect can be achieved with the Boolean resource values \rsc{sort}
 and \rsc{sort.reverse} respectively.
 
 \RSC{sort}{on}\vspace{-4ex}
 \RSC{sort.reverse}{on}
 
 The resource \rsc{sort} determines whether or not the entries should be
-sorted.  The resource \rsc{sort.reverse} determines whether the order is
-ascending (off) or descending (on) \ASCII{} order of the sort key.  The
-sort key is initialized from the reference key if not given otherwise.
+sorted. The resource \rsc{sort.reverse} determines whether the order is
+ascending (off) or descending (on) \ASCII{} order of the sort key. The sort
+key is initialized from the reference key if not given otherwise.
 
 Alternatively the sort key can be constructed according to a specification.
 This specification can be given in the same way as a specification for key
@@ -1508,7 +1509,7 @@ uppercase letters all come before the lowercase letters.  \medskip
 Usually the keys are folded to lower case during the normalization. Thus the
 lower case variants are also used for comparison. The resource
 \rsc{preserve.key.case} can be used to print cased keys as they are
-encountered in the input file. This feature can be combined with the boolean
+encountered in the input file. This feature can be combined with the Boolean
 resource \rsc{sort.cased} to achieve sorting according to the unfolded
 reference key:
 
@@ -1538,8 +1539,8 @@ An example of sorting can be seen in section~\ref{sample.sort} on page
 %------------------------------------------------------------------------------
 \section{Regular Expression Matching}\label{sec:regex}
 
-\BibTool{} makes use of the GNU regular expression library.  Thus a short
-excursion into regular expressions is contained in this manual.  Several
+\BibTool{} makes use of the GNU regular expression library. Thus a short
+excursion into regular expressions is contained in this manual. Several
 examples of the application of regular expressions can be found also in other
 sections of this manual.
 
@@ -1594,7 +1595,7 @@ Note that the default regular expressions of the Emacs style are used.
   regular expression matches a string if one of the alternative separated by
   the bar does.
 
-  Note that the bar has to be preceeded by a backslash.
+  Note that the bar has to be preceded by a backslash.
   
   For instance the regular expression \emph{abc\(\backslash\mid\)def} matches
   the string \emph{abc} and the string \emph{def}.
@@ -1603,7 +1604,7 @@ Note that the default regular expressions of the Emacs style are used.
   group is enclosed in parentheses. It matches a string if the enclosed
   regular expression does.
 
-  Note that the parantheses have to be preceeded by a backslash.
+  Note that the parentheses have to be preceded by a backslash.
   
   For instance the regular expression
   \emph{\(a\backslash(b\backslash\mid\backslash d)c\)} matches the strings
@@ -1663,7 +1664,7 @@ Note that the default regular expressions of the Emacs style are used.
 \subsection{Extracting by \texttt{aux} Files}
 
 \BibTool{} includes a module to extract \BibTeX{} entries required for a
-document.  This is accomplished by analyzing the \texttt{aux} file of the
+document. This is accomplished by analyzing the \texttt{aux} file of the
 document. The \texttt{aux} file is usually produced by \LaTeX. It contains the
 information which \BibTeX{} files and which references are used in the
 document. Only those entries mentioned in the \texttt{aux} file are selected
@@ -1685,7 +1686,7 @@ A small difference exists between the two variants. the command line option
 automatically sets the resource \rsc{print.all.strings} to \verb|off|. This
 has to be done in the resource file manually.
 
-Note that the extraction automatically respects the crossreferences in the
+Note that the extraction automatically respects the cross-references in the
 selected entries. Thus you will get a complete \BibTeX\ file---unless some
 references can not be resolved and an error is produced.
 
@@ -1697,7 +1698,7 @@ imitated by the extracting mechanism of \BibTool.
 An example of extracting can be seen in section~\ref{sample:extract} on page
 \pageref{sample:extract}.
 
-\subsection{Extracting with Substring Matching}
+\subsection{Extracting with Sub-string Matching}
 
 The simplest way of specifying an entry---except by giving its key---is to
 give a string which has to be present in one of the fields or pseudo-fields.
@@ -1717,17 +1718,17 @@ following funny syntax:
 This operation selects all entries containing \texttt{some string} in one of
 the normal fields. The search can be restricted to specific fields or extended
 to pseudo-fields by specifying those fields before the search string. An
-arbitrary number of whitespace separated fields can be given there. Thus the
+arbitrary number of white-space separated fields can be given there. Thus the
 general syntax for this resource is as follows:
 
 \RSC{select.by.string}{\textit{field\(_1\) \(\ldots\) field\(_n\) "string"}}
 
 To make this selection operation more flexible it is possible to determine
 whether or not the comparison against the value of a field is performed case
-sensitive. This can be done with the boolean resource
+sensitive. This can be done with the Boolean resource
 \rsc{select.case.sensitive}. Since the selection is performed after all
-resources have been read the value of this resource is only considered
-then. Thus it is not possible to mix case sensitive and non case sensitive
+resources have been read the value of this resource is only considered then.
+Thus it is not possible to mix case sensitive and non case sensitive
 selections as with regular expressions (see section~\ref{sec:extract}).
 
 During the matching of the search string against the value of a field
@@ -1746,11 +1747,11 @@ ignored sets of characters.
 In addition to the functionality described above the resource
 \rsc{select.by.non.string} can be used to select all entries for which the
 match against the given field fails. The general form is the same as for
-\rsc{select.by.string}: 
+\rsc{select.by.string}:
 
 \RSC{select.by.non.string}{\textit{field\(_1\) \(\ldots\) field\(_n\) "string"}}
 \begin{description}
-\item[Note] Crossreferences are not considered unless \rsc{select.crossrefs}
+\item[Note] Cross-references are not considered unless \rsc{select.crossrefs}
   is set.
 \end{description}
 
@@ -1758,7 +1759,7 @@ match against the given field fails. The general form is the same as for
 
 Another selecting mechanism uses regular expressions to select items. This
 feature can be used in addition to the selection according to \texttt{aux}
-files.  The regular expression syntax is identical to the one used in GNU
+files. The regular expression syntax is identical to the one used in GNU
 Emacs. For a description see section \ref{sec:regex}.
 
 The resource \rsc{select} allows to specify which fields should be used to
@@ -1767,19 +1768,19 @@ select entries. The general form is as follows:
 \RSC{select}{\textit{field\(_1\) \(\ldots\) field\(_n\) "regular\_expression"}}
 
 If no field is specified then the regular expression is searched in each
-field.  If no regular expression is specified then any value is accepted; i.e.
+field. If no regular expression is specified then any value is accepted; i.e.
 the regular expression \texttt{"."} is used.
 
 Any number of selection rules can be given. An entry is selected if one of
 those rules selects it. The select rule selects an entry if this entry has a
-field named \emph{field} which has a substring matching
+field named \emph{field} which has a sub-string matching
 \emph{regular\_expression}. The field can be missing in which case the regular
 expression is tried to match against any field in turn.
 
 The pseudo fields \verb|$key|, \verb|$type|, and \verb|@|\emph{type} can be
 used to access the key and the type of the entry. See page
-\pageref{pseudo:key} for details. The routines used there are the same as those
-used here.
+\pageref{pseudo:key} for details. The routines used there are the same as
+those used here.
 
 Analogously to the negation of the string matching the regular expression
 matching can be negated. The resource to perform this functionality is
@@ -1788,7 +1789,7 @@ matching can be negated. The resource to perform this functionality is
 \RSC{select.non}{\textit{field\(_1\) \(\ldots\) field\(_n\) "regular\_expression"}}
 
 
-The boolean resource \rsc{select.case.sensitive} can be used to determine
+The Boolean resource \rsc{select.case.sensitive} can be used to determine
 whether the selection is performed case sensitive or not:
 
 \Rsc{select.case.sensitive}{off}
@@ -1809,7 +1810,7 @@ A regular expression can be specified in the command line using the option
 The fields compared against this regular expression are given in the string
 valued resource \rsc{select.fields}. Initially this resource has the value
 \verb|$key|. In general the value is a list of fields and pseudo fields to be
-considered.  The elements of the list are separated by spaces. If the list is
+considered. The elements of the list are separated by spaces. If the list is
 empty then all fields and the key are considered for comparison.
 %$
 
@@ -1823,8 +1824,8 @@ previously is equivalent to the (longer) command
 
 \sh[-]{select\{\$key "regular\_expression"\}}
 
-Note that the resources \rsc{select.case.sensitive} and \rsc{select.fields} are
-used for all regular expressions following their definition until they are
+Note that the resources \rsc{select.case.sensitive} and \rsc{select.fields}
+are used for all regular expressions following their definition until they are
 redefined. This means that it is possible to specify that some comparisons are
 done case sensitive and others are not done case sensitive.
 
@@ -1838,26 +1839,26 @@ against the key. This feature is kept for backward compatibility only. It is
 not encouraged and will vanish in a future release.
 
 \begin{description}
-\item[Note] Crossreferences are not considered unless \rsc{select.crossrefs}
+\item[Note] Cross-references are not considered unless \rsc{select.crossrefs}
   is set.
 \end{description}
 
-\subsection{Extracting and Crossreferences}\label{sec:xref}
+\subsection{Extracting and Cross-references}\label{sec:xref}
 
-When extracting entries due to contained substrings or regular expression
-matching crossreferenes are not considered automatically. This behaviour can
+When extracting entries due to contained sub-strings or regular expression
+matching cross-references are not considered automatically. This behavior can
 result in incomplete and thus incorrect \BibTeX\ files.
 
-The automatic selection of crossreferenced entries can be controlled by the
-resource \rsc{select.crossrefs}. This resource is |off| by default.
-This means that crossreferences are ignored.
+The automatic selection of cross-referenced entries can be controlled by the
+resource \rsc{select.crossrefs}. This resource is |off| by default. This means
+that cross-references are ignored.
 
 The following instruction can be used to turn on the automatic inclusion of
-crossreferenced entries:
+cross-referenced entries:
 
 \Rsc{select.crossrefs}{on}
 
-The depth of crossreference chains can be restricted with the resource
+The depth of cross-reference chains can be restricted with the resource
 \rsc{crossref.limit}.
 
 \begin{Summary}
@@ -1868,15 +1869,15 @@ The depth of crossreference chains can be restricted with the resource
   \Desc{\opt{X} regex}{\rsc{select}\{spec\}}{Select certain entries according
     to a regular expression.}
   \Desc{}{\rsc{select.by.non.string}\{spec\}}{Select certain entries according
-    to a failing substring matching.}
+    to a failing sub-string matching.}
   \Desc{}{\rsc{select.by.string}\{spec\}}{Select certain entries according to
-    a substring matching.}
+    a sub-string matching.}
   \Desc{}{\rsc{select.by.string.ignored}\{chars\}}{Define the class of
-    characters to be ignored by the substring matching.}
+    characters to be ignored by the sub-string matching.}
   \Desc{}{\rsc{select.case.sensitive}=off}{Turn off the case
     insensitive comparison.}
   \Desc{\opt{c}}{\rsc{select.crossrefs}=on}{Turn on the additional selection of
-    crossreferenced entries.}
+    cross-referenced entries.}
   \Desc{}{\rsc{select.fields}\{fields\}}{Determine fields for \opt{X}.}
   \Desc{}{\rsc{select.non}\{spec\}}{Select certain entries according
     to a failing regular expression matching.}
@@ -1930,13 +1931,12 @@ database entries:
 
 \begin{description}
 \item [\rsc{short}]
-  If a field named \verb|key| is present then its value is
-  used.  Otherwise if an author or editor field are present, then this field
-  is used.  The short version uses last names only. Afterwards a title or
-  booktitle field is appended, after the \rsc{fmt.name.title} separator has
-  been inserted. Finally if all else fails then the default key
-  \rsc{default.key} is used. The result is disambiguated (cf.\
-  \rsc{key.base}). 
+  If a field named \verb|key| is present then its value is used. Otherwise if
+  an author or editor field are present, then this field is used. The short
+  version uses last names only. Afterwards a title or booktitle field is
+  appended, after the \rsc{fmt.name.title} separator has been inserted.
+  Finally if all else fails then the default key \rsc{default.key} is used.
+  The result is disambiguated (cf.\ \rsc{key.base}).
   
   To see the effect we apply \BibTool{} to the example entries given earlier
   with the command line argument \verb|-- key.format=short|.  This results in
@@ -1994,7 +1994,7 @@ database entries:
   The empty version clears the key entirely. The result does not conform to
   the \BibTeX{} syntax rules. This feature can be useful if a resource file
   must be used which generates only new keys. In this case a first pass can
-  clear the keys and the given resource file acn be applied in a second pass
+  clear the keys and the given resource file can be applied in a second pass
   to generate all keys.
 
   If \BibTool{} is applied to the example entries given earlier with the
@@ -2014,7 +2014,7 @@ explicitly. This can be done using the command line option \opt{F} as in
 
 \sh[F]{}
 
-Alternatively the boolean resource \rsc{key.generation} can be used in a
+Alternatively the Boolean resource \rsc{key.generation} can be used in a
 resource file:
 
 \Rsc{key.generation}{on}
@@ -2024,7 +2024,7 @@ invalidate citations in old documents. For this situation the resource
 \rsc{preserve.keys} is meant. This resource is usually \verb|off|. If it is
 turned \verb|on| then only those entries receive new keys if they do not have
 a key already. This means that the input contains only a sequence of
-whitespace characters (which is not accepted by \BibTeX) as in the following
+white-space characters (which is not accepted by \BibTeX) as in the following
 example:
 
 \begingroup\footnotesize
@@ -2070,18 +2070,18 @@ seen in the following table:
 
 
 As we have seen there are options to adapt the behavior of formatting.  Before
-we explain the free formating specification in section \ref{sec:key.format} we
+we explain the free formatting specification in section \ref{sec:key.format} we
 will present the formatting options. Those options can be activated from a
 resource file or with the corresponding feature to specify resource
 instructions on the command line.
 
 \begin{description}
   \item [\rsc{preserve.keys}]
-        This boolean resource determines whether existing keys should
+        This Boolean resource determines whether existing keys should
         be left unchanged when new keys are generated.
         The default value is \verb|off|.
   \item [\rsc{preserve.key.case}]
-        This boolean resource determines whether keys should be recorded and
+        This Boolean resource determines whether keys should be recorded and
         used exactly as read as opposed to normalizing them by translating all
         uppercase letters to lower case.  The default value is \verb|off|.
   \item [\rsc{default.key}]
@@ -2097,7 +2097,7 @@ instructions on the command line.
         number from the rest of the key.
         The default value is \verb|*|.
   \item [\rsc{key.expand.macros}]
-        The value of this boolean resource is used to indicate whether
+        The value of this Boolean resource is used to indicate whether
         macros should be expanded while generating a key.
         The default value is \verb|off|.
   \item [\rsc{fmt.name.title}]
@@ -2125,8 +2125,8 @@ instructions on the command line.
         The default value is \verb|.ea|.
   \item [\rsc{fmt.word.separator}]
         The value of this resource is used as additional characters not to be
-        considered as word constituents. Word separators are whitespace and
-        punctation characters. Those can not be redefined.
+        considered as word constituents. Word separators are white-space and
+        punctuation characters. Those can not be redefined.
         The default value is empty. 
 \end{description}
 
@@ -2189,7 +2189,7 @@ The syntax and meaning of such format specifications is explained in section
 \subsection{Constant Parts}
 
 The simplest component of a format is a constant string. Such strings are
-made up of any character except whitespace and the following ten characters
+made up of any character except white-space and the following ten characters
 
 \begin{verbatim}
     "  #  %  '  (  )  ,  =  {  }
@@ -2209,7 +2209,7 @@ parts of a format:
 
 
 Now we come to explain the meaning of the special characters. The first case
-consists of the whitespace characters. They are simply ignored. Thus the
+consists of the white-space characters. They are simply ignored. Thus the
 following format strings are equal:\footnote{Well, this is not the whole
 truth. Internally it makes a difference whether there is a space or not. In
 the presence of spaces more memory is used. But you shouldn't worry too much
@@ -2223,17 +2223,17 @@ about this.}
 
 \subsection{Formatting Fields}\label{ssec:fields}
 
-The next component of formats are made up formating instructions which are
+The next component of formats are made up formatting instructions which are
 starting with a \texttt{\%} character. The general idea has been inspired by
-formating facilities of C. Since there are several different types of
-information in a \BibTeX{} entry we provide several primitives for formating.
+formatting facilities of C. Since there are several different types of
+information in a \BibTeX{} entry we provide several primitives for formatting.
 The simplest form is for instance\index{N@\%N}
 \begin{verbatim}
   %N(author)
 \end{verbatim}
 
 The \texttt{\%} character is followed by a single character---here
-\verb|N|---which indicates the way of formating and the name of the field to
+\verb|N|---which indicates the way of formatting and the name of the field to
 be formatted enclosed in parenthesis. The example above requests to format the
 field \verb|author| according to formatting rules for names (\verb|N|).
 
@@ -2255,83 +2255,81 @@ the qualifier \verb|#|. Possible values are as described in the following
 list:
 
 \begin{itemize}
-  \item [\texttt{p}] \index{p@\%p|(}Format names according to the format specifier number
-        \textit{post}. In a list of names at most \textit{pre} names are
-        used. If there are more names they are treated as given as
-        \texttt{and others}.
+  \item [\texttt{p}] \index{p@\%p|(}Format names according to the format
+    specifier number \textit{post}. In a list of names at most \textit{pre}
+    names are used. If there are more names they are treated as given as
+    \texttt{and others}.
 
-        \textit{pre} defaults to 2 and \textit{post} defaults to 0.
+    \textit{pre} defaults to 2 and \textit{post} defaults to 0.
 
-        See section~\ref{sec:names} for a description of how to
-        specify name formats.
+    See section~\ref{sec:names} for a description of how to specify name
+    formats.
 
-        \begin{Example}
-          \verb|author = {A. U. Thor and S. O. Meone and others}|\\
-          With the above item we get the following results:
+    \begin{Example}
+      \verb|author = {A. U. Thor and S. O. Meone and others}|\\
+      With the above item we get the following results:
 
-          \begin{tabular}{ll}
-            \texttt{\%p(author)}	& \texttt{Thor.Meone.ea}	\\
-            \texttt{\%1p(author)}	& \texttt{Thor.ea}		\\
-            \texttt{\%-2p(author)}	& \texttt{thor.meone.ea}	\\
-            \texttt{\%+1p(author)}	& \texttt{THOR.EA}		
-          \end{tabular}
-        \end{Example}\index{p@\%p|)}
+      \begin{tabular}{ll}
+        \texttt{\%p(author)}	& \texttt{Thor.Meone.ea}	\\
+        \texttt{\%1p(author)}	& \texttt{Thor.ea}		\\
+        \texttt{\%-2p(author)}	& \texttt{thor.meone.ea}	\\
+        \texttt{\%+1p(author)}	& \texttt{THOR.EA}		
+      \end{tabular}
+    \end{Example}\index{p@\%p|)}
 
   \item [\texttt{n}] \index{n@\%n|(}Format last names only.\\
-        In a list of names at most \textit{pre} last names are used. If there
-        are more names they are treated as given as \texttt{and others}.
-        If \textit{post} is greater than 0 then at most \textit{post}
-        characters per name are used. Otherwise the whole name is
-        considered.
+    In a list of names at most \textit{pre} last names are used. If there are
+    more names they are treated as given as \texttt{and others}. If
+    \textit{post} is greater than 0 then at most \textit{post} characters per
+    name are used. Otherwise the whole name is considered.
 
-        \textit{pre} defaults to 2 and \textit{post} defaults to 0.
+    \textit{pre} defaults to 2 and \textit{post} defaults to 0.
 
-        This is the same as using the \texttt{p} format specifier with
-        the post value of 0. The \textit{post} value of the \texttt{n}
-        specifier is used as the \textit{len} value of the first item of
-        the name format specifier. (See also section~\ref{sec:names})
+    This is the same as using the \texttt{p} format specifier with the post
+    value of 0. The \textit{post} value of the \texttt{n} specifier is used as
+    the \textit{len} value of the first item of the name format specifier.
+    (See also section~\ref{sec:names})
 
-        \begin{Example}
-          \verb|author = {A. U. Thor and S. O. Meone and others}|\\
-          With the above item we get the following results:
+    \begin{Example}
+      \verb|author = {A. U. Thor and S. O. Meone and others}|\\
+      With the above item we get the following results:
 
-          \begin{tabular}{ll}
-            \texttt{\%n(author)}	& \texttt{Thor.Meone.ea}	\\
-            \texttt{\%1n(author)}	& \texttt{Thor.ea}		\\
-            \texttt{\%-2n(author)}	& \texttt{thor.meone.ea}	\\
-            \texttt{\%+1n(author)}	& \texttt{THOR.EA}		\\
-            \texttt{\%.3n(author)}	& \texttt{Tho.Meo.ea}		
-          \end{tabular}
-        \end{Example}\index{n@\%n|)}
+      \begin{tabular}{ll}
+        \texttt{\%n(author)}	& \texttt{Thor.Meone.ea}	\\
+        \texttt{\%1n(author)}	& \texttt{Thor.ea}		\\
+        \texttt{\%-2n(author)}	& \texttt{thor.meone.ea}	\\
+        \texttt{\%+1n(author)}	& \texttt{THOR.EA}		\\
+        \texttt{\%.3n(author)}	& \texttt{Tho.Meo.ea}		
+      \end{tabular}
+    \end{Example}\index{n@\%n|)}
 
   \item [\texttt{N}] \index{N@\%N|(}Format names with last names and 
-        initials.\\
-        In a list of names at most \textit{pre} last names are used. If there
-        are more names they are treated as given as \texttt{and others}.
-        If \textit{post} is greater than 0 then at most \textit{post}
-        characters per name are used. Otherwise the whole name is
-        considered.
+    initials.\\
+    In a list of names at most \textit{pre} last names are used. If there are
+    more names they are treated as given as \texttt{and others}. If
+    \textit{post} is greater than 0 then at most \textit{post} characters per
+    name are used. Otherwise the whole name is considered.
 
-        \textit{pre} defaults to 2 and \textit{post} defaults to 0.
+    \textit{pre} defaults to 2 and \textit{post} defaults to 0.
 
-        This is the same as using the \texttt{p} format specifier with
-        the post value of 1. The \textit{post} value of the \texttt{n}
-        specifier is used as the \textit{len} value of the first item of
-        the name format specifier. (See also section~\ref{sec:names})
+    This is the same as using the \texttt{p} format specifier with the post
+    value of 1. The \textit{post} value of the \texttt{n} specifier is used as
+    the \textit{len} value of the first item of the name format specifier.
+    (See also section~\ref{sec:names})
 
-        \begin{Example}
-          \verb|author = {A. U. Thor and S. O. Meone and others}|\\
-          With the above item we get the following results:
-
-          \begin{tabular}{ll}
-            \texttt{\%N(author)}	& \texttt{Thor.AU.Meone.SO.ea}	\\
-            \texttt{\%1N(author)}	& \texttt{Thor.AU.ea}		\\
-            \texttt{\%-2N(author)}	& \texttt{thor.au.meone.so.ea}	\\
-            \texttt{\%+1N(author)}	& \texttt{THOR.AU.EA}		\\
-            \texttt{\%.3N(author)}	& \texttt{Tho.AU.Meo.SO.ea}	
-          \end{tabular}
-        \end{Example}\index{N@\%N|)}
-
+    \begin{Example}
+      \verb|author = {A. U. Thor and S. O. Meone and others}|\\
+      With the above item we get the following results:
+      
+      \begin{tabular}{ll}
+        \texttt{\%N(author)}	& \texttt{Thor.AU.Meone.SO.ea}	\\
+        \texttt{\%1N(author)}	& \texttt{Thor.AU.ea}		\\
+        \texttt{\%-2N(author)}	& \texttt{thor.au.meone.so.ea}	\\
+        \texttt{\%+1N(author)}	& \texttt{THOR.AU.EA}		\\
+        \texttt{\%.3N(author)}	& \texttt{Tho.AU.Meo.SO.ea}	
+      \end{tabular}
+    \end{Example}\index{N@\%N|)}
+    
   \item [\texttt{d}] \index{d@\%d|(}Format a number, e.g.\ a year.\\
     
     The \textit{post}$^{th}$ number in the field is searched. At most
@@ -2342,7 +2340,7 @@ list:
     \textit{pre} defaults to a large number except in when the negative sign
     is present. Then it defaults to 1.
         
-    \textit{post} defaults to 1. Thus if you want to select the second numer
+    \textit{post} defaults to 1. Thus if you want to select the second number
     you can simply use \texttt{\%.2d} as format specifier.
         
     If no number is contained in the field then this specifier fails. Thus the
@@ -2359,195 +2357,192 @@ list:
     required. In this case the specifier does not fail at all. Even if no
     number is found then an appropriate number of \verb|0|s is used.
 
-        \begin{Example}
-          \verb|pages = {89--123}|\\
-          With the above item we get the following results:
-
-          \begin{tabular}{ll}
-            \texttt{\%d(pages)}		& \texttt{89}			\\
-            \texttt{\%1d(pages)}	& \texttt{9}			\\
-            \texttt{\%4d(pages)}	& \texttt{89}			\\
-            \texttt{\%-4d(pages)}	& \texttt{0089}			\\
-            \texttt{\%-5.2d(pages)}	& \texttt{00123}		\\
-            \texttt{\%.3d(pages)}	& \textit{fails}		\\
-            \texttt{\%+.3d(pages)}	& \texttt{0}			\\
-            \texttt{\%0d(pages)}	& \textit{succeeds with empty result}
-          \end{tabular}
-        \end{Example}\index{d@\%d|)}
+    \begin{Example}
+      \verb|pages = {89--123}|\\
+      With the above item we get the following results:
+      
+      \begin{tabular}{ll}
+        \texttt{\%d(pages)}	& \texttt{89}			\\
+        \texttt{\%1d(pages)}	& \texttt{9}			\\
+        \texttt{\%4d(pages)}	& \texttt{89}			\\
+        \texttt{\%-4d(pages)}	& \texttt{0089}			\\
+        \texttt{\%-5.2d(pages)}	& \texttt{00123}		\\
+        \texttt{\%.3d(pages)}	& \textit{fails}		\\
+        \texttt{\%+.3d(pages)}	& \texttt{0}			\\
+        \texttt{\%0d(pages)}	& \textit{succeeds with empty result}
+      \end{tabular}
+    \end{Example}\index{d@\%d|)}
 
   \item [\texttt{D}] \index{D@\%D|(}Format a number.\\
-        This format specifier acts like the \texttt{d} specifier except
-        that the number is not truncated. Thus a large number comes
-        out complete and not only the last few digits.
+    This format specifier acts like the \texttt{d} specifier except that the
+    number is not truncated. Thus a large number comes out complete and not
+    only the last few digits.
 
-
-        \begin{Example}
-          \verb|pages = {89--123}|\\
-          With the above item we get the following results:
-
-          \begin{tabular}{ll}
-            \texttt{\%D(pages)}		& \texttt{89}		\\
-            \texttt{\%1D(pages)}	& \texttt{89}		\\
-            \texttt{\%4D(pages)}	& \texttt{89}		\\
-            \texttt{\%-4D(pages)}	& \texttt{0089}		\\
-            \texttt{\%-5.2D(pages)}	& \texttt{00123}	\\
-            \texttt{\%.3D(pages)}	& \textit{fails}	\\
-            \texttt{\%+.3D(pages)}	& \texttt{0}		\\
-            \texttt{\%0D(pages)}	& \texttt{89}
-          \end{tabular}
-        \end{Example}\index{D@\%D|)}
-
+    \begin{Example}
+      \verb|pages = {89--123}|\\
+      With the above item we get the following results:
+      
+      \begin{tabular}{ll}
+        \texttt{\%D(pages)}		& \texttt{89}		\\
+        \texttt{\%1D(pages)}	& \texttt{89}		\\
+        \texttt{\%4D(pages)}	& \texttt{89}		\\
+        \texttt{\%-4D(pages)}	& \texttt{0089}		\\
+        \texttt{\%-5.2D(pages)}	& \texttt{00123}	\\
+        \texttt{\%.3D(pages)}	& \textit{fails}	\\
+        \texttt{\%+.3D(pages)}	& \texttt{0}		\\
+        \texttt{\%0D(pages)}	& \texttt{89}
+      \end{tabular}
+    \end{Example}\index{D@\%D|)}
 
   \item [\texttt{s}] \index{s@\%s|(}Take a field as is (after translation of
     special characters).\\ 
-        At most \textit{pre} characters are used.
+    At most \textit{pre} characters are used.
 
-        \textit{pre} defaults to a large number.
+    \textit{pre} defaults to a large number.
 
-        \begin{Example}
-          \verb|author = {A. U. Thor and S. O. Meone and others}|\\
-          With the above item we get the following results:
-
-          \begin{tabular}{ll}
-            \texttt{\%s(author)}	& \texttt{A.-U.-Thor-and-S.-O.-Meone-and-others}	\\
-            \texttt{\%8s(author)}	& \texttt{A.-U.-Th}	\\
-            \texttt{\%-8s(author)}	& \texttt{a.-u.-th}	\\
-            \texttt{\%+8s(author)}	& \texttt{A.-U.-TH}	\\
-            \texttt{\%0s(author)}	& \textit{succeeds with empty result}
-          \end{tabular}
-        \end{Example}\index{s@\%s|)}
+    \begin{Example}
+      \verb|author = {A. U. Thor and S. O. Meone and others}|\\
+      With the above item we get the following results:
+      
+      \begin{tabular}{ll}
+        \texttt{\%s(author)}	& \texttt{A.-U.-Thor-and-S.-O.-Meone-and-others}	\\
+        \texttt{\%8s(author)}	& \texttt{A.-U.-Th}	\\
+        \texttt{\%-8s(author)}	& \texttt{a.-u.-th}	\\
+        \texttt{\%+8s(author)}	& \texttt{A.-U.-TH}	\\
+        \texttt{\%0s(author)}	& \textit{succeeds with empty result}
+      \end{tabular}
+    \end{Example}\index{s@\%s|)}
 
   \item [\texttt{T}] \index{T@\%T|(}Format sentences. Certain words are 
-        ignored.\\
-        At most \textit{pre} words are used. The other words are ignored. If
-        \textit{pre} is 0 then no artificial limit is forced. If \textit{post}
-        is positive then at most \textit{post} letters of each word are
-        considered. Otherwise the complete words are used.
+    ignored.\\
+    At most \textit{pre} words are used. The other words are ignored. If
+    \textit{pre} is 0 then no artificial limit is forced. If \textit{post} is
+    positive then at most \textit{post} letters of each word are considered.
+    Otherwise the complete words are used.
 
-        New words to be ignored can be added with the resource
-        \rsc{ignored.word}.
+    New words to be ignored can be added with the resource \rsc{ignored.word}.
 
-        \textit{pre} defaults to 1 and \textit{post} defaults to 0.
+    \textit{pre} defaults to 1 and \textit{post} defaults to 0.
 
-        \begin{Example}
-          \verb|title = {The Whole Title}|\\
-          With the above item we get the following results:
+    \begin{Example}
+      \verb|title = {The Whole Title}|\\
+      With the above item we get the following results:
+      
+      \begin{tabular}{ll}
+        \texttt{\%T(title)}		& \texttt{Whole}		\\
+        \texttt{\%2T(title)}	& \texttt{Whole-Title}		\\
+        \texttt{\%2.1T(title)}	& \texttt{W-T}			\\
+        \texttt{\%-T(title)}	& \texttt{whole}		\\
+        \texttt{\%+T(title)}	& \texttt{WHOLE}		
+      \end{tabular}
+    \end{Example}
 
-          \begin{tabular}{ll}
-            \texttt{\%T(title)}		& \texttt{Whole}		\\
-            \texttt{\%2T(title)}	& \texttt{Whole-Title}		\\
-            \texttt{\%2.1T(title)}	& \texttt{W-T}			\\
-            \texttt{\%-T(title)}	& \texttt{whole}		\\
-            \texttt{\%+T(title)}	& \texttt{WHOLE}		
-          \end{tabular}
-        \end{Example}
+    The string to be formatted according to this specification is separated
+    into words. To accomplish this white-space characters and punctuation
+    characters are considered to be not part of a word but as separator. To
+    add additional word separators use the resource \rsc{fmt.word.separator}.
+    In the following example the characters \verb|+|, \verb|-|, \verb|<|,
+    \verb|=|, \verb|>|, \verb|*|, and \verb|/| are declared as additional word
+    separators.
 
-        The string to be formatted according to this specification is
-        separated into words. To accomplish this whitespace characters and
-        punctation characters are considered to be not part of a word but as
-        separator. To add additional word separators use the resource
-        \rsc{fmt.word.separator}. In the following example the characters
-        \verb|+|, \verb|-|, \verb|<|, \verb|=|, \verb|>|, \verb|*|, and
-        \verb|/| are declared as additional word separators.
-
-        \Rsc{fmt.word.separator}{\tt "+-<=>*/"}
-
-        Note that the effect of \rsc{fmt.word.separator} is accumulating more
-        characters. It is not possible to define a character not to be a word
-        separator once it has this property.\index{T@\%T|)}
+    \Rsc{fmt.word.separator}{\tt "+-<=>*/"}
+    
+    Note that the effect of \rsc{fmt.word.separator} is accumulating more
+    characters. It is not possible to define a character not to be a word
+    separator once it has this property.\index{T@\%T|)}
 
   \item [\texttt{t}] \index{t@\%t|(}Format sentences. In contrast to the
-        format letter
-        \texttt{T} no words are ignored.\\
-        At most \textit{pre} words are used. The other words are ignored. If
-        \textit{pre} is 0 then no artificial limit is forced. If \textit{post}
-        is positive then at most \textit{post} letters of each word are
-        considered. Otherwise the complete words are used.
+    format letter \texttt{T} no words are ignored.\\
+    At most \textit{pre} words are used. The other words are ignored. If
+    \textit{pre} is 0 then no artificial limit is forced. If \textit{post} is
+    positive then at most \textit{post} letters of each word are considered.
+    Otherwise the complete words are used.
 
-        \textit{pre} defaults to 1 and \textit{post} defaults to 0.
-        \begin{Example}
-          \verb|title = {The Whole Title}|\\
-          With the above item we get the following results:
+    \textit{pre} defaults to 1 and \textit{post} defaults to 0.
 
-          \begin{tabular}{ll}
-            \texttt{\%t(title)}		& \texttt{The}		\\
-            \texttt{\%2t(title)}	& \texttt{The-Whole}	\\
-            \texttt{\%2.1t(title)}	& \texttt{T-W}		\\
-            \texttt{\%-t(title)}	& \texttt{the}		\\
-            \texttt{\%+t(title)}	& \texttt{THE}
-          \end{tabular}
-        \end{Example}\index{t@\%t|)}
+    \begin{Example}
+      \verb|title = {The Whole Title}|\\
+      With the above item we get the following results:
+
+      \begin{tabular}{ll}
+        \texttt{\%t(title)}	& \texttt{The}		\\
+        \texttt{\%2t(title)}	& \texttt{The-Whole}	\\
+        \texttt{\%2.1t(title)}	& \texttt{T-W}		\\
+        \texttt{\%-t(title)}	& \texttt{the}		\\
+        \texttt{\%+t(title)}	& \texttt{THE}
+      \end{tabular}
+    \end{Example}\index{t@\%t|)}
 
   \item [\texttt{W}] \index{W@\%W|(}Format word lists.\\
-        This specifier acts like \texttt{T} except that nothing is inserted
-        between words.
+    This specifier acts like \texttt{T} except that nothing is inserted
+    between words.
 
-        \begin{Example}
-          \verb|title = {The Whole Title}|\\
-          With the above item we get the following results:
+    \begin{Example}
+      \verb|title = {The Whole Title}|\\
+      With the above item we get the following results:
 
-          \begin{tabular}{ll}
-            \texttt{\%W(title)}		& \texttt{Whole}		\\
-            \texttt{\%2W(title)}	& \texttt{WholeTitle}		\\
-            \texttt{\%2.1W(title)}	& \texttt{WT}			\\
-            \texttt{\%-W(title)}	& \texttt{whole}		\\
-            \texttt{\%+W(title)}	& \texttt{WHOLE}	
-          \end{tabular}
-        \end{Example}\index{W@\%W|)}
+      \begin{tabular}{ll}
+        \texttt{\%W(title)}	& \texttt{Whole}		\\
+        \texttt{\%2W(title)}	& \texttt{WholeTitle}		\\
+        \texttt{\%2.1W(title)}	& \texttt{WT}			\\
+        \texttt{\%-W(title)}	& \texttt{whole}		\\
+        \texttt{\%+W(title)}	& \texttt{WHOLE}	
+      \end{tabular}
+    \end{Example}\index{W@\%W|)}
 
   \item [\texttt{w}] \index{w@\%w|(}Format word lists.\\
-        This specifier acts like \texttt{t} except that nothing is inserted
-        between words.
+    This specifier acts like \texttt{t} except that nothing is inserted
+    between words.
 
-        \begin{Example}
-          \verb|title = {The Whole Title}|\\
-          With the above item we get the following results:
+    \begin{Example}
+      \verb|title = {The Whole Title}|\\
+      With the above item we get the following results:
 
-          \begin{tabular}{ll}
-            \texttt{\%w(title)}		& \texttt{The}		\\
-            \texttt{\%2w(title)}	& \texttt{TheWhole}	\\
-            \texttt{\%2.1w(title)}	& \texttt{TW}		\\
-            \texttt{\%-w(title)}	& \texttt{the}		\\
-            \texttt{\%+w(title)}	& \texttt{THE}
-          \end{tabular}
-        \end{Example}\index{w@\%w|)}
+      \begin{tabular}{ll}
+        \texttt{\%w(title)}	& \texttt{The}		\\
+        \texttt{\%2w(title)}	& \texttt{TheWhole}	\\
+        \texttt{\%2.1w(title)}	& \texttt{TW}		\\
+        \texttt{\%-w(title)}	& \texttt{the}		\\
+        \texttt{\%+w(title)}	& \texttt{THE}
+      \end{tabular}
+    \end{Example}\index{w@\%w|)}
 
   \item [\texttt{\#p}] \index{p@\%\#p|(}Count the number of names.
 
-    If no \textit{sign} is given or the \textit{sign} is \verb|+| then
-    the following rules apply. If the count is less than \textit{pre}
-    or the count is greater than \textit{post} then this specifier fails.
-    Otherwise it succeeds without adding something to the key.
+    If no \textit{sign} is given or the \textit{sign} is \verb|+| then the
+    following rules apply. If the count is less than \textit{pre} or the count
+    is greater than \textit{post} then this specifier fails. Otherwise it
+    succeeds without adding something to the key.
 
-    The construction \verb|and others|, which indicates an unspecified
-    number of additional authors, counts as one single author.
+    The construction \verb|and others|, which indicates an unspecified number
+    of additional authors, counts as one single author.
 
-    If the \textit{sign} is \verb|-| then the specifier succeeds if
-    and only if the specifier without this sign fails. Thus the
-    \verb|-| acts like a negation of the condition.
+    If the \textit{sign} is \verb|-| then the specifier succeeds if and only
+    if the specifier without this sign fails. Thus the \verb|-| acts like a
+    negation of the condition.
 
     If post has the value 0 than this is treated like \(\infty\).
 
     If \(a\) is the number of names separated by \texttt{and} then\\
     \texttt{\%\textit{l}.\textit{h}\#p} succeeds if and only if
     \(l\leq a\leq h\).\\
-    \texttt{\%-\textit{l}.\textit{h}\#p} succeeds if and only if
-    \(l>a\) or \(a>h\).
+    \texttt{\%-\textit{l}.\textit{h}\#p} succeeds if and only if \(l>a\) or
+    \(a>h\).
 
     \textit{pre} and \textit{post} both defaults to 0.
 
-        \begin{Example}
-          \verb|author = {A. U. Thor and S. O. Meone and others}|\\
-          With the above item we get the following results:
+    \begin{Example}
+      \verb|author = {A. U. Thor and S. O. Meone and others}|\\
+      With the above item we get the following results:
 
-          \begin{tabular}{ll}
-            \texttt{\%2\#p(author)}	& \textit{succeeds with empty result}	\\
-            \texttt{\%4\#p(author)}	& \textit{fails}	\\
-            \texttt{\%-4\#p(author)}	& \textit{succeeds with empty result}	\\
-            \texttt{\%3.4\#p(author)}	& \textit{succeeds with empty result}	\\
-            \texttt{\%-3.4\#p(author)}	& \textit{fails}
-          \end{tabular}
-        \end{Example}\index{p@\%\#p|)}
+      \begin{tabular}{ll}
+        \texttt{\%2\#p(author)}		& \textit{succeeds with empty result}	\\
+        \texttt{\%4\#p(author)}		& \textit{fails}	\\
+        \texttt{\%-4\#p(author)}	& \textit{succeeds with empty result}	\\
+        \texttt{\%3.4\#p(author)}	& \textit{succeeds with empty result}	\\
+        \texttt{\%-3.4\#p(author)}	& \textit{fails}
+      \end{tabular}
+    \end{Example}\index{p@\%\#p|)}
     
   \item [\texttt{\#n}] Is the same as \texttt{\#p}\index{n@\%\#n}.
 
@@ -2555,14 +2550,14 @@ list:
 
   \item [\texttt{\#s}] \index{s@\%\#s|(}Count the number of allowed characters.
 
-    If no \textit{sign} is given or the \textit{sign} is \verb|+| then
-    the following rules apply. If the count is less than \textit{pre}
-    or the count is greater than \textit{post} then this specifier fails.
-    Otherwise it succeeds without adding something to the key.
+    If no \textit{sign} is given or the \textit{sign} is \verb|+| then the
+    following rules apply. If the count is less than \textit{pre} or the count
+    is greater than \textit{post} then this specifier fails. Otherwise it
+    succeeds without adding something to the key.
 
-    If the \textit{sign} is \verb|-| then the specifier succeeds if
-    and only if the specifier without this sign fails. Thus the
-    \verb|-| acts like a negation of the condition.
+    If the \textit{sign} is \verb|-| then the specifier succeeds if and only
+    if the specifier without this sign fails. Thus the \verb|-| acts like a
+    negation of the condition.
 
     If post has the value 0 than this is treated like \(\infty\).
 
@@ -2571,55 +2566,55 @@ list:
     If \(a\) is the number of allowed characters then\\
     \texttt{\%\textit{l}.\textit{h}\#s} succeeds if and only if
     \(l\leq a\leq h\).\\
-    \texttt{\%-\textit{l}.\textit{h}\#s} succeeds if and only if
-    \(l>a\) or \(a>h\).
+    \texttt{\%-\textit{l}.\textit{h}\#s} succeeds if and only if \(l>a\) or
+    \(a>h\).
 
-        \begin{Example}
-          \verb|title = {The Whole Title}|\\
-          With the above item we get the following results:
+    \begin{Example}
+      \verb|title = {The Whole Title}|\\
+      With the above item we get the following results:
 
-          \begin{tabular}{ll}
-            \texttt{\%\#s(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%13.13\#s(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%10.16\#s(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%-10.16\#s(title)}	& \textit{fails}
-          \end{tabular}
-        \end{Example}\index{s@\%\#s|)}
+      \begin{tabular}{ll}
+        \texttt{\%\#s(title)}		& \textit{succeeds with empty result}\\
+        \texttt{\%13.13\#s(title)}	& \textit{succeeds with empty result}\\
+        \texttt{\%10.16\#s(title)}	& \textit{succeeds with empty result}\\
+        \texttt{\%-10.16\#s(title)}	& \textit{fails}
+      \end{tabular}
+    \end{Example}\index{s@\%\#s|)}
  
-  \item [\texttt{\#w}] \index{w@\%\#w|(}Count the number of words. All words are considered
-    as valid. The division into words is performed after de\TeX{}ing
-    the field.
+  \item [\texttt{\#w}] \index{w@\%\#w|(}Count the number of words. All words
+    are considered as valid. The division into words is performed after
+    de\TeX{}ing the field.
 
-    If no \textit{sign} is given or the \textit{sign} is \verb|+| then
-    the following rules apply. If the count is less than \textit{pre}
-    or the count is greater than \textit{post} then this specifier fails.
-    Otherwise it succeeds without adding something to the key.
+    If no \textit{sign} is given or the \textit{sign} is \verb|+| then the
+    following rules apply. If the count is less than \textit{pre} or the count
+    is greater than \textit{post} then this specifier fails. Otherwise it
+    succeeds without adding something to the key.
 
-    If the \textit{sign} is \verb|-| then the specifier succeeds if
-    and only if the specifier without this sign succeeds. Thus the
-    \verb|-| acts like a negation of the condition.
+    If the \textit{sign} is \verb|-| then the specifier succeeds if and only
+    if the specifier without this sign succeeds. Thus the \verb|-| acts like a
+    negation of the condition.
 
     If post has the value 0 than this is treated like \(\infty\).
 
     \textit{pre} and \textit{post} both default to 0.
 
-    If \(a\) is the number of words separated by whitespace then\\
+    If \(a\) is the number of words separated by white-space then\\
     \texttt{\%\textit{l}.\textit{h}\#p} succeeds if and only if 
     \(l\leq a\leq h\).\\
     \texttt{\%-\textit{l}.\textit{h}\#p} succeeds if and only if 
     \(l>a\) or \(a>h\).
 
-        \begin{Example}
-          \verb|title = {The Whole Title}|\\
-          With the above item we get the following results:
+    \begin{Example}
+      \verb|title = {The Whole Title}|\\
+      With the above item we get the following results:
 
-          \begin{tabular}{ll}
-            \texttt{\%\#w(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%3.3\#w(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%1.6\#w(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%-1.6\#w(title)}	& \textit{fails}
-          \end{tabular}
-        \end{Example}\index{w@\%\#w|)}
+      \begin{tabular}{ll}
+        \texttt{\%\#w(title)}	& \textit{succeeds with empty result}\\
+        \texttt{\%3.3\#w(title)}	& \textit{succeeds with empty result}\\
+        \texttt{\%1.6\#w(title)}	& \textit{succeeds with empty result}\\
+        \texttt{\%-1.6\#w(title)}	& \textit{fails}
+      \end{tabular}
+    \end{Example}\index{w@\%\#w|)}
 
    \item [\texttt{\#t}] \index{t@\%\#t}Is the same as \texttt{\#w}.
      
@@ -2628,44 +2623,44 @@ list:
      \rsc{ignored.word}. The division into words is performed after
      de\TeX{}ing the field.
 
-    If no \textit{sign} is given or the \textit{sign} is \verb|+| then
-    the following rules apply. If the count is less than \textit{pre}
-    or the count is greater than \textit{post} then this specifier fails.
-    Otherwise it succeeds without adding something to the key.
+     If no \textit{sign} is given or the \textit{sign} is \verb|+| then the
+     following rules apply. If the count is less than \textit{pre} or the
+     count is greater than \textit{post} then this specifier fails. Otherwise
+     it succeeds without adding something to the key.
 
-    If the \textit{sign} is \verb|-| then the specifier succeeds if
-    and only if the specifier without this sign fails. Thus the
-    \verb|-| acts like a negation of the condition.
+     If the \textit{sign} is \verb|-| then the specifier succeeds if and only
+     if the specifier without this sign fails. Thus the \verb|-| acts like a
+     negation of the condition.
 
-    If post has the value 0 than this is treated like \(\infty\).
+     If post has the value 0 than this is treated like \(\infty\).
 
-    \textit{pre} and \textit{post} both default to 0.
+     \textit{pre} and \textit{post} both default to 0.
 
-    If \(a\) is the number of words separated by whitespace which are
-    not marked to be ignored then\\
-    \texttt{\%\textit{l}.\textit{h}\#p} succeeds if and only if 
-    \(l\leq a\leq h\).\\
-    \texttt{\%-\textit{l}.\textit{h}\#p} succeeds if and only if 
-    \(l>a\) or \(a>h\).
+     If \(a\) is the number of words separated by white-space which are
+     not marked to be ignored then\\
+     \texttt{\%\textit{l}.\textit{h}\#p} succeeds if and only if
+     \(l\leq a\leq h\).\\
+     \texttt{\%-\textit{l}.\textit{h}\#p} succeeds if and only if \(l>a\) or
+     \(a>h\).
 
-        \begin{Example}
-          \verb|title = {The Whole Title}|\\
-          With the above item we get the following results:
+     \begin{Example}
+       \verb|title = {The Whole Title}|\\
+       With the above item we get the following results:
 
-          \begin{tabular}{ll}
-            \texttt{\%\#W(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%2.2\#W(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%1.6\#W(title)}	& \textit{succeeds with empty result}\\
-            \texttt{\%-1.6\#W(title)}	& \textit{fails}
-          \end{tabular}
-        \end{Example}\index{w@\%\#w|)}
+       \begin{tabular}{ll}
+         \texttt{\%\#W(title)}		& \textit{succeeds with empty result}\\
+         \texttt{\%2.2\#W(title)}	& \textit{succeeds with empty result}\\
+         \texttt{\%1.6\#W(title)}	& \textit{succeeds with empty result}\\
+         \texttt{\%-1.6\#W(title)}	& \textit{fails}
+       \end{tabular}
+     \end{Example}\index{w@\%\#w|)}
 
    \item [\texttt{\#T}] \index{T@\%\#T}Is the same as \texttt{\#W}.
 
 \end{itemize}
 
-If some words are enclosed in brace, they are considered as one composed 
-word. For example, with the format \verb|%t(title)|\index{t@\%t}, and 
+If some words are enclosed in brace, they are considered as one composed word.
+For example, with the format \verb|%t(title)|\index{t@\%t}, and
 this field:
 \begin{itemize}
 \item [] {\verb|title = "{The Whole Title}"|}
@@ -2673,13 +2668,13 @@ this field:
 We obtain \verb|The-Whole-Title|.
 
 The field specification \textit{(field)} selects the field of the entry to be
-formatted. As usual in \BibTeX{} the case of the letters is ignored.  If the
+formatted. As usual in \BibTeX{} the case of the letters is ignored. If the
 field does not exist then the formatting fails and continues at the next
 alternative (see below).
 
 But the field is not only sought in the current entry. According to the
-behaviour of \BibTeX{} the special field \texttt{crossref} is taken into
-account.  If a field is missing them the entry named in the \texttt{crossref}
+behavior of \BibTeX{} the special field \texttt{crossref} is taken into
+account. If a field is missing them the entry named in the \texttt{crossref}
 field is also considered. Since this dereferencing contains the potential
 danger of an infinite loop the number of dereferencing steps is restricted by
 the numeric resource \rsc{crossref.limit}. The number of uses of the
@@ -2702,31 +2697,31 @@ In addition to the ordinary fields of an entry there are several pseudo
 fields. They are listed below.
 
 \begin{description}
-\item [\texttt{\$key}]\label{pseudo:key}
+\item [\texttt{\$key}]\label{pseudo:key}%
   This pseudo field contains the old reference key---before generating a new
   one. If none has been given then the access fails.
 
-\item [\texttt{\$sortkey}]
+\item [\texttt{\$sortkey}]%
   This pseudo field contains the string according to which the sorting is
   performed. It defaults to the reference key.
 
-\item [\texttt{\$default.key}]
+\item [\texttt{\$default.key}]%
   This pseudo field contains the value of the resource \rsc{default.key}
   similarly the resources \rsc{fmt.name.title}, \rsc{fmt.title.title},
   \rsc{fmt.name.name}, \rsc{fmt.inter.name}, \rsc{fmt.name.pre}, and
   \rsc{fmt.et.al} can be accessed.
 
-\item [\texttt{\$source}]
+\item [\texttt{\$source}]%
   This pseudo field contains the name of the file the entry has been read
   from. If this file can not be determined, e.g. because the entry has been
   read from stdin, then this pseudo field is empty.
 
-\item [\texttt{\$type}]
+\item [\texttt{\$type}]%
   This pseudo field contains the type of the entry, i.e.\ the string following
   the initial \texttt{@} of an \BibTeX{} entry, e.g.\ \texttt{article}. It is
   always present.
 
-\item [\texttt{@}\textit{type}]
+\item [\texttt{@}\textit{type}]%
   This pseudo field is matched against the type of the entry. If they are
   identical (ignoring cases) then the type is returned. Otherwise the access
   fails.
@@ -2735,7 +2730,7 @@ fields. They are listed below.
   succeeds and returns \texttt{Article} whereas
   \texttt{\%s(@Book)}\index{s@\%s} fails.
 
-\item [\texttt{\$day}]
+\item [\texttt{\$day}]%
   This pseudo field contains the current day as a two digit number or the
   empty string if this value is not available. The date and time values are
   determined at the beginning of the \BibTool{} run and does not reflect the
@@ -2744,37 +2739,37 @@ fields. They are listed below.
   On some systems the timing function might be missing or returning strange
   values. In this case the timing fields simply return the empty string. 
 
-\item [\texttt{\$month}]
+\item [\texttt{\$month}]%
   This pseudo field contains the current month as a two digit number or the
   empty string if this value is not available. 
 
-\item [\texttt{\$mon}]
+\item [\texttt{\$mon}]%
   This pseudo field contains the current month name as a string or the
   empty string if this value is not available. 
 
-\item [\texttt{\$year}]
+\item [\texttt{\$year}]%
   This pseudo field contains the current year as a four digit number or the
   empty string if this value is not available. 
 
-\item [\texttt{\$hour}]
+\item [\texttt{\$hour}]%
   This pseudo field contains the current hour as a two digit number or the
   empty string if this value is not available. 
 
-\item [\texttt{\$minute}]
+\item [\texttt{\$minute}]%
   This pseudo field contains the current minute as a two digit number or the
   empty string if this value is not available. 
 
-\item [\texttt{\$second}]
+\item [\texttt{\$second}]%
   This pseudo field contains the current second as a two digit number or the
   empty string if this value is not available. 
   
-\item [\texttt{\$user}] 
+\item [\texttt{\$user}] %
   This pseudo field contains the contents of the environment variable
   \texttt{\$USER} or the empty string if this value is not available. On UN*X
   systems this variable usually contains the name of the user. This can be
   used to write logging information into a field.
 
-\item [\texttt{\$hostname}]
+\item [\texttt{\$hostname}]%
   This pseudo field contains the contents of the environment variable
   \texttt{\$HOSTNAME} or the empty string if this value is not available.
 \end{description}
@@ -2810,10 +2805,9 @@ issued. This corresponds to an if-then-else statement in a
            \verb|{|\textit{else-part}\/\verb|}|
 \end{itemize}
 
-If the access to the (pseudo-)field as described in \ref{ssec:fields}
-succeeds then the \textit{then-part} is evaluated. Otherwise the
-\textit{else-part} is evaluated. Both parts may be empty. Nevertheless the
-braces are required.
+If the access to the (pseudo-)field as described in \ref{ssec:fields} succeeds
+then the \textit{then-part} is evaluated. Otherwise the \textit{else-part} is
+evaluated. Both parts may be empty. Nevertheless the braces are required.
 
 Let us look at an example. The following construction can be used to format a
 field \texttt{author} if it is present or print a constant string.
@@ -2884,25 +2878,24 @@ existence of a certain field without actually adding anything to the output.
 Other constructs may serve for the same purpose. This construct is applied to
 the pseudo-fields \texttt{@book} and \texttt{@proceedings}. The access to the
 pseudo-field fails if requested in another type of entry. Those two checks are
-combined to form a disjunction.  Thus the following code---the constant in
-this example---is reached only if we are in a book or in a proceedings entry.
-It is not reached in an article.
+combined to form a disjunction. Thus the following code---the constant in this
+example---is reached only if we are in a book or in a proceedings entry. It is
+not reached in an article.
 
 
 \subsection{Ignored Words}
 
-Certain format specifiers act on lists of words. In this situation it
-can be desirable to ignore certain words. For instance when a sort key is
-constructed with the title of books it is common practice to omit certain
-words like articles. This is accomplished by a list of igored words. This list
-is initialized at compile time to contain articles of different languages (If
-the installer has not modified it).
+Certain format specifiers act on lists of words. In this situation it can be
+desirable to ignore certain words. For instance when a sort key is constructed
+with the title of books it is common practice to omit certain words like
+articles. This is accomplished by a list of ignored words. This list is
+initialized at compile time to contain articles of different languages (If the
+installer has not modified it).
 
 The resource \rsc{ignored.word} can be used to put additional words onto the
 list of ignored words. For this purpose the new word is given as argument to
-the resource. Note that there should be no space between the braces and the 
-word. For example:
-\RSc{ignored.word}{\(\{\)word\(\}\)}
+the resource. Note that there should be no space between the braces and the
+word. For example: \RSc{ignored.word}{\(\{\)word\(\}\)}
 
 To gain complete control over the list of ignored words you can completely
 overwrite the compiled in defaults. This can be accomplished by clearing the
@@ -2917,8 +2910,8 @@ resources you have to give an empty argument to this resource:
 
 \subsection{Expanding \TeX/\LaTeX{} Macros}
 
-When fields are formatted certain \LaTeX{} macros may be replaced by pure text.
-Each macro not defined is simply ignored. Initially no \LaTeX{} macro is
+When fields are formatted certain \LaTeX{} macros may be replaced by pure
+text. Each macro not defined is simply ignored. Initially no \LaTeX{} macro is
 defined. The resource \rsc{tex.define} can be used to define \LaTeX{} macros.
 The syntax is very close to \LaTeX. The simplest form is the following
 definition.
@@ -2926,7 +2919,7 @@ definition.
 \RSC{tex.define}{\textit{macro=replacement text}}
 
 This resource defines a simple macro which is replaced by the replacement
-text.  This replacement text may in turn contain macros.
+text. This replacement text may in turn contain macros.
 
 In addition to this simple macro also macros involving arguments can be
 defined. As in \LaTeX's \verb|\newcommand| the number of arguments is appended
@@ -2940,8 +2933,7 @@ by writing \texttt{\#}\textit{n}, where \textit{n} is the number of the argument
 For instance, this feature can be used to ignore certain arguments of macros.
 
 Note that spaces between the macro head and the equality sign (\verb|=|) are
-ignored.  Any unwanted spaces after the equality sign may have strange
-effects.
+ignored. Any unwanted spaces after the equality sign may have strange effects.
 
 Usually the macro name starts with a backslash (\verb|\|). If the macro name
 starts with another character then this character is made active
@@ -2960,12 +2952,12 @@ Without this definition the title \verb|The \TeX{}book| would result in
 Suppose you have an input file containing 8-bit characters (e.g. ISO 8859-1
 encoding). The following definition can be used to map this character into a
 pure ASCII string\footnote{To add an e is the German convention for umlaut
-  characters.} 
+  characters.}
 
 \RSC{tex.define}{{\"u}=ue}
 
 With the following definition the \verb|\protect| macro and the corresponding 
-braces would be ignored when formating field, otherwise the braces would 
+braces would be ignored when formatting field, otherwise the braces would 
 remain.
 
 \RSC{tex.define}{\BS protect[1]=\#1}
@@ -3025,7 +3017,7 @@ format specifiers:\index{f@\%f}\index{v@\%v}\index{l@\%l}
 \RSC{new.format.type}{17="\%f\%v\%l"}
 
 This instruction sets the name format specifier number 17 to the given value.
-This value is a string of characters to be used directly.  There is only one
+This value is a string of characters to be used directly. There is only one
 construct which is not used literally. This construct is started by a \% sign
 optionally followed by a \verb|+| or a \verb|-| and a number. Next comes one
 of the letters \texttt{f}\index{f@\%f}, \texttt{v}\index{v@\%v},
@@ -3091,7 +3083,7 @@ one letter and of three letters of the last name. Thus we will get the result
 \verb|M.d.Cer-Saa|.
 
 Note that the name specifier does not take care to include only allowed
-letters into a key. Thus watch out and avoid special characters as whitespace
+letters into a key. Thus watch out and avoid special characters as white-space
 and comma.
 
 
@@ -3099,40 +3091,37 @@ and comma.
 \subsection{Example}
 
 To end this section we should have a look at a complete example of key
-generation specification. For this purpose we define a rule according
-to which the keys should be generated:
+generation specification. For this purpose we define a rule according to which
+the keys should be generated:
 \begin{enumerate}
-\item If a field named \texttt{bibkey} is present then the value of this
-  field should be used.
-\item If the type of the entry is a book then the authors/editors are
-  used followed by the year separated by a colon. 
-\item If the type of the entry is an article in a journal ({\tt
-    article}) then the author, the journal, the number, and the year
-  should be used. Author and journal should be separated by a colon,
-  The journal should be abbreviated with the initials and separated
-  from number and year by a period.
+\item If a field named \texttt{bibkey} is present then the value of this field
+  should be used.
+\item If the type of the entry is a book then the authors/editors are used
+  followed by the year separated by a colon.
+\item If the type of the entry is an article in a journal ({\tt article}) then
+  the author, the journal, the number, and the year should be used. Author and
+  journal should be separated by a colon, The journal should be abbreviated
+  with the initials and separated from number and year by a period.
 \item If the type of the entry is a volume of conference proceedings
-  (\texttt{proceedings}) then the editor, the first 5 initials of the
-  title and the year should be used. The editor should be followed by
-  a colon and the year preceded by a period.
-\item If the type of the entry is a contribution in conference
-  proceedings then the author, the initials of the book title and the
-  year should be used.
+  (\texttt{proceedings}) then the editor, the first 5 initials of the title
+  and the year should be used. The editor should be followed by a colon and
+  the year preceded by a period.
+\item If the type of the entry is a contribution in conference proceedings
+  then the author, the initials of the book title and the year should be used.
 \item Otherwise the first three letters of the type, the author and the
   year should be used. If no author is given then the initials of the
   title should be used instead---but at most 6 characters.
 \end{enumerate}
-The names should include up to two names abbreviated to four letters
-and should be translated to lower case.
-If an information is missing then the respective part together with
-the following separator should be omitted.
+The names should include up to two names abbreviated to four letters and
+should be translated to lower case. If an information is missing then the
+respective part together with the following separator should be omitted.
 
-The disambiguation should be done by appending upper case letters
-without a preceding string. If everything else fails three question
-marks should be inserted as key.
+The disambiguation should be done by appending upper case letters without a
+preceding string. If everything else fails three question marks should be
+inserted as key.
 
-To implement this scheme we write the following specification into a
-resource file:
+To implement this scheme we write the following specification into a resource
+file:
 \begingroup\small
 \begin{verbatim}
 key.expand.macros = on
@@ -3174,8 +3163,8 @@ key.format =
 \end{verbatim}%
 \endgroup
   
-Since each part has been explained before we just need some overall remarks.
-I prefer to use the backtracking-based disjunctions instead of nested
+Since each part has been explained before we just need some overall remarks. I
+prefer to use the backtracking-based disjunctions instead of nested
 if-then-else constructs because they save some braces. They can be read as a
 switch statement, or even better as a \texttt{cond} statement in Lisp. This
 means they describe cases. The first successful case terminates the evaluation
@@ -3224,7 +3213,7 @@ added first. The additions are applied in the sequence they are given.
 
 \textit{value} can contain formatting instructions already introduced in the
 section~\ref{ssec:fields} about ``Formatting Fields'' on
-page~\pageref{ssec:fields}.  
+page~\pageref{ssec:fields}.
 
 Suppose a time stamp is stored in the field \texttt{time}.  With these
 resources the update of a time-stamp can be achieved using the resource
@@ -3274,12 +3263,12 @@ Next there is the separator '\#'. This separator is optional. It can also be
 the equality sign '='.
 
 \emph{pattern} is a regular expression enclosed in double quotes ("). This
-pattern is matched against substrings of the field value---including the
-delimiters. If a match is found then the matching substring is replaced by the
+pattern is matched against sub-strings of the field value---including the
+delimiters. If a match is found then the matching sistering is replaced by the
 replacement text or the field deleted if no replacement text is given.
 
 \emph{replacement\_text} is the string to be inserted for the matching
-substring of the field value. The backslash '\BS' is used as escape character.
+sistering of the field value. The backslash '\BS' is used as escape character.
 '\BS\(n\)' is replaced by the \(n^{th}\)\/ matching group of \emph{pattern}.
 \(n\)\/ is a single digit (1--9). Otherwise the character following the
 backslash is inserted.\footnote{Future releases may use backslash followed by
@@ -3294,7 +3283,7 @@ Other specials are
 
 If no replacement text is given then the whole field is deleted. In fact the
 instruction \rsc{delete.field} is only an alias for a corresponding rewrite
-rule with an empty replacement text.  This behaviour is illustrated in the
+rule with an empty replacement text.  This behavior is illustrated in the
 following abstract examples:
 
 \RSc{rewrite.rule}{\(\{\)\textit{field \# pattern} \(\}\)}\\[-7ex]
@@ -3313,7 +3302,7 @@ fields with empty contents.
 
 This can be generalized to the following rewrite rule which deletes all empty
 fields using the same mechanism and just omitting the specification of a field
-name: 
+name:
 
 \RSc{rewrite.rule}{\(\{\) "\Hat\(\{\}\)\$" \(\}\)}
 
@@ -3324,33 +3313,33 @@ need to quote these characters with backslashes:
 
 
 The replacement text may contain field formatting instructions as described in
-section~\ref{ssec:fields} on page~\pageref{ssec:fields}. These field fomatting
-instructions are replaced by their respective values. Thus we could exploit
-again the time stamp example from above. The following rewrite rule will
-update an existing timestamp without adding one if none is present:
+section~\ref{ssec:fields} on page~\pageref{ssec:fields}. These field
+formatting instructions are replaced by their respective values. Thus we could
+exploit again the time stamp example from above. The following rewrite rule
+will update an existing time stamp without adding one if none is present:
 
 \RSc{rewrite.rule}{\(\{\) time ".*" = "\%3s(\$mon) \%s(\$day), \%2d(\$year)"\(\}\)}\index{s@\%s}\index{d@\%d}
 
 The pattern \verb|.*| matches any sequence of arbitrary characters. Thus the
-old contents of the field is a match.  In this example the value is not reused
-in the replacement text. Thus the old contents is completly replaced by the
+old contents of the field is a match. In this example the value is not reused
+in the replacement text. Thus the old contents is completely replaced by the
 new one.
 
 Usually the matching is done case insensitive. This means that any upper case
 letter matches its lower counterpart and vice versa. This behavior is
-controlled by the boolean resource \rsc{rewrite.case.sensitive} which is
+controlled by the Boolean resource \rsc{rewrite.case.sensitive} which is
 \rsc{on} by default. Changing this variable influences only rewrite rules
 specified later.
 
 \Rsc{rewrite.case.sensitive}{off}
 
 A problem occurs e.g. when a string is replaced by a string containing the
-original one.  To avoid infinite recursion in such cases the numeric resource
-\rsc{rewrite.limit} controls the number of applications of each rewrite
-rule. If the number given in \rsc{rewrite.limit} is not negative and this
-limit is exceeded then a warning is printed and further applications of this
-rule are stopped. A negative value of the resource \rsc{rewrite.limit}
-indicates that no limitation should be used.
+original one. To avoid infinite recursion in such cases the numeric resource
+\rsc{rewrite.limit} controls the number of applications of each rewrite rule.
+If the number given in \rsc{rewrite.limit} is not negative and this limit is
+exceeded then a warning is printed and further applications of this rule are
+stopped. A negative value of the resource \rsc{rewrite.limit} indicates that
+no limitation should be used.
 
 
 Next we will investigate some concrete examples. Note that in these examples
@@ -3359,39 +3348,39 @@ highlight places where spaces have to be used which would be hard to recognize
 otherwise.
 
 \begin{itemize}
-  \item Empty entries are composed of delimiters --- either double quotes or
-        curly braces which enclose an arbitrary number of spaces. If we want
-        to delete empty entries we can use the following two rules.
+\item Empty entries are composed of delimiters --- either double quotes or
+  curly braces which enclose an arbitrary number of spaces. If we want to
+  delete empty entries we can use the following two rules.
 
-        \RSc{rewrite.rule}{%
-          \texttt{\symbol{"7B} "\symbol{"5E}\symbol{"5C}"\symbol{32}*\symbol{"5C}"\$" \symbol{"7D}}}\\[-9ex]
-        \RSc{rewrite.rule}{%
-          \texttt{\symbol{"7B} "\symbol{"5E}\symbol{"7B}\symbol{32}*\symbol{"7D}\$" \symbol{"7D}}}
+  \RSc{rewrite.rule}{%
+    \texttt{\symbol{"7B} "\symbol{"5E}\symbol{"5C}"\symbol{32}*\symbol{"5C}"\$" \symbol{"7D}}}\\[-9ex]
+  \RSc{rewrite.rule}{%
+    \texttt{\symbol{"7B} "\symbol{"5E}\symbol{"7B}\symbol{32}*\symbol{"7D}\$" \symbol{"7D}}}
         
-        The caret '\texttt{\symbol{"5E}}' denotes the beginning of the whole
-        string and the dollar is its end. The star is an operator which says
-        that an arbitrary number of the preceding regular expression --- i.e.\ 
-        the space --- can occur at this point.
+  The caret '\texttt{\symbol{"5E}}' denotes the beginning of the whole string
+  and the dollar is its end. The star is an operator which says that an
+  arbitrary number of the preceding regular expression --- i.e.\ the space ---
+  can occur at this point.
 
-  \item Ranges of pages should usually be composed of numbers separated by an
-        n-dash (\texttt{-{}-}). The next example shows how the pages field can be
-        normalized. Spaces are deleted and a single minus sign is replaced by
-        a double minus.
+\item Ranges of pages should usually be composed of numbers separated by an
+  n-dash (\texttt{-{}-}). The next example shows how the pages field can be
+  normalized. Spaces are deleted and a single minus sign is replaced by a
+  double minus.
 
-        \RSc{rewrite.rule}{\texttt{\symbol{"7B} pages \#
-            "\symbol{"5C}(\symbol{"5B}0-9\symbol{"5D}+\symbol{"5C})\symbol{32}*-\symbol{32}*\symbol{"5C}(\symbol{"5B}0-9\symbol{"5D}+\symbol{"5C})" 
-            = "\symbol{"5C} 1--\symbol{"5C} 2" \symbol{"7D}}}
+  \RSc{rewrite.rule}{\texttt{\symbol{"7B} pages \#
+      "\symbol{"5C}(\symbol{"5B}0-9\symbol{"5D}+\symbol{"5C})\symbol{32}*-\symbol{32}*\symbol{"5C}(\symbol{"5B}0-9\symbol{"5D}+\symbol{"5C})" 
+      = "\symbol{"5C} 1--\symbol{"5C} 2" \symbol{"7D}}}
 
-  \item Field rewriting may be used to remove \LaTeX{} commands. This example 
-        shows how to remove from titles a {\tt\char"5C protect} macro 
-        together with the braces, in case the delimiter is a double quote.
+\item Field rewriting may be used to remove \LaTeX{} commands. This example
+  shows how to remove from titles a {\tt\char"5C protect} macro together with
+  the braces, in case the delimiter is a double quote.
 
-        \RSc{rewrite.rule}{\tt\char"7B title \#
-            "\char"5E\char"5C"\char32*\char"5C\char"5C
-             \char32*protect\char32*\char"7B
-             \char"5C(.*\char"5C)\char"7D\char"5C"\$"
-            = "\char"5C"\char"5C 1\char"5C"" \char"7D}
-
+  \RSc{rewrite.rule}{\tt\char"7B title \#
+    "\char"5E\char"5C"\char32*\char"5C\char"5C
+    \char32*protect\char32*\char"7B
+    \char"5C(.*\char"5C)\char"7D\char"5C"\$"
+    = "\char"5C"\char"5C 1\char"5C"" \char"7D}
+  
 \end{itemize}
 
 %------------------------------------------------------------------------------
@@ -3409,9 +3398,9 @@ says that \emph{field1} should precede \emph{field2} etc. Fields which are not
 in this list are arranged after the specified ones. The are left in the same
 order as they appear in the entry.
 
-Another possibility is to specify the entry \texttt{*}. Such a sorting order is
-applicable to any kind of entry. If no specific sort order is found then this
-general order is used if one has been specified.
+Another possibility is to specify the entry \texttt{*}. Such a sorting order
+is applicable to any kind of entry. If no specific sort order is found then
+this general order is used if one has been specified.
 
 Any sorting order is added to a list of sorting orders if it has not been
 defined before. If a sorting order is specified again, the old one is simply
@@ -3452,40 +3441,38 @@ during parsing.
 \subsection{Finding Double Entries}
 
 When merging several bibliographic data bases a common problem is the
-occurrence of doubled entries in the resulting data base.  When searching for
+occurrence of doubled entries in the resulting data base. When searching for
 double entries several problems arise. Which entries should be considered
 equal and what should happen to double entries.
 
 The first question is answered as follows. Two entries are considered equal if
 their sort key is identical and they are adjacent in the final output. The
 first condition of identical sort keys allows the user to specify which
-criteria should be used when comparing entries.  This can be achieved with the
+criteria should be used when comparing entries. This can be achieved with the
 resource \rsc{sort.format} (see section \ref{sorting}). The second condition
 can easily be achieved by also sorting when requesting checking of doubles.
 
 It remains the question what to do with the doubles. Usually it is not
 desirable to keep double entries in one data base, so only one entry found is
-kept.  The others are printed as comments, i.e.\ the initial ``@'' is replaced
+kept. The others are printed as comments, i.e.\ the initial ``@'' is replaced
 by ``\#\#\#''. Thus all information is still present but inactive in the
 \BibTeX{} file. However, further processing with \BibTool{} will remove these
 entries if \rsc{pass.comments} is \rsc{off}, which is the default.
 
 Sometimes it is not desirable to include deleted entries in the output -- not
-even as comments.  Then the default behaviour can be changed with the boolean
+even as comments. Then the default behavior can be changed with the Boolean
 resource \rsc{print.deleted.entries}. If this resource is \rsc{off} then
 deleted entries are suppressed completely.
 
 The prefix for deleted entries is stored in the resource
-\rsc{print.deleted.prefix} which defaults to ``\#\#\#''.  Thus it can be
-redefined.  However note that you should avoid using a string ending in an at
-sign \texttt{@} since this would undo the effect of deleteing an entry.
+\rsc{print.deleted.prefix} which defaults to ``\#\#\#''. Thus it can be
+redefined. However note that you should avoid using a string ending in an at
+sign \texttt{@} since this would undo the effect of deleting an entry.
 
-
-The boolean resource \rsc{check.double.delete} can be used to delete double
+The Boolean resource \rsc{check.double.delete} can be used to delete double
 entries completely. For this purpose it has to be turned off as in:
 
 \Rsc{check.double.delete}{ON}
-
 
 The resource \rsc{check.double} can be used to turn on the checking of
 doubles. This feature is turned off initially.
@@ -3508,28 +3495,26 @@ for \rsc{rewrite.rule}.
 
 \RSc{check.rule}{ \(\{\) \textit{field \# pattern \# message}\(\}\)}
 
-Again \emph{field} and \emph{message} is optional. The separator
-\# can also be written as equality sign (=) or omitted.
+Again \emph{field} and \emph{message} is optional. The separator \# can also
+be written as equality sign (=) or omitted.
 
 Each field is processed as follows. Each check.rule is tried in turn until one
-rule is found where \emph{field} (if given) is identical to the field name
-and \emph{pattern} matches a substring of the field value. If such a rule is
-found then the \emph{message} is written to the error stream. If no message
-is given then nothing is printed and processing of the current field is ended.
+rule is found where \emph{field} (if given) is identical to the field name and
+\emph{pattern} matches a sub-string of the field value. If such a rule is
+found then the \emph{message} is written to the error stream. If no message is
+given then nothing is printed and processing of the current field is ended.
 
 \emph{message} is treated like the replacement text in \rsc{rewrite.rule},
 Thus the special character combinations described in section
 \ref{sec:field.rewriting} are expanded.
 
-
 Usually the matching is not done case sensitive. This means that any upper
 case letter matches its lower counterpart and vice versa. This behavior is
-controlled by the boolean resource \rsc{check.case.sensitive} which is ON by
+controlled by the Boolean resource \rsc{check.case.sensitive} which is ON by
 default. Changing this variable influences only rewrite rules as described in
 section~\ref{sec:field.rewriting}.
 
 \Rsc{check.case.sensitive}{off}
-
 
 Consider the following example. We want to check that the year field contains
 only years from 1800 to 1999. Additionally we want to allow two digit
@@ -3548,14 +3533,14 @@ braces.\footnote{In fact the regular expression allows also strings starting
 the end force that the pattern matches against the whole field value only.
 
 The next rule covers years consisting of two digits. The first two rules
-produce no error message but end the search for further matches.  Thus is
+produce no error message but end the search for further matches. Thus is
 something suitable is found then one of the first two rules finds it.
 
 Otherwise we have to produce an error message. This is done with the third
 rule. The empty pattern matches against any value of the year field. This rule
-is only applied if the preceding rules do not match.  In this case we print an
-error message. \texttt{\BS@} is replaced by the current type and \texttt{\BS\$} by
-the current key.
+is only applied if the preceding rules do not match. In this case we print an
+error message. \texttt{\BS@} is replaced by the current type and
+\texttt{\BS\$} by the current key.
 
 
 \begin{Summary}
@@ -3574,7 +3559,7 @@ the current key.
 \section{Strings --- also called Macros}\label{sec:macros}
 
 Strings in \BibTeX{} files play an important role when managing large
-bibliographic data bases. Thus the deserve special treatment.  If the resource
+bibliographic data bases. Thus the deserve special treatment. If the resource
 \rsc{macro.file} is defined then the macros are written to this file. The
 argument is a file name as in
 
@@ -3585,7 +3570,7 @@ does not deserve special treatment. You can simply give the macro file as one
 of the input files---preferably before any input file that makes use of one of
 the macros contained therein.
 
-The boolean resource \rsc{print.all.strings} indicates if all macros defined
+The Boolean resource \rsc{print.all.strings} indicates if all macros defined
 in the \BibTeX{} file should be printed or only those macros actually used.
 
 \Rsc{print.all.strings}{ON}
@@ -3621,13 +3606,13 @@ resource.
     month       = {1~} # jan
   }
 \end{verbatim}
-The macro \texttt{WGA} has been expanded and merged with \verb|1967|. Note that
-the string \verb|jan| has not been expanded since the value should be defined
-in a \BibTeX{} style file (\file{.bst}).
+The macro \texttt{WGA} has been expanded and merged with \verb|1967|. Note
+that the string \verb|jan| has not been expanded since the value should be
+defined in a \BibTeX{} style file (\file{.bst}).
 
 When macros are expanded the delimiters of entries are normalized, i.e.\ only
-one style is used. In this example braces have been used.  The alternative
-would be to use double quotes.  This behavior is controlled by the resource
+one style is used. In this example braces have been used. The alternative
+would be to use double quotes. This behavior is controlled by the resource
 \rsc{print.braces}. If this resource is on then braces are used otherwise
 double quotes are taken. It can be changed like in
 
@@ -3635,7 +3620,7 @@ double quotes are taken. It can be changed like in
 
 The delimiters of the whole entry are recommended to be braces. For
 compatibility with Scribe it is also allowed that parentheses are used for
-those delimiters. This behavior can be achieved with the boolean resource
+those delimiters. This behavior can be achieved with the Boolean resource
 \rsc{print.parentheses}. Initially this resource is off. It can be set like in
 the following instruction:
 
@@ -3679,9 +3664,9 @@ listed which have been found in the input files.
 \end{Summary}
 
 %------------------------------------------------------------------------------
-\section{\BibTeX1 Support}
+\section{\BibTeX1.0 Support}
 
-\BibTool\ supports already some of the feature proposed for \BibTeX1.
+\BibTool\ supports already some of the feature proposed for \BibTeX1.0.
 
 %------------------------------------------------------------------------------
 \subsection{Including Bibliographies}
@@ -3693,8 +3678,8 @@ The bibliography file may contain an instruction of the following form:
 \end{verbatim}
 
 Such an entry is stored in the database and printed when requested.
-Nevertheless the resource  \rsc{apply.include} can be used to controll this
-behaviour. 
+Nevertheless the resource  \rsc{apply.include} can be used to control this
+behavior. 
 
 %------------------------------------------------------------------------------
 \subsection{Aliases}
@@ -3709,7 +3694,7 @@ This means that the key \texttt{abc} is treated as an alias for the key
 \texttt{def}. Usually this alias is stored as alias in the database. For old
 \BibTeX\ files it may be desirable to eliminate aliases and introduce copies
 of records instead. Nevertheless the resource \rsc{apply.alias} can be used to
-controll this behaviour.
+control this behavior.
 
 %------------------------------------------------------------------------------
 \subsection{Modifications}
@@ -3723,8 +3708,8 @@ The bibliography file may contain an instruction of the following form:
 \end{verbatim}
 
 This modification is stored in the database without being applied.
-Nevertheless the resource \rsc{apply.modify} can be used to controll this
-behaviour.
+Nevertheless the resource \rsc{apply.modify} can be used to control this
+behavior.
 
 
 \begin{Summary}
@@ -3746,7 +3731,7 @@ Thus \BibTool{} should be limited by the memory available only. Especially the
 limitation on the field length which is present in \BibTeX\,0.99 is not
 present in \BibTool.
 
-\BibTeX{} needs a special order when crossreferenced entries are used. This
+\BibTeX{} needs a special order when cross-referenced entries are used. This
 limitation has also been released in \BibTool.
 
 

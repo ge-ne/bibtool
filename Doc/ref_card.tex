@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: ref_card.tex,v 1.12 2011-10-18 16:55:43 gene Exp $
+%% $Id: ref_card.tex,v 1.13 2011-11-27 14:37:00 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -22,27 +22,30 @@
 \documentclass{article}
 \fi
 \usepackage{multicol}
+\usepackage[landscape]{geometry}
 
 \input config
 
-\ifAfour
-\textwidth      = 170mm
-\textheight     = 260mm
+%\ifAfour
+%\textwidth      = 170mm
+%\textheight     = 260mm
 
+%\oddsidemargin  = -10mm
+%\evensidemargin = -10mm
+%\topmargin      = -10mm
+%\else
 \oddsidemargin  = -10mm
 \evensidemargin = -10mm
 \topmargin      = -10mm
-\else
-\oddsidemargin  = -10mm
-\evensidemargin = -10mm
-\topmargin      = -20mm
-\fi
+\advance\textwidth60mm
+\advance\textheight34mm
+%\fi
 
 \headsep        = 0pt
 \headheight     = 0pt
 \parsep         = 0pt
 \parindent      = 0pt
-\parskip        = 6pt
+\parskip        = 0pt
 
 \pagestyle{empty}
 
@@ -58,7 +61,8 @@
 \newcommand\ARG[1]{{\sl #1}}
 \newcommand\OnOff{{\sl OnOff}}
 \newcommand\Num{{\sl n}}
-\newcommand\Section[1]{\smallskip\par\ \hfill{\normalsize\bf #1}\hfill\ \par}
+\newcommand\Section[1]{\begin{center}\normalsize\bf
+    #1\end{center}\nobreak }
 \newcommand\Lib[1]{{\tt #1}}
 \newcommand\mailto[1]{{\tt #1}}
 \newcommand\NewPage{\end{multicols}
@@ -66,7 +70,7 @@
  \begin{center}\rule{.8\textwidth}{.1pt}\end{center}
  \newpage
  \begin{center}\rule{.8\textwidth}{.1pt}\end{center}\vfill
- \begin{multicols}{2}
+ \begin{multicols}{4}
 }
 
 \begin{document} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -83,7 +87,7 @@
 \end{center}
 \vfill
 \footnotesize\rm
-\begin{multicols}{2}
+\begin{multicols}{4}
   \Section{Command line options}
   \begin{FlatList}
   \item [-{}- \ARG{rsc\_command}]\ \\
@@ -124,7 +128,7 @@
     Extract entries matching \ARG{regex}.
   \end{FlatList}
   \Section{Libraries}
-  \begin{tabular}{ll}
+  \begin{tabular}{lp{.17\textwidth}}
   \Lib{check{\rm\_}y}	& Check the value of the year.\\
   \Lib{default}		& All default settings.\\
   \Lib{field}		& Redefine field names.\\
@@ -224,6 +228,12 @@
   \item [expand.crossref = \OnOff]
   \end{FlatList}
 \NewPage
+  \Section{\BibTeX1.0}
+  \begin{FlatList}
+  \item [apply.alias = \OnOff]
+  \item [apply.include = \OnOff]
+  \item [apply.modify = \OnOff]
+  \end{FlatList}
   \Section{Counting}
   \begin{FlatList}
   \item [count.all = \OnOff]
