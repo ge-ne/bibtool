@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 ##*****************************************************************************
-## $Id: make_version.pl,v 1.2 2010-02-06 10:50:25 gene Exp $
+## $Id: make_version.pl,v 1.3 2011-11-27 14:25:46 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -64,11 +64,11 @@ my $version = undef;
 my $year    = 1900 + $_[5];
 
 while(<>) {
-  $version = $1 if m/bibtool_version *= *"([0-9.]*)";/;
-  $year = $1 if m/\$Id: make_version.pl,v 1.2 2010-02-06 10:50:25 gene Exp $/;
+  $version = $1 if m/bibtool_version *= *"([0-9.]*)/;
+  $year = $1 if m/\$Id: make_version.pl,v 1.3 2011-11-27 14:25:46 gene Exp $/;
 }
 
-die "Missing version" if not defined $version;
+die "*** Missing version\n" if not defined $version;
 
 print <<__EOF__;
 %%********************************************************
@@ -82,6 +82,7 @@ print <<__EOF__;
 %% Net: gene\@gerd-neugebauer.de
 %%
 %%********************************************************
+\\newcommand\\LIBDIR{/usr/local/lib/BibTool}
 \\newcommand\\Year{$year}
 \\newcommand\\Version{$version}
 __EOF__

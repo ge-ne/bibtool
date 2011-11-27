@@ -1,5 +1,5 @@
 ##*****************************************************************************
-## $Id: Makefile,v 1.11 2011-06-08 17:35:56 gene Exp $
+## $Id: Makefile,v 1.12 2011-11-27 14:25:46 gene Exp $
 ##=============================================================================
 ## 
 ## This file is part of BibTool.
@@ -55,11 +55,8 @@ bibtool.ind ind index: bibtool.idx
 
 ##-----------------------------------------------------------------------------
 
-config.tex: ..$(DIR_SEP)Makefile ..$(DIR_SEP)config.h
-	cd ..; $(MAKE) Doc$(DIR_SEP)config.tex
-
-version.tex: ../version.c
-	./make_version.pl ../version.c > version.tex
+config.tex: ..$(DIR_SEP)version.c
+	.$(DIR_SEP)make_version.pl ..$(DIR_SEP)version.c > $*.tex
 
 ##-----------------------------------------------------------------------------
 
