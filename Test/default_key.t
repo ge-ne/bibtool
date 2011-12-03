@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: default_key.t,v 1.1 2011-11-20 16:20:29 gene Exp $
+# $Id: default_key.t,v 1.2 2011-12-03 06:34:15 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -41,6 +41,27 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'default_key_0',
+	   args         => '-f short',
+	   bib	        => <<__EOF__,
+\@Manual{	  bibtool,
+  itle		= {BibTool},
+  uthor	= {Gerd Neugebauer},
+  ear		= 2011
+}
+__EOF__
+	   expected_out => <<__EOF__,
+
+\@Manual{	  **key*,
+  itle		= {BibTool},
+  uthor		= {Gerd Neugebauer},
+  ear		= 2011
+}
+__EOF__
+    expected_err => ''
+    );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'default_key_1',
