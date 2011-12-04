@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.25 2011-11-27 14:37:00 gene Exp $
+%% $Id: bibtool.tex,v 1.26 2011-12-04 13:19:21 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -33,21 +33,21 @@
 \newcommand\texttt[1]{{\tt #1}}
 \newcommand\emph[1]{{\em #1}\/}
 \else
+\ifAfour
+\documentclass[11pt,a4paper]{book}
+\else
 \documentclass[11pt]{book}
+\fi
 \usepackage{makeidx}
 \usepackage{hyperref}
 \hypersetup{colorlinks=true,
             linkcolor=blue,
             citecolor=blue}
-\ifAfour
-\makeatletter
-\input{dina4.sty}
-\makeatother
 \fi
 \DeclareFontShape{OT1}{cmss}{m}{it}{<-> ssub * cmss/m/sl}{}
 \fi
 
-\input config.tex
+\input{config.tex}
 
 \makeatletter%>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 \renewcommand\ps@headings{\let\@mkboth\markboth
@@ -921,15 +921,14 @@ Additionally note that resource files are evaluated at once whereas input
 files are read in one chunk at the end. Thus you can not specify one set of
 parameters to be used for one file and another set of parameters for the next
 file. This is impossible within one invocation of \BibTool\footnote{This might
-  be changed in the next major revision (3.0).}
+  be changed in the next major revision (3.0).}.
 
 As a consequence of this behavior the last example is equivalent to the
 following invocations:
 
 \sh{\texttt{-r} my\_rsc  \texttt{-i} sample \texttt{-R}}\vspace*{-4ex}
 \sh{\texttt{-i} sample \texttt{-r} my\_rsc \texttt{-R}}
-\bigskip
-
+\medskip
 
 Now we have to describe the commands allowed in a resource file.  The general
 form of a resource command is of the form
@@ -965,9 +964,11 @@ language. Resource commands simply set the variables to the given value, add
 the value to the old value, or initiate a action. There are different types of
 resources
 \begin{itemize}
-\item Boolean resources can take only the values \rsc{on} and \rsc{off}.
-  The values \rsc{on}, \rsc{t}, \rsc{true}, 1, and \rsc{yes} are interpreted
-  as the same. Everything else is interpreted as \rsc{off}.
+\item Boolean resources can take only the values \rsc{on} and \rsc{off}. The
+  values \rsc{on}, \rsc{t}, \rsc{true}, 1, and \rsc{yes} are interpreted as
+  the same. For those values the case of the letters is ignored. Thus
+  \rsc{true} and \rsc{TrUe} are the same. Every other value else is
+  interpreted as \rsc{off}.
 \item Numeric resources can take numeric values only.
 \item String resources can take arbitrary strings.
 \end{itemize}
@@ -1029,7 +1030,8 @@ be used from the command line with the following
 
 An arbitrary number of input files can be specified. Input files can be
 specified in two ways. The command line option \opt{i} is immediately followed
-by a file name.
+by a file name. Since no restriction on the file name is applied this can also
+be used to specify files starting with a dash.
 
 \sh[i]{input\_file}
 
