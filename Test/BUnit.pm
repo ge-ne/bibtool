@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: BUnit.pm,v 1.13 2011-11-23 18:28:39 gene Exp $
+# $Id: BUnit.pm,v 1.14 2011-12-04 13:21:56 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -22,6 +22,8 @@ perl -MBUnit -e "exit all()"
 
 =head1 DESCRIPTION
 
+This is the test driver for unit tests of BibTool.
+
 =head1 Attributes
 
 =head1 Methods
@@ -32,13 +34,7 @@ Gerd Neugebauer
 
 =head1 BUGS
 
-=over 4
-
-=item *
-
-...
-
-=back
+none
 
 =cut
 
@@ -66,7 +62,7 @@ our $verbose = 1;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.13 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.14 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -87,12 +83,6 @@ our %summary = ();
 our %names = ();
 
 our ($success,$ignored,$failure);
-
-#------------------------------------------------------------------------------
-# Variable:	$suite
-# Description:	
-#
-our $suite = '';
 
 #------------------------------------------------------------------------------
 # Function:	out
@@ -213,6 +203,14 @@ sub suites {
   local $_;
   my @a	  = sort(@_);
   my $len = 6;
+  my $suite;
+
+  die "*** '$BIBTOOL' executable not found\n" if not -x $BIBTOOL;
+  die "*** Current dircetory is not writable\n" if not -w '.';
+  die "*** .bibtoolrsc exists in current directory. Aborted\n"
+      if -e ".bibtoolrsc";
+  die "*** .bibtoolrsc exists in home directory. Aborted \n"
+      if -e "$ENV{HOME}/.bibtoolrsc";
 
   foreach $_ (@a) {
     my $l = length($_);
@@ -225,7 +223,7 @@ sub suites {
     $failure = 0;
     $suite   = $_;
     $suite   =~ s/\.t$//;
-#    out "$suite:\n";
+
     my $ret = do "$_";
     unless($ret) {
       if ($@) {                   warn "couldn't parse $_: $@\n"
@@ -285,5 +283,6 @@ sub get_library_path {
   return $library_path;
 }
 
+#------------------------------------------------------------------------------
 1;
 #
