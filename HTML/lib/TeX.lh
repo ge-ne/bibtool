@@ -28,11 +28,14 @@ my %accented =
     '^u' => 'û',    '^U' => 'Û',
   );
 
+#------------------------------------------------------------------------------
+# Function:	findFile
+#
 sub findFile {
   my $dir      = shift;
   my $basename = shift;
   my $file     = "$dir/$basename";
-  die ("file not found: $basename\n") if not -e $file;
+  die "file not found: $basename\n" if not -e $file;
   return $file;
 }
 

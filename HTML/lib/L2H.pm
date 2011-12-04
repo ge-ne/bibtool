@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H.pm,v 1.7 2010-07-24 05:21:10 gene Exp $
+## $Id: L2H.pm,v 1.8 2011-12-04 13:24:07 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -27,11 +27,11 @@ my %opt = (
 
 require Exporter;
 @ISA       = qw(Exporter);
-@EXPORT    = qw(newcommand newenvironment getMacro set_opt hyphenate);
+@EXPORT    = qw(newcommand newenvironment getMacro set_opt hyphenate %Macro);
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.7 $'; #'
+  my $VERSION = '$Revision: 1.8 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
 
@@ -171,7 +171,7 @@ my %SectionLevel =
 # Description:	Hash of array containing the defined macros.
 #		The first element is the array is the arity of the macro.
 #		The second argument is a modifier for the context. The value
-#		undef leaves the context unchanged. The value '/' pos a value
+#		undef leaves the context unchanged. The value '/' pops a value
 #		from the context stack. All aotehr values are pushed to the
 #		context stack.
 #		The third element is the replacement text. The strings
@@ -182,8 +182,9 @@ my %SectionLevel =
 #		parameters of the macro are passed to this code in the array
 #		@_. The return value is used as replacement text.
 #
-my %Macro;
+my %Macro = ();
 
+newcommand('CURRENTDIR',text=>'.');
 
 #------------------------------------------------------------------------------
 # Function:	begingroup

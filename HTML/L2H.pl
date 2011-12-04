@@ -1,6 +1,6 @@
 #!d:/Programme/Perl/bin/perl -w
 ##*****************************************************************************
-## $Id: L2H.pl,v 1.8 2010-05-31 04:02:43 gene Exp $
+## $Id: L2H.pl,v 1.9 2011-12-04 13:23:14 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -33,6 +33,7 @@ $0 [options] [files]
 	-title=<s>	Set the title information for the HTML pages.
 	-v	
 	-verbose	Turn on verbose output about file operations.
+	-workdir=<s>	Set the base dir for reading TeX files.
 	-year=<s>	Set the copyright year.
 __EOF__
     exit(0);
@@ -40,6 +41,7 @@ __EOF__
 
 my $trans = new L2H_file;
 
+$trans->load('TeX.lh');
 $trans->load('LaTeX.lh');
 $trans->load('BibTool.lh');
 $trans->load('Changes.lh');
@@ -62,23 +64,26 @@ my $main    = $trans->opt('main');
 my $year    = $trans->opt('year');
 my $ext	    = $trans->opt('ext');
 my $nocopy  = 0;
+my $cwd     = '.';
 
 use Getopt::Long;
-GetOptions ('author=s'	=> \$author,
-	    'd=s'	=> \@debug,
-	    'debug=s'	=> \@debug,
-	    'dir=s'	=> \$dirname,
-	    'email=s'	=> \$email,
-	    'ext=s'	=> \$ext,
-	    'h|help'	=> \&usage,
-	    'load=s'	=> \&load,
-	    'main=s'	=> \$main,
-	    'nocopy'	=> \$nocopy,
-	    'prefix=s'	=> \$prefix,
-	    'profile=s'	=> \$profile,
-	    'title=s'	=> \$title,
-	    'v|verbose'	=> \$verbose,
-	    'year'	=> \$year,
+GetOptions ('author=s'	    => \$author,
+	    'd=s'	    => \@debug,
+	    'debug=s'	    => \@debug,
+	    'dir=s'	    => \$dirname,
+	    'email=s'	    => \$email,
+	    'ext=s'	    => \$ext,
+	    'h|help'	    => \&usage,
+	    'load=s'	    => \&load,
+	    'main=s'	    => \$main,
+	    'nocopy'	    => \$nocopy,
+	    'prefix=s'	    => \$prefix,
+	    'profile=s'	    => \$profile,
+	    'title=s'	    => \$title,
+	    'working_dir=s' => \$cwd,
+	    'workdir=s'     => \$cwd,
+	    'v|verbose'	    => \$verbose,
+	    'year'	    => \$year,
 	   );
 
 $trans->set_opt('dirname', $dirname);

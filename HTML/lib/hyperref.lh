@@ -15,6 +15,9 @@ newcommand('link',
  	     local $_ = shift;
  	     return "<a href=\"$url\">$_</a>";
  	   });
+newcommand('hypersetup',
+ 	   arity => 1,
+ 	   text  => '');
 
 1;
 #------------------------------------------------------------------------------
