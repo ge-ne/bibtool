@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: resource.t,v 1.2 2011-12-04 13:22:40 gene Exp $
+# $Id: bibtoolrsc.t,v 1.1 2011-12-04 13:22:40 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -15,11 +15,11 @@
 
 =head1 NAME
 
-resource.t - Test suite for BibTool resource.
+bibtoolrsc.t - Test suite for BibTool .bibtoolrsc.
 
 =head1 SYNOPSIS
 
-resource.t 
+bibtoolrsc.t 
 
 =head1 DESCRIPTION
 
@@ -43,44 +43,44 @@ use BUnit;
 
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'resource_1',
-	   resource	=> <<__EOF__,
-resource{_rsc.rsc}
-__EOF__
+BUnit::run(name         => '_bibtoolrsc_1',
+	   ignore 	=> (-e ".bibtoolrsc"),
 	   prepare 	=> sub {
-	     BUnit::store_file('_rsc.rsc','print{Been there}');
+	     BUnit::store_file('.bibtoolrsc','print{Done that}');
 	   },
 	   check 	=> sub {
-	     unlink('_rsc.rsc');
+	     unlink('.bibtoolrsc');
 	     return 0;
 	   },
-	   expected_err	=> "Been there\n"
+	   expected_err	=> "Done that\n"
     );
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => '_r_1',
-	   args		=> "-r _rsc.rsc",
+BUnit::run(name         => '_bibtoolrsc_2',
+	   ignore 	=> (-e "$ENV{HOME}/.bibtoolrsc"),
 	   prepare 	=> sub {
-	     BUnit::store_file('_rsc.rsc','print{Been there}');
+	     BUnit::store_file("$ENV{HOME}/.bibtoolrsc",'print{Done that too}');
 	   },
 	   check 	=> sub {
-	     unlink('_rsc.rsc');
+	     unlink("$ENV{HOME}/.bibtoolrsc");
 	     return 0;
 	   },
-	   expected_err	=> "Been there\n"
+	   expected_err	=> "Done that too\n"
     );
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => '_r_2',
-	   args		=> "-r _rsc",
+BUnit::run(name         => '_bibtoolrsc_3',
+	   ignore 	=> (-e ".bibtoolrsc" or -e "$ENV{HOME}/.bibtoolrsc"),
 	   prepare 	=> sub {
-	     BUnit::store_file('_rsc.rsc','print{Been there}');
+	     BUnit::store_file(".bibtoolrsc",'print{Been there}');
+	     BUnit::store_file("$ENV{HOME}/.bibtoolrsc",'print{Done that}');
 	   },
 	   check 	=> sub {
-	     unlink('_rsc.rsc');
+	     unlink("$ENV{HOME}/.bibtoolrsc");
+	     unlink('.bibtoolrsc');
 	     return 0;
 	   },
-	   expected_err	=> "Been there\n"
+	   expected_err	=> "Done that\n"
     );
 
 #------------------------------------------------------------------------------
