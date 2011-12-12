@@ -1,21 +1,18 @@
 #******************************************************************************
-#* $Id: Makefile,v 1.7 2011-12-04 13:23:14 gene Exp $
+#* $Id: Makefile,v 1.8 2011-12-12 15:15:39 gene Exp $
 #******************************************************************************
 #* Author: Gerd Neugebauer
 #*=============================================================================
 
-DOCFILES      = ../Doc/config.tex	\
-	  	../Doc/bibtool.bbl	\
+DOCFILES      = ../Doc/bibtool.bbl	\
 	  	../Doc/bibtool.tex
 
-INSTFILES     = ../Doc/config.tex	\
-	  	../install.tex
+INSTFILES     = ../install.tex
 
-CHANGESFILES  =	../Doc/config.tex	\
-	  	../Changes.tex
+CHANGESFILES  =	../Changes.tex
 
 FLAGS         =	-v -dir=target
-DOC_FLAGS     =	${FLAGS} -prefix=doc -main=doc.html
+DOC_FLAGS     =	${FLAGS} -prefix=doc -main=doc.html -workdir=../Doc
 INST_FLAGS    =	${FLAGS} -prefix=install -main=install.html
 CHANGES_FLAGS =	${FLAGS} -prefix=changes -main=changes.html
 

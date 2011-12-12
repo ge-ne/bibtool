@@ -34,8 +34,9 @@ my %accented =
 sub findFile {
   my $dir      = shift;
   my $basename = shift;
+  print STDERR "--- find file $dir $basename\n";
   my $file     = "$dir/$basename";
-  die "file not found: $basename\n" if not -e $file;
+  die "file not found: $dir/$basename\n" if not -e $file;
   return $file;
 }
 
@@ -47,7 +48,7 @@ newcommand('input',
 	   text	      => sub {
 	     my $this = shift;
 	     my $file = shift;
-	     my $dir  = "src/".$L2H::Macro{'CURRENTDIR'}[2]; # TODO
+	     my $dir  = $L2H::Macro{'CURRENTDIR'}[2]; # TODO
 	     $file    = findFile($dir,$file);
 	     local $/ = undef;
 	     my $fd = new FileHandle($file, 'r') || die "$file: $!\n";

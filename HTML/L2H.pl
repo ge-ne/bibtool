@@ -1,6 +1,6 @@
 #!d:/Programme/Perl/bin/perl -w
 ##*****************************************************************************
-## $Id: L2H.pl,v 1.9 2011-12-04 13:23:14 gene Exp $
+## $Id: L2H.pl,v 1.10 2011-12-12 15:15:39 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -85,6 +85,8 @@ GetOptions ('author=s'	    => \$author,
 	    'v|verbose'	    => \$verbose,
 	    'year'	    => \$year,
 	   );
+
+L2H::renewcommand('CURRENTDIR',text=>$cwd);
 
 $trans->set_opt('dirname', $dirname);
 $trans->set_opt('author', $author);

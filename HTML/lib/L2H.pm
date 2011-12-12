@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H.pm,v 1.8 2011-12-04 13:24:07 gene Exp $
+## $Id: L2H.pm,v 1.9 2011-12-12 15:15:40 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -31,7 +31,7 @@ require Exporter;
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.8 $'; #'
+  my $VERSION = '$Revision: 1.9 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
 
@@ -184,7 +184,7 @@ my %SectionLevel =
 #
 my %Macro = ();
 
-newcommand('CURRENTDIR',text=>'.');
+newcommand('CURRENTDIR',text=>'.') if not exists $Macro{'CURRENTDIR'};
 
 #------------------------------------------------------------------------------
 # Function:	begingroup
@@ -404,6 +404,7 @@ sub hyphenate
 { my $this = shift;
   local $_ = shift;
   my $h	   = $this->{hyphenate};
+  $h 	   = 'en' if $h == 0;
   eval "require hyph_$h;" || die "hyph_$h.pm: $!$@\n";
   my $hyphenator = "hyph_${h}::hyph";
   my $result 	 = '';

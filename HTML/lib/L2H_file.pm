@@ -1,6 +1,6 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: L2H_file.pm,v 1.6 2010-06-07 07:59:27 gene Exp $
+## $Id: L2H_file.pm,v 1.7 2011-12-12 15:15:41 gene Exp $
 ##*****************************************************************************
 ## Author: Gerd Neugebauer
 ##=============================================================================
@@ -20,7 +20,7 @@ require Exporter;
 @EXPORT_OK = qw();
 
 BEGIN{
-  my $VERSION = '$Revision: 1.6 $'; #'
+  my $VERSION = '$Revision: 1.7 $'; #'
   $VERSION =~ s/[^0-9.]//go;
 }
 
@@ -75,7 +75,7 @@ sub put (@)
   local $_ = join("",@_);
   s/\&\#095;/_/go;
   if (defined $self->{hyphenate}) {
-    $_ = hyphenate($self->{hyphenate}, $_);
+    $_ = $self->hyphenate($self->{hyphenate}, $_);
   }
   print {$self->{out}} $_;
 }
