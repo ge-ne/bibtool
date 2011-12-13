@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: Changes.tex,v 1.8 2011-12-13 06:53:45 gene Exp $
+%% $Id: Changes.tex,v 1.9 2011-12-13 19:18:18 gene Exp $
 %%*****************************************************************************
 %% Author: Gerd Neugebauer
 %%-----------------------------------------------------------------------------
@@ -14,10 +14,10 @@
 \newcommand\BibTcl{\textsc{BibTcl}}
 \newcommand\BibTeX{\textsc{Bib}\TeX}
 \newenvironment{Release}[2]{\section*{Release #1}\begin{itemize}}{\end{itemize}}
-\newenvironment{Fix}{\item }{}
-\newenvironment{New}{\item }{}
-\newenvironment{Doc}{\item }{}
-\newenvironment{Update}{\item }{}
+\newenvironment{Fix}[1]{\item }{}
+\newenvironment{New}[1]{\item }{}
+\newenvironment{Doc}[1]{\item }{}
+\newenvironment{Update}[1]{\item }{}
 \newcommand\BS{\char`\\}
 
 \begin{document}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -86,10 +86,9 @@
     A few incompatibilities with signed and unsigned characters which showed up
     on MacOS only have been fixed.
   \end{Fix}
- \end{Release}
-
+ % \end{Release}
  % ===================================================================== -->
- \begin{Release}{2.52}{April 26, 2011}
+ % \begin{Release}{2.52}{April 26, 2011}
   \begin{Fix}{gene}
     A few compiler warnings have been fixed.
   \end{Fix}
@@ -109,10 +108,9 @@
     Bugfix in \File{names.c}: The classification of name parts erroneously has
     used a wrong translation under certain circumstances.
   \end{Fix}
- \end{Release}
-
+ %\end{Release}
  % ===================================================================== -->
- \begin{Release}{2.50}{February 6, 2010}
+ %\begin{Release}{2.50}{February 6, 2010}
   \begin{Fix}{gene}
     Bugfix in \File{key.c}: The classification of name parts erroneously has
     considered, to be a first name under certain circumstances. This has been
