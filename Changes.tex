@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: Changes.tex,v 1.7 2011-11-26 06:21:15 gene Exp $
+%% $Id: Changes.tex,v 1.8 2011-12-13 06:53:45 gene Exp $
 %%*****************************************************************************
 %% Author: Gerd Neugebauer
 %%-----------------------------------------------------------------------------
@@ -34,6 +34,10 @@
  % ===================================================================== -->
  \begin{Release}{2.54}{???}
   \begin{New}{gene}
+    Resource \rsc{key.make.alias} added to create new \texttt{@ALIAS}
+    records for any newly generated key.
+  \end{New}
+  \begin{New}{gene}
     Resource \rsc{apply.alias} added to expand the \texttt{@ALIAS}
     records.
   \end{New}
@@ -52,6 +56,10 @@
     \texttt{@ALIAS} and \texttt{@INCLUDE} records where not printed.
     This has been fixed.
   \end{Fix}
+  \begin{New}{gene}
+    A test suite for \BibTool{} has been integrated. It requires Perl
+    to be present on the system on which the tests should be run.
+  \end{New}
  \end{Release}
 
  % ===================================================================== -->

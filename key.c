@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: key.c,v 1.11 2011-11-20 15:24:17 gene Exp $
+** $Id: key.c,v 1.12 2011-12-13 06:53:45 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -1035,6 +1035,8 @@ static int fmt_c_string(s,min,max,not)		   /*			     */
 
  static WordList old_keys = WordNULL;
 
+ static Record tmp_rec = NULL;
+
 /*-----------------------------------------------------------------------------
 ** Function:	start_key_gen()
 ** Purpose:	Start the key generation.
@@ -1075,7 +1077,7 @@ int mark_key(db,rec)				   /*			     */
        *RecordHeap(rec) == NULL )		   /*                        */
   { return 0; }	   				   /*			     */
    						   /*                        */
-  add_word(symbol(*RecordHeap(rec)),&old_keys);
+  add_word(symbol(*RecordHeap(rec)),&old_keys);	   /*                        */
   return 0;					   /*                        */
 }						   /*------------------------*/
 
@@ -1091,6 +1093,7 @@ void make_key(db,rec)				   /*			     */
   DB		  db;				   /*                        */
   register Record rec;				   /*			     */
 { register Uchar  *kp;			   	   /*			     */
+  Uchar           *old;			   	   /*			     */
   int		  pos;				   /*			     */
 						   /*			     */
   if ( IsSpecialRecord(RecordType(rec)) ) return;  /*			     */
@@ -1148,8 +1151,24 @@ void make_key(db,rec)				   /*			     */
     } while ( find_word(kp,old_keys) );	   	   /*			     */
   }						   /*			     */
  						   /*                        */
-  *RecordHeap(rec) = symbol(kp);		   /* store new key	     */
-  add_word(symbol(kp),&old_keys);		   /* remember new key       */
+  kp  = symbol(kp);				   /*                        */
+  old = *RecordHeap(rec);			   /*                        */
+  *RecordHeap(rec) = kp;		   	   /* store new key	     */
+  add_word(kp,&old_keys);		   	   /* remember new key       */
+ 						   /* ---------------------- */
+  if (rsc_make_alias				   /* if needed then make    */
+      && !rsc_apply_alias			   /*                        */
+      && old != NULL				   /*  an alias              */
+      && kp != old				   /*                        */
+      && *old)  				   /*                        */
+  {						   /*                        */
+    if (tmp_rec == RecordNULL)			   /* lacy initialization    */
+    { tmp_rec = new_record(BIB_ALIAS,2); }	   /*                        */
+ 						   /*                        */
+    *RecordHeap(tmp_rec)   = old;		   /*                        */
+    RecordHeap(tmp_rec)[1] = kp;		   /*                        */
+    db_insert(db,copy_record(tmp_rec),FALSE);	   /*                        */
+  }						   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

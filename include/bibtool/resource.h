@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: resource.h,v 1.9 2011-11-26 06:21:15 gene Exp $
+** $Id: resource.h,v 1.10 2011-12-13 06:53:45 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -84,6 +84,7 @@ RSC_NEXT('k')
   RscBoolean( "key.generation"	      , r_kg  ,rsc_make_key	  , FALSE   ) 
   RscByFct(   "key.base"	      , r_kb  ,set_base(val)		    )
   RscByFct(   "key.format"	      , r_kf  ,add_format(val)		    )
+  RscBoolean( "key.make.alias"	      , r_ma  ,rsc_make_alias	  , FALSE   ) 
   RscByFct(   "key.number.separator"  , r_kns ,set_separator(6,val)	    )
   RscBoolean( "key.expand.macros"     , r_kem ,rsc_key_expand_macros,TRUE   )
 RSC_NEXT('m')
