@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: database.c,v 1.8 2011-11-26 06:21:15 gene Exp $
+** $Id: database.c,v 1.9 2011-12-13 06:52:06 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -246,7 +246,7 @@ void db_insert(db,rec,verbose)		   	   /*                        */
     case BIB_ALIAS:				   /*                        */
       if (rsc_apply_alias)			   /*                        */
       {	DebugPrint2("Alias ",*RecordHeap(rec));	   /*                        */
-	apply_alias(db,*(RecordHeap(rec)+1), rec, verbose);/*               */
+	apply_alias(db,*(RecordHeap(rec)+1), rec, verbose);/*                */
 	free_record(rec);			   /*                        */
 	return;					   /*                        */
       } else {					   /*                        */
@@ -442,10 +442,22 @@ static void print_segment(file, db, rec, allp)	   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
-static void preprint_string(file, db, strings, rec)
+/*-----------------------------------------------------------------------------
+** Function:	preprint_string()
+** Type:	static void
+** Purpose:	
+**		
+** Arguments:
+**	file	
+**	 db	
+**	 strings	
+**	 rec	
+** Returns:	nothing
+**___________________________________________________			     */
+static void preprint_string(file, db, strings, rec)/*                        */
   FILE   *file;					   /*                        */
   DB     db;					   /*                        */
-  Record strings;
+  Record strings;				   /*                        */
   Record rec;					   /*                        */
 { int i;					   /*                        */
   int d;					   /*                        */
@@ -454,7 +466,7 @@ static void preprint_string(file, db, strings, rec)
   for ( i=0; i < RecordFree(rec); i+=2 )   	   /*                        */
   { if ( RecordHeap(rec)[i] != NULL )	   	   /*                        */
     { Uchar * s = RecordHeap(rec)[i+1];   	   /*                        */
-
+ 						   /*                        */
       while(*s)					   /*                        */
       {						   /*                        */
 	switch (*s)				   /*                        */
@@ -541,13 +553,13 @@ static void print_strings(file, db, allp)	   /*                        */
   { strings = PrevRecord(strings); }		   /*  of strings            */
  						   /*                        */
   if ( allp )					   /*                        */
-  {
+  {						   /*                        */
     for ( rec = strings;			   /*                        */
 	  rec != RecordNULL;			   /*                        */
 	  rec = NextRecord(rec) )		   /*                        */
     { SetRecordMARK(rec); }			   /*                        */
-  }
-  else
+  }						   /*                        */
+  else						   /*                        */
   { int    i;					   /*                        */
  						   /*                        */
     for ( rec = strings;			   /* reset all marks        */
@@ -572,12 +584,12 @@ static void print_strings(file, db, allp)	   /*                        */
 	  }					   /*                        */
 	}					   /*                        */
       }						   /*                        */
-
+ 						   /*                        */
       for ( rec = strings;			   /* mark the dependencies  */
 	    rec != RecordNULL;			   /*  from within strings   */
 	    rec = NextRecord(rec) )		   /*                        */
       {						   /*                        */
-	if ( RecordIsMARKED(rec) )
+	if ( RecordIsMARKED(rec) )		   /*                        */
 	{					   /*                        */
 	  for ( i=2; i < RecordFree(rec); i+=2 )   /*                        */
 	  { if ( RecordHeap(rec)[i] != NULL )	   /*                        */
