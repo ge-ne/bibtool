@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.26 2011-12-04 13:19:21 gene Exp $
+%% $Id: bibtool.tex,v 1.27 2011-12-13 19:41:50 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -43,7 +43,6 @@
 \hypersetup{colorlinks=true,
             linkcolor=blue,
             citecolor=blue}
-\fi
 \DeclareFontShape{OT1}{cmss}{m}{it}{<-> ssub * cmss/m/sl}{}
 \fi
 
@@ -2158,6 +2157,20 @@ specification given in section \ref{sec:key.format} as follows:
 The syntax and meaning of such format specifications is explained in section
 \ref{sec:key.format}.
 
+\subsection{Aliases for Renamed Entries}
+
+\BibTool{} provides a means to automatically generate \verb|@Alias|
+definitions for those entries whoich have received a new key during the key
+generation. This works for a sufficiently current \BibTeX{} only.
+
+The aliases can be requested with the boolean resource \rsc{key.make.alias}.
+This can be set in a resource file file thie:
+
+\Rsc{key.make.alias}{on}
+
+The default is \texttt{off}. This means that no additional entries are
+created.
+
 
 \begin{Summary}
   \Desc{}{\rsc{preserve.keys}=off}{Do not generate new keys if one is already
@@ -2180,6 +2193,8 @@ The syntax and meaning of such format specifications is explained in section
   \Desc{\opt{f}}{\rsc{key.format}\{fmt\}}{Set the specification for
   key generation to \textit{fmt}.}
   \Desc{\opt{F}}{\rsc{key.generation}=on}{Turn on key generation.}
+  \Desc{}{\rsc{key.make.alias}=on}{Turn on creation of \texttt{@Alias} entries
+  for entries which have received a new key.}
   \Desc{}{\rsc{key.number.separator}=\{s\}}{String to be used before the
     disambiguating number.}
 \end{Summary}
@@ -3812,6 +3827,7 @@ key.base                 = lower
 key.expand.macros        = on
 key.format               = short
 key.generation           = off
+key.make.alias           = off
 key.number.separator     = "*"
 new.entry.type           = "{}Article"    
 new.entry.type           = "Book" 
