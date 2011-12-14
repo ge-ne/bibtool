@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.27 2011-12-13 19:41:50 gene Exp $
+%% $Id: bibtool.tex,v 1.28 2011-12-14 14:17:41 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -18,33 +18,14 @@
 %%         latex     bibtool
 %%*****************************************************************************
 
-\newif\ifAfour \Afourtrue
+\documentclass[11pt,a4paper]{scrbook}
 
-\ifx\documentclass\undefined
-\ifAfour
-\documentstyle[11pt,dina4,makeidx]{book}
-\else
-\documentstyle[11pt,makeidx]{book}
-\fi
-\newcommand\textbf[1]{{\bf #1}}
-\newcommand\textit[1]{{\it #1}}
-\newcommand\textrm[1]{{\rm #1}}
-\newcommand\textsf[1]{{\sf #1}}
-\newcommand\texttt[1]{{\tt #1}}
-\newcommand\emph[1]{{\em #1}\/}
-\else
-\ifAfour
-\documentclass[11pt,a4paper]{book}
-\else
-\documentclass[11pt]{book}
-\fi
 \usepackage{makeidx}
 \usepackage{hyperref}
 \hypersetup{colorlinks=true,
             linkcolor=blue,
             citecolor=blue}
 \DeclareFontShape{OT1}{cmss}{m}{it}{<-> ssub * cmss/m/sl}{}
-\fi
 
 \input{config.tex}
 
