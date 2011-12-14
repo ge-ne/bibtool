@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.28 2011-12-14 14:17:41 gene Exp $
+%% $Id: bibtool.tex,v 1.29 2011-12-14 14:51:08 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -21,13 +21,17 @@
 \documentclass[11pt,a4paper]{scrbook}
 
 \usepackage{makeidx}
-\usepackage{hyperref}
-\hypersetup{colorlinks=true,
+\usepackage[colorlinks=true,
             linkcolor=blue,
-            citecolor=blue}
-\DeclareFontShape{OT1}{cmss}{m}{it}{<-> ssub * cmss/m/sl}{}
+            citecolor=blue]{hyperref}
 
 \input{config.tex}
+
+\hypersetup{pdftitle={BibTool Manual}}
+\hypersetup{pdfauthor={Gerd Neugebauer}}
+\hypersetup{pdfsubject={Version \Version}}
+
+\DeclareFontShape{OT1}{cmss}{m}{it}{<-> ssub * cmss/m/sl}{}
 
 \makeatletter%>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 \renewcommand\ps@headings{\let\@mkboth\markboth
@@ -57,6 +61,8 @@
 \newcommand\Rsc[2]{\RSc{#1}{= #2}}
 \newcommand\env[1]{\texttt{#1}\index{#1@{\tt #1}}}
 
+\makeatother%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 \newif\ifHTML \HTMLfalse
 
 \newenvironment{Resource}%
@@ -68,8 +74,6 @@
 
 \newcommand\off{\textsf{off}}
 \newcommand\on{\textsf{on}}
-
-\makeatother%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 \newcommand\bs{\texttt{\symbol{"5C}}\ignorespaces}
 \newcommand\BS{\(\backslash\)}
