@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.29 2011-12-14 14:51:08 gene Exp $
+%% $Id: bibtool.tex,v 1.30 2011-12-14 18:46:46 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -55,6 +55,7 @@
 \newcommand\sh@@[1]{\texttt{bibtool }\textit{#1}
         \smallskip\par\noindent\ignorespaces}
 \newcommand\rsc[1]{\textsf{#1}\index{#1@\textsf{#1}}}
+\newcommand\vrsc[1]{\textsf{\textit{#1}}}
 \newcommand\RSc[2]{\smallskip\par\hspace*{2em}\textsf{#1 #2}\index{#1@\textsf{#1}}
         \smallskip\par\noindent\ignorespaces}
 \newcommand\RSC[2]{\RSc{#1}{= \(\{\)#2\(\}\)}}
@@ -919,10 +920,10 @@ form of a resource command is of the form
 
 \Rsc{name}{value}
 
-\rsc{name} is the resource name which conforms the rules of \BibTeX{}
-reference keys. Thus \rsc{name} can be composed of all characters but
-white-space characters and\index{\#}\index{"}\index{\%}\index{=}\index{,}%
-\index{'}\index{\{}\index{\}}\index{(}\index{)}
+\vrsc{name} is the resource name which conforms the rules of \BibTeX{}
+reference keys. Thus \vrsc{name} can be composed of all characters but
+white-space characters and\index{\#}\index{\%}\index{=}\index{,}\index{\"@\"{}}%
+\index{'}\index{(}\index{)}\index{\{@$\{$}\index{\}@$\}$}
 \begin{verbatim}
     "  #  %  '  (  )  ,  =  {  }
 \end{verbatim}
