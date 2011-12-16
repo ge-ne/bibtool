@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.30 2011-12-14 18:46:46 gene Exp $
+%% $Id: bibtool.tex,v 1.31 2011-12-16 22:48:29 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -20,10 +20,7 @@
 
 \documentclass[11pt,a4paper]{scrbook}
 
-\usepackage{makeidx}
-\usepackage[colorlinks=true,
-            linkcolor=blue,
-            citecolor=blue]{hyperref}
+\usepackage{bibtool-doc}
 
 \input{config.tex}
 
@@ -31,44 +28,61 @@
 \hypersetup{pdfauthor={Gerd Neugebauer}}
 \hypersetup{pdfsubject={Version \Version}}
 
+\makeindex
+
 \DeclareFontShape{OT1}{cmss}{m}{it}{<-> ssub * cmss/m/sl}{}
 
-\makeatletter%>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-\renewcommand\ps@headings{\let\@mkboth\markboth
-  \def\@oddfoot{}\def\@evenfoot{}
-  \def\@evenhead{\vbox{\vss\hbox to \textwidth{\rm\thepage \hss
-        {\scriptsize\sc\ \leftmark}}\kern 1.5mm\hrule depth 0.2 true pt}}
-  \def\@oddhead{\vbox{\vss\hbox to \textwidth{\rm{\scriptsize\sc \rightmark\ }
-        \hss \thepage}\kern 1.5mm\hrule depth 0.2 true pt}}
-  \def\chaptermark##1{\markboth {\ifnum \c@secnumdepth>\m@ne
-     \thechapter. \ \fi ##1}{}}
-  \def\sectionmark##1{\markright
-                      {\ifnum \c@secnumdepth >\z@ \thesection. \ \fi ##1}}}
+\definecolor{keyword}{rgb}{0,.5,0}
+\definecolor{bibtex-bg}{rgb}{0.9607843137,0.9019607843,0.8235294118}
+\usepackage{listings}
+\lstdefinelanguage{BibTeX}{sensitive=false,
+  basicstyle=\footnotesize\ttfamily,
+  keywordstyle=\bfseries\color{keyword},
+  keywords={@string,@article,@book,@misc,@proceedings,@manual,@modify,@alias,@include},
+  backgroundcolor=\color{bibtex-bg},
+  frame=single,
+  framerule=0pt}
+\lstdefinelanguage{BibTool}{sensitive=false,
+  basicstyle=\scriptsize\ttfamily,
+  keywordstyle=\bfseries\color{keyword},
+  backgroundcolor=\color{rsc-bg},
+  frame=single,
+  framerule=0pt}
 
-\pagestyle{headings}
-\addtolength{\headheight}{2pt}
+\makeatletter%>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 \newcommand\opt[1]{\texttt{-{}#1}\index{#1@{\tt-{}#1}}}
+
+\definecolor{sh-bg}{rgb}{.9,.9,.9}
+\definecolor{sh-border}{rgb}{.4,.4,.4}
+
 \newcommand\sh{\smallskip\par\hspace*{2em}\@ifnextchar[{\sh@}{\sh@@}}
-\def\sh@[#1]#2{\texttt{bibtool -#1 }\textit{#2}\index{#1@{\tt-{}#1}}
-        \smallskip\par\noindent\ignorespaces}
-\newcommand\sh@@[1]{\texttt{bibtool }\textit{#1}
-        \smallskip\par\noindent\ignorespaces}
-\newcommand\rsc[1]{\textsf{#1}\index{#1@\textsf{#1}}}
-\newcommand\vrsc[1]{\textsf{\textit{#1}}}
-\newcommand\RSc[2]{\smallskip\par\hspace*{2em}\textsf{#1 #2}\index{#1@\textsf{#1}}
-        \smallskip\par\noindent\ignorespaces}
-\newcommand\RSC[2]{\RSc{#1}{= \(\{\)#2\(\}\)}}
-\newcommand\Rsc[2]{\RSc{#1}{= #2}}
-\newcommand\env[1]{\texttt{#1}\index{#1@{\tt #1}}}
+\def\sh@[#1]#2{%
+  \fcolorbox{sh-border}{sh-bg}{\hspace*{1em}\begin{minipage}{.85\textwidth}
+      \texttt{bibtool -{}#1 }\textit{#2}\index{#1@{\tt-{}#1}}
+    \end{minipage}}\smallskip\par\noindent\ignorespaces}
+\newcommand\sh@@[1]{%
+  \fcolorbox{sh-border}{sh-bg}{\hspace*{1em}\begin{minipage}{.85\textwidth}
+      \texttt{bibtool }\textit{#1}
+    \end{minipage}}\smallskip\par\noindent\ignorespaces}
 
 \makeatother%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-\newif\ifHTML \HTMLfalse
+\newcommand\rsc[1]{\textsf{#1}\index{#1@\textsf{#1}}}
+\newcommand\rscEqBraces[2]{\rsc{#1} = \(\{\)#2\(\}\)}
+\newcommand\rscBraces[2]{\rsc{#1} \(\{\)#2\(\}\)}
+\newcommand\rscIt[1]{\textsf{\textit{#1}}}
+\newcommand\env[1]{\texttt{#1}\index{#1@{\tt #1}}}
 
-\newenvironment{Resource}%
-  {\begingroup\scriptsize\tt\obeylines\obeyspaces%
-  }{\endgroup}
+\definecolor{rsc-bg}{rgb}{.9,1,.9}
+\definecolor{rsc-border}{rgb}{.4,.6,.4}
+\newbox\rscbox
+\newenvironment{Resources}%
+  {\setbox\rscbox=\hbox\bgroup\hspace*{.06\textwidth}\begin{minipage}{.88\textwidth}\sf\obeylines\obeyspaces
+  }{\end{minipage}\egroup\vspace{1.5ex}%
+    \fcolorbox{rsc-border}{rsc-bg}{\usebox\rscbox}%
+    \medskip\par
+  }
 
 \newcommand\code[1]{\texttt{#1}}
 \newcommand\file[1]{\textsf{#1}}
@@ -79,11 +93,6 @@
 \newcommand\bs{\texttt{\symbol{"5C}}\ignorespaces}
 \newcommand\BS{\(\backslash\)}
 \newcommand\Hat{\^{}}
-
-\newcommand\BibTool{{\sc Bib\hskip-.1em\-%
-        \mbox{T\hskip-.15emo\hskip-.05emo\hskip-.05eml}}}
-\newcommand\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
-        T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \newfont\cminch{cminch}
 \ifx\chaptername\relax\else
@@ -96,42 +105,22 @@
 \newenvironment{Summary}{\subsection*{Summary}
   \begin{center}\small
     \begin{tabular}{p{.08\textwidth}p{.35\textwidth}p{.48\textwidth}}
-      \hline
+      \toprule
       \textit{\scriptsize Option}&
       \textit{\scriptsize Resource command}&
       \textit{\scriptsize Description}\\
-      \hline
-}{\end{tabular}\end{center}}
+      \midrule
+}{\bottomrule\end{tabular}\end{center}}
 
 \newcommand\Desc[3]{\textit{#1}&\textit{#2}&#3\\\hline}
 
 \newenvironment{Example}{\smallskip\par\textit{Example}\par}{\smallskip\par}
 
-\newenvironment{Abstract}{\begin{center}\begin{minipage}{.8\textwidth}\small
-  \begin{center}\textbf{Abstract}\end{center}\par
-  }{\end{minipage}\end{center}\vfill\vfill}
-
-\renewcommand\maketitle{\thispagestyle{empty}
-  \null\vfill
-  \begin{center}
-    \rule{\textwidth}{5pt}%
-    \bigskip\par
-    \hbox to \textwidth{\cminch \hss B\hss I\hss B\hss T\hss O\hss O\hss L\hss}
-    \medskip\par\normalsize
-    \mbox{}\rfill{5pt}\ A Tool to Manipulate \BibTeX\ Files\ \rfill{5pt}\null
-    \medskip\par\normalsize          Version  \Version
-    \vfill\vfill
-    \textit{\LARGE        $\cal G$\kern-.1emerd $\cal N$\kern-.2emeugebauer}
-  \end{center}
-  \vfill\vfill
-}
-
 \newenvironment{Disclaimer}{\begin{center}\sf\tiny --- }{ ---\end{center}}
 
-\makeindex
-
-\newcommand\Link[2]{\texttt{#2}}
-\newcommand\email[1]{\texttt{#1}}
+\newcommand\LINK[2]{\texttt{#2}}
+\newcommand\Link[2]{\href{#1}{\texttt{#2}}}
+\newcommand\email[1]{\href{mailto:#1}{\texttt{#1}}}
 
 \newcommand\FTP[2]{\texttt{#1}}
 
@@ -154,10 +143,10 @@
   used in a publication.
 \end{Abstract}
 
-\begin{Disclaimer}
-  This documentation is still in a rudimentary form and needs additional
-  efforts.
-\end{Disclaimer}
+%\begin{Disclaimer}
+%  This documentation is still in a rudimentary form and needs additional
+%  efforts.
+%\end{Disclaimer}
 %------------------------------------------------------------------------------
 \newpage
 \begingroup\setlength\parskip{1ex}\setlength\parindent{0pt}
@@ -168,26 +157,26 @@ Copyright \copyright{} \Year{} Gerd Neugebauer
 \medskip\par
 
 \BibTool{} is free software; you can redistribute it and/or modify it under
-the terms of the \Link{GPL.html}{GNU General Public License} as published by
+the terms of the \LINK{GPL.html}{GNU General Public License} as published by
 the Free Software Foundation; either version 1, or (at your option) any later
 version.
 
 \BibTool{} is distributed in the hope that it will be useful, but WITHOUT ANY
 WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.  See the \Link{GPL.html}{GNU General Public License} for
+A PARTICULAR PURPOSE.  See the \LINK{GPL.html}{GNU General Public License} for
 more details.
 
-You should have received a copy of the \Link{GPL.html}{GNU General Public
+You should have received a copy of the \LINK{GPL.html}{GNU General Public
   License} along with this documentation; see the file
-\Link{GPL.html}{COPYING}.  If not, write to the Free Software Foundation, 675
+\LINK{GPL.html}{COPYING}.  If not, write to the Free Software Foundation, 675
 Mass Ave, Cambridge, MA 02139, USA.
 \vfill\par
 Gerd Neugebauer\\
 Im Lerchelsb\"ohl 5\\
-64521 Gro\ss-Gerau (Germany)\smallskip\par\noindent
-WWW: \Link{http://www.gerd-neugebauer.de/}{http://www.gerd-neugebauer.de/}
-\smallskip\par\noindent
-Net: \email{gene@gerd-neugebauer.de}
+64521 Gro\ss-Gerau (Germany)\par\noindent
+Net: \Link{http://www.gerd-neugebauer.de/}{http://www.gerd-neugebauer.de/}
+\par\noindent
+E-Mail: \email{gene@gerd-neugebauer.de}
 \endgroup
 %------------------------------------------------------------------------------
 \tableofcontents
@@ -221,81 +210,81 @@ utilities emerged to fill the gaps. We will sketch some of them shortly.
 %
 \begin{description}
 \item
-  [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/distribs/}{\BibTeX}] is
+  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/distribs/}{\BibTeX}] is
   a program by Oren Patashnik to select publications used in a \LaTeX{}
   document and format them for inclusion into this document. This program
   should be part of each \TeX{} installation.
   
 \item
-  [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibclean/}{bibclean}]
+  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibclean/}{bibclean}]
   is a program by Nelson H.F.~Beebe to pretty-print \BibTeX{} files. It also
   can act as syntax checker. The C sources can be compiled on several systems.
   
 \item
-  [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/biblook/}{bibindex/biblook}]
+  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/biblook/}{bibindex/biblook}]
   is a pair of programs by Nelson H.F.~Beebe to generate an index for a
   \BibTeX{} file and use it to perform a fast look-up of certain entries. The
   programs so far run only under UNIX.
     
 \item
-  [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibsort/}{bibsort}]
+  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibsort/}{bibsort}]
   is a UNIX shell script by Nelson H.F.~Beebe to sort a \BibTeX{} file.
   
 \item
-  [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibextract/}{bibextract}]
+  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibextract/}{bibextract}]
   is a UNIX shell script by Nelson H.F.~Beebe to extract entries from a
   \BibTeX{} file which are used in a \LaTeX{} document.
     
 \item
-  [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/lookbibtex/}{lookbibtex/bibdestringify}]
+  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/lookbibtex/}{lookbibtex/bibdestringify}]
     are Perl scripts by John Heidemann to extract entries from a \BibTeX{}
     file which are used in a \LaTeX{} document and to remove strings from a
     \BibTeX{} file.
     
 \item
-  [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibtools/}{bibtools}]
+  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibtools/}{bibtools}]
   is a collection of UNIX shell scripts by David Kotz to add and extract
   entries to bibliographic databases. Several small programs are provided to
   perform special tasks.
     
 \item
-  [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibview/}{bibview}]
+  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibview/}{bibview}]
   is a Perl script by Dana Jacobsen to extract entries from a \BibTeX{} file
   which are used in a \LaTeX{} document.
     
 \item
-  [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibcard/}{BibCard}]
+  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibcard/}{BibCard}]
   is a program by William C.~Ogden running under X11/xview which provides a
   means to edit bibliographic databases.
   
 \item
-  [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/hyperbibtex/}{hyperbibtex}]
+  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/hyperbibtex/}{hyperbibtex}]
   Something similar for Macintosh computers.
     
 \item
-  [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/xbibtex/}{xbibtex/bibprocess/bibsearch}]
+  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/xbibtex/}{xbibtex/bibprocess/bibsearch}]
   are programs by Nicholas J. Kelly and Christian H. Bischof running under X11
   which provides a means to edit bibliographic databases, add fields to a
   \BibTeX{} file and extract certain entries from a \BibTeX{} file.
     
 \item
-  [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibview/}{bibview}]
+  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibview/}{bibview}]
   is an X11 program by Holger Martin, Peter Urban, and Armin Liebl to search
   in and manipulate \BibTeX{} files. It is similar to BibCard and hyperbibtex.
  
 \item
-  [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/tkbibtex/}{tkbibtex}]
+  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/tkbibtex/}{tkbibtex}]
   is a \BibTeX{} file browser with support for editing, searching sorting and
   merging. Written by Peter Corke in Tcl/Tk it runs under Unix and Windows.
 
-\item [\Link{http://www.ctan.org/tex-archive/support/bibdb/}{bibdb}] Editor for \BibTeX{} files that runs under Dos and Windows.
+\item [\href{http://www.ctan.org/tex-archive/support/bibdb/}{bibdb}] Editor for \BibTeX{} files that runs under Dos and Windows.
   
 \item
-  [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/qbibman/}{qbibman}]
+  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/qbibman/}{qbibman}]
   is a graphical user interface by Ralf G\"{o}rtz utilizing \BibTool{} as
   underlying library. It is written in C++ and uses Qt.
       
-\item [\Link{http://barracuda.linuxbox.com/}{Barracuda}] an X11 Editor for
+\item [\href{http://barracuda.linuxbox.com/}{Barracuda}] an X11 Editor for
   \BibTeX{} files, written in C++ and Qt.
  
 \item [\BibTeX-Mode] is an extension of the editor GNU-Emacs to provide means
@@ -303,7 +292,7 @@ utilities emerged to fill the gaps. We will sketch some of them shortly.
   There is also a \BibTeX-Mode for the Emacs-like JED-Editor.
   
 \item
-  [\Link{http://www.ctan.org/tex-archive/biblio/bibtex/utils/btOOL/}{btOOL}]
+  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/btOOL/}{btOOL}]
   is a Perl library to access \BibTeX{} files. It is implemented in Perl and C
   and has been written by Greg Ward.
   
@@ -409,8 +398,8 @@ For this section we want to use the following \BibTeX{} entry as our
 example:\footnote{Shamelessly stolen from the \BibTeX{} \file{xamples.bib}
   file.} Suppose it is contained in a file named \file{sample.bib}.
 
-\begingroup\footnotesize\label{sample1}%
-\begin{verbatim}
+\label{sample1}%
+\begin{lstlisting}[language=BibTeX]
 @ARTICLE{article-full,
    author = {L[eslie] A. Aamport},
    title = {The Gnats and Gnus Document Preparation System},
@@ -422,19 +411,18 @@ example:\footnote{Shamelessly stolen from the \BibTeX{} \file{xamples.bib}
    month = jul,
    note = "This is a full ARTICLE entry",
 }
-\end{verbatim}%
-\endgroup
+\end{lstlisting}
 
 First, we want to see how we can make keys consisting of author and title.
 This is one of my favorite algorithms thus it is rather easy to use it. You
-simply have to run the command
+simply have to run the following command:
 
 \sh[k]{\texttt{sample.bib -o sample1.bib}}
 
-Afterwards the following entry can be found in the file \file{sample1.bib}:
+After the command has colpleted it's work the following entry can be found in
+the output file \file{sample1.bib}: 
 
-\begingroup\footnotesize
-\begin{verbatim}
+\begin{lstlisting}[language=BibTeX]
 @Article{         aamport:gnats,
   author        = {L[eslie] A. Aamport},
   title         = {The Gnats and Gnus Document Preparation System},
@@ -446,8 +434,7 @@ Afterwards the following entry can be found in the file \file{sample1.bib}:
   month         = jul,
   note          = "This is a full ARTICLE entry"
 }
-\end{verbatim}%
-\endgroup
+\end{lstlisting}
 
 You see that the reference key has been changed. It now consists of the last
 name and the first relevant word of the title, separated by a colon. Sometimes
@@ -526,16 +513,16 @@ We have used the complicated construction with a character class to avoid
 wrong results which would have resulted when this rewrite rule is applied to a
 concatenated field value like the following one:
 
-\begin{verbatim}
+\begin{lstlisting}[language=BibTeX]
   author = "A. U. Thor" # " and " # "S. O. Meone"
-\end{verbatim}
+\end{lstlisting}
 
 Such fields are left unchanged by the rewrite rule given above. We could have
 used the point (\verb|.|) instead of the character class since the point
 matches any character. But this would have let to the syntactic wrong result:
-\begin{verbatim}
+\begin{lstlisting}[language=BibTeX]
   author = {A. U. Thor" # " and " # "S. O. Meone}
-\end{verbatim}
+\end{lstlisting}
 
 But we have to complete the explanation of the rewrite rule. The remaining
 part is the replacement text. Here we just have to note that the sub-string
@@ -640,13 +627,13 @@ field ``crossref'' before those containing none. As second sorting criterion
 we want to use the reference key.
 
 This can be achieved with a resource file containing the
-following\index{l@\%l}
+following instructions\index{l@\%l}
 
-\Rsc{sort.format}{\{\{\%1.\#s(crossref)a\#z\}\$key\}}
-\vspace*{-1.6\baselineskip}
-\Rsc{sort.reverse}{off}
-\vspace*{-1.6\baselineskip}
-\Rsc{sort}{on}
+\begin{Resources}
+  \rsc{sort.format} = \{\{\%1.\#s(crossref)a\#z\}\$key\}
+  \rsc{sort.reverse} = off
+  \rsc{sort} = on
+\end{Resources}
 
 The magic is contained in the first instruction. Thus we will examine it in
 detail: 
@@ -712,13 +699,13 @@ can get \BibTool{} via ftp or extract it from a CDROM containing a dump of the
 CTAN. The CTAN (Comprehensive \TeX{} Archive Network) consists of the
 following major sites (and many mirrors):
 \begin{list}{}{\itemsep=0pt\parsep=0pt}
-\item \FTP{ftp.dante.de}{tex-archive/biblio/bibtex/utils/bibtool}  (Germany)
-\item \FTP{ftp.tex.ac.uk}{tex-archive/biblio/bibtex/utils/bibtool} (UK)
-\item \FTP{ctan.tug.org}{tex-archive/biblio/bibtex/utils/bibtool} (USA)
+\item \Link{http://www.dante.de}{www.dante.de}
+\item \Link{http://www.tex.ac.uk}{www.tex.ac.uk}
 \end{list}
 \BibTool{} can be found in the following directory:
 \begin{list}{}{}
-\item \texttt{tex-archive/biblio/bibtex/utils/bibtool}
+\item
+  \Link{http://www.ctan.org:/tex-archive/biblio/bibtex/utils/bibtool}{tex-archive/biblio/bibtex/utils/bibtool}
 \end{list}
 
 \BibTool\ is hosted in a public repository at Sarovar. The repository
@@ -761,7 +748,7 @@ sending a bug report.
 
 On the other side I have unfortunately also had the experience that I have got
 complains about problems in my software. After several questions it turned out
-that the program had not been used correctly.
+that the program had not been used properly.
 
 Oh, sure. There have been bugs and I suppose there are still some bugs in
 \BibTool. I am grateful for each hint which helps me eliminating these bugs.
@@ -773,7 +760,7 @@ Oh, sure. There have been bugs and I suppose there are still some bugs in
 As you might have read \BibTool{} is free software in the sense of the Free
 Software Foundation. This means that you can use it as a whole or parts of it
 as long as you do not deny anyone to have the sources and use it freely. See
-the file \Link{COPYING}{COPYING} for details.
+the file \LINK{COPYING}{COPYING} for details.
 
 If you feel morally obliged to provide compensation for the use of this
 program I have the following suggestions.
@@ -784,17 +771,15 @@ program I have the following suggestions.
 \item Provide additional contributed pieces to \BibTool. For instance useful
   resource files which could be included into the library.
 \item Write a useful program and release it to the public without making
-  profit, preferably under an Open Source license like the \Link{GPL.html}{GNU
+  profit, preferably under an Open Source license like the \LINK{GPL.html}{GNU
     General Public License} or the GNU artistic license.
 \end{itemize}
-
 
 
 %------------------------------------------------------------------------------
 \appendix
 \chapter{Reference Manual}
 %------------------------------------------------------------------------------
-\setlength\parindent{0pt}
 
 This part of the documentation tries to describe all commands and options.
 Since the behavior of \BibTool{} can be adjusted at compile time not all
@@ -874,7 +859,9 @@ the search path. The search path can also be set in a resource file (for
 following resource file reading). This can be achieved by setting the resource
 \rsc{resource.search.path}.
 
-\Rsc{resource.search.path}{\emph{path}}
+\begin{Resources}
+  \rsc{resource.search.path} = \emph{path}
+\end{Resources}
 
 When an explicit resource file is given in the command line the defaults are
 not used. To incorporate the default resource searching mechanism the command
@@ -918,10 +905,12 @@ following invocations:
 Now we have to describe the commands allowed in a resource file.  The general
 form of a resource command is of the form
 
-\Rsc{name}{value}
+\begin{Resources}
+  \rscIt{name} = $\{$\textit{value}$\}$
+\end{Resources}
 
-\vrsc{name} is the resource name which conforms the rules of \BibTeX{}
-reference keys. Thus \vrsc{name} can be composed of all characters but
+\rscIt{name} is the resource name which conforms the rules of \BibTeX{}
+reference keys. Thus \rscIt{name} can be composed of all characters but
 white-space characters and\index{\#}\index{\%}\index{=}\index{,}\index{\"@\"{}}%
 \index{'}\index{(}\index{)}\index{\{@$\{$}\index{\}@$\}$}
 \begin{verbatim}
@@ -967,7 +956,9 @@ ignored afterwards.
 Now we come the description of the first resource available. To read in
 additional resource files the resource file may contain the resource
 
-\RSC{resource}{additional/resource/file}
+\begin{Resources}
+  \rscBraces{resource}{additional/resource/file}
+\end{Resources}
 
 Thus the resource given above has the same functionality as the command line
 option \opt{r} described above. Path names should be specified in the normal
@@ -983,7 +974,9 @@ To end this subsection we give an example of the \rsc{print} resource. In this
 sample we also see the possibility to omit the equality sign and use quotes as
 delimiters.
 
-\RSc{print}{"This is a stupid message."}
+\begin{Resources}
+  \rsc{print} "This is a stupid message."
+\end{Resources}
 
 Finally we can note that the commands given in a resource file can also be
 specified on the command line. This can be achieved with the command line
@@ -1022,7 +1015,9 @@ be used to specify files starting with a dash.
 
 The resource name \rsc{input} can be used to specify additional input files.
 
-\RSC{input}{input\_file}
+\begin{Resources}
+  \rscBraces{input}{input\_file}
+\end{Resources}
 
 Input files are processed in the order they are given. If no input file is
 specified the standard input is used to read from.
@@ -1040,7 +1035,9 @@ addition directories can be given which are searched for input files. The
 search path can be given in two different ways. First, the resource name
 \rsc{bibtex.search.path} can be set to contain a search path specification.
 
-\RSC{bibtex.search.path}{directory1:directory2:directory3}
+\begin{Resources}
+  \rscEqBraces{bibtex.search.path}{directory1:directory2:directory3}
+\end{Resources}
 
 The elements of the search path are separated by colons. Thus colons are not
 allowed as parts of directories. Another source of the search path is the
@@ -1054,19 +1051,25 @@ To allow adaption to operating systems other than UN*X the following resources
 can be used. The name of the environment \rsc{bibtex.env.name} overwrites the
 name of the environment variable which defaults to \env{BIBINPUTS}.
 
-\RSC{bibtex.env.name}{ENVIRONMENT\_VARIABLE}
+\begin{Resources}
+  \rscEqBraces{bibtex.env.name}{ENVIRONMENT\_VARIABLE}
+\end{Resources}
 
 The first character of the resource \rsc{env.separator} is used as separator
 of directories in the resource \rsc{bibtex.search.path} and the environment
 variable given as \rsc{bibtex.env.name}.
 
-\RSC{env.separator}{:}
+\begin{Resources}
+  \rscEqBraces{env.separator}{:}
+\end{Resources}
 
 The default character separating directories in a file name is the slash
 (\verb|/|).  The first character of the resource \rsc{dir.file.separator} can
 be used to change this value.
 
-\RSC{dir.file.separator}{\BS}
+\begin{Resources}
+  \rscEqBraces{dir.file.separator}{\BS}
+\end{Resources}
 
 \textbf{Note} that the defaults for \rsc{env.separator} and
 \rsc{dir.file.separator} are set at compile time to a value suitable for the
@@ -1106,7 +1109,9 @@ output. This output can be redirected to a file using the command line option
 
 The resource name \rsc{output.file} can also be used for this purpose.
 
-\RSC{output.file}{output\_file}
+\begin{Resources}
+  \rscEqBraces{output.file}{output\_file}
+\end{Resources}
 
 No provisions are made to check if the output file is the same as a input
 file.
@@ -1130,7 +1135,9 @@ This option toggles the Boolean quiet value.
 The same effect can be obtained by assigning the value \textsf{on} or
 \textsf{off} to the resource \rsc{quiet}:
 
-\Rsc{quiet}{on}
+\begin{Resources}
+  \rsc{quiet} = on
+\end{Resources}
 
 Status reports are useful to see the operations performed. They can be enabled
 using the command line option \opt{v}. This option toggles the Boolean verbose
@@ -1140,7 +1147,9 @@ value.
 
 The same can also be achieved with the Boolean resource \rsc{verbose}:
 
-\Rsc{verbose}{on}
+\begin{Resources}
+  \rsc{verbose} = on
+\end{Resources}
 
 Another output stream can be used to select the string definitions. This is
 described in section~\ref{sec:macros} on macros.
@@ -1176,7 +1185,9 @@ and attaches them to the entry immediately following them. Normally anything
 between entries is simply discarded and a warning printed. The Boolean
 resource \rsc{pass.comments} can be used to change this behavior.
 
-\Rsc{pass.comments}{on}
+\begin{Resources}
+  \rsc{pass.comments} = on
+\end{Resources}
 
 If this resource is on then the characters between entries are directly passed
 to the output file. This transfer starts with the first non-space character
@@ -1186,14 +1197,18 @@ The standard \BibTeX{} styles support a limited number of entry types. Those
 are predefined in \BibTool. Additional entry types can be defined using the
 resource \rsc{new.entry.type} as in
 
-\RSC{new.entry.type}{Anthology}
+\begin{Resources}
+  \rscBraces{new.entry.type}{Anthology}
+\end{Resources}
 
 This option can also be used to redefine the appearance of entry types which
 are already defined. Suppose we have defined \emph{Anthology} as above.
 Afterwards we can redefine this entry type to be printed in upper case with
 the following option:
 
-\RSC{new.entry.type}{ANTHOLOGY}
+\begin{Resources}
+  \rscBraces{new.entry.type}{ANTHOLOGY}
+\end{Resources}
 
 Each undefined entry type leads to an error message.
 
@@ -1222,7 +1237,9 @@ to their lowercase counterparts if they are not mentioned explicitly:
 The following invocation prints the preambles and the normal entries only.
 This can be desirable if the macros are printed into a separate file.
 
-\RSC{print.entry.types}{pn}
+\begin{Resources}
+  \rscBraces{print.entry.types}{pn}
+\end{Resources}
 
 The internal representation is printed in a format which can be adjusted by
 certain options. Those options are available through resource files or
@@ -1293,12 +1310,6 @@ The resource values described above are illustrated by the following examples.
 First we look at a string entry.
 \bigskip
 
-{\small
-\begin{verbatim}
-@STRING{macro   = "This is a rather long replacement text which exceeds one
-                  line"}
-\end{verbatim}
-}
 \ifHTML
 {\small
 \begin{verbatim}
@@ -1308,9 +1319,10 @@ First we look at a string entry.
 }
 \else
 \noindent
+\vbox{
 \begin{minipage}{\textwidth}
-\begingroup
-\settowidth{\unitlength}{\texttt{\small m}}
+\begingroup%
+\settowidth{\unitlength}{\texttt{\small m}}%
 \begin{picture}(0,2)(0,-3)
   \put(18,0){\line(0,1){5.5}}
   \put(77,0){\line(0,1){5.5}}
@@ -1318,7 +1330,7 @@ First we look at a string entry.
   \put(18,0){\makebox(0,0)[l]{\rsc{print.align.string}}}
 \end{picture}
 \endgroup
-\vspace{1ex}\end{minipage}
+\vspace{1ex}\end{minipage}}
 \fi
 
 Next we look at an unpublished entry. It has a rather long list of authors and
@@ -1343,6 +1355,7 @@ a long title. It shows how the lines are broken.
 }
 \else
 \noindent
+\hbox{%
 \begin{minipage}{\textwidth}
 {\small
 \begin{verbatim}
@@ -1353,9 +1366,9 @@ a long title. It shows how the lines are broken.
                   exceeds one line",
   note          = "Some useless comment"
 }
-\end{verbatim}
-}
-\settowidth{\unitlength}{\texttt{\small m}}
+\end{verbatim}%
+}%
+\settowidth{\unitlength}{\texttt{\small m}}%
 \begin{picture}(0,2)(0,-3)
   \put( 2,0){\line(0,1){14.5}}
   \put(18,15.5){\line(0,1){3.5}}
@@ -1366,7 +1379,7 @@ a long title. It shows how the lines are broken.
   \put(18,0){\makebox(0,0)[l]{\rsc{print.align}}}
   \put( 2,0){\makebox(0,0)[l]{\rsc{print.indent}}}
 \end{picture}
-\end{minipage}
+\end{minipage}}
 \vspace{1ex}
 \fi
 
@@ -1375,12 +1388,16 @@ changed with the resource \rsc{new.field.type}. The argument of this resource
 is an equation where left of the '=' sign is the name of a field and on the
 right side is it's print name. They should only contain allowed characters.
 
-\RSc{new.field.type}{\(\{\) author = AUTHOR \(\}\)}
+\begin{Resources}
+  \rsc{new.field.type} {\(\{\) author = AUTHOR \(\}\)}
+\end{Resources}
 
 This feature can be used to rewrite the field types. Thus it is completely
 legal to have a different replacement text than the original field:
 
-\RSc{new.field.type}{\(\{\) OPTauthor = Author \(\}\)}
+\begin{Resources}
+  \rsc{new.field.type} {\(\{\) OPTauthor = Author \(\}\)}
+\end{Resources}
 
 String names are used case insensitive by \BibTeX. \BibTool{} normalizes
 string names before printing. By default string names are translated to lower
@@ -1392,7 +1409,9 @@ The translation is controlled by the resource
 \rsc{symbol.type}\label{symbol.type}.  The value is one of the strings
 \verb|lower|, \verb|upper|, and \verb|cased|. The resource can be set as in
 
-\Rsc{symbol.type}{upper}
+\begin{Resources}
+  \rsc{symbol.type} = upper
+\end{Resources}
 
 The macro names are passed through the same normalization apparatus as field
 types. Thus you can force a rewriting of macro names with the same method as
@@ -1407,7 +1426,9 @@ achieved with the Boolean resource \rsc{preserve.key.case}. Usually it is
 turned off (because of backward compatibility and the memory used for this
 feature). You can turn it on as in
 
-\Rsc{preserve.key.case}{on}
+\begin{Resources}
+  \rsc{preserve.key.case} = on
+\end{Resources}
 
 If it is turned on then the keys as they are read are recorded and used when
 printing the entries. The internal comparisons are performed case insensitive.
@@ -1459,8 +1480,10 @@ of upper and lower case). The second form sorts in descending \ASCII{} order.
 The same effect can be achieved with the Boolean resource values \rsc{sort}
 and \rsc{sort.reverse} respectively.
 
-\RSC{sort}{on}\vspace{-4ex}
-\RSC{sort.reverse}{on}
+\begin{Resources}
+  \rscEqBraces{sort}{on}
+  \rscEqBraces{sort.reverse}{on}
+\end{Resources}
 
 The resource \rsc{sort} determines whether or not the entries should be
 sorted. The resource \rsc{sort.reverse} determines whether the order is
@@ -1474,12 +1497,16 @@ generation. This is described in section \ref{sec:key.gen} in detail.
 The associated resource name is \rsc{sort.format}. Several formats are
 combined as alternatives. 
 
-\RSC{sort.format}{\%N(author)}\vspace{-4ex}\index{N@\%N}
-\RSC{sort.format}{\%N(editor)}
+\begin{Resources}
+  \rscEqBraces{sort.format}{\%N(author)}\index{N@\%N}
+  \rscEqBraces{sort.format}{\%N(editor)}
+\end{Resources}
 
 Those two lines are equivalent with the single resource
 
-\RSC{sort.format}{\textit{\%N(author) \# \%N(editor)}}\index{N@\%N}
+\begin{Resources}
+  \rscEqBraces{sort.format}{\textit{\%N(author) \# \%N(editor)}}\index{N@\%N}
+\end{Resources}
 
 This means that the sort key is set to the (normalized) author names if an
 author is given. Otherwise it tries to use the normalized editor name. If
@@ -1500,15 +1527,18 @@ encountered in the input file. This feature can be combined with the Boolean
 resource \rsc{sort.cased} to achieve sorting according to the unfolded
 reference key:
 
-\RSC{preserve.key.case}{on}\vspace{-4ex}
-\RSC{sort.cased}{on}
-\smallskip
+\begin{Resources}
+  \rscEqBraces{preserve.key.case}{on}
+  \rscEqBraces{sort.cased}{on}
+\end{Resources}
 
 Beside the normal entries the macros (string entries) are sorted. This happens
 in per default. The resource \rsc{sort.macros} can be used to turn off this
 feature as in
 
-\RSC{sort.macros}{off}
+\begin{Resources}
+  \rscEqBraces{sort.macros}{off}
+\end{Resources}
 
 An example of sorting can be seen in section~\ref{sample.sort} on page
 \pageref{sample.sort}.
@@ -1667,7 +1697,9 @@ Multiple files can be given this way. As always the same functionality can be
 requested with a resource. The resource \rsc{extract.file} can be used for
 this purpose.
 
-\RSC{extract.file}{\textit{file.aux}}
+\begin{Resources}
+  \rscBraces{extract.file}{\textit{file.aux}}
+\end{Resources}
 
 A small difference exists between the two variants. the command line option
 automatically sets the resource \rsc{print.all.strings} to \verb|off|. This
@@ -1700,7 +1732,9 @@ single string to search for. This string has to be enclosed in double quotes.
 Since the argument of the resource has to be enclosed in braces we get the
 following funny syntax:
 
-\RSC{select.by.string}{"some string"}
+\begin{Resources}
+  \rscBraces{select.by.string}{"some string"}
+\end{Resources}
 
 This operation selects all entries containing \texttt{some string} in one of
 the normal fields. The search can be restricted to specific fields or extended
@@ -1708,7 +1742,9 @@ to pseudo-fields by specifying those fields before the search string. An
 arbitrary number of white-space separated fields can be given there. Thus the
 general syntax for this resource is as follows:
 
-\RSC{select.by.string}{\textit{field\(_1\) \(\ldots\) field\(_n\) "string"}}
+\begin{Resources}
+  \rscBraces{select.by.string}{\textit{field\(_1\) \(\ldots\) field\(_n\) "string"}}
+\end{Resources}
 
 To make this selection operation more flexible it is possible to determine
 whether or not the comparison against the value of a field is performed case
@@ -1724,7 +1760,9 @@ details like braces or spaces. The characters to ignore are stored in the
 resource \rsc{select.by.string.ignored}. As a default the following resource
 command is performed implicitly:
 
-\Rsc{select.by.string.ignored}{"\{\} []"}
+\begin{Resources}
+  \rscBraces{select.by.string.ignored}{"\{\} []"}
+\end{Resources}
 
 As for the resource \rsc{select.case.sensitive} the evaluation of the resource
 \rsc{select.by.string.ignored} is performed just before the comparisons are
@@ -1736,7 +1774,10 @@ In addition to the functionality described above the resource
 match against the given field fails. The general form is the same as for
 \rsc{select.by.string}:
 
-\RSC{select.by.non.string}{\textit{field\(_1\) \(\ldots\) field\(_n\) "string"}}
+\begin{Resources}
+  \rscBraces{select.by.non.string}{\textit{field\(_1\) \(\ldots\) field\(_n\) "string"}}
+\end{Resources}
+
 \begin{description}
 \item[Note] Cross-references are not considered unless \rsc{select.crossrefs}
   is set.
@@ -1752,7 +1793,9 @@ Emacs. For a description see section \ref{sec:regex}.
 The resource \rsc{select} allows to specify which fields should be used to
 select entries. The general form is as follows:
 
-\RSC{select}{\textit{field\(_1\) \(\ldots\) field\(_n\) "regular\_expression"}}
+\begin{Resources}
+  \rscBraces{select}{\textit{field\(_1\) \(\ldots\) field\(_n\) "regular\_expression"}}
+\end{Resources}
 
 If no field is specified then the regular expression is searched in each
 field. If no regular expression is specified then any value is accepted; i.e.
@@ -1773,13 +1816,17 @@ Analogously to the negation of the string matching the regular expression
 matching can be negated. The resource to perform this functionality is
 \rsc{select.non}. The general form is
 
-\RSC{select.non}{\textit{field\(_1\) \(\ldots\) field\(_n\) "regular\_expression"}}
+\begin{Resources}
+  \rscBraces{select.non}{\textit{field\(_1\) \(\ldots\) field\(_n\) "regular\_expression"}}
+\end{Resources}
 
 
 The Boolean resource \rsc{select.case.sensitive} can be used to determine
 whether the selection is performed case sensitive or not:
 
-\Rsc{select.case.sensitive}{off}
+\begin{Resources}
+  \rscEqBraces{select.case.sensitive}{off}
+\end{Resources}
 
 Note that the selection does not take place immediately. Instead all selection
 rules are collected and the selection is performed at an appropriate time
@@ -1804,7 +1851,9 @@ empty then all fields and the key are considered for comparison.
 Thus the following setting means that the regular only the fields \verb|author|
 and \verb|editor| are considered when doing a selection.
 
-\Rsc{select.fields}{"author editor"}
+\begin{Resources}
+  \rscEqBraces{select.fields}{"author editor"}
+\end{Resources}
 
 Without changing the resource \rsc{select.fields} the command line given
 previously is equivalent to the (longer) command
@@ -1819,7 +1868,9 @@ done case sensitive and others are not done case sensitive.
 
 Finally the resource \rsc{extract.regex} can be used as in
 
-\RSC{extract.regex}{\textit{regular\_expression}}
+\begin{Resources}
+  \rscEqBraces{extract.regex}{\textit{regular\_expression}}
+\end{Resources}
 
 This is equivalent to specifying a single regular expression to be matched
 against the key. This feature is kept for backward compatibility only. It is
@@ -1837,16 +1888,24 @@ matching cross-references are not considered automatically. This behavior can
 result in incomplete and thus incorrect \BibTeX\ files.
 
 The automatic selection of cross-referenced entries can be controlled by the
-resource \rsc{select.crossrefs}. This resource is |off| by default. This means
-that cross-references are ignored.
+resource \rsc{select.crossrefs}. This resource is \texttt{off} by default.
+This means that cross-references are ignored.
 
 The following instruction can be used to turn on the automatic inclusion of
 cross-referenced entries:
 
-\Rsc{select.crossrefs}{on}
+\begin{Resources}
+  \rsc{select.crossrefs} = on
+\end{Resources}
 
 The depth of cross-reference chains can be restricted with the resource
-\rsc{crossref.limit}.
+\rsc{crossref.limit}. This numeric value limits the depth of the
+crossreferences. If the actual depth is greater than this value then the
+cross-referencing is terminated artifically. The default value is 32.
+
+\begin{Resources}
+  \rsc{crossref.limit} = 42
+\end{Resources}
 
 \begin{Summary}
   \Desc{\opt{x}}{\rsc{extract.file}\{file\}}{Extract the entries from an
@@ -1886,13 +1945,15 @@ be enabled using the command line option \opt{f} in the following way:
 This command adds format disjunctively to the formatting instructions already
 given. The same effect can be achieved with the resource \rsc{key.format}.
 
-\RSC{key.format}{format}
+\begin{Resources}
+  \rscEqBraces{key.format}{\textit{format}}
+\end{Resources}
 
 Some values of \textit{format} have a special meaning. Fixed formatting rules
 are used when one of them is in effect. The special values are described
 below. To illustrate their results we consider the following \BibTeX{}
 database entries:
-\begin{verbatim}
+\begin{lstlisting}[language=BibTeX]
 @Unpublished{unpublished-key,
   author   = "First A. U. Thor and Seco N. D. Author and Third A. Uthor
               and others",
@@ -1914,7 +1975,7 @@ database entries:
    key = "Missilany",
    note = "This is a minimal MISC entry"
 }
-\end{verbatim}
+\end{lstlisting}
 
 \begin{description}
 \item [\rsc{short}]
@@ -1928,12 +1989,12 @@ database entries:
   To see the effect we apply \BibTool{} to the example entries given earlier
   with the command line argument \verb|-- key.format=short|.  This results in
   the following keys (remaining lines skipped):
-\begin{verbatim}
+\begin{lstlisting}[language=BibTeX]
 @Unpublished{     thor.author.ea:this,
 @Article{         aamport:gnats,
 @Book{            lipcoll.lawrie.ea:high,
 @Misc{            missilany,
-\end{verbatim}
+\end{lstlisting}
 
 \item [\rsc{long}]
   The long version acts like the short version but incorporates initials when
@@ -1941,12 +2002,12 @@ database entries:
   
   If \BibTool{} is applied to the example entries given earlier with the
   command line argument \verb|-- key.format=long| we get the following keys:
-\begin{verbatim}
+\begin{lstlisting}[language=BibTeX]
 @Unpublished{     thor.fau.author.snd.ea:this,
 @Article{         aamport.la:gnats,
 @Book{            lipcoll.dj.lawrie.dh.ea:high,
 @Misc{            missilany,
-\end{verbatim}
+\end{lstlisting}
 
 \item [\rsc{new.short}]
   This version formats like \rsc{short} but only if the given key field is
@@ -1956,12 +2017,12 @@ database entries:
   If \BibTool{} is applied to the example entries given earlier with the
   command line argument \verb|-- key.format=short.need| we get the following
   keys:
-\begin{verbatim}
+\begin{lstlisting}[language=BibTeX]
 @Unpublished{     unpublished-key,
 @Article{         aamport:gnats,
 @Book{            whole-collection,
 @Misc{            misc-minimal,
-\end{verbatim}
+\end{lstlisting}
 \item [\rsc{new.long}]
   This version formats like \rsc{long} but only if the given key field is
   empty. This is obsoleted by the resource \rsc{preserve.keys} and will be
@@ -1970,12 +2031,12 @@ database entries:
   If \BibTool{} is applied to the example entries given earlier with the
   command line argument \verb|-- key.format=short.need| we get the following
   keys:
-\begin{verbatim}
+\begin{lstlisting}[language=BibTeX]
 @Unpublished{     unpublished-key,
 @Article{         aamport.la:gnats,
 @Book{            whole-collection,
 @Misc{            misc-minimal,
-\end{verbatim}
+\end{lstlisting}
 
 \item [\rsc{empty}]
   The empty version clears the key entirely. The result does not conform to
@@ -1987,12 +2048,12 @@ database entries:
   If \BibTool{} is applied to the example entries given earlier with the
   command line argument \verb|-- key.format=empty| we get the following
   keys:
-\begin{verbatim}
+\begin{lstlisting}[language=BibTeX]
 @Unpublished{	  ,
 @Article{	  ,
 @Book{		  ,
 @Misc{		  ,
-\end{verbatim}
+\end{lstlisting}
 \end{description}
 
 In contrast to the command line option, the resource instruction only modifies
@@ -2004,7 +2065,9 @@ explicitly. This can be done using the command line option \opt{F} as in
 Alternatively the Boolean resource \rsc{key.generation} can be used in a
 resource file:
 
-\Rsc{key.generation}{on}
+\begin{Resources}
+  \rsc{key.generation} = on
+\end{Resources}
 
 Usually all keys are regenerated. This can have the unpleasant side-effect to
 invalidate citations in old documents. For this situation the resource
@@ -2014,8 +2077,7 @@ a key already. This means that the input contains only a sequence of
 white-space characters (which is not accepted by \BibTeX) as in the following
 example:
 
-\begingroup\footnotesize
-\begin{verbatim}
+\begin{lstlisting}[language=BibTeX]
 @Article{,
    author = {L[eslie] A. Aamport},
    title = {The Gnats and Gnus Document Preparation System},
@@ -2027,8 +2089,7 @@ example:
    month = jul,
    note = "This is a full ARTICLE entry",
 }
-\end{verbatim}%
-\endgroup
+\end{lstlisting}
     
 Even if \rsc{preserve.keys} is \verb|on|, \BibTool{} still changes all keys to
 lower case by default.  This can be suppressed by switching
@@ -2120,8 +2181,7 @@ instructions on the command line.
 The key style \rsc{short} can be formulated in terms of the format
 specification given in section \ref{sec:key.format} as follows:
 
-\begingroup\small
-\begin{verbatim}
+\begin{lstlisting}[language=BibTool]
 {
   { %-2n(author)
   # %-2n(editor)
@@ -2137,8 +2197,7 @@ specification given in section \ref{sec:key.format} as follows:
   }
 }
 # %s($default.key)
-\end{verbatim}
-\endgroup
+\end{lstlisting}
 
 The syntax and meaning of such format specifications is explained in section
 \ref{sec:key.format}.
@@ -2152,7 +2211,9 @@ generation. This works for a sufficiently current \BibTeX{} only.
 The aliases can be requested with the boolean resource \rsc{key.make.alias}.
 This can be set in a resource file file thie:
 
-\Rsc{key.make.alias}{on}
+\begin{Resources}
+  \rsc{key.make.alias} = on
+\end{Resources}
 
 The default is \texttt{off}. This means that no additional entries are
 created.
@@ -2269,7 +2330,9 @@ list:
     formats.
 
     \begin{Example}
-      \verb|author = {A. U. Thor and S. O. Meone and others}|\\
+      \begin{lstlisting}[language=BibTeX]
+  author = {A. U. Thor and S. O. Meone and others}
+      \end{lstlisting}\vspace{-2ex}
       With the above item we get the following results:
 
       \begin{tabular}{ll}
@@ -2294,7 +2357,9 @@ list:
     (See also section~\ref{sec:names})
 
     \begin{Example}
-      \verb|author = {A. U. Thor and S. O. Meone and others}|\\
+      \begin{lstlisting}[language=BibTeX]
+  author = {A. U. Thor and S. O. Meone and others}
+      \end{lstlisting}\vspace{-2ex}
       With the above item we get the following results:
 
       \begin{tabular}{ll}
@@ -2321,7 +2386,9 @@ list:
     (See also section~\ref{sec:names})
 
     \begin{Example}
-      \verb|author = {A. U. Thor and S. O. Meone and others}|\\
+      \begin{lstlisting}[language=BibTeX]
+  author = {A. U. Thor and S. O. Meone and others}
+      \end{lstlisting}\vspace{-2ex}
       With the above item we get the following results:
       
       \begin{tabular}{ll}
@@ -2361,7 +2428,9 @@ list:
     number is found then an appropriate number of \verb|0|s is used.
 
     \begin{Example}
-      \verb|pages = {89--123}|\\
+      \begin{lstlisting}[language=BibTeX]
+  pages = {89--123}
+      \end{lstlisting}\vspace{-2ex}
       With the above item we get the following results:
       
       \begin{tabular}{ll}
@@ -2382,7 +2451,9 @@ list:
     only the last few digits.
 
     \begin{Example}
-      \verb|pages = {89--123}|\\
+      \begin{lstlisting}[language=BibTeX]
+  pages = {89--123}
+      \end{lstlisting}\vspace{-2ex}
       With the above item we get the following results:
       
       \begin{tabular}{ll}
@@ -2404,7 +2475,9 @@ list:
     \textit{pre} defaults to a large number.
 
     \begin{Example}
-      \verb|author = {A. U. Thor and S. O. Meone and others}|\\
+      \begin{lstlisting}[language=BibTeX]
+  author = {A. U. Thor and S. O. Meone and others}
+      \end{lstlisting}\vspace{-2ex}
       With the above item we get the following results:
       
       \begin{tabular}{ll}
@@ -2428,7 +2501,9 @@ list:
     \textit{pre} defaults to 1 and \textit{post} defaults to 0.
 
     \begin{Example}
-      \verb|title = {The Whole Title}|\\
+      \begin{lstlisting}[language=BibTeX]
+  title = {The Whole Title}
+      \end{lstlisting}\vspace{-2ex}
       With the above item we get the following results:
       
       \begin{tabular}{ll}
@@ -2448,8 +2523,10 @@ list:
     \verb|=|, \verb|>|, \verb|*|, and \verb|/| are declared as additional word
     separators.
 
-    \Rsc{fmt.word.separator}{\tt "+-<=>*/"}
-    
+    \begin{Resources}
+      \rsc{fmt.word.separator} = {\tt "+-<=>*/"}
+    \end{Resources}
+
     Note that the effect of \rsc{fmt.word.separator} is accumulating more
     characters. It is not possible to define a character not to be a word
     separator once it has this property.\index{T@\%T|)}
@@ -2464,7 +2541,9 @@ list:
     \textit{pre} defaults to 1 and \textit{post} defaults to 0.
 
     \begin{Example}
-      \verb|title = {The Whole Title}|\\
+      \begin{lstlisting}[language=BibTeX]
+  title = {The Whole Title}
+      \end{lstlisting}\vspace{-2ex}
       With the above item we get the following results:
 
       \begin{tabular}{ll}
@@ -2481,7 +2560,9 @@ list:
     between words.
 
     \begin{Example}
-      \verb|title = {The Whole Title}|\\
+      \begin{lstlisting}[language=BibTeX]
+  title = {The Whole Title}
+      \end{lstlisting}\vspace{-2ex}
       With the above item we get the following results:
 
       \begin{tabular}{ll}
@@ -2498,7 +2579,9 @@ list:
     between words.
 
     \begin{Example}
-      \verb|title = {The Whole Title}|\\
+      \begin{lstlisting}[language=BibTeX]
+  title = {The Whole Title}
+      \end{lstlisting}\vspace{-2ex}
       With the above item we get the following results:
 
       \begin{tabular}{ll}
@@ -2535,7 +2618,9 @@ list:
     \textit{pre} and \textit{post} both defaults to 0.
 
     \begin{Example}
-      \verb|author = {A. U. Thor and S. O. Meone and others}|\\
+      \begin{lstlisting}[language=BibTeX]
+  author = {A. U. Thor and S. O. Meone and others}
+      \end{lstlisting}\vspace{-2ex}
       With the above item we get the following results:
 
       \begin{tabular}{ll}
@@ -2573,7 +2658,9 @@ list:
     \(a>h\).
 
     \begin{Example}
-      \verb|title = {The Whole Title}|\\
+      \begin{lstlisting}[language=BibTeX]
+  title = {The Whole Title}
+      \end{lstlisting}\vspace{-2ex}
       With the above item we get the following results:
 
       \begin{tabular}{ll}
@@ -2608,7 +2695,9 @@ list:
     \(l>a\) or \(a>h\).
 
     \begin{Example}
-      \verb|title = {The Whole Title}|\\
+      \begin{lstlisting}[language=BibTeX]
+  title = {The Whole Title}
+      \end{lstlisting}\vspace{-2ex}
       With the above item we get the following results:
 
       \begin{tabular}{ll}
@@ -2647,7 +2736,9 @@ list:
      \(a>h\).
 
      \begin{Example}
-       \verb|title = {The Whole Title}|\\
+      \begin{lstlisting}[language=BibTeX]
+  title = {The Whole Title}
+      \end{lstlisting}\vspace{-2ex}
        With the above item we get the following results:
 
        \begin{tabular}{ll}
@@ -2665,10 +2756,10 @@ list:
 If some words are enclosed in brace, they are considered as one composed word.
 For example, with the format \verb|%t(title)|\index{t@\%t}, and
 this field:
-\begin{itemize}
-\item [] {\verb|title = "{The Whole Title}"|}
-\end{itemize}
-We obtain \verb|The-Whole-Title|.
+\begin{lstlisting}[language=BibTeX]
+  title = "{The Whole Title}"
+\end{lstlisting}
+In this case we obtain \verb|The-Whole-Title|.
 
 The field specification \textit{(field)} selects the field of the entry to be
 formatted. As usual in \BibTeX{} the case of the letters is ignored. If the
@@ -2898,7 +2989,11 @@ installer has not modified it).
 The resource \rsc{ignored.word} can be used to put additional words onto the
 list of ignored words. For this purpose the new word is given as argument to
 the resource. Note that there should be no space between the braces and the
-word. For example: \RSc{ignored.word}{\(\{\)word\(\}\)}
+word. For example:
+
+\begin{Resources}
+  \rscBraces{ignored.word}{word}
+\end{Resources}
 
 To gain complete control over the list of ignored words you can completely
 overwrite the compiled in defaults. This can be accomplished by clearing the
@@ -2908,7 +3003,9 @@ resource \rsc{clear.ignored.words}. In principal this operation does not
 require any argument. Since this contradicts the syntactic restrictions for
 resources you have to give an empty argument to this resource:
 
-\RSc{clear.ignored.words}{\(\{\)\(\}\)}
+\begin{Resources}
+  \rscBraces{clear.ignored.words}{}
+\end{Resources}
 
 
 \subsection{Expanding \TeX/\LaTeX{} Macros}
@@ -2919,7 +3016,9 @@ defined. The resource \rsc{tex.define} can be used to define \LaTeX{} macros.
 The syntax is very close to \LaTeX. The simplest form is the following
 definition.
 
-\RSC{tex.define}{\textit{macro=replacement text}}
+\begin{Resources}
+  \rscBraces{tex.define}{\textit{macro=replacement text}}
+\end{Resources}
 
 This resource defines a simple macro which is replaced by the replacement
 text. This replacement text may in turn contain macros.
@@ -2928,7 +3027,9 @@ In addition to this simple macro also macros involving arguments can be
 defined. As in \LaTeX's \verb|\newcommand| the number of arguments is appended
 after the macro name.
 
-\RSC{tex.define}{\textit{macro}\texttt{[}\textit{arg}\texttt{]=}\textit{replacement text}}
+\begin{Resources}
+  \rscBraces{tex.define}{\textit{macro}\texttt{[}\textit{arg}\texttt{]=}\textit{replacement text}}
+\end{Resources}
 
 The number of arguments may not exceed 9. The actual parameters are addressed
 by writing \texttt{\#}\textit{n}, where \textit{n} is the number of the argument.
@@ -2947,7 +3048,9 @@ macros.
 For instance the following definition forces the expansion of the macro
 \verb|\TeX| to the string \verb|TeX|.
 
-\RSC{tex.define}{\BS TeX=TeX}
+\begin{Resources}
+  \rscBraces{tex.define}{\BS{}TeX=TeX}
+\end{Resources}
 
 Without this definition the title \verb|The \TeX{}book| would result in
 \verb|book|. With this definition the same title results in \verb|TeXbook|.
@@ -2957,13 +3060,17 @@ encoding). The following definition can be used to map this character into a
 pure ASCII string\footnote{To add an e is the German convention for umlaut
   characters.}
 
-\RSC{tex.define}{{\"u}=ue}
+\begin{Resources}
+  \rscBraces{tex.define}{{\"u}=ue}
+\end{Resources}
 
 With the following definition the \verb|\protect| macro and the corresponding 
 braces would be ignored when formatting field, otherwise the braces would 
 remain.
 
-\RSC{tex.define}{\BS protect[1]=\#1}
+\begin{Resources}
+  \rscBraces{tex.define}{\BS{}protect[1]=\#1}
+\end{Resources}
 
 Some useful definitions can be found in the libraries distributed with
 \BibTool{} (see also appendix \ref{chap:resource.files}). 
@@ -3017,7 +3124,9 @@ specifiers \BibTool{} issues a warning when they are modified.
 The resource \rsc{new.format.type} can be used to assign values to those name
 format specifiers:\index{f@\%f}\index{v@\%v}\index{l@\%l}
 
-\RSC{new.format.type}{17="\%f\%v\%l"}
+\begin{Resources}
+  \rscBraces{new.format.type}{17="\%f\%v\%l"}
+\end{Resources}
 
 This instruction sets the name format specifier number 17 to the given value.
 This value is a string of characters to be used directly. There is only one
@@ -3125,8 +3234,7 @@ inserted as key.
 
 To implement this scheme we write the following specification into a resource
 file:
-\begingroup\small
-\begin{verbatim}
+\begin{lstlisting}[language=BibTool]
 key.expand.macros = on
 key.base = upper
 key.number.separator = {}
@@ -3163,8 +3271,7 @@ key.format =
     %4d(year)
   # ???
 }
-\end{verbatim}%
-\endgroup
+\end{lstlisting}
   
 Since each part has been explained before we just need some overall remarks. I
 prefer to use the backtracking-based disjunctions instead of nested
@@ -3208,7 +3315,9 @@ not rewritten (see next section) even though rewrite rules are applicable.
 Two resources are provided to accomplish adding and deleting fields:
 \rsc{add.field} and \rsc{delete.field}
 
-\RSC{add.field}{\textit{field=value}}
+\begin{Resources}
+  \rscBraces{add.field}{\textit{field=value}}
+\end{Resources}
 
 This instruction replaces the contents of the field \textit{field} by
 \textit{value} in each entry. If this field does not exist already then it is
@@ -3222,24 +3331,32 @@ Suppose a time stamp is stored in the field \texttt{time}.  With these
 resources the update of a time-stamp can be achieved using the resource
 instructions
 
-\RSC{add.field}{time="June 13, 2000"}
+\begin{Resources}
+  \rscBraces{add.field}{time="June 13, 2000"}
+\end{Resources}
 
 If you want to update all time fields to contain the current date the
 following instruction can be used. It makes use of the pseudo fields (see
 page~\pageref{pseudo:key}).\index{s@\%s}
 
-\RSC{add.field}{time="\%s(\$mon) \%s(\$day), \%s(\$year)"}
+\begin{Resources}
+  \rscBraces{add.field}{time="\%s(\$mon) \%s(\$day), \%s(\$year)"}
+\end{Resources}
 
 If you want to strip the month to three leading letters and the year to two
 trailing digits this can be achieved with the following
 instruction:\index{s@\%s}\index{d@\%d}
 
-\RSC{add.field}{time="\%3s(\$mon) \%s(\$day), \%2d(\$year)"}
+\begin{Resources}
+  \rscBraces{add.field}{time="\%3s(\$mon) \%s(\$day), \%2d(\$year)"}
+\end{Resources}
 
 
 The following instruction deletes all fields named \textit{field}:
 
-\RSC{delete.field}{\textit{field}}
+\begin{Resources}
+  \rscBraces{delete.field}{\textit{field}}
+\end{Resources}
 
 
 %------------------------------------------------------------------------------
@@ -3252,15 +3369,17 @@ used for this purpose as we have already seen in section~\ref{sample.norm}.
 The resource \rsc{rewrite.rule} can be used to specify rewrite rules. The
 general form is as follows:
 
-\RSc{rewrite.rule}{\textit{\(\{\) field\(_1\) \(\ldots\) field\(_n\)
-    \# pattern \#
-    replacement\_text\(\}\)}} 
+\begin{Resources}
+  \rscBraces{rewrite.rule}{field\(_1\) \(\ldots\) field\(_n\) \# pattern \# replacement\_text} 
+\end{Resources}
 
 \emph{field\(_1\) \(\ldots\) field\(_n\)} is a list of field names. The
 rewrite rule is only applied to those fields which have one of those names. If
 no field name is given then the rewrite rule is applied to all fields.
 
-\RSc{rewrite.rule}{\(\{\) \textit{pattern \# replacement\_text}\(\}\)}
+\begin{Resources}
+  \rscBraces{rewrite.rule}{\textit{pattern \# replacement\_text}}
+\end{Resources}
 
 Next there is the separator '\#'. This separator is optional. It can also be
 the equality sign '='.
@@ -3289,12 +3408,16 @@ instruction \rsc{delete.field} is only an alias for a corresponding rewrite
 rule with an empty replacement text.  This behavior is illustrated in the
 following abstract examples:
 
-\RSc{rewrite.rule}{\(\{\)\textit{field \# pattern} \(\}\)}\\[-7ex]
-\RSc{rewrite.rule}{\(\{\)\textit{pattern}\(\}\)}
+\begin{Resources}
+  \rscBraces{rewrite.rule}{\textit{field \# pattern}}
+  \rscBraces{rewrite.rule}{\textit{pattern}}
+\end{Resources}
 
 More concrete, the rewrite rule
 
-\RSc{rewrite.rule}{\(\{\) time \# "\Hat\(\{\}\)\$" \(\}\)}
+\begin{Resources}
+  \rscBraces{rewrite.rule}{ time \# "\Hat\(\{\}\)\$" }
+\end{Resources}
 
 deletes the time field if the value of the field is empty and enclosed in
 curly braces. This is checked with the anchored regular expression
@@ -3307,12 +3430,16 @@ This can be generalized to the following rewrite rule which deletes all empty
 fields using the same mechanism and just omitting the specification of a field
 name:
 
-\RSc{rewrite.rule}{\(\{\) "\Hat\(\{\}\)\$" \(\}\)}
+\begin{Resources}
+  \rscBraces{rewrite.rule}{ "\Hat\(\{\}\)\$" }
+\end{Resources}
 
 Note that for a similar kind of rule for double quotes as field delimiters you
 need to quote these characters with backslashes:
 
-\RSc{rewrite.rule}{\(\{\) "\Hat\BS"\BS"\$" \(\}\)}
+\begin{Resources}
+  \rscBraces{rewrite.rule}{ "\Hat\BS"\BS"\$" }
+\end{Resources}
 
 
 The replacement text may contain field formatting instructions as described in
@@ -3321,7 +3448,9 @@ formatting instructions are replaced by their respective values. Thus we could
 exploit again the time stamp example from above. The following rewrite rule
 will update an existing time stamp without adding one if none is present:
 
-\RSc{rewrite.rule}{\(\{\) time ".*" = "\%3s(\$mon) \%s(\$day), \%2d(\$year)"\(\}\)}\index{s@\%s}\index{d@\%d}
+\begin{Resources}
+  \rscBraces{rewrite.rule}{ time ".*" = "\%3s(\$mon) \%s(\$day), \%2d(\$year)"	}\index{s@\%s}\index{d@\%d}
+\end{Resources}
 
 The pattern \verb|.*| matches any sequence of arbitrary characters. Thus the
 old contents of the field is a match. In this example the value is not reused
@@ -3334,7 +3463,9 @@ controlled by the Boolean resource \rsc{rewrite.case.sensitive} which is
 \rsc{on} by default. Changing this variable influences only rewrite rules
 specified later.
 
-\Rsc{rewrite.case.sensitive}{off}
+\begin{Resources}
+  \rsc{rewrite.case.sensitive} = off
+\end{Resources}
 
 A problem occurs e.g. when a string is replaced by a string containing the
 original one. To avoid infinite recursion in such cases the numeric resource
@@ -3355,11 +3486,11 @@ otherwise.
   curly braces which enclose an arbitrary number of spaces. If we want to
   delete empty entries we can use the following two rules.
 
-  \RSc{rewrite.rule}{%
-    \texttt{\symbol{"7B} "\symbol{"5E}\symbol{"5C}"\symbol{32}*\symbol{"5C}"\$" \symbol{"7D}}}\\[-9ex]
-  \RSc{rewrite.rule}{%
-    \texttt{\symbol{"7B} "\symbol{"5E}\symbol{"7B}\symbol{32}*\symbol{"7D}\$" \symbol{"7D}}}
-        
+  \begin{Resources}
+    \rscBraces{rewrite.rule}{\texttt{ "\symbol{"5E}\symbol{"5C}"\symbol{32}*\symbol{"5C}"\$" }}
+    \rscBraces{rewrite.rule}{\texttt{ "\symbol{"5E}\symbol{"7B}\symbol{32}*\symbol{"7D}\$" }}
+  \end{Resources}
+
   The caret '\texttt{\symbol{"5E}}' denotes the beginning of the whole string
   and the dollar is its end. The star is an operator which says that an
   arbitrary number of the preceding regular expression --- i.e.\ the space ---
@@ -3370,20 +3501,17 @@ otherwise.
   normalized. Spaces are deleted and a single minus sign is replaced by a
   double minus.
 
-  \RSc{rewrite.rule}{\texttt{\symbol{"7B} pages \#
-      "\symbol{"5C}(\symbol{"5B}0-9\symbol{"5D}+\symbol{"5C})\symbol{32}*-\symbol{32}*\symbol{"5C}(\symbol{"5B}0-9\symbol{"5D}+\symbol{"5C})" 
-      = "\symbol{"5C} 1--\symbol{"5C} 2" \symbol{"7D}}}
+  \begin{Resources}
+      \rscBraces{rewrite.rule}{\texttt{ pages \# "\symbol{"5C}(\symbol{"5B}0-9\symbol{"5D}+\symbol{"5C})\symbol{32}*-\symbol{32}*\symbol{"5C}(\symbol{"5B}0-9\symbol{"5D}+\symbol{"5C})" = "\symbol{"5C}1--\symbol{"5C}2" }}
+  \end{Resources}
 
 \item Field rewriting may be used to remove \LaTeX{} commands. This example
   shows how to remove from titles a {\tt\char"5C protect} macro together with
   the braces, in case the delimiter is a double quote.
 
-  \RSc{rewrite.rule}{\tt\char"7B title \#
-    "\char"5E\char"5C"\char32*\char"5C\char"5C
-    \char32*protect\char32*\char"7B
-    \char"5C(.*\char"5C)\char"7D\char"5C"\$"
-    = "\char"5C"\char"5C 1\char"5C"" \char"7D}
-  
+  \begin{Resources}
+      \rscBraces{rewrite.rule}{\tt title \# "\char"5E\char"5C"\char32*\char"5C\char"5C \char32*protect\char32*\char"7B \char"5C(.*\char"5C)\char"7D\char"5C"\$" = "\symbol{"5C}"\symbol{"5C}1\char"5C"" }
+  \end{Resources}
 \end{itemize}
 
 %------------------------------------------------------------------------------
@@ -3393,7 +3521,9 @@ Fields can be reordered within an entry. This feature is controlled by the
 presence of a specification for the order to use. The order is specified with
 the resource \rsc{sort.order}. The general form is as follows:
 
-\RSc{sort.order}{\(\{\) \textit{entry = field\(_1\) \# field\(_2\) \# ...} \(\}\)}
+\begin{Resources}
+  \rscBraces{sort.order}{ \textit{entry = field\(_1\) \# field\(_2\) \# ...} }
+\end{Resources}
 
 \emph{entry} is the name of an entry like \texttt{book}. The \emph{field}s are
 an arbitrary number of field names like \texttt{author}. This specification
@@ -3411,9 +3541,10 @@ overwritten.
 
 Consider the following part of a resource file:
 
-\RSC{sort.order}{* = author \# title}\\[-8ex]
-\RSC{sort.order}{misc = author \# title \# howpublished \# year \# month
-  \# note}
+\begin{Resources}
+  \rscBraces{sort.order}{* = author \# title}
+  \rscBraces{sort.order}{misc = author \# title \# howpublished \# year \# month \# note}
+\end{Resources}
 
 This means that the author field goes before the title field in any entry
 type. For the misc entries additional specifications are made.
@@ -3463,9 +3594,9 @@ by ``\#\#\#''. Thus all information is still present but inactive in the
 entries if \rsc{pass.comments} is \rsc{off}, which is the default.
 
 Sometimes it is not desirable to include deleted entries in the output -- not
-even as comments. Then the default behavior can be changed with the Boolean
-resource \rsc{print.deleted.entries}. If this resource is \rsc{off} then
-deleted entries are suppressed completely.
+even as comments. In this case the default behavior can be changed with the
+help of the Boolean resource \rsc{print.deleted.entries}. If this resource is
+\rsc{off} then deleted entries are suppressed completely.
 
 The prefix for deleted entries is stored in the resource
 \rsc{print.deleted.prefix} which defaults to ``\#\#\#''. Thus it can be
@@ -3475,12 +3606,16 @@ sign \texttt{@} since this would undo the effect of deleting an entry.
 The Boolean resource \rsc{check.double.delete} can be used to delete double
 entries completely. For this purpose it has to be turned off as in:
 
-\Rsc{check.double.delete}{ON}
+\begin{Resources}
+  \rsc{check.double.delete} = on
+\end{Resources}
 
 The resource \rsc{check.double} can be used to turn on the checking of
 doubles. This feature is turned off initially.
 
-\Rsc{check.double}{ON}
+\begin{Resources}
+  \rsc{check.double} = on
+\end{Resources}
 
 Checking of doubles can also be turned on with the command line option
 \opt{d}: 
@@ -3496,7 +3631,9 @@ perform semantic checks on fields. For this purpose the resource
 \rsc{check.rule} is provided. The syntax of \rsc{check.rule} is the same as
 for \rsc{rewrite.rule}.
 
-\RSc{check.rule}{ \(\{\) \textit{field \# pattern \# message}\(\}\)}
+\begin{Resources}
+  \rscBraces{check.rule}{ \textit{field \# pattern \# message} }
+\end{Resources}
 
 Again \emph{field} and \emph{message} is optional. The separator \# can also
 be written as equality sign (=) or omitted.
@@ -3517,16 +3654,19 @@ controlled by the Boolean resource \rsc{check.case.sensitive} which is ON by
 default. Changing this variable influences only rewrite rules as described in
 section~\ref{sec:field.rewriting}.
 
-\Rsc{check.case.sensitive}{off}
+\begin{Resources}
+  \rsc{check.case.sensitive} = off
+\end{Resources}
 
 Consider the following example. We want to check that the year field contains
 only years from 1800 to 1999. Additionally we want to allow two digit
 abbreviations.
 
-\RSc{check.rule}{\texttt{\symbol{"7B} year
- "\Hat[\BS"\symbol{"7B}]1[89][0-9][0-9][\BS"\symbol{"7D}]\$" \symbol{"7D}}}\\[-7ex]
-\RSc{check.rule}{\texttt{\symbol{"7B} year "\Hat[\BS"\symbol{"7B}][0-9][0-9][\BS"\symbol{"7D}]\$" \symbol{"7D}}}\\[-7ex] 
-\RSc{check.rule}{\texttt{\symbol{"7B} year "" "\BS@ \BS\$: Year has to be a suitable number"\symbol{"7D}}} 
+\begin{Resources}
+  \rscBraces{check.rule}{\texttt{ year "\Hat[\BS"\symbol{"7B}]1[89][0-9][0-9][\BS"\symbol{"7D}]\$" }}
+  \rscBraces{check.rule}{\texttt{ year "\Hat[\BS"\symbol{"7B}][0-9][0-9][\BS"\symbol{"7D}]\$" }}
+  \rscBraces{check.rule}{\texttt{ year "" "\BS@ \BS\$: Year has to be a suitable number" }}
+\end{Resources}
 
 The first rule matches any number starting with 1 followed by 8 or 9 and
 finally two digits. The whole number may be enclosed in double quotes or curly
@@ -3566,7 +3706,9 @@ bibliographic data bases. Thus the deserve special treatment. If the resource
 \rsc{macro.file} is defined then the macros are written to this file. The
 argument is a file name as in
 
-\RSC{macro.file}{\textit{macro/file/name}}
+\begin{Resources}
+  \rscBraces{macro.file}{\textit{macro/file/name}}
+\end{Resources}
 
 Note that the reverse operation to string export namely the import of strings
 does not deserve special treatment. You can simply give the macro file as one
@@ -3576,7 +3718,9 @@ the macros contained therein.
 The Boolean resource \rsc{print.all.strings} indicates if all macros defined
 in the \BibTeX{} file should be printed or only those macros actually used.
 
-\Rsc{print.all.strings}{ON}
+\begin{Resources}
+  \rsc{print.all.strings} = on
+\end{Resources}
 
 The appearance of string names is controlled by the resource \rsc{symbol.type}
 (see \pageref{symbol.type}).
@@ -3584,31 +3728,35 @@ The appearance of string names is controlled by the resource \rsc{symbol.type}
 Strings can be expanded when printing entries. This feature of \BibTool{} is
 controlled by the resource \rsc{expand.macros} as in
 
-\Rsc{expand.macros}{ON}
+\begin{Resources}
+  \rsc{expand.macros} = on
+\end{Resources}
 
 The effect is that all known strings in normal entries are replaced by their
 values. If the values are not defined at the time of expansion then the macro
 name remains untouched. As a side effect strings concatenations are
 simplified. Imagine the following \BibTeX{} file.
-\begin{verbatim}
+
+\begin{lstlisting}[language=BibTeX]
   @string{ WGA = " World Gnus Almanac" }
 
   @Book{ almanac-66,
           title =  1967 # WGA,
           month = "1~" # jan
   }
-\end{verbatim}
+\end{lstlisting}
+
 If \BibTool{} is applied with \rsc{expand.macros} turned on this results in
 the following output --- if the default settings are used for every other
 resource.
-\begin{verbatim}
+\begin{lstlisting}[language=BibTeX]
   @STRING{wga   = " World Gnus Almanac" }
 
   @Book{          almanac-66,
     title       = {1967 World Gnus Almanac},
     month       = {1~} # jan
   }
-\end{verbatim}
+\end{lstlisting}
 The macro \texttt{WGA} has been expanded and merged with \verb|1967|. Note
 that the string \verb|jan| has not been expanded since the value should be
 defined in a \BibTeX{} style file (\file{.bst}).
@@ -3619,7 +3767,9 @@ would be to use double quotes. This behavior is controlled by the resource
 \rsc{print.braces}. If this resource is on then braces are used otherwise
 double quotes are taken. It can be changed like in
 
-\Rsc{print.braces}{OFF}
+\begin{Resources}
+  \rsc{print.braces} = off
+\end{Resources}
 
 The delimiters of the whole entry are recommended to be braces. For
 compatibility with Scribe it is also allowed that parentheses are used for
@@ -3627,7 +3777,9 @@ those delimiters. This behavior can be achieved with the Boolean resource
 \rsc{print.parentheses}. Initially this resource is off. It can be set like in
 the following instruction:
 
-\Rsc{print.parentheses}{ON}
+\begin{Resources}
+  \rsc{print.parentheses} = on
+\end{Resources}
 
 
 \begin{Summary}
@@ -3650,13 +3802,19 @@ Some information can be obtained at the end of a \BibTool{} run. The number of
 \BibTeX{} items read and written is printed. To enable this feature the
 resources \rsc{count.all} and \rsc{count.used} are provided.
 
-\Rsc{count.all}{ON}
-
-\Rsc{count.used}{ON}
+\begin{Resources}
+  \rsc{count.all} = on
+\end{Resources}
 
 \rsc{count.all} indicates that all known types of \BibTeX{} items should be
-listed. \rsc{count.used} forces only those types of \BibTeX{} items to be
-listed which have been found in the input files.
+listed.
+
+\begin{Resources}
+  \rsc{count.used} = on
+\end{Resources}
+
+\rsc{count.used} forces only those types of \BibTeX{} items to be listed which
+have been found in the input files.
 
 
 \begin{Summary}
@@ -3676,9 +3834,9 @@ listed which have been found in the input files.
 
 The bibliography file may contain an instruction of the following form:
 
-\begin{verbatim}
-@include{abc.bib}
-\end{verbatim}
+\begin{lstlisting}[language=BibTeX]
+  @include{abc.bib}
+\end{lstlisting}
 
 Such an entry is stored in the database and printed when requested.
 Nevertheless the resource  \rsc{apply.include} can be used to control this
@@ -3689,9 +3847,9 @@ behavior.
 
 The bibliography file may contain an instruction of the following form:
 
-\begin{verbatim}
-@alias{abc=def}
-\end{verbatim}
+\begin{lstlisting}[language=BibTeX]
+  @alias{abc=def}
+\end{lstlisting}
 
 This means that the key \texttt{abc} is treated as an alias for the key
 \texttt{def}. Usually this alias is stored as alias in the database. For old
@@ -3704,11 +3862,11 @@ control this behavior.
 
 The bibliography file may contain an instruction of the following form:
 
-\begin{verbatim}
-@modify{key,
-  abc = {def}
-}
-\end{verbatim}
+\begin{lstlisting}[language=BibTeX]
+  @modify{key,
+    abc = {def}
+  }
+\end{lstlisting}
 
 This modification is stored in the database without being applied.
 Nevertheless the resource \rsc{apply.modify} can be used to control this
@@ -3773,7 +3931,9 @@ directory \file{Lib}. Only some of them are reproduced in this section.
 
 \section{The Default Settings}
 
-\begin{Resource}
+The following list shows the defaults for all resource instructions.
+
+\begin{lstlisting}[language=BibTool]
 apply.alias              = off
 apply.include            = off
 apply.modify             = off
@@ -3864,7 +4024,7 @@ sort.reverse             = off
 suppress.initial.newline = off
 symbol.type              = lower
 verbose                  = off
-\end{Resource}
+\end{lstlisting}
 
 \section{Useful Translations}
 
@@ -3876,26 +4036,23 @@ a \BibTeX{} file is translated to \verb|Ae|.\footnote{Note that the short
   \BibTeX{} nor by \BibTool. }
 
 Additionally some logos are defined.
-\medskip
-\begin{Resource}
-\def\{{\symbol{123}}%
-\def\}{\symbol{125}}%
-tex.define \{\bs"[1]=\#1e\}
-tex.define \{\bs ss=ss\}
-tex.define \{\bs AE=AE\}
-tex.define \{\bs OE=OE\}
-tex.define \{\bs aa=aa\}
-tex.define \{\bs AA=AA\}
-tex.define \{\bs o=o\}
-tex.define \{\bs O=O\}
-tex.define \{\bs l=l\}
-tex.define \{\bs L=L\}
-tex.define \{\bs TeX=TeX\}
-tex.define \{\bs LaTeX=LaTeX\}
-tex.define \{\bs LaTeXe=LaTeX2e\}
-tex.define \{\bs BibTeX=BibTeX\}
-tex.define \{\bs AMSTeX=AMSTeX\}
-\end{Resource}
+\begin{lstlisting}[language=BibTool]
+tex.define {\"[1]=#1e}
+tex.define {\ss=ss}
+tex.define {\AE=AE}
+tex.define {\OE=OE}
+tex.define {\aa=aa}
+tex.define {\AA=AA}
+tex.define {\o=o}
+tex.define {\O=O}
+tex.define {\l=l}
+tex.define {\L=L}
+tex.define {\TeX=TeX}
+tex.define {\LaTeX=LaTeX}
+tex.define {\LaTeXe=LaTeX2e}
+tex.define {\BibTeX=BibTeX}
+tex.define {\AMSTeX=AMSTeX}
+\end{lstlisting}
 
 \section{Other Resource Files}
 
@@ -3904,23 +4061,23 @@ here. Others may be contained in the distribution as well. Look in the
 appropriate directory.
 
 \begin{description}
-\item [\texttt{iso2tex}]\ \\
+\item [\file{iso2tex}]\ \\
   define rewrite rules to translate ISO 8859-1 characters into \BibTeX\ 
   compatible sequences.
-\item [\texttt{iso\_def}]\ \\
+\item [\file{iso\_def}]\ \\
   define macro equivalents for ISO 8859-1 characters into \TeX{} compatible
   sequences.
-\item [\texttt{sort\_fld}]\ \\
+\item [\file{sort\_fld}]\ \\
   defines a sort order for the common \BibTeX\ entry types.
-\item [\texttt{check\_y}]\ \\
+\item [\file{check\_y}]\ \\
   contains a sample for semantic checks. The year field is checked to be a
   suitable number.
-\item [\texttt{month}]\ \\
+\item [\file{month}]\ \\
   tries to introduce \BibTeX\ strings for month names.  Provisions are made to
   preserve other information contained in the month field.
-\item [\texttt{opt}]\ \\
+\item [\file{opt}]\ \\
   copes with \texttt{OPT} prefixes as introduced e.g. by bibtex-mode.
-\item [\texttt{braces}]\ \\
+\item [\file{braces}]\ \\
   tries to replace double quotes as field delimiters by braces.
 \end{description}
 
