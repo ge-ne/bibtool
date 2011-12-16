@@ -1,5 +1,5 @@
 %%*****************************************************************************
-%% $Id: ref_card.tex,v 1.14 2011-12-13 19:41:50 gene Exp $
+%% $Id: ref_card.tex,v 1.15 2011-12-16 11:35:53 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
@@ -14,17 +14,20 @@
 %% Usage:  latex ref_card
 %%*****************************************************************************
 
-\newif\ifAfour \Afourtrue
-
-\ifAfour
 \documentclass[a4paper]{article}
-\else
-\documentclass{article}
-\fi
+
 \usepackage{multicol}
 \usepackage[landscape]{geometry}
 
-\input config
+\usepackage[colorlinks=true,
+            linkcolor=blue,
+            citecolor=blue]{hyperref}
+
+\input{config.tex}
+
+\hypersetup{pdftitle={BibTool Quick Reference Card}}
+\hypersetup{pdfauthor={Gerd Neugebauer}}
+\hypersetup{pdfsubject={Version \Version}}
 
 %\ifAfour
 %\textwidth      = 170mm
