@@ -1,13 +1,13 @@
 /* include/bibtool/config.h.  Generated from config.h.in by configure.  */
 /******************************************************************************
-** $Id: config.h,v 1.8 2011-06-07 20:01:06 gene Exp $
+** $Id: config.h,v 1.9 2011-12-17 05:53:25 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2011 Gerd Neugebauer
+** (c) 1996-2010 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 

@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: bibtool.h,v 1.7 2011-06-07 20:01:06 gene Exp $
+** $Id: bibtool.h,v 1.8 2011-12-17 05:53:25 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -14,7 +14,7 @@
 ** Description:
 **	This header file contains includes for all other header files
 **	belonging to the \BibTool{} C library. It is here for the
-**	convenience of the C programmer who doen not have to include
+**	convenience of the C programmer who does not have to include
 **	two dozen header files but can use this single file. Thus any
 **	C program which utilizes the \BibTool{} C library can start as
 **	follows:
@@ -22,7 +22,7 @@
 **	\verb|#include <bibtool/bibtool.h>|
 **
 **      Note that this include file also contains includes to system
-**	specific header files.
+**	specific header files. They are determined during configuration.
 **
 ******************************************************************************/
 

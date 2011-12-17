@@ -1,5 +1,5 @@
 # *****************************************************************************
-#  $Id: makefile.ata,v 1.7 2011-06-25 08:21:34 gene Exp $
+#  $Id: makefile.ata,v 1.8 2011-12-17 05:53:25 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -354,7 +354,6 @@ DOCFILES      = Doc$(DIR_SEP)bibtool.1		\
 		Doc$(DIR_SEP)bibtool.ist	\
 		Doc$(DIR_SEP)config.tex		\
 		Doc$(DIR_SEP)version.tex	\
-		Doc$(DIR_SEP)dina4.sty		\
 		Doc$(DIR_SEP)ref_card.tex	\
 		Doc$(DIR_SEP)Makefile		\
 		Doc$(DIR_SEP)c_get.pl		\
