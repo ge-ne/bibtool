@@ -37,12 +37,12 @@ possibilities of BibTool include
 * Generation  of uniform reference keys  according to predefined rules
   or according to an own specification.
 
-* Selecting references  used in  one  publication which are found   by
+* Selecting references  used in  one  publication  which are found  by
   analyzing an .aux file.
 
 * Selecting references by a set of criteria (regular expressions).
 
-* Controlled rewriting    of fields utilizing  regular expressions  to
+* Controlled  rewriting  of  fields utilizing  regular expressions  to
   specify the rewriting rules.
 
 * Macro  (String)  expansion to  eliminate the  need  of  extra string
@@ -61,9 +61,9 @@ source code.   No compiled  versions  are  available from  the  author
 
 BibTool can be obtained from the CTAN archives:
 
+* mirror.ctan.org:/biblio/bibtex/utils/bibtool
 * ftp.dante.de:/tex-archive/biblio/bibtex/utils/bibtool
 * ftp.tex.ac.uk:/tex-archive/biblio/bibtex/utils/bibtool
-* ctan.tug.org:/tex-archive/biblio/bibtex/utils/bibtool
 
 Get  the  file BibTool-x.xx.tar.gz  where  x.xx is the version number.
 Unpack it with the command (on UN*X)

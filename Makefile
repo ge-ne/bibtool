@@ -1,5 +1,5 @@
 #******************************************************************************
-#* $Id: Makefile,v 1.5 2011-11-20 15:22:45 gene Exp $
+#* $Id: Makefile,v 1.6 2012-01-26 19:54:20 gene Exp $
 #******************************************************************************
 #* Author: Gerd Neugebauer
 #*=============================================================================
@@ -43,7 +43,11 @@ DISTFILES += 	AutoConf/config.h.in 	\
 		Test/*.t
 
 dist:
-	@( cd ..; rm -f $(DIR).tar.gz; tar -cvf - $(DISTFILES:%=$(DIR)/%) | gzip > $(DIR).tar.gz )
-	@( cd ..; rm -f $(DIR).zip; zip $(DIR).zip $(DISTFILES:%=$(DIR)/%) )
+	@( cd ..; rm -f $(DIR).tar.gz; \
+	   tar  -cvzf $(DIR).tar.gz $(DISTFILES:%=$(DIR)/%)	\
+		--exclude CVS --exclude config.status )
+	@( cd ..; rm -f $(DIR).zip; \
+	   zip  -r $(DIR).zip $(DISTFILES:%=$(DIR)/%)		\
+		-x \*/\*/CVS/\* \*/config.status )
 
 #

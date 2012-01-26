@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: key.c,v 1.12 2011-12-13 06:53:45 gene Exp $
+** $Id: key.c,v 1.13 2012-01-26 19:54:20 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2011 Gerd Neugebauer
+** (c) 1996-2012 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 

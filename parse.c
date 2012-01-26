@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: parse.c,v 1.10 2011-11-20 15:24:17 gene Exp $
+** $Id: parse.c,v 1.11 2012-01-26 19:54:21 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2011 Gerd Neugebauer
+** (c) 1996-2012 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 

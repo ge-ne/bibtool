@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: main.c,v 1.13 2011-11-13 13:51:49 gene Exp $
+** $Id: main.c,v 1.14 2012-01-26 19:54:20 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2011 Gerd Neugebauer
+** (c) 1996-2012 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -147,7 +147,7 @@ char * getenv(name)				   /*			     */
     "\t%cs\t\tSort.\n",
     "\t%cS\t\tSort reverse.\n",
     "\t%cv\t\tEnable verbose mode\n",
-    "\t%cV\t\tPrint version\n",
+    "\t%cV\t\tPrint version and exit\n",
     "\t%cx file\t\tExtract from aux file.\n",
     "\t%cX <regex>\tExtract regular expression.\n",
     "\t%c- <rsc>\tEvaluate one resource command <rsc>.\n",
@@ -157,7 +157,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2011-11-13 13:51:49 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2012-01-26 19:54:20 $",
     "gene@gerd-neugebauer.de"
   };
 
@@ -187,9 +187,10 @@ static void usage(fullp)			   /*			     */
 		 OptionLeadingCharacter,	   /*			     */
 		 OptionLeadingCharacter);	   /*			     */
     }						   /*                        */
+    ErrPrint("\n");	   			   /*                        */
   }						   /*                        */
 						   /*                        */
-  ErrPrintF("\nLibrary path: %s",		   /*                        */
+  ErrPrintF("Library path: %s",		   	   /*                        */
 	    (rsc_v_rsc==NULL		   	   /*                        */
 	     ? "none"				   /*                        */
 	     : rsc_v_rsc));	   	   	   /*                        */
@@ -481,7 +482,7 @@ int main(argc,argv)				   /*			     */
 	  Toggle(rsc_sort_reverse);		   /*			     */
 	  break;				   /* sort		     */
 	case 'v': Toggle(rsc_verbose);	    break; /* verbose		     */
-	case 'V': usage(FALSE);	            break; /* version		     */
+	case 'V': usage(FALSE);	         return 1; /* version		     */
 	case 'x':				   /* extract		     */
 	  rsc_all_macs = FALSE;			   /*                        */
 	  if ( ++i < argc )			   /*			     */

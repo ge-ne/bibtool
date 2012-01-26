@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: database.c,v 1.9 2011-12-13 06:52:06 gene Exp $
+** $Id: database.c,v 1.10 2012-01-26 19:54:20 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2011 Gerd Neugebauer
+** (c) 1996-2012 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -730,7 +730,7 @@ void delete_record(db,rec)			   /*                        */
 ** Function:	db_forall()
 ** Purpose:	Visit all normal records in the data base and apply the given
 **		function |fct| to each.
-**		if this function returns |TRUE| then no more records need to
+**		If this function returns |TRUE| then no more records need to
 **		be visited.
 **		No special order can be assumed in which the records are seen.
 ** Arguments:
@@ -749,14 +749,16 @@ void db_forall(db,fct)				   /*                        */
 	rec != RecordNULL;			   /*                        */
 	rec = next )			   	   /*                        */
   { next = NextRecord(rec);			   /*                        */
-    if ( (*fct)(db,rec) ) return;		   /*                        */
+    if ( !RecordIsDELETED(rec) && 		   /*                        */
+	 (*fct)(db,rec) ) return;		   /*                        */
   }		   				   /*                        */
  						   /*                        */
   for ( rec = PrevRecord(DBnormal(db));		   /*                        */
 	rec != RecordNULL;			   /*                        */
 	rec = next )			   	   /*                        */
   { next = PrevRecord(rec);			   /*                        */
-    if ( (*fct)(db,rec) ) return;		   /*                        */
+    if ( !RecordIsDELETED(rec) && 		   /*                        */
+	 (*fct)(db,rec) ) return;		   /*                        */
   }		   				   /*                        */
 }						   /*------------------------*/
 

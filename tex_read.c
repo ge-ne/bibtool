@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: tex_read.c,v 1.7 2011-09-25 13:42:49 gene Exp $
+** $Id: tex_read.c,v 1.8 2012-01-26 19:54:21 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2011 Gerd Neugebauer
+** (c) 1996-2012 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 **	    

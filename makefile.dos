@@ -1,5 +1,5 @@
 # *****************************************************************************
-#  $Id: makefile.dos,v 1.8 2011-12-17 05:53:25 gene Exp $
+#  $Id: makefile.dos,v 1.9 2012-01-26 19:54:21 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -404,7 +404,7 @@ PROGFILES     = Perl$(DIR_SEP)bibtool.pl	\
 ETCFILES      = README				\
 		INSTALL				\
 		COPYING				\
-		Changes.xml			\
+		Changes.tex			\
 		makefile.unx			\
 		makefile.dos			\
 		makefile.ata			\
