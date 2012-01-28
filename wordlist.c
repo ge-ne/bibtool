@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: wordlist.c,v 1.8 2012-01-26 19:54:21 gene Exp $
+** $Id: wordlist.c,v 1.9 2012-01-28 06:44:26 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -60,7 +60,8 @@ void add_word(s,wlp)				   /*			     */
   register int	    cmp = 1;			   /*			     */
 						   /*			     */
   while ( *wlp != WordNULL			   /*			     */
-	 && (cmp=strcmp(ThisWord(*wlp),s)) < 0 )   /*			     */
+	 && (cmp=strcmp((char*)ThisWord(*wlp),	   /*                        */
+			(char*)s)) < 0 )   	   /*			     */
   { wlp = & NextWord(*wlp); }			   /*			     */
 						   /*			     */
   if ( cmp == 0 ) return;			   /*			     */
@@ -96,7 +97,8 @@ int delete_word(s,wlp,fct)			   /*                        */
 { WordList wl;				   	   /*			     */
   int cmp = 1;					   /*                        */
   while ( *wlp != WordNULL			   /*			     */
-	 && (cmp=strcmp(ThisWord(*wlp),s)) < 0 )   /*			     */
+	  && (cmp=strcmp((char*)ThisWord(*wlp),    /*                        */
+			 (char*)s)) < 0 )	   /*		             */
   { wlp = & NextWord(*wlp); }			   /*			     */
   						   /*                        */
   if ( cmp == 0 ) return 0;			   /*			     */

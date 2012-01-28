@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: database.c,v 1.10 2012-01-26 19:54:20 gene Exp $
+** $Id: database.c,v 1.11 2012-01-28 06:44:26 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -136,8 +136,7 @@ int apply_modify(db,key,rec)	   		   /*                        */
   char * key;					   /*                        */
   Record rec;					   /*                        */
 { Uchar **hp = RecordHeap(rec);			   /*                        */
-  Uchar **ep;					   /*                        */
-  int i, j;					   /*                        */
+  int i;					   /*                        */
   Record r  = db_find(db,key);			   /*                        */
   if (r == RecordNULL)				   /*                        */
   { WARNING2("Entry to modify not found: ",key);   /*                        */
@@ -173,10 +172,7 @@ int apply_alias(db,key,rec,verbose)	   	   /*                        */
   Uchar * key;					   /*                        */
   Record rec;					   /*                        */
   int verbose;					   /*                        */
-{ Uchar **hp = RecordHeap(rec);			   /*                        */
-  Uchar **ep;					   /*                        */
-  int i, j;					   /*                        */
-  Record r  = db_find(db,key);			   /*                        */
+{ Record r  = db_find(db,key);			   /*                        */
   if (r == RecordNULL)				   /*                        */
   { WARNING2("Entry to alias not found: ",key);    /*                        */
     return 0;					   /*			     */
@@ -650,8 +646,7 @@ void print_db(file,db,spec)			   /*                        */
   FILE   *file;					   /*                        */
   DB     db;					   /*                        */
   char   *spec;					   /*                        */
-{ Record rec;					   /*                        */
- 						   /*                        */
+{						   /*                        */
   while ( *spec )				   /*                        */
   { switch ( *(spec++) )			   /*                        */
     { case 'p': case 'P':			   /*                        */

@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: names.c,v 1.13 2012-01-26 19:54:21 gene Exp $
+** $Id: names.c,v 1.14 2012-01-28 06:44:26 gene Exp $
 *******************************************************************************
 ** 
 ** This file is part of BibTool.
@@ -641,40 +641,40 @@ static int is_jr(s, eager)			   /*                        */
 	       case_cmp(s,"hD.")  );	   	   /*                        */
     case 'i':					   /*                        */
       s++;					   /*                        */
-      return ( (*s == '\0' && eager) ||		   /*                        */
-	       strcmp(s,"I")    == 0 ||	   	   /*                        */
-	       strcmp(s,"II")   == 0 ||	   	   /*                        */
-	       strcmp(s,"V")    == 0 ||	   	   /*                        */
-	       strcmp(s,"X")    == 0 );	   	   /*                        */
+      return ( (*s == '\0' && eager)      ||	   /*                        */
+	       strcmp((char*)s,"I")  == 0 ||	   /*                        */
+	       strcmp((char*)s,"II") == 0 ||	   /*                        */
+	       strcmp((char*)s,"V")  == 0 ||	   /*                        */
+	       strcmp((char*)s,"X")  == 0 );	   /*                        */
     case 'v':					   /*                        */
       s++;					   /*                        */
       return ( (*s == '\0' && eager) ||		   /*                        */
-	       strcmp(s,"I")    == 0 ||	   	   /*                        */
-	       strcmp(s,"II")   == 0 ||	   	   /*                        */
-	       strcmp(s,"III")  == 0 );	   	   /*                        */
+	       strcmp((char*)s,"I")    == 0 ||	   /*                        */
+	       strcmp((char*)s,"II")   == 0 ||	   /*                        */
+	       strcmp((char*)s,"III")  == 0 );	   /*                        */
     case 'x':					   /*                        */
       s++;					   /*                        */
       return ( (*s == '\0' && eager) ||		   /*                        */
-	       strcmp(s,"I")     == 0 ||	   /*                        */
-	       strcmp(s,"II")    == 0 ||	   /*                        */
-	       strcmp(s,"III") 	 == 0 ||	   /*                        */
-	       strcmp(s,"IV")    == 0 ||	   /*                        */
-	       strcmp(s,"V")     == 0 ||	   /*                        */
-	       strcmp(s,"VI")    == 0 ||	   /*                        */
-	       strcmp(s,"VII")   == 0 ||	   /*                        */
-	       strcmp(s,"VIII")  == 0 ||	   /*                        */
-	       strcmp(s,"IX")    == 0 ||	   /*                        */
-	       strcmp(s,"X")     == 0 ||	   /*                        */
-	       strcmp(s,"XI")    == 0 ||	   /*                        */
-	       strcmp(s,"XII")   == 0 ||	   /*                        */
-	       strcmp(s,"XIII")  == 0 ||	   /*                        */
-	       strcmp(s,"XIV")   == 0 ||	   /*                        */
-	       strcmp(s,"XV")    == 0 ||	   /*                        */
-	       strcmp(s,"XVI")   == 0 ||	   /*                        */
-	       strcmp(s,"XVII")  == 0 ||	   /*                        */
-	       strcmp(s,"XVIII") == 0 ||	   /*                        */
-	       strcmp(s,"XIX")   == 0 ||	   /*                        */
-	       strcmp(s,"XX")    == 0 );	   /*                        */
+	       strcmp((char*)s,"I")     == 0 ||	   /*                        */
+	       strcmp((char*)s,"II")    == 0 ||	   /*                        */
+	       strcmp((char*)s,"III")   == 0 ||	   /*                        */
+	       strcmp((char*)s,"IV")    == 0 ||	   /*                        */
+	       strcmp((char*)s,"V")     == 0 ||	   /*                        */
+	       strcmp((char*)s,"VI")    == 0 ||	   /*                        */
+	       strcmp((char*)s,"VII")   == 0 ||	   /*                        */
+	       strcmp((char*)s,"VIII")  == 0 ||	   /*                        */
+	       strcmp((char*)s,"IX")    == 0 ||	   /*                        */
+	       strcmp((char*)s,"X")     == 0 ||	   /*                        */
+	       strcmp((char*)s,"XI")    == 0 ||	   /*                        */
+	       strcmp((char*)s,"XII")   == 0 ||	   /*                        */
+	       strcmp((char*)s,"XIII")  == 0 ||	   /*                        */
+	       strcmp((char*)s,"XIV")   == 0 ||	   /*                        */
+	       strcmp((char*)s,"XV")    == 0 ||	   /*                        */
+	       strcmp((char*)s,"XVI")   == 0 ||	   /*                        */
+	       strcmp((char*)s,"XVII")  == 0 ||	   /*                        */
+	       strcmp((char*)s,"XVIII") == 0 ||	   /*                        */
+	       strcmp((char*)s,"XIX")   == 0 ||	   /*                        */
+	       strcmp((char*)s,"XX")    == 0 );	   /*                        */
     case 'e':					   /*                        */
       return ( case_cmp(++s,"sc") ||	   	   /*                        */
 	       case_cmp(s,"sc.")  );		   /*                        */

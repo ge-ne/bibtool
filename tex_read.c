@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: tex_read.c,v 1.8 2012-01-26 19:54:21 gene Exp $
+** $Id: tex_read.c,v 1.9 2012-01-28 06:44:26 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -77,7 +77,7 @@
 #define _ARG(A) ()
 #endif
  int TeX_read _ARG((Uchar * cp,Uchar **sp));	   /* tex_read.c             */
- static MacDef find_macro _ARG((char *name,MacDef md));/* tex_read.c         */
+ static MacDef find_macro _ARG((Uchar *name,MacDef md));/* tex_read.c        */
  static MacDef new_macdef _ARG((Uchar *name,int arity,Token tokens));/* tex_read.c*/
  static Token TeX_get_token _ARG((int (*get_fct)_ARG((void))));/* tex_read.c */
  static Token new_token _ARG((int type,Uchar *string));/* tex_read.c         */
@@ -227,10 +227,10 @@ static Token new_token(type,string)		   /*			     */
   return new;					   /*			     */
 }						   /*------------------------*/
 
-#define CopyToken(t) \
-  new_token(TokenChar(t),TokenSeq(t)?new_string(TokenSeq(t)):NULL)
+#define CopyToken(t) new_token(TokenChar(t),	\
+			       TokenSeq(t) ? (Uchar*)new_string((char*)TokenSeq(t)) : NULL)
 
-#define NewToken(C) new_token(C,(char*)0)
+#define NewToken(C) new_token(C, (Uchar*)0)
 
 /*-----------------------------------------------------------------------------
 ** Function:	token_list_copy()
@@ -250,7 +250,7 @@ static Token token_list_copy(t,nt,argp)		   /*			     */
 						   /*			     */
   if ( t == TokenNULL ) return TokenNULL;	   /*			     */
   if ( (i=TokenChar(t)) > 0xff )		   /*			     */
-  { a = p = token_list_copy(argp[i>>8],TokenNULL,argp);/*		    */
+  { a = p = token_list_copy(argp[i>>8],TokenNULL,argp);/*		     */
     while ( NextToken(p) != TokenNULL )		   /*			     */
     { p = NextToken(p); }			   /*			     */
   }						   /*			     */
@@ -259,7 +259,7 @@ static Token token_list_copy(t,nt,argp)		   /*			     */
   while ( (t=NextToken(t)) != TokenNULL )	   /*			     */
   {						   /*			     */
     if ( (i=TokenChar(t)) > 0xff )		   /*			     */
-    { NextToken(p) = token_list_copy(argp[i>>8],TokenNULL,argp);/*	    */
+    { NextToken(p) = token_list_copy(argp[i>>8],TokenNULL,argp);/*	     */
       while ( NextToken(p) != TokenNULL )	   /*			     */
       { p = NextToken(p); }			   /*			     */
     }						   /*			     */
@@ -526,7 +526,7 @@ static int do_get()				   /*			     */
 static Token tokenize(s,arity)			   /*			     */
   unsigned char	*s;				   /*			     */
   int		arity;				   /*			     */
-{ Token		t ,				   /*			     */
+{ Token		t = TokenNULL,			   /*			     */
 		t_ret = TokenNULL,		   /*			     */
 		nt, t0;				   /*			     */
   int		a;				   /*			     */
@@ -602,16 +602,17 @@ static void free_macdef(mac)			   /*                        */
 **		
 **
 ** Arguments:
-**	name
-**	md
+**	name	the name of the macro
+**	md	the macro to start searching at
 ** Returns:	
 **___________________________________________________			     */
 static MacDef find_macro(name,md)		   /*			     */
-  register char	  *name;			   /*			     */
+  register Uchar  *name;			   /*			     */
   register MacDef md;				   /*			     */
 {						   /*			     */
   for ( ; md != MacDefNULL; md=NextMacro(md) )	   /*			     */
-  { if ( strcmp(MacroName(md),name) == 0 )	   /*			     */
+  { if ( strcmp((char*)MacroName(md),		   /*                        */
+		(char*)name) == 0 )  		   /*			     */
       return md;				   /*			     */
   }						   /*			     */
   return MacDefNULL;				   /*			     */

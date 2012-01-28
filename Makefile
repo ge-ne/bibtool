@@ -1,5 +1,5 @@
 #******************************************************************************
-#* $Id: Makefile,v 1.6 2012-01-26 19:54:20 gene Exp $
+#* $Id: Makefile,v 1.7 2012-01-28 06:44:25 gene Exp $
 #******************************************************************************
 #* Author: Gerd Neugebauer
 #*=============================================================================
@@ -41,6 +41,9 @@ DISTFILES += 	AutoConf/config.h.in 	\
 		Test/makefile		\
 		Test/bib/*.bib		\
 		Test/*.t
+
+lint:
+	gcc  $(C_FLAGS) $(REGEX_DEF) $(DONT_LINK) -ansi -W -Wall -O2 ${CFILES}
 
 dist:
 	@( cd ..; rm -f $(DIR).tar.gz; \

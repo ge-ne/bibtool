@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: symbols.c,v 1.9 2012-01-26 19:54:21 gene Exp $
+** $Id: symbols.c,v 1.10 2012-01-28 06:44:26 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -325,7 +325,7 @@ Uchar * sym_add(s,count)			   /*			     */
   last_stp = *stp;				   /*			     */
   SymbolUsed(*stp)++;				   /*                        */
   if ( count < 0 )				   /*                        */
-  { SymbolFlags(*stp) != SYMBOL_STATIC;		   /*                        */
+  { SymbolFlags(*stp) ^= SYMBOL_STATIC;
   }	   					   /*			     */
   return SymbolName(*stp);			   /*			     */
 }						   /*------------------------*/

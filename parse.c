@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: parse.c,v 1.11 2012-01-26 19:54:21 gene Exp $
+** $Id: parse.c,v 1.12 2012-01-28 06:44:26 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -731,7 +731,7 @@ int parse_bib(rec)				   /*			     */
 	s = t = sbflush(comment_sb);		   /*                        */
 	while ( *s ) s++;			   /*                        */
 	while ( t <= --s  && is_space(*s) ) *s = '\0';/*                     */
-	if ( *t ) RecordComment(rec) = symbol(t);  /*                        */
+	if ( *t ) RecordComment(rec) = symbol((Uchar*)t);/*                  */
 	sbrewind(comment_sb);			   /*                        */
 	return(BIB_COMMENT);		   	   /*			     */
       }						   /*                        */
@@ -778,12 +778,12 @@ int parse_bib(rec)				   /*			     */
   { case BIB_COMMENT:				   /* This code is not used  */
       UnGetC; 					   /*  any more.             */
       (void)parse_rhs();			   /*                        */
-      push_to_record(rec,pop_string(),(char*)0);   /*			     */
+      push_to_record(rec,pop_string(),(Uchar*)0);  /*			     */
       return type;				   /*                        */
  						   /*                        */
     case BIB_PREAMBLE:				   /*			     */
       ExpectRhs(BIB_NOOP);			   /*			     */
-      push_to_record(rec,pop_string(),(char*)0);   /*			     */
+      push_to_record(rec,pop_string(),(Uchar*)0);  /*			     */
       break;					   /*			     */
 						   /*			     */
     case BIB_STRING:				   /*			     */
@@ -796,20 +796,20 @@ int parse_bib(rec)				   /*			     */
 						   /*			     */
     case BIB_INCLUDE:				   /*			     */
       ExpectRhs(BIB_NOOP);			   /*			     */
-      push_to_record(rec,pop_string(),(char*)0);   /*			     */
+      push_to_record(rec,pop_string(),(Uchar*)0);  /*			     */
       break;					   /*			     */
 						   /*			     */
     case BIB_MODIFY:				   /*			     */
     default:					   /*			     */
       if ( TestC == ',' )			   /*			     */
       { Warning("Missing reference key");	   /*			     */
-	push_to_record(rec,sym_empty,(char*)0);	   /*			     */
+	push_to_record(rec,sym_empty,(Uchar*)0);   /*			     */
 	(void)GetC;				   /*			     */
       }						   /*			     */
       else					   /*			     */
       { ExpectKey(FALSE,BIB_NOOP);		   /*			     */
 	Expect(',',BIB_NOOP);			   /*			     */
-	push_to_record(rec,pop_string(),(char*)0); /*			     */
+	push_to_record(rec,pop_string(),(Uchar*)0); /*			     */
       }						   /*			     */
 						   /*			     */
       do					   /*			     */
@@ -841,7 +841,8 @@ int parse_bib(rec)				   /*			     */
       break;					   /*			     */
     case EOF:					   /*                        */
       { char *s;				   /*                        */
-        if (c=='{') { s="'{'"; } else { s="'('"; } /*                        */
+        if (c == '{') { s = "'{'"; }		   /*                        */
+	else          { s = "'('"; } 		   /*                        */
 	error(ERR_ERROR|ERR_FILE,(Uchar*)s,	   /*                        */
 	      (Uchar*)" not closed at end of file.",/*                       */
 	      (Uchar*)0,(Uchar*)0,(Uchar*)0,	   /*			     */
@@ -850,7 +851,8 @@ int parse_bib(rec)				   /*			     */
       break;					   /*                        */
     default:					   /*			     */
       { Uchar *s;				   /*                        */
-        if (c=='{') { s="'{'"; } else { s="'('"; } /*                        */
+        if (c == '{') { s = (Uchar*)"'{'"; }	   /*                        */
+	else	      { s = (Uchar*)"'('"; }	   /*                        */
 	error(ERR_ERROR|ERR_FILE,		   /*                        */
 	      s,				   /*                        */
 	      (Uchar*)" not properly terminated.", /*                        */

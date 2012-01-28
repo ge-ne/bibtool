@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: main.c,v 1.14 2012-01-26 19:54:20 gene Exp $
+** $Id: main.c,v 1.15 2012-01-28 06:44:26 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -157,7 +157,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2012-01-26 19:54:20 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2012-01-28 06:44:26 $",
     "gene@gerd-neugebauer.de"
   };
 
@@ -827,17 +827,17 @@ static int dbl_check(db,rec)			   /*                        */
 {						   /*                        */
   if ( PrevRecord(rec) != RecordNULL		   /*                        */
        && equal_records(PrevRecord(rec),rec) )	   /*			     */
-  {
-    if ( !rsc_quiet )
-    { Uchar *k1 = *RecordHeap(rec);
-      Uchar *k2 = *RecordHeap(PrevRecord(rec));
+  {						   /*                        */
+    if ( !rsc_quiet )				   /*                        */
+    { Uchar *k1 = *RecordHeap(rec);		   /*                        */
+      Uchar *k2 = *RecordHeap(PrevRecord(rec));	   /*                        */
       ErrPrint("*** BibTool WARNING: Possible double entries discovered: \n***\t");
-      if ( k1 == NULL ) k1 = "";
-      if ( k2 == NULL ) k2 = "";
-      ErrPrint(k2);
-      ErrPrint(" =?= ");
-      ErrPrint(k1);
-      ErrPrint("\n***\t");
+      if ( k1 == NULL ) k1 = (Uchar*) "";	   /*                        */
+      if ( k2 == NULL ) k2 = (Uchar*) "";	   /*                        */
+      ErrPrint(k2);				   /*                        */
+      ErrPrint(" =?= ");			   /*                        */
+      ErrPrint(k1);				   /*                        */
+      ErrPrint("\n***\t");			   /*                        */
       ErrPrint(RecordSortkey(rec));		   /*			     */
       ErrPrint("\n");				   /*                        */
     }						   /*                        */

@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: type.c,v 1.8 2012-01-26 19:54:21 gene Exp $
+** $Id: type.c,v 1.9 2012-01-28 06:44:26 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -56,7 +56,7 @@
 void init_type()				   /*                        */
 { register int i;				   /*                        */
  						   /*                        */
-  for ( i=0; i<256; ++i )			   /*                        */
+  for ( i = 0; i < 256; ++i )			   /*                        */
   { trans_lower[i] = is_upper(i)?to_lower(i):i;	   /*                        */
     trans_upper[i] = is_lower(i)?to_upper(i):i;	   /*                        */
     trans_id[i] = i;				   /*                        */
@@ -95,19 +95,19 @@ void add_word_sep(s)				   /*                        */
 ** Returns:	|FALSE| iff the strings differ.
 **___________________________________________________			     */
 int case_cmp(s, t)				   /*                        */
-  register unsigned char * s;			   /*                        */
-  register unsigned char * t;			   /*                        */
+  register Uchar * s;			   	   /*                        */
+  register Uchar * t;			   	   /*                        */
 {						   /*                        */
 #ifdef DEBUG
-  assert(s!=NULL);
-  assert(t!=NULL);
+  assert(s!=NULL);				   /*                        */
+  assert(t!=NULL);				   /*                        */
 #endif
   while ( *s )					   /*                        */
   { if ( ToLower(*(s++)) != ToLower(*(t++)) )	   /*                        */
       return 0;				   	   /*                        */
   }						   /*                        */
 #ifdef DEBUG
-  assert(t!=NULL);
+  assert(t!=NULL);				   /*                        */
 #endif
   return (*t=='\0'?1:0);			   /*                        */
 }						   /*------------------------*/
@@ -119,9 +119,9 @@ int case_cmp(s, t)				   /*                        */
 **	s	string to convert
 ** Returns:	The converted string.
 **___________________________________________________			     */
-char * lower(s)			   		   /*                        */
+unsigned char * lower(s)			   /*                        */
   register unsigned char * s;			   /*                        */
 { unsigned char *t = s;				   /*                        */
   while ( *s ) { *s = ToLower(*s); ++s; }	   /*                        */
-  return t;					   /*                        */
+  return t;				   	   /*                        */
 }						   /*------------------------*/

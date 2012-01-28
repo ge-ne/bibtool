@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: tex_aux.c,v 1.9 2012-01-26 19:54:21 gene Exp $
+** $Id: tex_aux.c,v 1.10 2012-01-28 06:44:26 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -168,7 +168,7 @@ int read_aux(fname,fct,verbose)			   /*                        */
     sbclose(sb);                                   /*                        */
   }			   			   /*                        */
   if ( file == NULL )				   /*                        */
-  { ERROR3("aux file ",fname," not found.");
+  { ERROR3("aux file ",fname," not found.");	   /*                        */
     return TRUE;				   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -212,7 +212,7 @@ int read_aux(fname,fct,verbose)			   /*                        */
 	  if ( c == ',' || c == '}' )		   /*                        */
 	  { s = sbflush(aux_sb);		   /*                        */
 	    sbrewind(aux_sb);			   /*                        */
-	    (*fct)(symbol(s));		   	   /*                        */
+	    (*fct)((Uchar*)symbol(s));		   /*                        */
 	  }					   /*                        */
 	  else					   /*                        */
 	  { (void)sbputchar(c,aux_sb); }	   /*                        */
@@ -294,23 +294,22 @@ int apply_aux(db)				   /*                        */
 	 RecordIsXREF(rec)   &&		   	   /*                        */
 	 !RecordIsDELETED(rec)		   	   /*                        */
        )					   /*                        */
-    { Uchar  *key;				   /*                        */
+    { Uchar  *key = (Uchar*)"???";		   /*                        */
       int    count;				   /*                        */
       Record r = rec;				   /*                        */
  						   /*                        */
-      for ( count=rsc_xref_limit;		   /* Prevent infinite loop  */
-	    count >= 0	  &&	   	   	   /*                        */
-	      RecordIsXREF(r)   &&		   /*                        */
+      for ( count = rsc_xref_limit;		   /* Prevent infinite loop  */
+	    count >= 0	      &&		   /*                        */
+	      RecordIsXREF(r) &&		   /*                        */
 	      !RecordIsDELETED(r);		   /*                        */
 	    count-- )				   /*                        */
-      {					   	   /*                        */
-	if ( (key = get_field(db,r,sym_crossref)) == NULL )/*                */
+      {	key = get_field(db,r,sym_crossref);	   /*                        */
+	if ( key == NULL )			   /*                        */
 	{ count = -1; }			   	   /*                        */
 	else					   /*                        */
-	{					   /*                        */
-	  key = symbol(lower(expand_rhs(key,	   /*                        */
-					sym_empty, /*                        */
-					sym_empty, /*                        */
+	{ key = symbol(lower(expand_rhs(key,	   /*                        */
+					(char*)sym_empty,/*                  */
+					(char*)sym_empty,/*                  */
 					db)));     /*                        */
 	  if ( (r=db_find(db,key)) == RecordNULL ) /*                        */
 	  { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",key);/*      */

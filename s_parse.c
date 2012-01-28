@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: s_parse.c,v 1.8 2012-01-26 19:54:21 gene Exp $
+** $Id: s_parse.c,v 1.9 2012-01-28 06:44:26 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -129,7 +129,7 @@ Uchar * s_parse(type,sp,errp)			   /*                        */
   Uchar		 **sp;				   /*                        */
   int		 errp;				   /*                        */
 { register Uchar *s = *sp;			   /*                        */
-  char           c,				   /*                        */
+  Uchar          c,				   /*                        */
   		 *cp;				   /*                        */
   static char    *unexpected = "Unexpected ";	   /*                        */
   static char    *expected   = " expected.";	   /*                        */

@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: print.c,v 1.10 2012-01-26 19:54:21 gene Exp $
+** $Id: print.c,v 1.11 2012-01-28 06:44:26 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -42,9 +42,9 @@
  static int fput_char _ARG((int c));		   /* print.c                */
  static int sput_char _ARG((int c));		   /* print.c                */
  static void indent _ARG((int col,int (*fct)_ARG((int))));/* print.c         */
- static void line_breaking _ARG((char *t,int align,int (*fct)_ARG((int))));/* print.c*/
+ static void line_breaking _ARG((Uchar *t,int align,int (*fct)_ARG((int))));/* print.c*/
  static void print_equation _ARG((Uchar *pre,Uchar *s,Uchar *t,int align,int (*fct)_ARG((int))));/* print.c*/
- static void puts_in _ARG((char *s,int in,int (*fct)_ARG((int))));/* print.c */
+ static void puts_in _ARG((Uchar *s,int in,int (*fct)_ARG((int))));/* print.c */
  void fput_record _ARG((FILE *file,Record rec,DB db,Uchar *start));/* print.c*/
  void put_record _ARG((int (*fct)_ARG((int)),Record rec,DB db,Uchar *start));/* print.c*/
  void set_key_type _ARG((char * s));		   /* print.c                */
@@ -137,7 +137,7 @@ void set_key_type(s)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void puts_in(s,in,fct)			   /*			     */
-  register char *s;				   /*			     */
+  register Uchar *s;				   /*			     */
   register int  in;				   /*                        */
   int (*fct)_ARG((int));			   /*                        */
 {						   /*			     */
@@ -198,14 +198,14 @@ static void indent(col,fct)			   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void line_breaking(t,align,fct)		   /*			     */
-  register char *t;				   /* string to print.	     */
-  int		align;				   /* alignment column	     */
-  int (*fct)_ARG((int));			   /*                        */
-{ register unsigned char *s;			   /* intermediate pointer   */
-  char		end_c;				   /* temp. character.	     */
-  int		brace,				   /* brace counter	     */
-		len,				   /* length of rem. output  */
-		first = TRUE;			   /* indicator for #	     */
+  register Uchar *t;				   /* string to print.	     */
+  int		 align;				   /* alignment column	     */
+  int            (*fct)_ARG((int));		   /*                        */
+{ register Uchar *s;			   	   /* intermediate pointer   */
+  char		  end_c;			   /* temp. character.	     */
+  int		  brace,			   /* brace counter	     */
+		  len,				   /* length of rem. output  */
+		  first = TRUE;			   /* indicator for #	     */
 						   /*			     */
   while ( is_space(*t) ) ++t;			   /* skip leading spaces    */
 						   /*			     */
@@ -243,8 +243,8 @@ static void line_breaking(t,align,fct)		   /*			     */
       default:					   /* Now we should have a   */
 	while ( is_allowed(*t) ) ++t;		   /*	SYMBOL		     */
 	end_c = *t; *t = '\0';			   /*			     */
-	s = (char*)get_item(symbol(s),symbol_type);/*			     */
-	len = strlen(s);			   /*			     */
+	s = get_item(symbol(s),symbol_type);	   /*			     */
+	len = strlen((char*)s);			   /*			     */
     }						   /*			     */
 						   /* Now s is a single	     */
 						   /*  string to print.	     */
@@ -253,25 +253,25 @@ static void line_breaking(t,align,fct)		   /*			     */
 						   /* end_c is the old *t    */
     while ( *s )				   /*			     */
     { if ( len + (first?0:3) <= rsc_linelen - column)/* Is there enough space*/
-      { if ( !first ) PUTS(" # ");		   /* Maybe add separator    */
+      { if ( !first ) PUTS((Uchar*)" # ");	   /* Maybe add separator    */
 	puts_in(s,align,fct);			   /* write it out	     */
 	s = t;					   /* and we are done	     */
       }						   /*			     */
       else if ( !first )			   /* If sth has been before */
-      { puts_in("\n# ",align-2,fct);	   	   /*  start a new line	     */
+      { puts_in((Uchar*)"\n# ",align-2,fct);	   /*  start a new line	     */
 	first = TRUE;				   /*			     */
       }						   /* Now we have to break   */
       else					   /*  a single entry	     */
-      { unsigned char save_c,			   /*                        */
-	              *save_ptr,		   /*                        */
-	              *ptr;			   /*			     */
+      { Uchar save_c,			   	   /*                        */
+	      *save_ptr,		   	   /*                        */
+	      *ptr;			   	   /*			     */
 						   /*			     */
         if ( 0 <= rsc_linelen - column )	   /*                        */
 	  save_ptr = s + rsc_linelen - column;	   /* Potential end	     */
 	else					   /*                        */
 	  save_ptr = s;				   /*                        */
  						   /*                        */
-	for(ptr=s;				   /* Search next newline    */
+	for(ptr = s;				   /* Search next newline    */
 	    ptr <= save_ptr && *ptr != '\n';	   /*  or end of region      */
 	    ptr++) {}				   /*                        */
  						   /*                        */
