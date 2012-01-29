@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: main.c,v 1.17 2012-01-29 19:28:01 gene Exp $
+** $Id: main.c,v 1.18 2012-01-29 21:18:23 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -157,7 +157,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2012-01-29 19:28:01 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2012-01-29 21:18:23 $",
     "gene@gerd-neugebauer.de"
   };
 
@@ -446,7 +446,7 @@ int main(argc,argv)				   /*			     */
     }						   /*			     */
     else					   /*			     */
     { switch ( *++ap )				   /*			     */
-      { case 'A': set_base((ap+1));  break;	   /* disambiguation	     */
+      { case 'A': set_base((Uchar*)(ap+1));  break;/* disambiguation	     */
 	case 'c': Toggle(rsc_xref_select);   break;/* include crossreferences*/
 	case 'd': Toggle(rsc_double_check);  break;/* double entries	     */
 #ifdef HAVE_LIBKPATHSEA
@@ -470,7 +470,7 @@ int main(argc,argv)				   /*			     */
 	  break; 				   /*			     */
 	case 'q': Toggle(rsc_quiet);	    break; /* quiet		     */
 	case 'r':				   /* resource file	     */
-	  if ( ++i < argc && load_rsc(argv[i]) )   /*		             */
+	  if ( ++i < argc && load_rsc((Uchar*)(argv[i])) )/*		     */
 	  { need_rsc = FALSE; }		   	   /*			     */
 	  else					   /*                        */
 	  {  NoRscError(argv[i]); }		   /*                        */
@@ -486,7 +486,7 @@ int main(argc,argv)				   /*			     */
 	case 'x':				   /* extract		     */
 	  rsc_all_macs = FALSE;			   /*                        */
 	  if ( ++i < argc )			   /*			     */
-	  { read_aux(argv[i],			   /*                        */
+	  { read_aux((Uchar*)(argv[i]),		   /*                        */
 		     save_input_file,		   /*                        */
 		     *++ap=='v');  		   /*                        */
 	  }					   /*                        */
@@ -527,7 +527,7 @@ int main(argc,argv)				   /*			     */
   for ( i = 0; i < input_file_ptr; i++ )	   /* For all input files    */
   {						   /*			     */
     if ( read_db(the_db,			   /*                        */
-		 input_files[i],		   /*                        */
+		 (Uchar*)(input_files[i]),	   /*                        */
 		 rsc_verbose) )	   		   /*                        */
     { NoFileError(input_files[i]); }		   /*			     */
   }						   /*			     */

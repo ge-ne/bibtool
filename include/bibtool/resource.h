@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: resource.h,v 1.12 2012-01-29 20:53:12 gene Exp $
+** $Id: resource.h,v 1.13 2012-01-29 21:18:23 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -92,7 +92,7 @@ RscByFct(   "macro.file"	      , r_mf  ,save_macro_file((char*)val)  )
 RSC_NEXT('n')
   RscByFct(   "new.entry.type"	      , r_net ,def_entry_type(val)	    )
   RscByFct(   "new.field.type"	      , r_nft ,def_field_type(val)	    )
-RscByFct(   "new.format.type"	      , r_nfmt,def_format_type((char*)val)  )
+RscByFct(   "new.format.type"	      , r_nfmt,def_format_type(val)         )
 RSC_NEXT('o')
 RscByFct(   "output.file"	      , r_of  ,save_output_file((char*)val) )
 RSC_NEXT('p')

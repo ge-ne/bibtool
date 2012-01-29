@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: key.h,v 1.9 2012-01-29 17:04:08 gene Exp $
+** $Id: key.h,v 1.10 2012-01-29 21:18:23 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -40,7 +40,7 @@
  void add_ignored_word _ARG((Uchar *s));	   /* key.c                  */
  void add_sort_format _ARG((char *s));		   /* key.c                  */
  void clear_ignored_words _ARG((void));		   /* key.c                  */
- void def_format_type _ARG((char *s));		   /* key.c                  */
+ void def_format_type _ARG((Uchar *s));		   /* key.c                  */
  void end_key_gen _ARG((void));			   /* key.c                  */
  void free_key_node _ARG((KeyNode kn));		   /* key.c                  */
  void make_key _ARG((DB db,Record rec));	   /* key.c                  */

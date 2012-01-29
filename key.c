@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: key.c,v 1.16 2012-01-29 20:53:12 gene Exp $
+** $Id: key.c,v 1.17 2012-01-29 21:18:23 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -57,9 +57,9 @@
  static int fmt_parse _ARG((char **sp,KeyNode *knp));/* key.c                */
  static void Push_Word _ARG((char *s));		   /* key.c                  */
  static void eval__special _ARG((StringBuffer *sb,KeyNode kn,Record rec));/* key.c*/
- static void fmt_names _ARG((StringBuffer *sb,char *line,int maxname,int post,char *trans));/* key.c*/
+ static void fmt_names _ARG((StringBuffer *sb,Uchar *line,int maxname,int post,char *trans));/* key.c*/
  static void fmt_string _ARG((StringBuffer *sb,char * s,int n,char *trans,Uchar *sep));/* key.c*/
- static void fmt_title _ARG((StringBuffer *sb,char *line,int len,int in,char *trans,int ignore,Uchar *sep));/* key.c*/
+ static void fmt_title _ARG((StringBuffer *sb,Uchar *line,int len,int in,char *trans,int ignore,Uchar *sep));/* key.c*/
  static void init_key _ARG((int state));	   /* key.c                  */
  static void key_init _ARG((void));		   /* key.c                  */
  static void push_s _ARG((StringBuffer *sb,Uchar *s,int max,char *trans));/* key.c*/
@@ -68,7 +68,7 @@
  void add_ignored_word _ARG((Uchar *s));	   /* key.c                  */
  void add_sort_format _ARG((char *s));		   /* key.c                  */
  void clear_ignored_words _ARG((void));		   /* key.c                  */
- void def_format_type _ARG((char *s));		   /* key.c                  */
+ void def_format_type _ARG((Uchar *s));		   /* key.c                  */
  void end_key_gen _ARG((void));			   /* key.c                  */
  void free_key_node _ARG((KeyNode kn));		   /* key.c                  */
  void make_key _ARG((DB db,Record rec));	   /* key.c                  */
@@ -382,11 +382,11 @@ static char * itostr(i,digits)			   /*			     */
 static void init_key(state)			   /*                        */
   int  state;					   /*                        */
 { int  i;					   /*			     */
-  char *s;					   /*                        */
+  Uchar *s;					   /*                        */
   						   /*                        */
   if ( formatp )				   /*                        */
   {						   /*                        */
-    for (i=0;i<NUMBER_OF_FORMATS;i++)		   /*                        */
+    for (i = 0; i < NUMBER_OF_FORMATS; i++)	   /*                        */
     { format[i] = NameNULL; }			   /*                        */
     formatp = FALSE;				   /*                        */
   }						   /*                        */
@@ -394,7 +394,7 @@ static void init_key(state)			   /*                        */
   if ( state & 1 )				   /*                        */
   { 						   /*                        */
     if ( format[0] == NameNULL )		   /*                        */
-    { s = new_string("%*l");			   /*                        */
+    { s = (Uchar*)new_string("%*l");		   /*                        */
       format[0] = name_format(s);		   /*                        */
       free(s);				   	   /*                        */
     }						   /*                        */
@@ -404,7 +404,7 @@ static void init_key(state)			   /*                        */
   if ( state & 2 )				   /*                        */
   { 						   /*                        */
     if ( format[1] == NameNULL )		   /*                        */
-    { s = new_string("%*l%*1f");		   /*                        */
+    { s = (Uchar*)new_string("%*l%*1f");	   /*                        */
       format[1] = name_format(s);		   /*                        */
       free(s);				   	   /*                        */
     }						   /*                        */
@@ -560,8 +560,8 @@ static int deTeX(line,save_fct,flags)		   /*			     */
 /***		       Title Formatting Section				   ***/
 /*****************************************************************************/
 
-#define PushS(SB,S)	push_s(SB,S,0,(Uchar*)trans)
-#define PushStr(SB,S,M)	push_s(SB,S,M,(Uchar*)trans)
+#define PushS(SB,S)	push_s(SB,S,0,trans)
+#define PushStr(SB,S,M)	push_s(SB,S,M,trans)
 #define PushC(SB,C)	(void)sbputchar(trans[(unsigned int)(C)],SB);
 
 /*-----------------------------------------------------------------------------
@@ -673,7 +673,7 @@ int foreach_ignored_word(fct)			   /*                        */
 **___________________________________________________			     */
 static void fmt_title(sb,line,len,in,trans,ignore,sep)/*		     */
   StringBuffer  *sb;				   /*                        */
-  char	        *line;				   /*			     */
+  Uchar	        *line;				   /*			     */
   int	        len;				   /*			     */
   int	        in;				   /*			     */
   char	        *trans;				   /* Translation table	     */
@@ -690,12 +690,14 @@ static void fmt_title(sb,line,len,in,trans,ignore,sep)/*		     */
   { OUT_OF_MEMORY("fmt_title()"); } 		   /*			     */
 						   /*			     */
   ResetWords;					   /*                        */
-  nw = deTeX(*line=='{'?line+1:line,push_word,DETEX_FLAG_NONE);/*	     */
+  nw = deTeX(*line == '{' ? line + 1 : line,	   /*                        */
+	     push_word,				   /*                        */
+	     DETEX_FLAG_NONE);			   /*	                     */
  						   /*                        */
-  for ( i=0; i < nw; ++i )		   	   /*			     */
+  for ( i = 0; i < nw; ++i )		   	   /*			     */
   {						   /*			     */
     sbrewind(tmp_sb);				   /* Reset the string buffer*/
-    for ( s=words[i]; *s; ++s )		   	   /* Translate the current  */
+    for ( s = words[i]; *s; ++s )		   /* Translate the current  */
     { (void)sbputchar(trans[*s],tmp_sb); }	   /*  word into the sbuffer */
     s = sbflush(tmp_sb);			   /* Get the translated word*/
 						   /*			     */
@@ -704,10 +706,10 @@ static void fmt_title(sb,line,len,in,trans,ignore,sep)/*		     */
     { if ( first ) { first = FALSE; }		   /*			     */
       else { PushS(sb,sep); }		   	   /*			     */
       if ( in <= 0 )				   /*                        */
-      { PushS(sb,words[i]); }		   	   /* Push the current word  */
+      { PushS(sb, (char*)(words[i])); }		   /* Push the current word  */
       else					   /*                        */
       { for ( s=words[i], j=in; *s && j-->0; ++s ) /* Push the initial part  */
-	{ PushC(sb,*s); }			   /*  of the current word.  */
+	{ PushC(sb, *s); }			   /*  of the current word.  */
       }						   /*                        */
       if ( len == 1 ) return;	   		   /*                        */
       if ( len > 0  ) len--;			   /*                        */
@@ -769,7 +771,7 @@ static int fmt_c_words(line,min,max,not,ignore)	   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void def_format_type(s)				   /*                        */
-  char *s;					   /*                        */
+  Uchar *s;					   /*                        */
 { int  n;					   /*                        */
   char *cp;					   /*                        */
   char c;					   /*                        */
@@ -813,7 +815,7 @@ void def_format_type(s)				   /*                        */
 **___________________________________________________			     */
 static void fmt_names(sb,line,maxname,post,trans)  /*		             */
   StringBuffer *sb;				   /*                        */
-  char	      *line;				   /* Name list string	     */
+  Uchar	      *line;				   /* Name list string	     */
   int	      maxname;				   /* number of names b4 etal*/
   int         post;				   /* number of relevant char*/
   char	      *trans;				   /* Translation table	     */
@@ -837,7 +839,9 @@ static void fmt_names(sb,line,maxname,post,trans)  /*		             */
   }						   /*                        */
  						   /*                        */
   ResetWords;					   /*                        */
-  wp = deTeX(*line=='{'?line+1:line,push_word,DETEX_FLAG_COMMA);/*	     */
+  wp = deTeX(*line == '{' ? line + 1 : line,	   /*                        */
+	     push_word,				   /*                        */
+	     DETEX_FLAG_COMMA);			   /*	                     */
   words[wp] = NULL;				   /*                        */
  						   /*                        */
   for (i = 0; i < wp; i++)			   /*			     */
@@ -1132,7 +1136,7 @@ void make_key(db,rec)				   /*			     */
     sbrewind(key_sb);				   /*                        */
     for ( i=0; i < nw; ++i )		   	   /*			     */
     { if ( strcmp(words[i],"\\") )		   /*                        */
-        PushS(key_sb,words[i]);			   /*			     */
+        PushS(key_sb,(char*)(words[i]));	   /*			     */
     }						   /*                        */
     free(buffer);				   /*                        */
   }						   /*                        */
