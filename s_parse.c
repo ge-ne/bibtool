@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: s_parse.c,v 1.9 2012-01-28 06:44:26 gene Exp $
+** $Id: s_parse.c,v 1.10 2012-01-29 15:50:05 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -129,8 +129,8 @@ Uchar * s_parse(type,sp,errp)			   /*                        */
   Uchar		 **sp;				   /*                        */
   int		 errp;				   /*                        */
 { register Uchar *s = *sp;			   /*                        */
-  Uchar          c,				   /*                        */
-  		 *cp;				   /*                        */
+  Uchar          c;				   /*                        */
+  char		 *cp;				   /*                        */
   static char    *unexpected = "Unexpected ";	   /*                        */
   static char    *expected   = " expected.";	   /*                        */
  						   /*                        */
@@ -262,15 +262,15 @@ Uchar * s_parse(type,sp,errp)			   /*                        */
  						   /*                        */
   c   = *s;					   /*                        */
   *s  = '\0';					   /*                        */
-  cp  = new_string(*sp);			   /*                        */
+  cp  = new_string((char*)*sp);			   /*                        */
   *s  = c;					   /*                        */
   if (   type == StringParseUnquotedString	   /*                        */
       || type == StringParseUnquotedBraces ) s++;  /*                        */
   *sp = s;					   /*                        */
  if (   type == StringParseSymbol )		   /*                        */
-  { (void)lower(cp); }			   	   /*                        */
+ { (void)lower((Uchar*)cp); }			   /*                        */
  						   /*                        */
-  { Uchar *sym = symbol(cp);			   /*                        */
+ { Uchar *sym = symbol((Uchar*)cp);		   /*                        */
     free(cp);					   /*                        */
     return sym;					   /*                        */
   }						   /*                        */
