@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: tex_aux.h,v 1.7 2011-06-07 20:01:06 gene Exp $
+** $Id: tex_aux.h,v 1.8 2012-01-29 15:40:13 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -21,6 +21,6 @@
 #endif
  int apply_aux _ARG((DB db));			   /* tex_aux.c              */
  int foreach_aux _ARG((int (fct)_ARG((Uchar*))));  /* tex_aux.c              */
- int aux_used _ARG((char *s));	   		   /* tex_aux.c              */
+ int aux_used _ARG((Uchar *s));	   		   /* tex_aux.c              */
  int read_aux _ARG((char *fname,void (*fct)(char*),int verbose));/* tex_aux.c*/
  void clear_aux _ARG((void));			   /* tex_aux.c              */

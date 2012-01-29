@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: tex_aux.c,v 1.10 2012-01-28 06:44:26 gene Exp $
+** $Id: tex_aux.c,v 1.11 2012-01-29 15:40:13 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -33,7 +33,7 @@
 #else
 #define _ARG(A) ()
 #endif
- static void save_ref _ARG((char *s));
+ static void save_ref _ARG((Uchar *s));
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -98,7 +98,7 @@ int foreach_aux(fct)				   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void save_ref(s)				   /*                        */
-  register char *s;				   /*                        */
+  register Uchar *s;				   /*                        */
 { 						   /*                        */
   if ( cite_star ) return;			   /*                        */
  						   /*                        */
@@ -117,7 +117,7 @@ static void save_ref(s)				   /*                        */
 ** Returns:	
 **___________________________________________________			     */
 int aux_used(s)				   	   /*                        */
-  char * s;					   /*                        */
+  Uchar * s;					   /*                        */
 {						   /*                        */
   return (  cite_star				   /*                        */
 	 || find_word(s,cite[*s&31])  );	   /*                        */
@@ -197,7 +197,7 @@ int read_aux(fname,fct,verbose)			   /*                        */
 	    case '}':		   	   	   /*                        */
 	      s = sbflush(aux_sb);		   /*                        */
 	      sbrewind(aux_sb);			   /*                        */
-	      save_ref(s);	   		   /*                        */
+	      save_ref((Uchar*)s);		   /*                        */
 	      break;				   /*                        */
 	    default:				   /*                        */
 	      (void)sbputchar(ToLower(c&0xff),aux_sb);/*                     */
@@ -212,7 +212,7 @@ int read_aux(fname,fct,verbose)			   /*                        */
 	  if ( c == ',' || c == '}' )		   /*                        */
 	  { s = sbflush(aux_sb);		   /*                        */
 	    sbrewind(aux_sb);			   /*                        */
-	    (*fct)((Uchar*)symbol(s));		   /*                        */
+	    (*fct)((char*)symbol((Uchar*)s));	   /*                        */
 	  }					   /*                        */
 	  else					   /*                        */
 	  { (void)sbputchar(c,aux_sb); }	   /*                        */
