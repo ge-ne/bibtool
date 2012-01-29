@@ -1,13 +1,13 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: verbose.t,v 1.1 2011-11-20 15:22:45 gene Exp $
+# $Id: verbose.t,v 1.2 2012-01-29 19:28:02 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2011 Gerd Neugebauer
+#  (c) 2011-2012 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -44,7 +44,8 @@ use BUnit;
 my @library_path;
 my $fs;
 
-{ local $_  = BUnit::get_library_path();
+{ local $_ = BUnit::get_library_path();
+  $_ 	   = '.' if $_ eq 'none';
   if (m/;/) { @library_path = split /;/;
   } else {    @library_path = split /:/;
   }

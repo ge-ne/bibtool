@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: main.c,v 1.16 2012-01-29 17:04:07 gene Exp $
+** $Id: main.c,v 1.17 2012-01-29 19:28:01 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -146,8 +146,8 @@ char * getenv(name)				   /*			     */
     "\t%cR\t\tLoad default resource file here.\n",
     "\t%cs\t\tSort.\n",
     "\t%cS\t\tSort reverse.\n",
-    "\t%cv\t\tEnable verbose mode\n",
-    "\t%cV\t\tPrint version and exit\n",
+    "\t%cv\t\tEnable verbose mode.\n",
+    "\t%cV\t\tPrint version and exit.\n",
     "\t%cx file\t\tExtract from aux file.\n",
     "\t%cX <regex>\tExtract regular expression.\n",
     "\t%c- <rsc>\tEvaluate one resource command <rsc>.\n",
@@ -157,7 +157,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2012-01-29 17:04:07 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2012-01-29 19:28:01 $",
     "gene@gerd-neugebauer.de"
   };
 

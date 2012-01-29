@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: print.c,v 1.11 2012-01-28 06:44:26 gene Exp $
+** $Id: print.c,v 1.12 2012-01-29 19:28:01 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -38,7 +38,7 @@
 #else
 #define _ARG(A) ()
 #endif
- char * sput_record _ARG((Record rec,DB db,Uchar *start));/* print.c          */
+ char * sput_record _ARG((Record rec,DB db,Uchar *start));/* print.c         */
  static int fput_char _ARG((int c));		   /* print.c                */
  static int sput_char _ARG((int c));		   /* print.c                */
  static void indent _ARG((int col,int (*fct)_ARG((int))));/* print.c         */
@@ -47,8 +47,8 @@
  static void puts_in _ARG((Uchar *s,int in,int (*fct)_ARG((int))));/* print.c */
  void fput_record _ARG((FILE *file,Record rec,DB db,Uchar *start));/* print.c*/
  void put_record _ARG((int (*fct)_ARG((int)),Record rec,DB db,Uchar *start));/* print.c*/
- void set_key_type _ARG((char * s));		   /* print.c                */
- void set_symbol_type _ARG((char * s));		   /* print.c                */
+ void set_key_type _ARG((Uchar * s));		   /* print.c                */
+ void set_symbol_type _ARG((Uchar * s));	   /* print.c                */
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -58,11 +58,11 @@
 
 #define TAB_WIDTH 8
 
- static int symbol_type = SYMBOL_TYPE_LOWER;
+ static int symbol_type = SYMBOL_TYPE_LOWER;	   /*                        */
 
- static char * s_upper = "upper";
- static char * s_lower = "lower";
- static char * s_cased = "cased";
+ static Uchar * s_upper = (Uchar*)"upper";	   /*                        */
+ static Uchar * s_lower = (Uchar*)"lower";	   /*                        */
+ static Uchar * s_cased = (Uchar*)"cased";	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	set_symbol_type()
@@ -81,21 +81,20 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 void set_symbol_type(s)				   /*			     */
-  register char * s;				   /*			     */
-{ if ( case_cmp(s,s_upper) )			   /*			     */
+  register Uchar * s;				   /*			     */
+{ if ( case_cmp(s, s_upper) )			   /*			     */
   { symbol_type = SYMBOL_TYPE_UPPER; }		   /*			     */
-  else if ( case_cmp(s,s_cased) )		   /*			     */
+  else if ( case_cmp(s, s_cased) )		   /*			     */
   { symbol_type = SYMBOL_TYPE_CASED; }		   /*			     */
-  else if ( case_cmp(s,s_lower) )		   /*			     */
+  else if ( case_cmp(s, s_lower) )		   /*			     */
   { symbol_type = SYMBOL_TYPE_LOWER; }		   /*			     */
   else						   /*			     */
   { Err("Unknown symbol type ignored.\n"); }	   /*			     */
 }						   /*------------------------*/
 
-
 #ifdef MAYBE_IN_THE_NEXT_RELEASE
 
- static int key_type = SYMBOL_TYPE_LOWER;
+ static int key_type = SYMBOL_TYPE_LOWER;	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function*:	set_key_type()
@@ -106,7 +105,7 @@ void set_symbol_type(s)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void set_key_type(s)				   /*			     */
-  register char * s;				   /*			     */
+  register Uchar * s;				   /*			     */
 { if ( case_cmp(s,s_upper) )			   /*			     */
   { key_type = SYMBOL_TYPE_UPPER; }		   /*			     */
   else if ( case_cmp(s,s_cased) )		   /*			     */
@@ -125,7 +124,7 @@ void set_key_type(s)				   /*			     */
 
 #define NL	(void)(*fct)('\n'),column=0
 #define PUTC(C) (void)((*fct)(C),++column)
-#define PUTS(S) puts_in(S,0,fct)
+#define PUTS(S) puts_in((Uchar*)S,0,fct)
 
 /*-----------------------------------------------------------------------------
 ** Function:	puts_in()
@@ -253,12 +252,12 @@ static void line_breaking(t,align,fct)		   /*			     */
 						   /* end_c is the old *t    */
     while ( *s )				   /*			     */
     { if ( len + (first?0:3) <= rsc_linelen - column)/* Is there enough space*/
-      { if ( !first ) PUTS((Uchar*)" # ");	   /* Maybe add separator    */
-	puts_in(s,align,fct);			   /* write it out	     */
+      { if ( !first ) PUTS(" # ");	   	   /* Maybe add separator    */
+	puts_in(s, align, fct);			   /* write it out	     */
 	s = t;					   /* and we are done	     */
       }						   /*			     */
       else if ( !first )			   /* If sth has been before */
-      { puts_in((Uchar*)"\n# ",align-2,fct);	   /*  start a new line	     */
+      { puts_in((Uchar*)"\n# ", align-2, fct);	   /*  start a new line	     */
 	first = TRUE;				   /*			     */
       }						   /* Now we have to break   */
       else					   /*  a single entry	     */
@@ -278,7 +277,7 @@ static void line_breaking(t,align,fct)		   /*			     */
 	if ( *ptr == '\n' )			   /*                        */
 	{ save_ptr = ptr;			   /*                        */
 	  *save_ptr = '\0';	   		   /* Save and mark end.     */
-	  puts_in(s,align,fct);			   /*                        */
+	  puts_in(s, align, fct);		   /*                        */
 	  NL;					   /*                        */
 	  indent(align,fct);	   		   /*			     */
 	  *save_ptr = '\n';			   /* Restore end	     */
@@ -296,7 +295,7 @@ static void line_breaking(t,align,fct)		   /*			     */
 	  }					   /*                        */
 	  len += s - save_ptr;			   /* Update the length	     */
 	  save_c = *save_ptr; *save_ptr = '\0';	   /* Save and mark end.     */
-	  puts_in(s,align,fct);			   /*                        */
+	  puts_in(s, align, fct);		   /*                        */
 	  NL;					   /*                        */
 	  indent(align,fct);	   		   /*			     */
 	  *save_ptr = save_c;			   /* Restore end	     */
@@ -573,7 +572,7 @@ void put_record(fct,rec,db,start)		   /*                        */
 	  comma2 = sym_empty;			   /*                        */
 	}					   /*                        */
  						   /*                        */
-        for ( i=RecordFree(rec); i>0; i-=2 )	   /*			     */
+        for ( i = RecordFree(rec); i > 0; i -= 2 ) /*			     */
 	{		   			   /* No deleted or          */
 	  if ( *hp && is_allowed(**hp) )	   /*   private entry        */
 	  { 					   /*                        */
@@ -584,8 +583,8 @@ void put_record(fct,rec,db,start)		   /*                        */
 			     *hp,		   /*                        */
 			     (rsc_expand_macros	   /*                        */
 			      ? expand_rhs(*(hp+1),/*                        */
-					   (rsc_braces?"{":"\""),/*          */
-					   (rsc_braces?"}":"\""),/*          */
+					   (Uchar*)(rsc_braces?"{":"\""),/*  */
+					   (Uchar*)(rsc_braces?"}":"\""),/*  */
 					   db)	   /*                        */
 			      : *(hp+1) ),	   /*                        */
 			     rsc_col,		   /*                        */

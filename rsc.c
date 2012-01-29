@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: rsc.c,v 1.10 2012-01-29 17:04:08 gene Exp $
+** $Id: rsc.c,v 1.11 2012-01-29 19:28:02 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -49,7 +49,7 @@
 #else
 #define _ARG(A) ()
 #endif
- int load_rsc _ARG((char *name));		   /*                        */
+ int load_rsc _ARG((Uchar *name));		   /*                        */
  int resource _ARG((Uchar *name));		   /*                        */
  int search_rsc _ARG((void));			   /*                        */
  int set_rsc _ARG((Uchar *name,Uchar *val));	   /*                        */
@@ -134,24 +134,26 @@ static void init_rsc()				   /*			     */
 ** Returns:	|TRUE| iff the resource loading succeeds somewhere.
 **___________________________________________________			     */
 int search_rsc()				   /*			     */
-{ static char	*def = DefaultResourceFile;	   /*			     */
+{ static Uchar	*def = (Uchar*)DefaultResourceFile;/*			     */
   register char *ap;				   /*			     */
   register char *fn;				   /*			     */
   int		l;				   /*			     */
 						   /*			     */
 #ifdef RSC_ENV_VAR
   if ( (ap=getenv(RSC_ENV_VAR)) != NULL		   /* Try to get the name    */
-      && load_rsc(ap) ) return TRUE;		   /*  from the environment. */
+       && load_rsc((Uchar*)ap) ) return TRUE;	   /*  from the environment. */
 #endif
 						   /*			     */
 #ifdef HOME_ENV_VAR
   if ( (ap=getenv(HOME_ENV_VAR)) != NULL )	   /* Try to get the resource*/
-  { l = strlen(ap)+strlen(DIR_SEP)+strlen(def)+1;  /*  file from the home    */
+  { l = strlen(ap) +				   /*                        */
+        strlen(DIR_SEP) +			   /*                        */
+        strlen((char*)def) + 1;			   /*  file from the home    */
     if ( (fn=malloc(l)) != NULL )		   /*  directory	     */
-    { (void)strcpy(fn,ap);			   /*			     */
-      (void)strcat(fn,DIR_SEP);			   /*			     */
-      (void)strcat(fn,def);			   /*			     */
-      l = load_rsc(fn);				   /*			     */
+    { (void)strcpy(fn, ap);			   /*			     */
+      (void)strcat(fn, DIR_SEP);		   /*			     */
+      (void)strcat(fn, (char*)def);		   /*			     */
+      l = load_rsc((Uchar*)fn);			   /*			     */
       free(fn);					   /*			     */
       if ( l ) return TRUE;			   /*			     */
     }						   /*			     */
@@ -173,7 +175,7 @@ int search_rsc()				   /*			     */
 ** Returns:	|FALSE| iff the reading failed.
 **___________________________________________________			     */
 int load_rsc(name)			   	   /*			     */
-  register char *name;				   /*			     */
+  register Uchar *name;				   /*			     */
 {						   /*			     */
   if ( r_v == NULL ) { init_rsc(); }		   /*			     */
   return ( name != NULL ? read_rsc(name) : 0 );	   /*			     */

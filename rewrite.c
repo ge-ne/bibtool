@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: rewrite.c,v 1.10 2012-01-29 17:04:08 gene Exp $
+** $Id: rewrite.c,v 1.11 2012-01-29 19:28:01 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -61,27 +61,27 @@
 #else
 #define _ARG(A) ()
 #endif
- int is_selected _ARG((DB db,Record rec));
- int set_regex_syntax _ARG((char* name));
+ int is_selected _ARG((DB db,Record rec));	   /*                        */
+ int set_regex_syntax _ARG((char* name));	   /*                        */
  static Rule new_rule _ARG((Uchar *field,Uchar *pattern,Uchar *frame,int flags,int casep));
  static Uchar * check_regex _ARG((Uchar *field,Uchar *value,Rule rule,DB db,Record rec));
  static Uchar * repl_regex _ARG((Uchar *field,Uchar *value,Rule rule,DB db,Record rec));
- static int s_match _ARG((Uchar * p,Uchar * s));
- static int s_search _ARG((Uchar * pattern,Uchar * s));
- static void add_rule _ARG((Uchar *s,Rule *rp,Rule *rp_end,int flags,int casep));
+ static int s_match _ARG((Uchar * p,Uchar * s));   /*                        */
+ static int s_search _ARG((Uchar * pattern,Uchar * s));/*                    */
+ static void add_rule _ARG((Uchar *s,Rule *rp,Rule *rp_end,int flags,int casep));/**/
 #ifdef UNUSED
- static void free_rule _ARG((Rule rule));
+ static void free_rule _ARG((Rule rule));	   /*                        */
 #endif
- static void init_s_search _ARG((char * ignored));
- static void rewrite_1 _ARG((Uchar *frame,StringBuffer *sb,Uchar *match,DB db,Record rec));
- void add_check_rule _ARG((Uchar *s));
- void add_extract _ARG((Uchar *s,int regexp,int notp));
- void add_field _ARG((Uchar *spec));
- void add_rewrite_rule _ARG((Uchar *s));
- void clear_addlist _ARG((void));
- void remove_field _ARG((Uchar *field,Record rec));
- void rewrite_record _ARG((DB db,Record rec));
- void save_regex _ARG((Uchar *s));
+ static void init_s_search _ARG((Uchar * ignored));/*                        */
+ static void rewrite_1 _ARG((Uchar *frame,StringBuffer *sb,Uchar *match,DB db,Record rec));/**/
+ void add_check_rule _ARG((Uchar *s));		   /*                        */
+ void add_extract _ARG((Uchar *s,int regexp,int notp));/*                    */
+ void add_field _ARG((Uchar *spec));		   /*                        */
+ void add_rewrite_rule _ARG((Uchar *s));	   /*                        */
+ void clear_addlist _ARG((void));		   /*                        */
+ void remove_field _ARG((Uchar *field,Record rec));/*                        */
+ void rewrite_record _ARG((DB db,Record rec));	   /*                        */
+ void save_regex _ARG((Uchar *s));		   /*                        */
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -395,10 +395,10 @@ static void rewrite_1(frame,sb,match,db,rec)	   /*			     */
 #endif
 	  break;				   /*			     */
 	case '$':				   /*			     */
-	  (void)sbputs(*RecordHeap(rec),sb);	   /*			     */
+	  (void)sbputs((char*)*RecordHeap(rec),sb);/*			     */
 	  break;				   /*			     */
 	case '@':				   /*			     */
-	  (void)sbputs(EntryName(RecordType(rec)),sb);/*		     */
+	  (void)sbputs((char*)EntryName(RecordType(rec)),sb);/*		     */
 	  break;				   /*			     */
 	case 'n': (void)sbputchar('\n',sb); break; /*			     */
 	case 't': (void)sbputchar('\t',sb); break; /*			     */
@@ -444,7 +444,7 @@ static Uchar * repl_regex(field,value,rule,db,rec)  /*			     */
   if ( s1 == NULL ) { s1 = sbopen(); s2 = sbopen(); }/*			     */
   else		    { sbrewind(s1);  sbrewind(s2);  }/*			     */
 						   /*			     */
-  (void)sbputs(value,s1);			   /*			     */
+  (void)sbputs((char*)value,s1);		   /*			     */
   value     = (Uchar*)sbflush(s1);		   /*			     */
   len	    = strlen((char*)value);		   /*			     */
   limit     = rsc_rewrite_limit;		   /*			     */
@@ -479,14 +479,14 @@ static Uchar * repl_regex(field,value,rule,db,rec)  /*			     */
 						   /*			     */
 	if ( reg.start[0] > 0 )		   	   /*			     */
 	{ c = value[reg.start[0]];		   /* Push initial segment   */
-	value[reg.start[0]] = '\0';		   /*			     */
-	(void)sbputs(value,s2);		   	   /*			     */
-	value[reg.start[0]] = c;		   /*			     */
+	  value[reg.start[0]] = '\0';		   /*			     */
+	  (void)sbputs((char*)value, s2);	   /*			     */
+	  value[reg.start[0]] = c;		   /*			     */
 	}					   /*			     */
 						   /*			     */
 	rewrite_1(RuleFrame(rule),s2,value,db,rec);/*		             */
 						   /*			     */
-	(void)sbputs(value+reg.end[0],s2);	   /* Transfer the end.	     */
+	(void)sbputs((char*)(value+reg.end[0]),s2);/* Transfer the end.	     */
 						   /*			     */
 	value = (Uchar*)sbflush(s2);		   /* update the value	     */
 	len   = strlen((char*)value);		   /*  and its length	     */
@@ -723,32 +723,30 @@ void add_extract(s,regexp,notp)			   /*			     */
 **___________________________________________________			     */
 void save_regex(s)				   /*                        */
   Uchar *s;				   	   /*                        */
-{ char *t;				   	   /*			     */
- 						   /*			     */
-  if ( (t=malloc( (size_t)strlen((char*)s)	   /*                        */
-		 +(size_t)strlen(rsc_sel_fields)   /*                        */
-		 +4 )) == NULL )   		   /*			     */
-  { OUT_OF_MEMORY("string"); }	   		   /*			     */
+{ Uchar *t = malloc( (size_t)strlen((char*)s)	   /*                        */
+		   + (size_t)strlen((char*)rsc_sel_fields)/*                 */
+		   + 4 );			   /*			     */
+  if ( t == NULL ) { OUT_OF_MEMORY("string"); }	   /*			     */
  						   /*                        */
-  (void)strcpy(t,rsc_sel_fields);	   	   /*			     */
-  (void)strcat(t," \"");			   /*			     */
-  (void)strcat(t,(char*)s);		   	   /*			     */
-  (void)strcat(t,"\"");			   	   /*			     */
+  (void)strcpy((char*)t, (char*)rsc_sel_fields);   /*			     */
+  (void)strcat((char*)t, " \"");		   /*			     */
+  (void)strcat((char*)t, (char*)s);		   /*			     */
+  (void)strcat((char*)t, "\"");			   /*			     */
  						   /*                        */
-  add_rule((Uchar*)t,				   /*                        */
+  add_rule(t,				   	   /*                        */
 	   &x_rule,				   /*                        */
 	   &x_rule_end,				   /*                        */
 	   RULE_REGEXP,				   /*                        */
 	   !rsc_case_select);			   /*			     */
  						   /*                        */
-  free(t);					   /*                        */
+  free((char*)t);				   /*                        */
   rsc_select = TRUE;				   /*                        */
 }						   /*------------------------*/
 
 
- static char s_class[256];
- static Uchar *s_ignored = (Uchar*)NULL;
- static int  s_cased    = -33;
+ static char s_class[256];			   /*                        */
+ static Uchar *s_ignored = (Uchar*)NULL;	   /*                        */
+ static int  s_cased    = -33;			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	init_s_search()
@@ -760,9 +758,9 @@ void save_regex(s)				   /*                        */
 ** Returns:	Nothing
 **___________________________________________________			     */
 static void init_s_search(ignored)		   /*                        */
-  char * ignored;				   /*                        */
+  Uchar * ignored;				   /*                        */
 { int i;					   /*                        */
-  for (i=0;i<256;i++) s_class[i] = i;		   /*                        */
+  for (i = 0; i < 256; i++) s_class[i] = i;	   /*                        */
  						   /*                        */
   if (!rsc_case_select) 			   /*                        */
   {						   /*                        */

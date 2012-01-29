@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: expand.c,v 1.10 2012-01-29 17:04:07 gene Exp $
+** $Id: expand.c,v 1.11 2012-01-29 19:28:01 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -81,7 +81,7 @@ Uchar * expand_rhs(s,pre,post,db)		   /*                        */
   return (Uchar*)sbflush(sb);			   /*                        */
 }						   /*------------------------*/
 
-#define PUTS(S,SB) (void)sbputs(S,SB)
+#define PUTS(S,SB) (void)sbputs((char*)S,SB)
 #define PUTC(C,SB) (void)sbputchar(C,SB)
 
 /*-----------------------------------------------------------------------------
@@ -202,27 +202,26 @@ static int expand(s,sb,brace,first,q_open,q_close,db)/*                      */
       default:					   /*                        */
         if ( is_space(*s) ) ++s;		   /* Ignore spaces.         */
         else if (!is_allowed(*s))		   /*                        */
-	{ PUTC(*s,sb);
-	  s++;
-	}
+	{ PUTC(*s, sb);				   /*                        */
+	  s++;					   /*                        */
+	}					   /*                        */
         else		   			   /* Only macros are left.  */
 	{ Uchar *sym = (Uchar*)s;	   	   /*                        */
-	  char  *val;			   	   /*                        */
+	  Uchar *val;			   	   /*                        */
 	  char  c;			   	   /*                        */
  						   /*                        */
           DebugPrint2("Start symbol: ",s);	   /*                        */
 	  while ( is_allowed(*s) ) ++s;		   /*                        */
 	  c = *s; *s = '\0';			   /*                        */
-	  { Uchar *sym_copy;			   /* Local copy of sym      */
-	    if ( (sym_copy = (Uchar*)malloc(strlen((char*)sym)+1))/* Allocate memory*/
-		== (Uchar*)NULL )		   /* Upon failure           */
-	    { OUT_OF_MEMORY("expand string"); }	   /*  exit.                 */
+	  { Uchar *sym_copy = (Uchar*)malloc(strlen((char*)sym)+1);/*Copy of sym*/
+	    if (sym_copy == (Uchar*)NULL )	   /* Allocate memory        */
+	    { OUT_OF_MEMORY("expand string"); }	   /* Upon failure exit.     */
 	    (void)strcpy((char*)sym_copy,(char*)sym);/* Save sym             */
 	    *s = c;				   /* Restore end mark       */
 	    sym = symbol(sym_copy);		   /* Intern the symbol.     */
 	    free((char*)sym_copy);		   /* Free the temp. memory  */
 	  }					   /*                        */
-	  val = (char*)db_string(db,sym,1);	   /*                        */
+	  val = db_string(db,sym,1);	   	   /*                        */
 	  if ( val )			   	   /*                        */
 	  { brace = expand(val,sb,brace,first,q_open,q_close,db); }/*        */
 	  else					   /*                        */

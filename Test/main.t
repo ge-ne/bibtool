@@ -1,13 +1,13 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: main.t,v 1.1 2011-11-20 15:22:45 gene Exp $
+# $Id: main.t,v 1.2 2012-01-29 19:28:02 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2011 Gerd Neugebauer
+#  (c) 2011-2012 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -478,8 +478,8 @@ bibtool [options] [-o outfile] [[-i] infile] ...
 	-R		Load default resource file here.
 	-s		Sort.
 	-S		Sort reverse.
-	-v		Enable verbose mode
-	-V		Print version
+	-v		Enable verbose mode.
+	-V		Print version and exit.
 	-x file		Extract from aux file.
 	-X <regex>	Extract regular expression.
 	-- <rsc>	Evaluate one resource command <rsc>.
@@ -504,7 +504,6 @@ BUnit::run(name => '_V_1',
 	 expected_out => '',
 	 expected_err => <<__EOF__ ,
 BibTool Vers. 2.xxx (C) 1996-2xxx Gerd Neugebauer
-
 
 Library path: xxx
 Special configuration options: xxx

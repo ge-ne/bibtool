@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: record.c,v 1.10 2012-01-26 19:54:21 gene Exp $
+** $Id: record.c,v 1.11 2012-01-29 19:28:01 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -386,7 +386,8 @@ void add_sort_order(val)			   /*                        */
 { Uchar     *s;					   /*                        */
   int       type;				   /*                        */
   OrderList ol;					   /*                        */
-  WordList  *wlp, wl, wl_next;			   /*                        */
+  WordList  *wlp = NULL;			   /*                        */
+  WordList  wl, wl_next;			   /*                        */
  						   /*                        */
   (void)SParseSkip(&val);			   /*                        */
   if ( *val == '*' )				   /*                        */

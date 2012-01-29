@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: parse.c,v 1.13 2012-01-29 17:04:07 gene Exp $
+** $Id: parse.c,v 1.14 2012-01-29 19:28:01 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -39,9 +39,9 @@
 #define _ARG(A) ()
 #endif
  int parse_bib _ARG((Record rec));		   /* parse.c                */
- int read_rsc _ARG((char *name));		   /* parse.c                */
+ int read_rsc _ARG((Uchar *name));		   /* parse.c                */
  int see_bib _ARG((Uchar * fname));		   /* parse.c                */
- static int see_rsc _ARG((char * fname));	   /* parse.c                */
+ static int see_rsc _ARG((Uchar * fname));	   /* parse.c                */
  int seen _ARG((void));				   /* parse.c                */
  static int fill_line _ARG((void));		   /* parse.c                */
  static int parse_block _ARG((int quotep));	   /* parse.c                */
@@ -59,7 +59,7 @@
  static void init_parse _ARG((void));		   /* parse.c                */
  static void parse_number _ARG((void));		   /* parse.c                */
  void init_read _ARG((void));			   /* parse.c                */
- void set_rsc_path _ARG((char * val));		   /* parse.c                */
+ void set_rsc_path _ARG((Uchar * val));		   /* parse.c                */
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -187,7 +187,7 @@ void init_read()				   /*			     */
   init___(&f_path,				   /*			     */
 	  f_pattern,				   /*			     */
 	  (char**)&rsc_v_bibtex,		   /*			     */
-	  rsc_e_bibtex	);			   /*			     */
+	  (char*)rsc_e_bibtex	);		   /*			     */
 #endif
 }						   /*------------------------*/
 
@@ -328,7 +328,7 @@ static void init_parse()			   /*			     */
 ** Returns:	Returns 0 iff a character has been read.
 **___________________________________________________'			     */
 static int fill_line()				   /*			     */
-{ register int	len;				   /*			     */
+{ register size_t	len;			   /*			     */
 						   /*			     */
   flp = file_line_buffer;			   /* Reset line pointer     */
   ++flno;					   /* Increase line number   */
@@ -340,7 +340,7 @@ static int fill_line()				   /*			     */
   }						   /*                        */
 						   /*			     */
   FOREVER					   /*			     */
-  { for (len=0;					   /* Find the end	     */
+  { for (len = 0;				   /* Find the end	     */
 	 file_line_buffer[len] != '\0';		   /*  of the buffer and     */
 	 ++len ) ;				   /*  count the length.     */
 						   /*			     */
@@ -349,7 +349,7 @@ static int fill_line()				   /*			     */
 #endif
 						   /*			     */
     if ( file_line_buffer[len-1] == '\n'	   /*			     */
-	|| len < fl_size-1)			   /*			     */
+	|| len < fl_size - 1)			   /*			     */
     { return 0; }				   /*			     */
 						   /*			     */
     if ( (file_line_buffer = (Uchar*)		   /* Try to enlarge	     */
@@ -635,7 +635,7 @@ static int parse_rhs()				   /*			     */
       case '5': case '6': case '7': case '8': case '9':/*		     */
 	UnGetC;					   /*                        */
 	parse_number();			   	   /*			     */
-	(void)sbputs(pop_string(),parse_sb);	   /*			     */
+	(void)sbputs((char*)pop_string(),parse_sb);/*			     */
 	break;					   /*			     */
 						   /*			     */
       default:					   /*			     */
@@ -646,12 +646,12 @@ static int parse_rhs()				   /*			     */
 #ifdef OLD
 	  (void)look_macro(mac,1);		   /*			     */
 #endif
-	  (void)sbputs(mac,parse_sb);		   /*			     */
+	  (void)sbputs((char*)mac,parse_sb);	   /*			     */
 	}					   /*			     */
     }						   /*			     */
   } while ( GetC == '#' );			   /*			     */
 						   /*			     */
-  push_string(symbol(sbflush(parse_sb)));	   /*			     */
+  push_string(symbol((Uchar*)sbflush(parse_sb)));  /*			     */
   sbrewind(parse_sb);				   /*			     */
   UnGetC; return(TRUE);				   /*			     */
 }						   /*------------------------*/
@@ -752,15 +752,15 @@ int parse_bib(rec)				   /*			     */
       }						   /*			     */
     }						   /*			     */
 						   /*			     */
-    if ( (type=find_entry_type((char*)flp)) == BIB_NOOP )/*		     */
+    if ( (type=find_entry_type(flp)) == BIB_NOOP ) /*		             */
     { Error("Unknown entry type");		   /*                        */
       return(BIB_NOOP);				   /*                        */
     }						   /*		             */
     flp += strlen((char*)EntryName(type));	   /*			     */
  						   /*                        */
     if ( type == BIB_COMMENT && rsc_pass_comment ) /*                        */
-    { sbputchar('@',comment_sb);		   /*                        */
-      sbputs(EntryName(type),comment_sb);	   /*                        */
+    { sbputchar('@', comment_sb);		   /*                        */
+      sbputs((char*)EntryName(type), comment_sb);  /*                        */
     }						   /*                        */
   } while (type == BIB_COMMENT);		   /*                        */
 					   	   /*			     */
@@ -866,7 +866,7 @@ int parse_bib(rec)				   /*			     */
     s = t = sbflush(comment_sb);		   /*                        */
     while ( *s ) s++;				   /*                        */
     while ( t <= --s  && is_space(*s) ) *s = '\0'; /*                        */
-    if ( *t ) RecordComment(rec) = symbol(t);	   /*                        */
+    if ( *t ) RecordComment(rec) = (Uchar*)symbol(t);/*                      */
   }						   /*                        */
   sbrewind(comment_sb);				   /*                        */
   return(type);					   /*			     */
@@ -890,9 +890,9 @@ int parse_bib(rec)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void set_rsc_path(val)				   /*			     */
-  char * val;				   	   /*			     */
+  Uchar * val;				   	   /*			     */
 {						   /*			     */
-  rsc_v_rsc = val;				   /*			     */
+  rsc_v_rsc = (char*)val;			   /*			     */
   init___(&r_path,				   /*			     */
 	  r_pattern,				   /*			     */
 	  &rsc_v_rsc,				   /*			     */
@@ -909,12 +909,12 @@ void set_rsc_path(val)				   /*			     */
 ** Returns:	|TRUE| iff the operation succeeds.
 **___________________________________________________			     */
 static int see_rsc(fname)			   /*			     */
-  char * fname;			   		   /*			     */
+  Uchar * fname;				   /*			     */
 {						   /*			     */
   if ( fname )					   /*			     */
   { init_parse();				   /*			     */
     InitLine;					   /*			     */
-    file = px_fopen(fname,			   /*			     */
+    file = px_fopen((char*)fname,		   /*			     */
 		    "r",			   /*			     */
 		    r_pattern,			   /*			     */
 		    r_path,			   /*			     */
@@ -947,7 +947,7 @@ static int parse_value()			   /*			     */
 						   /*			     */
     case '"':					   /*			     */
       if ( !parse_string(FALSE) ) return(FALSE);   /*			     */
-      push_string(symbol(sbflush(parse_sb)));	   /*			     */
+      push_string(symbol((Uchar*)sbflush(parse_sb)));/*			     */
       sbrewind(parse_sb);			   /*			     */
       break;					   /*			     */
 						   /*			     */
@@ -958,7 +958,7 @@ static int parse_value()			   /*			     */
 						   /*			     */
     case '{':					   /*			     */
       if ( !parse_block(FALSE) ) return FALSE;	   /*			     */
-      push_string(symbol(sbflush(parse_sb)));	   /*			     */
+      push_string(symbol((Uchar*)sbflush(parse_sb)));/*			     */
       sbrewind(parse_sb);			   /*			     */
       break;					   /*			     */
 						   /*			     */
@@ -987,7 +987,7 @@ static int parse_value()			   /*			     */
 ** Returns:	
 **___________________________________________________			     */
 int read_rsc(name)				   /*			     */
-  char	        *name;				   /*			     */
+  Uchar	        *name;				   /*			     */
 { int	        c;				   /*			     */
   Uchar	        *token;				   /*			     */
  						   /*                        */
