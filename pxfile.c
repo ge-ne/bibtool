@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: pxfile.c,v 1.8 2012-01-26 19:54:21 gene Exp $
+** $Id: pxfile.c,v 1.9 2012-01-29 17:17:07 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -233,8 +233,8 @@ char ** px_s2p(s,sep)				   /*			     */
   register size_t l = 1;			   /*			     */
   char		  **pattern;			   /*			     */
   int		  *array;			   /*                        */
-  int		  array_size = INIT_SIZE;	   /*                        */
-  int		  array_ptr  = 0;		   /*                        */
+  size_t	  array_size = INIT_SIZE;	   /*                        */
+  size_t	  array_ptr  = 0;		   /*                        */
   char 		  *t;				   /*                        */
   StringBuffer    *sb;				   /*                        */
 					       	   /*			     */
@@ -278,7 +278,7 @@ char ** px_s2p(s,sep)				   /*			     */
   cp = (char*)&pattern[array_ptr+1];		   /*                        */
   (void)memcpy(cp,s,l);		   		   /* save the string spec   */
  						   /*                        */
-  for ( l=0; l<array_ptr; l++ )			   /*                        */
+  for ( l = 0; l < array_ptr; l++ )		   /*                        */
   { pattern[l] = cp + array[l]; }		   /*                        */
   pattern[array_ptr] = 0L;			   /* Mark end		     */
 						   /*			     */

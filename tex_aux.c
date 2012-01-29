@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: tex_aux.c,v 1.12 2012-01-29 17:04:08 gene Exp $
+** $Id: tex_aux.c,v 1.13 2012-01-29 17:17:07 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -162,7 +162,7 @@ int read_aux(fname,fct,verbose)			   /*                        */
   					   	   /*                        */
   if ( (file=fopen((char*)fname,"r") ) == NULL )   /*                        */
   { StringBuffer *sb = sbopen();                   /*                        */
-    sbputs(fname,sb);                              /*                        */
+    sbputs((char*)fname,sb);			   /*                        */
     sbputs(".aux",sb);                             /*                        */
     file = fopen(sbflush(sb),"r");                 /*                        */
     sbclose(sb);                                   /*                        */
@@ -224,7 +224,7 @@ int read_aux(fname,fct,verbose)			   /*                        */
 	s = sbflush(aux_sb);			   /*                        */
 	sbrewind(aux_sb);			   /*                        */
 	    					   /*                        */
-	read_aux(s,fct,verbose);		   /*                        */
+	read_aux((Uchar*)s,fct,verbose);	   /*                        */
       }						   /*                        */
     }						   /*                        */
   }						   /*                        */
