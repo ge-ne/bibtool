@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: key.h,v 1.7 2011-06-07 20:01:06 gene Exp $
+** $Id: key.h,v 1.8 2012-01-29 15:23:43 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -45,7 +45,7 @@
  void free_key_node _ARG((KeyNode kn));		   /* key.c                  */
  void make_key _ARG((DB db,Record rec));	   /* key.c                  */
  void make_sort_key _ARG((DB db,Record rec));	   /* key.c                  */
- void set_base _ARG((Uchar *value));		   /* key.c                  */
+ void set_base _ARG((char *value));		   /* key.c                  */
  void set_separator _ARG((int n,Uchar *s));	   /* key.c                  */
  void start_key_gen _ARG((void));		   /* key.c                  */
 

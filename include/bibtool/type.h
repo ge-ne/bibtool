@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: type.h,v 1.7 2011-06-07 20:01:06 gene Exp $
+** $Id: type.h,v 1.8 2012-01-29 15:23:43 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -477,7 +477,7 @@ unsigned char trans_id[256];			   /*                        */
 #else
 #define _ARG(A) ()
 #endif
- char * lower _ARG((Uchar * s));		   /* type.c                 */
+ Uchar * lower _ARG((Uchar * s));		   /* type.c                 */
  int case_cmp _ARG((Uchar * s,Uchar * t));	   /* type.c                 */
  void add_word_sep _ARG((Uchar *s));		   /* type.c                 */
  void init_type _ARG((void));			   /* type.c                 */
