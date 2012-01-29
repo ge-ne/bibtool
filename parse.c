@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: parse.c,v 1.14 2012-01-29 19:28:01 gene Exp $
+** $Id: parse.c,v 1.15 2012-01-29 20:53:12 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -866,7 +866,7 @@ int parse_bib(rec)				   /*			     */
     s = t = sbflush(comment_sb);		   /*                        */
     while ( *s ) s++;				   /*                        */
     while ( t <= --s  && is_space(*s) ) *s = '\0'; /*                        */
-    if ( *t ) RecordComment(rec) = (Uchar*)symbol(t);/*                      */
+    if ( *t ) RecordComment(rec) = (Uchar*)symbol((Uchar*)t);/*              */
   }						   /*                        */
   sbrewind(comment_sb);				   /*                        */
   return(type);					   /*			     */

@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: rsc.h,v 1.9 2012-01-29 19:28:02 gene Exp $
+** $Id: rsc.h,v 1.10 2012-01-29 20:53:12 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -54,4 +54,4 @@ DECLARE( char* , rsc_v_rsc        , RSC_BIBTOOL_DEFAULT		);
  int search_rsc _ARG((void));
  int set_rsc _ARG((Uchar *name,Uchar *val));
  int use_rsc _ARG((Uchar *s));
- void rsc_print _ARG((char *s));
+ void rsc_print _ARG((Uchar *s));

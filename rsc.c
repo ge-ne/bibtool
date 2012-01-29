@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: rsc.c,v 1.11 2012-01-29 19:28:02 gene Exp $
+** $Id: rsc.c,v 1.12 2012-01-29 20:53:12 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -56,7 +56,7 @@
  int use_rsc _ARG((Uchar *s));			   /*                        */
  static int test_true _ARG((Uchar * s));	   /*                        */
  static void init_rsc _ARG((void));		   /*                        */
- void rsc_print _ARG((char *s));		   /*                        */
+ void rsc_print _ARG((Uchar *s));		   /*                        */
 
 #define NoRscError(X)	      WARNING3("Resource file ",X," not found.")
 
@@ -318,7 +318,7 @@ int set_rsc(name,val)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void rsc_print(s)				   /*			     */
-  char *s;				   	   /*			     */
-{ ErrPrintF("%s\n",s);				   /* print the string itself*/
+  Uchar *s;				   	   /*			     */
+{ ErrPrintF("%s\n",(char*)s);			   /* print the string itself*/
 			   			   /* followed by a newline  */
 }						   /*------------------------*/

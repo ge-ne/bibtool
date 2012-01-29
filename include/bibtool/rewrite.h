@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: rewrite.h,v 1.7 2011-06-07 20:01:06 gene Exp $
+** $Id: rewrite.h,v 1.8 2012-01-29 20:53:12 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2011 Gerd Neugebauer
+** (c) 1996-2012 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 

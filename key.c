@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: key.c,v 1.15 2012-01-29 17:04:07 gene Exp $
+** $Id: key.c,v 1.16 2012-01-29 20:53:12 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -58,7 +58,7 @@
  static void Push_Word _ARG((char *s));		   /* key.c                  */
  static void eval__special _ARG((StringBuffer *sb,KeyNode kn,Record rec));/* key.c*/
  static void fmt_names _ARG((StringBuffer *sb,char *line,int maxname,int post,char *trans));/* key.c*/
- static void fmt_string _ARG((StringBuffer *sb,char * s,int n,char *trans,char *sep));/* key.c*/
+ static void fmt_string _ARG((StringBuffer *sb,char * s,int n,char *trans,Uchar *sep));/* key.c*/
  static void fmt_title _ARG((StringBuffer *sb,char *line,int len,int in,char *trans,int ignore,Uchar *sep));/* key.c*/
  static void init_key _ARG((int state));	   /* key.c                  */
  static void key_init _ARG((void));		   /* key.c                  */
@@ -980,13 +980,16 @@ static void fmt_string(sb,s,n,trans,sep)	   /*			     */
   register char *s;				   /*			     */
   register int	n;				   /*			     */
   register char *trans;				   /*			     */
-  char          *sep;				   /*                        */
+  Uchar         *sep;				   /*                        */
 {						   /*			     */
   while ( *s && n>0 )				   /*			     */
   { if ( is_allowed(*s) )			   /*			     */
-    { (void)sbputchar(trans[*((unsigned char*)s)],sb); n--; }/*		     */
+    { (void)sbputchar(trans[*((unsigned char*)s)],sb);/*                     */
+      n--;					   /*                        */
+    }						   /*		             */
     else if ( is_space(*s) )			   /*			     */
-    { (void)sbputs(sep,sb); n--;	   	   /*                        */
+    { (void)sbputs((char*)sep, sb);		   /*                        */
+      n--;	   	   			   /*                        */
       while ( is_space(*s) ) s++;		   /* skip over multiple SPC */
       s--;					   /*                        */
     }   					   /*			     */
@@ -1113,7 +1116,7 @@ void make_key(db,rec)				   /*			     */
   sbrewind(key_sb);				   /* clear key		     */
 						   /*			     */
   if ( eval_fmt(key_sb,key_tree,rec,db) )	   /*                        */
-  { sbputs(DefaultKey,key_sb);			   /*                        */
+  { sbputs((char*)DefaultKey,key_sb);		   /*                        */
   }			   			   /*			     */
 						   /*			     */
   ReleaseSymbol(RecordOldKey(rec));		   /*                        */
@@ -1141,7 +1144,7 @@ void make_key(db,rec)				   /*			     */
   if ( find_word(kp,old_keys) )		   	   /* is key already used?   */
   { int n = 1;					   /* Then disambiguate:     */
     (void)sbseek(key_sb,pos);			   /*			     */
-    (void)sbputs(KeyNumberSep,key_sb);		   /* put separator at end   */
+    (void)sbputs((char*)KeyNumberSep,key_sb);	   /* put separator at end   */
     pos = sbtell(key_sb);			   /*			     */
     do						   /* last symbol was present*/
     { (void)sbseek(key_sb,pos);			   /*			     */
@@ -1607,7 +1610,7 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
     switch ( NodeType(kn) )			   /*			     */
     { case NodeSTRING:				   /*			     */
 	DebugPrint3("STRING \"",NodeSymbol(kn),"\"");/*		             */
-	(void)sbputs(NodeSymbol(kn),sb);	   /*			     */
+	(void)sbputs((char*)NodeSymbol(kn),sb);	   /*			     */
 	break;					   /*			     */
       case NodeTEST:				   /*			     */
 #ifdef DEBUG
@@ -1832,12 +1835,12 @@ static void eval__special(sb,kn,rec)		   /*			     */
   }						   /*			     */
 						   /*			     */
   IfGetField(s,s_title)				   /*			     */
-  { (void)sbputs(NameTitleSep,sb);		   /*			     */
+  { (void)sbputs((char*)NameTitleSep,sb);	   /*			     */
     fmt_title(sb,s,1,0,trans_lower,TRUE,TitleTitleSep);/*		     */
     missing = FALSE;				   /*			     */
   }						   /*			     */
   else IfGetField(s,s_booktitle)		   /*			     */
-  { (void)sbputs(NameTitleSep,sb);		   /*			     */
+       { (void)sbputs((char*)NameTitleSep,sb);	   /*			     */
     fmt_title(sb,s,1,0,trans_lower,TRUE,TitleTitleSep);/*		     */
     missing = FALSE;				   /*			     */
   }						   /*			     */
@@ -1846,7 +1849,7 @@ static void eval__special(sb,kn,rec)		   /*			     */
   { sbrewind(sb);				   /*			     */
     IfGetField(s,s_key)				   /*			     */
     { fmt_title(sb,s,1,0,trans_lower,TRUE,TitleTitleSep); }/*	             */
-    else { (void)sbputs(DefaultKey,sb); }	   /*			     */
+    else { (void)sbputs((char*)DefaultKey,sb); }   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
 
@@ -2028,7 +2031,7 @@ Uchar* fmt_expand(sb,cp,db,rec)			   /*                        */
 		     field,			   /*                        */
 		     PreOr(0xffff),		   /*                        */
 		     trans,			   /*                        */
-		     " ");	   		   /*		             */
+		     (Uchar*)" ");		   /*		             */
 	  break;				   /*			     */
 	case 'W':				   /*			     */
 	  fmt_title(sb,				   /*                        */
@@ -2164,73 +2167,74 @@ Uchar *get_field(db,rec,name)		   	   /*			     */
 #endif
 				   		   /*                        */
   if ( *name == '@' )				   /*			     */
-  { if ( case_cmp(name+1,EntryName(RecordType(rec))) )/*		     */
+  { if ( case_cmp(name + 1,			   /*                        */
+		  EntryName(RecordType(rec))) )	   /*		             */
       return EntryName(RecordType(rec));	   /*		             */
   }						   /*			     */
   else if ( *name == '$' )			   /*			     */
   { ++name;					   /*			     */
     switch (*name)				   /*                        */
     { case 'k': case 'K':			   /*                        */
-        if ( case_cmp(name,"key") )		   /*			     */
+        if ( case_cmp(name,(Uchar*)"key") )	   /*			     */
 	{ return (**RecordHeap(rec)		   /*                        */
 		  ? *RecordHeap(rec)		   /*                        */
 		  : (Uchar*)NULL);		   /*                        */
 	}					   /*		             */
         break;					   /*                        */
       case 'd': case 'D':			   /*                        */
-	if ( case_cmp(name,"default.key") )	   /*			     */
+	if ( case_cmp(name,(Uchar*)"default.key") )/*			     */
 	{ return DefaultKey; }			   /*			     */
-	else if ( case_cmp(name,"day") )  	   /*			     */
+	else if ( case_cmp(name,(Uchar*)"day") )   /*			     */
 	{ ReturnTime("%d"); }			   /*			     */
 	break;    				   /*                        */
       case 'f': case 'F':			   /*                        */
-	if ( case_cmp(name,"fmt.et.al") )	   /*			     */
+	if ( case_cmp(name,(Uchar*)"fmt.et.al") )  /*			     */
 	{ return EtAl; }			   /*			     */
-	else if ( case_cmp(name,"fmt.name.pre") )  /*			     */
+	else if ( case_cmp(name,(Uchar*)"fmt.name.pre") )  /*		     */
 	{ return NamePreSep; }			   /*			     */
-	else if ( case_cmp(name,"fmt.inter.name") )/*			     */
+	else if ( case_cmp(name,(Uchar*)"fmt.inter.name") )/*		     */
 	{ return InterNameSep; }		   /*			     */
-	else if ( case_cmp(name,"fmt.name.name") ) /*			     */
+	else if ( case_cmp(name,(Uchar*)"fmt.name.name") )/*		     */
 	{ return NameNameSep; }			   /*			     */
-	else if ( case_cmp(name,"fmt.name.title") )/*			     */
+	else if ( case_cmp(name,(Uchar*)"fmt.name.title") )/*		     */
 	{ return NameTitleSep; }		   /*			     */
-	else if ( case_cmp(name,"fmt.title.title") )/*			     */
+	else if ( case_cmp(name,(Uchar*)"fmt.title.title") )/*		     */
 	{ return TitleTitleSep; }		   /*			     */
       case 'h': case 'H':			   /*                        */
-	if ( case_cmp(name,"hostname") )	   /*			     */
+	if ( case_cmp(name,(Uchar*)"hostname") )   /*			     */
 	{ if ( sym_host==NULL )			   /*                        */
 	  { sym_host = (Uchar*)getenv("HOSTNAME"); /*                        */
 	    sym_host = symbol(sym_host?sym_host:sym_empty);/*                */
 	  }					   /*                        */
 	  return sym_host;			   /*                        */
 	}	   	   			   /*			     */
-        else if ( case_cmp(name,"hour") )  	   /*			     */
+        else if ( case_cmp(name,(Uchar*)"hour") )  /*			     */
 	{ ReturnTime("%H"); }			   /*			     */
 	break;					   /*                        */
       case 'm': case 'M':			   /*                        */
-	if ( case_cmp(name,"month") )	   	   /*			     */
+	if ( case_cmp(name,(Uchar*)"month") )	   /*			     */
 	{ ReturnTime("%m"); }			   /*			     */
-	else if ( case_cmp(name,"minute") )  	   /*			     */
+	else if ( case_cmp(name,(Uchar*)"minute") )/*			     */
 	{ ReturnTime("%M"); }			   /*			     */
-	else if ( case_cmp(name,"mon") )  	   /*			     */
+	else if ( case_cmp(name,(Uchar*)"mon") )   /*			     */
 	{ ReturnTime("%B"); }			   /*			     */
 	break;    				   /*                        */
       case 's': case 'S':			   /*                        */
-	if ( case_cmp(name,"sortkey") )	   	   /*			     */
+	if ( case_cmp(name,(Uchar*)"sortkey") )	   /*			     */
 	{ return RecordSortkey(rec); }		   /*			     */
-	else if ( case_cmp(name,"source") )	   /*			     */
+	else if ( case_cmp(name,(Uchar*)"source") )/*			     */
 	{ return RecordSource(rec); }		   /*			     */
-	else if ( case_cmp(name,"second") )	   /*			     */
+	else if ( case_cmp(name,(Uchar*)"second") )/*			     */
 	{ ReturnTime("%S"); }			   /*			     */
 	break;    				   /*                        */
       case 't': case 'T':			   /*                        */
-	if ( case_cmp(name,"type") )		   /*			     */
+	if ( case_cmp(name,(Uchar*)"type") )	   /*			     */
 	{ return EntryName(RecordType(rec)); }	   /*			     */
-	else if ( case_cmp(name,"time") )	   /*			     */
+	else if ( case_cmp(name,(Uchar*)"time") )  /*			     */
 	{ ReturnTime("%H:%M:%S"); }		   /*			     */
         break;					   /*                        */
       case 'u': case 'U':			   /*                        */
-	if ( case_cmp(name,"user") )		   /*			     */
+	if ( case_cmp(name,(Uchar*)"user") )	   /*			     */
 	{ if ( sym_user==NULL )			   /*                        */
 	  { sym_user = (Uchar*)getenv("USER");	   /*                        */
 	    sym_user = symbol(sym_user?sym_user:sym_empty);/*                */
@@ -2239,11 +2243,11 @@ Uchar *get_field(db,rec,name)		   	   /*			     */
 	}	   	   			   /*			     */
         break;					   /*                        */
       case 'w': case 'W':			   /*                        */
-	if ( case_cmp(name,"weekday") )	   	   /*			     */
+	if ( case_cmp(name,(Uchar*)"weekday") )	   /*			     */
 	{ ReturnTime("%a"); }			   /*			     */
 	break;    				   /*                        */
       case 'y': case 'Y':			   /*                        */
-	if ( case_cmp(name,"year") )	   	   /*			     */
+	if ( case_cmp(name,(Uchar*)"year") )	   /*			     */
 	{ ReturnTime("%Y"); }			   /*			     */
 	break;    				   /*                        */
     }						   /*                        */
@@ -2263,7 +2267,10 @@ Uchar *get_field(db,rec,name)		   	   /*			     */
 	if ( *cpp == name && *(cpp+1) != NULL )    /*                        */
 	{					   /*                        */
 	  return ( rsc_key_expand_macros	   /*                        */
-		   ? expand_rhs(*(cpp+1),"{","}",db)/*                       */
+		   ? expand_rhs(*(cpp+1),	   /*                        */
+				(Uchar*)"{",	   /*                        */
+				(Uchar*)"}",	   /*                        */
+				db)		   /*                        */
 		   : *(cpp+1) );		   /*			     */
 	}					   /*                        */
  						   /*                        */
@@ -2318,38 +2325,38 @@ int set_field(db,rec,name,value)		   /*			     */
   { ++name;					   /*			     */
     switch ( *name )				   /*                        */
     { case 'k': case 'K':			   /*                        */
-        if ( case_cmp(name,"key") )		   /*			     */
+        if ( case_cmp(name,(Uchar*)"key") )	   /*			     */
 	{ *RecordHeap(rec) = value;	   	   /*                        */
 	  return 0;			   	   /*                        */
 	}					   /*		             */
         break;					   /*                        */
       case 'd': case 'D':			   /*                        */
-	if ( case_cmp(name,"default.key") )	   /*			     */
+	if ( case_cmp(name,(Uchar*)"default.key") )/*			     */
 	{ DefaultKey = value;		   	   /*                        */
 	  return 0;				   /*                        */
 	}		   			   /*			     */
 	break;    				   /*                        */
       case 'f': case 'F':			   /*                        */
-	if ( case_cmp(name,"fmt.et.al") )	   /*			     */
+	if ( case_cmp(name,(Uchar*)"fmt.et.al") )  /*			     */
 	{ EtAl = value; return 0; }	   	   /*			     */
-	else if ( case_cmp(name,"fmt.name.pre") )  /*			     */
+	else if ( case_cmp(name,(Uchar*)"fmt.name.pre") )/*		     */
 	{ NamePreSep = value; return 0; }  	   /*			     */
-	else if ( case_cmp(name,"fmt.inter.name") )/*			     */
+	else if ( case_cmp(name,(Uchar*)"fmt.inter.name") )/*		     */
 	{ InterNameSep = value; return 0; }	   /*			     */
-	else if ( case_cmp(name,"fmt.name.name") ) /*			     */
+	else if ( case_cmp(name,(Uchar*)"fmt.name.name") )/*		     */
 	{ NameNameSep = value; return 0; } 	   /*			     */
-	else if ( case_cmp(name,"fmt.name.title") )/*			     */
-	{ NameTitleSep = value; return 0; }	   /*			     */
-	else if ( case_cmp(name,"fmt.title.title") )/*			     */
+	else if ( case_cmp(name,(Uchar*)"fmt.name.title") )/*		     */
+	{ NameTitleSep = value; return 0; }	   /*		             */
+	else if ( case_cmp(name,(Uchar*)"fmt.title.title") )/*		     */
 	{ TitleTitleSep = value; return 0; }	   /*			     */
       case 's': case 'S':			   /*                        */
-	if ( case_cmp(name,"sortkey") )	   	   /*			     */
+	if ( case_cmp(name,(Uchar*)"sortkey") )	   /*			     */
 	{ RecordSortkey(rec) = value; return 0; }  /*			     */
-	else if ( case_cmp(name,"source") )	   /*			     */
+	else if ( case_cmp(name,(Uchar*)"source") )/*			     */
 	{ RecordSource(rec) = value; return 0; }   /*		             */
 	break;    				   /*                        */
       case 't': case 'T':			   /*                        */
-	if ( case_cmp(name,"type") )		   /*			     */
+	if ( case_cmp(name,(Uchar*)"type") )	   /*			     */
 	{ int type;				   /*                        */
 	  if ( IsNormalRecord(RecordType(rec)) &&  /*                        */
 	       (type=find_entry_type(value)) >= 0 )/*                        */
@@ -2357,14 +2364,14 @@ int set_field(db,rec,name,value)		   /*			     */
 	}					   /*                        */
         break;					   /*                        */
       case 'u': case 'U':			   /*                        */
-	if ( case_cmp(name,"user") )		   /*			     */
+	if ( case_cmp(name,(Uchar*)"user") )	   /*			     */
 	{ sym_user = value; return 0; }	   	   /*			     */
         break;					   /*                        */
     }						   /*                        */
   }						   /*			     */
   else						   /*			     */
   {   						   /*			     */
-    push_to_record(rec,symbol(name),value);	   /*			     */
+    push_to_record(rec, symbol(name), value);	   /*			     */
     return 0;					   /*                        */
   }						   /*                        */
  						   /*                        */

@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: names.c,v 1.14 2012-01-28 06:44:26 gene Exp $
+** $Id: names.c,v 1.15 2012-01-29 20:53:12 gene Exp $
 *******************************************************************************
 ** 
 ** This file is part of BibTool.
@@ -475,14 +475,14 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   if ( commas == 0 )				   /*------------------------*/
   {						   /* ff vv ll               */
     j = len - 1;				   /* ff vv ll jr            */
-    if ( is_jr(w[j], TRUE) )			   /*                        */
+    if ( is_jr((Uchar*)w[j], TRUE) )		   /*                        */
     { type[j--] = 'j'; jr++; }			   /*                        */
     if ( j >= 0 )				   /*                        */
     { type[j] = 'l'; last++; }  		   /*                        */
     i = 0;					   /*                        */
-    while ( i < j && !is_lower_word(w[i]) )	   /*                        */
+    while ( i < j && !is_lower_word((Uchar*)w[i]) )/*                        */
     { type[i++] = 'f'; first++; }		   /*                        */
-    while ( i < j && is_lower_word(w[i]) )	   /*                        */
+    while ( i < j && is_lower_word((Uchar*)w[i]) ) /*                        */
     { type[i++] = 'v'; von++; }			   /*                        */
     while ( i < j )				   /*                        */
     { type[i++] = 'l'; last++; }		   /*                        */
@@ -490,23 +490,25 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   else if (   commas == 1			   /*------------------------*/
 	   && len > 2				   /* ff vv ll, jj           */
 	   && w[len-2] == comma			   /*                        */
-	   && is_jr(w[len-1], FALSE) )		   /*                        */
+	   && is_jr((Uchar*)w[len-1], FALSE) )	   /*                        */
   { j = len - 1;				   /*                        */
     type[j--] = 'j'; jr++;			   /*                        */
     type[j--] = ',';				   /*                        */
     if ( j >= 0 ) { type[j--] = 'l'; last++; }	   /*                        */
     i = 0;					   /*                        */
-    while ( i < j && !is_lower_word(w[i]) )	   /*                        */
+    while ( i < j && !is_lower_word((Uchar*)w[i]) )/*                        */
     { type[i++] = 'f'; first++; }		   /*                        */
-    while ( i < j && is_lower_word(w[i]) )	   /*                        */
+    while ( i < j && is_lower_word((Uchar*)w[i]) ) /*                        */
     { type[i++] = 'v'; von++; }			   /*                        */
     while ( i < j )				   /*                        */
     { type[i++] = 'l'; last++; }		   /*                        */
   }						   /*                        */
   else						   /*                        */
   { i = 0;			   		   /*------------------------*/
-    if ( is_lower_word(w[i]) )		   	   /* vv ll, ff              */
-    { while ( i < len && w[i] != comma && is_lower_word(w[i]) )/*            */
+    if ( is_lower_word((Uchar*)w[i]) )		   /* vv ll, ff              */
+    { while ( i < len &&			   /*                        */
+	      w[i] != comma &&	   		   /*                        */
+	      is_lower_word((Uchar*)w[i]) )	   /*                        */
       { type[i++] = 'v'; von++; }		   /*                        */
     }						   /*                        */
 			   			   /*------------------------*/
@@ -519,14 +521,14 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
       { type[i++] = 'j'; jr++; }		   /*                        */
       if (i < len) { type[i++] = ','; }		   /*                        */
     }						   /*                        */
-    while ( i < len && !is_lower_word(w[i]) )	   /*                        */
+    while ( i < len && !is_lower_word((Uchar*)w[i]) )/*                      */
     { if (w[i] == comma) {	   		   /*                        */
         type[i++] = ',';			   /*                        */
       } else {					   /*                        */
         type[i++] = 'f'; first++;		   /*                        */
       }						   /*                        */
     }		   				   /*                        */
-    while ( i < len && is_lower_word(w[i]) )	   /*                        */
+    while ( i < len && is_lower_word((Uchar*)w[i]) )/*                       */
     { type[i++] = 'v'; von++; }			   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -548,7 +550,7 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
       case NameLast:	t = 'l'; j = last;  break; /*                        */
       case NameVon:	t = 'v'; j = von;   break; /*                        */
       case NameJr:	t = 'j'; j = jr;    break; /*                        */
-      case NameString:	sbputs(NameMid(nn),sb);	   /*                        */
+      case NameString:	sbputs((char*)NameMid(nn),sb);/*                     */
       default:		t = ' '; j = 0; 	   /*                        */
     }						   /*                        */
     switch( NameType(nn) & NameTranslationMask )   /*                        */
@@ -559,19 +561,19 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
     }						   /*                        */
  						   /*                        */
     if ( j > 0 )				   /*                        */
-    { sbputs(NamePre(nn), sb);			   /*                        */
+    { sbputs((char*)NamePre(nn), sb);		   /*                        */
       again = FALSE;				   /*                        */
       for ( i = 0; i < len; i++ )		   /*                        */
       { if ( type[i] == t )			   /*                        */
 	{					   /*                        */
   	  if ( trim-- == 0 ) break;		   /*                        */
-	  if ( again ) sbputs(NameMid(nn), sb);	   /*                        */
+	  if ( again ) sbputs((char*)NameMid(nn), sb);/*                     */
 	  else again = TRUE;			   /*                        */
  						   /*                        */
 	  initial(w[i], tr, strip, sb);	   	   /*                        */
 	}					   /*                        */
       }						   /*                        */
-      sbputs(NamePost(nn), sb);			   /*                        */
+      sbputs((char*)NamePost(nn), sb);		   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -624,21 +626,21 @@ static int is_jr(s, eager)			   /*                        */
   switch ( ToLower(*s) )			   /*                        */
   { case 'j':					   /*                        */
       s++;					   /*                        */
-      return ( case_cmp(s,"r")    ||		   /*                        */
-	       case_cmp(s,"r.")   ||		   /*                        */
-	       case_cmp(s,"unior") );	   	   /*                        */
+      return ( case_cmp(s,(Uchar*)"r")    ||	   /*                        */
+	       case_cmp(s,(Uchar*)"r.")   ||	   /*                        */
+	       case_cmp(s,(Uchar*)"unior") );	   /*                        */
     case 's':					   /*                        */
       s++;					   /*                        */
-      return ( case_cmp(s,"en")   ||		   /*                        */
-	       case_cmp(s,"en.")  ||	   	   /*                        */
-	       case_cmp(s,"enior") );	   	   /*                        */
+      return ( case_cmp(s,(Uchar*)"en")   ||	   /*                        */
+	       case_cmp(s,(Uchar*)"en.")  ||	   /*                        */
+	       case_cmp(s,(Uchar*)"enior") );	   /*                        */
     case 'm':					   /*                        */
       s++;					   /*                        */
-      return ( case_cmp(s,"d") );	   	   /*                        */
+      return ( case_cmp(s,(Uchar*)"d") );	   /*                        */
     case 'p':					   /*                        */
       s++;					   /*                        */
-      return ( case_cmp(s,"hD")   ||		   /*                        */
-	       case_cmp(s,"hD.")  );	   	   /*                        */
+      return ( case_cmp(s,(Uchar*)"hD")   ||	   /*                        */
+	       case_cmp(s,(Uchar*)"hD.")  );	   /*                        */
     case 'i':					   /*                        */
       s++;					   /*                        */
       return ( (*s == '\0' && eager)      ||	   /*                        */
@@ -676,8 +678,8 @@ static int is_jr(s, eager)			   /*                        */
 	       strcmp((char*)s,"XIX")   == 0 ||	   /*                        */
 	       strcmp((char*)s,"XX")    == 0 );	   /*                        */
     case 'e':					   /*                        */
-      return ( case_cmp(++s,"sc") ||	   	   /*                        */
-	       case_cmp(s,"sc.")  );		   /*                        */
+      return ( case_cmp(++s,(Uchar*)"sc") ||	   /*                        */
+	       case_cmp(s,(Uchar*)"sc.")  );	   /*                        */
   }						   /*                        */
   return FALSE;					   /*                        */
 }						   /*------------------------*/
