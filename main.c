@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: main.c,v 1.15 2012-01-28 06:44:26 gene Exp $
+** $Id: main.c,v 1.16 2012-01-29 17:04:07 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -157,7 +157,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2012-01-28 06:44:26 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2012-01-29 17:04:07 $",
     "gene@gerd-neugebauer.de"
   };
 
@@ -440,13 +440,13 @@ int main(argc,argv)				   /*			     */
   init_error(stderr);				   /*                        */
   init_bibtool(argv[0]);			   /*                        */
 						   /*			     */
-  for ( i=1; i<argc; i++ )			   /*			     */
+  for ( i = 1; i < argc; i++ )			   /*			     */
   { if ( *(ap=argv[i]) != OptionLeadingCharacter ) /*			     */
     { save_input_file(argv[i]);			   /*			     */
     }						   /*			     */
     else					   /*			     */
     { switch ( *++ap )				   /*			     */
-      { case 'A': set_base((Uchar*)(ap+1));  break;/* disambiguation	     */
+      { case 'A': set_base((ap+1));  break;	   /* disambiguation	     */
 	case 'c': Toggle(rsc_xref_select);   break;/* include crossreferences*/
 	case 'd': Toggle(rsc_double_check);  break;/* double entries	     */
 #ifdef HAVE_LIBKPATHSEA
@@ -524,7 +524,7 @@ int main(argc,argv)				   /*			     */
  						   /*  has been modified.    */
   the_db = new_db();				   /*                        */
 						   /*			     */
-  for ( i=0; i<input_file_ptr; i++ )		   /* For all input files    */
+  for ( i = 0; i < input_file_ptr; i++ )	   /* For all input files    */
   {						   /*			     */
     if ( read_db(the_db,			   /*                        */
 		 input_files[i],		   /*                        */
@@ -545,7 +545,7 @@ int main(argc,argv)				   /*			     */
     if ( (c=(int*)malloc(c_len*sizeof(int))) == NULL )/*                     */
     { rsc_cnt_all = rsc_cnt_used = 0; }		   /*                        */
     else					   /*                        */
-    { for (i=0;i<c_len;i++) c[i] = cnt[i];	   /*                        */
+    { for (i = 0;i < c_len; i++) c[i] = cnt[i];	   /*                        */
     }						   /*                        */
   }						   /*                        */
 						   /*			     */
@@ -627,7 +627,7 @@ int main(argc,argv)				   /*			     */
     int *cnt = db_count(the_db,(int*)NULL);	   /*                        */
 						   /*                        */
     ErrC('\n');		   	   	   	   /*			     */
-    for (i=0; i<c_len; ++i)			   /*			     */
+    for (i = 0; i < c_len; ++i)			   /*			     */
     { if ( rsc_cnt_all || c[i] > 0 )	   	   /*			     */
       { ErrPrintF3("---  %-15s %5d read  %5d written\n",/*		     */
 		   get_entry_type(i),	   	   /*			     */
@@ -834,11 +834,11 @@ static int dbl_check(db,rec)			   /*                        */
       ErrPrint("*** BibTool WARNING: Possible double entries discovered: \n***\t");
       if ( k1 == NULL ) k1 = (Uchar*) "";	   /*                        */
       if ( k2 == NULL ) k2 = (Uchar*) "";	   /*                        */
-      ErrPrint(k2);				   /*                        */
+      ErrPrint((char*)k2);			   /*                        */
       ErrPrint(" =?= ");			   /*                        */
-      ErrPrint(k1);				   /*                        */
+      ErrPrint((char*)k1);			   /*                        */
       ErrPrint("\n***\t");			   /*                        */
-      ErrPrint(RecordSortkey(rec));		   /*			     */
+      ErrPrint((char*)RecordSortkey(rec));	   /*			     */
       ErrPrint("\n");				   /*                        */
     }						   /*                        */
     if (rsc_del_dbl)				   /*                        */

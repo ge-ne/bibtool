@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: expand.c,v 1.9 2012-01-26 19:54:20 gene Exp $
+** $Id: expand.c,v 1.10 2012-01-29 17:04:07 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -34,9 +34,9 @@
 #else
 #define _ARG(A) ()
 #endif
- Uchar * expand_rhs _ARG((Uchar *s,char *pre,char *post,DB db));/* expand.c  */
- static int expand _ARG((char *s,StringBuffer *sb,int brace,int first,char *q_open,char *q_close,DB db));/* expand.c*/
- static void expand__ _ARG((char *s,StringBuffer *sb,char *q_open,char *q_close,DB db));/* expand.c*/
+ Uchar * expand_rhs _ARG((Uchar *s,Uchar *pre,Uchar *post,DB db));/* expand.c*/
+ static int expand _ARG((Uchar *s,StringBuffer *sb,int brace,int first,Uchar *q_open,Uchar *q_close,DB db));/* expand.c*/
+ static void expand__ _ARG((Uchar *s,StringBuffer *sb,Uchar *q_open,Uchar *q_close,DB db));/* expand.c*/
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -65,19 +65,19 @@
 **___________________________________________________			     */
 Uchar * expand_rhs(s,pre,post,db)		   /*                        */
   Uchar *s;					   /*                        */
-  char *pre;					   /*                        */
-  char *post;					   /*                        */
+  Uchar *pre;					   /*                        */
+  Uchar *post;					   /*                        */
   DB   db;					   /*                        */
 { static StringBuffer *sb = NULL;		   /*                        */
 						   /*                        */
-  DebugPrint1("expand_rhs");
+  DebugPrint1("expand_rhs");			   /*                        */
   if ( sb == NULL && (sb = sbopen()) == NULL )	   /*                        */
   { OUT_OF_MEMORY("string expansion");}		   /*                        */
  						   /*                        */
   DebugPrint2("Expanding ",s);			   /*                        */
  						   /*                        */
   sbrewind(sb);					   /*                        */
-  expand__((char*)s,sb,pre,post,db);		   /*                        */
+  expand__(s, sb, pre, post, db);		   /*                        */
   return (Uchar*)sbflush(sb);			   /*                        */
 }						   /*------------------------*/
 
@@ -96,17 +96,17 @@ Uchar * expand_rhs(s,pre,post,db)		   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void expand__(s,sb,q_open,q_close,db)	   /*                        */
-  register char *s;				   /*                        */
-  StringBuffer  *sb;				   /*                        */
-  char          *q_open;			   /*                        */
-  char          *q_close;			   /*                        */
-  DB		db;				   /*                        */
+  register Uchar *s;				   /*                        */
+  StringBuffer   *sb;				   /*                        */
+  Uchar          *q_open;			   /*                        */
+  Uchar          *q_close;			   /*                        */
+  DB		 db;				   /*                        */
 {						   /*                        */
   if ( ! expand(s,sb,TRUE,TRUE,q_open,q_close,db) )/*                        */
-  { PUTS(q_close,sb); }				   /*                        */
+  { PUTS(q_close, sb); }			   /*                        */
   else if ( sbtell(sb) == 0 )			   /*                        */
-  { PUTS(q_open,sb);			   	   /*                        */
-    PUTS(q_close,sb);			   	   /*                        */
+  { PUTS(q_open, sb);			   	   /*                        */
+    PUTS(q_close, sb);			   	   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
@@ -126,20 +126,20 @@ static void expand__(s,sb,q_open,q_close,db)	   /*                        */
 ** Returns:	
 **___________________________________________________			     */
 static int expand(s,sb,brace,first,q_open,q_close,db)/*                      */
-  register char *s;				   /* specification          */
-  StringBuffer  *sb;				   /* output device          */
-  int           brace;				   /* is a brace needed?     */
-  int           first;				   /* is this the first part?*/
-  char          *q_open;			   /* open delimiter         */
-  char          *q_close;			   /* close delimiter        */
-  DB		db;				   /*                        */
+  register Uchar *s;				   /* specification          */
+  StringBuffer   *sb;				   /* output device          */
+  int            brace;				   /* is a brace needed?     */
+  int            first;				   /* is this the first part?*/
+  Uchar          *q_open;			   /* open delimiter         */
+  Uchar          *q_close;			   /* close delimiter        */
+  DB		 db;				   /*                        */
 {						   /*                        */
   while ( *s )					   /*                        */
   { 						   /*                        */
     switch ( *s )				   /*                        */
     { case '\0': break;				   /* Just in case.          */
       case '"':					   /* Start a string part.   */
-        DebugPrint2("Start String:",s);		   /*                        */
+        DebugPrint2("Start String:", s);	   /*                        */
         if ( *++s == '"' ) { ++s; break; }	   /* Ignore the empty string*/
         if ( brace ) 				   /*                        */
 	{ if ( !first ) { PUTS(" # ",sb); }	   /*                        */
@@ -147,7 +147,7 @@ static int expand(s,sb,brace,first,q_open,q_close,db)/*                      */
         }					   /*                        */
         first = FALSE;				   /*                        */
  						   /*                        */
-        for ( ; *s && *s!='"'; ++s )		   /* Until the end is found */
+        for ( ; *s && *s != '"'; ++s )		   /* Until the end is found */
 	{ PUTC(*s,sb);		   		   /*  transfer character.   */
 	  if ( *s == '\\' && *(s+1) ) 		   /*  \ is for quoting.     */
 	  { ++s; PUTC(*s,sb); }	   		   /*                        */
@@ -164,7 +164,7 @@ static int expand(s,sb,brace,first,q_open,q_close,db)/*                      */
         first = FALSE;				   /*                        */
  						   /*                        */
         { register int level = 1;		   /* Initialize brace count */
-	  for ( ; *s && level>0; ++s )		   /* Until level 0 or end   */
+	  for ( ; *s && level > 0; ++s )	   /* Until level 0 or end   */
 	  { switch ( *s )			   /*                        */
 	    { case '\\':			   /* \ is for quoting.      */
 		PUTC(*s,sb);		   	   /*                        */

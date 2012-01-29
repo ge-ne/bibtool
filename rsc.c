@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: rsc.c,v 1.9 2012-01-26 19:54:21 gene Exp $
+** $Id: rsc.c,v 1.10 2012-01-29 17:04:08 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -49,14 +49,14 @@
 #else
 #define _ARG(A) ()
 #endif
- int load_rsc _ARG((char *name));
- int resource _ARG((char *name));
- int search_rsc _ARG((void));
- int set_rsc _ARG((Uchar *name,Uchar *val));
- int use_rsc _ARG((Uchar *s));
- static int test_true _ARG((Uchar * s));
- static void init_rsc _ARG((void));
- void rsc_print _ARG((char *s));
+ int load_rsc _ARG((char *name));		   /*                        */
+ int resource _ARG((Uchar *name));		   /*                        */
+ int search_rsc _ARG((void));			   /*                        */
+ int set_rsc _ARG((Uchar *name,Uchar *val));	   /*                        */
+ int use_rsc _ARG((Uchar *s));			   /*                        */
+ static int test_true _ARG((Uchar * s));	   /*                        */
+ static void init_rsc _ARG((void));		   /*                        */
+ void rsc_print _ARG((char *s));		   /*                        */
 
 #define NoRscError(X)	      WARNING3("Resource file ",X," not found.")
 
@@ -186,15 +186,13 @@ int load_rsc(name)			   	   /*			     */
 **		
 ** Arguments:
 **	name	
-**	 warnp	
 ** Returns:	
 **___________________________________________________			     */
 int resource(name)			   	   /*			     */
-  register char *name;				   /*			     */
+  register Uchar *name;				   /*			     */
 {						   /*			     */
   int ret = load_rsc(name);			   /*                        */
-  if ( !ret )
-  { NoRscError(name); }
+  if ( !ret ) { NoRscError(name); }		   /*                        */
   return ret;	   				   /*			     */
 }						   /*------------------------*/
 

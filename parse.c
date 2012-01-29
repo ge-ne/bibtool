@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: parse.c,v 1.12 2012-01-28 06:44:26 gene Exp $
+** $Id: parse.c,v 1.13 2012-01-29 17:04:07 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -40,7 +40,7 @@
 #endif
  int parse_bib _ARG((Record rec));		   /* parse.c                */
  int read_rsc _ARG((char *name));		   /* parse.c                */
- int see_bib _ARG((char * fname));		   /* parse.c                */
+ int see_bib _ARG((Uchar * fname));		   /* parse.c                */
  static int see_rsc _ARG((char * fname));	   /* parse.c                */
  int seen _ARG((void));				   /* parse.c                */
  static int fill_line _ARG((void));		   /* parse.c                */
@@ -227,7 +227,7 @@ static int see_bib_msg(s)			   /*			     */
 ** Returns:	|TRUE| iff the file couls be opened for reading.
 **___________________________________________________			     */
 int see_bib(fname)				   /*			     */
-  register char * fname;			   /*			     */
+  register Uchar * fname;			   /*			     */
 {						   /*			     */
   init_parse();					   /*			     */
   InitLine;					   /*			     */
@@ -238,13 +238,13 @@ int see_bib(fname)				   /*			     */
     return TRUE;				   /*			     */
   }						   /*                        */
 #ifdef HAVE_LIBKPATHSEA
-  filename = kpse_find_file(fname,		   /*                        */
+  filename = kpse_find_file((char*)fname,	   /*                        */
 			    kpse_bib_format,	   /*                        */
 			    TRUE);		   /*                        */
   if ( filename == NULL ) return FALSE;	   	   /*                        */
   file = fopen(filename,"r");			   /*                        */
 #else
-  file = px_fopen(fname,			   /*			     */
+  file = px_fopen((char*)fname,			   /*			     */
 		  "r",			   	   /*			     */
 		  f_pattern,			   /*			     */
 		  f_path,			   /*			     */

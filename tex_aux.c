@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: tex_aux.c,v 1.11 2012-01-29 15:40:13 gene Exp $
+** $Id: tex_aux.c,v 1.12 2012-01-29 17:04:08 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -150,7 +150,7 @@ int aux_used(s)				   	   /*                        */
 ** Returns:	|TRUE| iff the file could not be opened.
 **___________________________________________________			     */
 int read_aux(fname,fct,verbose)			   /*                        */
-  char 	        *fname;				   /* aux file name          */
+  Uchar 	*fname;			   	   /* aux file name          */
   void		(*fct)_ARG((char*));		   /*                        */
   int           verbose;			   /*                        */
 { FILE 	        *file;				   /*                        */
@@ -160,7 +160,7 @@ int read_aux(fname,fct,verbose)			   /*                        */
   cite_star  = FALSE;				   /*                        */
   rsc_select = TRUE; 				   /*                        */
   					   	   /*                        */
-  if ( (file=fopen(fname,"r") ) == NULL )	   /*                        */
+  if ( (file=fopen((char*)fname,"r") ) == NULL )   /*                        */
   { StringBuffer *sb = sbopen();                   /*                        */
     sbputs(fname,sb);                              /*                        */
     sbputs(".aux",sb);                             /*                        */
@@ -308,8 +308,8 @@ int apply_aux(db)				   /*                        */
 	{ count = -1; }			   	   /*                        */
 	else					   /*                        */
 	{ key = symbol(lower(expand_rhs(key,	   /*                        */
-					(char*)sym_empty,/*                  */
-					(char*)sym_empty,/*                  */
+					sym_empty, /*                        */
+					sym_empty, /*                        */
 					db)));     /*                        */
 	  if ( (r=db_find(db,key)) == RecordNULL ) /*                        */
 	  { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",key);/*      */

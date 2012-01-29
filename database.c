@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: database.c,v 1.11 2012-01-28 06:44:26 gene Exp $
+** $Id: database.c,v 1.12 2012-01-29 17:04:07 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -40,26 +40,26 @@
 #else
 #define _ARG(A) ()
 #endif
- DB new_db _ARG((void));
- Record db_find _ARG((DB db,Uchar *key));
- Record db_search _ARG((DB db,Uchar *key));
- Uchar * db_new_key _ARG((DB db,Uchar *key));
- Uchar * db_string _ARG((DB db,Uchar *s,int localp));
- int * db_count _ARG((DB db,int *lp));
- int read_db _ARG((DB db,char *file,int verbose));
- static Record insert_record _ARG((Record rec,Record ptr,int (*less)_ARG((Record,Record))));
- static Record rec__sort _ARG((Record rec,int (*less)_ARG((Record,Record))));
- static int cmp_heap _ARG((Record r1,Record r2));
- static void mark_string _ARG((Record rec,Uchar *s));
- void db_insert _ARG((DB db,Record rec,int verbose));
- void db_forall _ARG((DB db,int (*fct)_ARG((DB,Record))));
- void db_mac_sort _ARG((DB db));
- void db_rewind _ARG((DB db));
- void db_sort _ARG((DB db,int (*less)_ARG((Record,Record))));
- void db_xref_undelete _ARG((DB db));
- void delete_record _ARG((DB db,Record rec));
- void free_db _ARG((DB db));
- void print_db _ARG((FILE *file,DB db,char *spec));
+ DB new_db _ARG((void));			   /*                        */
+ Record db_find _ARG((DB db,Uchar *key));	   /*                        */
+ Record db_search _ARG((DB db,Uchar *key));	   /*                        */
+ Uchar * db_new_key _ARG((DB db,Uchar *key));	   /*                        */
+ Uchar * db_string _ARG((DB db,Uchar *s,int localp));/*                      */
+ int * db_count _ARG((DB db,int *lp));		   /*                        */
+ int read_db _ARG((DB db,Uchar *file,int verbose));/*                        */
+ static Record insert_record _ARG((Record rec,Record ptr,int (*less)_ARG((Record,Record))));/**/
+ static Record rec__sort _ARG((Record rec,int (*less)_ARG((Record,Record))));/**/
+ static int cmp_heap _ARG((Record r1,Record r2));  /*                        */
+ static void mark_string _ARG((Record rec,Uchar *s));/*                      */
+ void db_insert _ARG((DB db,Record rec,int verbose));/*                      */
+ void db_forall _ARG((DB db,int (*fct)_ARG((DB,Record))));/*                 */
+ void db_mac_sort _ARG((DB db));		   /*                        */
+ void db_rewind _ARG((DB db));			   /*                        */
+ void db_sort _ARG((DB db,int (*less)_ARG((Record,Record))));/*              */
+ void db_xref_undelete _ARG((DB db));		   /*                        */
+ void delete_record _ARG((DB db,Record rec));	   /*                        */
+ void free_db _ARG((DB db));			   /*                        */
+ void print_db _ARG((FILE *file,DB db,char *spec));/*                        */
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -126,14 +126,14 @@ void free_db(db)				   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	db	
-**	key	
-**	rec	
+**	db	the database
+**	key	the key
+**	rec	the record
 ** Returns:	
 **___________________________________________________			     */
 int apply_modify(db,key,rec)	   		   /*                        */
-  DB db;					   /*                        */
-  char * key;					   /*                        */
+  DB    db;					   /*                        */
+  Uchar *key;					   /*                        */
   Record rec;					   /*                        */
 { Uchar **hp = RecordHeap(rec);			   /*                        */
   int i;					   /*                        */
@@ -144,7 +144,7 @@ int apply_modify(db,key,rec)	   		   /*                        */
   }						   /*			     */
   DebugPrint2("Modify ",*RecordHeap(rec));	   /*                        */
 						   /*			     */
-  for ( i=RecordFree(rec); i>0; i-=2 )		   /*			     */
+  for ( i = RecordFree(rec); i > 0; i-=2 )	   /*			     */
   {		   				   /* No deleted or          */
     if ( *hp && is_allowed(**hp) && *(hp+1) )	   /*   private entry        */
     { DebugPrint3(*hp," => ",*(hp+1));	   	   /*                        */
@@ -283,7 +283,7 @@ void db_insert(db,rec,verbose)		   	   /*                        */
 **___________________________________________________			     */
 int read_db(db,file,verbose)		   	   /*                        */
   DB		  db;				   /*                        */
-  char		  *file;			   /*                        */
+  Uchar		  *file;			   /*                        */
   int		  verbose;			   /*                        */
 { register int	  type;				   /*			     */
   static Record	  master_record = RecordNULL;	   /*			     */
@@ -297,7 +297,7 @@ int read_db(db,file,verbose)		   	   /*                        */
 				 ?sym_empty	   /*                        */
 				 :symbol((Uchar*)file));/*                   */
  						   /*                        */
-  if ( file == NULL ) file = "<stdin>";		   /*                        */
+  if ( file == NULL ) file = (Uchar*)"<stdin>";	   /*                        */
   if ( verbose ) 			   	   /* If desired print an    */
   { VerbosePrint2("Reading ",file); }	   	   /*	open message.	     */
  						   /*                        */
@@ -1211,8 +1211,7 @@ int * db_count(db,lp)				   /*                        */
 **___________________________________________________			     */
 void db_xref_undelete(db)			   /*                        */
   DB db;					   /*                        */
-{ Record rec1;					   /*                        */
-  Record rec = DBnormal(db);			   /*                        */
+{ Record rec = DBnormal(db);			   /*                        */
   if ( rec == RecordNULL ) return;		   /* No entries left anyhow.*/
  						   /*                        */
   while ( PrevRecord(rec) != RecordNULL )	   /* Rewind                 */
@@ -1225,7 +1224,7 @@ void db_xref_undelete(db)			   /*                        */
     if ( RecordIsXREF(rec)   &&		   	   /*                        */
 	 !RecordIsDELETED(rec)		   	   /*                        */
        )					   /*                        */
-    { Uchar  *key;				   /*                        */
+    { Uchar  *key = (Uchar*)"???";		   /*                        */
       int    count;				   /*                        */
       Record r = rec;				   /*                        */
  						   /*                        */

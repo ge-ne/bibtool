@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: database.h,v 1.8 2011-11-26 06:21:15 gene Exp $
+** $Id: database.h,v 1.9 2012-01-29 17:04:08 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2011 Gerd Neugebauer
+** (c) 1996-2012 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -154,7 +154,7 @@
  Uchar * db_new_key _ARG((DB db,Uchar *key));
  Uchar * db_string _ARG((DB db,Uchar *s,int localp));
  int *db_count _ARG((DB db,int *lp));
- int read_db _ARG((DB db,char *file,int verbose));
+ int read_db _ARG((DB db,Uchar *file,int verbose));
 void db_insert _ARG((DB db,Record rec, int verbose));
  void db_forall _ARG((DB db,int (*fct)_ARG((DB,Record))));
  void db_mac_sort _ARG((DB db));

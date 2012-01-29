@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: rewrite.c,v 1.9 2012-01-26 19:54:21 gene Exp $
+** $Id: rewrite.c,v 1.10 2012-01-29 17:04:08 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -69,7 +69,9 @@
  static int s_match _ARG((Uchar * p,Uchar * s));
  static int s_search _ARG((Uchar * pattern,Uchar * s));
  static void add_rule _ARG((Uchar *s,Rule *rp,Rule *rp_end,int flags,int casep));
+#ifdef UNUSED
  static void free_rule _ARG((Rule rule));
+#endif
  static void init_s_search _ARG((char * ignored));
  static void rewrite_1 _ARG((Uchar *frame,StringBuffer *sb,Uchar *match,DB db,Record rec));
  void add_check_rule _ARG((Uchar *s));
@@ -457,7 +459,7 @@ static Uchar * repl_regex(field,value,rule,db,rec)  /*			     */
 	    || RuleField(rule) == field ) &&	   /*			     */
 	   (RuleFlag(rule) & RULE_ADD) == 0 &&	   /*                        */
 	   re_search(&RulePattern(rule),	   /*			     */
-		     value,			   /*                        */
+		     (char*)value,		   /*                        */
 		     len,			   /*                        */
 		     0,				   /*                        */
 		     len-1,			   /*                        */
@@ -537,11 +539,12 @@ static Uchar * check_regex(field,value,rule,db,rec) /*			     */
   {						   /*			     */
     if ( (   RuleField(rule) == NULL		   /*			     */
 	  || RuleField(rule) == field )		   /*			     */
-	&&
-	 (   (RuleFlag(rule)&RULE_REGEXP) == 0
+	&&					   /*                        */
+	 (   (RuleFlag(rule)&RULE_REGEXP) == 0	   /*                        */
 	  || re_search(&RulePattern(rule),	   /*			     */
-		       value,len,0,len-1,&reg) >=0 /*			     */
-	 )
+		       (char*)value,		   /*                        */
+		       len,0,len-1,&reg) >=0 	   /*			     */
+	 )					   /*                        */
        )					   /*			     */
     { if ( RuleFrame(rule) == (Uchar*)NULL )	   /*			     */
       { return (Uchar*)NULL; }			   /*			     */
@@ -840,7 +843,8 @@ static int s_search(pattern,s)			   /*                        */
   Uchar * s;					   /*                        */
 {						   /*                        */
   if ( s_cased != rsc_case_select ||		   /*                        */
-       strcmp((char*)s_ignored,rsc_sel_ignored) != 0 )/*                     */
+       strcmp((char*)s_ignored,			   /*                        */
+	      (char*)rsc_sel_ignored) != 0 )	   /*                        */
   { init_s_search(rsc_sel_ignored); }		   /*                        */
  						   /*                        */
   for ( ; *s; s++ )				   /*                        */
@@ -893,7 +897,7 @@ int is_selected(db,rec)	   		   	   /*			     */
 	if ( RecordHeap(rec)[0] )		   /*                        */
 	{ len = strlen((char*)(RecordHeap(rec)[0]));/*                       */
 	  ReturnIf(re_search(&RulePattern(rule),   /*			     */
-			     RecordHeap(rec)[0],   /*                        */
+			     (char*)RecordHeap(rec)[0],/*                    */
 			     len,		   /*                        */
 			     0,		   	   /*                        */
 			     len-1,		   /*                        */
@@ -903,7 +907,7 @@ int is_selected(db,rec)	   		   	   /*			     */
 	{ if ( RecordHeap(rec)[i] )		   /*                        */
 	  { len = strlen((char*)(RecordHeap(rec)[i+1]));/*                   */
 	    ReturnIf(re_search(&RulePattern(rule), /*			     */
-			       RecordHeap(rec)[i+1],/*                       */
+			       (char*)RecordHeap(rec)[i+1],/*                */
 			       len,		   /*                        */
 			       0,		   /*                        */
 			       len-1,		   /*                        */
@@ -936,7 +940,7 @@ int is_selected(db,rec)	   		   	   /*			     */
 #ifdef REGEX
 	len = strlen((char*)value);		   /*                        */
         ReturnIf(re_search(&RulePattern(rule),	   /*			     */
-			   value,		   /*                        */
+			   (char *)value,	   /*                        */
 			   len,			   /*                        */
 			   0,			   /*                        */
 			   len-1,		   /*                        */

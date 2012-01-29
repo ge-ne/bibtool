@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: resource.h,v 1.10 2011-12-13 06:53:45 gene Exp $
+** $Id: resource.h,v 1.11 2012-01-29 17:04:08 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2011 Gerd Neugebauer
+** (c) 1996-2012 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -64,7 +64,7 @@ RSC_NEXT('d')
   RscBoolean( "dump.symbols"	      , r_ds  ,rsc_dump_symbols	  , FALSE   )
 RSC_NEXT('e')
   RscString(  "env.separator"	      , r_es  ,rsc_env_sep	  , ENV_SEP ) 
-  RscByFct(   "extract.file"	      , r_ef  ,read_aux(val,save_input_file,FALSE)	    )
+  RscByFct(   "extract.file"	      , r_ef  ,read_aux(val,save_input_file,FALSE))
   RscByFct(   "extract.regex"	      , r_er  ,save_regex(val)		    )
   RscBoolean( "expand.macros"	      , r_em  ,rsc_expand_macros  , FALSE   )
   RscBoolean( "expand.crossref"	      , r_ex  ,rsc_expand_crossref, FALSE   )
@@ -76,9 +76,9 @@ RSC_NEXT('f')
   RscByFct(   "fmt.title.title"	      , r_ftt ,set_separator(5,val)	    )
   RscByFct(   "fmt.et.al"	      , r_fea ,set_separator(7,val)	    )
   RscByFct(   "fmt.word.separator"    , r_fws ,add_word_sep(val)	    )
-  RscByFct(   "field.type"	      , r_ft  ,set_symbol_type(val)	    )
+  RscByFct(   "field.type"	      , r_ft  ,set_symbol_type((char*)val)  )
 RSC_NEXT('i')
-  RscByFct(   "input"		      , r_i   ,save_input_file(val)	    )
+RscByFct(   "input"		      , r_i   ,save_input_file((char*)val)  )
   RscByFct(   "ignored.word"	      , r_iw  ,add_ignored_word(val)	    )
 RSC_NEXT('k')
   RscBoolean( "key.generation"	      , r_kg  ,rsc_make_key	  , FALSE   ) 
@@ -88,13 +88,13 @@ RSC_NEXT('k')
   RscByFct(   "key.number.separator"  , r_kns ,set_separator(6,val)	    )
   RscBoolean( "key.expand.macros"     , r_kem ,rsc_key_expand_macros,TRUE   )
 RSC_NEXT('m')
-  RscByFct(   "macro.file"	      , r_mf  ,save_macro_file(val)	    )
+RscByFct(   "macro.file"	      , r_mf  ,save_macro_file((char*)val)  )
 RSC_NEXT('n')
   RscByFct(   "new.entry.type"	      , r_net ,def_entry_type(val)	    )
   RscByFct(   "new.field.type"	      , r_nft ,def_field_type(val)	    )
   RscByFct(   "new.format.type"	      , r_nfmt,def_format_type(val)	    )
 RSC_NEXT('o')
-  RscByFct(   "output.file"	      , r_of  ,save_output_file(val)	    )
+RscByFct(   "output.file"	      , r_of  ,save_output_file((char*)val) )
 RSC_NEXT('p')
   RscBoolean( "pass.comments"	      , r_pc  ,rsc_pass_comment	  , FALSE   )
   RscBoolean( "preserve.key.case"     , r_pkc ,rsc_key_case	  , FALSE   )
@@ -124,7 +124,7 @@ RSC_NEXT('q')
 RSC_NEXT('r')
   RscByFct(   "regexp.syntax"	      , r_rs  ,set_regex_syntax(val)	    )
   RscByFct(   "resource"	      , r_r   ,resource(val)		    )
-  RscByFct(   "resource.search.path"  , r_rsp ,set_rsc_path(val)	    )
+  RscByFct(   "resource.search.path"  , r_rsp ,set_rsc_path((char*)val)	    )
   RscByFct(   "rewrite.rule"	      , r_rr  ,add_rewrite_rule(val)	    )
   RscBoolean( "rewrite.case.sensitive", r_rcs ,rsc_case_rewrite	  ,  TRUE   )
   RscNumeric( "rewrite.limit"	      , r_rl  ,rsc_rewrite_limit  ,   512   )
@@ -141,10 +141,10 @@ RSC_NEXT('s')
   RscBoolean( "sort.cased"	      , r_sc  ,rsc_sort_cased     , FALSE   )
   RscBoolean( "sort.macros"	      , r_sm  ,rsc_srt_macs	  , TRUE    )
   RscBoolean( "sort.reverse"	      , r_sr  ,rsc_sort_reverse   , FALSE   )
-  RscByFct(   "sort.order"	      , r_so  ,add_sort_order(val)	    )
-  RscByFct(   "sort.format"	      , r_sf  ,add_sort_format(val)	    )
+RscByFct(   "sort.order"	      , r_so  ,add_sort_order(val)          )
+RscByFct(   "sort.format"	      , r_sf  ,add_sort_format((char*)val)  )
   RscBoolean( "suppress.initial.newline", r_sin ,rsc_no_nl	  , FALSE   )
-  RscByFct(   "symbol.type"	      , r_st  ,set_symbol_type(val)	    )
+  RscByFct(   "symbol.type"	      , r_st  ,set_symbol_type((char*)val)  )
 RSC_NEXT('t')
   RscByFct(   "tex.define"	      , r_td  ,TeX_def(val)		    ) 
 RSC_NEXT('v')

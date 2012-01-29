@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: key.c,v 1.14 2012-01-28 06:44:26 gene Exp $
+** $Id: key.c,v 1.15 2012-01-29 17:04:07 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -73,7 +73,7 @@
  void free_key_node _ARG((KeyNode kn));		   /* key.c                  */
  void make_key _ARG((DB db,Record rec));	   /* key.c                  */
  void make_sort_key _ARG((DB db,Record rec));	   /* key.c                  */
- void set_base _ARG((char *value));		   /* key.c                  */
+ void set_base _ARG((Uchar *value));		   /* key.c                  */
  void set_separator _ARG((int n,Uchar *s));	   /* key.c                  */
  void start_key_gen _ARG((void));		   /* key.c                  */
 
@@ -315,11 +315,11 @@ void set_separator(n,s)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void set_base(value)				   /*			     */
-  char *value;				   	   /*			     */
+  Uchar *value;				   	   /*			     */
 {						   /*			     */
-  if	  ( case_cmp(value,"upper") ) key_base = KEY_BASE_UPPER;/*           */
-  else if ( case_cmp(value,"lower") ) key_base = KEY_BASE_LOWER;/*           */
-  else if ( case_cmp(value,"digit") ) key_base = KEY_BASE_DIGIT;/*           */
+  if	  ( case_cmp(value,(Uchar*)"upper") ) key_base = KEY_BASE_UPPER;/*   */
+  else if ( case_cmp(value,(Uchar*)"lower") ) key_base = KEY_BASE_LOWER;/*   */
+  else if ( case_cmp(value,(Uchar*)"digit") ) key_base = KEY_BASE_DIGIT;/*   */
   else if ( is_upper(*value) )	      key_base = KEY_BASE_UPPER;/*	     */
   else if ( is_lower(*value) )	      key_base = KEY_BASE_LOWER;/*	     */
   else if ( is_digit(*value) )	      key_base = KEY_BASE_DIGIT;/*	     */
