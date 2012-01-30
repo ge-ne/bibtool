@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: names.c,v 1.15 2012-01-29 20:53:12 gene Exp $
+** $Id: names.c,v 1.16 2012-01-30 05:08:02 gene Exp $
 *******************************************************************************
 ** 
 ** This file is part of BibTool.
@@ -30,13 +30,13 @@
 #define _ARG(A) ()
 #endif
  NameNode name_format _ARG((Uchar *s));		   /* names.c                */
- Uchar * pp_list_of_names _ARG((char **wa,NameNode format,char *trans,int max,char *comma,char *and,char *namesep,char *etal));/* names.c*/
+ Uchar * pp_list_of_names _ARG((Uchar **wa,NameNode format,char *trans,int max,Uchar *comma,Uchar *and,char *namesep,char *etal));/* names.c*/
  char * pp_names _ARG((char *s,NameNode format,char *trans,int max,char *namesep,char *etal));/* names.c*/
  static NameNode new_name_node _ARG((int type,int strip,int trim,Uchar *pre,Uchar *mid,Uchar *post));/* names.c*/
  static int is_jr _ARG((Uchar * s, int eager));	   /* names.c                */
  static int is_lower_word _ARG((Uchar *s));	   /* names.c                */
- static void initial _ARG((char *s,char *trans,int len,StringBuffer *sb));/* names.c*/
- static void pp_one_name _ARG((StringBuffer *sb,char **w,NameNode format,char *trans,int len,char *comma,int commas));/* names.c*/
+ static void initial _ARG((Uchar *s,char *trans,int len,StringBuffer *sb));/* names.c*/
+ static void pp_one_name _ARG((StringBuffer *sb,Uchar **w,NameNode format,char *trans,int len,Uchar *comma,int commas));/* names.c*/
 
 #ifdef BIBTEX_SYNTAX
  static void set_type _ARG((char **sp,char **midp));/* names.c               */
@@ -382,16 +382,16 @@ NameNode name_format(s)				   /*                        */
 **		invocation of this function.
 **___________________________________________________			     */
 Uchar * pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
-  char     **wa;				   /*                        */
+  Uchar    **wa;				   /*                        */
   NameNode format;				   /*                        */
   char     *trans;				   /*                        */
   int      max;					   /*                        */
-  char     *comma;				   /*                        */
-  char     *and;				   /*                        */
+  Uchar     *comma;				   /*                        */
+  Uchar    *and;				   /*                        */
   char     *namesep;				   /*                        */
   char     *etal;				   /*                        */
-{ char     **w;					   /*                        */
-  char     *word;				   /*                        */
+{ Uchar    **w;					   /*                        */
+  Uchar    *word;				   /*                        */
   int      commas;				   /*                        */
   int      first = TRUE;			   /*                        */
   static StringBuffer*sb = (StringBuffer*)0;	   /*                        */
@@ -405,7 +405,7 @@ Uchar * pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
   while ( *wa )					   /*                        */
   {						   /*                        */
     if ( *(wa+1) == NULL			   /* Look at the end        */
-	 && strcmp(*wa,"others")==0 )		   /*  for `and others'      */
+	 && strcmp((char*)(*wa),"others")==0 )	   /*  for `and others'      */
     { sbputs(etal,sb);			   	   /*                        */
       break;					   /*                        */
     }						   /*                        */
@@ -415,8 +415,8 @@ Uchar * pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
     }						   /*                        */
  						   /*                        */
     commas = 0;					   /*                        */
-    for(w=wa; *w && *w != and; w++ )		   /*                        */
-    { if( *w == comma) commas++;		   /*                        */
+    for( w = wa; *w && *w != and; w++ )		   /*                        */
+    { if ( *w == comma ) commas++;		   /*                        */
       DebugPrint1(*w);				   /*                        */
     }						   /*                        */
     word = *w;					   /*                        */
@@ -446,11 +446,11 @@ Uchar * pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
 **___________________________________________________			     */
 static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   StringBuffer *sb;				   /*                        */
-  char         **w;				   /*                        */
+  Uchar        **w;				   /*                        */
   NameNode     format;				   /*                        */
   char	       *trans;				   /*                        */
   int	       len;				   /*                        */
-  char         *comma;				   /*                        */
+  Uchar         *comma;				   /*                        */
   int          commas;				   /*                        */
 { NameNode     nn;				   /*                        */
   char         t;				   /*                        */
@@ -490,7 +490,7 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   else if (   commas == 1			   /*------------------------*/
 	   && len > 2				   /* ff vv ll, jj           */
 	   && w[len-2] == comma			   /*                        */
-	   && is_jr((Uchar*)w[len-1], FALSE) )	   /*                        */
+	   && is_jr(w[len-1], FALSE) )	   	   /*                        */
   { j = len - 1;				   /*                        */
     type[j--] = 'j'; jr++;			   /*                        */
     type[j--] = ',';				   /*                        */
@@ -591,12 +591,12 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void initial(s,trans,len,sb)		   /*                        */
-  char         *s;				   /*                        */
+  Uchar        *s;				   /*                        */
   char         *trans;				   /*                        */
   int          len;				   /*                        */
   StringBuffer *sb;				   /*                        */
 { 						   /*                        */
-  if ( len < 0 ) { sbputs(s,sb); return; }	   /*                        */
+  if ( len < 0 ) { sbputs((char*)s,sb); return; }  /*                        */
  						   /*                        */
   while ( len > 0 )				   /*                        */
   { if (*s=='\0') { return; }			   /*                        */

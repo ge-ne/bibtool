@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: key.c,v 1.17 2012-01-29 21:18:23 gene Exp $
+** $Id: key.c,v 1.18 2012-01-30 05:08:02 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -46,24 +46,24 @@
  static KeyNode new_key_node _ARG((int type,Uchar *string));/* key.c         */
  static char * itostr _ARG((int i,char *digits));  /* key.c                  */
  static int add_fmt_tree _ARG((char *s,KeyNode *treep));/* key.c             */
- static int deTeX _ARG((char *line,void (*save_fct)_ARG((char*)),int commap));/* key.c*/
+ static int deTeX _ARG((Uchar *line,void (*save_fct)_ARG((Uchar*)),int commap));/*key.c*/
  static int eval__fmt _ARG((StringBuffer *sb,KeyNode kn,Record rec));/* key.c*/
  static int eval_fmt _ARG((StringBuffer *sb,KeyNode kn,Record rec,DB db));/* key.c*/
  static int fmt__parse _ARG((char **sp,KeyNode *knp));/* key.c               */
- static int fmt_c_names _ARG((char *line,int min,int max,int not));/* key.c  */
- static int fmt_c_string _ARG((char * s,int min,int max,int not));/* key.c   */
- static int fmt_c_words _ARG((char *line,int min,int max,int not,int ignore));/* key.c*/
- static int fmt_digits _ARG((StringBuffer *sb,char *s,int mp,int pp,int n,int sel,int trunc));/* key.c*/
+ static int fmt_c_names _ARG((Uchar *line,int min,int max,int not));/* key.c */
+ static int fmt_c_string _ARG((Uchar * s,int min,int max,int not));/* key.c  */
+ static int fmt_c_words _ARG((Uchar *line,int min,int max,int not,int ignore));/* key.c*/
+ static int fmt_digits _ARG((StringBuffer *sb,Uchar *s,int mp,int pp,int n,int sel,int trunc));/* key.c*/
  static int fmt_parse _ARG((char **sp,KeyNode *knp));/* key.c                */
- static void Push_Word _ARG((char *s));		   /* key.c                  */
+ static void Push_Word _ARG((Uchar *s));	   /* key.c                  */
  static void eval__special _ARG((StringBuffer *sb,KeyNode kn,Record rec));/* key.c*/
  static void fmt_names _ARG((StringBuffer *sb,Uchar *line,int maxname,int post,char *trans));/* key.c*/
- static void fmt_string _ARG((StringBuffer *sb,char * s,int n,char *trans,Uchar *sep));/* key.c*/
+ static void fmt_string _ARG((StringBuffer *sb,Uchar * s,int n,char *trans,Uchar *sep));/* key.c*/
  static void fmt_title _ARG((StringBuffer *sb,Uchar *line,int len,int in,char *trans,int ignore,Uchar *sep));/* key.c*/
  static void init_key _ARG((int state));	   /* key.c                  */
  static void key_init _ARG((void));		   /* key.c                  */
  static void push_s _ARG((StringBuffer *sb,Uchar *s,int max,char *trans));/* key.c*/
- static void push_word _ARG((char * s));	   /* key.c                  */
+ static void push_word _ARG((Uchar * s));	   /* key.c                  */
  void add_format _ARG((char *s));		   /* key.c                  */
  void add_ignored_word _ARG((Uchar *s));	   /* key.c                  */
  void add_sort_format _ARG((char *s));		   /* key.c                  */
@@ -143,7 +143,7 @@
 /***				Private word stack			   ***/
 /*****************************************************************************/
 
- static char   **words	  = (char**)0;
+ static Uchar  **words	  = (Uchar**)0;
  static size_t words_len  = 0;
  static size_t words_used = 0;
 #define WordLenInc 16
@@ -160,7 +160,7 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 static void push_word(s)			   /*			     */
-  register char * s;				   /*			     */
+  register Uchar * s;				   /*			     */
 { PushWord(s);					   /*			     */
 }						   /*------------------------*/
 
@@ -173,15 +173,15 @@ static void push_word(s)			   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void Push_Word(s)			   /*			     */
-  register char *s;				   /*			     */
-{ register char **wp;				   /*			     */
+  register Uchar  *s;				   /*			     */
+{ register Uchar **wp;				   /*			     */
 						   /*			     */
   words_len += WordLenInc;			   /*			     */
   if ( words_len == WordLenInc )		   /*			     */
-  { wp = (char**)malloc(words_len*sizeof(char*)); }/*			     */
+  { wp = (Uchar**)malloc(words_len*sizeof(Uchar*)); }/*			     */
   else						   /*			     */
-  { wp = (char**)realloc(words,words_len*sizeof(char*)); }/*		     */
-  if ( wp == (char**)0 )			   /*			     */
+  { wp = (Uchar**)realloc(words,words_len*sizeof(Uchar*)); }/*		     */
+  if ( wp == (Uchar**)0 )			   /*			     */
   { words_len -= WordLenInc;			   /*			     */
     ERROR((Uchar*)"Push_Word() failed: Word not pushed.");/*		     */
     return;					   /*			     */
@@ -467,9 +467,9 @@ static void key_init()				   /*			     */
 ** Returns:	
 **___________________________________________________			     */
 static int deTeX(line,save_fct,flags)		   /*			     */
-  char		*line;				   /*			     */
+  Uchar		*line;				   /*			     */
   int		flags;				   /*			     */
-  void		(*save_fct)_ARG((char*));	   /*			     */
+  void		(*save_fct)_ARG((Uchar*));	   /*			     */
 { static Uchar	*buffer;			   /*			     */
   static size_t len   = 0;			   /*			     */
   Uchar		c, *s, *bp;			   /*			     */
@@ -481,8 +481,8 @@ static int deTeX(line,save_fct,flags)		   /*			     */
 #define SaveChar(C)  *(bp++) = last = C
 #define StoreChar(C) *(bp++) = C
 						   /*			     */
-  brace = 4*strlen(line);			   /*			     */
-  if ( brace > len )				   /*			     */
+  brace = 4 * strlen((char*)line);		   /*			     */
+  if ( brace > (int)len )			   /*			     */
   { if ( len == 0 )				   /*			     */
     { len    = ( brace < DeTeX_BUFF_LEN		   /*			     */
 		? DeTeX_BUFF_LEN : brace );	   /*			     */
@@ -490,13 +490,14 @@ static int deTeX(line,save_fct,flags)		   /*			     */
     }						   /*			     */
     else					   /*			     */
     { len    = brace;				   /*			     */
-      buffer = (Uchar*)realloc((char*)buffer,sizeof(Uchar)*len);/*	     */
+      buffer = (Uchar*)realloc((char*)buffer,	   /*                        */
+			       sizeof(Uchar)*len); /*	                     */
     }						   /*			     */
     if ( buffer == NULL ) 			   /*                        */
     { OUT_OF_MEMORY("deTeX()"); }   		   /*			     */
   }						   /*			     */
 						   /*			     */
-  TeX_open_string((Uchar*)line);		   /*			     */
+  TeX_open_string(line);		   	   /*			     */
   bp	= buffer;				   /*			     */
   brace = 0;					   /*			     */
   wp    = 0;					   /*                        */
@@ -509,8 +510,8 @@ static int deTeX(line,save_fct,flags)		   /*			     */
 	|| is_extended(c)			   /* extended chars and     */
 	|| ( c == (Uchar)'-' && last != c ) )	   /* nonrepeated hyphens    */
     { SaveChar(c); }				   /*			     */
-    else if ( c == (Uchar)'{'	) { ++brace; }	   /* Count braces.	     */
-    else if ( c == (Uchar)'}'	)		   /*                        */
+    else if ( c == (Uchar)'{' ) { ++brace; }	   /* Count braces.	     */
+    else if ( c == (Uchar)'}' )		   	   /*                        */
     { if ( --brace < 0 ) brace = 0;		   /*                        */
     }						   /*			     */
     else if ( ( c == ',' 			   /* Commas                 */
@@ -535,7 +536,7 @@ static int deTeX(line,save_fct,flags)		   /*			     */
       { StoreChar('\0'); SaveWord; last = ' '; }   /*  of the next word.     */
       else					   /*                        */
       { Uchar *t;				   /*                        */
-	for (t=InterNameSep; *t; ++t )		   /*                        */
+	for (t = InterNameSep; *t; ++t )	   /*                        */
 	{ SaveChar(*t);	}			   /*                        */
       }		   				   /*			     */
     }						   /*			     */
@@ -548,7 +549,7 @@ static int deTeX(line,save_fct,flags)		   /*			     */
       						   /*                        */
   StoreChar('\0');				   /* Mark the end.	     */
 						   /*			     */
-  if ( bp-buffer >= len )			   /*			     */
+  if ( bp-buffer >= (int)len )			   /*			     */
   { ERROR_EXIT("deTeX buffer overflow."); }	   /*			     */
 						   /*			     */
   TeX_close();					   /*			     */
@@ -628,7 +629,7 @@ void clear_ignored_words()			   /*                        */
 { int i;					   /*                        */
   key_init();					   /*                        */
  						   /*                        */
-  for (i=0;i<32;i++)				   /*                        */
+  for (i = 0; i < 32; i++)			   /*                        */
   { free_words(&ignored_words[i],NULL); }	   /*                        */
 }						   /*------------------------*/
 
@@ -681,16 +682,16 @@ static void fmt_title(sb,line,len,in,trans,ignore,sep)/*		     */
   Uchar         *sep;				   /*                        */
 { int	        first = TRUE;			   /*			     */
   int	        nw, i, j;			   /*			     */
-  unsigned char *s;				   /*			     */
+  Uchar         *s;				   /*			     */
 						   /*			     */
   /*  if ( len == 0 ) return;			   /*                        */
  						   /*                        */
-  if (	 tmp_sb == (StringBuffer*)0		   /*			     */
-      && (tmp_sb=sbopen()) == (StringBuffer*)0 )   /*			     */
+  if (	 tmp_sb == (StringBuffer*)NULL		   /*			     */
+      && (tmp_sb=sbopen()) == (StringBuffer*)NULL )/*			     */
   { OUT_OF_MEMORY("fmt_title()"); } 		   /*			     */
 						   /*			     */
   ResetWords;					   /*                        */
-  nw = deTeX(*line == '{' ? line + 1 : line,	   /*                        */
+  nw = deTeX(*line == (Uchar)'{' ? line + 1 : line,/*                        */
 	     push_word,				   /*                        */
 	     DETEX_FLAG_NONE);			   /*	                     */
  						   /*                        */
@@ -699,16 +700,16 @@ static void fmt_title(sb,line,len,in,trans,ignore,sep)/*		     */
     sbrewind(tmp_sb);				   /* Reset the string buffer*/
     for ( s = words[i]; *s; ++s )		   /* Translate the current  */
     { (void)sbputchar(trans[*s],tmp_sb); }	   /*  word into the sbuffer */
-    s = sbflush(tmp_sb);			   /* Get the translated word*/
+    s = (Uchar*)sbflush(tmp_sb);		   /* Get the translated word*/
 						   /*			     */
     if ( ! ignore || 				   /*                        */
 	 ! find_word((Uchar*)s,ignored_words[(*s)&31] ) )/*		     */
     { if ( first ) { first = FALSE; }		   /*			     */
       else { PushS(sb,sep); }		   	   /*			     */
       if ( in <= 0 )				   /*                        */
-      { PushS(sb, (char*)(words[i])); }		   /* Push the current word  */
+      { PushS(sb, words[i]); }	   		   /* Push the current word  */
       else					   /*                        */
-      { for ( s=words[i], j=in; *s && j-->0; ++s ) /* Push the initial part  */
+      { for (s = words[i], j = in; *s && j-->0; ++s)/* Push the initial part */
 	{ PushC(sb, *s); }			   /*  of the current word.  */
       }						   /*                        */
       if ( len == 1 ) return;	   		   /*                        */
@@ -731,7 +732,7 @@ static void fmt_title(sb,line,len,in,trans,ignore,sep)/*		     */
 ** Returns:	
 **___________________________________________________			     */
 static int fmt_c_words(line,min,max,not,ignore)	   /*			     */
-  char	 *line;					   /*			     */
+  Uchar	 *line;					   /*			     */
   int	 min;					   /*			     */
   int	 max;					   /*			     */
   int	 not;					   /*			     */
@@ -739,20 +740,23 @@ static int fmt_c_words(line,min,max,not,ignore)	   /*			     */
 { int	 n, i, nw;				   /*			     */
 						   /*			     */
   ResetWords;					   /*                        */
-  nw = deTeX(*line=='{'?line+1:line,push_word,DETEX_FLAG_NONE);/*            */
+  nw = deTeX(*line == (Uchar)'{' ? line + 1 : line,/*                        */
+	     push_word,				   /*                        */
+	     DETEX_FLAG_NONE);			   /*                        */
   n = 0;					   /*                        */
  						   /*                        */
-  for ( i=0; i < nw; ++i )		   	   /*			     */
+  for ( i = 0; i < nw; ++i )		   	   /*			     */
   {						   /*			     */
     if ( !ignore || 				   /*                        */
-	 !find_word(words[i],ignored_words[(*words[i])&31]) )/*		     */
+	 !find_word(words[i],			   /*                        */
+		    ignored_words[(*words[i])&31]) )/*		             */
     { n++; }					   /*			     */
   }						   /*			     */
  						   /*                        */
-  if ( n < min || (max>0 && n> max))		   /*                        */
-  { return (not?FALSE:TRUE); }			   /*                        */
+  if ( n < min || (max > 0 && n > max))		   /*                        */
+  { return (not ? FALSE : TRUE); }		   /*                        */
  						   /*                        */
-  return (not?TRUE:FALSE);			   /*                        */
+  return (not ? TRUE : FALSE);			   /*                        */
 }						   /*------------------------*/
 
 
@@ -773,8 +777,8 @@ static int fmt_c_words(line,min,max,not,ignore)	   /*			     */
 void def_format_type(s)				   /*                        */
   Uchar *s;					   /*                        */
 { int  n;					   /*                        */
-  char *cp;					   /*                        */
-  char c;					   /*                        */
+  Uchar *cp;					   /*                        */
+  Uchar c;					   /*                        */
  						   /*                        */
   SkipSpaces(s);				   /*                        */
   n = 0;					   /*                        */
@@ -797,7 +801,7 @@ void def_format_type(s)				   /*                        */
   cp = s;					   /*                        */
   while ( *cp && *cp != '"' ) cp++;		   /*                        */
   c   = *cp;					   /*                        */
-  *cp = '\0';					   /*                        */
+  *cp = (Uchar)'\0';				   /*                        */
   format[n] = name_format(s);			   /*                        */
   *cp = c;					   /*                        */
 }						   /*------------------------*/
@@ -815,15 +819,15 @@ void def_format_type(s)				   /*                        */
 **___________________________________________________			     */
 static void fmt_names(sb,line,maxname,post,trans)  /*		             */
   StringBuffer *sb;				   /*                        */
-  Uchar	      *line;				   /* Name list string	     */
-  int	      maxname;				   /* number of names b4 etal*/
-  int         post;				   /* number of relevant char*/
-  char	      *trans;				   /* Translation table	     */
-{ int	      wp,				   /*			     */
-	      i;				   /*			     */
-  static char *and   = "&";			   /*                        */
-  static char *comma = ",";			   /*                        */
-  static int  undef_warning = FALSE;		   /*                        */
+  Uchar	       *line;				   /* Name list string	     */
+  int	       maxname;				   /* number of names b4 etal*/
+  int          post;				   /* number of relevant char*/
+  char	       *trans;				   /* Translation table	     */
+{ int	       wp,				   /*			     */
+	       i;				   /*			     */
+  static Uchar *and   = (Uchar*)"&";		   /*                        */
+  static Uchar *comma = (Uchar*)",";		   /*                        */
+  static int   undef_warning = FALSE;		   /*                        */
   						   /*                        */
   if ( maxname == 0 ) return;			   /*                        */
  						   /*                        */
@@ -839,7 +843,7 @@ static void fmt_names(sb,line,maxname,post,trans)  /*		             */
   }						   /*                        */
  						   /*                        */
   ResetWords;					   /*                        */
-  wp = deTeX(*line == '{' ? line + 1 : line,	   /*                        */
+  wp = deTeX(*line == (Uchar)'{' ? line + 1 : line,/*                        */
 	     push_word,				   /*                        */
 	     DETEX_FLAG_COMMA);			   /*	                     */
   words[wp] = NULL;				   /*                        */
@@ -848,9 +852,9 @@ static void fmt_names(sb,line,maxname,post,trans)  /*		             */
   {						   /*                        */
     DebugPrintF3("+++ %3d '%s'\n", i, words[i]);   /*                        */
  						   /*                        */
-    if ( strcmp(words[i],"and") == 0 )		   /*                        */
+    if ( strcmp((char*)words[i],"and") == 0 )	   /*                        */
     { words[i] = and; }				   /*                        */
-    else if ( strcmp(words[i],",") == 0 )	   /*                        */
+    else if ( strcmp((char*)words[i],",") == 0 )   /*                        */
     { words[i] = comma; }			   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -877,26 +881,28 @@ static void fmt_names(sb,line,maxname,post,trans)  /*		             */
 ** Returns:	nothing
 **___________________________________________________			     */
 static int fmt_c_names(line,min,max,not)	   /*		             */
-  char	      *line;				   /* Name list string	     */
-  int         min;				   /* number of relevant char*/
-  int	      max;				   /* number of names b4 etal*/
-  int         not;				   /* negation flag          */
-{ int	      wp,				   /*			     */
-	      i,				   /*                        */
-	      n;				   /*			     */
+  Uchar *line;				   	   /* Name list string	     */
+  int   min;				   	   /* number of relevant char*/
+  int   max;				   	   /* number of names b4 etal*/
+  int   not;				   	   /* negation flag          */
+{ int   wp,				   	   /*			     */
+        i,				   	   /*                        */
+	n;				   	   /*			     */
   						   /*                        */
   ResetWords;					   /*                        */
-  wp = deTeX(*line=='{'?line+1:line,push_word,DETEX_FLAG_COMMA);/*	     */
+  wp = deTeX(*line == (Uchar)'{' ? line + 1 : line,/*                        */
+	     push_word,				   /*                        */
+	     DETEX_FLAG_COMMA);			   /*	                     */
   words[wp] = NULL;				   /*                        */
  						   /*                        */
-  for ( i=0, n=1; i<wp; i++)			   /*			     */
-  { if ( strcmp(words[i],"and") == 0 ) { n++; }	   /*                        */
+  for ( i = 0, n = 1; i < wp; i++)		   /*			     */
+  { if ( strcmp((char*)words[i],"and") == 0 ) { n++; }/*                     */
   }						   /*                        */
  						   /*                        */
-  if ( n < min || (max>0 && n> max))		   /*                        */
-  { return (not?FALSE:TRUE); }			   /*                        */
+  if ( n < min || (max > 0 && n > max))		   /*                        */
+  { return (not ? FALSE : TRUE); }		   /*                        */
  						   /*                        */
-  return (not?TRUE:FALSE);			   /*                        */
+  return (not ? TRUE : FALSE);			   /*                        */
 }						   /*------------------------*/
 
 
@@ -921,14 +927,14 @@ static int fmt_c_names(line,min,max,not)	   /*		             */
 ** Returns:	nothing
 **___________________________________________________			     */
 static int fmt_digits(sb,s,mp,pp,n,sel,trunc)	   /*			     */
-  StringBuffer  *sb;				   /*                        */
-  register char *s;				   /*			     */
-  int           mp;				   /*                        */
-  int           pp;				   /*                        */
-  register int	n;				   /*			     */
-  int		sel;				   /*                        */
-  int           trunc;				   /*                        */
-{ register char *cp;				   /*			     */
+  StringBuffer   *sb;				   /*                        */
+  register Uchar *s;				   /*			     */
+  int            mp;				   /*                        */
+  int            pp;				   /*                        */
+  register int 	 n;				   /*			     */
+  int		 sel;				   /*                        */
+  int            trunc;				   /*                        */
+{ register Uchar *cp;				   /*			     */
 						   /*			     */
   if ( n < 0 ) { n = ( mp ? 1 : 0x7fff ); }	   /*                        */
  						   /*                        */
@@ -939,23 +945,23 @@ static int fmt_digits(sb,s,mp,pp,n,sel,trunc)	   /*			     */
     if ( *s == '\0' )				   /*                        */
     { cp = s; sel = 0; }			   /*                        */
     else					   /*                        */
-    { for ( cp=s; *cp && is_digit(*cp); ++cp) {}   /* skip over digits	     */
+    { for ( cp = s; *cp && is_digit(*cp); ++cp) {} /* skip over digits	     */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
   if ( trunc && cp-s > n ) s = cp-n;		   /*			     */
   else if ( mp )				   /*                        */
   { while ( cp-s < n-- )			   /*                        */
-    { (void)sbputchar('0',sb); }		   /*                        */
+    { (void)sbputchar('0', sb); }		   /*                        */
   }						   /*                        */
   if ( !mp && *s == '\0' )			   /*                        */
-  { if ( pp ) (void)sbputchar('0',sb);	   	   /*                        */
+  { if ( pp ) (void)sbputchar('0', sb);	   	   /*                        */
     else return 1;				   /*                        */
   }						   /*                        */
   else						   /*                        */
   {						   /*                        */
     while ( s != cp )				   /*			     */
-    { (void)sbputchar((char)(*s),sb);		   /*                        */
+    { (void)sbputchar((char)(*s), sb);		   /*                        */
       ++s;					   /*                        */
     }	   					   /*			     */
   }						   /*                        */
@@ -980,15 +986,15 @@ static int fmt_digits(sb,s,mp,pp,n,sel,trunc)	   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void fmt_string(sb,s,n,trans,sep)	   /*			     */
-  StringBuffer  *sb;				   /*                        */
-  register char *s;				   /*			     */
-  register int	n;				   /*			     */
-  register char *trans;				   /*			     */
-  Uchar         *sep;				   /*                        */
+  StringBuffer   *sb;				   /*                        */
+  register Uchar *s;				   /*			     */
+  register int	 n;				   /*			     */
+  register char  *trans;			   /*			     */
+  Uchar          *sep;				   /*                        */
 {						   /*			     */
-  while ( *s && n>0 )				   /*			     */
+  while ( *s && n > 0 )				   /*			     */
   { if ( is_allowed(*s) )			   /*			     */
-    { (void)sbputchar(trans[*((unsigned char*)s)],sb);/*                     */
+    { (void)sbputchar(trans[*s],sb);		   /*                        */
       n--;					   /*                        */
     }						   /*		             */
     else if ( is_space(*s) )			   /*			     */
@@ -1014,11 +1020,11 @@ static void fmt_string(sb,s,n,trans,sep)	   /*			     */
 ** Returns:	
 **___________________________________________________			     */
 static int fmt_c_string(s,min,max,not)		   /*			     */
-  register char * s;				   /*			     */
-  register int  min;				   /*			     */
-  register int  max;				   /*			     */
-  register int  not;				   /*			     */
-{ int           n = 0;				   /*			     */
+  register Uchar * s;				   /*			     */
+  register int   min;				   /*			     */
+  register int   max;				   /*			     */
+  register int   not;				   /*			     */
+{ int            n = 0;				   /*			     */
  						   /*                        */
   while ( *s )				   	   /*			     */
   { if ( is_allowed(*s) ) { n++; }	   	   /*			     */
@@ -1029,10 +1035,10 @@ static int fmt_c_string(s,min,max,not)		   /*			     */
     ++s;					   /*			     */
   }						   /*			     */
  						   /*                        */
-  if ( n < min || (max>0 && n> max))		   /*                        */
-  { return (not?FALSE:TRUE); }			   /*                        */
+  if ( n < min || (max > 0 && n > max))		   /*                        */
+  { return (not ? FALSE : TRUE); }		   /*                        */
  						   /*                        */
-  return (not?TRUE:FALSE);			   /*                        */
+  return (not ? TRUE : FALSE);			   /*                        */
 }						   /*------------------------*/
 
 #define IfGetField(S,NAME) if((S=get_field(tmp_key_db,rec,NAME))!=NULL)
@@ -1129,14 +1135,16 @@ void make_key(db,rec)				   /*			     */
 #define trans trans_id
   ResetWords;					   /*                        */
   { char * buffer = new_string(sbflush(key_sb));   /*                        */
-    int nw = deTeX(*buffer=='{'?buffer+1 : buffer, /*                        */
+    int nw = deTeX((Uchar*)(*buffer == '{'	   /*                        */
+			    ? buffer+1		   /*                        */
+			    : buffer), 		   /*                        */
 		   push_word,			   /*                        */
 		   DETEX_FLAG_ALLOWED);  	   /*                        */
     int i;					   /*                        */
     sbrewind(key_sb);				   /*                        */
-    for ( i=0; i < nw; ++i )		   	   /*			     */
-    { if ( strcmp(words[i],"\\") )		   /*                        */
-        PushS(key_sb,(char*)(words[i]));	   /*			     */
+    for ( i = 0; i < nw; ++i )		   	   /*			     */
+    { if ( strcmp((char*)words[i], "\\") )	   /*                        */
+        PushS(key_sb, words[i]);		   /*			     */
     }						   /*                        */
     free(buffer);				   /*                        */
   }						   /*                        */
@@ -1759,22 +1767,36 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 	    case 'p' | NodeCountMask:		   /*			     */
 	    case 'n' | NodeCountMask:		   /*			     */
 	    case 'N' | NodeCountMask:		   /*			     */
-	      if (fmt_c_names(s,UsePreOr(0),UsePostOr(0),HasMinus))/*        */
+	      if (fmt_c_names(s,		   /*                        */
+			      UsePreOr(0),	   /*                        */
+			      UsePostOr(0),	   /*                        */
+			      HasMinus))	   /*                        */
 	      { return 1; }			   /*	                     */
 	      break;				   /*			     */
 	    case 'd' | NodeCountMask:		   /*			     */
 	    case 's' | NodeCountMask:		   /*			     */
-	      if (fmt_c_string(s,UsePreOr(0),UsePostOr(0),HasMinus))/*       */
+	      if (fmt_c_string(s,		   /*                        */
+			       UsePreOr(0),	   /*                        */
+			       UsePostOr(0),	   /*                        */
+			       HasMinus))	   /*                        */
 	      { return 1; }			   /*	                     */
 	      break;				   /*			     */
 	    case 'T' | NodeCountMask:		   /*			     */
 	    case 'W' | NodeCountMask:		   /*			     */
-	      if (fmt_c_words(s,UsePreOr(0),UsePostOr(0),HasMinus,TRUE))/*   */
+	      if (fmt_c_words(s,		   /*                        */
+			      UsePreOr(0),	   /*                        */
+			      UsePostOr(0),	   /*                        */
+			      HasMinus,		   /*                        */
+			      TRUE))		   /*                        */
 	      { return 1; }			   /*	                     */
 	      break;				   /*			     */
 	    case 't' | NodeCountMask:		   /*			     */
 	    case 'w' | NodeCountMask:		   /*			     */
-	      if (fmt_c_words(s,UsePreOr(0),UsePostOr(0),HasMinus,FALSE))/*  */
+	      if (fmt_c_words(s,		   /*                        */
+			      UsePreOr(0),	   /*                        */
+			      UsePostOr(0),	   /*                        */
+			      HasMinus,		   /*                        */
+			      FALSE))		   /*                        */
 	      { return 1; }			   /*	                     */
 	      break;				   /*			     */
 	    default: return 1;			   /*			     */

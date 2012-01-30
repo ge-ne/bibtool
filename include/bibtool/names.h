@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: names.h,v 1.8 2011-06-07 20:01:06 gene Exp $
+** $Id: names.h,v 1.9 2012-01-30 05:08:02 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2011 Gerd Neugebauer
+** (c) 1996-2012 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -148,7 +148,7 @@
 #define _ARG(A) ()
 #endif
  NameNode name_format _ARG((Uchar *s));		   /* names.c                */
- Uchar * pp_list_of_names _ARG((char **wa,NameNode format,char *trans,int max,char *comma,char *and,char *namesep,char *etal));/* names.c*/
+ Uchar * pp_list_of_names _ARG((Uchar **wa,NameNode format,char *trans,int max,Uchar *comma,Uchar *and,char *namesep,char *etal));/* names.c*/
  char * pp_names _ARG((char *s,NameNode format,char *trans,int max,char *namesep,char *etal));/* names.c*/
 
 /*---------------------------------------------------------------------------*/

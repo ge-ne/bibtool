@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: config.h,v 1.4 2012-01-26 19:54:20 gene Exp $
+** $Id: config.h,v 1.5 2012-01-30 05:08:02 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -171,7 +171,7 @@
 **  Define the next macro to enable output of the symbol table.
 **  Mainly interesting for debugging (i.e. not for you:-).
 */
-/* #define SYMBOL_DUMP /**/
+/* #define SYMBOL_DUMP */
 
 
 #ifdef MSDOS

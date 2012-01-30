@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: main.c,v 1.18 2012-01-29 21:18:23 gene Exp $
+** $Id: main.c,v 1.19 2012-01-30 05:08:02 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -157,7 +157,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2012-01-29 21:18:23 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2012-01-30 05:08:02 $",
     "gene@gerd-neugebauer.de"
   };
 
@@ -191,9 +191,9 @@ static void usage(fullp)			   /*			     */
   }						   /*                        */
 						   /*                        */
   ErrPrintF("Library path: %s",		   	   /*                        */
-	    (rsc_v_rsc==NULL		   	   /*                        */
+	    (rsc_v_rsc == NULL		   	   /*                        */
 	     ? "none"				   /*                        */
-	     : rsc_v_rsc));	   	   	   /*                        */
+	     : (char*)rsc_v_rsc));		   /*                        */
  						   /*                        */
   ErrPrint("\nSpecial configuration options:");	   /*                        */
 #define SPECIAL_OPTIONS " none"

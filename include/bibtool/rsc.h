@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: rsc.h,v 1.10 2012-01-29 20:53:12 gene Exp $
+** $Id: rsc.h,v 1.11 2012-01-30 05:08:02 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -38,10 +38,10 @@
 
 #include <bibtool/resource.h>
 
-DECLARE( int   , rsc_select       , FALSE  			);
+DECLARE( int   , rsc_select        , FALSE  			);
 
-DECLARE( char* , rsc_e_rsc        , RSC_BIBTOOL			);
-DECLARE( char* , rsc_v_rsc        , RSC_BIBTOOL_DEFAULT		);
+DECLARE( char* , rsc_e_rsc         , RSC_BIBTOOL		);
+DECLARE( unsigned char*, rsc_v_rsc , (unsigned char*)(RSC_BIBTOOL_DEFAULT)	);
 
 
 #ifdef __STDC__
