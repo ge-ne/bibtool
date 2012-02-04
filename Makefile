@@ -1,9 +1,18 @@
 #******************************************************************************
-#* $Id: Makefile,v 1.7 2012-01-28 06:44:25 gene Exp $
+#* $Id: Makefile,v 1.8 2012-02-04 04:59:16 gene Exp $
+# =============================================================================
+#
+#  This file is part of BibTool.
+#  It is distributed under the GNU General Public License.
+#  See the file COPYING for details.
+#  
+#  (c) 1996-2012 Gerd Neugebauer
+#  
+#  Net: gene@gerd-neugebauer.de
+#  
 #******************************************************************************
 #* Author: Gerd Neugebauer
 #*=============================================================================
-
 
 include makefile
 
@@ -25,11 +34,6 @@ DISTFILES += 	AutoConf/config.h.in 	\
 		BibTcl/README		\
 		BibTcl/version.tex	\
 		BibTcl/Makefile		\
-		Doc/c.tex		\
-		Doc/c_main.tex		\
-		Doc/config.tex		\
-		Doc/c_get.pl		\
-		Doc/make_version.pl	\
 		MSDOS/link.dj		\
 		MSDOS/link.msc		\
 		MSDOS/link.wat		\
@@ -46,10 +50,11 @@ lint:
 	gcc  $(C_FLAGS) $(REGEX_DEF) $(DONT_LINK) -ansi -W -Wall -O2 ${CFILES}
 
 dist:
-	@( cd ..; rm -f $(DIR).tar.gz; \
+	@( cd Doc; make)
+	@( cd ..; rm -f $(DIR).tar.gz;				\
 	   tar  -cvzf $(DIR).tar.gz $(DISTFILES:%=$(DIR)/%)	\
 		--exclude CVS --exclude config.status )
-	@( cd ..; rm -f $(DIR).zip; \
+	@( cd ..; rm -f $(DIR).zip;				\
 	   zip  -r $(DIR).zip $(DISTFILES:%=$(DIR)/%)		\
 		-x \*/\*/CVS/\* \*/config.status )
 

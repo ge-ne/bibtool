@@ -1,12 +1,12 @@
 # *****************************************************************************
-#  $Id: makefile.in,v 1.12 2012-01-29 15:12:42 gene Exp $
+#  $Id: makefile.in,v 1.13 2012-02-04 04:59:16 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 1996-2010 Gerd Neugebauer
+#  (c) 1996-2012 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -389,10 +389,13 @@ DOCFILES      = Doc$(DIR_SEP)bibtool.1		\
 		Doc$(DIR_SEP)bibtool.tex	\
 		Doc$(DIR_SEP)bibtool.bib	\
 		Doc$(DIR_SEP)bibtool.ist	\
-		Doc$(DIR_SEP)ref_card.tex	\
+		Doc$(DIR_SEP)bibtool-doc.sty	\
+		Doc$(DIR_SEP)bibtool.tex	\
 		Doc$(DIR_SEP)Makefile		\
+		Doc$(DIR_SEP)config.tex		\
+		Doc$(DIR_SEP)c_main.tex		\
 		Doc$(DIR_SEP)c_lib.tex		\
-		Doc$(DIR_SEP)c_lib.ind		\
+		Doc$(DIR_SEP)c.tex		\
 		Doc$(DIR_SEP)c_get.pl		\
 		Doc$(DIR_SEP)make_version.pl
 
@@ -412,7 +415,7 @@ PROGFILES     = Perl$(DIR_SEP)bibtool.pl	\
 ETCFILES      = README				\
 		INSTALL				\
 		COPYING				\
-		Changes.xml			\
+		Changes.tex			\
 		makefile.unx			\
 		makefile.dos			\
 		makefile.ata			\
