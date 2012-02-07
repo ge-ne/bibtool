@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: verbose.t,v 1.2 2012-01-29 19:28:02 gene Exp $
+# $Id: verbose.t,v 1.3 2012-02-07 04:36:04 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -53,6 +53,9 @@ my $fs;
   } else {     $fs = '/';
   }
 }
+my $options = BUnit::get_configuration_options();
+my $xampl   = "--- BibTool: Trying .${fs}bib/xampl.bib\n";
+$xampl 	    = '' if $options =~ m/kpathsea/;
 
 #------------------------------------------------------------------------------
 BUnit::run(name => 'verbose_1',
@@ -61,8 +64,7 @@ verbose	     =on
 __EOF__
 	   args	=> 'bib/xampl.bib',
     expected_err => <<__EOF__);
---- BibTool: Trying .${fs}bib/xampl.bib
---- BibTool: Reading bib/xampl.bib
+$xampl--- BibTool: Reading bib/xampl.bib
 ++
 *** BibTool WARNING:  (line 29 in .${fs}bib/xampl.bib): 125 non-space characters ignored.
 ++++++++++++++++++++++++++++++++++--- BibTool: Done with bib/xampl.bib
@@ -79,8 +81,7 @@ BUnit::run(name => '_v_1',
     expected_err => <<__EOF__);
 --- BibTool: Trying $ENV{HOME}$fs.bibtoolrsc
 --- BibTool: Trying $ENV{HOME}$fs.bibtoolrsc.rsc
-$t--- BibTool: Trying .${fs}bib/xampl.bib
---- BibTool: Reading bib/xampl.bib
+$t$xampl--- BibTool: Reading bib/xampl.bib
 ++
 *** BibTool WARNING:  (line 29 in .${fs}bib/xampl.bib): 125 non-space characters ignored.
 ++++++++++++++++++++++++++++++++++--- BibTool: Done with bib/xampl.bib

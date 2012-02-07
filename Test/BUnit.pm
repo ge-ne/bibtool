@@ -1,13 +1,13 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: BUnit.pm,v 1.14 2011-12-04 13:21:56 gene Exp $
+# $Id: BUnit.pm,v 1.15 2012-02-07 04:36:04 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2011 Gerd Neugebauer
+#  (c) 2011-2012 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -62,7 +62,7 @@ our $verbose = 1;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.14 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.15 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -181,6 +181,9 @@ sub check {
     $_ = &$fct($_) if defined $fct;
     
     if ($_ ne $expected) {
+      my $fd = new FileHandle("$file-expected",'w') || die("$file-expected: $!\n");
+      print $fd $expected;
+      $fd->close();
       out "\n***\tSee actual $type in $file; ";
       return 1;
     }
@@ -281,6 +284,21 @@ sub get_library_path {
   $fd->close();
   unlink($err);
   return $library_path;
+}
+
+sub get_configuration_options {
+  my $err  = '_lib.err';
+  `$BIBTOOL -h 2>$err`;
+
+  my $options;
+  local $_;
+  my $fd = new FileHandle($err) || die "$err: $!\n";
+  while(<$fd>) {
+    $options = $1 if m/^Special configuration options: (.*)/;
+  }
+  $fd->close();
+  unlink($err);
+  return $options;
 }
 
 #------------------------------------------------------------------------------
