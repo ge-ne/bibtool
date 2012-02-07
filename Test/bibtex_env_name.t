@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: bibtex_env_name.t,v 1.1 2011-11-20 15:22:45 gene Exp $
+# $Id: bibtex_env_name.t,v 1.2 2012-02-07 16:58:55 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -56,9 +56,15 @@ BUnit::run(name         => 'bibtex_env_name_1',
     );
 delete $ENV{BIBINPUTS};
 
+
+my $use_kpathsea = undef;
+$use_kpathsea 	 = "since only applicable without kpathsea"
+    if BUnit::get_configuration_options() =~ m/kpathsea/;
+
 $ENV{BIBTOOLINPUTS} = "bib";
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'bibtex_env_name_2',
+	   ignore 	=> $use_kpathsea,
 	   resource	=> "bibtex.env.name={BIBTOOLINPUTS}",
 	   args		=> 'x1',
 	   expected_err	=> ""

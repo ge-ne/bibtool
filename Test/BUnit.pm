@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: BUnit.pm,v 1.15 2012-02-07 04:36:04 gene Exp $
+# $Id: BUnit.pm,v 1.16 2012-02-07 16:58:55 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -62,7 +62,7 @@ our $verbose = 1;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.15 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.16 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -113,7 +113,7 @@ sub run {
 
   if ($a{ignore}) {
     $ignored++;
-    out "ignored\n";
+    out "ignored $a{ignore}\n";
     return 1;
   }
 
@@ -286,6 +286,9 @@ sub get_library_path {
   return $library_path;
 }
 
+#------------------------------------------------------------------------------
+# Function:	get_configuration_options
+#
 sub get_configuration_options {
   my $err  = '_lib.err';
   `$BIBTOOL -h 2>$err`;

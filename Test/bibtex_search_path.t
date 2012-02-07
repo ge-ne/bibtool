@@ -1,13 +1,13 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: bibtex_search_path.t,v 1.1 2011-11-20 15:22:45 gene Exp $
+# $Id: bibtex_search_path.t,v 1.2 2012-02-07 16:58:55 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2011 Gerd Neugebauer
+#  (c) 2011-2012 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -41,8 +41,13 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
+my $use_kpathsea = undef;
+$use_kpathsea 	 = "since only applicable without kpathsea"
+    if BUnit::get_configuration_options() =~ m/kpathsea/;
+
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'bibtex_search_path_1',
+	   ignore 	=> $use_kpathsea,
 	   resource	=> "bibtex.search.path={.:bib}",
 	   args		=> 'x1.bib',
 	   expected_err	=> ""
