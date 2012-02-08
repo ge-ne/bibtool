@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: BUnit.pm,v 1.16 2012-02-07 16:58:55 gene Exp $
+# $Id: BUnit.pm,v 1.17 2012-02-08 18:16:23 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -47,6 +47,7 @@ our @ISA       = qw(Exporter);
 our @EXPORT    = qw(all summary);
 our @EXPORT_OK = qw();
 
+use Cwd;
 use FileHandle;
 
 use constant TEST_RSC =>'_test.rsc';
@@ -62,7 +63,7 @@ our $verbose = 1;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.16 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = ('$Revision: 1.17 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -208,11 +209,14 @@ sub suites {
   my $len = 6;
   my $suite;
 
+  $ENV{HOME} = getcwd;
+
+
   die "*** '$BIBTOOL' executable not found\n" if not -x $BIBTOOL;
   die "*** Current dircetory is not writable\n" if not -w '.';
   die "*** .bibtoolrsc exists in current directory. Aborted\n"
       if -e ".bibtoolrsc";
-  die "*** .bibtoolrsc exists in home directory. Aborted \n"
+  die "*** .bibtoolrsc exists in this directory. Aborted \n"
       if -e "$ENV{HOME}/.bibtoolrsc";
 
   foreach $_ (@a) {
