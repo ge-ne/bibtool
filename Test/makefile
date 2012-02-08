@@ -1,5 +1,5 @@
 #******************************************************************************
-#* $Id: makefile,v 1.7 2012-02-07 04:36:04 gene Exp $
+#* $Id: makefile,v 1.8 2012-02-08 04:02:23 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -38,7 +38,7 @@ $(BIBTOOL): ../*.c ../*.h ../include/bibtool/*.h ../regex-0.12/*.[ch]
 	(cd ..; make)
 
 clean:
-	${RM} *.log *.err *.out *~ *.bak
+	${RM} *.log *.err *.???-expected *.out *~ *.bak
 
 distclean: clean
 
