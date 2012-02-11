@@ -1,5 +1,5 @@
 ##*****************************************************************************
-## $Id: Makefile,v 1.12 2011-11-27 14:25:46 gene Exp $
+## $Id: Makefile,v 1.13 2012-02-11 07:28:50 gene Exp $
 ##=============================================================================
 ## 
 ## This file is part of BibTool.
@@ -143,10 +143,10 @@ c.tex: $(CFILES) c_get.pl
 ##-----------------------------------------------------------------------------
 
 clean:
-	$(RM) *.bak *.BAK *~ *.log *.ilg *.blg
+	$(RM) *.bak *.BAK *~ *.log *.ilg *.blg *.toc *.out *.aux *.idx *.ind *.bbl
 
 veryclean: clean
-	$(RM) *.toc *.aux *.idx *.ind *.ilg *.bbl c.tex c_main.tex
+	$(RM) c.tex c_main.tex config.tex
 
 distclean: veryclean
 	$(RM) $(TARGETS)

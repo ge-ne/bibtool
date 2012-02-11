@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: main.c,v 1.19 2012-01-30 05:08:02 gene Exp $
+** $Id: main.c,v 1.20 2012-02-11 07:28:50 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -157,7 +157,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2012-01-30 05:08:02 $",
+    "Copyright (C) Gerd Neugebauer $Date: 2012-02-11 07:28:50 $",
     "gene@gerd-neugebauer.de"
   };
 
@@ -435,7 +435,7 @@ int main(argc,argv)				   /*			     */
   int	need_rsc = TRUE;		   	   /*			     */
   int	(*fct)();			   	   /* Function pointer	     */
   int	c_len;					   /*                        */
-  int   *c;					   /*                        */
+  int   *c = NULL;				   /*                        */
  						   /*                        */
   init_error(stderr);				   /*                        */
   init_bibtool(argv[0]);			   /*                        */

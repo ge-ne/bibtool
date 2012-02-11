@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: parse.c,v 1.16 2012-01-30 05:08:02 gene Exp $
+** $Id: parse.c,v 1.17 2012-02-11 07:28:50 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -164,9 +164,11 @@ static void init___(pathp,pattern,envvp,env)	   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
 
- static char **f_path = (char**)0;
- static char *f_pattern[] =
- { "%s/%s", "%s/%s.bib", NULL };
+#ifndef HAVE_LIBKPATHSEA
+ static char **f_path = (char**)0;		   /*                        */
+ static char *f_pattern[] =			   /*                        */
+ { "%s/%s", "%s/%s.bib", NULL };		   /*                        */
+#endif
 
 /*-----------------------------------------------------------------------------
 ** Function:	init_read()

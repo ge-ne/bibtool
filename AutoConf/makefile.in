@@ -1,5 +1,5 @@
 # *****************************************************************************
-#  $Id: makefile.in,v 1.14 2012-02-05 18:59:09 gene Exp $
+#  $Id: makefile.in,v 1.15 2012-02-11 07:28:50 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -490,14 +490,17 @@ bibtcl:
 CLEAN_TARGETS	= *$(OBJ) xref *.bak core #* *~ 
 
 clean mostlyclean:
-	-$(RM) $(CLEAN_TARGETS)
 	-cd Doc && $(MAKE) $(MFLAGS) clean
+	-cd Test && $(MAKE) $(MFLAGS) clean
 	-cd BibTcl && $(MAKE) $(MFLAGS) clean
+	-$(RM) $(CLEAN_TARGETS)
 
 veryclean distclean realclean extraclean: clean
+	-cd Doc && $(MAKE) $(MFLAGS) distclean
+	-cd Test && $(MAKE) $(MFLAGS) distclean
 	-$(RM) bibtool config.cache config.status makefile
 
-doc dvi: Doc$(DIR_SEP)config.tex
+doc:
 	cd Doc; $(MAKE) $(MFLAGS) DIR_SEP=$(DIR_SEP)
 
 info:
