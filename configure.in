@@ -1,5 +1,5 @@
 dnl ***************************************************************************
-dnl $Id: configure.in,v 1.9 2012-01-26 19:54:20 gene Exp $
+dnl $Id: configure.in,v 1.10 2012-02-12 06:16:08 gene Exp $
 dnl ===========================================================================
 dnl 
 dnl This file is part of BibTool.
@@ -11,7 +11,7 @@ dnl
 dnl Net: gene@gerd-neugebauer.de
 dnl 
 dnl ***************************************************************************
-AC_REVISION($Revision: 1.9 $)dnl
+AC_REVISION($Revision: 1.10 $)dnl
 AC_PREREQ(2.59)
 
 dnl ---------------------------------------------------------------------------
@@ -70,6 +70,7 @@ else
 	AC_MSG_CHECKING(for kpathsea library)
 	kpathsea_dir=
 	kpathsea_lib=
+	kpathsea_lib_static=
 	kpathsea_def=
 	AC_TRY_COMPILE(
 	[
@@ -88,10 +89,10 @@ else
 	    if test -f $cand/../lib/libkpathsea.a; then
 	      kpathsea_dir=$cand
 	      kpathsea_def="-DHAVE_LIBKPATHSEA -I$cand"
-	      kpathsea_lib=$cand/../lib/libkpathsea.a
+	      kpathsea_lib_static=$cand/../lib/libkpathsea.a
 	    else
 	      if test -f $cand/kpathsea/STATIC/libkpathsea.a; then
-	        kpathsea_lib=$cand/kpathsea/STATIC/libkpathsea.a
+	        kpathsea_lib_static=$cand/kpathsea/STATIC/libkpathsea.a
 		kpathsea_dir=$cand
 		kpathsea_def="-DHAVE_LIBKPATHSEA -I$cand"
 	      fi
@@ -107,6 +108,7 @@ else
 fi
 AC_SUBST(kpathsea_dir)dnl
 AC_SUBST(kpathsea_lib)dnl
+AC_SUBST(kpathsea_lib_static)dnl
 AC_SUBST(kpathsea_def)dnl
 
 dnl ---------------------------------------------------------------------------

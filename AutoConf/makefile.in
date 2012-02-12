@@ -1,5 +1,5 @@
 # *****************************************************************************
-#  $Id: makefile.in,v 1.15 2012-02-11 07:28:50 gene Exp $
+#  $Id: makefile.in,v 1.16 2012-02-12 06:16:08 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -86,7 +86,7 @@ CC         = @CC@
 # 	   optimizer is turned on.
 # 
 
-CFLAGS     =
+CFLAGS     = @CFLAGS@
 # CFLAGS = -O
 #  GNU C
 # CFLAGS = -g -Wall
@@ -249,9 +249,10 @@ REGEX      = regex$(OBJ)
 #  KPATHSEA is defined and the directory beneath kpathsea
 #  is in the include search path.
 
-KPATHSEA_DIR = @kpathsea_dir@
-KPATHSEA     = @kpathsea_lib@
-KPATHSEA_DEF = @kpathsea_def@
+KPATHSEA_DIR    = @kpathsea_dir@
+KPATHSEA        = @kpathsea_lib@
+KPATHSEA_STATIC = @kpathsea_lib_static@
+KPATHSEA_DEF    = @kpathsea_def@
 
 # -------------------------------------------------------
 #  Default search paths
@@ -441,7 +442,7 @@ DISTFILES     = $(ETCFILES)			\
 default all: bibtool$(EXT)
 
 bibtool$(EXT): $(OFILES) $(REGEX) $(KPATHSEA)
-	$(CC) $(C_FLAGS) $(LINK_TO) $@ $(OFILES) $(REGEX) $(KPATHSEA)
+	$(CC) $(C_FLAGS) $(LINK_TO) $@ $(OFILES) $(REGEX) $(KPATHSEA) $(KPATHSEA_STATIC)
 
 tex_read$(EXT): tex_read.c
 	$(CC) $(C_FLAGS) $(STANDALONE) tex_read.c $(LINK_TO) tex_read$(EXT)
@@ -498,7 +499,7 @@ clean mostlyclean:
 veryclean distclean realclean extraclean: clean
 	-cd Doc && $(MAKE) $(MFLAGS) distclean
 	-cd Test && $(MAKE) $(MFLAGS) distclean
-	-$(RM) bibtool config.cache config.status makefile
+	-$(RM) bibtool config.cache config.status config.log makefile
 
 doc:
 	cd Doc; $(MAKE) $(MFLAGS) DIR_SEP=$(DIR_SEP)

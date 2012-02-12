@@ -1,5 +1,5 @@
 ##*****************************************************************************
-## $Id: Makefile,v 1.13 2012-02-11 07:28:50 gene Exp $
+## $Id: Makefile,v 1.14 2012-02-12 06:16:08 gene Exp $
 ##=============================================================================
 ## 
 ## This file is part of BibTool.
@@ -42,11 +42,11 @@ all: $(TARGETS)
 
 ##-----------------------------------------------------------------------------
 
-bibtool.dvi: bibtool.tex bibtool.bbl bibtool.ind config.tex
+bibtool.dvi: config.tex bibtool.tex bibtool.bbl bibtool.ind
 	$(LATEX) bibtool
 	$(LATEX) bibtool
 
-bibtool.pdf: bibtool.tex bibtool.bbl bibtool.ind config.tex
+bibtool.pdf: config.tex bibtool.tex bibtool.bbl bibtool.ind
 	$(PDFLATEX) bibtool
 	$(PDFLATEX) bibtool
 
