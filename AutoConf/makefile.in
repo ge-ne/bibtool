@@ -1,5 +1,5 @@
 # *****************************************************************************
-#  $Id: makefile.in,v 1.16 2012-02-12 06:16:08 gene Exp $
+#  $Id: makefile.in,v 1.17 2012-02-13 18:45:43 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -441,7 +441,7 @@ DISTFILES     = $(ETCFILES)			\
 
 default all: bibtool$(EXT)
 
-bibtool$(EXT): $(OFILES) $(REGEX) $(KPATHSEA)
+bibtool$(EXT): $(OFILES) $(REGEX) $(KPATHSEA_STATIC)
 	$(CC) $(C_FLAGS) $(LINK_TO) $@ $(OFILES) $(REGEX) $(KPATHSEA) $(KPATHSEA_STATIC)
 
 tex_read$(EXT): tex_read.c
