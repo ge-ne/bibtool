@@ -3,78 +3,177 @@
 BibTool \- BibTeX file manipulation tool
 .SH SYNOPSIS
 .B bibtool
-[options] [[file ... ]file]
+[options] [files]
 .SH DESCRIPTION
-.I BibTool
-takes the following options
-.TP
-.BR -A c
-Kind of disambiguating keystrings: <c>=0|a|A
-.TP
-.B -h
-Print help info and exit
-.TP
-.BR -i \ \ infile
-Specify input file. If 
-.B -i
-omitted it may not start
-with a -. If absent stdin is taken to read from.
-Multiple input files may be given.
-.TP
-.B -k
-Key generation enabled.
-.TP
-.B -K
-Key generation enabled (long key).
-.TP
-.BR -f \ \ format
-Key generation enabled (formated key)
-.TP
-.BR -m \ \ macfile
-Dump macros to macfile. - is stdout
-.TP
-.BR -M \ \ macfile
-Dump used macros to macfile. - is stdout
-.TP
-.BR -o \ \ outfile
-Specify output file as next argument
-If absent stdout is taken to write to.
-.TP
-.B -O
-Optimization (remove empty fields)
-.TP
-.B -q
-Quiet mode. No warnings.
-.TP
-.BR -r \ \ resource
-Load resource file (several are possible).
-.TP
-.B -s
-Sort.
-.TP
-.B -S
-Sort reverse.
-.TP
-.B -v
-Enable verbose mode
-.TP
-.BR -x \ \ file
-Extract from aux file.
-.TP
-.BR -X \ \ regex
-Extract regular expression.
-.TP
-.B --
-Print statistics (short).
-.TP
-.B -+
-Print statistics.
+This manual is not meant to be exhaustive.
+The complete documentation for
+.B BibTool
+can be found in the manual
+.IR "BibTool: A Tool to Manipulate BibTeX files" .
+BibTeX provides an easy to use means to integrate citations and
+bibliographies into LaTeX documents. But the user is left alone with
+the management of the BibTeX files.
+.B BibTool
+is intended to fill this gap.
+.B BibTool
+allows the  manipulation of BibTeX files which goes
+beyond the possibilities - and intentions - of BibTeX.
 .PP
+.B BibTool
+manipulates BibTeX database files through
+the command line front\-end
+.B bibtool
+which accepts numerous options.
+Modifications are performed through
+resource instructions
+that allow the modification of the various internal parameters
+determining the behavior of 
+.BR BibTool ;
+resource instructions can be grouped in resource files.
+The original
+.B BibTool
+distribtion contains a sufficient set of resource file samples
+to perform basic, relevant manipulations.
+.SH OPTIONS
+.B bibtool
+accepts the following options.
+.SS "Resource files"
+.TP
+\fB\-R\fR
+Immediately evaluate the instructions from the default resource file.
+.TP
+.BI \fB\-r\  rsc_file
+Immediately evaluate the instructions from the resource file
+.IR rsc_file .
+.TP
+.BI \fB\-\-\  rsc_cmd
+Evaluate the resource instruction
+.IR rsc_cmd .
+.SS "Input file"
+.TP
+.BI \fB\-i\  bib_file
+Add the BibTeX database file
+.IR bib_file
+to the list of input files.
+If \fB\-i\fR omitted the file name may not start with a \-.
+If absent stdin is taken to read from.
+.\"Multiple input files may be given.
 Input files should follow the
-.I bibtex
+.BR bibtex (1)
 conventions.
+.SS "Output file"
+.TP
+.BI \fB\-o\  output_file
+Direct output to the file
+.IR output_file .
+If absent the output is directed to stdout.
+.SS "Status reporting"
+.TP
+\fB\-q\fR
+Suppress warnings. Errors can not be suppressed.
+.TP
+\fB\-v\fR
+Enable informative messages on the activities of BibTool.
+.SS "Sorting"
+.TP
+\fB\-s\fR
+Enable sorting of entries.
+.TP
+\fB\-S\fR
+Enable sorting of entries in reverse order.
+.TP
+.BI \fB\-A\  type
+Determine key disambuguation;
+.IR type
+in 0, a, A.
+.SS "Selecting items"
+.TP
+.BI \fB\-x\  aux_file
+Extract the entries from the auxiliary
+.RI ( .aux )
+.\".BR latex (1)
+LaTeX
+.IR aux_file
+file.
+.TP
+.BI \fB\-X\  regex
+Select certain entries according to the regular expression
+.IR regex .
+.TP
+\fB\-c\fR
+Turn on the additional selection of crossreferenced entries.
+.SS "Key generation"
+.TP
+.BI \fB\-f\  key_format
+Set the specification for key generation to
+.IR key_format .
+.TP
+\fB\-F\fR
+Turn on key generation.
+.TP
+\fB\-k\fR
+Generate short format keys.
+.TP
+\fB\-K\fR
+Generate long format keys.
+.SS "Semantic checks"
+.TP
+\fB\-d\fR
+Find and mark (or delete) entries with identical sort keys.
+.SS "Strings/Macros"
+.TP
+.BI \fB\-m\  mac_file
+Write the macro definitions to the file
+.IR mac_file
+(\- is stdout).
+.TP
+.BI \fB\-M\  mac_file
+Write the used macro definitions to the file
+.IR mac_file
+(\- is stdout).
+.SS "Getting help"
+.TP
+\fB\-h\fR
+Print short help and exit.
+.TP
+\fB\-V\fR
+Print version and exit.
+.SS "Statistics"
+.TP
+\fB\-#\fR
+Print statistics about all known entry types (long).
+.TP
+\fB\-@\fR
+Print statistics about the used entry types only (short).
+.SH ENVIRONMENT
+.TP
+.B BIBINPUTS
+Search path for BibTeX database
+.RI ( .bib )
+files.
+.TP
+.B BIBTOOL
+Search path for BibTool resource
+.RI ( .rsc )
+files.
+.TP
+.B BIBTOOLRSC
+List of resource file names separated by colon.
 .SH FILES
-none
+.TP
+.I ./.bibtoolrsc
+The default current directory
+.B BibTool
+resource file.
+.TP
+.I ~/.bibtoolrsc
+The default individual
+.B BibTool
+resource file.
+.TP
+.I
+/usr/local/lib/BibTool/*.rsc
+The BibTool resource files included in the original distribution.
 .SH SEE ALSO
 .IR bibtex (1),
 .IR latex (1),
@@ -86,10 +185,9 @@ included as the file
 .B bibtool.tex
 in the
 .I BibTool
-source distribution.  This file contains a complete and hopefully up-to-date
-documentation of the program.
-.SH DIAGNOSTICS
-many
+source distribution.  This file contains a complete and up-to-date
+documentation of 
+.BR BibTool .
 .SH BUGS
 Some arrays are allocated statically which may result in an overflow.
 .br
@@ -97,3 +195,12 @@ Most memory is allocated but not returned to the OS. A garbage collection
 algorithm might be integrated in a future release.
 .br
 It is very likely that this man page is out of date.
+This man page is updated only occasionally.
+For complete, current documentation, refer to the manual
+.IR "BibTool: A Tool to Manipulate BibTeX files"
+which is made from the LaTeX source file
+.BR bibtool.tex .
+.SH AUTHOR
+BibTool is designed and maintained by Gerd Neugebauer.
+.\".SH COPYRIGHT
+.\"Copyright (C) 1996\-2012 Gerd Neugebauer <gene@gerd-neugebauer.de>

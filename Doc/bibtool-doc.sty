@@ -1,12 +1,12 @@
 %%*****************************************************************************
-%% $Id: bibtool-doc.sty,v 1.1 2011-12-16 22:48:29 gene Exp $
+%% $Id: bibtool-doc.sty,v 1.2 2012-02-18 06:09:50 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
 %% It is distributed under the Creative Commons Attribution-Share
 %% Alike 3.0 License.
 %%
-%% (c) 2011 Gerd Neugebauer
+%% (c) 2011-2012 Gerd Neugebauer
 %%
 %% Net: gene@gerd-neugebauer.de
 %%*****************************************************************************
@@ -21,10 +21,9 @@
 		filecolor=blue,
                 citecolor=blue]{hyperref}
 
-\newcommand\BibTool{\textsc{Bib\hskip-.1em\-%
+\DeclareRobustCommand\BibTool{\textsc{Bib\hskip-.1em\-%
         \mbox{T\hskip-.15emo\hskip-.05emo\hskip-.05eml}}}
-\newcommand\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
-        T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\DeclareRobustCommand\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em\TeX}}
 
 \renewcommand\maketitle{\thispagestyle{empty}
   \null\vfill
