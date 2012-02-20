@@ -8,8 +8,8 @@ BibTool \- BibTeX file manipulation tool
 This manual is not meant to be exhaustive.
 The complete documentation for
 .B BibTool
-can be found in the manual
-.IR "BibTool: A Tool to Manipulate BibTeX files" .
+can be found in the
+.IR "BibTool Manual" .
 BibTeX provides an easy to use means to integrate citations and
 bibliographies into LaTeX documents. But the user is left alone with
 the management of the BibTeX files.
@@ -32,7 +32,7 @@ determining the behavior of
 resource instructions can be grouped in resource files.
 The original
 .B BibTool
-distribtion contains a sufficient set of resource file samples
+distribution contains a sufficient set of resource file samples
 to perform basic, relevant manipulations.
 .SH OPTIONS
 .B bibtool
@@ -180,26 +180,22 @@ The BibTool resource files included in the original distribution.
 .IR tex (1)
 .br
 The
-.IR "BibTool Manual" ,
-included as the file
-.B bibtool.tex
-in the
-.I BibTool
-source distribution.  This file contains a complete and up-to-date
-documentation of 
-.BR BibTool .
+.IR "BibTool Manual" .
 .SH BUGS
 Some arrays are allocated statically which may result in an overflow.
 .br
-Most memory is allocated but not returned to the OS. A garbage collection
-algorithm might be integrated in a future release.
+Most memory is allocated but not returned to the OS:
+A garbage collection algorithm might be integrated in a future release.
 .br
-It is very likely that this man page is out of date.
-This man page is updated only occasionally.
-For complete, current documentation, refer to the manual
-.IR "BibTool: A Tool to Manipulate BibTeX files"
-which is made from the LaTeX source file
-.BR bibtool.tex .
+This man page is updated only occasionally,
+so it is very likely out of date.
+For complete, current documentation, refer to the
+.IR "BibTool Manual"
+which is distributed as LaTeX source file
+.RB ( bibtool.tex )
+in the original
+.BR BibTool
+source distribution.
 .SH AUTHOR
 BibTool is designed and maintained by Gerd Neugebauer.
 .\".SH COPYRIGHT
