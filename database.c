@@ -1,5 +1,5 @@
 /******************************************************************************
-** $Id: database.c,v 1.12 2012-01-29 17:04:07 gene Exp $
+** $Id: database.c,v 1.13 2012-04-02 13:18:52 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
@@ -587,9 +587,9 @@ static void print_strings(file, db, allp)	   /*                        */
       {						   /*                        */
 	if ( RecordIsMARKED(rec) )		   /*                        */
 	{					   /*                        */
-	  for ( i=2; i < RecordFree(rec); i+=2 )   /*                        */
+	  for ( i=1; i < RecordFree(rec); i++ )    /*                        */
 	  { if ( RecordHeap(rec)[i] != NULL )	   /*                        */
-            { mark_string(strings,RecordHeap(rec)[i+1]);/*                   */
+            { mark_string(strings,RecordHeap(rec)[i]);/*                     */
 	    }					   /*                        */
 	  }					   /*                        */
 	}					   /*                        */

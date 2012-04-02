@@ -1,13 +1,13 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: extract_file.t,v 1.1 2011-11-20 15:22:45 gene Exp $
+# $Id: extract_file.t,v 1.2 2012-04-02 13:18:52 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2011 Gerd Neugebauer
+#  (c) 2011-2012 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -109,6 +109,44 @@ __EOF__
 
 \@Book{		  whole-collection,
   title		= ""
+}
+__EOF__
+    );
+
+#------------------------------------------------------------------------------
+BUnit::run(name => 'extract_file_3',
+    args     => '-- \'extract.file={_xyzzy.aux}\'',
+    prepare  => sub {
+      my $fd = new FileHandle("_xyzzy.aux",'w') || die "_xyzzy.aux: $!\n";
+      print $fd <<__EOF__;
+\\citation{a}
+\\bibstyle{alpha}
+\\bibdata{_test.bib}
+__EOF__
+      $fd->close();
+      $fd = new FileHandle("_test.bib",'w') || die "_test.bib: $!\n";
+      print $fd <<__EOF__;
+\@string{sss="T" # t}
+\@string{t="ttt"#t2}
+\@string{t2="ttt"}
+\@Article{ a,
+  author = 	 sss,
+}
+__EOF__
+      $fd->close();
+	   },
+    post         => sub {
+      unlink('_xyzzy.aux');
+      unlink('_test.aux');
+	   },
+    expected_err => '',
+    expected_out => <<__EOF__,
+\@STRING{t	= "ttt"  # t2 }
+\@STRING{t2	= "ttt" }
+\@STRING{sss	= "T"  # t }
+
+\@Article{	  a,
+  author	= sss
 }
 __EOF__
     );

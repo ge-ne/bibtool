@@ -1,13 +1,13 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: ignored_word.t,v 1.1 2011-11-20 15:22:45 gene Exp $
+# $Id: ignored_word.t,v 1.2 2012-04-02 13:18:52 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2011 Gerd Neugebauer
+#  (c) 2011-2012 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -57,6 +57,30 @@ __EOF__
     expected_out => <<__EOF__,
 
 \@Manual{	  neugebauer:manual,
+  title		= {The BibTool Manual},
+  author	= {Gerd Neugebauer},
+  year		= 2011
+}
+__EOF__
+    expected_err => '' );
+
+#------------------------------------------------------------------------------
+BUnit::run(name => 'ignored_word_2',
+    resource 	 => <<__EOF__,
+ignored.word{BibTool}
+ignored.word{manual}
+key.format=short
+__EOF__
+    bib		 => <<__EOF__,
+\@Manual{	  bibtool,
+  title		= {The BibTool Manual},
+  author	= {Gerd Neugebauer},
+  year		= 2011
+}
+__EOF__
+    expected_out => <<__EOF__,
+
+\@Manual{	  neugebauer:,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
   year		= 2011
