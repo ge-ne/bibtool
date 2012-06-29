@@ -60,6 +60,8 @@ to this list;-):
 	MS-Windows 4.0, Sp 6	Cygwin
 	NeXT			
 	SGI Indigo2/IRIX 6.2	cc
+	Windows 7/Cygwin 1.7	gcc
+	Windows XP 32 bits	MinGW with GCC 4.6.1
 
 If you compile  BibTool on other systems drop  me a mail. I'm  interested to
 support a broad variety of systems/compilers.
