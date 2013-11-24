@@ -1,6 +1,6 @@
 #!/bin/perl -W
 #******************************************************************************
-# $Id: key_number_separator.t,v 1.1 2011-11-20 15:22:45 gene Exp $
+# $Id: key_number_separator.t,v 1.2 2013-11-24 21:40:14 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -94,7 +94,7 @@ __EOF__
   author	= "A. U. Thor"
 }
 
-\@Misc{		  thor--B,
+\@Misc{		  thor--A,
   author	= "A. U. Thor"
 }
 __EOF__
@@ -113,7 +113,7 @@ __EOF__
   author	= "A. U. Thor"
 }
 
-\@Misc{		  thor--b,
+\@Misc{		  thor--a,
   author	= "A. U. Thor"
 }
 __EOF__

@@ -1,13 +1,13 @@
 /* regex-0.12/config.h.  Generated from reconfig.h.in by configure.  */
 /******************************************************************************
-** $Id: config.h,v 1.10 2012-02-07 04:36:04 gene Exp $
+** $Id: config.h,v 1.11 2013-11-24 21:40:14 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2010 Gerd Neugebauer
+** (c) 1996-2013 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -17,6 +17,9 @@
 **  Define if you have the <string.h> header file.
 */
 #define HAVE_STRING_H 1
+
+/* Define to 1 if you have the ANSI C header files. */
+#define STDC_HEADERS 1
 
 /*-----------------------------------------------------------------------------
 **  Define if you have alloca, as a function or macro.

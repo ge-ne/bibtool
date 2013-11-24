@@ -1,12 +1,12 @@
 # *****************************************************************************
-#  $Id: makefile.in,v 1.17 2012-02-13 18:45:43 gene Exp $
+#  $Id: makefile.in,v 1.18 2013-11-24 21:40:13 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 1996-2012 Gerd Neugebauer
+#  (c) 1996-2013 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -297,7 +297,8 @@ DONT_LINK     = -c
 LINK_TO       = -o
 STANDALONE    = -DSTANDALONE
 
-C_FLAGS	      = $(CFLAGS) $(C_INCLUDE) $(FILE_TYPES)
+C_FLAGS	      = $(CFLAGS) $(CPPFLAGS) $(TARGET_ARCH) $(C_INCLUDE) $(FILE_TYPES)
+LD_FLAGS      = $(LDFLAGS)
 
 CFILES	      = main.c				\
 		$(CLIBFILES)
@@ -401,7 +402,8 @@ DOCFILES      = Doc$(DIR_SEP)bibtool.1		\
 		Doc$(DIR_SEP)c_get.pl		\
 		Doc$(DIR_SEP)make_version.pl
 
-LIBFILES      = Lib$(DIR_SEP)braces.rsc		\
+LIBFILES      = Lib$(DIR_SEP)biblatex.rsc	\
+		Lib$(DIR_SEP)braces.rsc		\
 		Lib$(DIR_SEP)check_y.rsc	\
 		Lib$(DIR_SEP)default.rsc	\
 		Lib$(DIR_SEP)field.rsc		\
@@ -415,7 +417,7 @@ LIBFILES      = Lib$(DIR_SEP)braces.rsc		\
 PROGFILES     = Perl$(DIR_SEP)bibtool.pl	\
 		Tcl$(DIR_SEP)bibtool.tcl
 ETCFILES      = README				\
-		INSTALL				\
+		install.tex			\
 		COPYING				\
 		Changes.tex			\
 		makefile.unx			\
@@ -442,10 +444,10 @@ DISTFILES     = $(ETCFILES)			\
 default all: bibtool$(EXT)
 
 bibtool$(EXT): $(OFILES) $(REGEX) $(KPATHSEA_STATIC)
-	$(CC) $(C_FLAGS) $(LINK_TO) $@ $(OFILES) $(REGEX) $(KPATHSEA) $(KPATHSEA_STATIC)
+	$(CC) $(LD_FLAGS) $(C_FLAGS) $(LINK_TO) $@ $(OFILES) $(REGEX) $(KPATHSEA) $(KPATHSEA_STATIC)
 
 tex_read$(EXT): tex_read.c
-	$(CC) $(C_FLAGS) $(STANDALONE) tex_read.c $(LINK_TO) tex_read$(EXT)
+	$(CC) $(LD_FLAGS) $(C_FLAGS) $(STANDALONE) tex_read.c $(LINK_TO) tex_read$(EXT)
 
 tex_aux$(OBJ): tex_aux.c
 	$(CC) $(C_FLAGS) $(REGEX_DEF) $(DONT_LINK) tex_aux.c -o tex_aux$(OBJ)
@@ -466,7 +468,7 @@ rsc$(OBJ): rsc.c
 	$(CC) $(C_FLAGS) $(RSC_DEF) $(DONT_LINK) rsc.c -o rsc$(OBJ)
 
 .c$(OBJ):
-	$(CC) $(C_FLAGS) $(CPPFLAGS) $(TARGET_ARCH) -c $< -o $@
+	$(CC) $(C_FLAGS) $(DONT_LINK) -c $< -o $@
 
 # __________________________________________________________________
 #  Include the makefile into the dependencies to force updates

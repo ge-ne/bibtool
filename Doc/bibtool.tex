@@ -1,12 +1,12 @@
 %%*****************************************************************************
-%% $Id: bibtool.tex,v 1.31 2011-12-16 22:48:29 gene Exp $
+%% $Id: bibtool.tex,v 1.32 2013-11-24 21:40:13 gene Exp $
 %%=============================================================================
 %%
 %% This file is part of BibTool.
 %% It is distributed under the Creative Commons Attribution-Share
 %% Alike 3.0 License.
 %%
-%% (c) 1995-2011 Gerd Neugebauer
+%% (c) 1995-2013 Gerd Neugebauer
 %%
 %% Net: gene@gerd-neugebauer.de
 %%
@@ -277,7 +277,8 @@ utilities emerged to fill the gaps. We will sketch some of them shortly.
   is a \BibTeX{} file browser with support for editing, searching sorting and
   merging. Written by Peter Corke in Tcl/Tk it runs under Unix and Windows.
 
-\item [\href{http://www.ctan.org/tex-archive/support/bibdb/}{bibdb}] Editor for \BibTeX{} files that runs under Dos and Windows.
+\item [\href{http://www.ctan.org/tex-archive/support/bibdb/}{bibdb}] Editor
+  for \BibTeX{} files that runs under Dos and Windows.
   
 \item
   [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/qbibman/}{qbibman}]
@@ -370,7 +371,7 @@ order.
 If you want to sort the \BibTeX{} files according to the authors then the
 following invocation should do the trick:\index{N@\%N}
 
-\sh[-]{sort.format="\%N(author)" file1.bib file2.bib}
+\sh[s]{--sort.format="\%N(author)" file1.bib file2.bib}
 
 This means that the sorting order is determined by the (normalized) author
 field. Note that single quotes encapsulating the \rsc{sort.format} are
@@ -419,7 +420,7 @@ simply have to run the following command:
 
 \sh[k]{\texttt{sample.bib -o sample1.bib}}
 
-After the command has colpleted it's work the following entry can be found in
+After the command has completed it's work the following entry can be found in
 the output file \file{sample1.bib}: 
 
 \begin{lstlisting}[language=BibTeX]
@@ -727,13 +728,13 @@ In addition, this page contains a description of the current version of
 \BibTool{} and a list of changes in the last few releases.
 
 If you encounter problems installing or using \BibTool{} you can send me a bug
-report to my email address \texttt{gene@gerd-neugebauer.de}. Please
-include the following information into a bug report:
+report to my email address \texttt{gene@gerd-neugebauer.de}. Please include
+the following information into a bug report:
 \begin{itemize}
 \item The version of \BibTool{} you are using.
 \item Your hardware specification and operating system version.
-\item The C compiler you are using and its version. (Only for
-  compilation and installation problems)
+\item The C compiler you are using and its version. (Only for compilation and
+  installation problems)
 \item The resource file you are using. Try to reduce it to the absolute
   minimum necessary for demonstrating the problem.
 \item A \emph{small} \BibTeX{} file showing the problem.
@@ -800,7 +801,7 @@ or special characters like \texttt{\symbol{"5C}}, \texttt{\$}, \texttt{\&},
 \verb|!|, or \verb|#|.´
 
 Instead of excessively using command line arguments it is preferable and less
-error-prome to put the major configuration into a resource file and just
+error-prone to put the major configuration into a resource file and just
 include this resource file on the command line. Details on this are described
 in the next section.
 
@@ -3386,7 +3387,7 @@ the equality sign '='.
 
 \emph{pattern} is a regular expression enclosed in double quotes ("). This
 pattern is matched against sub-strings of the field value---including the
-delimiters. If a match is found then the matching sistering is replaced by the
+delimiters. If a match is found then the matching string is replaced by the
 replacement text or the field deleted if no replacement text is given.
 
 \emph{replacement\_text} is the string to be inserted for the matching

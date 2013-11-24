@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: key.c,v 1.18 2012-01-30 05:08:02 gene Exp $
+** $Id: key.c,v 1.19 2013-11-24 21:40:13 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2012 Gerd Neugebauer
+** (c) 1996-2013 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -281,8 +281,8 @@ void set_separator(n,s)				   /*			     */
 
  static char * key__base[] = 
  { "0123456789",
-   "abcdefghijklmnopqrstuvwxyz",
-   "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+   "_abcdefghijklmnopqrstuvwxyz",
+   "_ABCDEFGHIJKLMNOPQRSTUVWXYZ"
  };
 #define KEY_BASE_DIGIT 0
 #define KEY_BASE_LOWER 1

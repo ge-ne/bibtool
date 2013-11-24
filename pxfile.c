@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: pxfile.c,v 1.9 2012-01-29 17:17:07 gene Exp $
+** $Id: pxfile.c,v 1.10 2013-11-24 21:40:13 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2012 Gerd Neugebauer
+** (c) 1996-2013 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -304,37 +304,37 @@ static void expand_env(s,se,res)		   /*                        */
 {						   /*                        */
   StringBuffer * val = sbopen();		   /*                        */
  						   /*                        */
-  for ( ; s<se; s++ )
-  {
-    if ( *s == '$' )
-    { char beg = '\0';
-      char * env;
-      sbrewind(val);
-      s++;
-      if ( *s == '{' || *s == '(' )
-      { beg = *(s++); }
-      while ( isalpha(*s) || isdigit(*s) || *s == '_' )
-      { sbputchar(*s,val);
-        s++;
-      }
-      if ( ( beg == '{' && *s == '}' ) ||
-	   ( beg == '(' && *s == ')' )
-	 )
-      { s++; }
-      env = sbflush(val);
-      if ( *env )
-      { env = getenv(env);
-        if ( env != NULL )
-	{ sbputs(env,res); }
-      }
-    }
+  for ( ; s<se; s++ )				   /*                        */
+  {						   /*                        */
+    if ( *s == '$' )				   /*                        */
+    { char beg = '\0';				   /*                        */
+      char * env;				   /*                        */
+      sbrewind(val);				   /*                        */
+      s++;					   /*                        */
+      if ( *s == '{' || *s == '(' )		   /*                        */
+      { beg = *(s++); }				   /*                        */
+      while ( isalpha(*s) || isdigit(*s) || *s == '_' )/*                    */
+      { sbputchar(*s,val);			   /*                        */
+        s++;					   /*                        */
+      }						   /*                        */
+      if ( ( beg == '{' && *s == '}' ) ||	   /*                        */
+	   ( beg == '(' && *s == ')' )		   /*                        */
+	 )					   /*                        */
+      { s++; }					   /*                        */
+      env = sbflush(val);			   /*                        */
+      if ( *env )				   /*                        */
+      { env = getenv(env);			   /*                        */
+        if ( env != NULL )			   /*                        */
+	{ sbputs(env,res); }			   /*                        */
+      }						   /*                        */
+    }						   /*                        */
 #ifdef HOME_ENV_VAR 
-    else if ( *s == '~' )
-    {
-      char * env = getenv(HOME_ENV_VAR);
-      if ( env != NULL )
-      { sbputs(env,res); }
-    }
+    else if ( *s == '~' )			   /*                        */
+    {						   /*                        */
+      char * env = getenv(HOME_ENV_VAR);	   /*                        */
+      if ( env != NULL )			   /*                        */
+      { sbputs(env,res); }			   /*                        */
+    }						   /*                        */
 #endif
     else					   /*                        */
     { sbputchar(*s,res);			   /*                        */

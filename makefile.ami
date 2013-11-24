@@ -1,12 +1,12 @@
 # *****************************************************************************
-#  $Id: makefile.ami,v 1.9 2012-01-26 19:54:20 gene Exp $
+#  $Id: makefile.ami,v 1.10 2013-11-24 21:40:13 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 1996-2011 Gerd Neugebauer
+#  (c) 1996-2013 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -362,7 +362,8 @@ DOCFILES      = Doc$(DIR_SEP)bibtool.1		\
 		Doc$(DIR_SEP)c_get.pl		\
 		Doc$(DIR_SEP)c_lib.tex
 
-LIBFILES      = Lib$(DIR_SEP)braces.rsc		\
+LIBFILES      = Lib$(DIR_SEP)biblatex.rsc	\
+		Lib$(DIR_SEP)braces.rsc		\
 		Lib$(DIR_SEP)check_y.rsc	\
 		Lib$(DIR_SEP)default.rsc	\
 		Lib$(DIR_SEP)field.rsc		\
