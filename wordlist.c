@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: wordlist.c,v 1.9 2012-01-28 06:44:26 gene Exp $
+** $Id: wordlist.c,v 1.10 2013-11-24 22:07:52 gene Exp $
 **=============================================================================
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2012 Gerd Neugebauer
+** (c) 1996-2013 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 

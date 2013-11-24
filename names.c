@@ -1,12 +1,12 @@
 /******************************************************************************
-** $Id: names.c,v 1.16 2012-01-30 05:08:02 gene Exp $
+** $Id: names.c,v 1.17 2013-11-24 22:07:52 gene Exp $
 *******************************************************************************
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2012 Gerd Neugebauer
+** (c) 1996-2013 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
