@@ -1,12 +1,10 @@
-##*****************************************************************************
-## $Id: Makefile,v 1.14 2012-02-12 06:16:08 gene Exp $
-##=============================================================================
+##*** Makefile ****************************************************************
 ## 
 ## This file is part of BibTool.
 ## It is distributed under the GNU General Public License.
 ## See the file COPYING for details.
 ## 
-## (c) 1997-2011 Gerd Neugebauer
+## (c) 1997-2013 Gerd Neugebauer
 ## 
 ## Net: gene@gerd-neugebauer.de
 ## 

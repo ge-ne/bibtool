@@ -1,6 +1,4 @@
-# *****************************************************************************
-#  $Id: makefile.ata,v 1.10 2013-11-24 21:40:13 gene Exp $
-# =============================================================================
+# *** makefile.ata ************************************************************
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
@@ -344,32 +342,32 @@ OLIBFILES     = database$(OBJ)	\
 		version$(OBJ)	\
 		wordlist$(OBJ)
 
-DOCFILES      = Doc$(DIR_SEP)bibtool.1		\
-		Doc$(DIR_SEP)bibtool.tex	\
-		Doc$(DIR_SEP)bibtool.bib	\
-		Doc$(DIR_SEP)bibtool.bbl	\
-		Doc$(DIR_SEP)bibtool.aux	\
-		Doc$(DIR_SEP)bibtool.ind	\
-		Doc$(DIR_SEP)bibtool.idx	\
-		Doc$(DIR_SEP)bibtool.ist	\
-		Doc$(DIR_SEP)config.tex		\
-		Doc$(DIR_SEP)version.tex	\
-		Doc$(DIR_SEP)ref_card.tex	\
-		Doc$(DIR_SEP)Makefile		\
-		Doc$(DIR_SEP)c_get.pl		\
-		Doc$(DIR_SEP)c_lib.tex
+DOCFILES      = doc$(DIR_SEP)bibtool.1		\
+		doc$(DIR_SEP)bibtool.tex	\
+		doc$(DIR_SEP)bibtool.bib	\
+		doc$(DIR_SEP)bibtool.bbl	\
+		doc$(DIR_SEP)bibtool.aux	\
+		doc$(DIR_SEP)bibtool.ind	\
+		doc$(DIR_SEP)bibtool.idx	\
+		doc$(DIR_SEP)bibtool.ist	\
+		doc$(DIR_SEP)config.tex		\
+		doc$(DIR_SEP)version.tex	\
+		doc$(DIR_SEP)ref_card.tex	\
+		doc$(DIR_SEP)Makefile		\
+		doc$(DIR_SEP)c_get.pl		\
+		doc$(DIR_SEP)c_lib.tex
 
-LIBFILES      = Lib$(DIR_SEP)biblatex.rsc	\
-		Lib$(DIR_SEP)braces.rsc		\
-		Lib$(DIR_SEP)check_y.rsc	\
-		Lib$(DIR_SEP)default.rsc	\
-		Lib$(DIR_SEP)field.rsc		\
-		Lib$(DIR_SEP)improve.rsc	\
-		Lib$(DIR_SEP)iso2tex.rsc	\
-		Lib$(DIR_SEP)month.rsc		\
-		Lib$(DIR_SEP)opt.rsc		\
-		Lib$(DIR_SEP)sort_fld.rsc	\
-		Lib$(DIR_SEP)tex_def.rsc
+LIBFILES      = lib$(DIR_SEP)biblatex.rsc	\
+		lib$(DIR_SEP)braces.rsc		\
+		lib$(DIR_SEP)check_y.rsc	\
+		lib$(DIR_SEP)default.rsc	\
+		lib$(DIR_SEP)field.rsc		\
+		lib$(DIR_SEP)improve.rsc	\
+		lib$(DIR_SEP)iso2tex.rsc	\
+		lib$(DIR_SEP)month.rsc		\
+		lib$(DIR_SEP)opt.rsc		\
+		lib$(DIR_SEP)sort_fld.rsc	\
+		lib$(DIR_SEP)tex_def.rsc
 
 PROGFILES     = Perl$(DIR_SEP)bibtool.pl	\
 		Tcl$(DIR_SEP)bibtool.tcl
@@ -385,9 +383,9 @@ ETCFILES      = README				\
 		THANKS				\
 		pxfile.man			\
 		sbuffer.man			\
-		Doc$(DIR_SEP)c.tex		\
-		Doc$(DIR_SEP)c_main.tex		\
-		Doc$(DIR_SEP)c_lib.ind		\
+		doc$(DIR_SEP)c.tex		\
+		doc$(DIR_SEP)c_main.tex		\
+		doc$(DIR_SEP)c_lib.ind		\
 		$(MSDOS_targets)		\
 		$(PROGFILES)			\
 		$(AUTOCONFFILES)		\
@@ -488,7 +486,7 @@ install.bin: bibtool$(EXT)
 	-$(INSTALL_DIR) $(BINDIR)
 	$(INSTALL) bibtool$(EXT) $(BINDIR)
 
-INSTALL_LIB_FILES = Lib$(DIR_SEP)*.*
+INSTALL_LIB_FILES = lib$(DIR_SEP)*.*
 
 install.lib: 
 	-$(INSTALL_DIR) $(LIBDIR)

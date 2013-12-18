@@ -1,6 +1,4 @@
-# *****************************************************************************
-#  $Id: makefile.in,v 1.18 2013-11-24 21:40:13 gene Exp $
-# =============================================================================
+# *** makefile ****************************************************************
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
@@ -387,32 +385,32 @@ OLIBFILES     = crossref$(OBJ)			\
 		version$(OBJ)			\
 		wordlist$(OBJ)
 
-DOCFILES      = Doc$(DIR_SEP)bibtool.1		\
-		Doc$(DIR_SEP)bibtool.tex	\
-		Doc$(DIR_SEP)bibtool.bib	\
-		Doc$(DIR_SEP)bibtool.ist	\
-		Doc$(DIR_SEP)bibtool-doc.sty	\
-		Doc$(DIR_SEP)bibtool.tex	\
-		Doc$(DIR_SEP)ref_card.tex	\
-		Doc$(DIR_SEP)Makefile		\
-		Doc$(DIR_SEP)config.tex		\
-		Doc$(DIR_SEP)c_main.tex		\
-		Doc$(DIR_SEP)c_lib.tex		\
-		Doc$(DIR_SEP)c.tex		\
-		Doc$(DIR_SEP)c_get.pl		\
-		Doc$(DIR_SEP)make_version.pl
+DOCFILES      = doc$(DIR_SEP)bibtool.1		\
+		doc$(DIR_SEP)bibtool.tex	\
+		doc$(DIR_SEP)bibtool.bib	\
+		doc$(DIR_SEP)bibtool.ist	\
+		doc$(DIR_SEP)bibtool-doc.sty	\
+		doc$(DIR_SEP)bibtool.tex	\
+		doc$(DIR_SEP)ref_card.tex	\
+		doc$(DIR_SEP)Makefile		\
+		doc$(DIR_SEP)config.tex		\
+		doc$(DIR_SEP)c_main.tex		\
+		doc$(DIR_SEP)c_lib.tex		\
+		doc$(DIR_SEP)c.tex		\
+		doc$(DIR_SEP)c_get.pl		\
+		doc$(DIR_SEP)make_version.pl
 
-LIBFILES      = Lib$(DIR_SEP)biblatex.rsc	\
-		Lib$(DIR_SEP)braces.rsc		\
-		Lib$(DIR_SEP)check_y.rsc	\
-		Lib$(DIR_SEP)default.rsc	\
-		Lib$(DIR_SEP)field.rsc		\
-		Lib$(DIR_SEP)improve.rsc	\
-		Lib$(DIR_SEP)iso2tex.rsc	\
-		Lib$(DIR_SEP)month.rsc		\
-		Lib$(DIR_SEP)opt.rsc		\
-		Lib$(DIR_SEP)sort_fld.rsc	\
-		Lib$(DIR_SEP)tex_def.rsc
+LIBFILES      = lib$(DIR_SEP)biblatex.rsc	\
+		lib$(DIR_SEP)braces.rsc		\
+		lib$(DIR_SEP)check_y.rsc	\
+		lib$(DIR_SEP)default.rsc	\
+		lib$(DIR_SEP)field.rsc		\
+		lib$(DIR_SEP)improve.rsc	\
+		lib$(DIR_SEP)iso2tex.rsc	\
+		lib$(DIR_SEP)month.rsc		\
+		lib$(DIR_SEP)opt.rsc		\
+		lib$(DIR_SEP)sort_fld.rsc	\
+		lib$(DIR_SEP)tex_def.rsc
 
 PROGFILES     = Perl$(DIR_SEP)bibtool.pl	\
 		Tcl$(DIR_SEP)bibtool.tcl
@@ -493,18 +491,19 @@ bibtcl:
 CLEAN_TARGETS	= *$(OBJ) xref *.bak core #* *~ 
 
 clean mostlyclean:
-	-cd Doc && $(MAKE) $(MFLAGS) clean
+	-cd doc && $(MAKE) $(MFLAGS) clean
 	-cd Test && $(MAKE) $(MFLAGS) clean
 	-cd BibTcl && $(MAKE) $(MFLAGS) clean
 	-$(RM) $(CLEAN_TARGETS)
 
 veryclean distclean realclean extraclean: clean
-	-cd Doc && $(MAKE) $(MFLAGS) distclean
+	-cd doc && $(MAKE) $(MFLAGS) distclean
 	-cd Test && $(MAKE) $(MFLAGS) distclean
 	-$(RM) bibtool config.cache config.status config.log makefile
 
-doc:
-	cd Doc; $(MAKE) $(MFLAGS) DIR_SEP=$(DIR_SEP)
+doc: Doc
+Doc:
+	cd doc; $(MAKE) $(MFLAGS) DIR_SEP=$(DIR_SEP)
 
 info:
 
@@ -524,7 +523,7 @@ install.bin install-exec: bibtool$(EXT)
 	-$(INSTALL_DIR) $(INSTALLPREFIX)$(BINDIR)
 	$(INSTALL) bibtool$(EXT) $(INSTALLPREFIX)$(BINDIR)
 
-INSTALL_LIB_FILES = Lib$(DIR_SEP)*.*
+INSTALL_LIB_FILES = lib$(DIR_SEP)*.*
 
 install.lib install-data: 
 	-$(INSTALL_DIR) $(INSTALLPREFIX)$(LIBDIR)
@@ -542,7 +541,7 @@ install.include install-include:
 
 install.man install-man: 
 	-$(INSTALL_DIR) $(INSTALLPREFIX)$(MANDIR)$(DIR_SEP)man$(MANSECT)
-	$(INSTALL) Doc$(DIR_SEP)bibtool.1 \
+	$(INSTALL) doc$(DIR_SEP)bibtool.1 \
 		$(INSTALLPREFIX)$(MANDIR)$(DIR_SEP)man$(MANSECT)$(DIR_SEP)bibtool.$(MANSECT)
 
 uninstall: uninstall.bin uninstall.lib

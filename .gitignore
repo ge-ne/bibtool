@@ -11,6 +11,7 @@ makefile
 *.gcov
 *.gcno
 *.bak
+*.save
 .project
 bibtool
 Work

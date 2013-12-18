@@ -1,6 +1,4 @@
-/******************************************************************************
-** $Id: version.c,v 1.16 2013-11-24 21:40:13 gene Exp $
-**=============================================================================
+/*** version.c ****************************************************************
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
@@ -35,6 +33,6 @@
 **___________________________________________________			     */
 void show_version()				   /*                        */
 {						   /*                        */
-  ErrPrintF("BibTool Vers. %s (C) 1996-2012 Gerd Neugebauer\n\n",/*          */
+  ErrPrintF("BibTool Vers. %s (C) 1996-2013 Gerd Neugebauer\n\n",/*          */
 	    bibtool_version);			   /*	                     */
 }						   /*------------------------*/

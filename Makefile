@@ -1,6 +1,4 @@
-#******************************************************************************
-#* $Id: Makefile,v 1.9 2013-11-24 21:40:13 gene Exp $
-# =============================================================================
+#*** Makefile ******************************************************************
 #
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
@@ -50,7 +48,7 @@ lint:
 	gcc  $(C_FLAGS) $(REGEX_DEF) $(DONT_LINK) -ansi -W -Wall -O2 ${CFILES}
 
 dist:
-	@( cd Doc; make)
+	@( cd doc; make)
 	@( cd ..; rm -f $(DIR).tar.gz;				\
 	   tar  -cvzf $(DIR).tar.gz $(DISTFILES:%=$(DIR)/%)	\
 		--exclude CVS --exclude config.status )

@@ -1,6 +1,4 @@
-%%*****************************************************************************
-%% $Id: install.tex,v 1.6 2013-11-24 21:40:13 gene Exp $
-%%=============================================================================
+%%*** install.tex **************************************************************
 %% 
 %% This file is part of BibTool.
 %% It is distributed under the Creative Commons Attribution-Share
@@ -280,8 +278,8 @@ To install \BibTool{} you can try to apply the following instructions:
 	make clean
 \end{verbatim}
   
-\item To prepare the documentation contained in the subdirectory
-  \file{Doc} go into the \file{Doc} subdirectory and run
+\item To prepare the documentation contained in the sub-directory
+  \file{doc} go into the \file{doc} subdirectory and run
 
 \begin{verbatim}
 	latex   bibtool
@@ -317,7 +315,7 @@ To install \BibTool{} you can try to apply the following instructions:
         make
 \end{verbatim}
   
-  in the \file{Doc} directory which tries to perform the steps given
+  in the \file{doc} directory which tries to perform the steps given
   above.
   
   The documentation is written in a way that either \LaTeX{} or
@@ -515,8 +513,8 @@ General instructions:
 \item Link together all object files to get the executable bibtool.
   (maybe include the kpathsea library; see section \ref{kpathsea})
   
-\item Run \LaTeX{} on \file{bibtool.tex} in the \file{Doc}
-  subdirectory to produce the documentation.  (see step H in section
+\item Run \LaTeX{} on \file{bibtool.tex} in the \file{doc}
+  sub-directory to produce the documentation.  (see step H in section
   \ref{generic} for details)
 \end{enumerate}
 
@@ -595,9 +593,9 @@ First of all a small list of assumptions that I use.
 \section{The C Interface}
 
 The C interface to \BibTool{} is described in the document
-\file{Doc/c\_lib.dvi}.  To create this document run \LaTeX{} and
-makeindex on the file \file{c\_lib.tex} in the \file{Doc}
-subdirectory:
+\file{doc/c\_lib.dvi}.  To create this document run \LaTeX{} and
+makeindex on the file \file{c\_lib.tex} in the \file{doca}
+sub-directory:
 
 \begin{verbatim}
 	latex c_lib

@@ -1,6 +1,4 @@
-/******************************************************************************
-** $Id: main.c,v 1.21 2013-11-24 22:07:52 gene Exp $
-**=============================================================================
+/*** main.c ********************************************************************
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
@@ -10,7 +8,7 @@
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
-** >>> See the file Doc/c_lib.tex for a printed documentation of the
+** >>> See the file doc/c_lib.tex for a printed documentation of the
 ** >>> main parts of the C source.
 ** 
 **-----------------------------------------------------------------------------

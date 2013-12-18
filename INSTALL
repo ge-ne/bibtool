@@ -4,7 +4,7 @@
 ## It is distributed under the GNU General Public License.
 ## See the file COPYING for details.
 ## 
-## (c) 1996-2012 Gerd Neugebauer
+## (c) 1996-2013 Gerd Neugebauer
 ## 
 ## Net: gene@gerd-neugebauer.de
 ## 
@@ -184,8 +184,8 @@ To install BibTool you can try to apply the following instructions:
 
 	make clean
 
- H  To prepare the documentation contained  in the sub-directory Doc go into
-    the Doc sub-directory and run
+ H  To prepare the documentation contained  in the sub-directory doc go into
+    the doc sub-directory and run
 
 	latex   bibtool
 	latex   bibtool
@@ -212,7 +212,7 @@ To install BibTool you can try to apply the following instructions:
 
         make
 
-    in the Doc directory which tries to perform the steps given above.
+    in the doc directory which tries to perform the steps given above.
 
     The documentation is written in a way that either LaTeX or LaTeX2.09 can
     be used to compile it. I had a bug report about a real ancient LaTeX2.09
@@ -367,7 +367,7 @@ General instructions:
  D  Link together all object files to get the executable bibtool.
     (maybe include the kpathsea library; see section 6)
 
- E  Run  LaTeX  on  bibtool.tex  in  the Doc  sub-directory  to  produce the
+ E  Run  LaTeX  on  bibtool.tex  in  the doc  sub-directory  to  produce the
     documentation.  (see step H in section 2 for details)
 
 
@@ -441,9 +441,9 @@ First of all a small list of assumptions that I use.
 9. The C Interface
 ==================
 
-The C interface to  BibTool is described in the  document Doc/c_lib.dvi.  To
+The C interface to  BibTool is described in the  document doc/c_lib.dvi.  To
 create this  document run LaTeX and makeindex  on the  file c_lib.tex in the
-Doc sub-directory:
+doc sub-directory:
 
 	latex c_lib
 	makeindex c_lib
