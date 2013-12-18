@@ -1,6 +1,7 @@
 *.o
 *~
 #*
+.#*
 *#
 config.status
 autom4te.cache
