@@ -1,13 +1,11 @@
 #!/bin/perl -W
-#******************************************************************************
-# $Id: bibtex_env_name.t,v 1.2 2012-02-07 16:58:55 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2011 Gerd Neugebauer
+#  (c) 2011-2014 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  

@@ -1,13 +1,11 @@
 #!/bin/perl -W
-#******************************************************************************
-# $Id: extract_file.t,v 1.2 2012-04-02 13:18:52 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2011-2012 Gerd Neugebauer
+#  (c) 2011-2014 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  

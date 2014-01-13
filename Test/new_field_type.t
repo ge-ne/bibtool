@@ -1,13 +1,11 @@
 #!/bin/perl -W
-#******************************************************************************
-# $Id: new_field_type.t,v 1.1 2011-11-20 16:07:25 gene Exp $
 # =============================================================================
 #  
 #  This fiel is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the fiel COPYING for details.
 #  
-#  (c) 2011 Gerd Neugebauer
+#  (c) 2011-2014 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  

@@ -1,13 +1,11 @@
 #!/bin/perl -W
-#******************************************************************************
-# $Id: main.t,v 1.2 2012-01-29 19:28:02 gene Exp $
 # =============================================================================
 #  
 #  This file is part of BibTool.
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2011-2012 Gerd Neugebauer
+#  (c) 2011-2014 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  

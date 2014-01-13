@@ -61,9 +61,7 @@ source code.   No compiled  versions  are  available from  the  author
 
 BibTool can be obtained from the CTAN archives:
 
-* mirror.ctan.org:/biblio/bibtex/utils/bibtool
-* ftp.dante.de:/tex-archive/biblio/bibtex/utils/bibtool
-* ftp.tex.ac.uk:/tex-archive/biblio/bibtex/utils/bibtool
+* http://mirrors.ctan.org/biblio/bibtex/utils/bibtool
 
 Get  the  file BibTool-x.xx.tar.gz  where  x.xx is the version number.
 Unpack it with the command (on UN*X)
