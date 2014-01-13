@@ -229,7 +229,7 @@ void set_name_format(nodep,s)			   /*                        */
 			     -1,		   /*                        */
 			     (Uchar*)NULL,	   /*                        */
 			     mid,		   /*                        */
-			     (Uchar*)NULL));	   /*                        */
+			     (Uchar*)NULL);	   /*                        */
       nodep  = &NextName(*nodep);		   /*                        */
  						   /*                        */
       if ( c == '\0' ) return;			   /*                        */

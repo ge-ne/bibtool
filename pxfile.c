@@ -193,8 +193,11 @@ FILE * px_fopen(name,mode,pattern,path,show)	   /*			     */
   for ( pp=path;*pp;++pp )			   /* use all paths	     */
   { len = strlen(*pp) + plen;			   /* required space	     */
     if ( px_len < len )				   /* if less present get it */
-    { if ( (px_filename = realloc(px_filename,len))==NULL )/*		     */
+    { char * old = px_filename;			   /*                        */
+      if ( (px_filename = realloc(px_filename,len))==NULL ) {/*		     */
+	free(old);				   /*                        */
 	return(NULL);				   /*                        */
+      }						   /*                        */
       px_len = len-1;				   /* usable is 1 less	     */
     }						   /*			     */
 						   /*			     */
@@ -249,9 +252,13 @@ char ** px_s2p(s,sep)				   /*			     */
     if ( *cp == sep || *cp == '\0' )		   /*                        */
     { if ( array_ptr >= array_size )		   /*                        */
       { array_size += INC_SIZE;			   /*                        */
-        array 	    = (int*)realloc(array,	   /*                        */
+	char* old   = array;			   /*                        */
+        array	    = (int*)realloc(array,	   /*                        */
 				    array_size*sizeof(int));/*               */
-	if ( array == NULL ) return NULL;	   /*                        */
+	if ( array == NULL ) {			   /*                        */
+	  free(old);				   /*                        */
+	  return NULL;	   			   /*                        */
+	}					   /*                        */
       }						   /*                        */
       array[array_ptr++] = sbtell(sb);		   /*                        */
       expand_env(t,cp,sb);			   /*                        */
