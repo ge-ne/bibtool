@@ -252,7 +252,7 @@ char ** px_s2p(s,sep)				   /*			     */
     if ( *cp == sep || *cp == '\0' )		   /*                        */
     { if ( array_ptr >= array_size )		   /*                        */
       { array_size += INC_SIZE;			   /*                        */
-	char* old   = array;			   /*                        */
+	int* old    = array;			   /*                        */
         array	    = (int*)realloc(array,	   /*                        */
 				    array_size*sizeof(int));/*               */
 	if ( array == NULL ) {			   /*                        */

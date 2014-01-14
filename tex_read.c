@@ -659,7 +659,6 @@ void TeX_def(s)					   /*			     */
   Uchar *s;			   		   /*			     */
 { Uchar	*name,				   	   /*			     */
 	*ep   = NULL;			   	   /*			     */
-  char	c;				   	   /*			     */
   int	arity = 0;				   /*			     */
 						   /*			     */
   while( isspace(*s) ) s++;			   /*                        */
@@ -673,7 +672,7 @@ void TeX_def(s)					   /*			     */
   if ( ep == NULL ) ep = s;			   /*			     */
 						   /*			     */
   if ( *name == '\\' )				   /*                        */
-  {  						   /*                        */
+  { char c;				   	   /*			     */
     while (ep > name + 2 &&			   /*                        */
 	   (*(ep-1)  == ' ' || *(ep-1) =='\t'))	   /*                        */
     { ep--; }					   /*                        */
@@ -859,7 +858,6 @@ int TeX_read(cp,sp)				   /*			     */
   static Token	old_t = TokenNULL;		   /*			     */
   static Token	arg[10];			   /*			     */
   Token		t2,tp;				   /*			     */
-  MacDef	mac;				   /*			     */
   int		i,d;				   /*			     */
 						   /*			     */
   EnsureInit;					   /*			     */
@@ -867,8 +865,9 @@ int TeX_read(cp,sp)				   /*			     */
 						   /*			     */
   while ( fill_token(&t) )			   /* One token left or	     */
   {						   /*  I got a new one.	     */
-    if ( (mac=active[TokenChar(t)]) != MacDefNULL )/* Is it active?          */
-    { UnlinkAndFreeToken(t,t2);			   /* Delete active token    */
+    MacDef mac = active[TokenChar(t)];	   	   /*			     */
+    if ( mac != MacDefNULL )			   /* Is it active?          */
+    { UnlinkAndFreeToken(t, t2);		   /* Delete active token    */
     }						   /*                        */
     else if ( TokenChar(t) == CHAR_ESCAPE &&	   /*                        */
 	      (mac=find_macro(TokenSeq(t),macro))  /*  or an undefined	     */
@@ -885,8 +884,7 @@ int TeX_read(cp,sp)				   /*			     */
       return 1;					   /*			     */
     }						   /*			     */
 						   /*			     */
-						   /*			     */
-    for ( i=1; i<=MacroArity(mac); ++i )	   /* Fill the argument	     */
+    for ( i = 1; i <= MacroArity(mac); ++i )	   /* Fill the argument	     */
     {						   /*  vector		     */
       if ( !fill_token(&t) )			   /*			     */
       { arg[i] = TokenNULL;			   /* Not enough tokens	     */

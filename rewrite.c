@@ -215,7 +215,11 @@ static Rule new_rule(field,pattern,frame,flags,casep)/*			     */
 				    strlen((char*)pattern),/*		     */
 				    &RulePattern(new) );/*	             */
 						   /*			     */
-    if ( msg ) { Err(msg); return NULL; }	   /*			     */
+    if ( msg ) {				   /*                        */
+      Err(msg);					   /*                        */
+      free(new);				   /*                        */
+      return NULL;				   /*                        */
+    }	   					   /*			     */
   }						   /*                        */
   else						   /*                        */
   {						   /*                        */

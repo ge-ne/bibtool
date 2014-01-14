@@ -199,7 +199,7 @@ void set_name_format(nodep,s)			   /*                        */
 { int      n,					   /*                        */
 	   type,				   /*                        */
     	   strip,				   /*                        */
-    	   trim;				   /*                        */
+    	   trim = 0;				   /*                        */
   Uchar    *mid,				   /*                        */
 	   *pre,				   /*                        */
 	   *post,				   /*                        */

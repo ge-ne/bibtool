@@ -30,7 +30,7 @@
 **	\end{quote}
 **	The arguments and the expected behavior of these functions is
 **	described below.
-**
+**g
 **	If you are trying to understand the implementation of
 **	\BibTool{} the file |resource.h| plays a central
 **	r\^ole. Consult the description of this file for further
@@ -155,7 +155,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) Gerd Neugebauer $Date: 2013-11-24 22:07:52 $",
+    "Copyright (C) 2014 Gerd Neugebauer",
     "gene@gerd-neugebauer.de"
   };
 
@@ -173,14 +173,14 @@ char * getenv(name)				   /*			     */
 **___________________________________________________			     */
 static void usage(fullp)			   /*			     */
   int           fullp;				   /*                        */
-{ register char **cpp;				   /*			     */
-  static char    *comma = ", ";			   /*                        */
+{ static char    *comma = ", ";			   /*                        */
   char		 *sep   = " ";			   /*                        */
 						   /*			     */
   show_version();				   /*                        */
 						   /*			     */
   if ( fullp )					   /*                        */
-  { for ( cpp=use; *cpp; cpp++ )		   /*			     */
+  { register char **cpp;			   /*			     */
+    for ( cpp = use; *cpp; cpp++ )		   /*			     */
     { ErrPrintF2(*cpp,				   /*			     */
 		 OptionLeadingCharacter,	   /*			     */
 		 OptionLeadingCharacter);	   /*			     */
@@ -209,7 +209,6 @@ static void usage(fullp)			   /*			     */
 #endif
 #ifdef EMTEX_LIKE_PATH
   ErrPrintF("%semTeX like path",sep);		   /*                        */
-  sep = comma;					   /*                        */
 #undef SPECIAL_OPTIONS
 #define SPECIAL_OPTIONS ""
 #endif
@@ -428,7 +427,6 @@ int main(argc,argv)				   /*			     */
 						   /* contains a reference to*/
 						   /* this database.	     */
   int	i;				   	   /*			     */
-  char	*ap;				   	   /*			     */
   FILE	*file;				   	   /*                        */
   int	need_rsc = TRUE;		   	   /*			     */
   int	(*fct)();			   	   /* Function pointer	     */
@@ -439,7 +437,8 @@ int main(argc,argv)				   /*			     */
   init_bibtool(argv[0]);			   /*                        */
 						   /*			     */
   for ( i = 1; i < argc; i++ )			   /*			     */
-  { if ( *(ap=argv[i]) != OptionLeadingCharacter ) /*			     */
+  { char *ap;				   	   /*			     */
+    if ( *(ap=argv[i]) != OptionLeadingCharacter ) /*			     */
     { save_input_file(argv[i]);			   /*			     */
     }						   /*			     */
     else					   /*			     */
@@ -633,6 +632,7 @@ int main(argc,argv)				   /*			     */
 		   cnt[i]);		   	   /*			     */
       }						   /*			     */
     }						   /*			     */
+    free(c);
   }						   /*                        */
 						   /*			     */
 #ifdef SYMBOL_DUMP
