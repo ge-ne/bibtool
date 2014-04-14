@@ -146,7 +146,7 @@
 #define _ARG(A) ()
 #endif
  NameNode name_format _ARG((Uchar *s));		   /* names.c                */
- Uchar * pp_list_of_names _ARG((Uchar **wa,NameNode format,char *trans,int max,Uchar *comma,Uchar *and,char *namesep,char *etal));/* names.c*/
- char * pp_names _ARG((char *s,NameNode format,char *trans,int max,char *namesep,char *etal));/* names.c*/
+ Uchar * pp_list_of_names _ARG((Uchar **wa,NameNode format,unsigned char *trans,int max,Uchar *comma,Uchar *and,char *namesep,char *etal));/* names.c*/
+ char * pp_names _ARG((char *s,NameNode format,unsigned char *trans,int max,char *namesep,char *etal));/* names.c*/
 
 /*---------------------------------------------------------------------------*/

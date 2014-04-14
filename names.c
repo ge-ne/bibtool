@@ -28,13 +28,13 @@
 #define _ARG(A) ()
 #endif
  NameNode name_format _ARG((Uchar *s));		   /* names.c                */
- Uchar * pp_list_of_names _ARG((Uchar **wa,NameNode format,char *trans,int max,Uchar *comma,Uchar *and,char *namesep,char *etal));/* names.c*/
- char * pp_names _ARG((char *s,NameNode format,char *trans,int max,char *namesep,char *etal));/* names.c*/
+ Uchar * pp_list_of_names _ARG((Uchar **wa,NameNode format,unsigned char *trans,int max,Uchar *comma,Uchar *and,char *namesep,char *etal));/* names.c*/
+ char * pp_names _ARG((char *s,NameNode format,unsigned char *trans,int max,char *namesep,char *etal));/* names.c*/
  static NameNode new_name_node _ARG((int type,int strip,int trim,Uchar *pre,Uchar *mid,Uchar *post));/* names.c*/
  static int is_jr _ARG((Uchar * s, int eager));	   /* names.c                */
  static int is_lower_word _ARG((Uchar *s));	   /* names.c                */
- static void initial _ARG((Uchar *s,char *trans,int len,StringBuffer *sb));/* names.c*/
- static void pp_one_name _ARG((StringBuffer *sb,Uchar **w,NameNode format,char *trans,int len,Uchar *comma,int commas));/* names.c*/
+ static void initial _ARG((Uchar *s,unsigned char *trans,int len,StringBuffer *sb));/* names.c*/
+ static void pp_one_name _ARG((StringBuffer *sb,Uchar **w,NameNode format,unsigned char *trans,int len,Uchar *comma,int commas));/* names.c*/
 
 #ifdef BIBTEX_SYNTAX
  static void set_type _ARG((char **sp,char **midp));/* names.c               */
@@ -372,6 +372,8 @@ NameNode name_format(s)				   /*                        */
 ** Arguments:
 **	wa	Word array of name constituents
 **	format
+**	trans
+**	max
 **	comma	","
 **	and	name separator
 **	namesep
@@ -380,19 +382,19 @@ NameNode name_format(s)				   /*                        */
 **		invocation of this function.
 **___________________________________________________			     */
 Uchar * pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
-  Uchar    **wa;				   /*                        */
-  NameNode format;				   /*                        */
-  char     *trans;				   /*                        */
-  int      max;					   /*                        */
-  Uchar     *comma;				   /*                        */
-  Uchar    *and;				   /*                        */
-  char     *namesep;				   /*                        */
-  char     *etal;				   /*                        */
-{ Uchar    **w;					   /*                        */
-  Uchar    *word;				   /*                        */
-  int      commas;				   /*                        */
-  int      first = TRUE;			   /*                        */
-  static StringBuffer*sb = (StringBuffer*)0;	   /*                        */
+  Uchar    	    **wa;			   /*                        */
+  NameNode	    format;			   /*                        */
+  unsigned char     *trans;			   /*                        */
+  int   	    max;			   /*                        */
+  Uchar 	    *comma;			   /*                        */
+  Uchar 	    *and;			   /*                        */
+  char 		    *namesep;			   /*                        */
+  char 		    *etal;			   /*                        */
+{ Uchar		    **w;			   /*                        */
+  Uchar		    *word;			   /*                        */
+  int  		    commas;			   /*                        */
+  int  		    first = TRUE;		   /*                        */
+  static StringBuffer *sb = (StringBuffer*)0;	   /*                        */
  						   /*                        */
   if ( sb == (StringBuffer*)0 			   /*                        */
       && (sb=sbopen()) == (StringBuffer*)0 )	   /*                        */
@@ -443,19 +445,19 @@ Uchar * pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
-  StringBuffer *sb;				   /*                        */
-  Uchar        **w;				   /*                        */
-  NameNode     format;				   /*                        */
-  char	       *trans;				   /*                        */
-  int	       len;				   /*                        */
+  StringBuffer  *sb;				   /*                        */
+  Uchar         **w;				   /*                        */
+  NameNode      format;				   /*                        */
+  unsigned char *trans;				   /*                        */
+  int	        len;				   /*                        */
   Uchar         *comma;				   /*                        */
-  int          commas;				   /*                        */
-{ NameNode     nn;				   /*                        */
-  char         t;				   /*                        */
-  char         *type;				   /*                        */
-  char         *tr;				   /*                        */
-  int          i, j, again;			   /*                        */
-  int	       first, last, von, jr;		   /*                        */
+  int           commas;				   /*                        */
+{ NameNode      nn;				   /*                        */
+  char          t;				   /*                        */
+  char          *type;				   /*                        */
+  char          *tr;				   /*                        */
+  int           i, j, again;			   /*                        */
+  int	        first, last, von, jr;		   /*                        */
  						   /*                        */
   first = last = von = jr = 0;			   /*                        */
   if ( len < 1 ) return;			   /*                        */
@@ -589,10 +591,10 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void initial(s,trans,len,sb)		   /*                        */
-  Uchar        *s;				   /*                        */
-  char         *trans;				   /*                        */
-  int          len;				   /*                        */
-  StringBuffer *sb;				   /*                        */
+  Uchar         *s;				   /*                        */
+  unsigned char *trans;				   /*                        */
+  int           len;				   /*                        */
+  StringBuffer  *sb;				   /*                        */
 { 						   /*                        */
   if ( len < 0 ) { sbputs((char*)s,sb); return; }  /*                        */
  						   /*                        */
@@ -725,19 +727,19 @@ static int is_lower_word(s)			   /*                        */
 ** Returns:	a new symbol with the reformatted names.
 **___________________________________________________			     */
 char * pp_names(s,format,trans,max,namesep,etal)   /*                        */
-  char     *s;					   /*                        */
-  NameNode format;				   /*                        */
-  char	   *trans;				   /*                        */
-  int	   max;					   /*                        */
-  char     *namesep;				   /*                        */
-  char     *etal;				   /*                        */
-{ char     *wp,					   /*                        */
-           *comma,				   /*                        */
-           *and;				   /*                        */
-  int      brace,				   /*                        */
-           n,					   /*                        */
-           cc;					   /*                        */
-  char     **words;				   /*                        */
+  char          *s;				   /*                        */
+  NameNode      format;				   /*                        */
+  unsigned char *trans;				   /*                        */
+  int	  	max;				   /*                        */
+  char   	*namesep;			   /*                        */
+  char   	*etal;				   /*                        */
+{ char   	*wp,				   /*                        */
+        	*comma,				   /*                        */
+        	*and;				   /*                        */
+  int   	brace,				   /*                        */
+        	n,				   /*                        */
+        	cc;				   /*                        */
+  char  	**words;			   /*                        */
  						   /*                        */
   if ( format == NameNULL ) return s;	   	   /*                        */
  						   /*                        */

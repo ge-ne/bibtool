@@ -336,9 +336,9 @@ unsigned char trans_id[256];			   /*                        */
 #else
 
  extern int  type__allowed[];
- extern char trans_lower[256];
- extern char trans_upper[256];
- extern char trans_id[256];
+ extern unsigned char trans_lower[256];
+ extern unsigned char trans_upper[256];
+ extern unsigned char trans_id[256];
 #endif
 
 /*-----------------------------------------------------------------------------

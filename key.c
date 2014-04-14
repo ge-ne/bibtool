@@ -55,12 +55,12 @@
  static int fmt_parse _ARG((char **sp,KeyNode *knp));/* key.c                */
  static void Push_Word _ARG((Uchar *s));	   /* key.c                  */
  static void eval__special _ARG((StringBuffer *sb,KeyNode kn,Record rec));/* key.c*/
- static void fmt_names _ARG((StringBuffer *sb,Uchar *line,int maxname,int post,char *trans));/* key.c*/
- static void fmt_string _ARG((StringBuffer *sb,Uchar * s,int n,char *trans,Uchar *sep));/* key.c*/
- static void fmt_title _ARG((StringBuffer *sb,Uchar *line,int len,int in,char *trans,int ignore,Uchar *sep));/* key.c*/
+ static void fmt_names _ARG((StringBuffer *sb,Uchar *line,int maxname,int post,unsigned char *trans));/* key.c*/
+ static void fmt_string _ARG((StringBuffer *sb,Uchar * s,int n,unsigned char *trans,Uchar *sep));/* key.c*/
+ static void fmt_title _ARG((StringBuffer *sb,Uchar *line,int len,int in,unsigned char *trans,int ignore,Uchar *sep));/* key.c*/
  static void init_key _ARG((int state));	   /* key.c                  */
  static void key_init _ARG((void));		   /* key.c                  */
- static void push_s _ARG((StringBuffer *sb,Uchar *s,int max,char *trans));/* key.c*/
+ static void push_s _ARG((StringBuffer *sb,Uchar *s,int max,unsigned char *trans));/* key.c*/
  static void push_word _ARG((Uchar * s));	   /* key.c                  */
  void add_format _ARG((char *s));		   /* key.c                  */
  void add_ignored_word _ARG((Uchar *s));	   /* key.c                  */
@@ -576,7 +576,7 @@ static void push_s(sb,s,max,trans)		   /*			     */
   StringBuffer *sb;				   /*                        */
   Uchar *s;			   	   	   /*			     */
   int max;				   	   /*                        */
-  char *trans;		   		   	   /*			     */
+  unsigned char *trans;	   		   	   /*			     */
 {						   /*                        */
   if ( max <= 0 ) 				   /*                        */
   { while ( *s )				   /*			     */
@@ -675,7 +675,7 @@ static void fmt_title(sb,line,len,in,trans,ignore,sep)/*		     */
   Uchar	        *line;				   /*			     */
   int	        len;				   /*			     */
   int	        in;				   /*			     */
-  char	        *trans;				   /* Translation table	     */
+  unsigned char *trans;				   /* Translation table	     */
   int           ignore;				   /*                        */
   Uchar         *sep;				   /*                        */
 { int	        first = TRUE;			   /*			     */
@@ -816,16 +816,16 @@ void def_format_type(s)				   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void fmt_names(sb,line,maxname,post,trans)  /*		             */
-  StringBuffer *sb;				   /*                        */
-  Uchar	       *line;				   /* Name list string	     */
-  int	       maxname;				   /* number of names b4 etal*/
-  int          post;				   /* number of relevant char*/
-  char	       *trans;				   /* Translation table	     */
-{ int	       wp,				   /*			     */
-	       i;				   /*			     */
-  static Uchar *and   = (Uchar*)"&";		   /*                        */
-  static Uchar *comma = (Uchar*)",";		   /*                        */
-  static int   undef_warning = FALSE;		   /*                        */
+  StringBuffer  *sb;				   /*                        */
+  Uchar	        *line;				   /* Name list string	     */
+  int	        maxname;			   /* number of names b4 etal*/
+  int           post;				   /* number of relevant char*/
+  unsigned char *trans;				   /* Translation table	     */
+{ int	        wp,				   /*			     */
+	        i;				   /*			     */
+  static Uchar  *and   = (Uchar*)"&";		   /*                        */
+  static Uchar  *comma = (Uchar*)",";		   /*                        */
+  static int    undef_warning = FALSE;		   /*                        */
   						   /*                        */
   if ( maxname == 0 ) return;			   /*                        */
  						   /*                        */
@@ -984,11 +984,11 @@ static int fmt_digits(sb,s,mp,pp,n,sel,trunc)	   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void fmt_string(sb,s,n,trans,sep)	   /*			     */
-  StringBuffer   *sb;				   /*                        */
-  register Uchar *s;				   /*			     */
-  register int	 n;				   /*			     */
-  register char  *trans;			   /*			     */
-  Uchar          *sep;				   /*                        */
+  StringBuffer		  *sb;			   /*                        */
+  register Uchar 	  *s;			   /*			     */
+  register int	           n;			   /*			     */
+  register unsigned char  *trans;		   /*			     */
+  Uchar       		   *sep;		   /*                        */
 {						   /*			     */
   while ( *s && n > 0 )				   /*			     */
   { if ( is_allowed(*s) )			   /*			     */
@@ -1612,7 +1612,7 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
   Record	rec;				   /*			     */
 { Uchar	   	*s;				   /*			     */
   int		pos;				   /*			     */
-  char		*trans;				   /*                        */
+  unsigned char	*trans;				   /*                        */
 						   /*			     */
   DebugPrint1("eval__fmt()");			   /*                        */
   while ( kn != (KeyNode)0 )			   /*			     */
@@ -1929,16 +1929,16 @@ int apply_fmt(sb,fmt,rec,db)			   /*                        */
 ** Returns:	The first character after the % format.
 **___________________________________________________			     */
 Uchar* fmt_expand(sb,cp,db,rec)			   /*                        */
-  StringBuffer *sb;				   /*                        */
-  Uchar	       *cp;				   /*                        */
-  DB	       db;				   /*                        */
-  Record       rec;				   /*                        */
-{ Uchar	       *field;				   /*                        */
-  Uchar	       *sp, c;			   	   /*                        */
-  char *trans = trans_id;			   /*                        */
-  int  pre  = -1,				   /*                        */
-       post = -1,				   /*                        */
-       type = 0;				   /*                        */
+  StringBuffer  *sb;				   /*                        */
+  Uchar	        *cp;				   /*                        */
+  DB	        db;				   /*                        */
+  Record        rec;				   /*                        */
+{ Uchar	        *field;				   /*                        */
+  Uchar	        *sp, c;			   	   /*                        */
+  unsigned char *trans = trans_id;		   /*                        */
+  int  		 pre  = -1,			   /*                        */
+     		 post = -1,			   /*                        */
+      		 type = 0;			   /*                        */
  						   /*                        */
   while ( *cp && *cp != (Uchar)'%' )		   /*                        */
   { sbputchar((Uchar)*cp,sb);			   /*                        */
