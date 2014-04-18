@@ -68,11 +68,6 @@ Unpack it with the command (on UN*X)
 
 	gunzip < BibTool-x.xx.tar.gz | tar -xvf -
 
-Alternatively get the file  BibTool-x.xx.zip where x.xx is the version
-number.  Unpack it with the command
-
-	unzip BibTool-x.xx.zip
-
 It will create  a  directory  named  BibTool-x.xx which contains   the
 installation instructions in the file INSTALL.
 
