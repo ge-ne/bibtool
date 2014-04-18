@@ -64,7 +64,7 @@ dist:
 		-x \*/\*/CVS/\* \*/config.status )
 
 ctan: dist
-	@rm -rf ../bibtool
+	@rm -rf ../bibtool ../bibtool.zip
 	@mkdir ../bibtool
 	@cp $(CTANFILES) ../$(DIRNO).tar.gz ../$(DIRNO).tar.gz.asc ../bibtool
 	@(cd ..; zip bibtool.zip bibtool/*)
