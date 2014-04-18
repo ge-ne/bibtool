@@ -207,7 +207,7 @@ static Rule new_rule(field,pattern,frame,flags,casep)/*			     */
     { OUT_OF_MEMORY("pattern"); }		   /*			     */
     RulePattern(new).allocated = 16;		   /*			     */
     RulePattern(new).syntax    = RE_SYNTAX_EMACS;  /*			     */
-    RulePattern(new).translate = (casep?trans_lower:NULL);/*		     */
+    RulePattern(new).translate = (casep?(char*)trans_lower:NULL);/*	     */
     RulePattern(new).fastmap   = NULL;		   /*			     */
     RulePattern(new).regs_allocated = REGS_FIXED;  /*			     */
 						   /*			     */

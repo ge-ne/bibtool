@@ -479,7 +479,7 @@ static int deTeX(line,save_fct,flags)		   /*			     */
 #define SaveChar(C)  *(bp++) = last = C
 #define StoreChar(C) *(bp++) = C
 						   /*			     */
-  brace = 4 * strlen((char*)line);		   /*			     */
+  brace = 8 * strlen((char*)line);		   /*			     */
   if ( brace > (int)len )			   /*			     */
   { if ( len == 0 )				   /*			     */
     { len    = ( brace < DeTeX_BUFF_LEN		   /*			     */
@@ -540,15 +540,17 @@ static int deTeX(line,save_fct,flags)		   /*			     */
     }						   /*			     */
   }						   /*			     */
  						   /*                        */
-  if ( bp != buffer && *(bp-1) != '\0' )	   /*                        */
-  { StoreChar('\0');				   /*                        */
-    SaveWord;					   /*                        */
-  }						   /*                        */
+  if (buffer) {					   /*			     */
+    if ( bp != buffer && *(bp-1) != '\0' )	   /*                        */
+    { StoreChar('\0');				   /*                        */
+      SaveWord;					   /*                        */
+    }						   /*                        */
       						   /*                        */
-  StoreChar('\0');				   /* Mark the end.	     */
+    StoreChar('\0');				   /* Mark the end.	     */
 						   /*			     */
-  if ( bp-buffer >= (int)len )			   /*			     */
-  { ERROR_EXIT("deTeX buffer overflow."); }	   /*			     */
+    if ( bp-buffer >= (int)len )		   /*			     */
+    { ERROR_EXIT("deTeX buffer overflow."); }	   /*			     */
+  }						   /*			     */
 						   /*			     */
   TeX_close();					   /*			     */
   return wp-1;					   /*			     */
@@ -682,7 +684,7 @@ static void fmt_title(sb,line,len,in,trans,ignore,sep)/*		     */
   int	        nw, i, j;			   /*			     */
   Uchar         *s;				   /*			     */
 						   /*			     */
-  /*  if ( len == 0 ) return;			   /*                        */
+  /*  if ( len == 0 ) return;			                           */
  						   /*                        */
   if (	 tmp_sb == (StringBuffer*)NULL		   /*			     */
       && (tmp_sb=sbopen()) == (StringBuffer*)NULL )/*			     */

@@ -264,6 +264,8 @@ int apply_aux(db)				   /*                        */
 { Record rec, rec1;				   /*                        */
  						   /*                        */
   if ( cite_star ) return FALSE;		   /* No selection desired.  */
+						   /*                        */
+  DebugPrint1("Filtering from aux");		   /*                        */
  						   /*                        */
   rec = DBnormal(db);				   /*                        */
   if ( rec == RecordNULL ) return TRUE;		   /* No entries left anyhow.*/

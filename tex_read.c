@@ -421,7 +421,7 @@ static Token TeX_get_token(get_fct)		   /*			     */
 						   /*			     */
   for (;;)					   /*			     */
   {						   /*			     */
-    if (   tex_line == TokenNULL		   /*			     */
+   if (    tex_line == TokenNULL		   /*			     */
 	&& TeX_fill_line(get_fct) )		   /*			     */
     { return TokenNULL; }			   /*			     */
 						   /*			     */
@@ -826,7 +826,7 @@ void TeX_close()				   /*			     */
 ** Purpose:	Check if *tp contains a token.
 **		Otherwise try to get one and store it there.
 ** Arguments:
-**	tp
+**	tp	the pointer to the token
 ** Returns:	
 **___________________________________________________			     */
 static int fill_token(tp)			   /*			     */

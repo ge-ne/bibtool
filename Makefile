@@ -15,6 +15,7 @@
 include makefile
 
 DIR  = $(shell basename `pwd`)
+DIRNO  = $(shell basename `pwd`-`sed -e '/bibtool_version =/s/.*"\(.*\)".*/\1/p' -e d version.c`)
 
 DISTFILES += 	AutoConf/config.h.in 	\
 		AutoConf/makefile.in	\
@@ -44,16 +45,28 @@ DISTFILES += 	AutoConf/config.h.in 	\
 		Test/bib/*.bib		\
 		Test/*.t
 
+CTANFILES =	README			\
+		doc/bibtool.pdf		\
+		doc/ref_card.pdf	\
+		doc/c_lib.pdf
+
 lint:
 	gcc  $(C_FLAGS) $(REGEX_DEF) $(DONT_LINK) -ansi -W -Wall -O2 ${CFILES}
 
 dist:
 	@( cd doc; make)
 	@( cd ..; rm -f $(DIR).tar.gz;				\
-	   tar  -cvzf $(DIR).tar.gz $(DISTFILES:%=$(DIR)/%)	\
+	   tar  -cvzf $(DIRNO).tar.gz $(DISTFILES:%=$(DIR)/%)	\
 		--exclude CVS --exclude config.status )
+	@gpg -a -b ../$(DIRNO).tar.gz
 	@( cd ..; rm -f $(DIR).zip;				\
-	   zip  -r $(DIR).zip $(DISTFILES:%=$(DIR)/%)		\
+	   zip  -r $(DIRNO).zip $(DISTFILES:%=$(DIR)/%)		\
 		-x \*/\*/CVS/\* \*/config.status )
 
+ctan: dist
+	@rm -rf ../bibtool
+	@mkdir ../bibtool
+	@cp $(CTANFILES) ../$(DIRNO).tar.gz ../$(DIRNO).tar.gz.asc ../bibtool
+	@(cd ..; zip bibtool.zip bibtool/*)
+	@rm -rf ../bibtool
 #

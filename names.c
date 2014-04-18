@@ -455,7 +455,7 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
 { NameNode      nn;				   /*                        */
   char          t;				   /*                        */
   char          *type;				   /*                        */
-  char          *tr;				   /*                        */
+  unsigned char *tr;				   /*                        */
   int           i, j, again;			   /*                        */
   int	        first, last, von, jr;		   /*                        */
  						   /*                        */
