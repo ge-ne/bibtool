@@ -1086,6 +1086,8 @@ int mark_key(db,rec)				   /*			     */
   DB	 db;					   /*                        */
   Record rec;				   	   /*			     */
 {						   /*			     */
+  POSSIBLY_UNUSED(db);				   /*                        */
+						   /*			     */
   if ( IsSpecialRecord(RecordType(rec)) ||	   /*                        */
        *RecordHeap(rec) == NULL )		   /*                        */
   { return 0; }	   				   /*			     */
@@ -2342,6 +2344,8 @@ int set_field(db,rec,name,value)		   /*			     */
   Uchar		  *name;			   /*			     */
   Uchar	  	  *value;			   /*			     */
 { 						   /*                        */
+  POSSIBLY_UNUSED(db);				   /*                        */
+						   /*			     */
   value = symbol(value);			   /*                        */
 				   		   /*                        */
   if ( *name == '@' )				   /*			     */

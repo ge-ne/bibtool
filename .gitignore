@@ -13,6 +13,4 @@ makefile
 *.bak
 *.save
 .project
-./bibtool
-bibtool
 Work

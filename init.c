@@ -76,6 +76,9 @@ void init_bibtool(progname)			   /*                        */
     rsc_v_bibtex = sbflush(sb_bibtex);		   /*                        */
   }						   /*                        */
 #endif
+						   /*			     */
+  POSSIBLY_UNUSED(progname);			   /*                        */
+						   /*			     */
 #ifdef HAVE_LIBKPATHSEA
 #ifdef HAVE_LIBKPATHSEA2
   kpse_set_progname(progname);			   /*                        */

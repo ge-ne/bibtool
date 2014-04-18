@@ -175,6 +175,8 @@ static void usage(fullp)			   /*			     */
   int           fullp;				   /*                        */
 { static char    *comma = ", ";			   /*                        */
   char		 *sep   = " ";			   /*                        */
+  POSSIBLY_UNUSED(comma);			   /*			     */
+  POSSIBLY_UNUSED(sep);				   /*			     */
 						   /*			     */
   show_version();				   /*                        */
 						   /*			     */

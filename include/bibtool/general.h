@@ -88,3 +88,12 @@
 ** Arguments:	none
 **___________________________________________________			     */
 #define FOREVER for (;;)
+
+/*-----------------------------------------------------------------------------
+** Macro:	POSSIBLY_UNUSED
+** Purpose:	Mark a variable as possibly unused. It silences a gcc
+**		compiler warning.
+**		
+** Arguments:	none
+**___________________________________________________			     */
+#define POSSIBLY_UNUSED(X) (void)(X)
