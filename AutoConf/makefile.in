@@ -492,13 +492,13 @@ CLEAN_TARGETS	= *$(OBJ) xref *.bak core #* *~
 
 clean mostlyclean:
 	-cd doc && $(MAKE) $(MFLAGS) clean
-	-cd Test && $(MAKE) $(MFLAGS) clean
+	-cd test && $(MAKE) $(MFLAGS) clean
 	-cd BibTcl && $(MAKE) $(MFLAGS) clean
 	-$(RM) $(CLEAN_TARGETS)
 
 veryclean distclean realclean extraclean: clean
 	-cd doc && $(MAKE) $(MFLAGS) distclean
-	-cd Test && $(MAKE) $(MFLAGS) distclean
+	-cd test && $(MAKE) $(MFLAGS) distclean
 	-$(RM) bibtool config.cache config.status config.log makefile
 
 doc: Doc
@@ -507,8 +507,9 @@ Doc:
 
 info:
 
-test check:
-	(cd Test; $(MAKE))
+test check: Test
+Test:
+	(cd test; $(MAKE))
 
 libbib.a: $(OLIBFILES)
 	$(AR) $@ $(OLIBFILES) regex.o

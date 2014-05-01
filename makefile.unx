@@ -502,8 +502,9 @@ veryclean: clean
 doc: doc$(DIR_SEP)config.tex
 	cd doc; $(MAKE) DIR_SEP=$(DIR_SEP)
 
-test:
-	(cd Test; $(MAKE))
+test check: Test
+Test:
+	(cd test; $(MAKE))
 
 libbib.a: $(OLIBFILES)
 	$(AR) $@ $(OLIBFILES) regex.o

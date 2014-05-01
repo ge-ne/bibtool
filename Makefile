@@ -40,10 +40,10 @@ DISTFILES += 	AutoConf/config.h.in 	\
 		configure.in		\
 		install-sh		\
 		mkdirchain		\
-		Test/BUnit.pm		\
-		Test/makefile		\
-		Test/bib/*.bib		\
-		Test/*.t
+		test/BUnit.pm		\
+		test/makefile		\
+		test/bib/*.bib		\
+		test/*.t
 
 CTANFILES =	README			\
 		doc/bibtool.pdf		\
