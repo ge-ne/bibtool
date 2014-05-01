@@ -252,6 +252,7 @@ void set_separator(n,s)				   /*			     */
   Uchar *s;				   	   /*			     */
 { Uchar *t, *tp;			   	   /*			     */
   						   /*                        */
+						   /*                        */
   if ( n < 0 || n >= NoSeps )			   /*			     */
   { ERROR("Invalid separator specification.");     /*			     */
     return;					   /*			     */
@@ -265,7 +266,7 @@ void set_separator(n,s)				   /*			     */
   ReleaseSymbol(key_seps[n]);			   /*                        */
   key_seps[n] = symbol(t);		   	   /*			     */
   free(t);					   /*                        */
- 						   /*                        */
+ 
   switch (n)					   /*                        */
   { case 1: init_key(1); break;
     case 2: init_key(2); break;
