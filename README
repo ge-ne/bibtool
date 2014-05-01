@@ -71,6 +71,10 @@ Unpack it with the command (on UN*X)
 It will create  a  directory  named  BibTool-x.xx which contains   the
 installation instructions in the file INSTALL.
 
+A signature for  the source bundle is provided as  well. My public key
+can be  found on http://pgp.mit.edu/.  You should search for  my email
+address.
+
 
 ----------------------------------------------------------------------
 Enjoy it!
