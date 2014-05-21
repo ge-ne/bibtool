@@ -499,7 +499,8 @@ clean:
 veryclean: clean
 	-$(RM) bibtool
 
-doc: doc$(DIR_SEP)config.tex
+doc: d-o-c
+d-o-c:
 	cd doc; $(MAKE) DIR_SEP=$(DIR_SEP)
 
 test check: Test

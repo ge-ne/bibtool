@@ -501,8 +501,8 @@ veryclean distclean realclean extraclean: clean
 	-cd test && $(MAKE) $(MFLAGS) distclean
 	-$(RM) bibtool config.cache config.status config.log makefile
 
-doc: Doc
-Doc:
+doc: d-o-c
+d-o-c:
 	cd doc; $(MAKE) $(MFLAGS) DIR_SEP=$(DIR_SEP)
 
 info:
