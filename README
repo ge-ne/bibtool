@@ -51,7 +51,7 @@ possibilities of BibTool include
 * Collecting statistics about one or more BibTeX data bases.
 
 
-BibTool  contains a  documentation written  in  LaTeX of  more than 60
+BibTool  contains a  documentation written  in  LaTeX of  more than 75
 pages (and still growing).
 
 BibTool is written  in C and  has  been compiled on  various operating
@@ -68,8 +68,8 @@ Unpack it with the command (on UN*X)
 
 	gunzip < BibTool-x.xx.tar.gz | tar -xvf -
 
-It will create  a  directory  named  BibTool-x.xx which contains   the
-installation instructions in the file INSTALL.
+It  will   create  a  directory  named  BibTool   which  contains  the
+installation instructions in the file install.tex.
 
 A signature for  the source bundle is provided as  well. My public key
 can be  found on http://pgp.mit.edu/.  You should search for  my email

@@ -12,5 +12,10 @@ makefile
 *.gcno
 *.bak
 *.save
+*.out
+*.aux
+*.toc
+*.dvi
+install.pdf
 .project
 Work
