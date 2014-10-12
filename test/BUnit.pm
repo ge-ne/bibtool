@@ -41,7 +41,7 @@ package BUnit;
 
 use strict;
 use Exporter;
-our @ISA       = qw(Exporter);
+use base qw(Exporter);
 our @EXPORT    = qw(all summary);
 our @EXPORT_OK = qw();
 
