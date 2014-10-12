@@ -43,9 +43,9 @@ use BUnit;
 BUnit::run(name  => 'select_by_string_1',
     args	 => '--select.by.string=\'{"none"}\' bib/xampl.bib',
     expected_out => <<__EOF__);
-\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
-	 # "\\newcommand{\\printfirst}[2]{#1} " 
-	 # "\\newcommand{\\singleletter}[1]{#1} " 
+\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} "
+	 # "\\newcommand{\\printfirst}[2]{#1} "
+	 # "\\newcommand{\\singleletter}[1]{#1} "
 	 # "\\newcommand{\\switchargs}[2]{#2#1} " }
 \@STRING{acm	= "The OX Association for Computing Machinery" }
 \@STRING{stoc	= " Symposium on the Theory of Computing" }
@@ -56,9 +56,9 @@ __EOF__
 BUnit::run(name  => 'select_by_string_2',
     args	 => '--select.by.string=\'{"anual-mi"}\' bib/xampl.bib',
     expected_out => <<__EOF__);
-\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
-	 # "\\newcommand{\\printfirst}[2]{#1} " 
-	 # "\\newcommand{\\singleletter}[1]{#1} " 
+\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} "
+	 # "\\newcommand{\\printfirst}[2]{#1} "
+	 # "\\newcommand{\\singleletter}[1]{#1} "
 	 # "\\newcommand{\\switchargs}[2]{#2#1} " }
 \@STRING{acm	= "The OX Association for Computing Machinery" }
 \@STRING{stoc	= " Symposium on the Theory of Computing" }
@@ -74,9 +74,9 @@ __EOF__
 BUnit::run(name  => 'select_by_string_3',
     args	 => '--select.by.string=\'{"manmaker"}\' bib/xampl.bib',
     expected_out => <<__EOF__);
-\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
-	 # "\\newcommand{\\printfirst}[2]{#1} " 
-	 # "\\newcommand{\\singleletter}[1]{#1} " 
+\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} "
+	 # "\\newcommand{\\printfirst}[2]{#1} "
+	 # "\\newcommand{\\singleletter}[1]{#1} "
 	 # "\\newcommand{\\switchargs}[2]{#2#1} " }
 \@STRING{acm	= "The OX Association for Computing Machinery" }
 \@STRING{stoc	= " Symposium on the Theory of Computing" }
@@ -93,7 +93,7 @@ BUnit::run(name  => 'select_by_string_3',
   organization	= "Chips-R-Us",
   address	= "Silicon Valley",
   edition	= "Silver",
-  month		= apr # "-"  # may,
+  month		= apr # "-" # may,
   year		= 1986,
   note		= "This is a full MANUAL entry"
 }
@@ -103,9 +103,9 @@ __EOF__
 BUnit::run(name  => 'select_by_string_4',
     args	 => '--select.by.string=\'{"MISC"}\' bib/xampl.bib',
     expected_out => <<__EOF__);
-\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
-	 # "\\newcommand{\\printfirst}[2]{#1} " 
-	 # "\\newcommand{\\singleletter}[1]{#1} " 
+\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} "
+	 # "\\newcommand{\\printfirst}[2]{#1} "
+	 # "\\newcommand{\\singleletter}[1]{#1} "
 	 # "\\newcommand{\\switchargs}[2]{#2#1} " }
 \@STRING{acm	= "The OX Association for Computing Machinery" }
 \@STRING{stoc	= " Symposium on the Theory of Computing" }
@@ -130,9 +130,9 @@ __EOF__
 BUnit::run(name  => 'select_by_string_10',
     args	 => '--select.by.string=\'{"MISC"}\' bib/xampl.bib',
     expected_out => <<__EOF__);
-\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
-	 # "\\newcommand{\\printfirst}[2]{#1} " 
-	 # "\\newcommand{\\singleletter}[1]{#1} " 
+\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} "
+	 # "\\newcommand{\\printfirst}[2]{#1} "
+	 # "\\newcommand{\\singleletter}[1]{#1} "
 	 # "\\newcommand{\\switchargs}[2]{#2#1} " }
 \@STRING{acm	= "The OX Association for Computing Machinery" }
 \@STRING{stoc	= " Symposium on the Theory of Computing" }
@@ -157,9 +157,9 @@ __EOF__
 BUnit::run(name  => 'select_by_string_11',
     args	 => '--select.by.string=\'{note "Kn"}\' bib/xampl.bib',
     expected_out => <<__EOF__);
-\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
-	 # "\\newcommand{\\printfirst}[2]{#1} " 
-	 # "\\newcommand{\\singleletter}[1]{#1} " 
+\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} "
+	 # "\\newcommand{\\printfirst}[2]{#1} "
+	 # "\\newcommand{\\singleletter}[1]{#1} "
 	 # "\\newcommand{\\switchargs}[2]{#2#1} " }
 \@STRING{acm	= "The OX Association for Computing Machinery" }
 \@STRING{stoc	= " Symposium on the Theory of Computing" }
@@ -175,9 +175,9 @@ __EOF__
 BUnit::run(name  => 'select_by_string_12',
     args	 => '--select.by.string=\'{$type "misc"}\' bib/xampl.bib',
     expected_out => <<__EOF__);
-\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
-	 # "\\newcommand{\\printfirst}[2]{#1} " 
-	 # "\\newcommand{\\singleletter}[1]{#1} " 
+\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} "
+	 # "\\newcommand{\\printfirst}[2]{#1} "
+	 # "\\newcommand{\\singleletter}[1]{#1} "
 	 # "\\newcommand{\\switchargs}[2]{#2#1} " }
 \@STRING{acm	= "The OX Association for Computing Machinery" }
 \@STRING{stoc	= " Symposium on the Theory of Computing" }

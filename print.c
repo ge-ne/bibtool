@@ -213,28 +213,28 @@ static void line_breaking(t,align,fct)		   /*			     */
 						   /*			     */
     switch( *t )				   /*			     */
     { case '"':					   /* QUOTED PART	     */
-	for ( len=2,++t;			   /*			     */
+	for ( len = 2, ++t;			   /*			     */
 	     *t && *t != '\"';			   /* Search terminating "   */
-	     ++t,++len )			   /*			     */
+	     ++t, ++len )			   /*			     */
 	{ if ( *t == '\\' && *(t+1) != '\0' )	   /* skip over quoted and   */
 	  { ++t; ++len; }			   /*  similar constructs.   */
 	}					   /*			     */
 	if ( *t ) ++t;				   /* skip after end, if poss*/
-	if ( *t ) { end_c = *++t; *t = '\0'; }	   /* save char and mark end.*/
+	if ( *t ) { end_c = *t; *t = '\0'; }	   /* save char and mark end.*/
 	else	  { end_c = *t; }		   /*			     */
 	break;					   /*			     */
       case '{':					   /* BRACED PART	     */
 	brace = 1;				   /*			     */
-	for ( len=2,++t;			   /* find matching brace.   */
-	     *t && brace>0;			   /*			     */
-	     ++t,++len )			   /*			     */
+	for ( len = 2, ++t;			   /* find matching brace.   */
+	     *t && brace > 0;			   /*			     */
+	     ++t, ++len )			   /*			     */
 	{ switch ( *t )				   /*			     */
 	  { case '\\': if ( *(t+1) ) ++t; break;   /* ignore \{ \} etc	     */
 	    case '{': ++brace; break;		   /*			     */
 	    case '}': brace--; break;		   /*			     */
 	  }					   /*			     */
 	}					   /*			     */
-	if ( *t ) { end_c = *++t; *t = '\0'; }	   /* save char and mark end.*/
+	if ( *t ) { end_c = *t; *t = '\0'; }	   /* save char and mark end.*/
 	else	  { end_c = *t; }		   /*			     */
 	break;					   /*			     */
       default:					   /* Now we should have a   */

@@ -85,9 +85,9 @@ BUnit::run(name         => 'print_entry_types_p2',
 	   print.entry.types {p}
 __EOF__
 	   expected_out => <<__EOF__ );
-\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
-	 # "\\newcommand{\\printfirst}[2]{#1} " 
-	 # "\\newcommand{\\singleletter}[1]{#1} " 
+\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} "
+	 # "\\newcommand{\\printfirst}[2]{#1} "
+	 # "\\newcommand{\\singleletter}[1]{#1} "
 	 # "\\newcommand{\\switchargs}[2]{#2#1} " }
 __EOF__
 

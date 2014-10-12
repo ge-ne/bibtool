@@ -139,9 +139,9 @@ __EOF__
 	   },
     expected_err => '',
     expected_out => <<__EOF__,
-\@STRING{t	= "ttt"  # t2 }
+\@STRING{t	= "ttt" # t2 }
 \@STRING{t2	= "ttt" }
-\@STRING{sss	= "T"  # t }
+\@STRING{sss	= "T" # t }
 
 \@Article{	  a,
   author	= sss

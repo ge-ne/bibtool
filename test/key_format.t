@@ -44,9 +44,9 @@ use BUnit;
 BUnit::run(name => '_k_1',
 	 args	      => '-k bib/xampl.bib',
 	 expected_out => <<EOF,
-\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
-	 # "\\newcommand{\\printfirst}[2]{#1} " 
-	 # "\\newcommand{\\singleletter}[1]{#1} " 
+\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} "
+	 # "\\newcommand{\\printfirst}[2]{#1} "
+	 # "\\newcommand{\\singleletter}[1]{#1} "
 	 # "\\newcommand{\\switchargs}[2]{#2#1} " }
 \@STRING{acm	= "The OX Association for Computing Machinery" }
 \@STRING{stoc	= " Symposium on the Theory of Computing" }
@@ -107,7 +107,7 @@ BUnit::run(name => '_k_1',
   publisher	= "Addison-Wesley",
   address	= "Reading, Massachusetts",
   edition	= "Second",
-  month		= "10~"  # jan,
+  month		= "10~" # jan,
   year		= "{\\noopsort{1973b}}1973",
   type		= "Section",
   chapter	= "1.2",
@@ -142,7 +142,7 @@ BUnit::run(name => '_k_1',
   publisher	= "Addison-Wesley",
   address	= "Reading, Massachusetts",
   edition	= "Second",
-  month		= "10~"  # jan,
+  month		= "10~" # jan,
   year		= "{\\noopsort{1973c}}1981",
   note		= "This is a full BOOK entry"
 }
@@ -241,7 +241,7 @@ BUnit::run(name => '_k_1',
   organization	= "Chips-R-Us",
   address	= "Silicon Valley",
   edition	= "Silver",
-  month		= apr # "-"  # may,
+  month		= apr # "-" # may,
   year		= 1986,
   note		= "This is a full MANUAL entry"
 }
@@ -259,7 +259,7 @@ BUnit::run(name => '_k_1',
   school	= "Stanford University",
   type		= "Master\'s project",
   address	= "English Department",
-  month		= jun # "-"  # aug,
+  month		= jun # "-" # aug,
   year		= 1988,
   note		= "This is a full MASTERSTHESIS entry"
 }
@@ -282,7 +282,7 @@ BUnit::run(name => '_k_1',
   author	= "Alfred V. Oaho and Jeffrey D. Ullman and Mihalis
 		  Yannakakis",
   title		= "On Notions of Information Transfer in {VLSI} Circuits",
-  booktitle	= "Proc. Fifteenth Annual ACM"  # stoc,
+  booktitle	= "Proc. Fifteenth Annual ACM" # stoc,
   year		= 1983
 }
 
@@ -291,7 +291,7 @@ BUnit::run(name => '_k_1',
 		  Yannakakis",
   title		= "On Notions of Information Transfer in {VLSI} Circuits",
   editor	= "Wizard V. Oz and Mihalis Yannakakis",
-  booktitle	= "Proc. Fifteenth Annual ACM"  # stoc,
+  booktitle	= "Proc. Fifteenth Annual ACM" # stoc,
   number	= 17,
   series	= "All ACM Conferences",
   pages		= "133--139",
@@ -315,13 +315,13 @@ BUnit::run(name => '_k_1',
 
 \@Proceedings{	  :proc,
   key		= stoc-key,
-  title		= "Proc. Fifteenth Annual"  # stoc,
+  title		= "Proc. Fifteenth Annual" # stoc,
   year		= 1983
 }
 
 \@Proceedings{	  oz.yannakakis:proc,
   editor	= "Wizard V. Oz and Mihalis Yannakakis",
-  title		= "Proc. Fifteenth Annual"  # stoc,
+  title		= "Proc. Fifteenth Annual" # stoc,
   number	= 17,
   series	= "All ACM Conferences",
   month		= mar,
@@ -335,10 +335,10 @@ BUnit::run(name => '_k_1',
 \@Proceedings{	  :proc*1,
   key		= stoc-key,
   organization	= acm,
-  title		= "Proc. Fifteenth Annual"  # stoc,
+  title		= "Proc. Fifteenth Annual" # stoc,
   address	= "Boston",
   year		= 1983,
-  booktitle	= "Proc. Fifteenth Annual ACM"  # stoc,
+  booktitle	= "Proc. Fifteenth Annual ACM" # stoc,
   note		= "This is a cross-referenced PROCEEDINGS"
 }
 
@@ -355,7 +355,7 @@ BUnit::run(name => '_k_1',
   school	= "Fanstord University",
   type		= "{PhD} Dissertation",
   address	= "Department of French",
-  month		= jun # "-"  # aug,
+  month		= jun # "-" # aug,
   year		= 1988,
   note		= "This is a full PHDTHESIS entry"
 }
@@ -389,7 +389,7 @@ BUnit::run(name => '_k_1',
 \@Unpublished{	  underwood.net.ea:lower*1,
   author	= "Ulrich {\\"{U}}nderwood and Ned {\\~N}et and Paul {\\={P}}ot",
   title		= "Lower Bounds for Wishful Research Results",
-  month		= nov # ", "  # dec,
+  month		= nov # ", " # dec,
   year		= 1988,
   note		= "Talk at Fanstord University (this is a full UNPUBLISHED
 		  entry)"
@@ -409,9 +409,9 @@ EOF
 BUnit::run(name => '_f_short_1',
 	 args	      => '-f short bib/xampl.bib',
 	 expected_out => <<EOF,
-\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} " 
-	 # "\\newcommand{\\printfirst}[2]{#1} " 
-	 # "\\newcommand{\\singleletter}[1]{#1} " 
+\@PREAMBLE{ "\\newcommand{\\noopsort}[1]{} "
+	 # "\\newcommand{\\printfirst}[2]{#1} "
+	 # "\\newcommand{\\singleletter}[1]{#1} "
 	 # "\\newcommand{\\switchargs}[2]{#2#1} " }
 \@STRING{acm	= "The OX Association for Computing Machinery" }
 \@STRING{stoc	= " Symposium on the Theory of Computing" }
@@ -472,7 +472,7 @@ BUnit::run(name => '_f_short_1',
   publisher	= "Addison-Wesley",
   address	= "Reading, Massachusetts",
   edition	= "Second",
-  month		= "10~"  # jan,
+  month		= "10~" # jan,
   year		= "{\\noopsort{1973b}}1973",
   type		= "Section",
   chapter	= "1.2",
@@ -507,7 +507,7 @@ BUnit::run(name => '_f_short_1',
   publisher	= "Addison-Wesley",
   address	= "Reading, Massachusetts",
   edition	= "Second",
-  month		= "10~"  # jan,
+  month		= "10~" # jan,
   year		= "{\\noopsort{1973c}}1981",
   note		= "This is a full BOOK entry"
 }
@@ -606,7 +606,7 @@ BUnit::run(name => '_f_short_1',
   organization	= "Chips-R-Us",
   address	= "Silicon Valley",
   edition	= "Silver",
-  month		= apr # "-"  # may,
+  month		= apr # "-" # may,
   year		= 1986,
   note		= "This is a full MANUAL entry"
 }
@@ -624,7 +624,7 @@ BUnit::run(name => '_f_short_1',
   school	= "Stanford University",
   type		= "Master\'s project",
   address	= "English Department",
-  month		= jun # "-"  # aug,
+  month		= jun # "-" # aug,
   year		= 1988,
   note		= "This is a full MASTERSTHESIS entry"
 }
@@ -647,7 +647,7 @@ BUnit::run(name => '_f_short_1',
   author	= "Alfred V. Oaho and Jeffrey D. Ullman and Mihalis
 		  Yannakakis",
   title		= "On Notions of Information Transfer in {VLSI} Circuits",
-  booktitle	= "Proc. Fifteenth Annual ACM"  # stoc,
+  booktitle	= "Proc. Fifteenth Annual ACM" # stoc,
   year		= 1983
 }
 
@@ -656,7 +656,7 @@ BUnit::run(name => '_f_short_1',
 		  Yannakakis",
   title		= "On Notions of Information Transfer in {VLSI} Circuits",
   editor	= "Wizard V. Oz and Mihalis Yannakakis",
-  booktitle	= "Proc. Fifteenth Annual ACM"  # stoc,
+  booktitle	= "Proc. Fifteenth Annual ACM" # stoc,
   number	= 17,
   series	= "All ACM Conferences",
   pages		= "133--139",
@@ -680,13 +680,13 @@ BUnit::run(name => '_f_short_1',
 
 \@Proceedings{	  :proc,
   key		= stoc-key,
-  title		= "Proc. Fifteenth Annual"  # stoc,
+  title		= "Proc. Fifteenth Annual" # stoc,
   year		= 1983
 }
 
 \@Proceedings{	  oz.yannakakis:proc,
   editor	= "Wizard V. Oz and Mihalis Yannakakis",
-  title		= "Proc. Fifteenth Annual"  # stoc,
+  title		= "Proc. Fifteenth Annual" # stoc,
   number	= 17,
   series	= "All ACM Conferences",
   month		= mar,
@@ -700,10 +700,10 @@ BUnit::run(name => '_f_short_1',
 \@Proceedings{	  :proc*1,
   key		= stoc-key,
   organization	= acm,
-  title		= "Proc. Fifteenth Annual"  # stoc,
+  title		= "Proc. Fifteenth Annual" # stoc,
   address	= "Boston",
   year		= 1983,
-  booktitle	= "Proc. Fifteenth Annual ACM"  # stoc,
+  booktitle	= "Proc. Fifteenth Annual ACM" # stoc,
   note		= "This is a cross-referenced PROCEEDINGS"
 }
 
@@ -720,7 +720,7 @@ BUnit::run(name => '_f_short_1',
   school	= "Fanstord University",
   type		= "{PhD} Dissertation",
   address	= "Department of French",
-  month		= jun # "-"  # aug,
+  month		= jun # "-" # aug,
   year		= 1988,
   note		= "This is a full PHDTHESIS entry"
 }
@@ -754,7 +754,7 @@ BUnit::run(name => '_f_short_1',
 \@Unpublished{	  underwood.net.ea:lower*1,
   author	= "Ulrich {\\"{U}}nderwood and Ned {\\~N}et and Paul {\\={P}}ot",
   title		= "Lower Bounds for Wishful Research Results",
-  month		= nov # ", "  # dec,
+  month		= nov # ", " # dec,
   year		= 1988,
   note		= "Talk at Fanstord University (this is a full UNPUBLISHED
 		  entry)"
@@ -837,7 +837,7 @@ BUnit::run(name         => '_K_1',
   publisher	= "Addison-Wesley",
   address	= "Reading, Massachusetts",
   edition	= "Second",
-  month		= "10~"  # jan,
+  month		= "10~" # jan,
   year		= "{\\noopsort{1973b}}1973",
   type		= "Section",
   chapter	= "1.2",
@@ -872,7 +872,7 @@ BUnit::run(name         => '_K_1',
   publisher	= "Addison-Wesley",
   address	= "Reading, Massachusetts",
   edition	= "Second",
-  month		= "10~"  # jan,
+  month		= "10~" # jan,
   year		= "{\\noopsort{1973c}}1981",
   note		= "This is a full BOOK entry"
 }
@@ -971,7 +971,7 @@ BUnit::run(name         => '_K_1',
   organization	= "Chips-R-Us",
   address	= "Silicon Valley",
   edition	= "Silver",
-  month		= apr # "-"  # may,
+  month		= apr # "-" # may,
   year		= 1986,
   note		= "This is a full MANUAL entry"
 }
@@ -989,7 +989,7 @@ BUnit::run(name         => '_K_1',
   school	= "Stanford University",
   type		= "Master\'s project",
   address	= "English Department",
-  month		= jun # "-"  # aug,
+  month		= jun # "-" # aug,
   year		= 1988,
   note		= "This is a full MASTERSTHESIS entry"
 }
@@ -1012,7 +1012,7 @@ BUnit::run(name         => '_K_1',
   author	= "Alfred V. Oaho and Jeffrey D. Ullman and Mihalis
 		  Yannakakis",
   title		= "On Notions of Information Transfer in {VLSI} Circuits",
-  booktitle	= "Proc. Fifteenth Annual ACM"  # stoc,
+  booktitle	= "Proc. Fifteenth Annual ACM" # stoc,
   year		= 1983
 }
 
@@ -1021,7 +1021,7 @@ BUnit::run(name         => '_K_1',
 		  Yannakakis",
   title		= "On Notions of Information Transfer in {VLSI} Circuits",
   editor	= "Wizard V. Oz and Mihalis Yannakakis",
-  booktitle	= "Proc. Fifteenth Annual ACM"  # stoc,
+  booktitle	= "Proc. Fifteenth Annual ACM" # stoc,
   number	= 17,
   series	= "All ACM Conferences",
   pages		= "133--139",
@@ -1045,13 +1045,13 @@ BUnit::run(name         => '_K_1',
 
 \@Proceedings{	  :proc,
   key		= stoc-key,
-  title		= "Proc. Fifteenth Annual"  # stoc,
+  title		= "Proc. Fifteenth Annual" # stoc,
   year		= 1983
 }
 
 \@Proceedings{	  oz.wv.yannakakis.m:proc,
   editor	= "Wizard V. Oz and Mihalis Yannakakis",
-  title		= "Proc. Fifteenth Annual"  # stoc,
+  title		= "Proc. Fifteenth Annual" # stoc,
   number	= 17,
   series	= "All ACM Conferences",
   month		= mar,
@@ -1065,10 +1065,10 @@ BUnit::run(name         => '_K_1',
 \@Proceedings{	  :proc*1,
   key		= stoc-key,
   organization	= acm,
-  title		= "Proc. Fifteenth Annual"  # stoc,
+  title		= "Proc. Fifteenth Annual" # stoc,
   address	= "Boston",
   year		= 1983,
-  booktitle	= "Proc. Fifteenth Annual ACM"  # stoc,
+  booktitle	= "Proc. Fifteenth Annual ACM" # stoc,
   note		= "This is a cross-referenced PROCEEDINGS"
 }
 
@@ -1085,7 +1085,7 @@ BUnit::run(name         => '_K_1',
   school	= "Fanstord University",
   type		= "{PhD} Dissertation",
   address	= "Department of French",
-  month		= jun # "-"  # aug,
+  month		= jun # "-" # aug,
   year		= 1988,
   note		= "This is a full PHDTHESIS entry"
 }
@@ -1119,7 +1119,7 @@ BUnit::run(name         => '_K_1',
 \@Unpublished{	  underwood.u.net.n.ea:lower*1,
   author	= "Ulrich {\\"{U}}nderwood and Ned {\\~N}et and Paul {\\={P}}ot",
   title		= "Lower Bounds for Wishful Research Results",
-  month		= nov # ", "  # dec,
+  month		= nov # ", " # dec,
   year		= 1988,
   note		= "Talk at Fanstord University (this is a full UNPUBLISHED
 		  entry)"
@@ -1202,7 +1202,7 @@ BUnit::run(name         => '_f_long_1',
   publisher	= "Addison-Wesley",
   address	= "Reading, Massachusetts",
   edition	= "Second",
-  month		= "10~"  # jan,
+  month		= "10~" # jan,
   year		= "{\\noopsort{1973b}}1973",
   type		= "Section",
   chapter	= "1.2",
@@ -1237,7 +1237,7 @@ BUnit::run(name         => '_f_long_1',
   publisher	= "Addison-Wesley",
   address	= "Reading, Massachusetts",
   edition	= "Second",
-  month		= "10~"  # jan,
+  month		= "10~" # jan,
   year		= "{\\noopsort{1973c}}1981",
   note		= "This is a full BOOK entry"
 }
@@ -1336,7 +1336,7 @@ BUnit::run(name         => '_f_long_1',
   organization	= "Chips-R-Us",
   address	= "Silicon Valley",
   edition	= "Silver",
-  month		= apr # "-"  # may,
+  month		= apr # "-" # may,
   year		= 1986,
   note		= "This is a full MANUAL entry"
 }
@@ -1354,7 +1354,7 @@ BUnit::run(name         => '_f_long_1',
   school	= "Stanford University",
   type		= "Master\'s project",
   address	= "English Department",
-  month		= jun # "-"  # aug,
+  month		= jun # "-" # aug,
   year		= 1988,
   note		= "This is a full MASTERSTHESIS entry"
 }
@@ -1377,7 +1377,7 @@ BUnit::run(name         => '_f_long_1',
   author	= "Alfred V. Oaho and Jeffrey D. Ullman and Mihalis
 		  Yannakakis",
   title		= "On Notions of Information Transfer in {VLSI} Circuits",
-  booktitle	= "Proc. Fifteenth Annual ACM"  # stoc,
+  booktitle	= "Proc. Fifteenth Annual ACM" # stoc,
   year		= 1983
 }
 
@@ -1386,7 +1386,7 @@ BUnit::run(name         => '_f_long_1',
 		  Yannakakis",
   title		= "On Notions of Information Transfer in {VLSI} Circuits",
   editor	= "Wizard V. Oz and Mihalis Yannakakis",
-  booktitle	= "Proc. Fifteenth Annual ACM"  # stoc,
+  booktitle	= "Proc. Fifteenth Annual ACM" # stoc,
   number	= 17,
   series	= "All ACM Conferences",
   pages		= "133--139",
@@ -1410,13 +1410,13 @@ BUnit::run(name         => '_f_long_1',
 
 \@Proceedings{	  :proc,
   key		= stoc-key,
-  title		= "Proc. Fifteenth Annual"  # stoc,
+  title		= "Proc. Fifteenth Annual" # stoc,
   year		= 1983
 }
 
 \@Proceedings{	  oz.wv.yannakakis.m:proc,
   editor	= "Wizard V. Oz and Mihalis Yannakakis",
-  title		= "Proc. Fifteenth Annual"  # stoc,
+  title		= "Proc. Fifteenth Annual" # stoc,
   number	= 17,
   series	= "All ACM Conferences",
   month		= mar,
@@ -1430,10 +1430,10 @@ BUnit::run(name         => '_f_long_1',
 \@Proceedings{	  :proc*1,
   key		= stoc-key,
   organization	= acm,
-  title		= "Proc. Fifteenth Annual"  # stoc,
+  title		= "Proc. Fifteenth Annual" # stoc,
   address	= "Boston",
   year		= 1983,
-  booktitle	= "Proc. Fifteenth Annual ACM"  # stoc,
+  booktitle	= "Proc. Fifteenth Annual ACM" # stoc,
   note		= "This is a cross-referenced PROCEEDINGS"
 }
 
@@ -1450,7 +1450,7 @@ BUnit::run(name         => '_f_long_1',
   school	= "Fanstord University",
   type		= "{PhD} Dissertation",
   address	= "Department of French",
-  month		= jun # "-"  # aug,
+  month		= jun # "-" # aug,
   year		= 1988,
   note		= "This is a full PHDTHESIS entry"
 }
@@ -1484,7 +1484,7 @@ BUnit::run(name         => '_f_long_1',
 \@Unpublished{	  underwood.u.net.n.ea:lower*1,
   author	= "Ulrich {\\"{U}}nderwood and Ned {\\~N}et and Paul {\\={P}}ot",
   title		= "Lower Bounds for Wishful Research Results",
-  month		= nov # ", "  # dec,
+  month		= nov # ", " # dec,
   year		= 1988,
   note		= "Talk at Fanstord University (this is a full UNPUBLISHED
 		  entry)"
