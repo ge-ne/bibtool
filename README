@@ -1,20 +1,20 @@
-======================================================================
+----------------------------------------------------------------------
 
-	######            ############
-	#######           ############
-	##    ##               ##
-	##    ##  ##  #####    ##    ####      ####    ##
-	#######   ##  ######   ##   ######    ######   ##
-	#######   ##  ##   ##  ##  ##    ##  ##    ##  ##
-	##    ##  ##  ######   ##  ##    ##  ##    ##  ##
-	##    ##  ##  ##   ##  ##  ##    ##  ##    ##  ##
-	##    ##  ##  ##   ##  ##  ##    ##  ##    ##  ##
-	#######   ##  ######   ##   ######    ######   #######
-	######    ##  #####    ##    ####      ####    #######
+        ######            ############
+        #######           ############
+        ##    ##               ##
+        ##    ##  ##  #####    ##    ####      ####    ##
+        #######   ##  ######   ##   ######    ######   ##
+        #######   ##  ##   ##  ##  ##    ##  ##    ##  ##
+        ##    ##  ##  ######   ##  ##    ##  ##    ##  ##
+        ##    ##  ##  ##   ##  ##  ##    ##  ##    ##  ##
+        ##    ##  ##  ##   ##  ##  ##    ##  ##    ##  ##
+        #######   ##  ######   ##   ######    ######   #######
+        ######    ##  #####    ##    ####      ####    #######
 
-======================================================================
+----------------------------------------------------------------------
 
-	  BibTool: A Tool for Manipulating BibTeX Data Bases
+          BibTool: A Tool for Manipulating BibTeX Data Bases
 
   
 BibTeX provides    an easy to  use means   to integrate  citations and
@@ -66,7 +66,7 @@ BibTool can be obtained from the CTAN archives:
 Get  the  file BibTool-x.xx.tar.gz  where  x.xx is the version number.
 Unpack it with the command (on UN*X)
 
-	gunzip < BibTool-x.xx.tar.gz | tar -xvf -
+    gunzip < BibTool-x.xx.tar.gz | tar -xvf -
 
 It  will   create  a  directory  named  BibTool   which  contains  the
 installation instructions in the file install.tex.
@@ -75,10 +75,9 @@ A signature for  the source bundle is provided as  well. My public key
 can be  found on http://pgp.mit.edu/.  You should search for  my email
 address.
 
-
 ----------------------------------------------------------------------
 Enjoy it!
 
 Gerd Neugebauer
-gene@gerd-neugebauer.de
+mailto:gene@gerd-neugebauer.de
 
