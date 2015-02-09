@@ -4,7 +4,7 @@
 %% It is distributed under the GNU General Public License.
 %% See the file COPYING for details.
 %% 
-%% (c) 1995-2014 Gerd Neugebauer
+%% (c) 1995-2015 Gerd Neugebauer
 %% 
 %% Net: gene@gerd-neugebauer.de
 %% 
@@ -23,6 +23,8 @@ tex.define {\o=o}
 tex.define {\O=O}
 tex.define {\l=l}
 tex.define {\L=L}
+tex.define {\i=i}
+tex.define {\j=j}
 tex.define {\TeX=TeX}
 tex.define {\LaTeX=LaTeX}
 tex.define {\LaTeXe=LaTeX2e}

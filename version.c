@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2014 Gerd Neugebauer
+** (c) 1996-2015 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -22,7 +22,7 @@
 **		numbers.  In addition a postfix like |alpha| or a
 **		patchlevel like |p1| can be present.
 **___________________________________________________			     */
- char * bibtool_version = "2.58-alpha";		   /*                        */
+ char * bibtool_version = "2.58";		   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	show_version()
@@ -33,6 +33,6 @@
 **___________________________________________________			     */
 void show_version()				   /*                        */
 {						   /*                        */
-  ErrPrintF("BibTool Vers. %s (C) 1996-2014 Gerd Neugebauer\n\n",/*          */
+  ErrPrintF("BibTool Vers. %s (C) 1996-2015 Gerd Neugebauer\n\n",/*          */
 	    bibtool_version);			   /*	                     */
 }						   /*------------------------*/

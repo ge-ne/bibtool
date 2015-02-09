@@ -1,13 +1,11 @@
 /* regex-0.12/config.h.  Generated from reconfig.h.in by configure.  */
-/******************************************************************************
-** $Id: config.h,v 1.11 2013-11-24 21:40:14 gene Exp $
-**=============================================================================
+/*** reconfig.h ***************************************************************
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2013 Gerd Neugebauer
+** (c) 1996-2015 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
