@@ -304,7 +304,7 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
     DebugPrint2("field   = ",field);	   	   /*			     */
     (void)SParseSkip(&s);			   /*                        */
 						   /*			     */
-    if ( stackp > stacksize )			   /*                        */
+    if ( stackp >= stacksize )			   /*                        */
     { stacksize += 8;				   /*                        */
       if ( (stack=(Uchar**)realloc((char*)stack,   /*                        */
 				  stacksize*sizeof(char*)))==NULL)/*         */
