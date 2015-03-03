@@ -156,7 +156,7 @@ static void puts_in(s,in,fct)			   /*			     */
 /*-----------------------------------------------------------------------------
 ** Function:	indent()
 ** Purpose:	Add spaces or tabs to indent to the given column.
-**		the current column is beyond col nothing happens.
+**		If the current column is beyond col then nothing happens.
 **		The resource use.tabs can be used to disable the use of TAB.
 ** Arguments:
 **	col	Target column
@@ -175,7 +175,7 @@ static void indent(col,fct)			   /*			     */
       column += TAB_WIDTH - (column%TAB_WIDTH);	   /*	update column.	     */
     }						   /*			     */
     else					   /* otherwise		     */
-    { (void)(*fct)(' ');			   /*  write a singe space   */
+    { (void)(*fct)(' ');			   /*  write a single space  */
       ++column;					   /*  and advance column.   */
     }						   /*			     */
   }						   /*			     */
@@ -211,7 +211,7 @@ static void line_breaking(t,align,fct)		   /*			     */
   while ( *t )					   /* as long as sth to print*/
   { s = t;					   /*			     */
 						   /*			     */
-    switch( *t )				   /*			     */
+    switch ( *t )				   /*			     */
     { case '"':					   /* QUOTED PART	     */
 	for ( len = 2, ++t;			   /*			     */
 	     *t && *t != '\"';			   /* Search terminating "   */
@@ -268,9 +268,9 @@ static void line_breaking(t,align,fct)		   /*			     */
 	else					   /*                        */
 	  save_ptr = s;				   /*                        */
  						   /*                        */
-	for(ptr = s;				   /* Search next newline    */
-	    ptr <= save_ptr && *ptr != '\n';	   /*  or end of region      */
-	    ptr++) {}				   /*                        */
+	for ( ptr = s;				   /* Search next newline    */
+	      ptr < save_ptr && *ptr != '\n';	   /*  or end of region      */
+	      ptr++ ) {}			   /*                        */
  						   /*                        */
 	if ( *ptr == '\n' )			   /*                        */
 	{ save_ptr = ptr;			   /*                        */
@@ -280,7 +280,7 @@ static void line_breaking(t,align,fct)		   /*			     */
 	  indent(align,fct);	   		   /*			     */
 	  *save_ptr = '\n';			   /* Restore end	     */
 	  len += s - save_ptr - 1;		   /* Update the length	     */
-	  s = save_ptr+1;			   /*			     */
+	  s = save_ptr + 1;			   /*			     */
 	}					   /*                        */
 	else					   /*                        */
 	{					   /*                        */
@@ -344,11 +344,11 @@ static void print_equation(pre,s,t,align,fct)	   /*			     */
   { indent(rsc_indent,fct);			   /*			     */
     PUTS(pre);		   			   /*			     */
     PUTS(get_item(s,symbol_type));		   /*			     */
-    if ( column>=align-2 && rsc_print_we )	   /*                        */
+    if ( column >= align - 2 && rsc_print_we )	   /*                        */
     { PUTC(' '); }				   /*                        */
     else if ( rsc_eq_right )			   /*                        */
     { indent(align-2,fct); }			   /*			     */
-    else if ( column<align || rsc_print_we )	   /*                        */
+    else if ( column < align || rsc_print_we )	   /*                        */
     { PUTC(' '); }	   			   /*                        */
     PUTC('=');					   /*			     */
     if ( rsc_print_we )	{ PUTC(' '); }		   /*                        */
@@ -427,7 +427,7 @@ char * sput_record(rec,db,start)	   	   /*			     */
   if ( osb == NULL ) osb = sbopen();		   /*                        */
   sbrewind(osb);				   /*                        */
   put_record(sput_char,rec,db,start);		   /*                        */
-  return sbflush(osb);
+  return sbflush(osb);				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -440,30 +440,30 @@ char * sput_record(rec,db,start)	   	   /*			     */
 **		\item[rsc\_parentheses] If this boolean variable is
 **		  |TRUE| then |(| and |)| are used to delimit the
 **		  record. Otherwise |{| and |}| are used.
-**		\item[rsc\_col\_p] This integer variable controlls the
+**		\item[rsc\_col\_p] This integer variable controls the
 **		  indentation of preamble records.
-**		\item[rsc\_col\_s] This integer variable controlls the
+**		\item[rsc\_col\_s] This integer variable controls the
 **		  indentation of string records.
 **
 **		\item[rsc\_expand\_macros] If this boolean variable is
 **		  set then macros are expanded before the record is
 **		  printed. This does not effect the internal
 **		  representation. 
-**		\item[rsc\_col] This integer variable controlls the
+**		\item[rsc\_col] This integer variable controls the
 **		  indentation of normal records.
-**		\item[rsc\_col\_key] This integer variable controlls the
+**		\item[rsc\_col\_key] This integer variable controls the
 **		  indentation of the key in a normal record.
-**		\item[rsc\_newlines] This integer variable controlls
+**		\item[rsc\_newlines] This integer variable controls
 **		  the number of newlines printed after a normal record.
 **
-**		\item[rsc\_linelen] This integer variable controlls
+**		\item[rsc\_linelen] This integer variable controls
 **		  the length of the line. The line breaking algorithm
 **		  is applied if this column is about to be violated.
-**		\item[rsc\_indent] This integer variable controlls the
+**		\item[rsc\_indent] This integer variable controls the
 **		  indentation of equations.
-**		\item[rsc\_eq\_right] This boolean variable controlls
+**		\item[rsc\_eq\_right] This boolean variable controls
 **		  the alignment of the |=| in equations. It it is set
-**		  then the equality sign is flused right. Otherwise it
+**		  then the equality sign is flushed right. Otherwise it
 **		  is flushed left.
 **		\end{description}
 **
