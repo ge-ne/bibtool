@@ -255,7 +255,7 @@ static void line_breaking(t,align,fct)		   /*			     */
 	s = t;					   /* and we are done	     */
       }						   /*			     */
       else if ( !first )			   /* If sth has been before */
-      { puts_in((Uchar*)"\n# ", align-2, fct);	   /*  start a new line	     */
+      { puts_in((Uchar*)"\n# ", align - 2, fct);   /*  start a new line	     */
 	first = TRUE;				   /*			     */
       }						   /* Now we have to break   */
       else					   /*  a single entry	     */
@@ -289,16 +289,18 @@ static void line_breaking(t,align,fct)		   /*			     */
 	  					   /*			     */
 	  if ( save_ptr == s  )			   /* If no SPC found then   */
 	  { while ( *save_ptr && *save_ptr != ' ' )/*  search one forward.   */
-	    { ++save_ptr; }	   		   /*                        */
+	    { save_ptr++; }	   		   /*                        */
 	  }					   /*                        */
 	  len += s - save_ptr;			   /* Update the length	     */
 	  save_c = *save_ptr; *save_ptr = '\0';	   /* Save and mark end.     */
 	  puts_in(s, align, fct);		   /*                        */
-	  NL;					   /*                        */
-	  indent(align,fct);	   		   /*			     */
+	  if (save_c != 0)
+	  { NL;					   /*                        */
+	    indent(align, fct);	   		   /*			     */
+	  }
 	  *save_ptr = save_c;			   /* Restore end	     */
 	  s = save_ptr;	   			   /*			     */
-	  while ( is_space(*s) ) { ++s; len--; }   /* Skip spaces	     */
+	  while ( is_space(*s) ) { s++; len--; }   /* Skip spaces	     */
 	}					   /*                        */
       }						   /*			     */
     }						   /*			     */
