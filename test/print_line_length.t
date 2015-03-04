@@ -53,7 +53,6 @@ __EOF__
 \@Article{key,
   title={x
      aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
-     
 }
 __EOF__
 
@@ -71,7 +70,6 @@ __EOF__
 \@Article{ key,
   title	  ={x
 	  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
-	  
 }
 __EOF__
 
@@ -89,7 +87,25 @@ __EOF__
 \@Article{ key,
   title	  ={x
 	  aaaaaaaaa}
-	  
+}
+__EOF__
+
+
+#------------------------------------------------------- stat-----------------------
+BUnit::run(name  => 'print_line_length-10c',
+    args         => '--print.line.length=10',
+    expected_err => '',
+    bib		 => <<__EOF__,
+\@Article{key,
+  title = {x aaaaaaaaa aaaaaaaaa}
+}
+__EOF__
+    expected_out => <<__EOF__);
+
+\@Article{ key,
+  title	  ={x
+	  aaaaaaaaa
+	  aaaaaaaaa}
 }
 __EOF__
 
@@ -107,7 +123,6 @@ __EOF__
 \@Article{	  key,
   title		= {x
 		  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
-		  
 }
 __EOF__
 
@@ -125,7 +140,6 @@ __EOF__
 \@Article{	  key,
   title		= {x
 		  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa}
-		  
 }
 __EOF__
 
