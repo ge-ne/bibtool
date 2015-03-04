@@ -224,7 +224,7 @@ static int see_bib_msg(s)			   /*			     */
 **		database. 
 ** Arguments:
 **	fname	Name of the file or |NULL|.
-** Returns:	|TRUE| iff the file couls be opened for reading.
+** Returns:	|TRUE| iff the file could be opened for reading.
 **___________________________________________________			     */
 int see_bib(fname)				   /*			     */
   register Uchar * fname;			   /*			     */
@@ -366,7 +366,7 @@ static int fill_line()				   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function:	skip()
-** Purpose:	Skip over spaces. Return the next nonspace character or |EOF|.
+** Purpose:	Skip over spaces. Return the next non-space character or |EOF|.
 **		If inc is TRUE point to the first character after the one
 **		returned.
 ** Arguments:
@@ -658,12 +658,10 @@ static int parse_rhs()				   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function:	parse_equation()
-** Purpose:	
-**		
+** Purpose:	Parse a pair separated by an equals sign.
 **
 ** Arguments:
-**	rec
-**	macp
+**	rec	The record to store the result in
 ** Returns:	Success status
 **___________________________________________________			     */
 static int parse_equation(rec)		   	   /*			     */
@@ -688,7 +686,7 @@ static int parse_equation(rec)		   	   /*			     */
 **		|BIB_EOF| is returned if nothing could be read and
 **		the end of the file has been encountered.
 **
-**		|BIB_NOOP| is returned when an error has occured. This is
+**		|BIB_NOOP| is returned when an error has occurred. This is
 **		an indicator that no record has been read but the
 **		error recovery is ready to try it again.
 **
@@ -976,7 +974,7 @@ static int parse_value()			   /*			     */
 **
 **		The characters |#|, |%|, and |;| start an endline
 **		comment but only between resource instructions. They
-**		are not recogniized between a resource instructiuon
+**		are not recognized between a resource instruction
 **		and its value or inside the value braces.
 **
 **		This function is contained in this module because it
