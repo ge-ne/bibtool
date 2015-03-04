@@ -20,3 +20,5 @@ makefile
 install.pdf
 .project
 Work
+/.cproject
+/.settings
