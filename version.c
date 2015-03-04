@@ -19,8 +19,8 @@
 **		\BibTool. Usually it is of the form
 **		\textit{major.minor} where \textit{major} and
 **		\textit{minor} are the major and minor version
-**		numbers.  In addition a postfix like |alpha| or a
-**		patchlevel like |p1| can be present.
+**		numbers.  In addition a post-fix like |alpha| or a
+**		patch level like |p1| can be present.
 **___________________________________________________			     */
  char * bibtool_version = "2.59-alpha";		   /*                        */
 

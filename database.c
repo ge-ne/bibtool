@@ -269,7 +269,7 @@ void db_insert(db,rec,verbose)		   	   /*                        */
 **		A function has to be given as one argument. This function is
 **		called for each record. If this function returns |TRUE| then
 **		the record is added to the database. Otherwise the record is
-**		discarted. 
+**		discarded.
 **
 **		The progress of reading is reported to |stderr| if the
 **		boolean argument |verbose| is |TRUE|.
@@ -571,7 +571,7 @@ static void print_strings(file, db, allp)	   /*                        */
       {						   /*                        */
 	if ( !RecordIsDELETED(rec) )		   /*                        */
 	{					   /*                        */
-	  for ( i=2; i < RecordFree(rec); i+=2 )   /*                        */
+	  for ( i = 2; i < RecordFree(rec); i += 2 )/*                       */
 	  { if ( RecordHeap(rec)[i] != NULL )	   /*                        */
 	    { mark_string(strings,RecordHeap(rec)[i+1]);/*                   */
 	    }					   /*                        */
@@ -585,7 +585,7 @@ static void print_strings(file, db, allp)	   /*                        */
       {						   /*                        */
 	if ( RecordIsMARKED(rec) )		   /*                        */
 	{					   /*                        */
-	  for ( i=1; i < RecordFree(rec); i++ )    /*                        */
+	  for ( i = 1; i < RecordFree(rec); i++ )  /*                        */
 	  { if ( RecordHeap(rec)[i] != NULL )	   /*                        */
             { mark_string(strings,RecordHeap(rec)[i]);/*                     */
 	    }					   /*                        */
@@ -632,8 +632,8 @@ static void print_strings(file, db, allp)	   /*                        */
 **		\item [a] The aliases.
 **		\item [m] The modifies.
 **		\end{description}
-**		Uppercase letters which are not mentioned are silently folded
-**		to their lowercase counterparts. 
+**		Upper-case letters which are not mentioned are silently folded
+**		to their lower-case counterparts.
 ** Arguments:
 **	file	The file handle for printing.
 **	db	The database to print
@@ -764,7 +764,7 @@ void db_forall(db,fct)				   /*                        */
 **
 **		Deleted records are ignored. An arbitrary matching
 **		record is returned. Thus if more than one record have
-**		the same key then the behaviour is nondeterministic. 
+**		the same key then the behavior is nondeterministic.
 ** Arguments:
 **	db	Database to search in.
 ** Returns:	nothing
@@ -811,7 +811,7 @@ Record db_find(db,key)				   /*                        */
 **
 **		Deleted records are not ignored! An arbitrary matching
 **		record is returned. Thus if more than one record have
-**		the same key then the behaviour is nondeterministic. 
+**		the same key then the behavior is nondeterministic.
 ** Arguments:
 **	db	Database to search in.
 ** Returns:	nothing
@@ -951,7 +951,7 @@ static Record rec__sort(rec,less)		   /*                        */
 ** Special cases have to be considered if the new record is to be inserted
 ** before the first or after the last element in the list.
 ** 
-** The rest is simply legwork.
+** The rest is simply leg work.
 **
 ** Well, a word on the complexity.
 ** If the input is almost sorted (correct or in reverse order) then the 
@@ -1100,7 +1100,7 @@ Uchar * db_string(db,s,localp)			   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	db_count()
 ** Purpose:	Count all entries in a database. This includes normal
-**		aswell as special records. The result is stored in a
+**		as well as special records. The result is stored in a
 **		static array which is reused by |db_count()|. A
 **		pointer to this array is returned. The indices
 **		correspond to the entry types defined with
@@ -1256,5 +1256,4 @@ void db_xref_undelete(db)			   /*                        */
       }						   /*                        */
     }    					   /*                        */
   }						   /*                        */
- 						   /*                        */
 }						   /*------------------------*/

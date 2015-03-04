@@ -62,7 +62,7 @@ int sp_open(s)					   /*                        */
 ** Function:	s_parse()
 ** Purpose:	Parse a string for a certain entity. Leading
 **		whitespace is ignored. |type| determines which kind of
-**		entity should be exepected. It can take the following
+**		entity should be expected. It can take the following
 **		values which are defined in |s_parse.h|:
 **		\begin{description}
 **		\item[StringParseValue] The string is analyzed and the

@@ -82,7 +82,7 @@ Record copy_record(rec)				   /*			     */
 /*-----------------------------------------------------------------------------
 ** Function:	new_record()
 ** Purpose:	Create a new record and return it.
-**		If no memory is left then an eror is raised and the
+**		If no memory is left then an error is raised and the
 **		program is terminated. 
 ** Arguments:
 **	token	The token type of the record.

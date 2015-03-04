@@ -92,7 +92,7 @@ void init_error(file)				   /*                        */
 **		shown. Otherwise the file name and the line number are
 **		suppressed.
 **		\item[ERR\_EXIT] If this bit is set then the error
-**		routine calles |exit(-1)| at the end. This implicitly
+**		routine calls |exit(-1)| at the end. This implicitly
 **		sets the |ERR_ERROR| bit as well.
 **		\end{description}
 **
@@ -132,7 +132,7 @@ void error(type,s1,s2,s3,line,err_pos,line_no,fname)/*			     */
 						   /*  error is ignored.     */
   ErrNL;					   /*			     */
   if ( (type&ERR_POINT) && line != NULL )	   /*			     */
-  { ErrS((char*)line);				   /* print the eror line.   */
+  { ErrS((char*)line);				   /* print the error line.  */
     if ( line[strlen((char*)line)-1] != '\n' ) ErrNL;/*			     */
     for ( ; line<err_pos; ++line ) ErrChar('_');   /*  and a pointer to the  */
     ErrChar('^'); ErrNL;			   /*  error position.	     */

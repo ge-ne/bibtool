@@ -955,7 +955,7 @@ static char * new_string(s)			   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function*:   main()
-** Purpose:     Main rountine for the stand alone version.
+** Purpose:     Main routine for the stand alone version.
 ** Arguments:
 **	argc	Number of arguments (+1)
 **	argv	Array of command line arguments (and program name)

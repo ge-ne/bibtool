@@ -68,7 +68,7 @@
 **		\begin{description}
 **		\item [BIB\_STRING] denotes a \BibTeX{} macro definition.
 **		\item [BIB\_PREAMBLE] denotes a preamble item which goes
-**		  before the bibligraphy environment.  
+**		  before the bibliography environment.
 **		\item [BIB\_COMMENT] denotes a comment entry which is
 **		  passed to the output file.
 **		\item [BIB\_ALIAS] denotes an alias entry which renames an
@@ -111,7 +111,7 @@ void init_entries()				   /*			     */
 **		stored. 
 **
 **		If no memory is left then an error is raised and the
-**		program is termined
+**		program is terminated
 ** Arguments:
 **	s	String containing the name of the entry.
 ** Returns:	nothing

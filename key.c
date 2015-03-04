@@ -296,10 +296,10 @@ void set_separator(n,s)				   /*			     */
 **		\begin{itemize}
 **		\item If the value is |upper| or starts with an upper
 **		  case letter then the disambiguation is done with
-**		  uppercase letters. 
+**		  upper-case letters.
 **		\item If the value is |lower| or starts with a lower
 **		  case letter then the disambiguation is done with
-**		  lowercase letters. 
+**		  lower-case letters.
 **		\item If the value is |digit| or starts with an digit
 **		  then the disambiguation is done with arabic numbers. 
 **		\end{itemize}
@@ -507,7 +507,7 @@ static int deTeX(line,save_fct,flags)		   /*			     */
     if (   is_alpha(c)				   /* Letters and	     */
 	|| is_digit(c)				   /* digits and	     */
 	|| is_extended(c)			   /* extended chars and     */
-	|| ( c == (Uchar)'-' && last != c ) )	   /* nonrepeated hyphens    */
+	|| ( c == (Uchar)'-' && last != c ) )	   /* non-repeated hyphens   */
     { SaveChar(c); }				   /*			     */
     else if ( c == (Uchar)'{' ) { ++brace; }	   /* Count braces.	     */
     else if ( c == (Uchar)'}' )		   	   /*                        */
@@ -919,12 +919,12 @@ static int fmt_c_names(line,min,max,not)	   /*		             */
 ** Arguments:
 **	sb	String buffer to store the result in
 **	s	String to format
-**	mp	Boolean indicating wether padding with 0s should be performed
+**	mp	Boolean indicating whether padding with 0s should be performed
 **		(true) or not.
-**	pp	Boolean indicating wether no number should be 0 or fail
+**	pp	Boolean indicating whether no number should be 0 or fail
 **	n	Length
 **	sel	The number to select.
-**	trunc	Boolean indicating wether or not to truncate the number.
+**	trunc	Boolean indicating whether or not to truncate the number.
 ** Returns:	nothing
 **___________________________________________________			     */
 static int fmt_digits(sb,s,mp,pp,n,sel,trunc)	   /*			     */
@@ -978,7 +978,7 @@ static int fmt_digits(sb,s,mp,pp,n,sel,trunc)	   /*			     */
 ** Function:	fmt_string()
 ** Purpose:	Push characters from s onto the string buffer.
 **		At most n characters are transfered.
-**		Letters are translated accoring to mode.
+**		Letters are translated according to mode.
 ** Arguments:
 **	s	String to format
 **	n	Length
@@ -1232,7 +1232,7 @@ void make_sort_key(db,rec)			   /*			     */
 ** Returns:	The address of the new node.
 **		Upon failure exit() is called.
 **___________________________________________________			     */
-static KeyNode new_key_node(type,string)	   /*			     */
+static KeyNode new_key_node(type, string)	   /*			     */
   int	  type;					   /*			     */
   Uchar	  *string;				   /*			     */
 { KeyNode new;					   /*			     */
@@ -1280,7 +1280,7 @@ void free_key_node(kn)				   /*			     */
 **	treep
 ** Returns:	
 **___________________________________________________			     */
-static int add_fmt_tree(s,treep)		   /*			     */
+static int add_fmt_tree(s, treep)		   /*			     */
   char	  *s;					   /*			     */
   KeyNode *treep;				   /*			     */
 { KeyNode kn, kn_or;				   /*			     */
@@ -1891,7 +1891,7 @@ static void eval__special(sb,kn,rec)		   /*			     */
 **	sb	Destination string buffer.
 **	fmt	Format specification,
 **	rec	Record to consider.
-**	db	Datrabase containing |rec|.
+**	db	Database containing |rec|.
 ** Returns:	|1| iff the format is invalid or the evaluation fails. |0|
 **		otherwise.
 **___________________________________________________			     */

@@ -60,7 +60,7 @@ Macro new_macro(name,val,next,count)		   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	free_macro()
 ** Purpose:	Free a list of macros. The memory allocated for the
-**		|Macro| given as argument and all struictures
+**		|Macro| given as argument and all structures
 **		reachable via the |NextMacro| pointer are released.
 ** Arguments:
 **	mac	First Macro to release.
@@ -125,7 +125,7 @@ int def_macro(name,val,count)			   /*                        */
 **		value is a symbol. 
 **		If the macro is undefined then |NULL| is returned.  In
 **		this case the value of |add| determines whether or not
-**		the macro shpould be defined. If it is less than 0
+**		the macro should be defined. If it is less than 0
 **		then no new macros is defined. Otherwise a new macro
 **		is defined. The value is the empty string and the
 **		initial reference count is |add|.
@@ -240,7 +240,7 @@ void dump_mac(fname,allp)			   /*                        */
 ** Function:	init_macros()
 ** Purpose:	Initialize some macros from a table defined in the
 **		configuration file or given as define to the C
-**		compiler. This function has to be caled to initialize
+**		compiler. This function has to be called to initialize
 **		the global macros.
 **
 **		Note that this function is for internal purposes
@@ -401,9 +401,9 @@ static Uchar * get_mapped_or_cased(name,mac,type)  /*                        */
 ** Function:	get_item()
 ** Purpose:	Return the print representation of a \BibTeX{} string.
 **		The appearance is determined by the |items| mapping.
-**		If no approriate entry is found then |type| is used to
+**		If no appropriate entry is found then |type| is used to
 **		decide whether the item should be returned as
-**		uppercase, lowercase or first upper only.
+**		upper-case, lower-case or first upper only.
 ** Arguments:
 **	name	Symbol to get the print representation for.
 **	type	One of the values |SYMBOL_TYPE_UPPER|, |SYMBOL_TYPE_LOWER|, or

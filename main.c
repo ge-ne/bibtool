@@ -555,22 +555,22 @@ int main(argc,argv)				   /*			     */
 						   /*			     */
   if ( rsc_make_key )				   /*                        */
   {						   /*                        */
-    DebugPrint1("start keygen");
+    DebugPrint1("start keygen");		   /*                        */
     start_key_gen();				   /*                        */
-
+						   /*			     */
     if ( rsc_key_preserve )	   		   /*                        */
     { db_forall(the_db,mark_key); }		   /*                        */
-
-    DebugPrint1("rewinding");
+						   /*			     */
+    DebugPrint1("rewinding");			   /*                        */
     db_rewind(the_db);				   /*                        */
-
-    DebugPrint1("do_keys");
+						   /*                        */
+    DebugPrint1("do_keys");			   /*                        */
     db_forall(the_db,do_keys);		   	   /*                        */
-
-    DebugPrint1("update crossref");
+						   /*                        */
+    DebugPrint1("update crossref");		   /*                        */
     db_forall(the_db,update_crossref);	   	   /*                        */
-
-    DebugPrint1("end keygen");
+						   /*                        */
+    DebugPrint1("end keygen");			   /*                        */
     end_key_gen();				   /*                        */
   }						   /*                        */
   else						   /*                        */

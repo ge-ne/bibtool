@@ -238,7 +238,7 @@ static int test_true(s)				   /*			     */
 **		This is an entry point for command line options which
 **		set resources. 
 ** Arguments:
-**	s	String containg a resource command.
+**	s	String containing a resource command.
 ** Returns:	|FALSE| iff no error has occurred.
 **___________________________________________________			     */
 int use_rsc(s)					   /*			     */

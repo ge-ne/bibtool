@@ -715,11 +715,11 @@ static int is_lower_word(s)			   /*                        */
 ** Function*:	pp_names()
 ** Purpose:	Take a string consisting of a list of names, parse it and
 **		reformat it according to a format specification.
-**		This function is modelled according to the specification
+**		This function is modeled according to the specification
 **		for |format.name$| in \BibTeX.
 ** Arguments:
 **	s	string to be parsed and reformatted.
-**	format	
+**	format	the format
 **	trans	translation table
 **	max	
 **	namesep	string to be inserted between names.
@@ -801,7 +801,7 @@ char * pp_names(s,format,trans,max,namesep,etal)   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function*:   main()
-** Purpose:     Main rountine
+** Purpose:     Main routine
 ** Arguments:
 **	argc	Number of arguments (+1)
 **	argv	Array of command line arguments (and program name)

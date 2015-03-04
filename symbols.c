@@ -174,7 +174,7 @@ char * new_string(s)				   /*			     */
 **	name	String value of the |StringTab| node.
 **	count	Initial use count of the |StringTab| node.
 **	flags	Flags of the new |StringTab| node.
-** Returns:	Pointer to a new inbstance of a |StringTab|.
+** Returns:	Pointer to a new instance of a |StringTab|.
 **___________________________________________________			     */
 static StringTab new_string_tab(name,count,flags)  /*			     */
   Uchar		     *name;			   /*			     */
@@ -195,10 +195,10 @@ static StringTab new_string_tab(name,count,flags)  /*			     */
 /*-----------------------------------------------------------------------------
 ** Function:	hashindex()
 ** Purpose:	Compute the sum of ASCII values modulo |HASHMAX|
-**		to be used as an hashindex.
+**		to be used as an hash index.
 ** Arguments:
 **	s	string to be analyzed.
-** Returns:	hashindex
+** Returns:	hash index
 **___________________________________________________			     */
 static int hashindex(s)				   /*                        */
   Uchar *s;					   /*                        */
@@ -215,7 +215,7 @@ static int hashindex(s)				   /*                        */
 **		The symbol table is cleared. This is not secure when
 **		the symbols have already been initialized because it
 **		would lead to a memory leak and a violation of the
-**		symbol comparison assumtion. Thus this case is caught
+**		symbol comparison assumption. Thus this case is caught
 **		and nothing is done when the initialization seems to
 **		be requested for the second time.
 **
@@ -363,7 +363,7 @@ void sym_unlink(s)				   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function*:	sym_gc()
-** Purpose:	This is the garbade collector. It analyzes the symbol
+** Purpose:	This is the garbage collector. It analyzes the symbol
 **		table and releases all |SymbolTab| nodes not needed
 **		any more.
 **

@@ -84,7 +84,7 @@ void add_word(s,wlp)				   /*			     */
 **		|0|. Otherwise |1| is returned. 
 ** Arguments:
 **	s	Word to remove.
-**	wlp	Pointer to the wordlist to modify.
+**	wlp	Pointer to the word list to modify.
 **	fct	Function to call to free the memory occupied by the word.
 ** Returns:	|0| if the word was not found. |1| otherwise.
 **___________________________________________________			     */
@@ -165,7 +165,7 @@ int foreach_word(wl,fct)			   /*                        */
 ** Arguments:
 **	s	String to find.
 **	wl	Word list to search in.
-** Returns:	|FALSE| iff the word does not occur in the wordlist.
+** Returns:	|FALSE| iff the word does not occur in the word list.
 **___________________________________________________			     */
 int find_word(s,wl)				   /*			     */
   register Uchar    *s;				   /*			     */

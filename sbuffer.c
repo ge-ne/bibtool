@@ -118,8 +118,8 @@ int sbputs(s,sb)				   /*                        */
 **		make a difference since the macros uses this function
 **		when needed.
 **
-**		When no memory is left then the character is discarted
-**		and this action is signalled via the return value.
+**		When no memory is left then the character is discarded
+**		and this action is signaled via the return value.
 ** Arguments:
 **	c	Character to put to the string buffer.
 **	sb	Destination string buffer.

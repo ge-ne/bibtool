@@ -108,7 +108,7 @@ static void save_ref(s)				   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	aux_used()
 ** Purpose:	Check whether a reference key has been requested by the
-**		previously read aux file. The request can either be expicit
+**		previously read aux file. The request can either be explicit
 **		or implicit if a * is used.
 ** Arguments:
 **	s	reference key to check
@@ -128,7 +128,7 @@ int aux_used(s)				   	   /*                        */
 **		original source file then those are read as well. Each
 **		citation found is remembered and can be queried
 **		afterwards. If a |\cite{*}| has been used then only a
-**		flag is set and all citation keys are discarted.
+**		flag is set and all citation keys are discarded.
 **
 **		The aux file contains also the information about the
 **		\BibTeX{} files used. For each such file the function
@@ -139,7 +139,7 @@ int aux_used(s)				   	   /*                        */
 **		This function has only a very simple parser for the
 **		aux file. Thus it can be confused by legal
 **		contents. But a similar thing can happen to \BibTeX{}
-**		aswell. 
+**		as well.
 ** Arguments:
 **	fname	The file name of the aux file.
 **	fct	A function to be called for each \BibTeX{} file requested.
