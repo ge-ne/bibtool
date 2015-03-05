@@ -57,7 +57,7 @@ __EOF__
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name  => 'print_line_length-10',
+BUnit::run(name  => 'print_line_length-10-1',
     args         => '--print.line.length=10',
     expected_err => '',
     bib		 => <<__EOF__,
@@ -74,7 +74,7 @@ __EOF__
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name  => 'print_line_length-10b',
+BUnit::run(name  => 'print_line_length-10-2',
     args         => '--print.line.length=10',
     expected_err => '',
     bib		 => <<__EOF__,
@@ -90,9 +90,8 @@ __EOF__
 }
 __EOF__
 
-
 #------------------------------------------------------------------------------
-BUnit::run(name  => 'print_line_length-10c',
+BUnit::run(name  => 'print_line_length-10-3',
     args         => '--print.line.length=10',
     expected_err => '',
     bib		 => <<__EOF__,
@@ -104,6 +103,28 @@ __EOF__
 
 \@Article{ key,
   title	  ={x
+	  aaaaaaaaa
+	  aaaaaaaaa}
+}
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name  => 'print_line_length-10-4',
+    args         => '--print.line.length=10',
+    expected_err => '',
+    bib		 => <<__EOF__,
+\@Article{key,
+  title = {x aaaaaaaaa aaaaaaaaa},
+  titlx = {x aaaaaaaaa aaaaaaaaa}
+}
+__EOF__
+    expected_out => <<__EOF__);
+
+\@Article{ key,
+  title	  ={x
+	  aaaaaaaaa
+	  aaaaaaaaa},
+  titlx	  ={x
 	  aaaaaaaaa
 	  aaaaaaaaa}
 }
