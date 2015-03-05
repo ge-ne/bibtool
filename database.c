@@ -142,7 +142,7 @@ int apply_modify(db,key,rec)	   		   /*                        */
   }						   /*			     */
   DebugPrint2("Modify ",*RecordHeap(rec));	   /*                        */
 						   /*			     */
-  for ( i = RecordFree(rec); i > 0; i-=2 )	   /*			     */
+  for ( i = RecordFree(rec); i > 0; i -= 2 )	   /*			     */
   {		   				   /* No deleted or          */
     if ( *hp && is_allowed(**hp) && *(hp+1) )	   /*   private entry        */
     { DebugPrint3(*hp," => ",*(hp+1));	   	   /*                        */
@@ -170,7 +170,7 @@ int apply_alias(db,key,rec,verbose)	   	   /*                        */
   Uchar * key;					   /*                        */
   Record rec;					   /*                        */
   int verbose;					   /*                        */
-{ Record r  = db_find(db,key);			   /*                        */
+{ Record r = db_find(db,key);			   /*                        */
   if (r == RecordNULL)				   /*                        */
   { WARNING2("Entry to alias not found: ",key);    /*                        */
     return 0;					   /*			     */
@@ -240,7 +240,8 @@ void db_insert(db,rec,verbose)		   	   /*                        */
     case BIB_ALIAS:				   /*                        */
       if (rsc_apply_alias)			   /*                        */
       {	DebugPrint2("Alias ",*RecordHeap(rec));	   /*                        */
-	apply_alias(db,*(RecordHeap(rec)+1), rec, verbose);/*                */
+	apply_alias(db, *(RecordHeap(rec)+1),	   /*                        */
+		    rec, verbose);		   /*                        */
 	free_record(rec);			   /*                        */
 	return;					   /*                        */
       } else {					   /*                        */
@@ -250,7 +251,8 @@ void db_insert(db,rec,verbose)		   	   /*                        */
       break;					   /*                        */
     default:	       				   /*                        */
       rp = &DBnormal(db);			   /*                        */
-      DebugPrint2("Inserting Entry ",*RecordHeap(rec));/*                    */
+      DebugPrint2("Inserting Entry ",		   /*                        */
+		  *RecordHeap(rec));		   /*                        */
       break;					   /*                        */
   }						   /*                        */
 						   /*                        */
@@ -307,7 +309,9 @@ int read_db(db,file,verbose)		   	   /*                        */
   }						   /*                        */
   DBnormal(db) = dbn;				   /*                        */
  						   /*                        */
-  while ( (type=parse_bib(master_record)) != BIB_EOF )/*		     */
+  for ( type = parse_bib(master_record);	   /*                        */
+	type != BIB_EOF;			   /*		             */
+	type = parse_bib(master_record))	   /*                        */
   {						   /*                        */
     if ( type < 0 )				   /* Errors give rise to    */
     { SkipWarning; }				   /*  a warning.	     */

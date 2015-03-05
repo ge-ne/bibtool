@@ -232,7 +232,7 @@ void init_symbols()				   /*			     */
 { register int i;				   /*			     */
 						   /*			     */
   if ( sym_empty != NULL ) return;		   /*                        */
-  for ( i=0; i<HASHMAX; i++ ) sym_tab[i] = NULL;   /*			     */
+  for ( i = 0; i < HASHMAX; i++ ) sym_tab[i] = NULL;/*			     */
   sym_empty    = sym_add((Uchar*)new_string(""),-1);/*                       */
   sym_crossref = sym_add((Uchar*)new_string("crossref"),-1); /*              */
 }						   /*------------------------*/
@@ -268,7 +268,8 @@ void sym_set_flag(s,flags)			   /*			     */
   register Uchar *s;				   /*			     */
   register int  flags;				   /*			     */
 { 						   /*                        */
-  if ( last_stp == NULL || SymbolName(last_stp) != s )/*                     */
+  if ( last_stp == NULL				   /*                        */
+       || SymbolName(last_stp) != s )		   /*                        */
   { s = sym_add(s,0); }				   /*                        */
   SymbolFlags(last_stp) |= flags;		   /*			     */
 }						   /*------------------------*/
@@ -310,7 +311,7 @@ Uchar * sym_add(s,count)			   /*			     */
         stp = &NextSymbol(*stp) )		   /*			     */
   {						   /*                        */
     if ( strcmp((char*)s,(char*)SymbolName(*stp)) == 0 )/*		     */
-    { if ( count>0 ) SymbolCount(*stp) += count;   /*			     */
+    { if ( count > 0 ) SymbolCount(*stp) += count; /*			     */
       last_stp = *stp;			   	   /*			     */
       if ( s != SymbolName(*stp) )		   /*                        */
       { SymbolUsed(*stp)++; }			   /*                        */
@@ -323,7 +324,7 @@ Uchar * sym_add(s,count)			   /*			     */
   last_stp = *stp;				   /*			     */
   SymbolUsed(*stp)++;				   /*                        */
   if ( count < 0 )				   /*                        */
-  { SymbolFlags(*stp) ^= SYMBOL_STATIC;
+  { SymbolFlags(*stp) ^= SYMBOL_STATIC;		   /*                        */
   }	   					   /*			     */
   return SymbolName(*stp);			   /*			     */
 }						   /*------------------------*/
@@ -380,22 +381,23 @@ void sym_gc()					   /*                        */
   						   /*                        */
   for ( i=0;i<HASHMAX;i++ )			   /*			     */
   {						   /*                        */
-    while (sym_tab[i] && SymbolUsed(sym_tab[i])<=0)
-    { st = sym_tab[i];
-      sym_tab[i] = NextSymbol(st);
-      if ( (SymbolFlags(st) & SYMBOL_STATIC) == 0 )
-      { free(SymbolName(st)); }
-      free(st);
-    }
-    st = sym_tab[i];
-    if ( st )
-    {
-      while ( (st2=NextSymbol(st)) != NULL &&
-	      SymbolUsed(st) <= 0 )
-      { NextSymbol(st) = NextSymbol(st2);
-        if ( (SymbolFlags(st2) & SYMBOL_STATIC) == 0 )
-	{ free(SymbolName(st2)); }
-	free(st2);
+    while (sym_tab[i] &&			   /*                        */
+	   SymbolUsed(sym_tab[i]) <= 0)		   /*                        */
+    { st = sym_tab[i];				   /*                        */
+      sym_tab[i] = NextSymbol(st);		   /*                        */
+      if ( (SymbolFlags(st) & SYMBOL_STATIC) == 0 )/*                        */
+      { free(SymbolName(st)); }			   /*                        */
+      free(st);					   /*                        */
+    }						   /*                        */
+    st = sym_tab[i];				   /*                        */
+    if ( st )					   /*                        */
+    {						   /*                        */
+      while ( (st2=NextSymbol(st)) != NULL &&	   /*                        */
+	      SymbolUsed(st) <= 0 )		   /*                        */
+      { NextSymbol(st) = NextSymbol(st2);	   /*                        */
+        if ( (SymbolFlags(st2) & SYMBOL_STATIC) == 0 )/*                     */
+	{ free(SymbolName(st2)); }		   /*                        */
+	free(st2);				   /*                        */
       }						   /*                        */
     }						   /*                        */
   }						   /*			     */
@@ -460,4 +462,3 @@ void sym_dump()					   /*			     */
 	     used);				   /*			     */
 }						   /*------------------------*/
 #endif
-

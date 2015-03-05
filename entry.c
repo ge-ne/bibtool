@@ -99,7 +99,7 @@ void init_entries()				   /*			     */
   def_entry_type((Uchar*)"MODIFY"  );		   /*			     */
   def_entry_type((Uchar*)"INCLUDE" );		   /*			     */
 #ifdef INITIALIZE_BIBTEX_ENTRIES
-  for ( wp=word_list; *wp!=NULL; ++wp )		   /* add compiled in types. */
+  for ( wp = word_list; *wp != NULL; ++wp )	   /* add compiled in types. */
   { def_entry_type((Uchar*)(*wp)); }		   /*			     */
 #endif
 }						   /*------------------------*/
@@ -120,7 +120,7 @@ void def_entry_type(s)				   /*			     */
   Uchar *s;				   	   /*			     */
 { int  i;				   	   /*                        */
  						   /*                        */
-  for (i=0; i<entry_ptr; ++i)			   /*			     */
+  for (i = 0; i < entry_ptr; ++i)		   /*			     */
   { 						   /*                        */
     if ( case_cmp(s,EntryName(i)) )		   /*			     */
     { free(EntryName(i));			   /*                        */
@@ -174,7 +174,7 @@ int find_entry_type(s)				   /*			     */
   Uchar *s;				   	   /*			     */
 { int i;				   	   /*			     */
 						   /*			     */
-  for (i=0; i<entry_ptr; ++i)			   /*			     */
+  for (i = 0; i < entry_ptr; ++i)		   /*			     */
   { if ( match(s,EntryName(i)) )		   /*			     */
     { return(i); }				   /*			     */
   }						   /*			     */
@@ -194,5 +194,7 @@ int find_entry_type(s)				   /*			     */
 Uchar * get_entry_type(idx)			   /*                        */
   int idx;				   	   /*                        */
 {						   /*                        */
-  return (idx<0||idx>=entry_ptr ? NULL : EntryName(idx));/*                  */
+  return (idx < 0 || idx >= entry_ptr		   /*                        */
+	  ? NULL				   /*                        */
+	  : EntryName(idx));			   /*                        */
 }						   /*------------------------*/

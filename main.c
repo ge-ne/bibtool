@@ -30,7 +30,7 @@
 **	\end{quote}
 **	The arguments and the expected behavior of these functions is
 **	described below.
-**g
+**
 **	If you are trying to understand the implementation of
 **	\BibTool{} the file |resource.h| plays a central
 **	r\^ole. Consult the description of this file for further
@@ -374,7 +374,7 @@ int keep_xref(db,rec)				   /*                        */
   { Uchar  *key;				   /*                        */
     int    count;				   /*                        */
  						   /*                        */
-    for ( count=rsc_xref_limit;		   	   /* Prevent infinite loop  */
+    for ( count = rsc_xref_limit;		   /* Prevent infinite loop  */
 	  count >= 0;		   	   	   /*                        */
 	  count-- )				   /*                        */
     {					   	   /*                        */
@@ -544,7 +544,7 @@ int main(argc,argv)				   /*			     */
     if ( (c=(int*)malloc(c_len*sizeof(int))) == NULL )/*                     */
     { rsc_cnt_all = rsc_cnt_used = 0; }		   /*                        */
     else					   /*                        */
-    { for (i = 0;i < c_len; i++) c[i] = cnt[i];	   /*                        */
+    { for (i = 0; i < c_len; i++) c[i] = cnt[i];   /*                        */
     }						   /*                        */
   }						   /*                        */
 						   /*			     */
@@ -597,8 +597,6 @@ int main(argc,argv)				   /*			     */
   if ( rsc_double_check	)		   	   /* Maybe look for doubles */
   { db_forall(the_db,dbl_check); }		   /*                        */
  						   /*                        */
-  DebugPrint1("out");
-
   if ( output_file == NULL ||			   /*                        */
        (file=fopen(output_file,"w")) == NULL )	   /*                        */
   { file = stdout; }				   /*                        */
@@ -793,9 +791,9 @@ static int update_crossref(db,rec)		   /*			     */
 						   /*			     */
   if ( !RecordIsXREF(rec) ) return 0;		   /*			     */
 						   /*                        */
-  for ( i=RecordFree(rec), hp = RecordHeap(rec);   /* search crossref field  */
-	i>0 && *hp != sym_crossref;		   /*			     */
-	i-=2, hp += 2 )			   	   /*			     */
+  for ( i = RecordFree(rec), hp = RecordHeap(rec); /* search crossref field  */
+	i > 0 && *hp != sym_crossref;		   /*			     */
+	i -= 2, hp += 2 )			   /*			     */
   { }						   /*			     */
   if ( i <= 0 )					   /*			     */
   { DebugPrint1("*** No crossref found.");	   /*			     */
@@ -861,7 +859,6 @@ static int dbl_check(db,rec)			   /*                        */
  						   /*                        */
   return 0;					   /*                        */
 }						   /*------------------------*/
-
 
 #ifdef DEBUG
 /*-----------------------------------------------------------------------------

@@ -92,7 +92,7 @@
 #define KEYSTYLE_LONG		0x0030
 #define KEYSTYLE_EXTENDED	0x0040
 
- static char	*percent_chars = "NntTdDsSwWp";	   /*                        */
+ static char *percent_chars = "NntTdDsSwWp";	   /*                        */
 
 #define DetexNone  0
 #define DetexLower 1
@@ -326,6 +326,7 @@ void set_base(value)				   /*			     */
 }						   /*------------------------*/
 
 #define ITOA_LEN 64
+
 /*-----------------------------------------------------------------------------
 ** Function:	itostr()
 ** Purpose:	Translate number using the ``digits'' given.
@@ -436,7 +437,7 @@ static void key_init()				   /*			     */
     if ( (key_sb=sbopen()) == (StringBuffer*)0 )   /* open string buffer     */
     { OUT_OF_MEMORY("key generation."); }	   /*			     */
 #ifdef INITIALIZE_IGNORED_WORDS
-    for ( wp=word_list; *wp!=NULL; ++wp )	   /* add ignored words.     */
+    for ( wp = word_list; *wp != NULL; ++wp )	   /* add ignored words.     */
     { add_ignored_word((Uchar*)*wp); }		   /*			     */
 #endif
   }						   /*			     */
@@ -502,7 +503,7 @@ static int deTeX(line,save_fct,flags)		   /*			     */
   wp    = 0;					   /*                        */
   SaveWord;					   /*			     */
 						   /*			     */
-  while ( TeX_read(&c,&s) )			   /*			     */
+  while ( TeX_read(&c, &s) )			   /*			     */
   {						   /*			     */
     if (   is_alpha(c)				   /* Letters and	     */
 	|| is_digit(c)				   /* digits and	     */
@@ -652,7 +653,7 @@ int foreach_ignored_word(fct)			   /*                        */
  						   /*                        */
   key_init();					   /*                        */
  						   /*                        */
-  for (i=0;i<32;i++)				   /*                        */
+  for (i = 0; i < 32; i++)			   /*                        */
   { if ( !foreach_word(ignored_words[i],fct))	   /*                        */
     { return 0; }				   /*                        */
   }						   /*                        */
@@ -897,7 +898,8 @@ static int fmt_c_names(line,min,max,not)	   /*		             */
   words[wp] = NULL;				   /*                        */
  						   /*                        */
   for ( i = 0, n = 1; i < wp; i++)		   /*			     */
-  { if ( strcmp((char*)words[i],"and") == 0 ) { n++; }/*                     */
+  { if ( strcmp((char*)words[i],"and") == 0 )	   /*                        */
+    { n++; }					   /*                        */
   }						   /*                        */
  						   /*                        */
   if ( n < min || (max > 0 && n > max))		   /*                        */
@@ -1572,7 +1574,7 @@ static int fmt__parse(sp,knp)			   /*			     */
 	}					   /*			     */
     }						   /*			     */
   }						   /*			     */
-  DebugPrintF1("<-fmt");
+  DebugPrintF1("<-fmt");			   /*                        */
   return -1;					   /* Signal end-of-string.  */
 }						   /*------------------------*/
 
@@ -1631,8 +1633,8 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 #ifdef DEBUG
 	DebugPrint3("IF_THEN_ELSE (",NodeSymbol(kn),")");/*		     */
 	IfGetField(s,NodeSymbol(kn))		   /*			     */
-	  DebugPrint1("Field found. Continuing with THEN part");
-	else DebugPrint1("Field NOT found. Continuing with ELSE part");
+	  DebugPrint1("Field found. Continuing with THEN part");/*           */
+	else DebugPrint1("Field NOT found. Continuing with ELSE part");/*    */
 #endif
 	IfGetField(s,NodeSymbol(kn))		   /*			     */
 	{ (void)eval__fmt(sb,NodeThen(kn),rec); }  /*			     */
@@ -1851,7 +1853,7 @@ static void eval__special(sb,kn,rec)		   /*			     */
   }						   /*			     */
 						   /*			     */
   if ( formatp ) init_key(3);			   /*                        */
-  fmt = ( NodePre(kn)==KEYSTYLE_LONG ? 1 : 0 );    /*                        */
+  fmt = ( NodePre(kn) == KEYSTYLE_LONG ? 1 : 0 );  /*                        */
   NameStrip(format[fmt]) = NodePost(kn);	   /*                        */
     					   	   /*			     */
   IfGetField(s,s_author)			   /*			     */
@@ -2350,7 +2352,7 @@ int set_field(db,rec,name,value)		   /*			     */
   value = symbol(value);			   /*                        */
 				   		   /*                        */
   if ( *name == '@' )				   /*			     */
-  {
+  {						   /*                        */
   }						   /*			     */
   else if ( *name == '$' )			   /*			     */
   { ++name;					   /*			     */

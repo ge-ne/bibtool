@@ -211,7 +211,7 @@ void dump_mac(fname,allp)			   /*                        */
     return;					   /*                        */
   }					   	   /*                        */
  						   /*                        */
-  for ( mac=macros; 				   /*                        */
+  for ( mac = macros; 				   /*                        */
 	mac != MacroNULL; 			   /*                        */
 	mac = NextMacro(mac) )			   /*                        */
   { if ( MacroCount(mac) > 0  ||		   /*                        */
@@ -317,7 +317,7 @@ void def_field_type(s)				   /*                        */
   *s  = c;					   /*                        */
  						   /*                        */
   { Uchar * cp;				   	   /*                        */
-    for ( cp=val; *cp; ++cp ) *cp = ToLower(*cp);  /*                        */
+    for ( cp = val; *cp; ++cp ) *cp = ToLower(*cp);/*                        */
   }						   /*                        */
  						   /*                        */
   name = symbol(val);				   /*                        */

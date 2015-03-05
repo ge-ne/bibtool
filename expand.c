@@ -211,7 +211,8 @@ static int expand(s,sb,brace,first,q_open,q_close,db)/*                      */
           DebugPrint2("Start symbol: ",s);	   /*                        */
 	  while ( is_allowed(*s) ) ++s;		   /*                        */
 	  c = *s; *s = '\0';			   /*                        */
-	  { Uchar *sym_copy = (Uchar*)malloc(strlen((char*)sym)+1);/*Copy of sym*/
+	  { Uchar *sym_copy =			   /*                        */
+	      (Uchar*)malloc(strlen((char*)sym)+1);/* Copy of sym            */
 	    if (sym_copy == (Uchar*)NULL )	   /* Allocate memory        */
 	    { OUT_OF_MEMORY("expand string"); }	   /* Upon failure exit.     */
 	    (void)strcpy((char*)sym_copy,(char*)sym);/* Save sym             */

@@ -83,7 +83,7 @@ void init_bibtool(progname)			   /*                        */
 #ifdef HAVE_LIBKPATHSEA2
   kpse_set_progname(progname);			   /*                        */
 #else
-  kpse_set_program_name(progname,"bibtool");	   /*                        */
+  kpse_set_program_name(progname, "bibtool");	   /*                        */
 #endif
 #endif
 						   /*			     */

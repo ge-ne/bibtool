@@ -153,9 +153,9 @@ static void init___(pathp,pattern,envvp,env)	   /*			     */
   }						   /*			     */
 						   /*			     */
   if ( *rsc_dir_file_sep != '/' )		   /*			     */
-  { for ( cpp=pattern; *cpp; ++cpp )		   /*			     */
+  { for ( cpp = pattern; *cpp; ++cpp )		   /*			     */
     { *cpp = new_string(*cpp);			   /*                        */
-      for (cp= *cpp; *cp; ++cp )		   /*			     */
+      for (cp = *cpp; *cp; ++cp )		   /*			     */
       { if ( *cp == '/' ) *cp = *rsc_dir_file_sep; /*			     */
       }						   /*			     */
     }						   /*			     */
@@ -415,21 +415,21 @@ static int skip_nl()				   /*			     */
   { if ( EmptyC && fill_line() )   return EOF;	   /*			     */
     else if ( is_space(CurrentC) )		   /*			     */
     {						   /*                        */
-      for ( c=skip_c();				   /*                        */
+      for ( c = skip_c();			   /*                        */
 	    c != EOF && is_space(c) && c != '\n';  /*                        */
-	    c=skip_c() ) {}			   /*                        */
+	    c = skip_c() ) {}			   /*                        */
       if ( c == EOF  ) return EOF;		   /*                        */
       if ( c != '\n' ) { UnGetC; return ' '; }	   /*                        */
  						   /*                        */
-      for ( c=skip_c();				   /*                        */
+      for ( c = skip_c();			   /*                        */
 	    c != EOF && is_space(c) && c != '\n';  /*                        */
-	    c=skip_c() ) {}			   /*                        */
+	    c = skip_c() ) {}			   /*                        */
       if ( c == EOF  ) return EOF;		   /*                        */
       if ( c != '\n' ) { UnGetC; return ' '; }	   /*                        */
  						   /*                        */
-      for ( c=skip_c();				   /*                        */
+      for ( c = skip_c();			   /*                        */
 	    c != EOF && is_space(c);		   /*                        */
-	    c=skip_c() ) {}			   /*                        */
+	    c = skip_c() ) {}			   /*                        */
       if ( c == EOF  ) return EOF;		   /*                        */
       UnGetC;					   /*                        */
       state = TRUE;				   /*                        */
@@ -480,7 +480,7 @@ static int parse_key(alpha)			   /*			     */
   register Uchar *cp;			   	   /*			     */
 						   /*			     */
   c  = GetC;					   /*                        */
-  cp = flp-1;			   		   /*			     */
+  cp = flp - 1;			   		   /*			     */
   if ( alpha && (! is_alpha(c)) )		   /*			     */
   { Error("Key does not start with a letter");	   /*                        */
     return(FALSE);				   /*                        */
@@ -822,7 +822,7 @@ int parse_bib(rec)				   /*			     */
 	  case '}':				   /*                        */
 	  case ')': om = FALSE; break;		   /*                        */
 	  default:  om = TRUE;			   /*                        */
-	    if ( n==0 )			   	   /*			     */
+	    if ( n == 0 )			   /*			     */
 	    { Warning("Missing ',' assumed."); }   /*			     */
 	}					   /*                        */
       } while ( om );				   /*			     */
@@ -988,7 +988,6 @@ int read_rsc(name)				   /*			     */
   Uchar	        *name;				   /*			     */
 { int	        c;				   /*			     */
   Uchar	        *token;				   /*			     */
- 						   /*                        */
   char		*s_filename;			   /*			     */
   FILE		*s_file;			   /*                        */
   Uchar		*s_file_line_buffer;		   /*                        */

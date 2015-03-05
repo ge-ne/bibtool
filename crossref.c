@@ -61,9 +61,9 @@ int expand_crossref(db,rec)		   	   /*                        */
  						   /*                        */
   while	( RecordIsXREF(r) && limit-->=0 )	   /*                        */
   {						   /*                        */
-    for ( i=RecordFree(r), hp = RecordHeap(r); 	   /* search crossref field  */
-	  i>0 && *hp != sym_crossref;		   /*			     */
-	  i-=2, hp += 2 )			   /*			     */
+    for ( i = RecordFree(r), hp = RecordHeap(r);   /* search crossref field  */
+	  i > 0 && *hp != sym_crossref;		   /*			     */
+	  i -= 2, hp += 2 )			   /*			     */
     { }						   /*			     */
     if ( i <= 0 )				   /*			     */
     { DebugPrint1("*** No crossref found.");	   /*			     */
@@ -81,9 +81,9 @@ int expand_crossref(db,rec)		   	   /*                        */
       return FALSE;				   /*			     */
     }						   /*			     */
     						   /*                        */
-    for ( i=RecordFree(r), hp = RecordHeap(r);	   /* visit all fields       */
-	  i>0;		   			   /*			     */
-	  i-=2 )			   	   /*			     */
+    for ( i = RecordFree(r), hp = RecordHeap(r);   /* visit all fields       */
+	  i > 0;				   /*			     */
+	  i -= 2 )			   	   /*			     */
     {						   /*                        */
       s	= *hp++;                                   /*                        */
       t	= *hp++;                                   /*                        */

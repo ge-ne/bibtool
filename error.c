@@ -128,7 +128,7 @@ void error(type,s1,s2,s3,line,err_pos,line_no,fname)/*			     */
   int	  line_no;		   	   	   /* line number	     */
   char	  *fname;		   	   	   /* file name		     */
 {						   /*			     */
-  if ( (type&ERR_ERROR)==0 && rsc_quiet ) return;  /* anything less than an  */
+  if ( (type&ERR_ERROR) == 0 && rsc_quiet ) return;/* anything less than an  */
 						   /*  error is ignored.     */
   ErrNL;					   /*			     */
   if ( (type&ERR_POINT) && line != NULL )	   /*			     */
