@@ -146,9 +146,9 @@ static void puts_in(s,in,fct)			   /*			     */
 	break;					   /*	                     */
       case '\n':				   /*                        */
 	column = 0;			   	   /*                        */
-        if ( in > 0 ) indent(in,fct);		   /*                        */
+        if ( in > 0 ) indent(in, fct);		   /*                        */
         break;  				   /*			     */
-      default:	 ++column;			   /*			     */
+      default: ++column;			   /*			     */
     }						   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
@@ -194,7 +194,7 @@ static void indent(col,fct)			   /*			     */
 **	fct	function to use for writing a character.
 ** Returns:	nothing
 **___________________________________________________			     */
-static void line_breaking(t,align,fct)		   /*			     */
+static void line_breaking(t, align, fct)	   /*			     */
   register Uchar *t;				   /* string to print.	     */
   int		 align;				   /* alignment column	     */
   int            (*fct)_ARG((int));		   /*                        */
@@ -206,7 +206,7 @@ static void line_breaking(t,align,fct)		   /*			     */
 						   /*			     */
   while ( is_space(*t) ) ++t;			   /* skip leading spaces    */
 						   /*			     */
-  indent(align,fct);				   /* goto alignment column  */
+  indent(align, fct);				   /* goto alignment column  */
 						   /*			     */
   while ( *t )					   /* as long as sth to print*/
   { s = t;					   /*			     */
@@ -240,7 +240,7 @@ static void line_breaking(t,align,fct)		   /*			     */
       default:					   /* Now we should have a   */
 	while ( is_allowed(*t) ) ++t;		   /*	SYMBOL		     */
 	end_c = *t; *t = '\0';			   /*			     */
-	s = get_item(symbol(s),symbol_type);	   /*			     */
+	s = get_item(symbol(s), symbol_type);	   /*			     */
 	len = strlen((char*)s);			   /*			     */
     }						   /*			     */
 						   /* Now s is a single	     */
@@ -294,10 +294,10 @@ static void line_breaking(t,align,fct)		   /*			     */
 	  len += s - save_ptr;			   /* Update the length	     */
 	  save_c = *save_ptr; *save_ptr = '\0';	   /* Save and mark end.     */
 	  puts_in(s, align, fct);		   /*                        */
-	  if (save_c != 0)
+	  if (save_c != 0)			   /*                        */
 	  { NL;					   /*                        */
 	    indent(align, fct);	   		   /*			     */
-	  }
+	  }					   /*                        */
 	  *save_ptr = save_c;			   /* Restore end	     */
 	  s = save_ptr;	   			   /*			     */
 	  while ( is_space(*s) ) { s++; len--; }   /* Skip spaces	     */
@@ -326,7 +326,7 @@ static void line_breaking(t,align,fct)		   /*			     */
 **	fct	function to use for writing a character.
 ** Returns:	nothing
 **___________________________________________________'			     */
-static void print_equation(pre,s,t,align,fct)	   /*			     */
+static void print_equation(pre, s, t, align, fct)  /*			     */
   Uchar *pre;					   /*                        */
   Uchar *s;				   	   /*			     */
   Uchar *t;				   	   /*			     */
@@ -370,7 +370,7 @@ static void print_equation(pre,s,t,align,fct)	   /*			     */
 **___________________________________________________			     */
 static int fput_char(c)				   /*                        */
   int c;					   /*                        */
-{ return fputc(c,ofile);			   /*                        */
+{ return fputc(c, ofile);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -384,14 +384,14 @@ static int fput_char(c)				   /*                        */
 **	start	Initial string used before the type. Should be "@" normally.
 ** Returns:	nothing
 **___________________________________________________			     */
-void fput_record(file,rec,db,start)	   	   /*			     */
+void fput_record(file, rec, db, start)	   	   /*			     */
   FILE	 *file;			   		   /*                        */
   DB	 db;			   		   /*                        */
   Record rec;			   		   /* record to print	     */
   Uchar	 *start;		   	   	   /* initial string = "@"   */
 {						   /*                        */
   ofile = file;					   /*                        */
-  put_record(fput_char,rec,db,start);		   /*                        */
+  put_record(fput_char, rec, db, start);	   /*                        */
 }						   /*------------------------*/
 
  static StringBuffer *osb = NULL;
@@ -406,7 +406,7 @@ void fput_record(file,rec,db,start)	   	   /*			     */
 **___________________________________________________			     */
 static int sput_char(c)				   /*                        */
   int c;					   /*                        */
-{ return sbputchar(c,osb);			   /*                        */
+{ return sbputchar(c, osb);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -421,14 +421,14 @@ static int sput_char(c)				   /*                        */
 **	start	Initial string used before the type. Should be "@" normally.
 ** Returns:	The string containing the printed representation.
 **___________________________________________________			     */
-char * sput_record(rec,db,start)	   	   /*			     */
+char * sput_record(rec, db, start)	   	   /*			     */
   DB	 db;			   		   /*                        */
   Record rec;			   		   /* record to print	     */
   Uchar	 *start;		   	   	   /* initial string = "@"   */
 {						   /*                        */
   if ( osb == NULL ) osb = sbopen();		   /*                        */
   sbrewind(osb);				   /*                        */
-  put_record(sput_char,rec,db,start);		   /*                        */
+  put_record(sput_char, rec, db, start);	   /*                        */
   return sbflush(osb);				   /*                        */
 }						   /*------------------------*/
 
@@ -484,7 +484,7 @@ char * sput_record(rec,db,start)	   	   /*			     */
 **	start	Initial string used before the type. Should be "@" normally.
 ** Returns:	nothing
 **___________________________________________________			     */
-void put_record(fct,rec,db,start)		   /*                        */
+void put_record(fct, rec, db, start)		   /*                        */
   int	       (*fct)_ARG((int));		   /*                        */
   Record       rec;				   /*                        */
   DB	       db;				   /*                        */
@@ -517,7 +517,7 @@ void put_record(fct,rec,db,start)		   /*                        */
   switch ( RecordType(rec) )			   /*			     */
   { case BIB_COMMENT:				   /*			     */
 #ifdef OLD
-      indent(rsc_col_c,fct);			   /*			     */
+      indent(rsc_col_c, fct);			   /*			     */
       PUTS(*hp);				   /*			     */
       PUTC(' ');				   /*                        */
       NL;				   	   /*			     */
@@ -528,7 +528,7 @@ void put_record(fct,rec,db,start)		   /*                        */
       PUTS(EntryName(RecordType(rec)));	   	   /*			     */
       PUTC(open_brace);				   /*			     */
       indent(rsc_col_p,fct);			   /*			     */
-      line_breaking(*hp,rsc_col_p,fct);		   /*			     */
+      line_breaking(*hp, rsc_col_p, fct);	   /*			     */
       PUTC(' ');				   /*                        */
       PUTC(close_brace);			   /*                        */
       NL;				   	   /*			     */
@@ -537,7 +537,8 @@ void put_record(fct,rec,db,start)		   /*                        */
       PUTS(start);				   /*			     */
       PUTS(EntryName(RecordType(rec)));	   	   /*			     */
       PUTC(open_brace);				   /*			     */
-      print_equation(sym_empty,*hp,*(hp+1),rsc_col_s,fct);/*		     */
+      print_equation(sym_empty,			   /*                        */
+		     *hp, *(hp+1), rsc_col_s, fct);/*		             */
       PUTC(' ');				   /*                        */
       PUTC(close_brace);			   /*                        */
       NL;				   	   /*			     */
@@ -546,7 +547,8 @@ void put_record(fct,rec,db,start)		   /*                        */
       PUTS(start);				   /*			     */
       PUTS(EntryName(RecordType(rec)));	   	   /*			     */
       PUTC(open_brace);				   /*			     */
-      print_equation(sym_empty,*hp,*(hp+1),rsc_col_s,fct);/*		     */
+      print_equation(sym_empty,			   /*                        */
+		     *hp, *(hp+1), rsc_col_s, fct);/*		             */
       PUTC(' ');				   /*                        */
       PUTC(close_brace);			   /*                        */
       NL;				   	   /*			     */
@@ -591,7 +593,7 @@ void put_record(fct,rec,db,start)		   /*                        */
 			     fct);		   /*                        */
 	    }					   /*			     */
 	    else				   /* Otherwise print a key  */
-	    { indent(rsc_col_key,fct);		   /*			     */
+	    { indent(rsc_col_key, fct);		   /*			     */
 	      PUTS(get_key_name(*hp));      	   /*			     */
 	    }					   /*			     */
 	  }					   /*			     */
@@ -601,6 +603,6 @@ void put_record(fct,rec,db,start)		   /*                        */
       if (rsc_print_tc) { PUTC(','); }		   /*                        */
       NL;					   /*                        */
       PUTC(close_brace);	   	   	   /*                        */
-      for ( i=rsc_newlines; i>0; --i ) { NL; }	   /*                        */
+      for ( i = rsc_newlines; i > 0; --i ) { NL; } /*                        */
   }						   /*			     */
 }						   /*------------------------*/
