@@ -22,7 +22,7 @@
 **		numbers.  In addition a post-fix like |alpha| or a
 **		patch level like |p1| can be present.
 **___________________________________________________			     */
- char * bibtool_version = "2.59";		   /*                        */
+ char * bibtool_version = "2.60alpha";		   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	show_version()
