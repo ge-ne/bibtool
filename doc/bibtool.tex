@@ -665,6 +665,16 @@ crossref fields to the beginning.
 
 
 %------------------------------------------------------------------------------
+\subsection{\BibTool\ for Bib\LaTeX}
+
+\BibTool contais the definitions to cope with \BibTeX\ files prepared for
+Bib\LaTeX. These definitions are contained in the library \file{biblatex.rsc}.
+It can be easily included on the command line:
+
+\sh[r]{biblatex \texttt{-i} in.bib \texttt{-o} out.bib}
+
+
+%------------------------------------------------------------------------------
 \section{Interfacing \BibTool{} with Other Programming Languages}
 
 \BibTool{} can be used as a means for other programming languages to access
@@ -3925,7 +3935,7 @@ a look at the contents of this file.
 \chapter{Sample Resource Files}\label{chap:resource.files}
 
 Sample resource files are included in the distribution of \BibTool{} in the
-directory \file{Lib}. Only some of them are reproduced in this section.
+directory \file{lib}. Only some of them are reproduced in this section.
 
 \section{The Default Settings}
 
@@ -4002,6 +4012,7 @@ print.deleted.entries    = on
 print.entry.types        = "pisnmac"
 print.equal.right        = on
 print.indent             = 2
+print.leading.comma      = off
 print.line.length        = 77
 print.newline            = 1
 print.parentheses        = off
