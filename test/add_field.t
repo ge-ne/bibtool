@@ -49,7 +49,7 @@ BUnit::run(name => 'add_field_1',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2011,
+  year		= 2015,
   xyzzy		= {abc}
 }
 __EOF__
@@ -64,7 +64,7 @@ BUnit::run(name => 'add_field_2',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2011,
+  year		= 2015,
   xyzzy		= {abc}
 }
 __EOF__
@@ -79,7 +79,7 @@ BUnit::run(name => 'add_field_3',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2011,
+  year		= 2015,
   xyzzy		= {abc}
 }
 __EOF__

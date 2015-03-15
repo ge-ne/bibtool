@@ -47,7 +47,7 @@ BUnit::run(name         => 'suppress_initial_newline_1',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2011
+  year		= 2015
 }
 __EOF__
     expected_err => ''

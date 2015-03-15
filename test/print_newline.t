@@ -47,12 +47,12 @@ BUnit::run(name         => 'print_newline_1',
 	   "\@Manual{	  bibtool,\n".
 	   "  title		= {BibTool},\n".
 	   "  author	= {Gerd Neugebauer},\n".
-	   "  year		= 2011\n".
+	   "  year		= 2015\n".
 	   "}\n".
 	   "\@Manual{	  bibtool,\n".
 	   "  title		= {BibTool},\n".
 	   "  author	= {Gerd Neugebauer},\n".
-	   "  year		= 2011\n".
+	   "  year		= 2015\n".
 	   "}",
     expected_err => ''
     );
@@ -65,13 +65,13 @@ BUnit::run(name         => 'print_newline_2',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2011
+  year		= 2015
 }
 
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2011
+  year		= 2015
 }
 __EOF__
     expected_err => ''
@@ -85,14 +85,14 @@ BUnit::run(name         => 'print_newline_3',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2011
+  year		= 2015
 }
 
 
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2011
+  year		= 2015
 }
 
 __EOF__
