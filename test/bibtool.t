@@ -60,7 +60,6 @@ __EOF__
 	   expected_err	=> ""
     );
 
-
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'bibtool_2',
 	   bib		=> <<__EOF__,
@@ -79,6 +78,81 @@ __EOF__
 }
 __EOF__
 	   expected_err	=> ""
+    );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'bibtool_special_underscore',
+	   bib		=> <<__EOF__,
+\@Manual{BibTool,
+  _title = 	 {BibTool},
+  author =	 "Gerd Neugebauer",
+  year =	 "x"
+}
+__EOF__
+	   expected_out	=> <<__EOF__,
+
+\@Manual{	  bibtool,
+  _title	= {BibTool},
+  author	= "Gerd Neugebauer",
+  year		= "x"
+}
+__EOF__
+	   expected_err	=> <<__EOF__
+
+  _title = 	 {BibTool},
+___^
+*** BibTool WARNING:  (line 2 in ./_test.bib): Symbol does not start with a letter
+__EOF__
+    );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'bibtool_special_dollar',
+	   bib		=> <<__EOF__,
+\@Manual{BibTool,
+  \$title = 	 {BibTool},
+  author =	 "Gerd Neugebauer",
+  year =	 "x"
+}
+__EOF__
+	   expected_out	=> <<__EOF__,
+
+\@Manual{	  bibtool,
+  \$title	= {BibTool},
+  author	= "Gerd Neugebauer",
+  year		= "x"
+}
+__EOF__
+	   expected_err	=> <<__EOF__
+
+  \$title = 	 {BibTool},
+___^
+*** BibTool WARNING:  (line 2 in ./_test.bib): Symbol does not start with a letter
+__EOF__
+    );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'bibtool_special_exclamation',
+	   bib		=> <<__EOF__,
+\@Manual{BibTool,
+  !title = 	 {BibTool},
+  author =	 "Gerd Neugebauer",
+  year =	 "x"
+}
+__EOF__
+	   expected_out	=> <<__EOF__,
+
+\@Manual{	  bibtool,
+  !title	= {BibTool},
+  author	= "Gerd Neugebauer",
+  year		= "x"
+}
+__EOF__
+	   expected_err	=> <<__EOF__
+
+  !title = 	 {BibTool},
+___^
+*** BibTool WARNING:  (line 2 in ./_test.bib): Symbol does not start with a letter
+__EOF__
     );
 
 #------------------------------------------------------------------------------

@@ -455,8 +455,7 @@ static int parse_symbol(alpha)			   /*			     */
   c = GetC;					   /*                        */
   cp = flp-1;			   	   	   /*			     */
   if ( alpha && (! is_alpha(c)) )		   /*			     */
-  { Error("Symbol does not start with a letter");  /*                        */
-    return FALSE;				   /*                        */
+  { Warning("Symbol does not start with a letter");/*                        */
   }		   				   /*			     */
   while ( is_allowed(CurrentC) ) { SkipC; }	   /*			     */
   c = CurrentC;					   /*                        */
