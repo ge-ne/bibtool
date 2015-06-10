@@ -390,7 +390,6 @@ DOCFILES      = doc$(DIR_SEP)bibtool.1		\
 		doc$(DIR_SEP)bibtool.bib	\
 		doc$(DIR_SEP)bibtool.ist	\
 		doc$(DIR_SEP)bibtool-doc.sty	\
-		doc$(DIR_SEP)bibtool.tex	\
 		doc$(DIR_SEP)ref_card.tex	\
 		doc$(DIR_SEP)Makefile		\
 		doc$(DIR_SEP)config.tex		\
