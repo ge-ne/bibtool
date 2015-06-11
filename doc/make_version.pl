@@ -7,7 +7,7 @@
 
 =head1 NAME
 
-make_version.pl - ...
+make_version.pl - Create the content for config.tex
 
 =head1 SYNOPSIS
 
@@ -23,14 +23,6 @@ make_version.pl [-h|-help]
 
 Gerd Neugebauer
 
-=head1 BUGS
-
-=over 4
-
-=item *
-
-...
-
 =back
 
 =cut
@@ -39,9 +31,9 @@ use strict;
 
 #------------------------------------------------------------------------------
 # Function:	usage
-# Arguments:	
-# Returns:	
-# Description:	
+# Arguments:	none
+# Returns:	    nothing
+# Description:	Print the POD of this file to stderr.
 #
 sub usage
 { use Pod::Text;
@@ -50,7 +42,7 @@ sub usage
 
 #------------------------------------------------------------------------------
 # Variable:	$verbose
-# Description:	
+# Description:	Indicator for verbosity
 #
 my $verbose = 0;
 
@@ -60,8 +52,8 @@ GetOptions("h|help"	=> \&usage,
 	  );
 
 my $version = undef;
-@_ 	    = localtime;
-my $year    = 1900 + $_[5];
+@_ 	     = localtime;
+my $year = 1900 + $_[5];
 
 while(<>) {
   $version = $1 if m/bibtool_version *= *"([0-9.]*)/;
