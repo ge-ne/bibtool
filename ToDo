@@ -21,6 +21,16 @@ items will disappear at some time.
 
 General ideas:
 
+    *   Use Unicode UTF8 as  internal character set. This  goes beyond
+	BibTeX and brings in a new quality.
+	
+	This  requires  that reading  and  writing  are  aware of  the
+	character encoding. Additionally the regex processing needs to
+	be replaced by something which is Unicode-aware.
+	
+	ICU seems to be  the way to go. But it appears  to be a pretty
+	large beast.
+
     *   Make a C library of routines for manipulating BibTeX files.
 	(partially done. The main emphasis went into the documentation.
 	 Additional cleaning needed)
@@ -35,9 +45,6 @@ General ideas:
 	Maybe this is the time to completely redesign the resource
 	language. I think I will make a major revision or a seperate
 	program/library for this.
-
-    *	Use Unicode UTF8 as character set. This goes beyond BibTeX and
-	brings in a new quality.
 
 Special ideas:
 
