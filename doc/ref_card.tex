@@ -18,6 +18,8 @@
 \usepackage[landscape]{geometry}
 \usepackage[colorlinks=true,
             linkcolor=blue,
+            urlcolor=blue,
+            filecolor=blue,
             citecolor=blue]{hyperref}
 \input{config.tex}
 
@@ -53,7 +55,8 @@
 \newcommand\Section[1]{\begin{center}\normalsize\bf
     #1\end{center}\nobreak }
 \newcommand\Lib[1]{{\tt #1}}
-\newcommand\mailto[1]{{\tt #1}}
+\newcommand\mailto[1]{\href{mailto:#1}{\tt #1}}
+\newcommand\link[1]{\href{#1}{\tt #1}}
 \newcommand\NewPage{\end{multicols}
  \vfill\vfill\vfill
  \begin{center}\rule{.8\textwidth}{.1pt}\end{center}
@@ -68,7 +71,7 @@
   \Large \BibTool{} Quick Reference Card
   \\[.5ex]
   \scriptsize for \BibTool{} version \Version{}
-  --- see also \tt http://www.gerd.neugebauer.de/software/TeX/BibTool/
+  --- see also \link{http://www.gerd.neugebauer.de/software/TeX/BibTool/}
   \\
   \copyright\Year{} Gerd Neugebauer (\mailto{gene@gerd-neugebauer.de})
   \\
@@ -327,7 +330,9 @@
   \end{FlatList} 
 \end{multicols}
 \vfill\vfill\vfill
-\begin{center}\rule{.8\textwidth}{.1pt}\end{center}
+\begin{center}\rule{.8\textwidth}{.1pt}\\
+Source repository and issue tracker at \link{https://github.com/ge-ne/bibtool}
+\end{center}
 \end{document} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 % Local Variables:
