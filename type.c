@@ -65,9 +65,9 @@ void init_type()				   /*                        */
 ** Function:	add_word_sep()
 ** Type:	void
 ** Purpose:	
-**		
+**		Mark some characters as word separator.
 ** Arguments:
-**	s	
+**	s	the allowed word separator characters
 ** Returns:	nothing
 **___________________________________________________			     */
 void add_word_sep(s)				   /*                        */
