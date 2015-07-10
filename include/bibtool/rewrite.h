@@ -26,5 +26,6 @@
  void add_rewrite_rule _ARG((Uchar *s));
  void clear_addlist _ARG((void));
  void remove_field _ARG((Uchar *field,Record rec));
+ void rename_field _ARG((Uchar *spec));
  void rewrite_record _ARG((DB db,Record rec));
  void save_regex _ARG((Uchar *s));

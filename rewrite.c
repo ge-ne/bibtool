@@ -28,6 +28,7 @@
  typedef struct rULE
  { Uchar		    *rr_field;
    Uchar		    *rr_goal;
+   Uchar		    *rr_value;
    Uchar		    *rr_frame;
    int			    rr_flag;
    struct rULE		    *rr_next;
@@ -40,6 +41,7 @@
 
 #define RuleField(X)	((X)->rr_field)
 #define RuleGoal(X)	((X)->rr_goal)
+#define RuleValue(X)	((X)->rr_value)
 #define RulePattern(X)	((X)->rr_pat_buff)
 #define RuleFrame(X)	((X)->rr_frame)
 #define NextRule(X)	((X)->rr_next)
@@ -49,6 +51,8 @@
 #define RULE_ADD	0x01
 #define RULE_REGEXP	0x02
 #define RULE_NOT	0x04
+#define RULE_RENAME	0x08
+#define RULE_DELETE	0x016
 
 /*****************************************************************************/
 /* Internal Programs							     */
@@ -78,6 +82,7 @@
  void add_rewrite_rule _ARG((Uchar *s));	   /*                        */
  void clear_addlist _ARG((void));		   /*                        */
  void remove_field _ARG((Uchar *field,Record rec));/*                        */
+ void rename_field _ARG((Uchar *spec));		   /*                        */
  void rewrite_record _ARG((DB db,Record rec));	   /*                        */
  void save_regex _ARG((Uchar *s));		   /*                        */
 
@@ -135,12 +140,12 @@ void add_field(spec)				   /*			     */
 **	rec	Record in which the field should be removed.
 ** Returns:	nothing
 **___________________________________________________			     */
-void remove_field(field,rec)			   /*			     */
+void remove_field(field, rec)			   /*			     */
   register Uchar *field;			   /*			     */
   Record	 rec;				   /*			     */
 { register int	 i;				   /*			     */
 						   /*			     */
-  for (i=0;i<RecordFree(rec);i+=2 )		   /*			     */
+  for (i = 0; i < RecordFree(rec); i += 2 )	   /*			     */
   { if ( field == RecordHeap(rec)[i] )		   /* compare symbols	     */
     { RecordHeap(rec)[i] = (Uchar*)NULL; }	   /*			     */
   }						   /*			     */
@@ -165,9 +170,9 @@ void remove_field(field,rec)			   /*			     */
 ** Purpose:	Allocate a new Rule and fill some slots.
 ** Arguments:
 **	field	The field to apply this rule to, or |NULL| for each field.
-**	pattern	
+**	pattern	The rule goal
 **	frame	
-**	flags	
+**	flags	The ored flag values
 **	casep	Boolean; indicating case sensitive comparison.
 ** Returns:	A pointer to the allocated structure or |NULL| upon failure.
 **___________________________________________________			     */
@@ -201,7 +206,7 @@ static Rule new_rule(field,pattern,frame,flags,casep)/*			     */
   RuleGoal(new)  = pattern;			   /*                        */
 					       	   /*                        */
 #ifdef REGEX
-  if ( *pattern && (flags&RULE_REGEXP) )   	   /*                        */
+  if ( pattern && *pattern && (flags&RULE_REGEXP) )   	   /*                        */
   { char *msg;					   /*                        */
     if ( (RulePattern(new).buffer = (unsigned char *)malloc(16)) == NULL )/* */
     { OUT_OF_MEMORY("pattern"); }		   /*			     */
@@ -347,7 +352,7 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
     return;					   /*                        */
   }						   /*                        */
  						   /*                        */
-  for ( sp=0; sp<stackp; sp++ )			   /*                        */
+  for (sp = 0; sp < stackp; sp++)		   /*                        */
   { rule = new_rule(stack[sp],pattern,frame,flags,casep);/*		     */
     if ( *rp == RuleNULL )			   /*                        */
     { *rp = *rp_end = rule; }			   /*			     */
@@ -424,7 +429,7 @@ static void rewrite_1(frame,sb,match,db,rec)	   /*			     */
 **	rec
 ** Returns:	
 **___________________________________________________			     */
-static Uchar * repl_regex(field,value,rule,db,rec)  /*			     */
+static Uchar * repl_regex(field,value,rule,db,rec) /*			     */
   Uchar	 *field;				   /*			     */
   Uchar	 *value;				   /*			     */
   Rule	 rule;			   	   	   /*			     */
@@ -432,21 +437,21 @@ static Uchar * repl_regex(field,value,rule,db,rec)  /*			     */
   Record rec;			   	   	   /*			     */
 {						   /*			     */
 #ifdef REGEX
-  char			c;			   /*			     */
-  int			len;			   /*			     */
-  StringBuffer		*sp;			   /* intermediate pointer   */
-  int			once_more;		   /*                        */
-  int			limit;			   /* depth counter to break */
+  char		      c;			   /*			     */
+  int		      len;			   /*			     */
+  StringBuffer	      *sp;			   /* intermediate pointer   */
+  int		      once_more;		   /*                        */
+  int		      limit;			   /* depth counter to break */
  						   /*  out of infinite loops */
-  static StringBuffer	*s1 = 0L;		   /*			     */
-  static StringBuffer	*s2 = 0L;		   /*			     */
+  static StringBuffer *s1 = NULL;		   /*			     */
+  static StringBuffer *s2 = NULL;		   /*			     */
 						   /*			     */
-  if ( rule == RuleNULL ) return value;		   /*			     */
+  if (rule == RuleNULL) return value;		   /*			     */
 						   /*			     */
   if ( s1 == NULL ) { s1 = sbopen(); s2 = sbopen(); }/*			     */
   else		    { sbrewind(s1);  sbrewind(s2);  }/*			     */
 						   /*			     */
-  (void)sbputs((char*)value,s1);		   /*			     */
+  (void)sbputs((char*)value, s1);		   /*			     */
   value     = (Uchar*)sbflush(s1);		   /*			     */
   len	    = strlen((char*)value);		   /*			     */
   limit     = rsc_rewrite_limit;		   /*			     */
@@ -455,9 +460,29 @@ static Uchar * repl_regex(field,value,rule,db,rec)  /*			     */
   while ( once_more ) 				   /*			     */
   {						   /*			     */
     once_more = FALSE;				   /*                        */
-    while ( rule != RuleNULL )			   /*                        */
+    while (rule != RuleNULL)			   /*                        */
     {						   /*                        */
-      if ( (   RuleField(rule) == NULL		   /*			     */
+      if ((RuleFlag(rule) & RULE_RENAME) != 0)
+      {
+	if (RuleField(rule) == field)
+	{ int i;
+	  Uchar**hp;
+	  for (i = RecordFree(rec), hp = RecordHeap(rec);/*		     */
+	       i > 0;				   /*			     */
+	       i -= 2, hp += 2)			   /*			     */
+	  {					   /*			     */
+	    if (*hp == field)	   		   /*			     */
+	    {					   /*			     */
+	      *hp = RuleValue(rule);
+	      break;
+	    }
+	  }
+
+	}
+	rule = NextRule(rule);			   /*                        */
+	limit = rsc_rewrite_limit;		   /*			     */
+      }
+      else if ( ( RuleField(rule) == NULL	   /*			     */
 	    || RuleField(rule) == field ) &&	   /*			     */
 	   (RuleFlag(rule) & RULE_ADD) == 0 &&	   /*                        */
 	   re_search(&RulePattern(rule),	   /*			     */
@@ -465,7 +490,7 @@ static Uchar * repl_regex(field,value,rule,db,rec)  /*			     */
 		     len,			   /*                        */
 		     0,				   /*                        */
 		     len-1,			   /*                        */
-		     &reg) >=0 )		   /*			     */
+		     &reg) >= 0 )		   /*			     */
       {					   	   /*			     */
 	if ( 0 > --limit )			   /*                        */
 	{ ErrPrint("\n*** BibTool WARNING: Rewrite limit exceeded for field ");
@@ -564,6 +589,50 @@ static Uchar * check_regex(field,value,rule,db,rec) /*			     */
  static Rule r_rule = RuleNULL;
  static Rule r_rule_end	= RuleNULL;
 
+
+/*-----------------------------------------------------------------------------
+** Function:	rename_field()
+** Type:	void
+** Purpose:	
+**		
+** Arguments:
+**	s	
+** Returns:	nothing
+**___________________________________________________			     */
+void rename_field(s)				   /*			     */
+  Uchar *s;					   /*                        */
+{
+  Uchar* from;
+  Uchar* to;
+
+  /*
+    from to selector
+   */
+  DebugPrint2("Rename field: Parsing from: ",s);   /*			     */
+  (void)sp_open(s);				   /*			     */
+  (void)SParseSkip(&s);			   	   /*			     */
+						   /*                        */
+  if ( (from = SParseSymbol(&s)) == (Uchar*)NULL ) /*		             */
+    return;					   /*			     */
+  (void)SParseSkip(&s);			   	   /*			     */
+  if ( (to = SParseSymbol(&s)) == (Uchar*)NULL )   /*		             */
+    return;					   /*			     */
+
+					       /*TODO: parse selector*/
+
+  (void)SParseEOS(&s);				   /*			     */
+
+
+  Rule rule = new_rule(from, (Uchar*)0, (Uchar*)0,
+		       RULE_RENAME, rsc_case_rewrite);
+  RuleValue(rule) = to;				   /*                        */
+  if ( r_rule == RuleNULL )			   /*                        */
+  { r_rule = r_rule_end = rule; }		   /*			     */
+  else					   	   /*                        */
+  { NextRule(r_rule_end) = rule; r_rule_end = rule;}/*			     */
+
+}
+
 /*-----------------------------------------------------------------------------
 ** Function:	add_rewrite_rule()
 ** Purpose:	Save a rewrite rule for later use.
@@ -611,7 +680,7 @@ void add_check_rule(s)				   /*			     */
 **	db	The database record is belonging to.
 ** Returns:	nothing
 **___________________________________________________			     */
-void rewrite_record(db,rec)			   /*			     */
+void rewrite_record(db, rec)			   /*			     */
   DB		  db;				   /*                        */
   register Record rec;				   /*			     */
 { register int	  i;				   /*			     */
@@ -620,13 +689,13 @@ void rewrite_record(db,rec)			   /*			     */
   Uchar           *cp;				   /*			     */
   static StringBuffer *sb = NULL;		   /*                        */
  						   /*                        */
-  if ( sb == NULL ) sb = sbopen();		   /*                        */
+  if (sb == NULL) sb = sbopen();		   /*                        */
 						   /*			     */
-  if ( c_rule != RuleNULL )			   /*			     */
+  if (c_rule != RuleNULL)			   /*			     */
   {						   /*                        */
-    for ( i=RecordFree(rec), hp=RecordHeap(rec);   /*			     */
-	  i > 0;				   /*			     */
-	  i-=2, hp +=2	)			   /*			     */
+    for (i = RecordFree(rec), hp = RecordHeap(rec);/*			     */
+	 i > 0;				   	   /*			     */
+	 i -= 2, hp +=2)			   /*			     */
     {						   /*			     */
       if (   *hp				   /*			     */
 	  && *(hp+1)				   /*			     */
@@ -639,9 +708,9 @@ void rewrite_record(db,rec)			   /*			     */
 						   /*			     */
   if ( r_rule != RuleNULL )			   /*			     */
   {   						   /*			     */
-    for ( i=RecordFree(rec), hp=RecordHeap(rec);   /*			     */
-	 i>0;					   /*			     */
-	 i-=2, hp+=2  )				   /*			     */
+    for (i = RecordFree(rec), hp = RecordHeap(rec);/*			     */
+	 i > 0;					   /*			     */
+	 i -= 2, hp += 2)			   /*			     */
     {						   /*			     */
       if ( *hp && *(hp+1) )			   /*			     */
       {						   /*			     */
@@ -654,9 +723,9 @@ void rewrite_record(db,rec)			   /*			     */
     }						   /*			     */
   }						   /*			     */
  						   /*                        */
-  for ( mac=addlist;				   /* Add all items in the   */
-	mac;					   /*  add list		     */
-	mac=NextMacro(mac) )			   /*			     */
+  for (mac = addlist;				   /* Add all items in the   */
+       mac;					   /*  add list		     */
+       mac = NextMacro(mac) )			   /*			     */
   { cp = MacroValue(mac);			   /*                        */
     sbrewind(sb);				   /*                        */
     sbputc('{',sb);				   /*                        */
@@ -669,7 +738,7 @@ void rewrite_record(db,rec)			   /*			     */
       }					   	   /*                        */
       else { sbputc(*cp,sb); cp++; }		   /*                        */
     }						   /*                        */
-    sbputc('}',sb);				   /*                        */
+    sbputc('}', sb);				   /*                        */
     push_to_record(rec,			   	   /*                        */
 		   MacroName(mac),		   /*                        */
 		   sym_add((Uchar*)sbflush(sb),1));/*                        */
