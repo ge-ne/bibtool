@@ -81,6 +81,34 @@ BUnit::run(name => 'rename_field_2',
 __EOF__
     expected_err => '' );
 
+#------------------------------------------------------------------------------
+BUnit::run(name => 'rename_field_10',
+    args	 => 'bib/x1.bib',
+    resource 	 => 'rename.field={Title = booktitle # $type "manual"}',
+    expected_out => <<__EOF__,
+
+\@Manual{	  bibtool,
+  booktitle	= {BibTool},
+  author	= {Gerd Neugebauer},
+  year		= 2015
+}
+__EOF__
+    expected_err => '' );
+
+#------------------------------------------------------------------------------
+BUnit::run(name => 'rename_field_11',
+    args	 => 'bib/x1.bib',
+    resource 	 => 'rename.field={Title = booktitle # $type "book"}',
+    expected_out => <<__EOF__,
+
+\@Manual{	  bibtool,
+  title		= {BibTool},
+  author	= {Gerd Neugebauer},
+  year		= 2015
+}
+__EOF__
+    expected_err => '' );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

@@ -10,7 +10,6 @@
 ** 
 **-----------------------------------------------------------------------------
 ** Description:
-**	
 **
 **	This module provides also access to the functions and
 **	variables defined in |entry.c|. Consult also the documentation
@@ -24,18 +23,18 @@
 
 /*-----------------------------------------------------------------------------
 ** Variable:	entry_type
-** Type:	Uchar **
+** Type:	String *
 ** Purpose:	This is an array of strings which represent entry
 **		types. They are either built-in or user defined. Use
 **		the function |def_entry_type()| to allocate a new
 **		entry type and the function |get_entry_type()| to find
 **		a certain entry type.
 **___________________________________________________			     */
- extern Uchar **entry_type;
+ extern String *entry_type;
 
 /*-----------------------------------------------------------------------------
 ** Macro:	EntryName()
-** Type:	Uchar *
+** Type:	String 
 ** Purpose:	This is the functional representation of the name
 **		component for an entry type. The argument is the index
 **		of an entry type. This macro can also be used as
@@ -151,7 +150,7 @@
 #else
 #define _ARG(A) ()
 #endif
- Uchar * get_entry_type _ARG((int i));		   /* entry.c                */
- int find_entry_type _ARG((Uchar *s));		   /* entry.c                */
- void def_entry_type _ARG((Uchar * s));		   /* entry.c                */
+ String get_entry_type _ARG((int i));		   /* entry.c                */
+ int find_entry_type _ARG((String s));		   /* entry.c                */
+ void def_entry_type _ARG((String  s));		   /* entry.c                */
  void init_entries _ARG((void));		   /* entry.c                */

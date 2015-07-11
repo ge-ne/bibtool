@@ -371,7 +371,7 @@ int keep_xref(db,rec)				   /*                        */
   Record rec;					   /*                        */
 {						   /*                        */
   if ( !RecordIsDELETED(rec) )		   	   /*                        */
-  { Uchar  *key;				   /*                        */
+  { String key;				   	   /*                        */
     int    count;				   /*                        */
  						   /*                        */
     for ( count = rsc_xref_limit;		   /* Prevent infinite loop  */
@@ -445,7 +445,7 @@ int main(argc,argv)				   /*			     */
     }						   /*			     */
     else					   /*			     */
     { switch ( *++ap )				   /*			     */
-      { case 'A': set_base((Uchar*)(ap+1));  break;/* disambiguation	     */
+      { case 'A': set_base((String)(ap+1));  break;/* disambiguation	     */
 	case 'c': Toggle(rsc_xref_select);   break;/* include crossreferences*/
 	case 'd': Toggle(rsc_double_check);  break;/* double entries	     */
 #ifdef HAVE_LIBKPATHSEA
@@ -469,7 +469,7 @@ int main(argc,argv)				   /*			     */
 	  break; 				   /*			     */
 	case 'q': Toggle(rsc_quiet);	    break; /* quiet		     */
 	case 'r':				   /* resource file	     */
-	  if ( ++i < argc && load_rsc((Uchar*)(argv[i])) )/*		     */
+	  if ( ++i < argc && load_rsc((String)(argv[i])) )/*		     */
 	  { need_rsc = FALSE; }		   	   /*			     */
 	  else					   /*                        */
 	  {  NoRscError(argv[i]); }		   /*                        */
@@ -485,22 +485,23 @@ int main(argc,argv)				   /*			     */
 	case 'x':				   /* extract		     */
 	  rsc_all_macs = FALSE;			   /*                        */
 	  if ( ++i < argc )			   /*			     */
-	  { read_aux((Uchar*)(argv[i]),		   /*                        */
+	  { read_aux((String)(argv[i]),		   /*                        */
 		     save_input_file,		   /*                        */
 		     *++ap=='v');  		   /*                        */
 	  }					   /*                        */
-	  else		    { NoSFileWarning; }	   /*			     */
+	  else					   /*                        */
+	  { NoSFileWarning; }	   		   /*			     */
 	  break;				   /*			     */
 	case 'X':				   /* extract pattern	     */
 	  rsc_all_macs = FALSE;			   /*                        */
-	  if ( ++i < argc ) { save_regex((Uchar*)argv[i]); }/*		     */
+	  if ( ++i < argc ) { save_regex((String)argv[i]); }/*		     */
 	  else		    { MissingPattern; }	   /*			     */
 	  break;				   /*			     */
 	case '#': Toggle(rsc_cnt_all);	    break; /* print full statistics  */
 	case '@': Toggle(rsc_cnt_used);	    break; /* print short statistics */
 	case '-':				   /* extended command	     */
-	  if ( *++ap )	      { (void)use_rsc((Uchar*)ap); }/*		     */
-	  else if ( ++i<argc ){ (void)use_rsc((Uchar*)argv[i]); }/*	     */
+	  if ( *++ap )	      { (void)use_rsc((String)ap); }/*		     */
+	  else if ( ++i<argc ){ (void)use_rsc((String)argv[i]); }/*	     */
 	  else		      { MissingResource;  }/*			     */
 	  break;				   /*			     */
 #ifdef SYMBOL_DUMP
@@ -526,7 +527,7 @@ int main(argc,argv)				   /*			     */
   for ( i = 0; i < input_file_ptr; i++ )	   /* For all input files    */
   {						   /*			     */
     if ( read_db(the_db,			   /*                        */
-		 (Uchar*)(input_files[i]),	   /*                        */
+		 (String)(input_files[i]),	   /*                        */
 		 rsc_verbose) )	   		   /*                        */
     { NoFileError(input_files[i]); }		   /*			     */
   }						   /*			     */
@@ -785,9 +786,9 @@ static int do_no_keys(db,rec)			   /*                        */
 static int update_crossref(db,rec)		   /*			     */
   DB		 db;				   /*                        */
   Record	 rec;				   /*			     */
-{ register Uchar **hp;				   /*			     */
+{ register String *hp;				   /*			     */
   register int   i;				   /*                        */
-  Uchar		 *t,*s;			   	   /*			     */
+  String	 s, t;			   	   /*			     */
 						   /*			     */
   if ( !RecordIsXREF(rec) ) return 0;		   /*			     */
 						   /*                        */
@@ -802,15 +803,15 @@ static int update_crossref(db,rec)		   /*			     */
 						   /*			     */
   t = *++hp; t++;				   /*			     */
   (void)sp_open(t);				   /* Try to extract	     */
-  if ( (s = SParseSymbol(&t)) == (Uchar*)0 )	   /*  the crossref as symbol*/
+  if ( (s = SParseSymbol(&t)) == StringNULL )	   /*  the crossref as symbol*/
   { return 0; }					   /*			     */
 						   /*			     */
-  if ( (s = db_new_key(db,s)) == (Uchar*)0 )	   /*			     */
+  if ( (s = db_new_key(db,s)) == StringNULL )	   /*			     */
   { ERROR2("Crossref not found: ",(char*)s);	   /*			     */
     return 0;					   /*			     */
   }						   /*			     */
   if (rsc_key_case) { s = get_key_name(s); }	   /*                        */
-  if ( (t=(Uchar*)malloc(strlen((char*)s)+3))==(Uchar*)NULL )/* get temp mem */
+  if ( (t=(String)malloc(strlen((char*)s)+3))==(String)NULL )/* get temp mem */
   { OUT_OF_MEMORY("update_crossref()"); }	   /*		             */
 						   /*			     */
   (void)sprintf((char*)t,(**hp=='"'?"\"%s\"":"{%s}"),s);/* make new crossref */
@@ -839,11 +840,11 @@ static int dbl_check(db,rec)			   /*                        */
        && equal_records(PrevRecord(rec),rec) )	   /*			     */
   {						   /*                        */
     if ( !rsc_quiet )				   /*                        */
-    { Uchar *k1 = *RecordHeap(rec);		   /*                        */
-      Uchar *k2 = *RecordHeap(PrevRecord(rec));	   /*                        */
+    { String k1 = *RecordHeap(rec);		   /*                        */
+      String k2 = *RecordHeap(PrevRecord(rec));	   /*                        */
       ErrPrint("*** BibTool WARNING: Possible double entries discovered: \n***\t");
-      if ( k1 == NULL ) k1 = (Uchar*) "";	   /*                        */
-      if ( k2 == NULL ) k2 = (Uchar*) "";	   /*                        */
+      if ( k1 == NULL ) k1 = (String) "";	   /*                        */
+      if ( k2 == NULL ) k2 = (String) "";	   /*                        */
       ErrPrint((char*)k2);			   /*                        */
       ErrPrint(" =?= ");			   /*                        */
       ErrPrint((char*)k1);			   /*                        */

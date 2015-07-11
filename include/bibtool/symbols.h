@@ -75,23 +75,23 @@
 
 /*-----------------------------------------------------------------------------
 ** Variable:	sym_empty
-** Type:	Uchar *
+** Type:	String 
 ** Purpose:	The empty symbol. This is a symbol pointing
 **		immediately to a |\0| byte.  This needs
 **		|init_symbols()| to be called first.
 **___________________________________________________			     */
- extern Uchar * sym_empty;
+ extern String sym_empty;
 
 /*-----------------------------------------------------------------------------
 ** Variable:	sym_crossref
-** Type:	Uchar *
+** Type:	String
 ** Purpose:	The symbol |crossref|. This variable needs
 **		|init_symbols()| to be called first.
 **___________________________________________________			     */
- extern Uchar * sym_crossref;
+ extern String sym_crossref;
 
 
-#define new_Ustring(S) (Uchar*)new_string((char*)(S))
+#define new_Ustring(S) (String)new_string((char*)(S))
 
 
 #ifdef __STDC__
@@ -99,14 +99,14 @@
 #else
 #define _ARG(A) ()
 #endif
- Uchar * sym_add _ARG((Uchar *s,int count));	   /* symbols.c              */
- Uchar * sym_extract _ARG((Uchar *ap,Uchar *ep,int count));/* symbols.c      */
+ String  sym_add _ARG((String s,int count));	   /* symbols.c              */
+ String  sym_extract _ARG((String ap,String ep,int count));/* symbols.c      */
  char * new_string _ARG((char * s));		   /* symbols.c              */
- int sym_flag _ARG((Uchar * s));		   /* symbols.c              */
+ int sym_flag _ARG((String  s));		   /* symbols.c              */
  void init_symbols _ARG((void));		   /* symbols.c              */
  void sym_dump _ARG((void));			   /* symbols.c              */
  void sym_gc _ARG((void));			   /* symbols.c              */
- void sym_set_flag _ARG((Uchar *s,int flags));	   /* symbols.c              */
- void sym_unlink _ARG((Uchar *s));		   /* symbols.c              */
+ void sym_set_flag _ARG((String s,int flags));	   /* symbols.c              */
+ void sym_unlink _ARG((String s));		   /* symbols.c              */
 
 #endif /* SYMBOLS_H_LOADED */

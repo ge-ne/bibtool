@@ -24,8 +24,8 @@
 #define _ARG(A) ()
 #endif
  int parse_bib _ARG((Record rec));		   /* parse.c                */
- int read_rsc _ARG((Uchar *name));		   /* parse.c                */
- int see_bib _ARG((Uchar * fname));		   /* parse.c                */
+ int read_rsc _ARG((String name));		   /* parse.c                */
+ int see_bib _ARG((String fname));		   /* parse.c                */
  int seen _ARG((void));				   /* parse.c                */
  void init_read _ARG((void));			   /* parse.c                */
- void set_rsc_path _ARG((Uchar * val));		   /* parse.c                */
+ void set_rsc_path _ARG((String val));		   /* parse.c                */

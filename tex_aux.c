@@ -31,7 +31,7 @@
 #else
 #define _ARG(A) ()
 #endif
- static void save_ref _ARG((Uchar *s));
+ static void save_ref _ARG((String s));
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -79,7 +79,7 @@ void clear_aux()				   /*                        */
 ** Returns:	|cite_star|
 **___________________________________________________			     */
 int foreach_aux(fct)				   /*                        */
-  int (fct)_ARG((Uchar*));			   /*                        */
+  int (fct)_ARG((String));			   /*                        */
 { int i;					   /*                        */
   for ( i=0; i<32; i++ )			   /*                        */
   { foreach_word(cite[i],fct); }		   /*                        */
@@ -96,7 +96,7 @@ int foreach_aux(fct)				   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void save_ref(s)				   /*                        */
-  register Uchar *s;				   /*                        */
+  register String s;				   /*                        */
 { 						   /*                        */
   if ( cite_star ) return;			   /*                        */
  						   /*                        */
@@ -115,7 +115,7 @@ static void save_ref(s)				   /*                        */
 ** Returns:	
 **___________________________________________________			     */
 int aux_used(s)				   	   /*                        */
-  Uchar * s;					   /*                        */
+  String s;					   /*                        */
 {						   /*                        */
   return (  cite_star				   /*                        */
 	 || find_word(s,cite[*s&31])  );	   /*                        */
@@ -147,8 +147,8 @@ int aux_used(s)				   	   /*                        */
 **		indicating the status of the operation.
 ** Returns:	|TRUE| iff the file could not be opened.
 **___________________________________________________			     */
-int read_aux(fname,fct,verbose)			   /*                        */
-  Uchar 	*fname;			   	   /* aux file name          */
+int read_aux(fname, fct, verbose)		   /*                        */
+  String 	fname;			   	   /* aux file name          */
   void		(*fct)_ARG((char*));		   /*                        */
   int           verbose;			   /*                        */
 { FILE 	        *file;				   /*                        */
@@ -195,7 +195,7 @@ int read_aux(fname,fct,verbose)			   /*                        */
 	    case '}':		   	   	   /*                        */
 	      s = sbflush(aux_sb);		   /*                        */
 	      sbrewind(aux_sb);			   /*                        */
-	      save_ref((Uchar*)s);		   /*                        */
+	      save_ref((String)s);		   /*                        */
 	      break;				   /*                        */
 	    default:				   /*                        */
 	      (void)sbputchar(ToLower(c&0xff),aux_sb);/*                     */
@@ -210,10 +210,10 @@ int read_aux(fname,fct,verbose)			   /*                        */
 	  if ( c == ',' || c == '}' )		   /*                        */
 	  { s = sbflush(aux_sb);		   /*                        */
 	    sbrewind(aux_sb);			   /*                        */
-	    (*fct)((char*)symbol((Uchar*)s));	   /*                        */
+	    (*fct)((char*)symbol((String)s));	   /*                        */
 	  }					   /*                        */
 	  else					   /*                        */
-	  { (void)sbputchar(c,aux_sb); }	   /*                        */
+	  { (void)sbputchar(c, aux_sb); }	   /*                        */
 	}					   /*                        */
       }						   /*                        */
       else if ( strcmp(s,"@input" )==0 )	   /* Read another aux file  */
@@ -222,7 +222,7 @@ int read_aux(fname,fct,verbose)			   /*                        */
 	s = sbflush(aux_sb);			   /*                        */
 	sbrewind(aux_sb);			   /*                        */
 	    					   /*                        */
-	read_aux((Uchar*)s,fct,verbose);	   /*                        */
+	read_aux((String)s, fct, verbose);	   /*                        */
       }						   /*                        */
     }						   /*                        */
   }						   /*                        */
@@ -294,7 +294,7 @@ int apply_aux(db)				   /*                        */
 	 RecordIsXREF(rec)   &&		   	   /*                        */
 	 !RecordIsDELETED(rec)		   	   /*                        */
        )					   /*                        */
-    { Uchar  *key = (Uchar*)"???";		   /*                        */
+    { String key = (String)"???";		   /*                        */
       int    count;				   /*                        */
       Record r = rec;				   /*                        */
  						   /*                        */

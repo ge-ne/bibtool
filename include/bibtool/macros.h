@@ -27,8 +27,8 @@
 **		by a counter which can be used as a reference count.
 **___________________________________________________			     */
  typedef struct mACRO				   /*			     */
- { Uchar	*mc_name;		   	   /* Name of the macro.     */
-   Uchar	*mc_value;		   	   /* Value of the macro.    */
+ { String	mc_name;		   	   /* Name of the macro.     */
+   String	mc_value;		   	   /* Value of the macro.    */
    int		mc_used;			   /* Reference count.	     */
    struct mACRO *mc_next;			   /* Pointer the next macro.*/
  } SMacro, *Macro;				   /*			     */
@@ -44,7 +44,7 @@
 
 /*-----------------------------------------------------------------------------
 ** Macro:	MacroName()
-** Type:	Uchar *
+** Type:	String 
 ** Purpose:	This is the functional representation of the name
 **		component of a |Macro|. It can be used to extract this
 **		information. It can also be used as a lvalue.
@@ -55,7 +55,7 @@
 
 /*-----------------------------------------------------------------------------
 ** Macro:	MacroValue()
-** Type:	Uchar *
+** Type:	String 
 ** Purpose:	This is the functional representation of the value
 **		component of a |Macro|. It can be used to extract this
 **		information. It can also be used as a lvalue.
@@ -86,21 +86,19 @@
 **___________________________________________________			     */
 #define NextMacro(M)	((M)->mc_next)
 
-
-
 #ifdef __STDC__
 #define _ARG(A) A
 #else
 #define _ARG(A) ()
 #endif
- Macro new_macro _ARG((Uchar *name,Uchar *val,Macro next,int count));/* macros.c*/
- Uchar * get_item _ARG((Uchar * name,int type));   /* macros.c               */
- Uchar * get_key_name _ARG((Uchar *s));		   /* macros.c               */
- Uchar * look_macro _ARG((Uchar *name,int add));   /* macros.c               */
- int def_macro _ARG((Uchar *name,Uchar *val,int count));/* macros.c          */
- void def_field_type _ARG((Uchar * s));		   /* macros.c               */
+ Macro new_macro _ARG((String name,String val,Macro next,int count));/* macros.c*/
+ String  get_item _ARG((String  name,int type));   /* macros.c               */
+ String  get_key_name _ARG((String s));		   /* macros.c               */
+ String  look_macro _ARG((String name,int add));   /* macros.c               */
+ int def_macro _ARG((String name,String val,int count));/* macros.c          */
+ void def_field_type _ARG((String  s));		   /* macros.c               */
  void dump_mac _ARG((char *fname,int allp));	   /* macros.c               */
- void foreach_macro _ARG((int (*fct) _ARG((Uchar *,Uchar *))));/* macros.c   */
+ void foreach_macro _ARG((int (*fct) _ARG((String , String))));/* macros.c   */
  void free_macro _ARG((Macro mac));		   /* macros.c               */
  void init_macros _ARG((void));			   /* macros.c               */
- void save_key _ARG((Uchar* s,Uchar* key));	   /* macros.c               */
+ void save_key _ARG((String s, String key));	   /* macros.c               */

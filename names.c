@@ -27,14 +27,14 @@
 #else
 #define _ARG(A) ()
 #endif
- NameNode name_format _ARG((Uchar *s));		   /* names.c                */
- Uchar * pp_list_of_names _ARG((Uchar **wa,NameNode format,unsigned char *trans,int max,Uchar *comma,Uchar *and,char *namesep,char *etal));/* names.c*/
+ NameNode name_format _ARG((String s));		   /* names.c                */
+ String  pp_list_of_names _ARG((String *wa,NameNode format,unsigned char *trans,int max,String comma,String and,char *namesep,char *etal));/* names.c*/
  char * pp_names _ARG((char *s,NameNode format,unsigned char *trans,int max,char *namesep,char *etal));/* names.c*/
- static NameNode new_name_node _ARG((int type,int strip,int trim,Uchar *pre,Uchar *mid,Uchar *post));/* names.c*/
- static int is_jr _ARG((Uchar * s, int eager));	   /* names.c                */
- static int is_lower_word _ARG((Uchar *s));	   /* names.c                */
- static void initial _ARG((Uchar *s,unsigned char *trans,int len,StringBuffer *sb));/* names.c*/
- static void pp_one_name _ARG((StringBuffer *sb,Uchar **w,NameNode format,unsigned char *trans,int len,Uchar *comma,int commas));/* names.c*/
+ static NameNode new_name_node _ARG((int type,int strip,int trim,String pre,String mid,String post));/* names.c*/
+ static int is_jr _ARG((String  s, int eager));	   /* names.c                */
+ static int is_lower_word _ARG((String s));	   /* names.c                */
+ static void initial _ARG((String s,unsigned char *trans,int len,StringBuffer *sb));/* names.c*/
+ static void pp_one_name _ARG((StringBuffer *sb,String *w,NameNode format,unsigned char *trans,int len,String comma,int commas));/* names.c*/
 
 #ifdef BIBTEX_SYNTAX
  static void set_type _ARG((char **sp,char **midp));/* names.c               */
@@ -63,13 +63,13 @@
 **	post	
 ** Returns:	The new instance of a node.
 **___________________________________________________			     */
-static NameNode new_name_node(type,strip,trim,pre,mid,post)/*                */
+static NameNode new_name_node(type, strip, trim, pre, mid, post)/*           */
   int      type;				   /*                        */
   int      strip;				   /*                        */
   int      trim;				   /*                        */
-  Uchar    *pre;				   /*                        */
-  Uchar    *mid;				   /*                        */
-  Uchar    *post;				   /*                        */
+  String   pre;				   	   /*                        */
+  String   mid;				   	   /*                        */
+  String   post;				   /*                        */
 { NameNode node;				   /*                        */
  						   /*                        */
   if ( (node = (NameNode)malloc(sizeof(SNameNode))) == NameNULL )/*          */
@@ -200,11 +200,11 @@ void set_name_format(nodep,s)			   /*                        */
 	   type,				   /*                        */
     	   strip,				   /*                        */
     	   trim = 0;				   /*                        */
-  Uchar    *mid,				   /*                        */
-	   *pre,				   /*                        */
-	   *post,				   /*                        */
-	   c;					   /*                        */
-  Uchar    *space;				   /*                        */
+  String   mid,				   	   /*                        */
+	   pre,				   	   /*                        */
+	   post;				   /*                        */
+  Uchar	   c;					   /*                        */
+  String   space;				   /*                        */
   char     buffer[256];				   /*                        */
 #define UseBuffer(S) strcpy(buffer,S); s = buffer
  						   /*                        */
@@ -227,9 +227,9 @@ void set_name_format(nodep,s)			   /*                        */
       *nodep = new_name_node(NameString,	   /*                        */
 			     -1,		   /*                        */
 			     -1,		   /*                        */
-			     (Uchar*)NULL,	   /*                        */
+			     StringNULL,	   /*                        */
 			     mid,		   /*                        */
-			     (Uchar*)NULL);	   /*                        */
+			     StringNULL);	   /*                        */
       nodep  = &NextName(*nodep);		   /*                        */
  						   /*                        */
       if ( c == '\0' ) return;			   /*                        */
@@ -275,18 +275,18 @@ void set_name_format(nodep,s)			   /*                        */
 ** Returns:	
 **___________________________________________________			     */
 NameNode name_format(s)				   /*                        */
-  Uchar	   *s;					   /*                        */
+  String   s;					   /*                        */
 { int	   type,				   /*                        */
 	   strip,				   /*                        */
 	   trim;				   /*                        */
-  Uchar	   *pre,				   /*                        */
-     	   *mid,				   /*                        */
-     	   *post;				   /*                        */
+  String   pre,				   	   /*                        */
+     	   mid,				   	   /*                        */
+     	   post;				   /*                        */
   Uchar	   c;					   /*                        */
-  Uchar    *cp;					   /*                        */
+  String   cp;					   /*                        */
   NameNode node = NameNULL;			   /*                        */
   NameNode *nnp;				   /*                        */
-  static char *msg = "Missing ']' in format string.";
+  static char *msg = "Missing ']' in format string.";/*                      */
 #define OptionalArg(S)						\
   if ( *cp == '[' )						\
   { for ( S=++cp; *cp && *cp != ']'; cp++) ;			\
@@ -327,11 +327,11 @@ NameNode name_format(s)				   /*                        */
         case 'j': type |= NameJr;    break;	   /*                        */
         default:  type |= NoName;		   /*                        */
 	  error(ERR_ERROR|ERR_POINT,		   /*                        */
-		(Uchar*)"Wrong type of format.",   /*                        */
-		(Uchar*)0,			   /*                        */
-		(Uchar*)0,			   /*                        */
+		(String)"Wrong type of format.",   /*                        */
+		StringNULL,			   /*                        */
+		StringNULL,			   /*                        */
 		s,				   /*                        */
-		cp,0,(char*)0);			   /*                        */
+		cp, 0, (char*)0);		   /*                        */
       }						   /*                        */
       cp++;					   /*                        */
       OptionalArg(pre);				   /*                        */
@@ -381,17 +381,17 @@ NameNode name_format(s)				   /*                        */
 ** Returns:	Pointer to static string which is reused upon the next
 **		invocation of this function.
 **___________________________________________________			     */
-Uchar * pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
-  Uchar    	    **wa;			   /*                        */
+String  pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
+  String    	    *wa;			   /*                        */
   NameNode	    format;			   /*                        */
   unsigned char     *trans;			   /*                        */
   int   	    max;			   /*                        */
-  Uchar 	    *comma;			   /*                        */
-  Uchar 	    *and;			   /*                        */
+  String 	    comma;			   /*                        */
+  String 	    and;			   /*                        */
   char 		    *namesep;			   /*                        */
   char 		    *etal;			   /*                        */
-{ Uchar		    **w;			   /*                        */
-  Uchar		    *word;			   /*                        */
+{ String	    *w;			   	   /*                        */
+  String	    word;		   	   /*                        */
   int  		    commas;			   /*                        */
   int  		    first = TRUE;		   /*                        */
   static StringBuffer *sb = (StringBuffer*)0;	   /*                        */
@@ -428,7 +428,7 @@ Uchar * pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
     wa = ( word != NULL? ++w : w ) ;		   /*                        */
   }						   /*                        */
  						   /*                        */
-  return (Uchar*)sbflush(sb);			   /*                        */
+  return (String)sbflush(sb);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -446,11 +446,11 @@ Uchar * pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
 **___________________________________________________			     */
 static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   StringBuffer  *sb;				   /*                        */
-  Uchar         **w;				   /*                        */
+  String        *w;				   /*                        */
   NameNode      format;				   /*                        */
   unsigned char *trans;				   /*                        */
   int	        len;				   /*                        */
-  Uchar         *comma;				   /*                        */
+  String        comma;				   /*                        */
   int           commas;				   /*                        */
 { NameNode      nn;				   /*                        */
   char          t;				   /*                        */
@@ -475,14 +475,14 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   if ( commas == 0 )				   /*------------------------*/
   {						   /* ff vv ll               */
     j = len - 1;				   /* ff vv ll jr            */
-    if ( is_jr((Uchar*)w[j], TRUE) )		   /*                        */
+    if ( is_jr((String)w[j], TRUE) )		   /*                        */
     { type[j--] = 'j'; jr++; }			   /*                        */
     if ( j >= 0 )				   /*                        */
     { type[j] = 'l'; last++; }  		   /*                        */
     i = 0;					   /*                        */
-    while ( i < j && !is_lower_word((Uchar*)w[i]) )/*                        */
+    while ( i < j && !is_lower_word((String)w[i]) )/*                        */
     { type[i++] = 'f'; first++; }		   /*                        */
-    while ( i < j && is_lower_word((Uchar*)w[i]) ) /*                        */
+    while ( i < j && is_lower_word((String)w[i]) ) /*                        */
     { type[i++] = 'v'; von++; }			   /*                        */
     while ( i < j )				   /*                        */
     { type[i++] = 'l'; last++; }		   /*                        */
@@ -496,19 +496,19 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
     type[j--] = ',';				   /*                        */
     if ( j >= 0 ) { type[j--] = 'l'; last++; }	   /*                        */
     i = 0;					   /*                        */
-    while ( i < j && !is_lower_word((Uchar*)w[i]) )/*                        */
+    while ( i < j && !is_lower_word((String)w[i]) )/*                        */
     { type[i++] = 'f'; first++; }		   /*                        */
-    while ( i < j && is_lower_word((Uchar*)w[i]) ) /*                        */
+    while ( i < j && is_lower_word((String)w[i]) ) /*                        */
     { type[i++] = 'v'; von++; }			   /*                        */
     while ( i < j )				   /*                        */
     { type[i++] = 'l'; last++; }		   /*                        */
   }						   /*                        */
   else						   /*                        */
   { i = 0;			   		   /*------------------------*/
-    if ( is_lower_word((Uchar*)w[i]) )		   /* vv ll, ff              */
+    if ( is_lower_word((String)w[i]) )		   /* vv ll, ff              */
     { while ( i < len &&			   /*                        */
 	      w[i] != comma &&	   		   /*                        */
-	      is_lower_word((Uchar*)w[i]) )	   /*                        */
+	      is_lower_word((String)w[i]) )	   /*                        */
       { type[i++] = 'v'; von++; }		   /*                        */
     }						   /*                        */
 			   			   /*------------------------*/
@@ -521,14 +521,14 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
       { type[i++] = 'j'; jr++; }		   /*                        */
       if (i < len) { type[i++] = ','; }		   /*                        */
     }						   /*                        */
-    while ( i < len && !is_lower_word((Uchar*)w[i]) )/*                      */
+    while ( i < len && !is_lower_word((String)w[i]) )/*                      */
     { if (w[i] == comma) {	   		   /*                        */
         type[i++] = ',';			   /*                        */
       } else {					   /*                        */
         type[i++] = 'f'; first++;		   /*                        */
       }						   /*                        */
     }		   				   /*                        */
-    while ( i < len && is_lower_word((Uchar*)w[i]) )/*                       */
+    while ( i < len && is_lower_word((String)w[i]) )/*                       */
     { type[i++] = 'v'; von++; }			   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -591,8 +591,8 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void initial(s,trans,len,sb)		   /*                        */
-  Uchar         *s;				   /*                        */
-  unsigned char *trans;				   /*                        */
+  String        s;				   /*                        */
+  String	trans;				   /*                        */
   int           len;				   /*                        */
   StringBuffer  *sb;				   /*                        */
 { 						   /*                        */
@@ -620,27 +620,27 @@ static void initial(s,trans,len,sb)		   /*                        */
 ** Returns:	
 **___________________________________________________			     */
 static int is_jr(s, eager)			   /*                        */
-  Uchar * s;					   /*                        */
+  String  s;					   /*                        */
   int  eager;					   /*                        */
 {						   /*                        */
   switch ( ToLower(*s) )			   /*                        */
   { case 'j':					   /*                        */
       s++;					   /*                        */
-      return ( case_cmp(s,(Uchar*)"r")    ||	   /*                        */
-	       case_cmp(s,(Uchar*)"r.")   ||	   /*                        */
-	       case_cmp(s,(Uchar*)"unior") );	   /*                        */
+      return ( case_cmp(s,(String)"r")    ||	   /*                        */
+	       case_cmp(s,(String)"r.")   ||	   /*                        */
+	       case_cmp(s,(String)"unior") );	   /*                        */
     case 's':					   /*                        */
       s++;					   /*                        */
-      return ( case_cmp(s,(Uchar*)"en")   ||	   /*                        */
-	       case_cmp(s,(Uchar*)"en.")  ||	   /*                        */
-	       case_cmp(s,(Uchar*)"enior") );	   /*                        */
+      return ( case_cmp(s,(String)"en")   ||	   /*                        */
+	       case_cmp(s,(String)"en.")  ||	   /*                        */
+	       case_cmp(s,(String)"enior") );	   /*                        */
     case 'm':					   /*                        */
       s++;					   /*                        */
-      return ( case_cmp(s,(Uchar*)"d") );	   /*                        */
+      return ( case_cmp(s,(String)"d") );	   /*                        */
     case 'p':					   /*                        */
       s++;					   /*                        */
-      return ( case_cmp(s,(Uchar*)"hD")   ||	   /*                        */
-	       case_cmp(s,(Uchar*)"hD.")  );	   /*                        */
+      return ( case_cmp(s,(String)"hD")   ||	   /*                        */
+	       case_cmp(s,(String)"hD.")  );	   /*                        */
     case 'i':					   /*                        */
       s++;					   /*                        */
       return ( (*s == '\0' && eager)      ||	   /*                        */
@@ -678,8 +678,8 @@ static int is_jr(s, eager)			   /*                        */
 	       strcmp((char*)s,"XIX")   == 0 ||	   /*                        */
 	       strcmp((char*)s,"XX")    == 0 );	   /*                        */
     case 'e':					   /*                        */
-      return ( case_cmp(++s,(Uchar*)"sc") ||	   /*                        */
-	       case_cmp(s,(Uchar*)"sc.")  );	   /*                        */
+      return ( case_cmp(++s,(String)"sc") ||	   /*                        */
+	       case_cmp(s,(String)"sc.")  );	   /*                        */
   }						   /*                        */
   return FALSE;					   /*                        */
 }						   /*------------------------*/
@@ -695,7 +695,7 @@ static int is_jr(s, eager)			   /*                        */
 ** Returns:	TRUE or FALSE
 **___________________________________________________			     */
 static int is_lower_word(s)			   /*                        */
-  register Uchar *s;				   /*                        */
+  register String s;				   /*                        */
 { 						   /*                        */
   while(*s)					   /*                        */
   { if ( is_lower(*s) ) return TRUE;		   /*                        */

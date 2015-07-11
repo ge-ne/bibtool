@@ -22,13 +22,13 @@
 
 #ifdef RSC_INIT
 #define RscNumeric(SYM,S,V,I) int    V = I;
-#define RscString(SYM,S,V,I)  Uchar * V = (Uchar*)I;
+#define RscString(SYM,S,V,I)  String V = (String)I;
 #define RscBoolean(SYM,S,V,I) int    V = I;
 #define RscByFct(SYM,S,FCT)   
 #define DECLARE(TYPE,VAR,VAL) TYPE VAR = VAL
 #else
 #define RscNumeric(SYM,S,V,I) extern int    V;
-#define RscString(SYM,S,V,I)  extern Uchar * V;
+#define RscString(SYM,S,V,I)  extern String V;
 #define RscBoolean(SYM,S,V,I) extern int    V;
 #define RscByFct(SYM,S,FCT)   
 #define DECLARE(TYPE,VAR,VAL) extern TYPE VAR
@@ -47,9 +47,9 @@ DECLARE( unsigned char*, rsc_v_rsc , (unsigned char*)(RSC_BIBTOOL_DEFAULT)	);
 #else
 #define _ARG(A) ()
 #endif
- int load_rsc _ARG((Uchar *name));
- int resource _ARG((Uchar *name));
+ int load_rsc _ARG((String name));
+ int resource _ARG((String name));
  int search_rsc _ARG((void));
- int set_rsc _ARG((Uchar *name,Uchar *val));
- int use_rsc _ARG((Uchar *s));
- void rsc_print _ARG((Uchar *s));
+ int set_rsc _ARG((String name,String val));
+ int use_rsc _ARG((String s));
+ void rsc_print _ARG((String s));

@@ -51,11 +51,11 @@
 int expand_crossref(db,rec)		   	   /*                        */
   DB     db;					   /*                        */
   Record rec;					   /*                        */
-{ register Uchar **hp;				   /*			     */
-  register int   i;				   /*                        */
-  Uchar		 *t, *s;			   /*			     */
-  Record         r = rec;			   /*                        */
-  int            limit = rsc_xref_limit;	   /*                        */
+{ register String *hp;				   /*			     */
+  register int    i;				   /*                        */
+  String	  t, s;			   	   /*			     */
+  Record          r = rec;			   /*                        */
+  int             limit = rsc_xref_limit;	   /*                        */
  						   /*                        */
   DebugPrint1("expand_crossref");		   /*                        */
  						   /*                        */
@@ -73,7 +73,7 @@ int expand_crossref(db,rec)		   	   /*                        */
     t = *++hp;					   /*                        */
     t++;				   	   /*			     */
     (void)sp_open(t);				   /* Try to extract	     */
-    if ( (s = SParseSymbol(&t)) == (Uchar*)0 )     /*  the crossref as symbol*/
+    if ( (s = SParseSymbol(&t)) == StringNULL )	   /*  the crossref as symbol*/
     { return FALSE; }				   /*			     */
 						   /*			     */
     if ( (r = db_find(db,s)) == (Record)NULL )	   /*			     */
@@ -87,7 +87,7 @@ int expand_crossref(db,rec)		   	   /*                        */
     {						   /*                        */
       s	= *hp++;                                   /*                        */
       t	= *hp++;                                   /*                        */
-      if (t != (Uchar*)0)                          /*                        */
+      if (t != StringNULL)			   /*                        */
       { provide_to_record(rec,s,t);                /*                        */
       }                                            /*                        */
     }						   /*			     */

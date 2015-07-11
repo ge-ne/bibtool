@@ -44,7 +44,7 @@
 #else
 #define _ARG(A) ()
 #endif
- static int match _ARG((Uchar *s,Uchar *t));	   /* entry.c                */
+ static int match _ARG((String s, String t));	   /* entry.c                */
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -56,7 +56,7 @@
 
 #define EntrySizeIncrement 8
 
- Uchar	    **entry_type;
+ String	    *entry_type;
  static int entry_ptr	= 0;
  static int entry_size  = 0;
 
@@ -92,15 +92,15 @@ void init_entries()				   /*			     */
   register char**wp;				   /*			     */
 #endif
 						   /*			     */
-  def_entry_type((Uchar*)"STRING"  );		   /*			     */
-  def_entry_type((Uchar*)"PREAMBLE");		   /*			     */
-  def_entry_type((Uchar*)"COMMENT" );		   /*			     */
-  def_entry_type((Uchar*)"ALIAS"   );		   /*			     */
-  def_entry_type((Uchar*)"MODIFY"  );		   /*			     */
-  def_entry_type((Uchar*)"INCLUDE" );		   /*			     */
+  def_entry_type((String)"STRING"  );		   /*			     */
+  def_entry_type((String)"PREAMBLE");		   /*			     */
+  def_entry_type((String)"COMMENT" );		   /*			     */
+  def_entry_type((String)"ALIAS"   );		   /*			     */
+  def_entry_type((String)"MODIFY"  );		   /*			     */
+  def_entry_type((String)"INCLUDE" );		   /*			     */
 #ifdef INITIALIZE_BIBTEX_ENTRIES
   for ( wp = word_list; *wp != NULL; ++wp )	   /* add compiled in types. */
-  { def_entry_type((Uchar*)(*wp)); }		   /*			     */
+  { def_entry_type((String)(*wp)); }		   /*			     */
 #endif
 }						   /*------------------------*/
 
@@ -117,7 +117,7 @@ void init_entries()				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void def_entry_type(s)				   /*			     */
-  Uchar *s;				   	   /*			     */
+  String s;				   	   /*			     */
 { int  i;				   	   /*                        */
  						   /*                        */
   for (i = 0; i < entry_ptr; ++i)		   /*			     */
@@ -132,11 +132,11 @@ void def_entry_type(s)				   /*			     */
   if ( entry_ptr <= entry_size )		   /*			     */
   { entry_size += EntrySizeIncrement;		   /*			     */
     entry_type = ( entry_ptr == 0		   /*			     */
-		  ? (Uchar**)malloc((size_t)(entry_size*sizeof(Uchar*)))
-		  : (Uchar**)realloc((char*)entry_type,
-				     (size_t)(entry_size*sizeof(Uchar*)))
+		  ? (String*)malloc((size_t)(entry_size*sizeof(String)))
+		  : (String*)realloc((char*)entry_type,
+				     (size_t)(entry_size*sizeof(String)))
 		  );				   /*			     */
-    if ( entry_type == (Uchar**)NULL )		   /*			     */
+    if ( entry_type == (String*)NULL )		   /*			     */
     { OUT_OF_MEMORY("entry type"); }		   /*                        */
   }						   /*			     */
   entry_type[entry_ptr++] = new_Ustring(s);	   /*		             */
@@ -153,8 +153,8 @@ void def_entry_type(s)				   /*			     */
 ** Returns:	
 **___________________________________________________			     */
 static int match(s,t)				   /*			     */
-  register Uchar *s;				   /*			     */
-  register Uchar *t;				   /*			     */
+  register String s;				   /*			     */
+  register String t;				   /*			     */
 {						   /*			     */
   while( *t )					   /*			     */
   { if ( ToLower(*s) != ToLower(*t) ) return(FALSE);/*			     */
@@ -171,7 +171,7 @@ static int match(s,t)				   /*			     */
 ** Returns:	The index in the array or |NOOP|.
 **___________________________________________________			     */
 int find_entry_type(s)				   /*			     */
-  Uchar *s;				   	   /*			     */
+  String s;				   	   /*			     */
 { int i;				   	   /*			     */
 						   /*			     */
   for (i = 0; i < entry_ptr; ++i)		   /*			     */
@@ -191,7 +191,7 @@ int find_entry_type(s)				   /*			     */
 **	idx	Index of entry type.
 ** Returns:	Print representation of the entry type or |NULL|.
 **___________________________________________________			     */
-Uchar * get_entry_type(idx)			   /*                        */
+String  get_entry_type(idx)			   /*                        */
   int idx;				   	   /*                        */
 {						   /*                        */
   return (idx < 0 || idx >= entry_ptr		   /*                        */

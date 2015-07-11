@@ -36,6 +36,11 @@
 
 #include <stdio.h>
 
+ typedef unsigned char Uchar;
+ typedef Uchar* String;
+
+#define StringNULL (String)NULL
+
 #define T__None      0
 #define T__Upper     1
 #define T__Lower     2
@@ -313,7 +318,7 @@
 **		case. Such a translation table can be used as argument
 **		to the regular expression functions.
 **___________________________________________________			     */
-unsigned char trans_lower[256];			   /*                        */
+Uchar trans_lower[256];			   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Variable:	trans_upper
@@ -322,7 +327,7 @@ unsigned char trans_lower[256];			   /*                        */
 **		case. Such a translation table can be used as argument
 **		to the regular expression functions.
 **___________________________________________________			     */
-unsigned char trans_upper[256];			   /*                        */
+Uchar trans_upper[256];			   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Variable:	trans_id
@@ -331,14 +336,14 @@ unsigned char trans_upper[256];			   /*                        */
 **		implements the identity a translation table can be
 **		used as argument to the regular expression functions.
 **___________________________________________________			     */
-unsigned char trans_id[256];			   /*                        */
+Uchar trans_id[256];			   	   /*                        */
 
 #else
 
  extern int  type__allowed[];
- extern unsigned char trans_lower[256];
- extern unsigned char trans_upper[256];
- extern unsigned char trans_id[256];
+ extern Uchar trans_lower[256];
+ extern Uchar trans_upper[256];
+ extern Uchar trans_id[256];
 #endif
 
 /*-----------------------------------------------------------------------------
@@ -350,7 +355,7 @@ unsigned char trans_id[256];			   /*                        */
 **	C	Character to consider
 ** Returns:	|TRUE| iff the argument is an allowed character.
 **___________________________________________________			     */
-#define is_allowed(C)	  (type__allowed[(unsigned char)C]&T__Allowed)
+#define is_allowed(C)	  (type__allowed[(Uchar)C]&T__Allowed)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_upper()
@@ -363,7 +368,7 @@ unsigned char trans_id[256];			   /*                        */
 **	C	Character to consider
 ** Returns:	|TRUE| iff the character is an uppercase letter.
 **___________________________________________________			     */
-#define is_upper(C)	  (type__allowed[(unsigned char)C]&T__Upper)
+#define is_upper(C)	  (type__allowed[(Uchar)C]&T__Upper)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_lower()
@@ -376,7 +381,7 @@ unsigned char trans_id[256];			   /*                        */
 **	C	Character to consider
 ** Returns:	|TRUE| iff the character is a lowercase letter.
 **___________________________________________________			     */
-#define is_lower(C)	  (type__allowed[(unsigned char)C]&T__Lower)
+#define is_lower(C)	  (type__allowed[(Uchar)C]&T__Lower)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_alpha()
@@ -389,7 +394,7 @@ unsigned char trans_id[256];			   /*                        */
 **	C	Character to consider
 ** Returns:	|TRUE| iff the character is a letter.
 **___________________________________________________			     */
-#define is_alpha(C)	  (type__allowed[(unsigned char)C]&(T__Upper|T__Lower))
+#define is_alpha(C)	  (type__allowed[(Uchar)C]&(T__Upper|T__Lower))
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_digit()
@@ -402,7 +407,7 @@ unsigned char trans_id[256];			   /*                        */
 **	C	Character to consider
 ** Returns:	|TRUE| iff the character is a digit.
 **___________________________________________________			     */
-#define is_digit(C)	  (type__allowed[(unsigned char)C]&T__Number)
+#define is_digit(C)	  (type__allowed[(Uchar)C]&T__Number)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_space()
@@ -413,7 +418,7 @@ unsigned char trans_id[256];			   /*                        */
 **	C	Character to consider
 ** Returns:	|TRUE| iff the character is a space character.
 **___________________________________________________			     */
-#define is_space(C)	  (type__allowed[(unsigned char)C]&T__Space)
+#define is_space(C)	  (type__allowed[(Uchar)C]&T__Space)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_extended()
@@ -424,7 +429,7 @@ unsigned char trans_id[256];			   /*                        */
 **	C	Character to consider
 ** Returns:	|TRUE| iff the character is an extended character.
 **___________________________________________________			     */
-#define is_extended(C)	  (type__allowed[(unsigned char)C]&T__Extended)
+#define is_extended(C)	  (type__allowed[(Uchar)C]&T__Extended)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_wordsep()
@@ -435,7 +440,7 @@ unsigned char trans_id[256];			   /*                        */
 **	C	Character to consider
 ** Returns:	|TRUE| iff the character is a word separator.
 **___________________________________________________			     */
-#define is_wordsep(C)	  (type__allowed[(unsigned char)C]&T__WordSep)
+#define is_wordsep(C)	  (type__allowed[(Uchar)C]&T__WordSep)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ToLower()
@@ -447,7 +452,7 @@ unsigned char trans_id[256];			   /*                        */
 **	C	Character to translate
 ** Returns:	The lower case letter or the character itself.
 **___________________________________________________			     */
-#define ToLower(C)	  trans_lower[(unsigned char)(C)]
+#define ToLower(C)	  trans_lower[(Uchar)(C)]
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ToUpper()
@@ -459,14 +464,12 @@ unsigned char trans_id[256];			   /*                        */
 **	C	Character to translate
 ** Returns:	The upper case letter or the character itself.
 **___________________________________________________			     */
-#define ToUpper(C)	  trans_upper[(unsigned char)(C)]
+#define ToUpper(C)	  trans_upper[(Uchar)(C)]
 
 
 #define SYMBOL_TYPE_LOWER 0
 #define SYMBOL_TYPE_UPPER 1
 #define SYMBOL_TYPE_CASED 2
-
- typedef unsigned char Uchar;
 
 #endif
 
@@ -475,8 +478,8 @@ unsigned char trans_id[256];			   /*                        */
 #else
 #define _ARG(A) ()
 #endif
- Uchar * lower _ARG((Uchar * s));		   /* type.c                 */
- int case_cmp _ARG((Uchar * s,Uchar * t));	   /* type.c                 */
- void add_word_sep _ARG((Uchar *s));		   /* type.c                 */
+ String lower _ARG((String s));		   	   /* type.c                 */
+ int case_cmp _ARG((String s, String t));	   /* type.c                 */
+ void add_word_sep _ARG((String s));		   /* type.c                 */
  void init_type _ARG((void));			   /* type.c                 */
 

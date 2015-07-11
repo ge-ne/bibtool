@@ -39,24 +39,24 @@
 **
 **________________________________________________   			     */
 typedef struct rECORD				/*                           */
-  { Uchar	  * rc_key;			/* The sort key.             */
-    Uchar	  * rc_old_key;			/* The old sort key.         */
-    int		  rc_type;			/* The type of the record.   */
-    int		  rc_flags;			/* Some bits; e.g. used      */
+{ String	rc_key;				/* The sort key.             */
+    String	rc_old_key;			/* The old sort key.         */
+    int		rc_type;			/* The type of the record.   */
+    int		rc_flags;			/* Some bits; e.g. used      */
  						/*  during selecting aux     */
  						/*  records.                 */
-    int		  rc_free;			/* The size of the heap. This*/
+    int		rc_free;			/* The size of the heap. This*/
  						/*  is purely internal and   */
  						/*  must not be modified.    */
-    Uchar	  **rc_heap;			/* The heap.                 */
-    Uchar	  * rc_comment;			/* The comment following     */
+    String	*rc_heap;			/* The heap.                 */
+    String	rc_comment;			/* The comment following     */
  						/*  the given record.        */
-    Uchar	  * rc_source;			/* The source of the record. */
+    String	rc_source;			/* The source of the record. */
  						/*  I.e. the file name it    */
  						/*  has been read from.      */
-    struct rECORD * rc_next;			/* Pointer to the next       */
+    struct rECORD *rc_next;			/* Pointer to the next       */
  						/*  record.                  */
-    struct rECORD * rc_prev;			/* Pointer to the previous   */
+    struct rECORD *rc_prev;			/* Pointer to the previous   */
  						/*  record.                  */
   } SRecord, *Record;				/*                           */
 
@@ -247,7 +247,7 @@ typedef struct rECORD				/*                           */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	RecordOldKey()
-** Type:	Uchar *
+** Type:	String 
 ** Purpose:	
 **		
 **		
@@ -258,7 +258,7 @@ typedef struct rECORD				/*                           */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	RecordSortkey()
-** Type:	Uchar *
+** Type:	String 
 ** Purpose:	This is the functional representation of the sort key
 **		of a record. This can be used to access the key component
 **		of a record. It can also be used as lvalue.
@@ -282,7 +282,7 @@ typedef struct rECORD				/*                           */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	RecordHeap()
-** Type:	Uchar **
+** Type:	String *
 ** Purpose:	The heap of a record is a array of strings. The even
 **		positions contain the names of fields and the
 **		following array cell contains its value. If the name
@@ -318,7 +318,7 @@ typedef struct rECORD				/*                           */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	RecordComment()
-** Type:	Uchar *
+** Type:	String 
 ** Purpose:	This is the functional representation of the comment
 **		component of a record. It can be used to get this value
 **		as well as an lvalue to set it.
@@ -329,7 +329,7 @@ typedef struct rECORD				/*                           */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	RecordSource()
-** Type:	Uchar *
+** Type:	String 
 ** Purpose:	This is the functional representation of the source
 **		indicator of a record. It is a string containing the
 **		file name from which this record has been read. The
@@ -363,12 +363,12 @@ typedef struct rECORD				/*                           */
  Record new_record _ARG((int token,int size));	   /* record.c               */
  Record record_gc _ARG((Record rec));		   /* record.c               */
  Record unlink_record _ARG((Record rec));	   /* record.c               */
- WordList new_wordlist _ARG((Uchar * s));	   /* record.c               */
- void add_sort_order _ARG((Uchar *val));	   /* record.c               */
+ WordList new_wordlist _ARG((String  s));	   /* record.c               */
+ void add_sort_order _ARG((String val));	   /* record.c               */
  void free_1_record _ARG((Record rec));		   /* record.c               */
  void free_record _ARG((Record rec));		   /* record.c               */
- void provide_to_record _ARG((Record rec,Uchar *s,Uchar *t));/*              */
- void push_to_record _ARG((Record rec,Uchar *s,Uchar *t));/* record.c        */
+ void provide_to_record _ARG((Record rec,String s, String t));/*             */
+ void push_to_record _ARG((Record rec,String s, String t));/* record.c       */
  void sort_record _ARG((Record rec));		   /* record.c               */
 
 

@@ -26,12 +26,12 @@
 #endif
 
  typedef struct rULE
- { Uchar		    *rr_field;
-   Uchar		    *rr_goal;
-   Uchar		    *rr_value;
-   Uchar		    *rr_frame;
-   int			    rr_flag;
-   struct rULE		    *rr_next;
+ { String	rr_field;
+   String	rr_goal;
+   String	rr_value;
+   String	rr_frame;
+   int		rr_flag;
+   struct rULE	*rr_next;
 #ifdef REGEX
    struct re_pattern_buffer rr_pat_buff;
 #endif
@@ -65,26 +65,26 @@
 #endif
  int is_selected _ARG((DB db,Record rec));	   /*                        */
  int set_regex_syntax _ARG((char* name));	   /*                        */
- static Rule new_rule _ARG((Uchar *field,Uchar *pattern,Uchar *frame,int flags,int casep));
- static Uchar * check_regex _ARG((Uchar *field,Uchar *value,Rule rule,DB db,Record rec));
- static Uchar * repl_regex _ARG((Uchar *field,Uchar *value,Rule rule,DB db,Record rec));
- static int s_match _ARG((Uchar * p,Uchar * s));   /*                        */
- static int s_search _ARG((Uchar * pattern,Uchar * s));/*                    */
- static void add_rule _ARG((Uchar *s,Rule *rp,Rule *rp_end,int flags,int casep));/**/
+ static Rule new_rule _ARG((String field,String pattern,String frame,int flags,int casep));
+ static String  check_regex _ARG((String field,String value,Rule rule,DB db,Record rec));
+ static String  repl_regex _ARG((String field,String value,Rule rule,DB db,Record rec));
+ static int s_match _ARG((String  p,String  s));   /*                        */
+ static int s_search _ARG((String  pattern,String  s));/*                    */
+ static void add_rule _ARG((String s,Rule *rp,Rule *rp_end,int flags,int casep));/**/
 #ifdef UNUSED
  static void free_rule _ARG((Rule rule));	   /*                        */
 #endif
- static void init_s_search _ARG((Uchar * ignored));/*                        */
- static void rewrite_1 _ARG((Uchar *frame,StringBuffer *sb,Uchar *match,DB db,Record rec));/**/
- void add_check_rule _ARG((Uchar *s));		   /*                        */
- void add_extract _ARG((Uchar *s,int regexp,int notp));/*                    */
- void add_field _ARG((Uchar *spec));		   /*                        */
- void add_rewrite_rule _ARG((Uchar *s));	   /*                        */
+ static void init_s_search _ARG((String  ignored));/*                        */
+ static void rewrite_1 _ARG((String frame,StringBuffer *sb,String match,DB db,Record rec));/**/
+ void add_check_rule _ARG((String s));		   /*                        */
+ void add_extract _ARG((String s,int regexp,int notp));/*                    */
+ void add_field _ARG((String spec));		   /*                        */
+ void add_rewrite_rule _ARG((String s));	   /*                        */
  void clear_addlist _ARG((void));		   /*                        */
- void remove_field _ARG((Uchar *field,Record rec));/*                        */
- void rename_field _ARG((Uchar *spec));		   /*                        */
+ void remove_field _ARG((String field,Record rec));/*                        */
+ void rename_field _ARG((String spec));		   /*                        */
  void rewrite_record _ARG((DB db,Record rec));	   /*                        */
- void save_regex _ARG((Uchar *s));		   /*                        */
+ void save_regex _ARG((String s));		   /*                        */
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -118,14 +118,14 @@ void clear_addlist()				   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void add_field(spec)				   /*			     */
-  Uchar *spec;					   /*			     */
-{ register Uchar *field, *value;		   /*			     */
+  String spec;					   /*			     */
+{ register String field, value;		   	   /*			     */
 						   /*			     */
   (void)sp_open(spec);				   /*			     */
-  if ( (field = SParseSymbol(&spec)) == (Uchar*)NULL )/*		     */
+  if ( (field = SParseSymbol(&spec)) == StringNULL )/*		             */
     return;					   /*			     */
   (void)SParseSkip(&spec);			   /*			     */
-  if ( (value=SParseValue(&spec)) == (Uchar*)NULL )/*			     */
+  if ( (value=SParseValue(&spec)) == StringNULL )  /*			     */
     return;					   /*			     */
   (void)SParseEOS(&spec);			   /*			     */
 						   /*			     */
@@ -141,17 +141,17 @@ void add_field(spec)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void remove_field(field, rec)			   /*			     */
-  register Uchar *field;			   /*			     */
+  register String field;			   /*			     */
   Record	 rec;				   /*			     */
 { register int	 i;				   /*			     */
 						   /*			     */
   for (i = 0; i < RecordFree(rec); i += 2 )	   /*			     */
   { if ( field == RecordHeap(rec)[i] )		   /* compare symbols	     */
-    { RecordHeap(rec)[i] = (Uchar*)NULL; }	   /*			     */
+    { RecordHeap(rec)[i] = StringNULL; }	   /*			     */
   }						   /*			     */
 						   /*			     */
   while ( RecordFree(rec) > 0 &&		   /* Adjust Heap Length     */
-	  RecordHeap(rec)[RecordFree(rec)-2] == NULL )/*		     */
+	  RecordHeap(rec)[RecordFree(rec) - 2] == NULL )/*		     */
   { RecordFree(rec) -= 2;			   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
@@ -177,9 +177,9 @@ void remove_field(field, rec)			   /*			     */
 ** Returns:	A pointer to the allocated structure or |NULL| upon failure.
 **___________________________________________________			     */
 static Rule new_rule(field,pattern,frame,flags,casep)/*			     */
-  Uchar		*field;				   /*			     */
-  Uchar		*pattern;			   /*			     */
-  Uchar		*frame;				   /*			     */
+  String	field;				   /*			     */
+  String	pattern;			   /*			     */
+  String	frame;				   /*			     */
   int		flags;				   /*			     */
   int		casep;				   /*			     */
 { register Rule new;				   /*			     */
@@ -206,7 +206,7 @@ static Rule new_rule(field,pattern,frame,flags,casep)/*			     */
   RuleGoal(new)  = pattern;			   /*                        */
 					       	   /*                        */
 #ifdef REGEX
-  if ( pattern && *pattern && (flags&RULE_REGEXP) )   	   /*                        */
+  if ( pattern && *pattern && (flags&RULE_REGEXP) )/*                        */
   { char *msg;					   /*                        */
     if ( (RulePattern(new).buffer = (unsigned char *)malloc(16)) == NULL )/* */
     { OUT_OF_MEMORY("pattern"); }		   /*			     */
@@ -271,23 +271,23 @@ static void free_rule(rule)			   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
-  Uchar		*s;				   /*			     */
+  String	s;				   /*			     */
   Rule		*rp;				   /*			     */
   Rule		*rp_end;			   /*			     */
   int		flags;				   /*                        */
   int		casep;				   /*			     */
-{ Uchar		*field;				   /*			     */
-  Uchar		*pattern;			   /*			     */
-  Uchar		*frame;				   /*			     */
+{ String	field;				   /*			     */
+  String	pattern;			   /*			     */
+  String	frame;				   /*			     */
   Rule		rule;				   /*			     */
   int		sp;				   /*                        */
   int		stackp;				   /* stack pointer for the  */
-  static Uchar	**stack;			   /* local stack of fields  */
+  static String	*stack;			   	   /* local stack of fields  */
   static int    stacksize = 0;			   /*                        */
  						   /*                        */
   if ( stacksize == 0 )				   /*                        */
   { stacksize++;				   /*                        */
-    if ((stack=(Uchar**)malloc(sizeof(Uchar*)))==(Uchar**)NULL)/*            */
+    if ((stack=(String*)malloc(sizeof(String)))==(String*)NULL)/*            */
     { OUT_OF_MEMORY("rule stack"); }		   /*                        */
   }						   /*                        */
   stackp = 0;					   /*                        */
@@ -311,15 +311,15 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
 						   /*			     */
     if ( stackp >= stacksize )			   /*                        */
     { stacksize += 8;				   /*                        */
-      if ( (stack=(Uchar**)realloc((char*)stack,   /*                        */
-				  stacksize*sizeof(char*)))==NULL)/*         */
+      if ( (stack=(String*)realloc((char*)stack,   /*                        */
+				   stacksize*sizeof(char*)))==NULL)/*        */
       { OUT_OF_MEMORY("rule stack"); }		   /*                        */
     }						   /*                        */
     stack[stackp++] = field;			   /*                        */
   }						   /*                        */
 						   /*			     */
   if ( *s == '\0' )				   /*			     */
-  { pattern = symbol((Uchar*)"."); }		   /*			     */
+  { pattern = symbol((String)"."); }		   /*			     */
   else if ( (pattern=SParseUnquotedString(&s)) == NULL )/*		     */
   { DebugPrintF1("No pattern found");		   /*                        */
     return;					   /*			     */
@@ -329,7 +329,7 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
   (void)SParseSkip(&s);				   /*			     */
 						   /*			     */
   if ( *s == '\0' )				   /*			     */
-  { frame = (Uchar*)NULL; }			   /*			     */
+  { frame = StringNULL; }			   /*			     */
   else if ( (frame=SParseUnquotedString(&s)) == NULL )/*		     */
   { return; }					   /*			     */
   else						   /*			     */
@@ -344,7 +344,7 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
 #endif
 						   /*			     */
   if ( stackp == 0 )				   /* No field specified.    */
-  { rule = new_rule((Uchar*)0,pattern,frame,flags,casep); /*		     */
+  { rule = new_rule(StringNULL, pattern, frame, flags, casep);/*		*/
     if ( *rp == RuleNULL )			   /*                        */
     { *rp = *rp_end = rule; }			   /*			     */
     else					   /*                        */
@@ -374,9 +374,9 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void rewrite_1(frame,sb,match,db,rec)	   /*			     */
-  Uchar		*frame;			   	   /*			     */
+  String	frame;			   	   /*			     */
   StringBuffer	*sb;			   	   /*			     */
-  Uchar		*match;			   	   /*			     */
+  String	match;			   	   /*			     */
   DB		db;			   	   /*                        */
   Record	rec;			   	   /*			     */
 {						   /*			     */
@@ -417,6 +417,52 @@ static void rewrite_1(frame,sb,match,db,rec)	   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
 
+#ifdef REGEX
+
+/*-----------------------------------------------------------------------------
+** Function:	selector_hits()
+** Type:	static int
+** Purpose:	
+**		
+** Arguments:
+**	rule	
+**	 rec	
+** Returns:	
+**___________________________________________________			     */
+static int selector_hits(rule, rec)		   /*                        */
+  Rule rule;					   /*                        */
+  Record rec;					   /*                        */
+{ int i;				   	   /*                        */
+  String *hp;				   	   /*                        */
+  String field = RuleFrame(rule);		   /*                        */
+ 						   /*                        */
+  if (field == NULL)				   /*                        */
+  { return TRUE;				   /*                        */
+  }						   /*                        */
+
+  for (i = RecordFree(rec), hp = RecordHeap(rec);/*		     */
+       i > 0;				   /*			     */
+       i -= 2, hp += 2)			   /*			     */
+  {					   /*			     */
+    if (*hp == field)	   		   /*			     */
+    { *hp = RuleValue(rule);
+      break;
+    }
+  }
+  
+#ifdef NEVER
+  return re_search(&RulePattern(rule),	   /*			     */
+		   (char*)value,		   /*                        */
+		   len,			   /*                        */
+		   0,				   /*                        */
+		   len-1,			   /*                        */
+		   &reg) >= 0 )		   /*			     */
+#else
+		   return FALSE;
+#endif
+}						   /*------------------------*/
+#endif
+
 /*-----------------------------------------------------------------------------
 ** Function:	repl_regex()
 ** Purpose:	
@@ -429,9 +475,9 @@ static void rewrite_1(frame,sb,match,db,rec)	   /*			     */
 **	rec
 ** Returns:	
 **___________________________________________________			     */
-static Uchar * repl_regex(field,value,rule,db,rec) /*			     */
-  Uchar	 *field;				   /*			     */
-  Uchar	 *value;				   /*			     */
+static String repl_regex(field, value, rule, db, rec)/*			     */
+  String field;				   	   /*			     */
+  String value;				   	   /*			     */
   Rule	 rule;			   	   	   /*			     */
   DB	 db;				   	   /*                        */
   Record rec;			   	   	   /*			     */
@@ -452,7 +498,7 @@ static Uchar * repl_regex(field,value,rule,db,rec) /*			     */
   else		    { sbrewind(s1);  sbrewind(s2);  }/*			     */
 						   /*			     */
   (void)sbputs((char*)value, s1);		   /*			     */
-  value     = (Uchar*)sbflush(s1);		   /*			     */
+  value     = (String)sbflush(s1);		   /*			     */
   len	    = strlen((char*)value);		   /*			     */
   limit     = rsc_rewrite_limit;		   /*			     */
   once_more = TRUE;				   /*                        */
@@ -462,22 +508,21 @@ static Uchar * repl_regex(field,value,rule,db,rec) /*			     */
     once_more = FALSE;				   /*                        */
     while (rule != RuleNULL)			   /*                        */
     {						   /*                        */
-      if ((RuleFlag(rule) & RULE_RENAME) != 0)
-      {
-	if (RuleField(rule) == field)
-	{ int i;
-	  Uchar**hp;
+      if ((RuleFlag(rule) & RULE_RENAME) != 0)	   /*                        */
+      {						   /*                        */
+	if (RuleField(rule) == field &&
+	    selector_hits(rule, rec))
+	{ int i;				   /*                        */
+	  String *hp;				   /*                        */
 	  for (i = RecordFree(rec), hp = RecordHeap(rec);/*		     */
 	       i > 0;				   /*			     */
 	       i -= 2, hp += 2)			   /*			     */
 	  {					   /*			     */
 	    if (*hp == field)	   		   /*			     */
-	    {					   /*			     */
-	      *hp = RuleValue(rule);
+	    { *hp = RuleValue(rule);
 	      break;
 	    }
 	  }
-
 	}
 	rule = NextRule(rule);			   /*                        */
 	limit = rsc_rewrite_limit;		   /*			     */
@@ -501,8 +546,8 @@ static Uchar * repl_regex(field,value,rule,db,rec) /*			     */
 	  once_more = FALSE;			   /*                        */
 	  break;				   /*                        */
 	}					   /*                        */
-	if ( RuleFrame(rule) == (Uchar*)NULL )	   /*			     */
-	{ return (Uchar*)NULL; }		   /*			     */
+	if ( RuleFrame(rule) == StringNULL )	   /*			     */
+	{ return StringNULL; }		   	   /*			     */
 						   /*			     */
 	if ( reg.start[0] > 0 )		   	   /*			     */
 	{ c = value[reg.start[0]];		   /* Push initial segment   */
@@ -515,7 +560,7 @@ static Uchar * repl_regex(field,value,rule,db,rec) /*			     */
 						   /*			     */
 	(void)sbputs((char*)(value+reg.end[0]),s2);/* Transfer the end.	     */
 						   /*			     */
-	value = (Uchar*)sbflush(s2);		   /* update the value	     */
+	value = (String)sbflush(s2);		   /* update the value	     */
 	len   = strlen((char*)value);		   /*  and its length	     */
 	sp = s1; s1 = s2; s2 = sp;		   /* rotate the two string  */
 	sbrewind(s2);				   /*  buffers and reset     */
@@ -544,9 +589,9 @@ static Uchar * repl_regex(field,value,rule,db,rec) /*			     */
 **	rec
 ** Returns:	
 **___________________________________________________			     */
-static Uchar * check_regex(field,value,rule,db,rec) /*			     */
-  Uchar		*field;			   	   /*			     */
-  Uchar		*value;			   	   /*			     */
+static String  check_regex(field, value, rule, db, rec)/*		     */
+  String	field;			   	   /*			     */
+  String	value;			   	   /*			     */
   Rule		rule;			   	   /*			     */
   DB			db;			   /*                        */
   Record		rec;			   /*			     */
@@ -573,15 +618,15 @@ static Uchar * check_regex(field,value,rule,db,rec) /*			     */
 		       len,0,len-1,&reg) >=0 	   /*			     */
 	 )					   /*                        */
        )					   /*			     */
-    { if ( RuleFrame(rule) == (Uchar*)NULL )	   /*			     */
-      { return (Uchar*)NULL; }			   /*			     */
+    { if ( RuleFrame(rule) == StringNULL )	   /*			     */
+      { return StringNULL; }			   /*			     */
       rewrite_1(RuleFrame(rule),s2,value,db,rec);  /*		             */
-      value = (Uchar*)sbflush(s2);		   /* update the value	     */
+      value = (String)sbflush(s2);		   /* update the value	     */
       return value;				   /*			     */
     }						   /*                        */
   }						   /*			     */
 #endif
-  return (Uchar*)NULL;				   /* return the result.     */
+  return StringNULL;				   /* return the result.     */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/
@@ -600,38 +645,41 @@ static Uchar * check_regex(field,value,rule,db,rec) /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void rename_field(s)				   /*			     */
-  Uchar *s;					   /*                        */
-{
-  Uchar* from;
-  Uchar* to;
-
-  /*
-    from to selector
-   */
+  String s;					   /*                        */
+{						   /*                        */
+  String from;					   /*                        */
+  String to;					   /*                        */
+  String field;					   /*                        */
+  String pattern = StringNULL;		   	   /*                        */
+ 						   /*                        */
   DebugPrint2("Rename field: Parsing from: ",s);   /*			     */
   (void)sp_open(s);				   /*			     */
   (void)SParseSkip(&s);			   	   /*			     */
 						   /*                        */
-  if ( (from = SParseSymbol(&s)) == (Uchar*)NULL ) /*		             */
+  if ( (from = SParseSymbol(&s)) == StringNULL ) /*		             */
     return;					   /*			     */
   (void)SParseSkip(&s);			   	   /*			     */
-  if ( (to = SParseSymbol(&s)) == (Uchar*)NULL )   /*		             */
+  if ( (to = SParseSymbol(&s)) == StringNULL )   /*		             */
     return;					   /*			     */
-
-					       /*TODO: parse selector*/
-
+ 						   /*                        */
+  (void)SParseSkip(&s);			   	   /*			     */
+  if ( (field = SParseOptionalSymbol(&s)) != StringNULL )/*		     */
+  {						   /*                        */
+    (void)SParseSkip(&s);			   /*			     */
+    if ( (pattern = SParseString(&s)) == StringNULL )/*		             */
+      return;					   /*			     */
+  }						   /*                        */
+ 						   /*                        */
   (void)SParseEOS(&s);				   /*			     */
-
-
-  Rule rule = new_rule(from, (Uchar*)0, (Uchar*)0,
-		       RULE_RENAME, rsc_case_rewrite);
+ 						   /*                        */
+  Rule rule = new_rule(from, pattern, field, 	   /*                        */
+		       RULE_RENAME, rsc_case_rewrite);/*                     */
   RuleValue(rule) = to;				   /*                        */
   if ( r_rule == RuleNULL )			   /*                        */
   { r_rule = r_rule_end = rule; }		   /*			     */
   else					   	   /*                        */
   { NextRule(r_rule_end) = rule; r_rule_end = rule;}/*			     */
-
-}
+}						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	add_rewrite_rule()
@@ -642,7 +690,7 @@ void rename_field(s)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void add_rewrite_rule(s)			   /*			     */
-  Uchar *s;				   	   /*			     */
+  String s;				   	   /*			     */
 {						   /*			     */
   add_rule(s,					   /*                        */
 	   &r_rule,				   /*                        */
@@ -662,7 +710,7 @@ void add_rewrite_rule(s)			   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void add_check_rule(s)				   /*			     */
-  Uchar *s;				   	   /*			     */
+  String s;				   	   /*			     */
 {						   /*			     */
   add_rule(s,					   /*                        */
 	   &c_rule,				   /*                        */
@@ -684,9 +732,9 @@ void rewrite_record(db, rec)			   /*			     */
   DB		  db;				   /*                        */
   register Record rec;				   /*			     */
 { register int	  i;				   /*			     */
-  register Uchar  **hp;				   /* heap pointer	     */
+  register String *hp;				   /* heap pointer	     */
   register Macro  mac;				   /*			     */
-  Uchar           *cp;				   /*			     */
+  String          cp;				   /*			     */
   static StringBuffer *sb = NULL;		   /*                        */
  						   /*                        */
   if (sb == NULL) sb = sbopen();		   /*                        */
@@ -699,7 +747,7 @@ void rewrite_record(db, rec)			   /*			     */
     {						   /*			     */
       if (   *hp				   /*			     */
 	  && *(hp+1)				   /*			     */
-	  && (Uchar*)NULL !=			   /*			     */
+	  && StringNULL !=			   /*			     */
 	     (cp=check_regex(*hp,*(hp+1),c_rule,db,rec))/*		     */
 	  )					   /*			     */
       { Err(cp); }				   /*			     */
@@ -715,8 +763,8 @@ void rewrite_record(db, rec)			   /*			     */
       if ( *hp && *(hp+1) )			   /*			     */
       {						   /*			     */
 	cp = repl_regex(*hp,*(hp+1),r_rule,db,rec);/*			     */
-	if ( cp == (Uchar*)NULL )		   /*			     */
-	{ *hp = *(hp+1) = (Uchar*)NULL; }	   /*			     */
+	if ( cp == StringNULL )		   	   /*			     */
+	{ *hp = *(hp+1) = StringNULL; }	   	   /*			     */
 	else if ( cp != *(hp+1) )		   /*			     */
 	{ *(hp+1) = symbol(cp); }		   /*			     */
       }						   /*			     */
@@ -741,7 +789,7 @@ void rewrite_record(db, rec)			   /*			     */
     sbputc('}', sb);				   /*                        */
     push_to_record(rec,			   	   /*                        */
 		   MacroName(mac),		   /*                        */
-		   sym_add((Uchar*)sbflush(sb),1));/*                        */
+		   sym_add((String)sbflush(sb),1));/*                        */
   }						   /*			     */
 }						   /*------------------------*/
 
@@ -770,7 +818,7 @@ void rewrite_record(db, rec)			   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void add_extract(s,regexp,notp)			   /*			     */
-  Uchar *s;				   	   /*			     */
+  String s;				   	   /*			     */
   int regexp;					   /*                        */
   int notp;					   /*                        */
 {						   /*                        */
@@ -793,8 +841,8 @@ void add_extract(s,regexp,notp)			   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void save_regex(s)				   /*                        */
-  Uchar *s;				   	   /*                        */
-{ Uchar *t = malloc( (size_t)strlen((char*)s)	   /*                        */
+  String s;				   	   /*                        */
+{ String t = malloc( (size_t)strlen((char*)s)	   /*                        */
 		   + (size_t)strlen((char*)rsc_sel_fields)/*                 */
 		   + 4 );			   /*			     */
   if ( t == NULL ) { OUT_OF_MEMORY("string"); }	   /*			     */
@@ -816,7 +864,7 @@ void save_regex(s)				   /*                        */
 
 
  static char s_class[256];			   /*                        */
- static Uchar *s_ignored = (Uchar*)NULL;	   /*                        */
+ static String s_ignored = (String)NULL;	   /*                        */
  static int  s_cased    = -33;			   /*                        */
 
 /*-----------------------------------------------------------------------------
@@ -829,7 +877,7 @@ void save_regex(s)				   /*                        */
 ** Returns:	Nothing
 **___________________________________________________			     */
 static void init_s_search(ignored)		   /*                        */
-  Uchar * ignored;				   /*                        */
+  String  ignored;				   /*                        */
 { int i;					   /*                        */
   for (i = 0; i < 256; i++) s_class[i] = i;	   /*                        */
  						   /*                        */
@@ -866,7 +914,7 @@ static void init_s_search(ignored)		   /*                        */
   { s_class[(unsigned int)(*(ignored++))] = '\0'; }/*                        */
  						   /*                        */
   s_cased   = rsc_case_select;			   /*                        */
-  s_ignored = symbol((Uchar*)rsc_sel_ignored);	   /*                        */
+  s_ignored = symbol((String)rsc_sel_ignored);	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -880,8 +928,8 @@ static void init_s_search(ignored)		   /*                        */
 ** Returns:	
 **___________________________________________________			     */
 static int s_match(p,s)				   /*                        */
-  Uchar * p;					   /*                        */
-  Uchar * s;					   /*                        */
+  String  p;					   /*                        */
+  String  s;					   /*                        */
 {						   /*                        */
   while ( *p && s_class[(unsigned int)*p] == '\0' ) p++;/*                   */
  						   /*                        */
@@ -908,8 +956,8 @@ static int s_match(p,s)				   /*                        */
 ** Returns:	
 **___________________________________________________			     */
 static int s_search(pattern,s)			   /*                        */
-  Uchar * pattern;				   /*                        */
-  Uchar * s;					   /*                        */
+  String  pattern;				   /*                        */
+  String  s;					   /*                        */
 {						   /*                        */
   if ( s_cased != rsc_case_select ||		   /*                        */
        strcmp((char*)s_ignored,			   /*                        */
@@ -946,7 +994,7 @@ int is_selected(db,rec)	   		   	   /*			     */
   Record rec;			   		   /*			     */
 {						   /*			     */
   int	 len, i;				   /*			     */
-  Uchar  *value;				   /*                        */
+  String value;				   	   /*                        */
   Rule   rule;					   /*                        */
  						   /*                        */
   if ( (rule=x_rule) == RuleNULL ||		   /* If no rule is given or */

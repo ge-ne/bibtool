@@ -29,9 +29,9 @@
  { short int	  kn_type;
    short int      kn_pre;
    short int      kn_post;
-   Uchar	  *kn_string;
-   Uchar	  *kn_from;
-   Uchar	  *kn_to;
+   String	  kn_string;
+   String	  kn_from;
+   String	  kn_to;
    struct kEYnODE *kn_next;
    struct kEYnODE *kn_then;
    struct kEYnODE *kn_else;

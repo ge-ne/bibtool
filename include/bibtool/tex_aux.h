@@ -18,7 +18,7 @@
 #define _ARG(A) ()
 #endif
  int apply_aux _ARG((DB db));			   /* tex_aux.c              */
- int foreach_aux _ARG((int (fct)_ARG((Uchar*))));  /* tex_aux.c              */
- int aux_used _ARG((Uchar *s));	   		   /* tex_aux.c              */
- int read_aux _ARG((Uchar *fname,void (*fct)(char*),int verbose));/*tex_aux.c*/
+ int foreach_aux _ARG((int (fct)_ARG((String))));  /* tex_aux.c              */
+ int aux_used _ARG((String s));	   		   /* tex_aux.c              */
+ int read_aux _ARG((String fname,void (*fct)(char*),int verbose));/*tex_aux.c*/
  void clear_aux _ARG((void));			   /* tex_aux.c              */

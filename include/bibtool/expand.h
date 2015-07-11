@@ -21,4 +21,4 @@
 #else
 #define _ARG(A) ()
 #endif
- Uchar * expand_rhs _ARG((Uchar *s,Uchar *pre,Uchar *post, DB db));/* expand.c*/
+ String  expand_rhs _ARG((String s,String pre,String post, DB db));/* expand.c*/

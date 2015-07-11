@@ -42,7 +42,7 @@
 
  typedef struct tOKEN				   /*			     */
  { short int	 to_char;			   /*			     */
-   Uchar	 *to_s;				   /*			     */
+   String	 to_s;				   /*			     */
    struct tOKEN  *to_next;			   /*			     */
  } *Token, SToken;				   /*			     */
 
@@ -54,7 +54,7 @@
 
  typedef struct mACdEF				   /*			     */
  { short int	 md_arity;			   /*			     */
-   unsigned char *md_name;			   /*			     */
+   String        md_name;			   /*			     */
    Token	 md_token;			   /*			     */
    struct mACdEF *md_next;			   /*			     */
  } *MacDef, SMacDef;				   /*			     */
@@ -74,11 +74,11 @@
 #else
 #define _ARG(A) ()
 #endif
- int TeX_read _ARG((Uchar * cp,Uchar **sp));	   /* tex_read.c             */
- static MacDef find_macro _ARG((Uchar *name,MacDef md));/* tex_read.c        */
- static MacDef new_macdef _ARG((Uchar *name,int arity,Token tokens));/* tex_read.c*/
+ int TeX_read _ARG((String  cp,String *sp));	   /* tex_read.c             */
+ static MacDef find_macro _ARG((String name,MacDef md));/* tex_read.c        */
+ static MacDef new_macdef _ARG((String name,int arity,Token tokens));/* tex_read.c*/
  static Token TeX_get_token _ARG((int (*get_fct)_ARG((void))));/* tex_read.c */
- static Token new_token _ARG((int type,Uchar *string));/* tex_read.c         */
+ static Token new_token _ARG((int type,String string));/* tex_read.c         */
  static Token token_list_copy _ARG((Token t,Token nt,Token *argp));/* tex_read.c*/
  static Token tokenize _ARG((unsigned char *s,int arity));/* tex_read.c      */
  static int TeX_fill_line _ARG((int (*get_fct)_ARG((void))));/* tex_read.c   */
@@ -92,11 +92,11 @@
  static void free_macdef _ARG((MacDef mac));	   /* tex_read.c             */
  static void free_tokens _ARG((Token t));	   /* tex_read.c             */
  static void init_TeX _ARG((void));		   /* tex_read.c             */
- static void init_get _ARG((Uchar*s));   	   /* tex_read.c             */
- void TeX_active _ARG((int c,int arity,Uchar * s));/* tex_read.c             */
+ static void init_get _ARG((String s));   	   /* tex_read.c             */
+ void TeX_active _ARG((int c,int arity,String  s));/* tex_read.c             */
  void TeX_close _ARG((void));			   /* tex_read.c             */
- void TeX_def _ARG((Uchar *s));		   	   /* tex_read.c             */
- void TeX_define _ARG((Uchar *name,int arity,Uchar *body));/* tex_read.c     */
+ void TeX_def _ARG((String s));		   	   /* tex_read.c             */
+ void TeX_define _ARG((String name,int arity,String body));/* tex_read.c     */
  void TeX_open_file _ARG((FILE * file));	   /* tex_read.c             */
  void TeX_open_string _ARG((unsigned char * s));   /* tex_read.c             */
  void TeX_reset _ARG((void));			   /* tex_read.c             */
@@ -203,14 +203,14 @@ static void init_TeX()				   /*			     */
 ** Function:	new_token()
 ** Purpose:	Allocate a new token cell and fill it with values.
 ** Arguments:
-**	type
-**	string
+**	type	the type
+**	string	the strign value
 ** Returns:	the new token
 **___________________________________________________			     */
-static Token new_token(type,string)		   /*			     */
-  int	type;				   	   /*			     */
-  Uchar	*string;			   	   /*			     */
-{ Token new;					   /*			     */
+static Token new_token(type, string)		   /*			     */
+  int	 type;				   	   /*			     */
+  String string;			   	   /*			     */
+{ Token  new;					   /*			     */
 						   /*			     */
   if ( token_free_list != TokenNULL )		   /*			     */
   { new = token_free_list;			   /*			     */
@@ -226,9 +226,9 @@ static Token new_token(type,string)		   /*			     */
 }						   /*------------------------*/
 
 #define CopyToken(t) new_token(TokenChar(t),	\
-			       TokenSeq(t) ? (Uchar*)new_string((char*)TokenSeq(t)) : NULL)
+			       TokenSeq(t) ? new_Ustring(TokenSeq(t)) : NULL)
 
-#define NewToken(C) new_token(C, (Uchar*)0)
+#define NewToken(C) new_token(C, StringNULL)
 
 /*-----------------------------------------------------------------------------
 ** Function:	token_list_copy()
@@ -552,17 +552,16 @@ static Token tokenize(s,arity)			   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function:	new_macdef()
-** Purpose:	
-**		
+** Purpose:	Allocate a new macro definition.
 **
 ** Arguments:
-**	name
-**	arity
-**	tokens
+**	name	the name
+**	arity	the arity
+**	tokens	the tokens
 ** Returns:	
 **___________________________________________________			     */
-static MacDef new_macdef(name,arity,tokens)	   /*			     */
-  Uchar	    *name;				   /*			     */
+static MacDef new_macdef(name, arity, tokens)	   /*			     */
+  String    name;				   /*			     */
   int	    arity;				   /*			     */
   Token	    tokens;				   /*			     */
 { MacDef    new;				   /*			     */
@@ -604,11 +603,11 @@ static void free_macdef(mac)			   /*                        */
 **	md	the macro to start searching at
 ** Returns:	
 **___________________________________________________			     */
-static MacDef find_macro(name,md)		   /*			     */
-  register Uchar  *name;			   /*			     */
+static MacDef find_macro(name, md)		   /*			     */
+  register String name;			   	   /*			     */
   register MacDef md;				   /*			     */
 {						   /*			     */
-  for ( ; md != MacDefNULL; md=NextMacro(md) )	   /*			     */
+  for ( ; md != MacDefNULL; md = NextMacro(md) )   /*			     */
   { if ( strcmp((char*)MacroName(md),		   /*                        */
 		(char*)name) == 0 )  		   /*			     */
       return md;				   /*			     */
@@ -627,10 +626,10 @@ static MacDef find_macro(name,md)		   /*			     */
 **	body
 ** Returns:	nothing
 **___________________________________________________			     */
-void TeX_define(name,arity,body)		   /*			     */
-  Uchar		  *name;			   /*			     */
+void TeX_define(name, arity, body)		   /*			     */
+  String	  name;			   	   /*			     */
   int		  arity;			   /*			     */
-  Uchar		  *body;			   /*			     */
+  String	  body;			   	   /*			     */
 { register MacDef md;				   /*			     */
 						   /*			     */
   if ( 0 > arity || arity > 9 ) return;		   /*			     */
@@ -656,10 +655,10 @@ void TeX_define(name,arity,body)		   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void TeX_def(s)					   /*			     */
-  Uchar *s;			   		   /*			     */
-{ Uchar	*name,				   	   /*			     */
-	*ep   = NULL;			   	   /*			     */
-  int	arity = 0;				   /*			     */
+  String s;			   		   /*			     */
+{ String name,				   	   /*			     */
+	 ep    = NULL;			   	   /*			     */
+  int	 arity = 0;				   /*			     */
 						   /*			     */
   while( isspace(*s) ) s++;			   /*                        */
   name = s;					   /*			     */
@@ -699,15 +698,15 @@ void TeX_def(s)					   /*			     */
 **	s	Body of the definition as string.
 ** Returns:	nothing
 **___________________________________________________			     */
-void TeX_active(c,arity,s)			   /*			     */
+void TeX_active(c, arity, s)			   /*			     */
   int   c;					   /*			     */
   int   arity;					   /*			     */
-  Uchar *s;				   	   /*			     */
+  String s;				   	   /*			     */
 {						   /*			     */
   EnsureInit;					   /*			     */
   if ( active[c] ) free_macdef(active[c]);	   /*                        */
  						   /*                        */
-  active[c] = new_macdef((Uchar*)NULL,		   /*                        */
+  active[c] = new_macdef(StringNULL,		   /*                        */
 			 arity,			   /*                        */
 			 tokenize(s,arity));	   /*	                     */
 }						   /*------------------------*/
@@ -725,7 +724,7 @@ void TeX_reset()				   /*                        */
 { int    i;					   /*                        */
   MacDef md, next;				   /*                        */
  						   /*                        */
-  for ( i=0;i<256;i++ )				   /*                        */
+  for (i = 0; i < 256; i++)			   /*                        */
   { free_macdef(active[i]); }			   /*                        */
  						   /*                        */
   md = macro;					   /*                        */
@@ -816,9 +815,10 @@ void TeX_open_string(s)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void TeX_close()				   /*			     */
-{ Uchar c, *s;				   	   /*			     */
+{ Uchar  c;					   /*                        */
+  String s;				   	   /*			     */
   src_get = get_EOF;				   /*			     */
-  while ( TeX_read(&c,&s) ) ;			   /*			     */
+  while ( TeX_read(&c, &s) ) ;			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -851,9 +851,9 @@ static int fill_token(tp)			   /*			     */
 **	sp	Pointer to position where the string is stored.
 ** Returns:	|FALSE| iff everything went right.
 **___________________________________________________			     */
-int TeX_read(cp,sp)				   /*			     */
-  Uchar		* cp;				   /*			     */
-  Uchar		**sp;				   /*			     */
+int TeX_read(cp, sp)				   /*			     */
+  Uchar	 	*cp;				   /*			     */
+  String	*sp;				   /*			     */
 { static Token	t     = TokenNULL;		   /*			     */
   static Token	old_t = TokenNULL;		   /*			     */
   static Token	arg[10];			   /*			     */

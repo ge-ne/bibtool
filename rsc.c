@@ -47,14 +47,14 @@
 #else
 #define _ARG(A) ()
 #endif
- int load_rsc _ARG((Uchar *name));		   /*                        */
- int resource _ARG((Uchar *name));		   /*                        */
+ int load_rsc _ARG((String name));		   /*                        */
+ int resource _ARG((String name));		   /*                        */
  int search_rsc _ARG((void));			   /*                        */
- int set_rsc _ARG((Uchar *name,Uchar *val));	   /*                        */
- int use_rsc _ARG((Uchar *s));			   /*                        */
- static int test_true _ARG((Uchar * s));	   /*                        */
+ int set_rsc _ARG((String name,String val));	   /*                        */
+ int use_rsc _ARG((String s));			   /*                        */
+ static int test_true _ARG((String  s));	   /*                        */
  static void init_rsc _ARG((void));		   /*                        */
- void rsc_print _ARG((Uchar *s));		   /*                        */
+ void rsc_print _ARG((String s));		   /*                        */
 
 #define NoRscError(X)	      WARNING3("Resource file ",X," not found.")
 
@@ -74,10 +74,10 @@
 
 /*---------------------------------------------------------------------------*/
 
-#define RscNumeric(SYM,S,V,I) static Uchar *S = (Uchar*)NULL;
-#define RscString(SYM,S,V,I)  static Uchar *S = (Uchar*)NULL;
-#define RscBoolean(SYM,S,V,I) static Uchar *S = (Uchar*)NULL;
-#define RscByFct(SYM,S,FCT)   static Uchar *S = (Uchar*)NULL;
+#define RscNumeric(SYM,S,V,I) static String S = StringNULL;
+#define RscString(SYM,S,V,I)  static String S = StringNULL;
+#define RscBoolean(SYM,S,V,I) static String S = StringNULL;
+#define RscByFct(SYM,S,FCT)   static String S = StringNULL;
 #include <bibtool/resource.h>
 
 /*-----------------------------------------------------------------------------
@@ -98,10 +98,10 @@
 **___________________________________________________			     */
 static void init_rsc()				   /*			     */
 {						   /*			     */
-#define RscNumeric(SYM,S,V,I)  S = symbol((Uchar*)SYM);
-#define RscString(SYM,S,V,I)   S = symbol((Uchar*)SYM);
-#define RscBoolean(SYM,S,V,I)  S = symbol((Uchar*)SYM);
-#define RscByFct(SYM,S,FCT)    S = symbol((Uchar*)SYM);
+#define RscNumeric(SYM,S,V,I)  S = symbol((String)SYM);
+#define RscString(SYM,S,V,I)   S = symbol((String)SYM);
+#define RscBoolean(SYM,S,V,I)  S = symbol((String)SYM);
+#define RscByFct(SYM,S,FCT)    S = symbol((String)SYM);
 #ifndef MAKEDEPEND
 #include <bibtool/resource.h>
 #endif
@@ -132,14 +132,14 @@ static void init_rsc()				   /*			     */
 ** Returns:	|TRUE| iff the resource loading succeeds somewhere.
 **___________________________________________________			     */
 int search_rsc()				   /*			     */
-{ static Uchar	*def = (Uchar*)DefaultResourceFile;/*			     */
+{ static String	def = (String)DefaultResourceFile;/*			     */
   register char *ap;				   /*			     */
   register char *fn;				   /*			     */
   int		l;				   /*			     */
 						   /*			     */
 #ifdef RSC_ENV_VAR
   if ( (ap=getenv(RSC_ENV_VAR)) != NULL		   /* Try to get the name    */
-       && load_rsc((Uchar*)ap) ) return TRUE;	   /*  from the environment. */
+       && load_rsc((String)ap) ) return TRUE;	   /*  from the environment. */
 #endif
 						   /*			     */
 #ifdef HOME_ENV_VAR
@@ -151,7 +151,7 @@ int search_rsc()				   /*			     */
     { (void)strcpy(fn, ap);			   /*			     */
       (void)strcat(fn, DIR_SEP);		   /*			     */
       (void)strcat(fn, (char*)def);		   /*			     */
-      l = load_rsc((Uchar*)fn);			   /*			     */
+      l = load_rsc((String)fn);			   /*			     */
       free(fn);					   /*			     */
       if ( l ) return TRUE;			   /*			     */
     }						   /*			     */
@@ -173,7 +173,7 @@ int search_rsc()				   /*			     */
 ** Returns:	|FALSE| iff the reading failed.
 **___________________________________________________			     */
 int load_rsc(name)			   	   /*			     */
-  register Uchar *name;				   /*			     */
+  register String name;				   /*			     */
 {						   /*			     */
   if ( r_v == NULL ) { init_rsc(); }		   /*			     */
   return ( name != NULL ? read_rsc(name) : 0 );	   /*			     */
@@ -189,7 +189,7 @@ int load_rsc(name)			   	   /*			     */
 ** Returns:	
 **___________________________________________________			     */
 int resource(name)			   	   /*			     */
-  register Uchar *name;				   /*			     */
+  register String name;				   /*			     */
 {						   /*			     */
   int ret = load_rsc(name);			   /*                        */
   if ( !ret ) { NoRscError(name); }		   /*                        */
@@ -208,7 +208,7 @@ int resource(name)			   	   /*			     */
 ** Returns:	|TRUE| iff the string represents true.
 **___________________________________________________			     */
 static int test_true(s)				   /*			     */
-  Uchar * s;				   	   /*			     */
+  String  s;				   	   /*			     */
 {						   /*			     */
   switch ( *s )					   /*                        */
   { case '1':		return (s[1] == '\0');	   /*                        */
@@ -242,9 +242,9 @@ static int test_true(s)				   /*			     */
 ** Returns:	|FALSE| iff no error has occurred.
 **___________________________________________________			     */
 int use_rsc(s)					   /*			     */
-  Uchar		*s;				   /*			     */
-{ register Uchar *name,				   /*			     */
-		 *value;			   /*			     */
+  String	  s;				   /*			     */
+{ register String name,				   /*			     */
+		  value;			   /*			     */
 						   /*			     */
   (void)sp_open(s);				   /*			     */
   if ( (name = SParseSymbol(&s)) == NULL ) return 1; /*			     */
@@ -272,8 +272,8 @@ int use_rsc(s)					   /*			     */
 ** Returns:	|FALSE| iff everything went right.
 **___________________________________________________			     */
 int set_rsc(name,val)				   /*			     */
-  Uchar *name;				   	   /*			     */
-  Uchar *val;				   	   /*			     */
+  String name;				   	   /*			     */
+  String val;				   	   /*			     */
 {						   /*			     */
   if ( rsc_verbose )				   /*			     */
   { VerbosePrint4("Resource ",			   /*                        */
@@ -316,7 +316,7 @@ int set_rsc(name,val)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void rsc_print(s)				   /*			     */
-  Uchar *s;				   	   /*			     */
+  String s;				   	   /*			     */
 { ErrPrintF("%s\n",(char*)s);			   /* print the string itself*/
 			   			   /* followed by a newline  */
 }						   /*------------------------*/

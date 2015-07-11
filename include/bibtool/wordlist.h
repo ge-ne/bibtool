@@ -21,7 +21,7 @@
 **		is prety generic.
 **________________________________________________   			     */
  typedef struct wORDlIST			   /*                        */
- { Uchar	   *wl_word;			   /* String value of	     */
+ { String	   wl_word;			   /* String value of	     */
  						   /*  this node.            */
    struct wORDlIST *wl_next;			   /* Pointer to the next    */
  						   /*  node.                 */
@@ -38,7 +38,7 @@
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ThisWord()
-** Type:	Uchar *
+** Type:	String
 ** Purpose:	This macro returns the string of a |WordList| node.
 ** Arguments:
 **	WL	|WordList| to consider which is not |WordNULL|.
@@ -62,9 +62,9 @@
 #else
 #define _ARG(A) ()
 #endif
- int find_word _ARG((Uchar *s,WordList wl));	   /* wordlist.c             */
- int foreach_word _ARG((WordList wl,int (*fct)_ARG((Uchar*))));/* wordlist.c */
- void free_words _ARG((WordList *wlp,void (*fct)_ARG((Uchar*))));/* wordlist.c*/
- void add_word _ARG((Uchar *s,WordList *wlp));	   /* wordlist.c             */
+ int find_word _ARG((String s, WordList wl));	   /* wordlist.c             */
+ int foreach_word _ARG((WordList wl,int (*fct)_ARG((String))));/* wordlist.c */
+ void free_words _ARG((WordList *wlp,void (*fct)_ARG((String))));/* wordlist.c*/
+ void add_word _ARG((String s,WordList *wlp));	   /* wordlist.c             */
 
 #endif

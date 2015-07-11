@@ -52,7 +52,7 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 void add_word(s,wlp)				   /*			     */
-  register Uchar    *s;				   /*			     */
+  register String   s;				   /*			     */
   register WordList *wlp;			   /*			     */
 { register WordList wl;				   /*			     */
   register int	    cmp = 1;			   /*			     */
@@ -88,10 +88,10 @@ void add_word(s,wlp)				   /*			     */
 **	fct	Function to call to free the memory occupied by the word.
 ** Returns:	|0| if the word was not found. |1| otherwise.
 **___________________________________________________			     */
-int delete_word(s,wlp,fct)			   /*                        */
-  Uchar    *s;					   /*                        */
+int delete_word(s, wlp, fct)			   /*                        */
+  String   s;					   /*                        */
   WordList *wlp;				   /*                        */
-  void    (*fct)_ARG((Uchar*));			   /*                        */
+  void    (*fct)_ARG((String));			   /*                        */
 { WordList wl;				   	   /*			     */
   int cmp = 1;					   /*                        */
   while ( *wlp != WordNULL			   /*			     */
@@ -120,9 +120,9 @@ int delete_word(s,wlp,fct)			   /*                        */
 **		If it is |NULL| then no function is called.
 ** Returns:	nothing
 **___________________________________________________			     */
-void free_words(wlp,fct)			   /*                        */
+void free_words(wlp, fct)			   /*                        */
   WordList *wlp;				   /*                        */
-  void    (*fct)_ARG((Uchar*));			   /*                        */
+  void    (*fct)_ARG((String));			   /*                        */
 { WordList wl, next;				   /*                        */
  						   /*                        */
   wl   = *wlp;					   /*                        */
@@ -149,9 +149,9 @@ void free_words(wlp,fct)			   /*                        */
 **	fct	function to apply.
 ** Returns:	return value of last function or 1.
 **___________________________________________________			     */
-int foreach_word(wl,fct)			   /*                        */
+int foreach_word(wl, fct)			   /*                        */
   WordList wl;					   /*                        */
-  int (*fct)_ARG((Uchar*));			   /*                        */
+  int (*fct)_ARG((String));			   /*                        */
 { int ret = 1;					   /*                        */
   while ( wl && (ret=(fct)(ThisWord(wl))) )	   /*                        */
   { wl = NextWord(wl); }			   /*                        */
@@ -167,8 +167,8 @@ int foreach_word(wl,fct)			   /*                        */
 **	wl	Word list to search in.
 ** Returns:	|FALSE| iff the word does not occur in the word list.
 **___________________________________________________			     */
-int find_word(s,wl)				   /*			     */
-  register Uchar    *s;				   /*			     */
+int find_word(s, wl)				   /*			     */
+  register String   s;				   /*			     */
   register WordList wl;				   /*			     */
 {					   	   /*			     */
   while ( wl != WordNULL )			   /*                        */

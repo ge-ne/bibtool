@@ -26,6 +26,7 @@
 #define StringParseValue	    265
 
 #define SParseSymbol(SP)	    s_parse(StringParseSymbol	     ,SP,-1)
+#define SParseOptionalSymbol(SP)    s_parse(StringParseSymbol	     ,SP, 0)
 #define SParseString(SP)	    s_parse(StringParseString	     ,SP,-1)
 #define SParseUnquotedString(SP)    s_parse(StringParseUnquotedString,SP,-1)
 #define SParseEOS(SP)		    s_parse(StringParseEOS   	     ,SP,-1)
@@ -40,7 +41,7 @@
 #else
 #define _ARG(A) ()
 #endif
- Uchar * s_parse _ARG((int type,Uchar **sp,int errp));/* s_parse.c           */
- int sp_open _ARG((Uchar * s));			   /* s_parse.c              */
+ String s_parse _ARG((int type, String *sp, int errp));/* s_parse.c          */
+ int sp_open _ARG((String  s));			   /* s_parse.c              */
  void sp_close _ARG((void));			   /* s_parse.c              */
- void sp_error _ARG((Uchar *s,char *a,char *b));   /* s_parse.c              */
+ void sp_error _ARG((String s, char *a, char *b)); /* s_parse.c              */

@@ -71,9 +71,9 @@ void init_type()				   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void add_word_sep(s)				   /*                        */
-  register Uchar *s;				   /*                        */
+  register String s;				   /*                        */
 {						   /*                        */
-  if ( s == (Uchar *)0 ) return;		   /*                        */
+  if ( s == StringNULL ) return;		   /*                        */
   for ( ; *s ; s++ )				   /*                        */
   { type__allowed[*s] |= T__WordSep; }		   /*                        */
 }						   /*------------------------*/
@@ -93,8 +93,8 @@ void add_word_sep(s)				   /*                        */
 ** Returns:	|FALSE| iff the strings differ.
 **___________________________________________________			     */
 int case_cmp(s, t)				   /*                        */
-  register Uchar * s;			   	   /*                        */
-  register Uchar * t;			   	   /*                        */
+  register String s;			   	   /*                        */
+  register String t;			   	   /*                        */
 {						   /*                        */
 #ifdef DEBUG
   assert(s!=NULL);				   /*                        */

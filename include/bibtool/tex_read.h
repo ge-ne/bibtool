@@ -21,11 +21,11 @@
 #else
 #define _ARG(A) ()
 #endif
- int TeX_read _ARG((Uchar * cp,Uchar **sp));	   /* tex-read.c             */
- void TeX_active _ARG((int c,int arity,unsigned char * s));/* tex_read.c     */
+ int TeX_read _ARG((String cp, String *sp));	   /* tex-read.c             */
+ void TeX_active _ARG((int c,int arity, String s));/* tex_read.c             */
  void TeX_close _ARG((void));			   /* tex_read.c             */
- void TeX_def _ARG((unsigned char *s));		   /* tex_read.c             */
+ void TeX_def _ARG((String s));		   	   /* tex_read.c             */
  void TeX_define _ARG((char *name,int arity,char *body));/* tex_read.c       */
  void TeX_open_file _ARG((FILE * file));	   /* tex_read.c             */
- void TeX_open_string _ARG((unsigned char * s));   /* tex_read.c             */
+ void TeX_open_string _ARG((String s));   	   /* tex_read.c             */
  void TeX_reset _ARG((void));			   /* tex_read.c             */

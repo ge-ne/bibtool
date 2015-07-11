@@ -40,9 +40,9 @@
 **	count	The initial reference count.
 ** Returns:	The new |Macro|.
 **___________________________________________________			     */
-Macro new_macro(name,val,next,count)		   /*                        */
-  Uchar		 *name;				   /*                        */
-  Uchar		 *val;				   /*                        */
+Macro new_macro(name, val, next, count)		   /*                        */
+  String	 name;				   /*                        */
+  String	 val;				   /*                        */
   int		 count;				   /*                        */
   Macro          next;				   /*                        */
 { register Macro macro;				   /*                        */
@@ -88,9 +88,9 @@ void free_macro(mac)				   /*                        */
 **	count	initial count for the macro.
 ** Returns:	nothing
 **___________________________________________________			     */
-int def_macro(name,val,count)			   /*                        */
-  Uchar		 *name;			   	   /*                        */
-  Uchar		 *val;				   /*                        */
+int def_macro(name, val, count)			   /*                        */
+  String	 name;			   	   /*                        */
+  String	 val;				   /*                        */
   int		 count;				   /*                        */
 { register Macro *mp;				   /*                        */
  						   /*                        */
@@ -135,8 +135,8 @@ int def_macro(name,val,count)			   /*                        */
 **		is required.
 ** Returns:	The value or |NULL|.
 **___________________________________________________			     */
-Uchar * look_macro(name,add)			   /*                        */
-  Uchar		 *name;			   	   /*                        */
+String  look_macro(name, add)			   /*                        */
+  String	 name;			   	   /*                        */
   int		 add;				   /*                        */
 { register Macro *mp;				   /*                        */
 						   /*                        */
@@ -178,7 +178,7 @@ Uchar * look_macro(name,add)			   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void foreach_macro(fct)				   /*                        */
-  int (*fct) _ARG((Uchar *,Uchar *));		   /*                        */
+  int (*fct) _ARG((String ,String ));		   /*                        */
 { Macro mac;					   /*                        */
   for ( mac=macros; 				   /*                        */
 	mac != MacroNULL; 			   /*                        */
@@ -252,13 +252,13 @@ void dump_mac(fname,allp)			   /*                        */
 void init_macros()				   /*                        */
 { 						   /*                        */
 #ifdef INITIALIZE_MACROS	
-  register Uchar *name;				   /*                        */
+  register String name;				   /*                        */
   register char**wp;				   /*			     */
   static char *word_list[] =			   /*                        */
   { INITIALIZE_MACROS, NULL };			   /*                        */
  						   /*                        */
   for ( wp = word_list; *wp != NULL; ++wp )	   /*                        */
-  { name = symbol((Uchar*)*wp);			   /*                        */
+  { name = symbol((String)*wp);			   /*                        */
     def_macro(name, name, -1);			   /*                        */
   }		   				   /*			     */
 #endif
@@ -280,8 +280,8 @@ void init_macros()				   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void def_item(name, value)		   /*                        */
-  register Uchar * name;			   /*                        */
-  register Uchar * value;			   /*                        */
+  register String  name;			   /*                        */
+  register String  value;			   /*                        */
 {						   /*                        */
   name  = symbol(name);				   /*                        */
   value = symbol(value);			   /*                        */
@@ -304,8 +304,9 @@ static void def_item(name, value)		   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void def_field_type(s)				   /*                        */
-  Uchar * s;					   /*                        */
-{ Uchar *name, *val, c;				   /*                        */
+  String  s;					   /*                        */
+{ String name, val;				   /*                        */
+  Uchar c;				   	   /*                        */
  						   /*                        */
   while ( *s && !is_allowed(*s) ) ++s;		   /*                        */
   if ( *s == '\0' ) return;			   /*                        */
@@ -316,7 +317,7 @@ void def_field_type(s)				   /*                        */
   val = new_Ustring(name);	   		   /*                        */
   *s  = c;					   /*                        */
  						   /*                        */
-  { Uchar * cp;				   	   /*                        */
+  { String  cp;				   	   /*                        */
     for ( cp = val; *cp; ++cp ) *cp = ToLower(*cp);/*                        */
   }						   /*                        */
  						   /*                        */
@@ -348,8 +349,8 @@ void def_field_type(s)				   /*                        */
 **	type
 ** Returns:	
 **___________________________________________________			     */
-static Uchar * get_mapped_or_cased(name,mac,type)  /*                        */
-  Uchar		 *name;				   /*                        */
+static String  get_mapped_or_cased(name, mac, type)/*                        */
+  String	 name;				   /*                        */
   int            type;				   /*                        */
   register Macro mac;				   /*                        */
 { static StringBuffer* sb = (StringBuffer*)NULL;   /*                        */
@@ -388,7 +389,7 @@ static Uchar * get_mapped_or_cased(name,mac,type)  /*                        */
 	break;					   /*                        */
     }						   /*                        */
   }						   /*                        */
-  return (Uchar*)sbflush(sb);			   /*                        */
+  return (String)sbflush(sb);			   /*                        */
 }						   /*------------------------*/
 
 
@@ -411,8 +412,8 @@ static Uchar * get_mapped_or_cased(name,mac,type)  /*                        */
 ** Returns:	A pointer to a static string. This location  is reused
 **		upon the next invocation of this function.
 **___________________________________________________			     */
-Uchar * get_item(name,type)			   /*                        */
-  Uchar *name;				   	   /*                        */
+String  get_item(name,type)			   /*                        */
+  String name;				   	   /*                        */
   int   type;				   	   /*                        */
 { return get_mapped_or_cased(name, items, type);   /*                        */
 }						   /*------------------------*/
@@ -434,8 +435,8 @@ Uchar * get_item(name,type)			   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void save_key(name, key)			   /*                        */
-  Uchar * name;				   	   /*                        */
-  Uchar * key;					   /*                        */
+  String  name;				   	   /*                        */
+  String  key;					   /*                        */
 {						   /*                        */
   keys = new_macro(name, key, keys, 1);		   /*                        */
 }						   /*------------------------*/
@@ -448,8 +449,8 @@ void save_key(name, key)			   /*                        */
 **	name	the name of the key to find
 ** Returns:	
 **___________________________________________________			     */
-Uchar * get_key_name(name)			   /*                        */
-  Uchar *name;			   	   	   /*                        */
+String  get_key_name(name)			   /*                        */
+  String name;			   	   	   /*                        */
 { return get_mapped_or_cased(name,		   /*                        */
 			     keys,		   /*                        */
 			     SYMBOL_TYPE_LOWER);   /*                        */

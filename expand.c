@@ -32,9 +32,9 @@
 #else
 #define _ARG(A) ()
 #endif
- Uchar * expand_rhs _ARG((Uchar *s,Uchar *pre,Uchar *post,DB db));/* expand.c*/
- static int expand _ARG((Uchar *s,StringBuffer *sb,int brace,int first,Uchar *q_open,Uchar *q_close,DB db));/* expand.c*/
- static void expand__ _ARG((Uchar *s,StringBuffer *sb,Uchar *q_open,Uchar *q_close,DB db));/* expand.c*/
+ String  expand_rhs _ARG((String s,String pre,String post,DB db));/* expand.c*/
+ static int expand _ARG((String s,StringBuffer *sb,int brace,int first,String q_open,String q_close,DB db));/* expand.c*/
+ static void expand__ _ARG((String s,StringBuffer *sb,String q_open,String q_close,DB db));/* expand.c*/
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -61,10 +61,10 @@
 **		static variable of this function and will be overwritten with
 **		the next invocation.
 **___________________________________________________			     */
-Uchar * expand_rhs(s,pre,post,db)		   /*                        */
-  Uchar *s;					   /*                        */
-  Uchar *pre;					   /*                        */
-  Uchar *post;					   /*                        */
+String  expand_rhs(s,pre,post,db)		   /*                        */
+  String s;					   /*                        */
+  String pre;					   /*                        */
+  String post;					   /*                        */
   DB   db;					   /*                        */
 { static StringBuffer *sb = NULL;		   /*                        */
 						   /*                        */
@@ -76,7 +76,7 @@ Uchar * expand_rhs(s,pre,post,db)		   /*                        */
  						   /*                        */
   sbrewind(sb);					   /*                        */
   expand__(s, sb, pre, post, db);		   /*                        */
-  return (Uchar*)sbflush(sb);			   /*                        */
+  return (String)sbflush(sb);			   /*                        */
 }						   /*------------------------*/
 
 #define PUTS(S,SB) (void)sbputs((char*)S,SB)
@@ -91,13 +91,14 @@ Uchar * expand_rhs(s,pre,post,db)		   /*                        */
 **	sb
 **	q_open
 **	q_close
+**	db
 ** Returns:	nothing
 **___________________________________________________			     */
-static void expand__(s,sb,q_open,q_close,db)	   /*                        */
-  register Uchar *s;				   /*                        */
+static void expand__(s, sb, q_open, q_close, db)   /*                        */
+  register String s;				   /*                        */
   StringBuffer   *sb;				   /*                        */
-  Uchar          *q_open;			   /*                        */
-  Uchar          *q_close;			   /*                        */
+  String         q_open;			   /*                        */
+  String         q_close;			   /*                        */
   DB		 db;				   /*                        */
 {						   /*                        */
   if ( ! expand(s,sb,TRUE,TRUE,q_open,q_close,db) )/*                        */
@@ -123,13 +124,13 @@ static void expand__(s,sb,q_open,q_close,db)	   /*                        */
 **	q_close	Close delimiter. This is a close brace or a double quote.
 ** Returns:	
 **___________________________________________________			     */
-static int expand(s,sb,brace,first,q_open,q_close,db)/*                      */
-  register Uchar *s;				   /* specification          */
+static int expand(s, sb, brace, first, q_open, q_close, db)/*                */
+  register String s;				   /* specification          */
   StringBuffer   *sb;				   /* output device          */
   int            brace;				   /* is a brace needed?     */
   int            first;				   /* is this the first part?*/
-  Uchar          *q_open;			   /* open delimiter         */
-  Uchar          *q_close;			   /* close delimiter        */
+  String         q_open;			   /* open delimiter         */
+  String         q_close;			   /* close delimiter        */
   DB		 db;				   /*                        */
 {						   /*                        */
   while ( *s )					   /*                        */
@@ -204,16 +205,16 @@ static int expand(s,sb,brace,first,q_open,q_close,db)/*                      */
 	  s++;					   /*                        */
 	}					   /*                        */
         else		   			   /* Only macros are left.  */
-	{ Uchar *sym = (Uchar*)s;	   	   /*                        */
-	  Uchar *val;			   	   /*                        */
+	{ String sym = (String)s;	   	   /*                        */
+	  String val;			   	   /*                        */
 	  char  c;			   	   /*                        */
  						   /*                        */
           DebugPrint2("Start symbol: ",s);	   /*                        */
 	  while ( is_allowed(*s) ) ++s;		   /*                        */
 	  c = *s; *s = '\0';			   /*                        */
-	  { Uchar *sym_copy =			   /*                        */
-	      (Uchar*)malloc(strlen((char*)sym)+1);/* Copy of sym            */
-	    if (sym_copy == (Uchar*)NULL )	   /* Allocate memory        */
+	  { String sym_copy =			   /*                        */
+	      (String)malloc(strlen((char*)sym)+1);/* Copy of sym            */
+	    if (sym_copy == StringNULL )	   /* Allocate memory        */
 	    { OUT_OF_MEMORY("expand string"); }	   /* Upon failure exit.     */
 	    (void)strcpy((char*)sym_copy,(char*)sym);/* Save sym             */
 	    *s = c;				   /* Restore end mark       */

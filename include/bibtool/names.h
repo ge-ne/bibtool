@@ -23,9 +23,9 @@
  { int		   nn_type;			   /*                        */
    int		   nn_strip;			   /*                        */
    int		   nn_trim;			   /*                        */
-   Uchar	   *nn_pre;			   /*                        */
-   Uchar	   *nn_mid;			   /*                        */
-   Uchar	   *nn_post;			   /*                        */
+   String	   nn_pre;			   /*                        */
+   String	   nn_mid;			   /*                        */
+   String	   nn_post;			   /*                        */
    struct nameNODE *nn_next;			   /* Pointer to the next    */
  						   /*  name node             */
  } SNameNode, *NameNode;			   /*                        */
@@ -79,7 +79,7 @@
 
 /*-----------------------------------------------------------------------------
 ** Macro:	NamePre()
-** Type:	Uchar*
+** Type:	String
 ** Purpose:	
 **		
 **		
@@ -91,7 +91,7 @@
 
 /*-----------------------------------------------------------------------------
 ** Macro:	NameMid()
-** Type:	Uchar*
+** Type:	String
 ** Purpose:	
 **		
 **		
@@ -103,7 +103,7 @@
 
 /*-----------------------------------------------------------------------------
 ** Macro:	NamePost()
-** Type:	Uchar*
+** Type:	String
 ** Purpose:	
 **		
 **		
@@ -145,8 +145,8 @@
 #else
 #define _ARG(A) ()
 #endif
- NameNode name_format _ARG((Uchar *s));		   /* names.c                */
- Uchar * pp_list_of_names _ARG((Uchar **wa,NameNode format,unsigned char *trans,int max,Uchar *comma,Uchar *and,char *namesep,char *etal));/* names.c*/
+ NameNode name_format _ARG((String s));		   /* names.c                */
+ String  pp_list_of_names _ARG((String *wa,NameNode format,unsigned char *trans,int max,String comma,String and,char *namesep,char *etal));/* names.c*/
  char * pp_names _ARG((char *s,NameNode format,unsigned char *trans,int max,char *namesep,char *etal));/* names.c*/
 
 /*---------------------------------------------------------------------------*/

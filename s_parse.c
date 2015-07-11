@@ -25,10 +25,10 @@
 #else
 #define _ARG(A) ()
 #endif
- Uchar * s_parse _ARG((int type,Uchar **sp,int errp));/* s_parse.c           */
- int sp_open _ARG((Uchar * s));			   /* s_parse.c              */
+ String  s_parse _ARG((int type,String *sp,int errp));/* s_parse.c           */
+ int sp_open _ARG((String  s));			   /* s_parse.c              */
  void sp_close _ARG((void));			   /* s_parse.c              */
- void sp_error _ARG((Uchar *s,char *a,char *b));   /* s_parse.c              */
+ void sp_error _ARG((String s,char *a,char *b));   /* s_parse.c              */
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -37,9 +37,9 @@
 /*---------------------------------------------------------------------------*/
 
 #define Error(E,S,A,B)	\
-  if(E) error(ERR_ERROR|ERR_POINT,(Uchar*)A,(Uchar*)B,(Uchar*)0,sp_line,(Uchar*)S,0,(char*)0)
+  if(E) error(ERR_ERROR|ERR_POINT,(String)A,(String)B,(String)0,sp_line,(String)S,0,(char*)0)
 
- static Uchar *sp_line = NULL;
+ static String sp_line = NULL;
 
 /*-----------------------------------------------------------------------------
 ** Function:	sp_open()
@@ -53,7 +53,7 @@
 ** Returns:	|TRUE|
 **___________________________________________________			     */
 int sp_open(s)					   /*                        */
-  Uchar *s;				   	   /*                        */
+  String s;				   	   /*                        */
 { sp_line = s;				   	   /*                        */
   return TRUE;					   /*                        */
 }						   /*------------------------*/
@@ -122,15 +122,15 @@ int sp_open(s)					   /*                        */
 **		message should be created in case of an error.
 ** Returns:	A symbol containing the requested entity or |NULL|.
 **___________________________________________________			     */
-Uchar * s_parse(type,sp,errp)			   /*                        */
-  int 		 type;				   /*                        */
-  Uchar		 **sp;				   /*                        */
-  int		 errp;				   /*                        */
-{ register Uchar *s = *sp;			   /*                        */
-  Uchar          c;				   /*                        */
-  char		 *cp;				   /*                        */
-  static char    *unexpected = "Unexpected ";	   /*                        */
-  static char    *expected   = " expected.";	   /*                        */
+String  s_parse(type,sp,errp)			   /*                        */
+  int 		  type;				   /*                        */
+  String	  *sp;				   /*                        */
+  int		  errp;				   /*                        */
+{ register String s = *sp;			   /*                        */
+  Uchar           c;				   /*                        */
+  char		  *cp;				   /*                        */
+  static char     *unexpected = "Unexpected ";	   /*                        */
+  static char     *expected   = " expected.";	   /*                        */
  						   /*                        */
   DebugPrint2((type == StringParseSkip ? "ParseSkip ":
 	       type == StringParseNext ? "ParseNext ":
@@ -151,11 +151,11 @@ Uchar * s_parse(type,sp,errp)			   /*                        */
       if ( is_allowed(*s) )			   /*                        */
       { do { s++; } while ( is_allowed(*s) );	   /*                        */
       }						   /*                        */
-      else					   /*                        */
+      else			   		   /*                        */
       { Error(errp,s,"Symbol",expected);	   /*                        */
 	return NULL;				   /*                        */
       }						   /*                        */
-     break;					   /*                        */
+      break;					   /*                        */
  						   /*                        */
     case StringParseNumber:			   /*                        */
       if ( is_digit(*s) )			   /*                        */
@@ -265,9 +265,9 @@ Uchar * s_parse(type,sp,errp)			   /*                        */
       || type == StringParseUnquotedBraces ) s++;  /*                        */
   *sp = s;					   /*                        */
  if (   type == StringParseSymbol )		   /*                        */
- { (void)lower((Uchar*)cp); }			   /*                        */
+ { (void)lower((String)cp); }			   /*                        */
  						   /*                        */
- { Uchar *sym = symbol((Uchar*)cp);		   /*                        */
+ { String sym = symbol((String)cp);		   /*                        */
     free(cp);					   /*                        */
     return sym;					   /*                        */
   }						   /*                        */

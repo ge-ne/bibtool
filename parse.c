@@ -37,9 +37,9 @@
 #define _ARG(A) ()
 #endif
  int parse_bib _ARG((Record rec));		   /* parse.c                */
- int read_rsc _ARG((Uchar *name));		   /* parse.c                */
- int see_bib _ARG((Uchar * fname));		   /* parse.c                */
- static int see_rsc _ARG((Uchar * fname));	   /* parse.c                */
+ int read_rsc _ARG((String name));		   /* parse.c                */
+ int see_bib _ARG((String fname));		   /* parse.c                */
+ static int see_rsc _ARG((String fname));	   /* parse.c                */
  int seen _ARG((void));				   /* parse.c                */
  static int fill_line _ARG((void));		   /* parse.c                */
  static int parse_block _ARG((int quotep));	   /* parse.c                */
@@ -57,7 +57,7 @@
  static void init_parse _ARG((void));		   /* parse.c                */
  static void parse_number _ARG((void));		   /* parse.c                */
  void init_read _ARG((void));			   /* parse.c                */
- void set_rsc_path _ARG((Uchar * val));		   /* parse.c                */
+ void set_rsc_path _ARG((String  val));		   /* parse.c                */
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -77,8 +77,8 @@
 
  static char	*filename;
  static FILE	*file;
- static Uchar	*file_line_buffer;
- static Uchar	*flp;
+ static String	file_line_buffer;
+ static String	flp;
  static size_t	fl_size	 = 0;
  static int	flno	 = 0;
 
@@ -100,20 +100,20 @@
 
 /*---------------------------------------------------------------------------*/
 
- static Uchar *str_unexpected	= (Uchar*)"Unexpected character encountered";
+ static String str_unexpected	= (String)"Unexpected character encountered";
  static char *str_stdin		= "<stdin>";
 
-#define Error3(X,Y,Z)	error(ERR_ERROR|ERR_POINT|ERR_FILE,(Uchar*)X,	\
-			      (Uchar*)Y,(Uchar*)Z,			\
+#define Error3(X,Y,Z)	error(ERR_ERROR|ERR_POINT|ERR_FILE,(String)X,	\
+			      (String)Y,(String)Z,			\
 			      file_line_buffer,flp,flno,filename)
-#define Error(X)	error(ERR_ERROR|ERR_POINT|ERR_FILE,(Uchar*)X,	\
+#define Error(X)	error(ERR_ERROR|ERR_POINT|ERR_FILE,(String)X,	\
 			      sym_empty,sym_empty,			\
 			      file_line_buffer,flp,flno,filename)
-#define Warning(X)	error(ERR_WARN|ERR_POINT|ERR_FILE,(Uchar*)X,	\
+#define Warning(X)	error(ERR_WARN|ERR_POINT|ERR_FILE,(String)X,	\
 			      sym_empty,sym_empty,			\
 			      file_line_buffer,flp,flno,filename)
 #define UnterminatedError(X,LINE)					\
-			error(ERR_ERROR|ERR_FILE,(Uchar*)X,		\
+			error(ERR_ERROR|ERR_FILE,(String)X,		\
 			      sym_empty,sym_empty,			\
 			      NULL,NULL,LINE,filename)
 #define UnexpectedError Error(str_unexpected)
@@ -227,7 +227,7 @@ static int see_bib_msg(s)			   /*			     */
 ** Returns:	|TRUE| iff the file could be opened for reading.
 **___________________________________________________			     */
 int see_bib(fname)				   /*			     */
-  register Uchar * fname;			   /*			     */
+  register String  fname;			   /*			     */
 {						   /*			     */
   init_parse();					   /*			     */
   InitLine;					   /*			     */
@@ -301,7 +301,7 @@ static void init_parse()			   /*			     */
   if ( fl_size != 0 ) return;			   /* Already initialzed?    */
 						   /*			     */
   fl_size = FLBLEN;				   /*			     */
-  if ( (file_line_buffer=(Uchar*)malloc(fl_size*sizeof(Uchar))) == NULL )/*  */
+  if ( (file_line_buffer=(String)malloc(fl_size*sizeof(Uchar))) == NULL )/*  */
   { OUT_OF_MEMORY("line buffer"); }		   /* Allocate line buffer   */
 				   		   /*  or message and exit.  */
   if ( parse_sb		   == (StringBuffer*)0 &&  /* Try to initialize the  */
@@ -352,7 +352,7 @@ static int fill_line()				   /*			     */
 	|| len < fl_size - 1)			   /*			     */
     { return 0; }				   /*			     */
 						   /*			     */
-    if ( (file_line_buffer = (Uchar*)		   /* Try to enlarge	     */
+    if ( (file_line_buffer = (String)		   /* Try to enlarge	     */
 	  realloc((char*)file_line_buffer,	   /*  the line buffer	     */
 		  fl_size+=FLBLEN)) == NULL )	   /*			     */
     { OUT_OF_MEMORY("line buffer"); }		   /*			     */
@@ -450,7 +450,7 @@ static int skip_nl()				   /*			     */
 static int parse_symbol(alpha)			   /*			     */
   register int   alpha;				   /*			     */
 { register Uchar c;				   /*			     */
-  register Uchar *cp;				   /*			     */
+  register String cp;				   /*			     */
 						   /*			     */
   c = GetC;					   /*                        */
   cp = flp-1;			   	   	   /*			     */
@@ -476,7 +476,7 @@ static int parse_symbol(alpha)			   /*			     */
 static int parse_key(alpha)			   /*			     */
   register int   alpha;				   /*			     */
 { register Uchar c;				   /*			     */
-  register Uchar *cp;			   	   /*			     */
+  register String cp;			   	   /*			     */
 						   /*			     */
   c  = GetC;					   /*                        */
   cp = flp - 1;			   		   /*			     */
@@ -489,7 +489,7 @@ static int parse_key(alpha)			   /*			     */
   c = CurrentC;					   /*                        */
   CurrentC = '\0';		   		   /*			     */
   if ( rsc_key_case )				   /*                        */
-  { Uchar *s;					   /*                        */
+  { String s;					   /*                        */
     s  = symbol(cp);				   /*                        */
     cp = symbol(lower(cp));			   /*                        */
     save_key(cp,s);				   /*                        */
@@ -512,7 +512,7 @@ static int parse_key(alpha)			   /*			     */
 **___________________________________________________			     */
 static void parse_number()			   /*			     */
 { register Uchar c;				   /*			     */
-  register Uchar *cp;				   /*			     */
+  register String cp;				   /*			     */
 						   /*			     */
   cp = flp;				   	   /*                        */
   while ( is_digit(CurrentC) ) { SkipC; }	   /*			     */
@@ -640,7 +640,7 @@ static int parse_rhs()				   /*			     */
       default:					   /*			     */
 	UnGetC;					   /*                        */
 	ExpectSymbol(TRUE,FALSE);	   	   /*			     */
-	{ register Uchar * mac;			   /*			     */
+	{ register String  mac;			   /*			     */
 	  mac = pop_string();			   /*			     */
 #ifdef OLD
 	  (void)look_macro(mac,1);		   /*			     */
@@ -650,7 +650,7 @@ static int parse_rhs()				   /*			     */
     }						   /*			     */
   } while ( GetC == '#' );			   /*			     */
 						   /*			     */
-  push_string(symbol((Uchar*)sbflush(parse_sb)));  /*			     */
+  push_string(symbol((String)sbflush(parse_sb)));  /*			     */
   sbrewind(parse_sb);				   /*			     */
   UnGetC; return(TRUE);				   /*			     */
 }						   /*------------------------*/
@@ -665,7 +665,7 @@ static int parse_rhs()				   /*			     */
 **___________________________________________________			     */
 static int parse_equation(rec)		   	   /*			     */
   Record rec;					   /*                        */
-{ Uchar  *s, *t;				   /*			     */
+{ String s, t;				   	   /*			     */
 						   /*			     */
   ExpectSymbol(TRUE,FALSE);			   /*			     */
   Expect('=',FALSE);				   /*			     */
@@ -728,7 +728,7 @@ int parse_bib(rec)				   /*			     */
 	s = t = sbflush(comment_sb);		   /*                        */
 	while ( *s ) s++;			   /*                        */
 	while ( t <= --s  && is_space(*s) ) *s = '\0';/*                     */
-	if ( *t ) RecordComment(rec) = symbol((Uchar*)t);/*                  */
+	if ( *t ) RecordComment(rec) = symbol((String)t);/*                  */
 	sbrewind(comment_sb);			   /*                        */
 	return(BIB_COMMENT);		   	   /*			     */
       }						   /*                        */
@@ -742,9 +742,9 @@ int parse_bib(rec)				   /*			     */
       { sbputchar('\n',comment_sb); }	   	   /*			     */
       else					   /*			     */
       { (void)sprintf(buffer,"%ld",ignored);	   /*			     */
-	error(ERR_WARN|ERR_FILE,(Uchar*)buffer,	   /*			     */
-	      (Uchar*)" non-space characters ignored.",/*		     */
-	      (Uchar*)0,(Uchar*)0,(Uchar*)0,	   /*			     */
+	error(ERR_WARN|ERR_FILE,(String)buffer,	   /*			     */
+	      (String)" non-space characters ignored.",/*		     */
+	      StringNULL,StringNULL,StringNULL,	   /*			     */
 	      flno,filename);			   /*			     */
       }						   /*			     */
     }						   /*			     */
@@ -775,12 +775,12 @@ int parse_bib(rec)				   /*			     */
   { case BIB_COMMENT:				   /* This code is not used  */
       UnGetC; 					   /*  any more.             */
       (void)parse_rhs();			   /*                        */
-      push_to_record(rec,pop_string(),(Uchar*)0);  /*			     */
+      push_to_record(rec,pop_string(),StringNULL);  /*			     */
       return type;				   /*                        */
  						   /*                        */
     case BIB_PREAMBLE:				   /*			     */
       ExpectRhs(BIB_NOOP);			   /*			     */
-      push_to_record(rec,pop_string(),(Uchar*)0);  /*			     */
+      push_to_record(rec,pop_string(),StringNULL);  /*			     */
       break;					   /*			     */
 						   /*			     */
     case BIB_STRING:				   /*			     */
@@ -793,20 +793,20 @@ int parse_bib(rec)				   /*			     */
 						   /*			     */
     case BIB_INCLUDE:				   /*			     */
       ExpectRhs(BIB_NOOP);			   /*			     */
-      push_to_record(rec,pop_string(),(Uchar*)0);  /*			     */
+      push_to_record(rec,pop_string(),StringNULL);  /*			     */
       break;					   /*			     */
 						   /*			     */
     case BIB_MODIFY:				   /*			     */
     default:					   /*			     */
       if ( TestC == ',' )			   /*			     */
       { Warning("Missing reference key");	   /*			     */
-	push_to_record(rec,sym_empty,(Uchar*)0);   /*			     */
+	push_to_record(rec,sym_empty,StringNULL);   /*			     */
 	(void)GetC;				   /*			     */
       }						   /*			     */
       else					   /*			     */
       { ExpectKey(FALSE,BIB_NOOP);		   /*			     */
 	Expect(',',BIB_NOOP);			   /*			     */
-	push_to_record(rec,pop_string(),(Uchar*)0); /*			     */
+	push_to_record(rec,pop_string(),StringNULL); /*			     */
       }						   /*			     */
 						   /*			     */
       do					   /*			     */
@@ -840,20 +840,20 @@ int parse_bib(rec)				   /*			     */
       { char *s;				   /*                        */
         if (c == '{') { s = "'{'"; }		   /*                        */
 	else          { s = "'('"; } 		   /*                        */
-	error(ERR_ERROR|ERR_FILE,(Uchar*)s,	   /*                        */
-	      (Uchar*)" not closed at end of file.",/*                       */
-	      (Uchar*)0,(Uchar*)0,(Uchar*)0,	   /*			     */
+	error(ERR_ERROR|ERR_FILE,(String)s,	   /*                        */
+	      (String)" not closed at end of file.",/*                       */
+	      StringNULL,StringNULL,StringNULL,	   /*			     */
 	      line,name);			   /*			     */
       }						   /*                        */
       break;					   /*                        */
     default:					   /*			     */
-      { Uchar *s;				   /*                        */
-        if (c == '{') { s = (Uchar*)"'{'"; }	   /*                        */
-	else	      { s = (Uchar*)"'('"; }	   /*                        */
+      { String s;				   /*                        */
+        if (c == '{') { s = (String)"'{'"; }	   /*                        */
+	else	      { s = (String)"'('"; }	   /*                        */
 	error(ERR_ERROR|ERR_FILE,		   /*                        */
 	      s,				   /*                        */
-	      (Uchar*)" not properly terminated.", /*                        */
-	      (Uchar*)0,(Uchar*)0,(Uchar*)0, 	   /*			     */
+	      (String)" not properly terminated.", /*                        */
+	      StringNULL,StringNULL,StringNULL,	   /*			     */
 	      line,name);			   /*			     */
       }						   /*                        */
       return(BIB_NOOP);				   /*			     */
@@ -863,7 +863,7 @@ int parse_bib(rec)				   /*			     */
     s = t = sbflush(comment_sb);		   /*                        */
     while ( *s ) s++;				   /*                        */
     while ( t <= --s  && is_space(*s) ) *s = '\0'; /*                        */
-    if ( *t ) RecordComment(rec) = (Uchar*)symbol((Uchar*)t);/*              */
+    if ( *t ) RecordComment(rec) = (String)symbol((String)t);/*              */
   }						   /*                        */
   sbrewind(comment_sb);				   /*                        */
   return(type);					   /*			     */
@@ -887,7 +887,7 @@ int parse_bib(rec)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void set_rsc_path(val)				   /*			     */
-  Uchar * val;				   	   /*			     */
+  String  val;				   	   /*			     */
 {						   /*			     */
   rsc_v_rsc = val;			   	   /*			     */
   init___(&r_path,				   /*			     */
@@ -906,7 +906,7 @@ void set_rsc_path(val)				   /*			     */
 ** Returns:	|TRUE| iff the operation succeeds.
 **___________________________________________________			     */
 static int see_rsc(fname)			   /*			     */
-  Uchar * fname;				   /*			     */
+  String fname;				   	   /*			     */
 {						   /*			     */
   if ( fname )					   /*			     */
   { init_parse();				   /*			     */
@@ -944,7 +944,7 @@ static int parse_value()			   /*			     */
 						   /*			     */
     case '"':					   /*			     */
       if ( !parse_string(FALSE) ) return(FALSE);   /*			     */
-      push_string(symbol((Uchar*)sbflush(parse_sb)));/*			     */
+      push_string(symbol((String)sbflush(parse_sb)));/*			     */
       sbrewind(parse_sb);			   /*			     */
       break;					   /*			     */
 						   /*			     */
@@ -955,7 +955,7 @@ static int parse_value()			   /*			     */
 						   /*			     */
     case '{':					   /*			     */
       if ( !parse_block(FALSE) ) return FALSE;	   /*			     */
-      push_string(symbol((Uchar*)sbflush(parse_sb)));/*			     */
+      push_string(symbol((String)sbflush(parse_sb)));/*			     */
       sbrewind(parse_sb);			   /*			     */
       break;					   /*			     */
 						   /*			     */
@@ -984,15 +984,15 @@ static int parse_value()			   /*			     */
 ** Returns:	
 **___________________________________________________			     */
 int read_rsc(name)				   /*			     */
-  Uchar	        *name;				   /*			     */
+  String	name;				   /*			     */
 { int	        c;				   /*			     */
-  Uchar	        *token;				   /*			     */
+  String	token;				   /*			     */
   char		*s_filename;			   /*			     */
   FILE		*s_file;			   /*                        */
-  Uchar		*s_file_line_buffer;		   /*                        */
+  String	s_file_line_buffer;		   /*                        */
   size_t	s_fl_size;			   /*                        */
   int		s_flno;				   /*                        */
-  Uchar		*s_flp;				   /*                        */
+  String	s_flp;				   /*                        */
  						   /* Save the old state in  */
  						   /*  local variables to    */
  						   /*  restore it later.     */

@@ -36,8 +36,8 @@
 #else
 #define _ARG(A) ()
 #endif
- Uchar * pop_string _ARG((void));		   /* stack.c                */
- void push_string _ARG((Uchar * s));		   /* stack.c                */
+ String  pop_string _ARG((void));		   /* stack.c                */
+ void push_string _ARG((String  s));		   /* stack.c                */
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -45,7 +45,7 @@
 
 /*---------------------------------------------------------------------------*/
 
- static Uchar  **stack;
+ static String *stack;
  static size_t stack_size = 0;
  static size_t stack_ptr  = 0;
 
@@ -62,14 +62,14 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 void push_string(s)				   /*                        */
-  register Uchar *s;				   /*                        */
+  register String s;				   /*                        */
 {						   /*                        */
   if ( stack_ptr >= stack_size )		   /*                        */
   { stack_size += 16;		   		   /*                        */
     stack = (stack_ptr == 0			   /*                        */
-	     ?(Uchar**)malloc((size_t)(stack_size*sizeof(Uchar*)))/*         */
-	     :(Uchar**)realloc((char*)stack,	   /*                        */
-			       (size_t)(stack_size*sizeof(Uchar*))));/*      */
+	     ?(String*)malloc((size_t)(stack_size*sizeof(String)))/*         */
+	     :(String*)realloc((char*)stack,	   /*                        */
+			       (size_t)(stack_size*sizeof(String))));/*      */
     if ( stack == NULL )			   /*                        */
     { OUT_OF_MEMORY("stack"); }	   		   /*                        */
   }		   				   /*                        */
@@ -86,7 +86,7 @@ void push_string(s)				   /*                        */
 ** Arguments:	none
 ** Returns:	The old top element or |NULL| if the stack is empty.
 **___________________________________________________			     */
-Uchar * pop_string()				   /*                        */
+String  pop_string()				   /*                        */
 {						   /*                        */
   if ( stack_ptr <= 0 ) return NULL;		   /*                        */
  						   /*                        */

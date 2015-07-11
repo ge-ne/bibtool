@@ -39,25 +39,25 @@
 #define _ARG(A) ()
 #endif
  DB new_db _ARG((void));			   /*                        */
- Record db_find _ARG((DB db,Uchar *key));	   /*                        */
- Record db_search _ARG((DB db,Uchar *key));	   /*                        */
- Uchar * db_new_key _ARG((DB db,Uchar *key));	   /*                        */
- Uchar * db_string _ARG((DB db,Uchar *s,int localp));/*                      */
- int * db_count _ARG((DB db,int *lp));		   /*                        */
- int read_db _ARG((DB db,Uchar *file,int verbose));/*                        */
- static Record insert_record _ARG((Record rec,Record ptr,int (*less)_ARG((Record,Record))));/**/
- static Record rec__sort _ARG((Record rec,int (*less)_ARG((Record,Record))));/**/
- static int cmp_heap _ARG((Record r1,Record r2));  /*                        */
- static void mark_string _ARG((Record rec,Uchar *s));/*                      */
+ Record db_find _ARG((DB db, String key));	   /*                        */
+ Record db_search _ARG((DB db, String key));	   /*                        */
+ String  db_new_key _ARG((DB db, String key));	   /*                        */
+ String  db_string _ARG((DB db, String s, int localp));/*                    */
+ int * db_count _ARG((DB db, int *lp));		   /*                        */
+ int read_db _ARG((DB db, String file, int verbose));/*                      */
+ static Record insert_record _ARG((Record rec, Record ptr,int (*less)_ARG((Record, Record))));/**/
+ static Record rec__sort _ARG((Record rec,int (*less)_ARG((Record, Record))));/**/
+ static int cmp_heap _ARG((Record r1, Record r2)); /*                        */
+ static void mark_string _ARG((Record rec, String s));/*                     */
  void db_insert _ARG((DB db,Record rec,int verbose));/*                      */
- void db_forall _ARG((DB db,int (*fct)_ARG((DB,Record))));/*                 */
+ void db_forall _ARG((DB db,int (*fct)_ARG((DB, Record))));/*                */
  void db_mac_sort _ARG((DB db));		   /*                        */
  void db_rewind _ARG((DB db));			   /*                        */
- void db_sort _ARG((DB db,int (*less)_ARG((Record,Record))));/*              */
+ void db_sort _ARG((DB db,int (*less)_ARG((Record, Record))));/*             */
  void db_xref_undelete _ARG((DB db));		   /*                        */
- void delete_record _ARG((DB db,Record rec));	   /*                        */
+ void delete_record _ARG((DB db, Record rec));	   /*                        */
  void free_db _ARG((DB db));			   /*                        */
- void print_db _ARG((FILE *file,DB db,char *spec));/*                        */
+ void print_db _ARG((FILE *file, DB db, char *spec));/*                      */
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -129,11 +129,11 @@ void free_db(db)				   /*                        */
 **	rec	the record
 ** Returns:	
 **___________________________________________________			     */
-int apply_modify(db,key,rec)	   		   /*                        */
+int apply_modify(db, key, rec)	   		   /*                        */
   DB    db;					   /*                        */
-  Uchar *key;					   /*                        */
+  String key;					   /*                        */
   Record rec;					   /*                        */
-{ Uchar **hp = RecordHeap(rec);			   /*                        */
+{ String *hp = RecordHeap(rec);			   /*                        */
   int i;					   /*                        */
   Record r  = db_find(db,key);			   /*                        */
   if (r == RecordNULL)				   /*                        */
@@ -159,18 +159,18 @@ int apply_modify(db,key,rec)	   		   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	db	
-**	key	
-**	rec	
-**	verbose	
+**	db	the database
+**	key	the key
+**	rec	the record
+**	verbose	the verbose indicator
 ** Returns:	
 **___________________________________________________			     */
-int apply_alias(db,key,rec,verbose)	   	   /*                        */
+int apply_alias(db, key, rec, verbose)	   	   /*                        */
   DB db;					   /*                        */
-  Uchar * key;					   /*                        */
+  String key;					   /*                        */
   Record rec;					   /*                        */
   int verbose;					   /*                        */
-{ Record r = db_find(db,key);			   /*                        */
+{ Record r = db_find(db, key);			   /*                        */
   if (r == RecordNULL)				   /*                        */
   { WARNING2("Entry to alias not found: ",key);    /*                        */
     return 0;					   /*			     */
@@ -195,7 +195,7 @@ int apply_alias(db,key,rec,verbose)	   	   /*                        */
 **	verbose	Boolean to determine whether progress should be reported.
 ** Returns:	nothing
 **___________________________________________________			     */
-void db_insert(db,rec,verbose)		   	   /*                        */
+void db_insert(db, rec, verbose)		   /*                        */
   DB     db;					   /*                        */
   Record rec;					   /*                        */
   int    verbose;				   /*                        */
@@ -216,7 +216,7 @@ void db_insert(db,rec,verbose)		   	   /*                        */
       break;					   /*                        */
     case BIB_MODIFY:				   /*                        */
       if(rsc_apply_modify &&			   /*                        */
-	 apply_modify(db,*RecordHeap(rec), rec))   /*                        */
+	 apply_modify(db, *RecordHeap(rec), rec))  /*                        */
       {	free_record(rec);			   /*                        */
 	return;					   /*                        */
       } else {					   /*                        */
@@ -281,9 +281,9 @@ void db_insert(db,rec,verbose)		   	   /*                        */
 **	verbose	Boolean to determine whether progress should be reported.
 ** Returns:	1 if the file can not be opened. 0 otherwise.
 **___________________________________________________			     */
-int read_db(db,file,verbose)		   	   /*                        */
+int read_db(db, file, verbose)		   	   /*                        */
   DB		  db;				   /*                        */
-  Uchar		  *file;			   /*                        */
+  String	  file;			   	   /*                        */
   int		  verbose;			   /*                        */
 { register int	  type;				   /*			     */
   static Record	  master_record = RecordNULL;	   /*			     */
@@ -295,9 +295,9 @@ int read_db(db,file,verbose)		   	   /*                        */
   { master_record = new_record(0,32); }		   /*                        */
   RecordSource(master_record) = (file==NULL	   /*                        */
 				 ?sym_empty	   /*                        */
-				 :symbol((Uchar*)file));/*                   */
+				 :symbol(file));   /*                        */
  						   /*                        */
-  if ( file == NULL ) file = (Uchar*)"<stdin>";	   /*                        */
+  if ( file == NULL ) file = (String)"<stdin>";	   /*                        */
   if ( verbose ) 			   	   /* If desired print an    */
   { VerbosePrint2("Reading ",file); }	   	   /*	open message.	     */
  						   /*                        */
@@ -342,23 +342,23 @@ int read_db(db,file,verbose)		   	   /*                        */
 **		
 **		
 ** Arguments:
-**	rec	
+**	rec	the record
 **	s	
 ** Returns:	nothing
 **___________________________________________________			     */
-static void mark_string(rec,s)			   /*                        */
+static void mark_string(rec, s)			   /*                        */
   Record rec;					   /*                        */
-  Uchar   *s;					   /*                        */
+  String s;					   /*                        */
 { int    d;					   /*                        */
   Record r;					   /*                        */
  						   /*                        */
-  while(*s)					   /*                        */
+  while (*s)					   /*                        */
   {						   /*                        */
     switch (*s)					   /*                        */
     { case '\0': return;			   /*                        */
       case '"':					   /*                        */
 	d = 0;					   /*                        */
-	while ( *++s && (*s!='"' || d>0) )	   /*                        */
+	while ( *++s && (*s != '"' || d > 0) )	   /*                        */
 	{ switch (*s)				   /*                        */
 	  { case '{': d++; break;		   /*                        */
 	    case '}': d--; break;		   /*                        */
@@ -369,7 +369,7 @@ static void mark_string(rec,s)			   /*                        */
 	break;					   /*                        */
       case '{':					   /*                        */
 	d = 1;					   /*                        */
-	while ( *++s && d>0 )			   /*                        */
+	while ( *++s && d > 0 )			   /*                        */
 	{ switch (*s)				   /*                        */
 	  { case '{': d++; break;		   /*                        */
 	    case '}': d--; break;		   /*                        */
@@ -380,8 +380,9 @@ static void mark_string(rec,s)			   /*                        */
 	break;					   /*                        */
       default:					   /*                        */
 	if ( is_allowed(*s) )			   /*                        */
-	{ Uchar c, *t;				   /*                        */
-	  Uchar *mac = s;			   /*                        */
+	{ Uchar c;				   /*                        */
+	  String t;				   /*                        */
+	  String mac = s;			   /*                        */
 	  while ( is_allowed(*s) ) s++;		   /*                        */
 	  c = *s;				   /*                        */
 	  *s ='\0';				   /*                        */
@@ -431,11 +432,11 @@ static void print_segment(file, db, rec, allp)	   /*                        */
     {					   	   /*                        */
       if ( allp || RecordIsMARKED(rec) )	   /*                        */
       {					   	   /*                        */
-	fput_record(file,rec,db,(Uchar*)"@");      /*                        */
+	fput_record(file, rec, db, (String)"@");   /*                        */
       }					   	   /*                        */
     }					   	   /*                        */
     else if ( rsc_del_q )			   /*                        */
-    { fput_record(file,rec,db,rsc_del_pre); }      /*                        */
+    { fput_record(file, rec,db, rsc_del_pre); }	   /*                        */
     rec = NextRecord(rec);			   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
@@ -463,7 +464,7 @@ static void preprint_string(file, db, strings, rec)/*                        */
  						   /*                        */
   for ( i=0; i < RecordFree(rec); i+=2 )   	   /*                        */
   { if ( RecordHeap(rec)[i] != NULL )	   	   /*                        */
-    { Uchar * s = RecordHeap(rec)[i+1];   	   /*                        */
+    { String  s = RecordHeap(rec)[i+1];   	   /*                        */
  						   /*                        */
       while(*s)					   /*                        */
       {						   /*                        */
@@ -493,8 +494,9 @@ static void preprint_string(file, db, strings, rec)/*                        */
 	    break;				   /*                        */
 	  default:				   /*                        */
 	    if ( is_allowed(*s) )		   /*                        */
-	    { Uchar c, *t;			   /*                        */
-	      Uchar *mac = s;			   /*                        */
+	    { Uchar c;			   	   /*                        */
+	      String t;				   /*                        */
+	      String mac = s;			   /*                        */
 	      while ( is_allowed(*s) ) s++;	   /*                        */
 	      c = *s;				   /*                        */
 	      *s ='\0';				   /*                        */
@@ -511,7 +513,7 @@ static void preprint_string(file, db, strings, rec)/*                        */
 		     RecordIsMARKED(r) )	   /*                        */
 	        {				   /*                        */
 		  ClearRecordMARK(r);		   /*                        */
-		  fput_record(file,r,db,(Uchar*)"@");/*                      */
+		  fput_record(file,r,db,(String)"@");/*                      */
  						   /*                        */
 		  preprint_string(file,		   /*                        */
 				  db,		   /*                        */
@@ -771,11 +773,12 @@ void db_forall(db,fct)				   /*                        */
 **		the same key then the behavior is nondeterministic.
 ** Arguments:
 **	db	Database to search in.
+**	key	the key to search for
 ** Returns:	nothing
 **___________________________________________________			     */
 Record db_find(db,key)				   /*                        */
   DB              db;				   /*                        */
-  Uchar		  *key;				   /*                        */
+  String	  key;				   /*                        */
 { register Record rec;				   /*                        */
 						   /*                        */
   DebugPrint2("Finding... ",key); 		   /*                        */
@@ -818,11 +821,12 @@ Record db_find(db,key)				   /*                        */
 **		the same key then the behavior is nondeterministic.
 ** Arguments:
 **	db	Database to search in.
+**	key	the key to search for
 ** Returns:	nothing
 **___________________________________________________			     */
-Record db_search(db,key)			   /*                        */
+Record db_search(db, key)			   /*                        */
   DB              db;				   /*                        */
-  Uchar		  *key;				   /*                        */
+  String	  key;				   /*                        */
 { register Record rec;				   /*                        */
 						   /*                        */
   if ( DBnormal(db) == RecordNULL ) return RecordNULL;/*                     */
@@ -854,9 +858,9 @@ Record db_search(db,key)			   /*                        */
 **	key	Key to find.
 ** Returns:	nothing
 **___________________________________________________			     */
-Uchar * db_new_key(db,key)			   /*                        */
+String  db_new_key(db,key)			   /*                        */
   DB              db;				   /*                        */
-  Uchar		  *key;				   /*                        */
+  String	  key;				   /*                        */
 { register Record rec;				   /*                        */
 						   /*                        */
   if ( DBnormal(db) == RecordNULL ) return NULL;   /*                        */
@@ -1080,9 +1084,9 @@ void db_sort(db,less)				   /*                        */
 **	localp	Boolean determining whether the search is only local to the db.
 ** Returns:	The macro expansion or |NULL| upon failure.
 **___________________________________________________			     */
-Uchar * db_string(db,s,localp)			   /*                        */
+String db_string(db, s, localp)			   /*                        */
   DB     db;					   /*                        */
-  Uchar   *s;					   /*                        */
+  String s;					   /*                        */
   int    localp;				   /*                        */
 { Record rec;					   /*                        */
  						   /*                        */
@@ -1226,7 +1230,7 @@ void db_xref_undelete(db)			   /*                        */
     if ( RecordIsXREF(rec)   &&		   	   /*                        */
 	 !RecordIsDELETED(rec)		   	   /*                        */
        )					   /*                        */
-    { Uchar  *key = (Uchar*)"???";		   /*                        */
+    { String key = (String)"???";		   /*                        */
       int    count;				   /*                        */
       Record r = rec;				   /*                        */
  						   /*                        */

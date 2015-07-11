@@ -23,5 +23,5 @@
 #else
 #define _ARG(A) ()
 #endif
- Uchar * pop_string _ARG((void));		   /* stack.c                */
- void push_string _ARG((Uchar * s));		   /* stack.c                */
+ String  pop_string _ARG((void));		   /* stack.c                */
+ void push_string _ARG((String  s));		   /* stack.c                */

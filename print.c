@@ -36,17 +36,17 @@
 #else
 #define _ARG(A) ()
 #endif
- char * sput_record _ARG((Record rec,DB db,Uchar *start));/* print.c         */
+ char * sput_record _ARG((Record rec,DB db,String start));/* print.c         */
  static int fput_char _ARG((int c));		   /* print.c                */
  static int sput_char _ARG((int c));		   /* print.c                */
  static void indent _ARG((int col,int (*fct)_ARG((int))));/* print.c         */
- static void line_breaking _ARG((Uchar *t,int align,int (*fct)_ARG((int))));/* print.c*/
- static void print_equation _ARG((Uchar *pre,Uchar *s,Uchar *t,int align,int (*fct)_ARG((int))));/* print.c*/
- static void puts_in _ARG((Uchar *s,int in,int (*fct)_ARG((int))));/* print.c */
- void fput_record _ARG((FILE *file,Record rec,DB db,Uchar *start));/* print.c*/
- void put_record _ARG((int (*fct)_ARG((int)),Record rec,DB db,Uchar *start));/* print.c*/
- void set_key_type _ARG((Uchar * s));		   /* print.c                */
- void set_symbol_type _ARG((Uchar * s));	   /* print.c                */
+ static void line_breaking _ARG((String t,int align,int (*fct)_ARG((int))));/* print.c*/
+ static void print_equation _ARG((String pre,String s,String t,int align,int (*fct)_ARG((int))));/* print.c*/
+ static void puts_in _ARG((String s,int in,int (*fct)_ARG((int))));/* print.c */
+ void fput_record _ARG((FILE *file,Record rec,DB db,String start));/* print.c*/
+ void put_record _ARG((int (*fct)_ARG((int)),Record rec,DB db,String start));/* print.c*/
+ void set_key_type _ARG((String  s));		   /* print.c                */
+ void set_symbol_type _ARG((String  s));	   /* print.c                */
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -58,9 +58,9 @@
 
  static int symbol_type = SYMBOL_TYPE_LOWER;	   /*                        */
 
- static Uchar * s_upper = (Uchar*)"upper";	   /*                        */
- static Uchar * s_lower = (Uchar*)"lower";	   /*                        */
- static Uchar * s_cased = (Uchar*)"cased";	   /*                        */
+ static String s_upper = (String)"upper";	   /*                        */
+ static String s_lower = (String)"lower";	   /*                        */
+ static String s_cased = (String)"cased";	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	set_symbol_type()
@@ -79,7 +79,7 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 void set_symbol_type(s)				   /*			     */
-  register Uchar * s;				   /*			     */
+  register String  s;				   /*			     */
 { if ( case_cmp(s, s_upper) )			   /*			     */
   { symbol_type = SYMBOL_TYPE_UPPER; }		   /*			     */
   else if ( case_cmp(s, s_cased) )		   /*			     */
@@ -103,7 +103,7 @@ void set_symbol_type(s)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void set_key_type(s)				   /*			     */
-  register Uchar * s;				   /*			     */
+  register String  s;				   /*			     */
 { if ( case_cmp(s,s_upper) )			   /*			     */
   { key_type = SYMBOL_TYPE_UPPER; }		   /*			     */
   else if ( case_cmp(s,s_cased) )		   /*			     */
@@ -122,7 +122,7 @@ void set_key_type(s)				   /*			     */
 
 #define NL	(void)(*fct)('\n'),column=0
 #define PUTC(C) (void)((*fct)(C),++column)
-#define PUTS(S) puts_in((Uchar*)S,0,fct)
+#define PUTS(S) puts_in((String)S, 0, fct)
 
 /*-----------------------------------------------------------------------------
 ** Function:	puts_in()
@@ -134,7 +134,7 @@ void set_key_type(s)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void puts_in(s,in,fct)			   /*			     */
-  register Uchar *s;				   /*			     */
+  register String s;				   /*			     */
   register int  in;				   /*                        */
   int (*fct)_ARG((int));			   /*                        */
 {						   /*			     */
@@ -195,10 +195,10 @@ static void indent(col,fct)			   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void line_breaking(t, align, fct)	   /*			     */
-  register Uchar *t;				   /* string to print.	     */
+  register String t;				   /* string to print.	     */
   int		 align;				   /* alignment column	     */
   int            (*fct)_ARG((int));		   /*                        */
-{ register Uchar *s;			   	   /* intermediate pointer   */
+{ register String s;			   	   /* intermediate pointer   */
   char		  end_c;			   /* temp. character.	     */
   int		  brace,			   /* brace counter	     */
 		  len,				   /* length of rem. output  */
@@ -255,13 +255,13 @@ static void line_breaking(t, align, fct)	   /*			     */
 	s = t;					   /* and we are done	     */
       }						   /*			     */
       else if ( !first )			   /* If sth has been before */
-      { puts_in((Uchar*)"\n# ", align - 2, fct);   /*  start a new line	     */
+      { puts_in((String)"\n# ", align - 2, fct);   /*  start a new line	     */
 	first = TRUE;				   /*			     */
       }						   /* Now we have to break   */
       else					   /*  a single entry	     */
-      { Uchar save_c,			   	   /*                        */
-	      *save_ptr,		   	   /*                        */
-	      *ptr;			   	   /*			     */
+      { Uchar  save_c;			   	   /*                        */
+	String save_ptr,		   	   /*                        */
+	       ptr;			   	   /*			     */
 						   /*			     */
         if ( 0 <= rsc_linelen - column )	   /*                        */
 	  save_ptr = s + rsc_linelen - column;	   /* Potential end	     */
@@ -327,9 +327,9 @@ static void line_breaking(t, align, fct)	   /*			     */
 ** Returns:	nothing
 **___________________________________________________'			     */
 static void print_equation(pre, s, t, align, fct)  /*			     */
-  Uchar *pre;					   /*                        */
-  Uchar *s;				   	   /*			     */
-  Uchar *t;				   	   /*			     */
+  String pre;					   /*                        */
+  String s;				   	   /*			     */
+  String t;				   	   /*			     */
   int  align;				   	   /*			     */
   int (*fct)_ARG((int));			   /*                        */
 {						   /*			     */
@@ -388,7 +388,7 @@ void fput_record(file, rec, db, start)	   	   /*			     */
   FILE	 *file;			   		   /*                        */
   DB	 db;			   		   /*                        */
   Record rec;			   		   /* record to print	     */
-  Uchar	 *start;		   	   	   /* initial string = "@"   */
+  String start;		   	   	   	   /* initial string = "@"   */
 {						   /*                        */
   ofile = file;					   /*                        */
   put_record(fput_char, rec, db, start);	   /*                        */
@@ -424,7 +424,7 @@ static int sput_char(c)				   /*                        */
 char * sput_record(rec, db, start)	   	   /*			     */
   DB	 db;			   		   /*                        */
   Record rec;			   		   /* record to print	     */
-  Uchar	 *start;		   	   	   /* initial string = "@"   */
+  String start;		   	   	   	   /* initial string = "@"   */
 {						   /*                        */
   if ( osb == NULL ) osb = sbopen();		   /*                        */
   sbrewind(osb);				   /*                        */
@@ -488,8 +488,8 @@ void put_record(fct, rec, db, start)		   /*                        */
   int	       (*fct)_ARG((int));		   /*                        */
   Record       rec;				   /*                        */
   DB	       db;				   /*                        */
-  Uchar	       *start;		   	   	   /* initial string = "@"   */
-{ Uchar	       **hp;			   	   /* heap pointer	     */
+  String       start;		   	   	   /* initial string = "@"   */
+{ String       *hp;			   	   /* heap pointer	     */
   unsigned int i;			   	   /*			     */
   char	       open_brace, close_brace;		   /*			     */
   static int   first = 1;			   /*                        */
@@ -566,8 +566,8 @@ void put_record(fct, rec, db, start)		   /*                        */
       PUTS(start);				   /*			     */
       PUTS(EntryName(RecordType(rec)));	   	   /*			     */
       PUTC(open_brace);				   /*			     */
-      { Uchar *comma1 = sym_empty,		   /*                        */
-	      *comma2 = (Uchar*)",";		   /*                        */
+      { String comma1 = sym_empty,		   /*                        */
+	       comma2 = (String)",";		   /*                        */
  						   /*                        */
         if (rsc_print_ce)			   /*                        */
 	{ comma1 = comma2;			   /*                        */
@@ -585,8 +585,8 @@ void put_record(fct, rec, db, start)		   /*                        */
 			     *hp,		   /*                        */
 			     (rsc_expand_macros	   /*                        */
 			      ? expand_rhs(*(hp+1),/*                        */
-					   (Uchar*)(rsc_braces?"{":"\""),/*  */
-					   (Uchar*)(rsc_braces?"}":"\""),/*  */
+					   (String)(rsc_braces?"{":"\""),/*  */
+					   (String)(rsc_braces?"}":"\""),/*  */
 					   db)	   /*                        */
 			      : *(hp+1) ),	   /*                        */
 			     rsc_col,		   /*                        */

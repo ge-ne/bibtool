@@ -28,12 +28,12 @@
  Record new_record _ARG((int token,int size));
  Record record_gc _ARG((Record rec));
  Record unlink_record _ARG((Record rec));
- WordList new_wordlist _ARG((Uchar * s));
- void add_sort_order _ARG((Uchar *val));
+ WordList new_wordlist _ARG((String  s));
+ void add_sort_order _ARG((String val));
  void free_1_record _ARG((Record rec));
  void free_record _ARG((Record rec));
- void provide_to_record _ARG((Record rec,Uchar *s,Uchar *t));
- void push_to_record _ARG((Record rec,Uchar *s,Uchar *t));
+ void provide_to_record _ARG((Record rec,String s,String t));
+ void push_to_record _ARG((Record rec,String s,String t));
  void sort_record _ARG((Record rec));
 
 /*****************************************************************************/
@@ -54,12 +54,12 @@
 Record copy_record(rec)				   /*			     */
   register Record rec;				   /*			     */
 { register Record new;				   /*			     */
-  register Uchar  **new_heap,			   /*			     */
-		  **old_heap;			   /*			     */
+  register String *new_heap,			   /*			     */
+		  *old_heap;			   /*			     */
   register int	  i;				   /*			     */
 						   /*			     */
   if (	(new=(Record)malloc(sizeof(SRecord))) == 0L/*			     */
-     || (new_heap=(Uchar**)malloc(sizeof(Uchar*)*(size_t)RecordFree(rec)))/* */
+     || (new_heap=(String*)malloc(sizeof(String)*(size_t)RecordFree(rec)))/* */
 	== 0L )					   /*			     */
   { OUT_OF_MEMORY("Record"); }      		   /*                        */
   RecordSortkey(new)	  = sym_empty;		   /*			     */
@@ -93,12 +93,12 @@ Record new_record(token,size)			   /*			     */
   int		  token;			   /*			     */
   int		  size;				   /*                        */
 { register Record new;				   /*			     */
-  register Uchar  **new_heap;			   /*			     */
+  register String *new_heap;			   /*			     */
   register int	  i;				   /*			     */
 						   /*			     */
   if ( size < 1 ) size = 1;			   /*                        */
   if (	(new=(Record)malloc(sizeof(SRecord))) == 0L/*			     */
-     || (new_heap=(Uchar**)malloc(sizeof(Uchar*)*(size_t)(size)))/*          */
+     || (new_heap=(String*)malloc(sizeof(String)*(size_t)(size)))/*          */
 	== 0L )					   /*			     */
   { OUT_OF_MEMORY("Record"); }      		   /*                        */
   RecordSortkey(new)	  = sym_empty;		   /*			     */
@@ -252,8 +252,8 @@ Record record_gc(rec)				   /*                        */
 **___________________________________________________			     */
 void push_to_record(rec,s,t)			   /*			     */
   register Record rec;				   /*                        */
-  register Uchar *s;				   /*			     */
-  register Uchar *t;				   /*			     */
+  register String s;				   /*			     */
+  register String t;				   /*			     */
 { register int i;		   		   /*			     */
    						   /*                        */
   if ( s == sym_crossref ) { SetRecordXREF(rec); } /*			     */
@@ -265,7 +265,7 @@ void push_to_record(rec,s,t)			   /*			     */
     }   					   /*                        */
   }						   /*                        */
   for ( i=2; i < RecordFree(rec); i+=2 )	   /* search empty field     */
-  { if ( RecordHeap(rec)[i] == (Uchar*)NULL )	   /* if found then          */
+  { if ( RecordHeap(rec)[i] == StringNULL )	   /* if found then          */
     { RecordHeap(rec)[i++] = s;			   /* add the new item       */
       RecordHeap(rec)[i]   = t;			   /*                        */
       return;					   /*                        */
@@ -274,9 +274,9 @@ void push_to_record(rec,s,t)			   /*			     */
   i = RecordFree(rec);				   /*                        */
   RecordFree(rec) += 2;				   /*                        */
   if ( (RecordHeap(rec)   			   /* enlarge the heap	     */
-	=(Uchar**)realloc(RecordHeap(rec),	   /*	                     */
-			 RecordFree(rec)*sizeof(Uchar*)))/*                  */
-     == (Uchar**)NULL )			   	   /*	                     */
+	=(String*)realloc(RecordHeap(rec),	   /*	                     */
+			 RecordFree(rec)*sizeof(String)))/*                  */
+     == (String*)NULL )			   	   /*	                     */
   { OUT_OF_MEMORY("heap"); }      		   /*                        */
 						   /*			     */
   RecordHeap(rec)[i++] = s;		   	   /*			     */
@@ -299,8 +299,8 @@ void push_to_record(rec,s,t)			   /*			     */
 **___________________________________________________			     */
 void provide_to_record(rec,s,t)			   /*			     */
   register Record rec;				   /*                        */
-  register Uchar *s;				   /*			     */
-  register Uchar *t;				   /*			     */
+  register String s;				   /*			     */
+  register String t;				   /*			     */
 { register int i;		   		   /*			     */
    						   /*                        */
   if ( s == sym_crossref ) { SetRecordXREF(rec); } /*			     */
@@ -311,7 +311,7 @@ void provide_to_record(rec,s,t)			   /*			     */
     }   					   /*                        */
   }						   /*                        */
   for ( i=2; i < RecordFree(rec); i+=2 )	   /* search empty field     */
-  { if ( RecordHeap(rec)[i] == (Uchar*)NULL )	   /* if found then          */
+  { if ( RecordHeap(rec)[i] == StringNULL )	   /* if found then          */
     { RecordHeap(rec)[i++] = s;			   /* add the new item       */
       RecordHeap(rec)[i]   = t;			   /*                        */
       return;					   /*                        */
@@ -320,9 +320,9 @@ void provide_to_record(rec,s,t)			   /*			     */
   i = RecordFree(rec);				   /*                        */
   RecordFree(rec) += 2;				   /*                        */
   if ( (RecordHeap(rec)   			   /* enlarge the heap	     */
-	=(Uchar**)realloc(RecordHeap(rec),	   /*	                     */
-			 RecordFree(rec)*sizeof(Uchar*)))/*                  */
-     == (Uchar**)NULL )			   	   /*	                     */
+	=(String*)realloc(RecordHeap(rec),	   /*	                     */
+			 RecordFree(rec)*sizeof(String)))/*                  */
+     == (String*)NULL )			   	   /*	                     */
   { OUT_OF_MEMORY("heap"); }      		   /*                        */
 						   /*			     */
   RecordHeap(rec)[i++] = s;		   	   /*			     */
@@ -347,7 +347,7 @@ void provide_to_record(rec,s,t)			   /*			     */
 ** Returns:	
 **___________________________________________________			     */
 WordList new_wordlist(s)			   /*                        */
-  Uchar * s;				   	   /*                        */
+  String  s;				   	   /*                        */
 { register WordList wl;				   /*                        */
   if ( (wl=(WordList)malloc(sizeof(SWordList))) == WordNULL )/*              */
   { OUT_OF_MEMORY("WordList"); }		   /*                        */
@@ -380,8 +380,8 @@ WordList new_wordlist(s)			   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void add_sort_order(val)			   /*                        */
-  Uchar      *val;				   /*                        */
-{ Uchar     *s;					   /*                        */
+  String    val;				   /*                        */
+{ String    s;					   /*                        */
   int       type;				   /*                        */
   OrderList ol;					   /*                        */
   WordList  *wlp = NULL;			   /*                        */
@@ -389,20 +389,20 @@ void add_sort_order(val)			   /*                        */
  						   /*                        */
   (void)SParseSkip(&val);			   /*                        */
   if ( *val == '*' )				   /*                        */
-  { s    = (Uchar*)NULL;			   /*                        */
+  { s    = StringNULL;			   	   /*                        */
     type = BIB_NOOP;				   /*                        */
     val++;					   /*                        */
   }						   /*                        */
-  else if ( (s=SParseSymbol(&val)) == (Uchar*)NULL )/*                       */
+  else if ( (s=SParseSymbol(&val)) == StringNULL ) /*                        */
   { return; }					   /*                        */
   else if ( (type=find_entry_type(s)) == BIB_NOOP )/*                        */
   { Err("Undefined entry type for sort order");	   /*                        */
     return;					   /*                        */
   }						   /*                        */
  						   /*                        */
-  for ( ol=order;				   /*                        */
+  for (ol = order;				   /*                        */
        ol != OrderNULL && OrderType(ol) != type;   /*                        */
-       ol=NextOrder(ol) ) {}			   /*                        */
+       ol = NextOrder(ol)) {}			   /*                        */
  						   /*                        */
   if ( ol )					   /*                        */
   { wlp = &OrderVal(ol);			   /*                        */

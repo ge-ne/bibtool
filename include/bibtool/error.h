@@ -72,10 +72,9 @@
 **___________________________________________________			     */
 #define ERR_EXIT      256
 
-
  extern char  *err_format;
- extern Uchar *err_point;
- extern Uchar *err_oom;
+ extern String err_point;
+ extern String err_oom;
  extern FILE  *err_file;
 
 /*-----------------------------------------------------------------------------
@@ -88,8 +87,8 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 #define ERROR_EXIT(X)				\
-	error(ERR_ERROR|ERR_EXIT,(Uchar*)X,	\
-	      (Uchar*)0,(Uchar*)0,(Uchar*)0,(Uchar*)0,0,(char*)0)
+	error(ERR_ERROR|ERR_EXIT,(String)X,	\
+	      (String)0,(String)0,(String)0,(String)0,0,(char*)0)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	OUT_OF_MEMORY()
@@ -104,7 +103,7 @@
 **___________________________________________________			     */
 #define OUT_OF_MEMORY(X)			\
 	error(ERR_ERROR|ERR_EXIT,err_oom,	\
-	      (Uchar*)X,err_point,(Uchar*)0,(Uchar*)0,0,(char*)0)
+	      (String)X,err_point,(String)0,(String)0,0,(char*)0)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ERROR()
@@ -116,8 +115,8 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 #define ERROR(X)				\
-	error(ERR_ERROR,(Uchar*)X,		\
-	      (Uchar*)0,(Uchar*)0,(Uchar*)0,(Uchar*)0,0,(char*)0)
+	error(ERR_ERROR,(String)X,		\
+	      (String)0,(String)0,(String)0,(String)0,0,(char*)0)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ERROR2()
@@ -130,8 +129,8 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 #define ERROR2(X,Y)				\
-	error(ERR_ERROR,(Uchar*)X,		\
-	      (Uchar*)Y,(Uchar*)0,(Uchar*)0,(Uchar*)0,0,(char*)0)
+	error(ERR_ERROR,(String)X,		\
+	      (String)Y,(String)0,(String)0,(String)0,0,(char*)0)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ERROR3()
@@ -145,8 +144,8 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 #define ERROR3(X,Y,Z)				\
-	error(ERR_ERROR,(Uchar*)X,		\
-	      (Uchar*)Y,(Uchar*)Z,(Uchar*)0,(Uchar*)0,0,(char*)0)
+	error(ERR_ERROR,(String)X,		\
+	      (String)Y,(String)Z,(String)0,(String)0,0,(char*)0)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	WARNING()
@@ -158,8 +157,8 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 #define WARNING(X)				\
-	error(ERR_WARN,(Uchar*)X,		\
-	      (Uchar*)0,(Uchar*)0,(Uchar*)0,(Uchar*)0,0,(char*)0)
+	error(ERR_WARN,(String)X,		\
+	      (String)0,(String)0,(String)0,(String)0,0,(char*)0)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	WARNING2()
@@ -172,8 +171,8 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 #define WARNING2(X,Y)				\
-	error(ERR_WARN,(Uchar*)X,		\
-	      (Uchar*)Y,(Uchar*)0,(Uchar*)0,(Uchar*)0,0,(char*)0)
+	error(ERR_WARN,(String)X,		\
+	      (String)Y,(String)0,(String)0,(String)0,0,(char*)0)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	WARNING3()
@@ -187,8 +186,8 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 #define WARNING3(X,Y,Z)				\
-	error(ERR_WARN,(Uchar*)X,		\
-	      (Uchar*)Y,(Uchar*)Z,(Uchar*)0,(Uchar*)0,0,(char*)0)
+	error(ERR_WARN,(String)X,		\
+	      (String)Y, (String)Z, StringNULL, StringNULL, 0, (char*)0)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	Err()
@@ -200,7 +199,7 @@
 **	S	String to print.
 ** Returns:	nothing
 **___________________________________________________			     */
-#define Err(S)			(void)fprintf(err_file,err_format,S)
+#define Err(S)	(void)fprintf(err_file,err_format,S)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ErrC()
@@ -210,7 +209,7 @@
 **	CHAR	Character to send to output.
 ** Returns:	nothing
 **___________________________________________________			     */
-#define ErrC(CHAR)		(void)fputc(CHAR,err_file)
+#define ErrC(CHAR)	(void)fputc(CHAR,err_file)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ErrPrint()
@@ -222,7 +221,7 @@
 **	F	String to print.
 ** Returns:	nothing
 **___________________________________________________			     */
-#define ErrPrint(F)		(void)fputs(F,err_file)
+#define ErrPrint(F)	(void)fputs(F,err_file)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ErrPrintF()
@@ -235,7 +234,7 @@
 **	A	Argument.
 ** Returns:	nothing
 **___________________________________________________			     */
-#define ErrPrintF(F,A)		(void)fprintf(err_file,F,A)
+#define ErrPrintF(F,A)	(void)fprintf(err_file,F,A)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ErrPrintF2()
@@ -274,7 +273,7 @@
 **		buffering. 
 ** Returns:	nothing
 **___________________________________________________			     */
-#define FlushErr		(void)fflush(err_file)
+#define FlushErr	(void)fflush(err_file)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	VerbosePrint1()
@@ -421,13 +420,11 @@
 #define DebugPrintF3(A,B,C)    
 #endif
 
-
-
 #ifdef __STDC__
 #define _ARG(A) A
 #else
 #define _ARG(A) ()
 #endif
- void error _ARG((int type,Uchar *s1,Uchar *s2,Uchar *s3,Uchar *line,Uchar *ep,int line_no,char *file_name));/* error.c*/
+ void error _ARG((int type,String s1,String s2,String s3,String line,String ep,int line_no,char *file_name));/* error.c*/
  void init_error _ARG((FILE * file));
 

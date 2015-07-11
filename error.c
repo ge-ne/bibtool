@@ -37,8 +37,8 @@
 /*---------------------------------------------------------------------------*/
 
  char  *err_format = "*** BibTool: %s";
- Uchar *err_point  = (Uchar*)".";
- Uchar *err_oom    = (Uchar*)"Out of memory for ";
+ String err_point  = (String)".";
+ String err_oom    = (String)"Out of memory for ";
 
  FILE * err_file = NULL;
 
@@ -118,13 +118,13 @@ void init_error(file)				   /*                        */
 **	fname	The file name where the error occurred.
 ** Returns:	nothing
 **___________________________________________________			     */
-void error(type,s1,s2,s3,line,err_pos,line_no,fname)/*			     */
+void error(type, s1, s2, s3, line, err_pos, line_no, fname)/*		     */
   int	  type;			   	   	   /* defined in error.h     */
-  Uchar	  *s1;			   	   	   /* 1st error message	     */
-  Uchar	  *s2;			   	   	   /* 2nd error message	     */
-  Uchar	  *s3;			   	   	   /* 3rd error message	     */
-  Uchar   *line;				   /* line_no string.	     */
-  Uchar   *err_pos;				   /* error position in line */
+  String  s1;			   	   	   /* 1st error message	     */
+  String  s2;			   	   	   /* 2nd error message	     */
+  String  s3;			   	   	   /* 3rd error message	     */
+  String  line;				   	   /* line_no string.	     */
+  String  err_pos;				   /* error position in line */
   int	  line_no;		   	   	   /* line number	     */
   char	  *fname;		   	   	   /* file name		     */
 {						   /*			     */
