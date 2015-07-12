@@ -22,7 +22,15 @@
 **		numbers.  In addition a post-fix like |alpha| or a
 **		patch level like |p1| can be present.
 **___________________________________________________			     */
- char * bibtool_version = "2.61-alpha";		   /*                        */
+char * bibtool_version = "2.61";		   /*                        */
+
+/*-----------------------------------------------------------------------------
+** Variable:	bibtool_year
+** Type:	char *
+** Purpose:	This string variable contains the publication year for this
+**		version. 
+**___________________________________________________			     */
+char * bibtool_year = "2015";			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	show_version()
@@ -33,6 +41,6 @@
 **___________________________________________________			     */
 void show_version()				   /*                        */
 {						   /*                        */
-  ErrPrintF("BibTool Vers. %s (C) 1996-2015 Gerd Neugebauer\n\n",/*          */
-	    bibtool_version);			   /*	                     */
+  ErrPrintF2("BibTool Vers. %s (C) 1996-%s Gerd Neugebauer\n\n",/*           */
+	     bibtool_version, bibtool_year);	   /*	                     */
 }						   /*------------------------*/
