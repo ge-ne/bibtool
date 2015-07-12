@@ -28,7 +28,8 @@
  String  s_parse _ARG((int type,String *sp,int errp));/* s_parse.c           */
  int sp_open _ARG((String  s));			   /* s_parse.c              */
  void sp_close _ARG((void));			   /* s_parse.c              */
- void sp_error _ARG((String s,char *a,char *b));   /* s_parse.c              */
+ int sp_expect _ARG((String*sp, String expect));   /* s_parse.c              */
+
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -39,7 +40,7 @@
 #define Error(E,S,A,B)	\
   if(E) error(ERR_ERROR|ERR_POINT,(String)A,(String)B,(String)0,sp_line,(String)S,0,(char*)0)
 
- static String sp_line = NULL;
+ static String sp_line = StringNULL;
 
 /*-----------------------------------------------------------------------------
 ** Function:	sp_open()
@@ -122,7 +123,7 @@ int sp_open(s)					   /*                        */
 **		message should be created in case of an error.
 ** Returns:	A symbol containing the requested entity or |NULL|.
 **___________________________________________________			     */
-String  s_parse(type,sp,errp)			   /*                        */
+String s_parse(type, sp, errp)			   /*                        */
   int 		  type;				   /*                        */
   String	  *sp;				   /*                        */
   int		  errp;				   /*                        */
@@ -251,7 +252,7 @@ String  s_parse(type,sp,errp)			   /*                        */
       }						   /*                        */
       						   /*                        */
       sp_line = NULL;				   /*                        */
-      return (*s?s:NULL);			   /*                        */
+      return (*s ? s : NULL);			   /*                        */
  						   /*                        */
     default:					   /*                        */
       return NULL;				   /*                        */
@@ -271,4 +272,31 @@ String  s_parse(type,sp,errp)			   /*                        */
     free(cp);					   /*                        */
     return sym;					   /*                        */
   }						   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	sp_expect()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**	sp	
+**	expect	
+** Returns:	
+**___________________________________________________			     */
+int sp_expect(sp, expect)			   /*                        */
+  String *sp;					   /*                        */
+  String expect;				   /*                        */
+{ String s = *sp;				   /*                        */
+ 						   /*                        */
+  while( is_space(*s) ) s++;			   /*                        */
+  *sp = s;					   /*                        */
+ 						   /*                        */
+  for ( ;*expect; expect++)			   /*                        */
+  { if (*expect  != *s)	{ return FALSE; }	   /*                        */
+    s++;					   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  *sp = s;					   /*                        */
+  return TRUE;					   /*                        */
 }						   /*------------------------*/

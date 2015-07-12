@@ -1728,7 +1728,7 @@ An example of extracting can be seen in section~\ref{sample:extract} on page
 \subsection{Extracting with Sub-string Matching}
 
 The simplest way of specifying an entry---except by giving its key---is to
-give a string which has to be present in one of the fields or pseudo-fields.
+give a string which has to be present in one of the fields or pseudo fields.
 The resource \rsc{select.by.string} can be used to store a selection rule
 which is applied at the appropriate time later on. If several rules are
 supplied then any entry matching one of the rules is selected. Thus different
@@ -1746,7 +1746,7 @@ following funny syntax:
 
 This operation selects all entries containing \texttt{some string} in one of
 the normal fields. The search can be restricted to specific fields or extended
-to pseudo-fields by specifying those fields before the search string. An
+to pseudo fields by specifying those fields before the search string. An
 arbitrary number of white-space separated fields can be given there. Thus the
 general syntax for this resource is as follows:
 
@@ -2792,11 +2792,10 @@ To turn off the crossref feature complete you can set the value of
 itself are considered.
 
 
-\subsection{Pseudo Fields}
+\subsection{Pseudo Fields}\label{sec:pseudo-fields}
 
-
-In addition to the ordinary fields of an entry there are several pseudo
-fields. They are listed below.
+In addition to the ordinary fields of an entry there are several
+pseudo fields. They are listed below.
 
 \begin{description}
 \item [\texttt{\$key}]\label{pseudo:key}%
@@ -2804,7 +2803,7 @@ fields. They are listed below.
   one. If none has been given then the access fails.
 
 \item [\texttt{\$sortkey}]%
-  This pseudo field contains the string according to which the sorting is
+  This pseudofield contains the string according to which the sorting is
   performed. It defaults to the reference key.
 
 \item [\texttt{\$default.key}]%
@@ -2978,8 +2977,8 @@ used to share a format specification for certain types of entries:
 The \texttt{\%}\verb|0s|\index{s@\%s} specifier is used to check for the
 existence of a certain field without actually adding anything to the output.
 Other constructs may serve for the same purpose. This construct is applied to
-the pseudo-fields \texttt{@book} and \texttt{@proceedings}. The access to the
-pseudo-field fails if requested in another type of entry. Those two checks are
+the pseudo fields \texttt{@book} and \texttt{@proceedings}. The access to the
+pseudo field fails if requested in another type of entry. Those two checks are
 combined to form a disjunction. Thus the following code---the constant in this
 example---is reached only if we are in a book or in a proceedings entry. It is
 not reached in an article.
@@ -3312,16 +3311,17 @@ happens to be empty---if the requested field does not exist.
 %------------------------------------------------------------------------------
 \section{Field Manipulation}
 
+This sections contains some operations to manipulate fields in some kind.
+
 %------------------------------------------------------------------------------
-\subsection{Adding or Deleting Fields}
+\subsection{Adding Fields}
 
-Certain fields can be added or deleted. This feature can be used to update
-time stamps. For this purpose it is important to know that deletion is done
-before addition. It is also important to know that the newly added entries are
-not rewritten (see next section) even though rewrite rules are applicable.
-
-Two resources are provided to accomplish adding and deleting fields:
-\rsc{add.field} and \rsc{delete.field}
+Certain fields can be added. This feature can be used for instance
+to update time stamps. For this purpose it is important to know that deletion
+is done before addition. It is also important to know that the newly added
+entries are not rewritten (see next section) even though rewrite rules are
+applicable. The resource \rsc{add.field} is provided to perform this
+operation.
 
 \begin{Resources}
   \rscBraces{add.field}{\textit{field=value}}
@@ -3359,11 +3359,73 @@ instruction:\index{s@\%s}\index{d@\%d}
   \rscBraces{add.field}{time="\%3s(\$mon) \%s(\$day), \%2d(\$year)"}
 \end{Resources}
 
+%------------------------------------------------------------------------------
+\subsection{Deleting Fields}
+
+Certain fields deleted. The resource \rsc{delete.field} is provided to perform
+this operation.
 
 The following instruction deletes all fields named \textit{field}:
 
 \begin{Resources}
   \rscBraces{delete.field}{\textit{field}}
+\end{Resources}
+
+
+%------------------------------------------------------------------------------
+\subsection{Renaming Fields}
+
+Fields can be renamed during the field rewriting phase. This takes immediate
+effect such that rewriting rules can fire after the renaming has been
+performed.
+
+The resource \rsc{rename.field} can be used to perform this operation. This
+resource can be used in the following forms:
+
+\begin{Resources}
+  \rscBraces{rename.field}{\textit{old=new}}
+  \rscBraces{rename.field}{\textit{old=new} if \textit{field=pattern}}
+\end{Resources}
+
+The parameters \textit{old} and \textit{new} are the old and the new name of
+the field. The values are (unquoted) symbols. They are treated case
+in-sensitive. The final appearance in the output is determined in the printing
+phase.
+
+In the second form a selector is added. \textit{field} is the name of a field
+or pseudo field (see section~\ref{sec:pseudo-fields}). The value of this field
+is gathered from the current record and matched against the pattern given as
+\textit{pattern}. \textit{pattern} is a string value enclosed in double quotes.
+The matching succeeds if the \textit{pattern} matches a substring of the value
+of the \textit{field}. If the record does not have such a field then the
+renaming is not applied. 
+
+The case-sensitivity of the matching is controlled by the resource
+\rsc{rewrite.case.sensitive}. 
+
+The equal signs in the parameter of the resource are optional. They can
+omitted or written as \#.
+
+Note that it is up to you to ensure that double appearing field names are
+avoided. They would lead to illegal records in the \BibTeX\ output.
+
+Note that the selecting pattern is rather restricted at the moment. This might
+change in the future.
+
+The following examples illustrate the function of the resource
+\rsc{rename.field}.
+
+The following rule fixes a typo in the field name.
+
+\begin{Resources}
+  \rscBraces{rename.field}{autor = author}
+\end{Resources}
+
+The following rule renames the field \texttt{title} to \texttt{booktitle} for
+books. All other record types are unaffected.
+
+\begin{Resources}
+  \rscBraces{rename.field}{title = booktitle if \$type = "book"}
 \end{Resources}
 
 
@@ -3565,6 +3627,9 @@ standard entry types.
   \Desc{}{\rsc{add.field}\{field=value\}}{Add a new field to each entry.}
   \Desc{}{\rsc{delete.field}\{field\}}{Delete the named field from all
     entries.} 
+  \Desc{}{\rsc{rename.field}\{old=new\}}{Rename a field.} 
+  \Desc{}{\rsc{rename.field}\{old=new if field=pattern\}}{Rename a field if
+    the record satisfies a certain condition.} 
   \Desc{}{\rsc{rewrite.case.sensitive}=off}{Turn off the case
     comparison during field rewriting.}
   \Desc{}{\rsc{rewrite.rule}\{fields\#pattern\#text\}}{Replace in all

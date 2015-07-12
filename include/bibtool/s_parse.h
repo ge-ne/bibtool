@@ -44,4 +44,4 @@
  String s_parse _ARG((int type, String *sp, int errp));/* s_parse.c          */
  int sp_open _ARG((String  s));			   /* s_parse.c              */
  void sp_close _ARG((void));			   /* s_parse.c              */
- void sp_error _ARG((String s, char *a, char *b)); /* s_parse.c              */
+ int sp_expect _ARG((String*sp, String expect));   /* s_parse.c              */

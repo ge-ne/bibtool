@@ -82,9 +82,50 @@ __EOF__
     expected_err => '' );
 
 #------------------------------------------------------------------------------
+BUnit::run(name => 'rename_field_err_1',
+    args	 => 'bib/x1.bib',
+    resource 	 => 'rename.field={Title}',
+    expected_out => <<__EOF__,
+
+\@Manual{	  bibtool,
+  title		= {BibTool},
+  author	= {Gerd Neugebauer},
+  year		= 2015
+}
+__EOF__
+    expected_err => <<__EOF__,
+
+Title
+_____^
+*** BibTool ERROR: Symbol expected.
+__EOF__
+    );
+
+
+#------------------------------------------------------------------------------
+BUnit::run(name => 'rename_field_err_2',
+    args	 => 'bib/x1.bib',
+    resource 	 => 'rename.field={Title booktitle xxx}',
+    expected_out => <<__EOF__,
+
+\@Manual{	  bibtool,
+  title		= {BibTool},
+  author	= {Gerd Neugebauer},
+  year		= 2015
+}
+__EOF__
+    expected_err => <<__EOF__,
+
+Title booktitle xxx
+________________^
+*** BibTool ERROR: Unexpected characters at end of string.
+__EOF__
+    );
+
+#------------------------------------------------------------------------------
 BUnit::run(name => 'rename_field_10',
     args	 => 'bib/x1.bib',
-    resource 	 => 'rename.field={Title = booktitle # $type "manual"}',
+    resource 	 => 'rename.field={Title = booktitle if author "Neu"}',
     expected_out => <<__EOF__,
 
 \@Manual{	  bibtool,
@@ -98,7 +139,7 @@ __EOF__
 #------------------------------------------------------------------------------
 BUnit::run(name => 'rename_field_11',
     args	 => 'bib/x1.bib',
-    resource 	 => 'rename.field={Title = booktitle # $type "book"}',
+    resource 	 => 'rename.field={Title = booktitle if $type "Book"}',
     expected_out => <<__EOF__,
 
 \@Manual{	  bibtool,

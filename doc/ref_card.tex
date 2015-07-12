@@ -147,6 +147,7 @@
   \item [verbose		  = \OnOff]
   \item [crossref.limit		  = \Arg{n}]
   \end{FlatList}
+  \columnbreak
   \Section{Reading and Printing}
   \begin{FlatList}
   \item [input \Arg{bib\_file}]
@@ -195,8 +196,10 @@
   \end{FlatList}
   \Section{Field Manipulation}
   \begin{FlatList}
-  \item [add.field \Arg{field=value}]
+  \item [add.field \Arg{field="value"}]
   \item [delete.field \Arg{field}]
+  \item [rename.field \Arg{old=new}]
+  \item [rename.field \Arg{old=new if field="pattern"}]
   \item [rewrite.rule \Arg{ pattern }]\ \\
     delete all matching fields
   \item [rewrite.rule \Arg{ pattern \# replacement}]\ \\
