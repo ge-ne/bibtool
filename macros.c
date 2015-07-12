@@ -35,14 +35,14 @@
 **		Upon failure an error is raised and |exit()| is called.
 ** Arguments:
 **	name	Name of the macro. This must be a symbol.
-**	val	The value of the macro. This must be a symbol.
+**	value	The value of the macro. This must be a symbol.
 **	next	The next pointer of the |Macro| structure.
 **	count	The initial reference count.
 ** Returns:	The new |Macro|.
 **___________________________________________________			     */
-Macro new_macro(name, val, next, count)		   /*                        */
+Macro new_macro(name, value, next, count)	   /*                        */
   String	 name;				   /*                        */
-  String	 val;				   /*                        */
+  String	 value;				   /*                        */
   int		 count;				   /*                        */
   Macro          next;				   /*                        */
 { register Macro macro;				   /*                        */
@@ -51,7 +51,7 @@ Macro new_macro(name, val, next, count)		   /*                        */
   { OUT_OF_MEMORY("Macro"); }      		   /*                        */
  						   /*                        */
   MacroName(macro)  = name;			   /*                        */
-  MacroValue(macro) = val ;			   /*                        */
+  MacroValue(macro) = value ;			   /*                        */
   MacroCount(macro) = count;			   /*                        */
   NextMacro(macro)  = next;			   /*                        */
   return(macro);				   /*                        */

@@ -611,14 +611,15 @@ static void push_s(sb,s,max,trans)		   /*			     */
 **		The argument has to be saved by the caller! This means
 **		that it is assumed that the argument is a symbol.
 ** Arguments:
-**	s	Word to add.
+**	word	Word to add.
 ** Returns:	nothing
 **___________________________________________________			     */
-void add_ignored_word(s)			   /*			     */
-  String s;				   	   /*			     */
-{ key_init();					   /*                        */
-  add_word(s,&ignored_words[(*s)&31]);		   /*			     */
-  DebugPrint2("Adding ignored word ",s);	   /*                        */
+void add_ignored_word(word)			   /*			     */
+  String word;				   	   /*			     */
+{						   /*                        */
+  key_init();					   /*                        */
+  add_word(word ,&ignored_words[(*word)&31]);	   /*			     */
+  DebugPrint2("Adding ignored word ", word);	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -633,7 +634,7 @@ void clear_ignored_words()			   /*                        */
   key_init();					   /*                        */
  						   /*                        */
   for (i = 0; i < 32; i++)			   /*                        */
-  { free_words(&ignored_words[i],NULL); }	   /*                        */
+  { free_words(&ignored_words[i], NULL); }	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -655,7 +656,7 @@ int foreach_ignored_word(fct)			   /*                        */
   key_init();					   /*                        */
  						   /*                        */
   for (i = 0; i < 32; i++)			   /*                        */
-  { if ( !foreach_word(ignored_words[i],fct))	   /*                        */
+  { if (!foreach_word(ignored_words[i], fct))	   /*                        */
     { return 0; }				   /*                        */
   }						   /*                        */
   return 1;					   /*                        */
@@ -675,12 +676,12 @@ int foreach_ignored_word(fct)			   /*                        */
 **	sep	String separating the words.
 ** Returns:	nothing
 **___________________________________________________			     */
-static void fmt_title(sb,line,len,in,trans,ignore,sep)/*		     */
+static void fmt_title(sb, line, len, in, trans, ignore, sep)/*		     */
   StringBuffer  *sb;				   /*                        */
   String        line;				   /*			     */
   int	        len;				   /*			     */
   int	        in;				   /*			     */
-  unsigned char *trans;				   /* Translation table	     */
+  String	trans;				   /* Translation table	     */
   int           ignore;				   /*                        */
   String        sep;				   /*                        */
 { int	        first = TRUE;			   /*			     */
@@ -1142,7 +1143,7 @@ void make_key(db,rec)				   /*			     */
   ResetWords;					   /*                        */
   { char * buffer = new_string(sbflush(key_sb));   /*                        */
     int nw = deTeX((String)(*buffer == '{'	   /*                        */
-			    ? buffer+1		   /*                        */
+			    ? buffer + 1	   /*                        */
 			    : buffer), 		   /*                        */
 		   push_word,			   /*                        */
 		   DETEX_FLAG_ALLOWED);  	   /*                        */
