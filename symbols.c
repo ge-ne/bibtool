@@ -105,13 +105,17 @@
 #define _ARG(A) ()
 #endif
  String  sym_add _ARG((String s, int count));	   /* symbols.c              */
+#ifdef New
  String  sym_extract _ARG((String ap, String ep, int count));/* symbols.c    */
+#endif
  char * new_string _ARG((char * s));		   /* symbols.c              */
  int sym_flag _ARG((String  s));		   /* symbols.c              */
  static StringTab new_string_tab _ARG((String name,int count,int flags));/* symbols.c*/
  static int hashindex _ARG((String s));		   /* symbols.c              */
  void init_symbols _ARG((void));		   /* symbols.c              */
+#ifdef SYMBOL_DUMP
  void sym_dump _ARG((void));			   /* symbols.c              */
+#endif
  void sym_gc _ARG((void));			   /* symbols.c              */
  void sym_set_flag _ARG((String s, int flags));	   /* symbols.c              */
  void sym_unlink _ARG((String s));		   /* symbols.c              */
@@ -176,7 +180,7 @@ char * new_string(s)				   /*			     */
 **	flags	Flags of the new |StringTab| node.
 ** Returns:	Pointer to a new instance of a |StringTab|.
 **___________________________________________________			     */
-static StringTab new_string_tab(name,count,flags)  /*			     */
+static StringTab new_string_tab(name, count, flags)/*			     */
   String	     name;			   /*			     */
   int		     count;			   /*			     */
   int		     flags;			   /*			     */
@@ -202,7 +206,7 @@ static StringTab new_string_tab(name,count,flags)  /*			     */
 **___________________________________________________			     */
 static int hashindex(s)				   /*                        */
   String s;					   /*                        */
-{ int	index=0;				   /*                        */
+{ int	index = 0;				   /*                        */
   while ( *s ) index = (index+*(s++)) % HASHMAX;   /*                        */
   return ( index < 0 ? -index : index );	   /*                        */
 }						   /*------------------------*/
