@@ -72,9 +72,9 @@ Record copy_record(rec)				   /*			     */
   RecordSource(new)	  = RecordSource(rec);	   /*			     */
   RecordHeap(new)	  = new_heap;		   /*			     */
   RecordFlags(new)	  = RecordFlags(rec);	   /*			     */
-  for ( i=0, old_heap=RecordHeap(rec);		   /*			     */
+  for (i = 0, old_heap = RecordHeap(rec);	   /*			     */
 	i < RecordFree(new);			   /*			     */
-	++i )					   /*			     */
+	++i)					   /*			     */
   { *(new_heap++) = *(old_heap++); }		   /*			     */
   return (new);					   /*			     */
 }						   /*------------------------*/
@@ -101,18 +101,18 @@ Record new_record(token,size)			   /*			     */
      || (new_heap=(String*)malloc(sizeof(String)*(size_t)(size)))/*          */
 	== 0L )					   /*			     */
   { OUT_OF_MEMORY("Record"); }      		   /*                        */
-  RecordSortkey(new)	  = sym_empty;		   /*			     */
-  RecordOldKey(new)	  = RecordSortkey(new);	   /*			     */
-  NextRecord(new)	  = RecordNULL;		   /*			     */
-  PrevRecord(new)	  = RecordNULL;		   /*			     */
-  RecordType(new)	  = token;		   /*			     */
-  RecordFree(new)	  = size;		   /*			     */
-  RecordComment(new)	  = sym_empty;		   /*			     */
-  RecordSource(new)	  = sym_empty;		   /*			     */
-  RecordFlags(new)	  = 0;	   		   /*			     */
-  RecordHeap(new)	  = new_heap;		   /*			     */
-  for ( i=0; i < RecordFree(new); ++i )		   /*			     */
-  { *(new_heap++) = NULL; }		   	   /*			     */
+  RecordSortkey(new)	= sym_empty;		   /*			     */
+  RecordOldKey(new)	= RecordSortkey(new);	   /*			     */
+  NextRecord(new)	= RecordNULL;		   /*			     */
+  PrevRecord(new)	= RecordNULL;		   /*			     */
+  RecordType(new)	= token;		   /*			     */
+  RecordFree(new)	= size;			   /*			     */
+  RecordComment(new)	= sym_empty;		   /*			     */
+  RecordSource(new)	= sym_empty;		   /*			     */
+  RecordFlags(new)	= 0;	   		   /*			     */
+  RecordHeap(new)	= new_heap;		   /*			     */
+  for (i = 0; i < RecordFree(new); ++i)		   /*			     */
+  { *(new_heap++) = StringNULL; }	   	   /*			     */
   return (new);					   /*			     */
 }						   /*------------------------*/
 
@@ -134,8 +134,7 @@ void free_record(rec)				   /*                        */
   { rec = PrevRecord(rec); }			   /*                        */
  						   /*                        */
   while ( rec != RecordNULL )			   /*                        */
-  {						   /*                        */
-    r = rec;					   /*                        */
+  { r = rec;					   /*                        */
     rec = NextRecord(rec);			   /*                        */
     free_1_record(r);				   /*                        */
   }						   /*                        */
@@ -162,7 +161,7 @@ void free_1_record(rec)				   /*                        */
     ReleaseSymbol(RecordSource(rec));		   /*                        */
     if ( RecordHeap(rec) != NULL )		   /*                        */
     {						   /*                        */
-      for ( i=0; i<RecordFree(rec); i++ )	   /*                        */
+      for (i = 0; i < RecordFree(rec); i++ )	   /*                        */
       { ReleaseSymbol(RecordHeap(rec)[i]); }	   /*                        */
       free(RecordHeap(rec));			   /*                        */
     }						   /*                        */
@@ -258,13 +257,13 @@ void push_to_record(rec,s,t)			   /*			     */
    						   /*                        */
   if ( s == sym_crossref ) { SetRecordXREF(rec); } /*			     */
  						   /*                        */
-  for ( i=2; i < RecordFree(rec); i+=2 )	   /* search the field       */
+  for (i = 2; i < RecordFree(rec); i += 2 )	   /* search the field       */
   { if ( RecordHeap(rec)[i] == s )		   /* if found then          */
     { RecordHeap(rec)[i+1] = t;			   /* overwrite the value    */
       return;					   /*                        */
     }   					   /*                        */
   }						   /*                        */
-  for ( i=2; i < RecordFree(rec); i+=2 )	   /* search empty field     */
+  for (i = 2; i < RecordFree(rec); i += 2 )	   /* search empty field     */
   { if ( RecordHeap(rec)[i] == StringNULL )	   /* if found then          */
     { RecordHeap(rec)[i++] = s;			   /* add the new item       */
       RecordHeap(rec)[i]   = t;			   /*                        */
@@ -305,12 +304,12 @@ void provide_to_record(rec,s,t)			   /*			     */
    						   /*                        */
   if ( s == sym_crossref ) { SetRecordXREF(rec); } /*			     */
  						   /*                        */
-  for ( i=2; i < RecordFree(rec); i+=2 )	   /* search the field       */
+  for (i = 2; i < RecordFree(rec); i += 2 )	   /* search the field       */
   { if ( RecordHeap(rec)[i] == s )		   /* if found then          */
     { return;					   /*  done                  */
     }   					   /*                        */
   }						   /*                        */
-  for ( i=2; i < RecordFree(rec); i+=2 )	   /* search empty field     */
+  for (i = 2; i < RecordFree(rec); i += 2 )	   /* search empty field     */
   { if ( RecordHeap(rec)[i] == StringNULL )	   /* if found then          */
     { RecordHeap(rec)[i++] = s;			   /* add the new item       */
       RecordHeap(rec)[i]   = t;			   /*                        */
@@ -355,7 +354,6 @@ WordList new_wordlist(s)			   /*                        */
   NextWord(wl) = WordNULL;			   /*                        */
   return wl;					   /*                        */
 }						   /*------------------------*/
-
 
  typedef struct oRDERLIST			   /*                        */
  { int		    ol_type;			   /*                        */
@@ -460,17 +458,17 @@ void sort_record(rec)				   /*			     */
   int             type = RecordType(rec);	   /*                        */
   WordList        wl;				   /*                        */
  						   /*                        */
-  for ( ol=order;				   /* Search for an order    */
+  for (ol = order;				   /* Search for an order    */
        ol && OrderType(ol) != type;		   /*  for this type of      */
        ol = NextOrder(ol) ) {}			   /*  record first.         */
   if ( ol == OrderNULL )			   /* If none was found then */
-  { for ( ol=order;				   /* Search for an order    */
+  { for (ol = order;				   /* Search for an order    */
 	 ol && OrderType(ol) != BIB_NOOP;	   /*  applicable for all    */
 	 ol = NextOrder(ol) ) {}		   /*  record types.         */
     if ( ol == OrderNULL ) return;		   /* No order then return.  */
   }						   /*                        */
   						   /*                        */
-  if ( (wl=OrderVal(ol))==WordNULL ) return;	   /* Empty order found. Done*/
+  if ( (wl=OrderVal(ol)) == WordNULL ) return;	   /* Empty order found. Done*/
  						   /*                        */
   r   = copy_record(rec);			   /*                        */
   ptr = 2;					   /* Heap pointer for rec   */
