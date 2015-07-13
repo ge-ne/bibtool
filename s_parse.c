@@ -259,16 +259,16 @@ String s_parse(type, sp, errp)			   /*                        */
   }						   /*                        */
  						   /*                        */
   c   = *s;					   /*                        */
-  *s  = '\0';					   /*                        */
+  *s  = (Uchar)'\0';				   /*                        */
   cp  = new_string((char*)*sp);			   /*                        */
   *s  = c;					   /*                        */
   if (   type == StringParseUnquotedString	   /*                        */
       || type == StringParseUnquotedBraces ) s++;  /*                        */
   *sp = s;					   /*                        */
- if (   type == StringParseSymbol )		   /*                        */
- { (void)lower((String)cp); }			   /*                        */
+  if (   type == StringParseSymbol )		   /*                        */
+  { (void)lower((String)cp); }			   /*                        */
  						   /*                        */
- { String sym = symbol((String)cp);		   /*                        */
+  { String sym = symbol((String)cp);		   /*                        */
     free(cp);					   /*                        */
     return sym;					   /*                        */
   }						   /*                        */
