@@ -374,7 +374,7 @@ LIBFILES      = lib$(DIR_SEP)biblatex.rsc	\
 
 PROGFILES     = Perl$(DIR_SEP)bibtool.pl	\
 		Tcl$(DIR_SEP)bibtool.tcl
-ETCFILES      = README				\
+ETCFILES      = README.md			\
 		INSTALL				\
 		COPYING				\
 		Changes.tex			\

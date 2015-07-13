@@ -45,7 +45,7 @@ DISTFILES += 	AutoConf/config.h.in 	\
 		test/bib/*.bib		\
 		test/*.t
 
-CTANFILES =	README			\
+CTANFILES =	README.md		\
 		doc/bibtool.pdf		\
 		doc/ref_card.pdf	\
 		doc/c_lib.pdf
