@@ -80,14 +80,14 @@
  static Token TeX_get_token _ARG((int (*get_fct)_ARG((void))));/* tex_read.c */
  static Token new_token _ARG((int type,String string));/* tex_read.c         */
  static Token token_list_copy _ARG((Token t,Token nt,Token *argp));/* tex_read.c*/
- static Token tokenize _ARG((unsigned char *s,int arity));/* tex_read.c      */
+ static Token tokenize _ARG((String s,int arity)); /* tex_read.c             */
  static int TeX_fill_line _ARG((int (*get_fct)_ARG((void))));/* tex_read.c   */
  static int do_get _ARG((void));		   /* tex_read.c             */
  static int fill_token _ARG((Token*tp));	   /* tex_read.c             */
  static int get_EOF _ARG((void));		   /* tex_read.c             */
  static int get_file _ARG((void));		   /* tex_read.c             */
  static int get_string _ARG((void));		   /* tex_read.c             */
- static unsigned char * tokens_to_string _ARG((Token t));/* tex_read.c       */
+ static String tokens_to_string _ARG((Token t));   /* tex_read.c             */
  static void free_1_token _ARG((Token t));	   /* tex_read.c             */
  static void free_macdef _ARG((MacDef mac));	   /* tex_read.c             */
  static void free_tokens _ARG((Token t));	   /* tex_read.c             */
@@ -98,7 +98,7 @@
  void TeX_def _ARG((String s));		   	   /* tex_read.c             */
  void TeX_define _ARG((String name,int arity,String body));/* tex_read.c     */
  void TeX_open_file _ARG((FILE * file));	   /* tex_read.c             */
- void TeX_open_string _ARG((unsigned char * s));   /* tex_read.c             */
+ void TeX_open_string _ARG((String s));		   /* tex_read.c             */
  void TeX_reset _ARG((void));			   /* tex_read.c             */
 
 #ifdef STANDALONE
@@ -481,8 +481,8 @@ static Token TeX_get_token(get_fct)		   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
 
- static unsigned char *g_s;
- static unsigned char *g_p;
+ static String g_s;				   /*			     */
+ static String g_p;				   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function:	init_get()
@@ -800,7 +800,7 @@ void TeX_open_file(file)			   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void TeX_open_string(s)				   /*			     */
-  unsigned char * s;				   /*			     */
+  String s;					   /*			     */
 { src_ptr = src_string = s;			   /*			     */
   src_get = get_string;				   /*			     */
   tex_clear;					   /*			     */

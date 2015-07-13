@@ -28,13 +28,13 @@
 #define _ARG(A) ()
 #endif
  NameNode name_format _ARG((String s));		   /* names.c                */
- String  pp_list_of_names _ARG((String *wa,NameNode format,unsigned char *trans,int max,String comma,String and,char *namesep,char *etal));/* names.c*/
- char * pp_names _ARG((char *s,NameNode format,unsigned char *trans,int max,char *namesep,char *etal));/* names.c*/
+ String  pp_list_of_names _ARG((String *wa,NameNode format,String trans,int max,String comma,String and,char *namesep,char *etal));/* names.c*/
+ char * pp_names _ARG((char *s,NameNode format,String trans,int max,char *namesep,char *etal));/* names.c*/
  static NameNode new_name_node _ARG((int type,int strip,int trim,String pre,String mid,String post));/* names.c*/
  static int is_jr _ARG((String  s, int eager));	   /* names.c                */
  static int is_lower_word _ARG((String s));	   /* names.c                */
- static void initial _ARG((String s,unsigned char *trans,int len,StringBuffer *sb));/* names.c*/
- static void pp_one_name _ARG((StringBuffer *sb,String *w,NameNode format,unsigned char *trans,int len,String comma,int commas));/* names.c*/
+ static void initial _ARG((String s,String trans,int len,StringBuffer *sb));/* names.c*/
+ static void pp_one_name _ARG((StringBuffer *sb,String *w,NameNode format,String trans,int len,String comma,int commas));/* names.c*/
 
 #ifdef BIBTEX_SYNTAX
  static void set_type _ARG((char **sp,char **midp));/* names.c               */
@@ -384,7 +384,7 @@ NameNode name_format(s)				   /*                        */
 String  pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
   String    	    *wa;			   /*                        */
   NameNode	    format;			   /*                        */
-  unsigned char     *trans;			   /*                        */
+  String	    trans;			   /*                        */
   int   	    max;			   /*                        */
   String 	    comma;			   /*                        */
   String 	    and;			   /*                        */
@@ -448,14 +448,14 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   StringBuffer  *sb;				   /*                        */
   String        *w;				   /*                        */
   NameNode      format;				   /*                        */
-  unsigned char *trans;				   /*                        */
+  String 	trans;				   /*                        */
   int	        len;				   /*                        */
   String        comma;				   /*                        */
   int           commas;				   /*                        */
 { NameNode      nn;				   /*                        */
   char          t;				   /*                        */
   char          *type;				   /*                        */
-  unsigned char *tr;				   /*                        */
+  String 	tr;				   /*                        */
   int           i, j, again;			   /*                        */
   int	        first, last, von, jr;		   /*                        */
  						   /*                        */
@@ -596,12 +596,12 @@ static void initial(s,trans,len,sb)		   /*                        */
   int           len;				   /*                        */
   StringBuffer  *sb;				   /*                        */
 { 						   /*                        */
-  if ( len < 0 ) { sbputs((char*)s,sb); return; }  /*                        */
+  if ( len < 0 ) { sbputs((char*)s, sb); return; } /*                        */
  						   /*                        */
   while ( len > 0 )				   /*                        */
   { if (*s=='\0') { return; }			   /*                        */
     if ( is_alpha(*s) )				   /*                        */
-    { sbputc(trans[*((unsigned char *)s)],sb);	   /*                        */
+    { sbputc(trans[*s], sb);			   /*                        */
       len--;					   /*                        */
     }						   /*                        */
     s++;					   /*                        */
@@ -726,10 +726,10 @@ static int is_lower_word(s)			   /*                        */
 **	etal	string to be added instead of `and others'
 ** Returns:	a new symbol with the reformatted names.
 **___________________________________________________			     */
-char * pp_names(s,format,trans,max,namesep,etal)   /*                        */
+char * pp_names(s, format, trans, max, namesep, etal)/*                      */
   char          *s;				   /*                        */
   NameNode      format;				   /*                        */
-  unsigned char *trans;				   /*                        */
+  String 	trans;				   /*                        */
   int	  	max;				   /*                        */
   char   	*namesep;			   /*                        */
   char   	*etal;				   /*                        */

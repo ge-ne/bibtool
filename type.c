@@ -117,9 +117,9 @@ int case_cmp(s, t)				   /*                        */
 **	s	string to convert
 ** Returns:	The converted string.
 **___________________________________________________			     */
-unsigned char * lower(s)			   /*                        */
-  register unsigned char * s;			   /*                        */
-{ unsigned char *t = s;				   /*                        */
+String lower(s)					   /*                        */
+  register String s;				   /*                        */
+{ String t = s;					   /*                        */
   while ( *s ) { *s = ToLower(*s); ++s; }	   /*                        */
   return t;				   	   /*                        */
 }						   /*------------------------*/

@@ -146,7 +146,7 @@
 #define _ARG(A) ()
 #endif
  NameNode name_format _ARG((String s));		   /* names.c                */
- String  pp_list_of_names _ARG((String *wa,NameNode format,unsigned char *trans,int max,String comma,String and,char *namesep,char *etal));/* names.c*/
- char * pp_names _ARG((char *s,NameNode format,unsigned char *trans,int max,char *namesep,char *etal));/* names.c*/
+ String  pp_list_of_names _ARG((String *wa,NameNode format,String trans,int max,String comma,String and,char *namesep,char *etal));/* names.c*/
+ char * pp_names _ARG((char *s,NameNode format,String trans,int max,char *namesep,char *etal));/* names.c*/
 
 /*---------------------------------------------------------------------------*/

@@ -184,16 +184,16 @@ int read_aux(fname, fct, verbose)		   /*                        */
           c != EOF && (is_alpha(c&0xff) || c == '@');/*                      */
           c = getc(file))			   /*                        */
       { (void)sbputchar(c, aux_sb); }              /*                        */
-      s = sbflush(aux_sb);			   /*                        */
+      s = (String)sbflush(aux_sb);		   /*                        */
       sbrewind(aux_sb);				   /*                        */
  						   /*                        */
-      if ( strcmp(s, "citation" ) == 0 )   	   /*                        */
+      if (strcmp((char*)s, "citation") == 0 )	   /*                        */
       { do					   /* Save a cite key.       */
 	{ switch ( c=getc(file) )		   /*                        */
 	  { case EOF: break;			   /*                        */
 	    case ',':				   /*                        */
 	    case '}':		   	   	   /*                        */
-	      s = sbflush(aux_sb);		   /*                        */
+	      s = (String)sbflush(aux_sb);	   /*                        */
 	      sbrewind(aux_sb);			   /*                        */
 	      save_ref((String)s);		   /*                        */
 	      break;				   /*                        */
@@ -202,27 +202,27 @@ int read_aux(fname, fct, verbose)		   /*                        */
 	  }	   				   /*                        */
 	} while ( c != '}' && c != EOF );	   /*                        */
       }						   /*                        */
-      else if ( strcmp(s,"bibdata" ) == 0 )	   /*                        */
+      else if (strcmp((char*)s, "bibdata") == 0 )  /*                        */
       { c = getc(file);				   /* Save a bib file name   */
 	(void)sbputchar((Uchar)c, aux_sb);	   /*                        */
 	while ( c != '}' && c != EOF )		   /*                        */
 	{ c = getc(file);			   /*                        */
 	  if ( c == ',' || c == '}' )		   /*                        */
-	  { s = sbflush(aux_sb);		   /*                        */
+	  { s = (String)sbflush(aux_sb);	   /*                        */
 	    sbrewind(aux_sb);			   /*                        */
-	    (*fct)((char*)symbol((String)s));	   /*                        */
+	    (*fct)((char*)symbol(s));	   	   /*                        */
 	  }					   /*                        */
 	  else					   /*                        */
 	  { (void)sbputchar(c, aux_sb); }	   /*                        */
 	}					   /*                        */
       }						   /*                        */
-      else if ( strcmp(s,"@input" )==0 )	   /* Read another aux file  */
+      else if (strcmp((char*)s, "@input") == 0 )   /* Read another aux file  */
       { while( (c=getc(file)) != '}' && c != EOF ) /*                        */
 	{ (void)sbputchar(c,aux_sb); }		   /*                        */
-	s = sbflush(aux_sb);			   /*                        */
+	s = (String)sbflush(aux_sb);		   /*                        */
 	sbrewind(aux_sb);			   /*                        */
 	    					   /*                        */
-	read_aux((String)s, fct, verbose);	   /*                        */
+	read_aux(s, fct, verbose);	   	   /*                        */
       }						   /*                        */
     }						   /*                        */
   }						   /*                        */
@@ -233,9 +233,9 @@ int read_aux(fname, fct, verbose)		   /*                        */
   { register int i;				   /*                        */
     WordList wl;				   /*			     */
 						   /*			     */
-    for ( i=0; i<32; ++i )			   /*                        */
+    for (i = 0; i < 32; ++i)			   /*                        */
     { ErrPrintF("--- BibTool: %d\n",i);	   	   /*                        */
-      for ( wl=cite[i]; wl!=WordNULL; wl=NextWord(wl) )/*		     */
+      for (wl = cite[i]; wl != WordNULL; wl = NextWord(wl) )/*		     */
       { ErrPrintF("%s\n",ThisWord(wl)); }	   /*			     */
     }		   	   			   /*                        */
   }						   /*                        */

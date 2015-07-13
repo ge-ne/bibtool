@@ -55,12 +55,12 @@
  static int fmt_parse _ARG((char **sp,KeyNode *knp));/* key.c                */
  static void Push_Word _ARG((String s));	   /* key.c                  */
  static void eval__special _ARG((StringBuffer *sb,KeyNode kn,Record rec));/* key.c*/
- static void fmt_names _ARG((StringBuffer *sb,String line,int maxname,int post,unsigned char *trans));/* key.c*/
- static void fmt_string _ARG((StringBuffer *sb,String  s,int n,unsigned char *trans,String sep));/* key.c*/
- static void fmt_title _ARG((StringBuffer *sb,String line,int len,int in,unsigned char *trans,int ignore,String sep));/* key.c*/
+ static void fmt_names _ARG((StringBuffer *sb,String line,int maxname,int post,String trans));/* key.c*/
+ static void fmt_string _ARG((StringBuffer *sb,String  s,int n,String trans,String sep));/* key.c*/
+ static void fmt_title _ARG((StringBuffer *sb,String line,int len,int in,String trans,int ignore,String sep));/* key.c*/
  static void init_key _ARG((int state));	   /* key.c                  */
  static void key_init _ARG((void));		   /* key.c                  */
- static void push_s _ARG((StringBuffer *sb,String s,int max,unsigned char *trans));/* key.c*/
+ static void push_s _ARG((StringBuffer *sb,String s,int max,String trans));/* key.c*/
  static void push_word _ARG((String  s));	   /* key.c                  */
  void add_format _ARG((char *s));		   /* key.c                  */
  void add_ignored_word _ARG((String s));	   /* key.c                  */
@@ -581,7 +581,7 @@ static void push_s(sb,s,max,trans)		   /*			     */
   StringBuffer *sb;				   /*                        */
   String s;			   	   	   /*			     */
   int max;				   	   /*                        */
-  unsigned char *trans;	   		   	   /*			     */
+  String trans;		   		   	   /*			     */
 {						   /*                        */
   if ( max <= 0 ) 				   /*                        */
   { while ( *s )				   /*			     */
@@ -826,7 +826,7 @@ static void fmt_names(sb,line,maxname,post,trans)  /*		             */
   String        line;				   /* Name list string	     */
   int	        maxname;			   /* number of names b4 etal*/
   int           post;				   /* number of relevant char*/
-  unsigned char *trans;				   /* Translation table	     */
+  String	trans;				   /* Translation table	     */
 { int	        wp,				   /*			     */
 	        i;				   /*			     */
   static String and   = (String)"&";		   /*                        */
@@ -991,11 +991,11 @@ static int fmt_digits(sb,s,mp,pp,n,sel,trunc)	   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void fmt_string(sb,s,n,trans,sep)	   /*			     */
-  StringBuffer		  *sb;			   /*                        */
-  register String 	  s;			   /*			     */
-  register int	           n;			   /*			     */
-  register unsigned char  *trans;		   /*			     */
-  String       		   sep;		   	   /*                        */
+  StringBuffer	  *sb;				   /*                        */
+  register String s;				   /*			     */
+  register int	  n;				   /*			     */
+  register String trans;			   /*			     */
+  String       	  sep;			   	   /*                        */
 {						   /*			     */
   while ( *s && n > 0 )				   /*			     */
   { if ( is_allowed(*s) )			   /*			     */
@@ -1289,7 +1289,7 @@ static int add_fmt_tree(s, treep)		   /*			     */
   KeyNode *treep;				   /*			     */
 { KeyNode kn, kn_or;				   /*			     */
   int	  special   = 0;			   /*			     */
-  unsigned char *s0 = (unsigned char*)s;	   /*			     */
+  String  s0 = (String )s;			   /*			     */
 						   /*			     */
   if ( s == (char*)NULL ) return FALSE;		   /*			     */
 						   /*			     */
@@ -1621,7 +1621,7 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
   Record	rec;				   /*			     */
 { String	s;				   /*			     */
   int		pos;				   /*			     */
-  unsigned char	*trans;				   /*                        */
+  String	trans;				   /*                        */
 						   /*			     */
   DebugPrint1("eval__fmt()");			   /*                        */
   while ( kn != (KeyNode)0 )			   /*			     */

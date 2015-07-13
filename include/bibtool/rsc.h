@@ -39,7 +39,7 @@
 DECLARE( int   , rsc_select        , FALSE  			);
 
 DECLARE( char* , rsc_e_rsc         , RSC_BIBTOOL		);
-DECLARE( unsigned char*, rsc_v_rsc , (unsigned char*)(RSC_BIBTOOL_DEFAULT)	);
+DECLARE( String , rsc_v_rsc , (String)(RSC_BIBTOOL_DEFAULT)	);
 
 
 #ifdef __STDC__
