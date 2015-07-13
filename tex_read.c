@@ -315,25 +315,25 @@ static void free_tokens(t)			   /*			     */
 **	t
 ** Returns:	
 **___________________________________________________			     */
-static unsigned char * tokens_to_string(t)	   /*			     */
-  Token			 t;			   /*			     */
-{ register Token	 t1;			   /*			     */
-  register unsigned char *s,			   /*			     */
-			 *sp;			   /*			     */
-  register int		 len;			   /*			     */
+static String tokens_to_string(t)		   /*			     */
+  Token		  t;				   /*			     */
+{ register Token  t1;				   /*			     */
+  register String s,				   /*			     */
+		  sp;				   /*			     */
+  register int	  len;				   /*			     */
 						   /*			     */
-  for ( len=1,t1=t;				   /* Count the elements of  */
-	t1!=TokenNULL;				   /*  the token list.	     */
-	t1=NextToken(t1) )			   /*  (+1 for '\0')	     */
+  for (len = 1, t1 = t;				   /* Count the elements of  */
+       t1 != TokenNULL;				   /*  the token list.	     */
+       t1 = NextToken(t1))			   /*  (+1 for '\0')	     */
   { ++len; }					   /*			     */
 						   /*			     */
-  if ( (s=(unsigned char*)malloc(len*sizeof(unsigned char)))/*               */
+  if ( (s=(String)malloc(len * sizeof(Uchar)))     /*                        */
        == NULL )	   			   /* Try to get             */
   { OUT_OF_MEMORY("TeX string."); } 		   /*     new memory.	     */
 						   /*			     */
-  for ( sp=s,t1=t;				   /* Transfer the characters*/
-	t1!=TokenNULL;				   /*  from the token list   */
-	t1=NextToken(t1) )			   /*  to the string.	     */
+  for (sp = s, t1 = t;				   /* Transfer the characters*/
+       t1 != TokenNULL;				   /*  from the token list   */
+       t1 = NextToken(t1))			   /*  to the string.	     */
   { *(sp++) = TokenChar(t1); }			   /*			     */
   *sp = '\0';					   /*			     */
   return s;					   /* Return the string.     */
@@ -397,7 +397,7 @@ static int TeX_fill_line(get_fct)		   /*			     */
       { NextToken(*tp) = NextToken(NextToken(t));  /*			     */
 	free_1_token(NextToken(t));		   /*			     */
 	free_1_token(t);			   /*			     */
-	TokenChar(*tp) = (c>=64?c-64:c+64);	   /*			     */
+	TokenChar(*tp) = (c >= 64 ? c - 64 : c + 64);/*			     */
       }						   /*			     */
     }						   /*			     */
   }						   /*			     */
@@ -494,7 +494,7 @@ static Token TeX_get_token(get_fct)		   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void init_get(s)				   /*			     */
-  register unsigned char * s;			   /*			     */
+  register String s;				   /*			     */
 { g_p = g_s = s;				   /*			     */
 }						   /*------------------------*/
 
@@ -521,13 +521,13 @@ static int do_get()				   /*			     */
 **	arity
 ** Returns:	
 **___________________________________________________			     */
-static Token tokenize(s,arity)			   /*			     */
-  unsigned char	*s;				   /*			     */
-  int		arity;				   /*			     */
-{ Token		t = TokenNULL,			   /*			     */
-		t_ret = TokenNULL,		   /*			     */
-		nt, t0;				   /*			     */
-  int		a;				   /*			     */
+static Token tokenize(s, arity)			   /*			     */
+  String s;					   /*			     */
+  int	 arity;					   /*			     */
+{ Token	 t = TokenNULL,				   /*			     */
+	 t_ret = TokenNULL,			   /*			     */
+	 nt, t0;				   /*			     */
+  int	 a;					   /*			     */
 						   /*			     */
   EnsureInit;					   /*			     */
   init_get(s);					   /*			     */
@@ -747,9 +747,9 @@ static int get_EOF()				   /*			     */
 { return EOF;					   /*			     */
 }						   /*------------------------*/
 
- static FILE *src_file;				   /*			     */
- static unsigned char *src_string;		   /*			     */
- static unsigned char *src_ptr;			   /*			     */
+ static FILE  *src_file;			   /*			     */
+ static String src_string;			   /*			     */
+ static String src_ptr;				   /*			     */
  static int  (*src_get)() = get_EOF;		   /*			     */
 
 /*-----------------------------------------------------------------------------
@@ -852,13 +852,13 @@ static int fill_token(tp)			   /*			     */
 ** Returns:	|FALSE| iff everything went right.
 **___________________________________________________			     */
 int TeX_read(cp, sp)				   /*			     */
-  Uchar	 	*cp;				   /*			     */
+  String	cp;				   /*			     */
   String	*sp;				   /*			     */
 { static Token	t     = TokenNULL;		   /*			     */
   static Token	old_t = TokenNULL;		   /*			     */
   static Token	arg[10];			   /*			     */
-  Token		t2,tp;				   /*			     */
-  int		i,d;				   /*			     */
+  Token		t2, tp;				   /*			     */
+  int		i, d;				   /*			     */
 						   /*			     */
   EnsureInit;					   /*			     */
   if ( old_t != TokenNULL ) free_1_token(old_t);   /*			     */
@@ -884,13 +884,13 @@ int TeX_read(cp, sp)				   /*			     */
       return 1;					   /*			     */
     }						   /*			     */
 						   /*			     */
-    for ( i = 1; i <= MacroArity(mac); ++i )	   /* Fill the argument	     */
+    for (i = 1; i <= MacroArity(mac); ++i)	   /* Fill the argument	     */
     {						   /*  vector		     */
       if ( !fill_token(&t) )			   /*			     */
       { arg[i] = TokenNULL;			   /* Not enough tokens	     */
         Err("*** Unexpected EOF\n");		   /*			     */
       }					   	   /*			     */
-      else if ( TokenChar(t) == CHAR_BEG_GROUP )   /* If there is a group    */
+      else if (TokenChar(t) == CHAR_BEG_GROUP)     /* If there is a group    */
       { tp = t;				   	   /*			     */
         d  = 0;				   	   /*			     */
 	while ( fill_token(&NextToken(tp))  &&     /* While there are more   */
@@ -919,7 +919,7 @@ int TeX_read(cp, sp)				   /*			     */
 						   /*			     */
     t = token_list_copy(MacroToken(mac),t,arg);    /*			     */
 						   /*			     */
-    for ( i=1; i<MacroArity(mac); ++i )	   	   /* free the arg vector    */
+    for (i = 1; i < MacroArity(mac); ++i)   	   /* free the arg vector    */
     { if ( arg[i] != TokenNULL )		   /*			     */
       { free_tokens(arg[i]);			   /*			     */
         arg[i] = TokenNULL;			   /*			     */

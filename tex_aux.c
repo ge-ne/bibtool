@@ -65,7 +65,7 @@
 void clear_aux()				   /*                        */
 { int i;					   /*                        */
   cite_star = TRUE;				   /*                        */
-  for ( i=0; i<32; i++ )			   /*                        */
+  for (i = 0; i < 32; i++)			   /*                        */
   { free_words(&cite[i],sym_unlink); }		   /*                        */
 }						   /*------------------------*/
 
@@ -81,8 +81,8 @@ void clear_aux()				   /*                        */
 int foreach_aux(fct)				   /*                        */
   int (fct)_ARG((String));			   /*                        */
 { int i;					   /*                        */
-  for ( i=0; i<32; i++ )			   /*                        */
-  { foreach_word(cite[i],fct); }		   /*                        */
+  for (i = 0; i < 32; i++)			   /*                        */
+  { foreach_word(cite[i], fct); }		   /*                        */
   return cite_star;				   /*                        */
 }						   /*------------------------*/
 
@@ -100,9 +100,9 @@ static void save_ref(s)				   /*                        */
 { 						   /*                        */
   if ( cite_star ) return;			   /*                        */
  						   /*                        */
-  if ( *s == '*' && *(s+1) == '\0' )		   /*                        */
+  if (*s == '*' && *(s+1) == '\0')		   /*                        */
   { clear_aux(); }				   /*                        */
-  else { add_word(symbol(s),&cite[*s&31]); }	   /*                        */
+  else { add_word(symbol(s), &cite[*s&31]); }	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -118,7 +118,7 @@ int aux_used(s)				   	   /*                        */
   String s;					   /*                        */
 {						   /*                        */
   return (  cite_star				   /*                        */
-	 || find_word(s,cite[*s&31])  );	   /*                        */
+	 || find_word(s,cite[*s&31]));		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -153,7 +153,7 @@ int read_aux(fname, fct, verbose)		   /*                        */
   int           verbose;			   /*                        */
 { FILE 	        *file;				   /*                        */
   int           c;                                 /*                        */
-  register char *s;				   /*                        */
+  String	s;				   /*                        */
  						   /*                        */
   cite_star  = FALSE;				   /*                        */
   rsc_select = TRUE; 				   /*                        */
