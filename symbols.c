@@ -237,8 +237,8 @@ void init_symbols()				   /*			     */
 						   /*			     */
   if ( sym_empty != NULL ) return;		   /*                        */
   for ( i = 0; i < HASHMAX; i++ ) sym_tab[i] = NULL;/*			     */
-  sym_empty    = sym_add((String)new_string(""),-1);/*                       */
-  sym_crossref = sym_add((String)new_string("crossref"),-1); /*              */
+  sym_empty    = sym_add(new_Ustring(""),-1);      /*                        */
+  sym_crossref = sym_add(new_Ustring("crossref"),-1); /*                     */
 }						   /*------------------------*/
 
  static StringTab last_stp = NULL;	
