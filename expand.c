@@ -207,7 +207,7 @@ static int expand(s, sb, brace, first, q_open, q_close, db)/*                */
         else		   			   /* Only macros are left.  */
 	{ String sym = (String)s;	   	   /*                        */
 	  String val;			   	   /*                        */
-	  char  c;			   	   /*                        */
+	  Uchar  c;			   	   /*                        */
  						   /*                        */
           DebugPrint2("Start symbol: ",s);	   /*                        */
 	  while ( is_allowed(*s) ) ++s;		   /*                        */

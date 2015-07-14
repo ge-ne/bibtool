@@ -29,7 +29,9 @@
 #endif
  NameNode name_format _ARG((String s));		   /* names.c                */
  String  pp_list_of_names _ARG((String *wa,NameNode format,String trans,int max,String comma,String and,char *namesep,char *etal));/* names.c*/
+#ifdef STANDALONE
  char * pp_names _ARG((char *s,NameNode format,String trans,int max,char *namesep,char *etal));/* names.c*/
+#endif
  static NameNode new_name_node _ARG((int type,int strip,int trim,String pre,String mid,String post));/* names.c*/
  static int is_jr _ARG((String  s, int eager));	   /* names.c                */
  static int is_lower_word _ARG((String s));	   /* names.c                */

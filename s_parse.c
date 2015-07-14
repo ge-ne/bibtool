@@ -38,7 +38,7 @@
 /*---------------------------------------------------------------------------*/
 
 #define Error(E,S,A,B)	\
-  if(E) error(ERR_ERROR|ERR_POINT,(String)A,(String)B,(String)0,sp_line,(String)S,0,(char*)0)
+  if(E) error(ERR_ERROR|ERR_POINT,A,(String)B,(String)0,sp_line,(String)S,0,(char*)0)
 
  static String sp_line = StringNULL;
 
@@ -130,8 +130,8 @@ String s_parse(type, sp, errp)			   /*                        */
 { register String s = *sp;			   /*                        */
   Uchar           c;				   /*                        */
   String	  cp;				   /*                        */
-  static char     *unexpected = "Unexpected ";	   /*                        */
-  static char     *expected   = " expected.";	   /*                        */
+  static String   unexpected = (String)"Unexpected ";/*                      */
+  static String   expected   = (String)" expected.";/*                       */
  						   /*                        */
   DebugPrint2((type == StringParseSkip ? "ParseSkip ":
 	       type == StringParseNext ? "ParseNext ":
