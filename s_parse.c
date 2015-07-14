@@ -129,7 +129,7 @@ String s_parse(type, sp, errp)			   /*                        */
   int		  errp;				   /*                        */
 { register String s = *sp;			   /*                        */
   Uchar           c;				   /*                        */
-  char		  *cp;				   /*                        */
+  String	  cp;				   /*                        */
   static char     *unexpected = "Unexpected ";	   /*                        */
   static char     *expected   = " expected.";	   /*                        */
  						   /*                        */
