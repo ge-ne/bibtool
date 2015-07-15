@@ -46,7 +46,7 @@
 ** Arguments:
 **	db	Database containing the entries.
 **	rec	The record to expand
-** Returns:	...
+** Returns:	FALSE
 **___________________________________________________			     */
 int expand_crossref(db,rec)		   	   /*                        */
   DB     db;					   /*                        */
@@ -59,13 +59,13 @@ int expand_crossref(db,rec)		   	   /*                        */
  						   /*                        */
   DebugPrint1("expand_crossref");		   /*                        */
  						   /*                        */
-  while	( RecordIsXREF(r) && limit-->=0 )	   /*                        */
+  while	( RecordIsXREF(r) && limit-- >= 0 )	   /*                        */
   {						   /*                        */
     for ( i = RecordFree(r), hp = RecordHeap(r);   /* search crossref field  */
 	  i > 0 && *hp != sym_crossref;		   /*			     */
 	  i -= 2, hp += 2 )			   /*			     */
     { }						   /*			     */
-    if ( i <= 0 )				   /*			     */
+    if (i <= 0)					   /*			     */
     { DebugPrint1("*** No crossref found.");	   /*			     */
       return FALSE;				   /*			     */
     }						   /*			     */
@@ -81,17 +81,14 @@ int expand_crossref(db,rec)		   	   /*                        */
       return FALSE;				   /*			     */
     }						   /*			     */
     						   /*                        */
-    for ( i = RecordFree(r), hp = RecordHeap(r);   /* visit all fields       */
-	  i > 0;				   /*			     */
-	  i -= 2 )			   	   /*			     */
-    {						   /*                        */
-      s	= *hp++;                                   /*                        */
+    for (i = RecordFree(r), hp = RecordHeap(r);    /* visit all fields       */
+	 i > 0;					   /*			     */
+	 i -= 2)			   	   /*			     */
+    { s	= *hp++;                                   /*                        */
       t	= *hp++;                                   /*                        */
       if (t != StringNULL)			   /*                        */
-      { provide_to_record(rec,s,t);                /*                        */
-      }                                            /*                        */
+      { provide_to_record(rec,s,t); }              /*                        */
     }						   /*			     */
-    						   /*                        */
   }						   /*                        */
  						   /*                        */
   return FALSE;	   				   /*			     */
