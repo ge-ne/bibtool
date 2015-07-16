@@ -95,15 +95,13 @@ int def_macro(name, val, count)			   /*                        */
 { register Macro *mp;				   /*                        */
  						   /*                        */
   name = symbol(name);				   /*                        */
-  if ( val ) val  = symbol(val);		   /*                        */
+  if (val) val  = symbol(val);			   /*                        */
  						   /*                        */
-  for ( mp   = &macros;				   /*                        */
-        *mp != MacroNULL;			   /*                        */
-	mp   = &NextMacro(*mp)			   /*                        */
-      )						   /*                        */
-  { if ( MacroName(*mp) == name )		   /*                        */
-    {						   /*                        */
-      if ( val )				   /*                        */
+  for (mp   = &macros;				   /*                        */
+       *mp != MacroNULL;			   /*                        */
+       mp   = &NextMacro(*mp))			   /*                        */
+  { if (MacroName(*mp) == name)			   /*                        */
+    { if (val)					   /*                        */
       { MacroValue(*mp) = val; }		   /*                        */
       else					   /*                        */
       { Macro mac = *mp;			   /*                        */
@@ -114,8 +112,8 @@ int def_macro(name, val, count)			   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
-  if ( val )					   /*                        */
-  { macros = new_macro(name,val,macros,count); }   /*                        */
+  if (val)					   /*                        */
+  { macros = new_macro(name, val, macros, count); }/*                        */
   return 0;					   /*                        */
 }						   /*------------------------*/
 
@@ -142,19 +140,19 @@ String  look_macro(name, add)			   /*                        */
 						   /*                        */
   name = symbol(name);				   /*                        */
 						   /*                        */
-  for ( mp   = &macros;				   /*                        */
-        *mp != MacroNULL;			   /*                        */
-	mp   = &NextMacro(*mp)			   /*                        */
-      )						   /*                        */
-  { if ( MacroName(*mp) == name )		   /*                        */
-    { if ( MacroCount(*mp) >= 0 )		   /*                        */
+  for (mp   = &macros;				   /*                        */
+       *mp != MacroNULL;			   /*                        */
+       mp   = &NextMacro(*mp))			   /*                        */
+  { if (MacroName(*mp) == name)			   /*                        */
+    { if (MacroCount(*mp) >= 0)			   /*                        */
 	MacroCount(*mp) += add;			   /*                        */
       return(MacroValue(*mp));			   /*                        */
     }						   /*                        */
   }						   /*                        */
-  if ( add < 0 ) return NULL;			   /*                        */
-  def_macro(name,sym_empty,add);		   /*                        */
-  WARNING3("Macro '",name,"' is undefined.");	   /*                        */
+  if (add >= 0)					   /*                        */
+  { def_macro(name,sym_empty,add);		   /*                        */
+    WARNING3("Macro '",name,"' is undefined.");	   /*                        */
+  }						   /*                        */
   return NULL;					   /*                        */
 }						   /*------------------------*/
 
@@ -180,12 +178,11 @@ String  look_macro(name, add)			   /*                        */
 void foreach_macro(fct)				   /*                        */
   int (*fct) _ARG((String ,String ));		   /*                        */
 { Macro mac;					   /*                        */
-  for ( mac=macros; 				   /*                        */
-	mac != MacroNULL; 			   /*                        */
-	mac = NextMacro(mac) )			   /*                        */
-  {						   /*                        */
-    if ( MacroValue(mac) &&			   /*                        */
-	 ! (*fct)(MacroName(mac),MacroValue(mac)) )/*                        */
+  for (mac = macros; 				   /*                        */
+       mac != MacroNULL; 			   /*                        */
+       mac = NextMacro(mac))			   /*                        */
+  { if (MacroValue(mac) &&			   /*                        */
+	! (*fct)(MacroName(mac), MacroValue(mac))) /*                        */
       return;					   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
@@ -211,12 +208,12 @@ void dump_mac(fname,allp)			   /*                        */
     return;					   /*                        */
   }					   	   /*                        */
  						   /*                        */
-  for ( mac = macros; 				   /*                        */
-	mac != MacroNULL; 			   /*                        */
-	mac = NextMacro(mac) )			   /*                        */
-  { if ( MacroCount(mac) > 0  ||		   /*                        */
-         ( MacroCount(mac) >= 0 && allp) )	   /*                        */
-    { if ( MacroName(mac) == MacroValue(mac) )	   /*                        */
+  for (mac = macros; 				   /*                        */
+       mac != MacroNULL; 			   /*                        */
+       mac = NextMacro(mac))			   /*                        */
+  { if (MacroCount(mac) > 0  ||			   /*                        */
+        (MacroCount(mac) >= 0 && allp))		   /*                        */
+    { if (MacroName(mac) == MacroValue(mac))	   /*                        */
       { (void)fprintf(file,			   /*                        */
 		      "_string{ %s = %s } used: %d\n",/*                     */
 		      MacroName(mac),		   /*                        */
@@ -257,7 +254,7 @@ void init_macros()				   /*                        */
   static char *word_list[] =			   /*                        */
   { INITIALIZE_MACROS, NULL };			   /*                        */
  						   /*                        */
-  for ( wp = word_list; *wp != NULL; ++wp )	   /*                        */
+  for (wp = word_list; *wp != NULL; ++wp)	   /*                        */
   { name = symbol((String)*wp);			   /*                        */
     def_macro(name, name, -1);			   /*                        */
   }		   				   /*			     */
@@ -308,26 +305,26 @@ void def_field_type(s)				   /*                        */
 { String name, val;				   /*                        */
   Uchar c;				   	   /*                        */
  						   /*                        */
-  while ( *s && !is_allowed(*s) ) ++s;		   /*                        */
+  while (*s && !is_allowed(*s)) ++s;		   /*                        */
   if ( *s == '\0' ) return;			   /*                        */
   name = s;					   /*                        */
-  while ( is_allowed(*s) ) ++s;			   /*                        */
+  while (is_allowed(*s)) ++s;			   /*                        */
   c   = *s;					   /*                        */
   *s  = '\0';					   /*                        */
   val = new_Ustring(name);	   		   /*                        */
   *s  = c;					   /*                        */
  						   /*                        */
   { String  cp;				   	   /*                        */
-    for ( cp = val; *cp; ++cp ) *cp = ToLower(*cp);/*                        */
+    for (cp = val; *cp; ++cp) *cp = ToLower(*cp);  /*                        */
   }						   /*                        */
  						   /*                        */
   name = symbol(val);				   /*                        */
   free((char*)val);				   /*                        */
   						   /*                        */
-  while ( *s && !is_allowed(*s) ) ++s;		   /*                        */
+  while (*s && !is_allowed(*s)) ++s;		   /*                        */
   if ( *s == '\0' ) return;			   /*                        */
   val = s;					   /*                        */
-  while ( is_allowed(*s) ) ++s;			   /*                        */
+  while (is_allowed(*s)) ++s;			   /*                        */
   c = *s; *s = '\0'; val = symbol(val); *s = c;	   /*                        */
  						   /*                        */
   def_item(name, val);				   /*                        */
@@ -360,32 +357,30 @@ static String  get_mapped_or_cased(name, mac, type)/*                        */
       return MacroValue(mac);			   /*                        */
   }						   /*                        */
  						   /*                        */
-  if ( sb == NULL &&				   /*                        */
-       (sb=sbopen()) == NULL )			   /*                        */
+  if (sb == NULL && (sb=sbopen()) == NULL)	   /*                        */
   { OUT_OF_MEMORY("get_item()"); } 		   /*                        */
   sbrewind(sb);					   /*                        */
-  if ( type == SYMBOL_TYPE_LOWER ) 	   	   /*                        */
-  { sbputs((char*)name,sb);			   /*                        */
+  if (type == SYMBOL_TYPE_LOWER) 	   	   /*                        */
+  { sbputs((char*)name, sb);			   /*                        */
   }						   /*                        */
   else						   /*                        */
-  { 						   /*                        */
-    switch ( type )			   	   /*                        */
+  { switch ( type )			   	   /*                        */
     { case SYMBOL_TYPE_CASED:			   /*                        */
-	while ( *name )				   /*                        */
-	{ if ( is_alpha(*name) )		   /*                        */
-	  { (void)sbputc(ToUpper(*name),sb);	   /*                        */
-	    for ( ++name; is_alpha(*name); ++name) /*                        */
-	    { (void)sbputc(*name,sb); }		   /*                        */
+	while (*name)				   /*                        */
+	{ if (is_alpha(*name))			   /*                        */
+	  { (void)sbputc(ToUpper(*name), sb);	   /*                        */
+	    for (++name; is_alpha(*name); ++name)  /*                        */
+	    { (void)sbputc(*name, sb); }	   /*                        */
 	  }					   /*                        */
 	  else					   /*                        */
-	  { (void)sbputc(*name,sb);		   /*                        */
+	  { (void)sbputc(*name, sb);		   /*                        */
 	    ++name;				   /*                        */
 	  }					   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
       case SYMBOL_TYPE_UPPER:			   /*                        */
 	for ( ; *name; ++name )			   /*                        */
-	{ (void)sbputc(ToUpper(*name),sb); }	   /*                        */
+	{ (void)sbputc(ToUpper(*name), sb); }	   /*                        */
 	break;					   /*                        */
     }						   /*                        */
   }						   /*                        */
@@ -412,7 +407,7 @@ static String  get_mapped_or_cased(name, mac, type)/*                        */
 ** Returns:	A pointer to a static string. This location  is reused
 **		upon the next invocation of this function.
 **___________________________________________________			     */
-String  get_item(name,type)			   /*                        */
+String  get_item(name, type)			   /*                        */
   String name;				   	   /*                        */
   int   type;				   	   /*                        */
 { return get_mapped_or_cased(name, items, type);   /*                        */
