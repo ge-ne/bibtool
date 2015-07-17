@@ -155,7 +155,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) 2014 Gerd Neugebauer",
+    "Copyright (C) 2015 Gerd Neugebauer",
     "gene@gerd-neugebauer.de"
   };
 
@@ -259,17 +259,17 @@ static void usage(fullp)			   /*			     */
 void save_input_file(file)			   /*			     */
   char *file;					   /*			     */
 {						   /*			     */
-  if ( file == NULL )				   /*			     */
+  if (file == NULL)				   /*			     */
   { WARNING("Missing input file name. Flag ignored.");/*		     */
     return;					   /*			     */
   }						   /*			     */
-  if ( *file == '-' && file[1] == '\0' )	   /*			     */
+  if (*file == '-' && file[1] == '\0')		   /*			     */
   { file = NULL; }				   /*			     */
 						   /*			     */
-  if ( InputPipeIsFull )			   /* No space left?	     */
+  if (InputPipeIsFull)				   /* No space left?	     */
   { input_file_size += InputFilePipeIncrement;	   /*			     */
 						   /*			     */
-    if ( InputPipeIsEmpty			   /* Try to enlarge array   */
+    if (InputPipeIsEmpty			   /* Try to enlarge array   */
 	? NULL==(input_files=			   /*			     */
 		 (char**)malloc(sizeof(char*)	   /*			     */
 				*(size_t)input_file_size))/*		     */
@@ -278,8 +278,7 @@ void save_input_file(file)			   /*			     */
 				 sizeof(char*)	   /*			     */
 				 *(size_t)input_file_size))/*		     */
 	)					   /*			     */
-    { OUT_OF_MEMORY("input file pipe.");	   /*		             */
-    }						   /*			     */
+    { OUT_OF_MEMORY("input file pipe."); }	   /*			     */
   }						   /*			     */
   PushToInputPipe(file);			   /*			     */
 }						   /*------------------------*/
@@ -337,20 +336,19 @@ void save_macro_file(file)			   /*			     */
 /*-----------------------------------------------------------------------------
 ** Function:	keep_selected()
 ** Type:	static int
-** Purpose:	
+** Purpose:	Mark the record as deleted if it is not selected.
 **		
 ** Arguments:
-**	db	
-**	rec	
-** Returns:	
+**	db	the database
+**	rec	the record
+** Returns:	FALSE
 **___________________________________________________			     */
-static int keep_selected(db,rec)		   /*                        */
+static int keep_selected(db, rec)		   /*                        */
   DB db;					   /*                        */
   Record rec;					   /*                        */
 {						   /*                        */
-  if ( !is_selected(db,rec) )			   /*                        */
-  { SetRecordDELETED(rec);			   /*                        */
-  }						   /*                        */
+  if (!is_selected(db, rec))			   /*                        */
+  { SetRecordDELETED(rec); }			   /*                        */
  						   /*                        */
   return FALSE;					   /*                        */
 }						   /*------------------------*/
@@ -362,9 +360,9 @@ static int keep_selected(db,rec)		   /*                        */
 ** Purpose:	Undelete crossreferenced entries
 **		
 ** Arguments:
-**	db	
-**	rec	
-** Returns:	
+**	db	the database
+**	rec	the record
+** Returns:	FALSE
 **___________________________________________________			     */
 int keep_xref(db,rec)				   /*                        */
   DB db;					   /*                        */
@@ -374,9 +372,9 @@ int keep_xref(db,rec)				   /*                        */
   { String key;				   	   /*                        */
     int    count;				   /*                        */
  						   /*                        */
-    for ( count = rsc_xref_limit;		   /* Prevent infinite loop  */
-	  count >= 0;		   	   	   /*                        */
-	  count-- )				   /*                        */
+    for (count = rsc_xref_limit;		   /* Prevent infinite loop  */
+	 count >= 0;		   	   	   /*                        */
+	 count--)				   /*                        */
     {					   	   /*                        */
       if ( (key = get_field(db,rec,sym_crossref)) == NULL )/*                */
       { return FALSE; }			   	   /*                        */
@@ -390,7 +388,7 @@ int keep_xref(db,rec)				   /*                        */
         return FALSE;			   	   /*                        */
       }					   	   /*                        */
  						   /*                        */
-      if ( !RecordIsDELETED(rec) ) { return FALSE; }/*                       */
+      if (!RecordIsDELETED(rec)) { return FALSE; } /*                        */
       ClearRecordDELETED(rec);		   	   /*                        */
     }					   	   /*                        */
  						   /*                        */
@@ -400,7 +398,6 @@ int keep_xref(db,rec)				   /*                        */
   return FALSE;					   /*                        */
 }						   /*------------------------*/
 #endif
-
 
 #define Toggle(X) X = !(X)
 
@@ -524,9 +521,8 @@ int main(argc,argv)				   /*			     */
  						   /*  has been modified.    */
   the_db = new_db();				   /*                        */
 						   /*			     */
-  for ( i = 0; i < input_file_ptr; i++ )	   /* For all input files    */
-  {						   /*			     */
-    if ( read_db(the_db,			   /*                        */
+  for (i = 0; i < input_file_ptr; i++)		   /* For all input files    */
+  { if ( read_db(the_db,			   /*                        */
 		 (String)(input_files[i]),	   /*                        */
 		 rsc_verbose) )	   		   /*                        */
     { NoFileError(input_files[i]); }		   /*			     */
@@ -673,7 +669,7 @@ int main(argc,argv)				   /*			     */
 **	r2
 ** Returns:	
 **___________________________________________________			     */
-static int rec_gt(r1,r2)			   /*                        */
+static int rec_gt(r1, r2)			   /*                        */
   Record r1;					   /*                        */
   Record r2;					   /*                        */
 { return (strcmp((char*)RecordSortkey(r1),	   /*                        */
@@ -690,7 +686,7 @@ static int rec_gt(r1,r2)			   /*                        */
 **	r2
 ** Returns:	
 **___________________________________________________			     */
-static int rec_lt(r1,r2)			   /*                        */
+static int rec_lt(r1, r2)			   /*                        */
   Record r1;					   /*                        */
   Record r2;					   /*                        */
 { return (strcmp((char*)RecordSortkey(r1),	   /*                        */
@@ -707,7 +703,7 @@ static int rec_lt(r1,r2)			   /*                        */
 **	r2	
 ** Returns:	
 **___________________________________________________			     */
-static int rec_gt_cased(r1,r2)			   /*                        */
+static int rec_gt_cased(r1, r2)			   /*                        */
   Record r1;					   /*                        */
   Record r2;					   /*                        */
 { return (strcmp((char*)get_key_name(RecordSortkey(r1)),/*                   */
@@ -724,7 +720,7 @@ static int rec_gt_cased(r1,r2)			   /*                        */
 **	r2	
 ** Returns:	
 **___________________________________________________			     */
-static int rec_lt_cased(r1,r2)			   /*                        */
+static int rec_lt_cased(r1, r2)			   /*                        */
   Record r1;					   /*                        */
   Record r2;					   /*                        */
 { return (strcmp((char*)get_key_name(RecordSortkey(r1)),/*                   */
@@ -740,7 +736,7 @@ static int rec_lt_cased(r1,r2)			   /*                        */
 **	rec
 ** Returns:	
 **___________________________________________________			     */
-static int do_keys(db,rec)			   /*                        */
+static int do_keys(db, rec)			   /*                        */
   DB	 db;					   /*                        */
   Record rec;					   /*                        */
 {						   /*                        */
@@ -761,7 +757,7 @@ static int do_keys(db,rec)			   /*                        */
 **	rec
 ** Returns:	
 **___________________________________________________			     */
-static int do_no_keys(db,rec)			   /*                        */
+static int do_no_keys(db, rec)			   /*                        */
   DB	 db;					   /*                        */
   Record rec;					   /*                        */
 {						   /*                        */
@@ -783,7 +779,7 @@ static int do_no_keys(db,rec)			   /*                        */
 **	first_rec
 ** Returns:	nothing
 **___________________________________________________			     */
-static int update_crossref(db,rec)		   /*			     */
+static int update_crossref(db, rec)		   /*			     */
   DB		 db;				   /*                        */
   Record	 rec;				   /*			     */
 { register String *hp;				   /*			     */
@@ -792,9 +788,9 @@ static int update_crossref(db,rec)		   /*			     */
 						   /*			     */
   if ( !RecordIsXREF(rec) ) return 0;		   /*			     */
 						   /*                        */
-  for ( i = RecordFree(rec), hp = RecordHeap(rec); /* search crossref field  */
-	i > 0 && *hp != sym_crossref;		   /*			     */
-	i -= 2, hp += 2 )			   /*			     */
+  for (i = RecordFree(rec), hp = RecordHeap(rec);  /* search crossref field  */
+       i > 0 && *hp != sym_crossref;		   /*			     */
+       i -= 2, hp += 2)				   /*			     */
   { }						   /*			     */
   if ( i <= 0 )					   /*			     */
   { DebugPrint1("*** No crossref found.");	   /*			     */
@@ -820,7 +816,6 @@ static int update_crossref(db,rec)		   /*			     */
   return 0;					   /*                        */
 }						   /*------------------------*/
 
-
 #define equal_records(R1,R2) RecordSortkey(R1) == RecordSortkey(R2)
 
 /*-----------------------------------------------------------------------------
@@ -832,7 +827,7 @@ static int update_crossref(db,rec)		   /*			     */
 **	rec
 ** Returns:	
 **___________________________________________________			     */
-static int dbl_check(db,rec)			   /*                        */
+static int dbl_check(db, rec)			   /*                        */
   DB	 db;					   /*                        */
   Record rec;					   /*                        */
 {						   /*                        */
