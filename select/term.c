@@ -64,11 +64,10 @@ Term new_term(op, a1, a2)			   /*                        */
 Term new_term_num(n)				   /*                        */
   long n;					   /*                        */
 {						   /*                        */
-  Term t = (Term)malloc(sizeof(STerm));
-
-  TermOp(t) = T_NUMBER;
-  TermNumber(t) = n;
-  TermArg2(t) = TermNULL;
+  Term t = (Term)malloc(sizeof(STerm));		   /*                        */
+  TermOp(t) = T_NUMBER;				   /*                        */
+  TermNumber(t) = n;				   /*                        */
+  TermArg2(t) = TermNULL;			   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -86,11 +85,10 @@ Term new_term_string(op, s)			   /*                        */
   int op;					   /*                        */
   char * s;					   /*                        */
 {						   /*                        */
-  Term t = (Term)malloc(sizeof(STerm));
-
-  TermOp(t) = op;
-  TermString(t) = s;
-  TermArg2(t) = TermNULL;
+  Term t = (Term)malloc(sizeof(STerm));		   /*                        */
+  TermOp(t) = op;				   /*                        */
+  TermString(t) = s;				   /*                        */
+  TermArg2(t) = TermNULL;			   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -149,7 +147,7 @@ static void dump_t(stream, t, in)		   /*                        */
       fprintf(stream, "\"%s\"",TermString(t));
       return;
     case T_NUMBER:
-      fprintf(stream, "\"%ld\"",TermNumber(t));
+      fprintf(stream, "%ld",TermNumber(t));
       return;
     case T_NOT:
       fputc('(', stream);
@@ -159,7 +157,7 @@ static void dump_t(stream, t, in)		   /*                        */
     case T_PAIR:
       in++;
       for (; t; t = TermArg2(t))
-      { dump_t(stream, TermTerm(t), in); }
+      { if (TermTerm(t)) dump_t(stream, TermTerm(t), in); }
       return;
   }
   fputc('(', stream);
