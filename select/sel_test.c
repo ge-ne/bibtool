@@ -32,13 +32,46 @@
 int main(argc, argv)				   /*                        */
   int  argc;					   /*                        */
   char *argv[];					   /*                        */
-{						   /*                        */
-  int c;
-  StringBuffer *sb =sbopen();
-  while ((c=getchar()) != EOF) {
-    sbputc(c, sb);
-  }
-  Term t = selection(sbflush(sb));
-  dump_term(t);  
+{ int i;					   /*                        */
+  int in = 1;					   /*                        */
+ 						   /*                        */
+  for (i = 1; i < argc; i++)			   /*                        */
+  {						   /*                        */
+    if (strcmp("-t", argv[i]) == 0)		   /*                        */
+    { in = run_tests();				   /*                        */
+    } else					   /*                        */
+    { in = run_file(argv[i]);
+    }
+  }						   /*                        */
+ 						   /*                        */
+  if (in)					   /*                        */
+  { int c;					   /*                        */
+    StringBuffer *sb = sbopen();		   /*                        */
+    while ((c=getchar()) != EOF) {		   /*                        */
+      sbputc(c, sb);				   /*                        */
+    }						   /*                        */
+    Term t = selection(sbflush(sb));		   /*                        */
+
+    if (t) dump_term(t);  			   /*                        */
+  }						   /*                        */
 }						   /*------------------------*/
 
+int run_file(fname)
+  char * fname;
+{ int c;					   /*                        */
+  StringBuffer *sb = sbopen();		   	   /*                        */
+  FILE * fd = fopen(fname, "r");		   /*                        */
+  while ((c=fgetc(fd)) != EOF) {		   /*                        */
+    sbputc(c, sb);				   /*                        */
+  }						   /*                        */
+  fclose(fd);					   /*                        */
+  Term t = selection(sbflush(sb));		   /*                        */
+  
+  if (t) dump_term(t);  			   /*                        */
+  return 0;
+}						   /*------------------------*/
+
+int run_tests()
+{
+  return 0;
+}						   /*------------------------*/

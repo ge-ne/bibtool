@@ -1,1 +1,1 @@
-"1234" like substring(abc)
+"1234" like substring(abc, 1)

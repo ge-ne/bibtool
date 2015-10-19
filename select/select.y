@@ -88,8 +88,8 @@ expr     : FIELD
 	 { $$ = $2; }
 	 | FIELD '(' opt_args ')'
 	 { int op = find_function_op(TermString($1));
-	   if (op == 0)
-	   { free_term($3);
+	   if (op < 0)
+	   { if ($3) free_term($3);
 	     free_term($1);
 	     error_msg = "unknown function";
 	     YYERROR;
@@ -106,6 +106,7 @@ opt_args :
 	 | args
 	 ;
 args	 : expr
+	 { $$ = new_term(T_PAIR, $1, TermNULL); }
 	 | expr ',' args
 	 { $$ = new_term(T_PAIR, $1, $3); }
 	 ;
@@ -158,8 +159,8 @@ int yylex()					   /*                        */
 {					   	   /*                        */
   int c;					   /*                        */
   						   /*                        */
-  for (c = GETC; c != EOF; c = GETC) 
-  {
+  for (c = GETC; c && c != EOF; c = GETC)	   /*                        */
+  {						   /*                        */
     switch (c) {
       case '\n':
 	linenum++;
@@ -228,7 +229,7 @@ int yylex()					   /*                        */
 	  char* s;
 	  sbputc((char)c ,sb);
 	  for (c = GETC; isalpha(c) || c == '_'; c = GETC) { sbputc((char)c ,sb); }
-
+	  UNGETC;
 	  s = sbflush(sb);
 	  if (strcmp("like", s) == 0)
 	  { sbclose(sb);
@@ -248,10 +249,10 @@ int yylex()					   /*                        */
 	  }
 	  yylval = new_term_string(T_FIELD, s);
 	  return FIELD;
-	}
-    }
-    return c;
-  }
+	}					   /*                        */
+    }						   /*                        */
+    return c;					   /*                        */
+  }						   /*                        */
   return 0;				   	   /*                        */
 }						   /*------------------------*/
 

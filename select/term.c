@@ -133,7 +133,7 @@ static void dump_t(stream, t, in)		   /*                        */
   Term t;					   /*                        */
   int in;					   /*                        */
 { int i;					   /*                        */
-  for (i = 0; i < in; i++) putchar(' ');	   /*                        */
+  for (i = 0; i < in; i++) fputc(' ', stream);	   /*                        */
  						   /*                        */
   if (t == TermNULL)				   /*                        */
   { fputs("nil", stream);			   /*                        */
@@ -156,6 +156,11 @@ static void dump_t(stream, t, in)		   /*                        */
       dump_t(TermTerm(t), in+1);
       fputc(' ', stream);
       return;
+    case T_PAIR:
+      in++;
+      for (; t; t = TermArg2(t))
+      { dump_t(stream, TermTerm(t), in); }
+      return;
   }
   fputc('(', stream);
   switch(TermOp(t))
@@ -174,6 +179,10 @@ static void dump_t(stream, t, in)		   /*                        */
     case T_DIVIDE: fputs("/ ", stream); break;
     case T_AND:    fputs("and ", stream); break;
     case T_OR:     fputs("or ", stream); break;
+    case T_FCT_LOWERCASE: fputs("lowercase ", stream); break;
+    case T_FCT_UPPERCASE: fputs("uppercase ", stream); break;
+    case T_FCT_SUBSTRING: fputs("substring ", stream); break;
+    case T_FCT_TRIM:      fputs("trim ", stream); break;
     default:
       fprintf(stderr, "*** UNKNOWN OP CODE: %d\n", TermOp(t));
       return;
@@ -200,7 +209,3 @@ void dump_term(t) 				   /*                        */
   fputc('\n', stdout);				   /*                        */
 }						   /*------------------------*/
 
-
-int is_selected()
-{
-}						   /*------------------------*/
