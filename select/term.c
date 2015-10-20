@@ -212,11 +212,3 @@ void dump_term(t) 				   /*                        */
   dump_t(stdout,t, 0);				   /*                        */
   fputc('\n', stdout);				   /*                        */
 }						   /*------------------------*/
-
- typedef struct
- { char type;
-   union
-   { long num;
-     char * str;
-   } value;
- } STaggedValue, *TaggedValue;
