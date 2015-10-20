@@ -1,13 +1,18 @@
-/******************************************************************************
-** $Id: sel_test.c,v 0.00 2015/10/17 20:57:50 gene Exp $
-*******************************************************************************
-** Author: Gerd Neugebauer
-**===========================================================================*/
+/*** sel_test.c ***************************************************************
+** 
+** This file is part of BibTool.
+** It is distributed under the GNU General Public License.
+** See the file COPYING for details.
+** 
+** (c) 2015 Gerd Neugebauer
+** 
+** Net: gene@gerd-neugebauer.de
+** 
+******************************************************************************/
 
 #include <stdio.h>
 #include <bibtool/sbuffer.h>
 #include "term.h"
-
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -56,8 +61,17 @@ int main(argc, argv)				   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
-int run_file(fname)
-  char * fname;
+/*-----------------------------------------------------------------------------
+** Function:	run_file()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**	fname	
+** Returns:	
+**___________________________________________________			     */
+int run_file(fname)				   /*                        */
+  char * fname;					   /*                        */
 { int c;					   /*                        */
   StringBuffer *sb = sbopen();		   	   /*                        */
   FILE * fd = fopen(fname, "r");		   /*                        */
@@ -66,12 +80,21 @@ int run_file(fname)
   }						   /*                        */
   fclose(fd);					   /*                        */
   Term t = selection(sbflush(sb));		   /*                        */
-  
+  						   /*                        */
   if (t) dump_term(t);  			   /*                        */
-  return 0;
+  return 0;					   /*                        */
 }						   /*------------------------*/
 
-int run_tests()
-{
+/*-----------------------------------------------------------------------------
+** Function:	run_tests()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**		
+** Returns:	
+**___________________________________________________			     */
+int run_tests()					   /*                        */
+{						   /*                        */
   return 0;
 }						   /*------------------------*/

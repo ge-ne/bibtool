@@ -1,8 +1,14 @@
-/******************************************************************************
-** $Id: term.c,v 0.00 2015/10/17 18:47:43 gene Exp $
-*******************************************************************************
-** Author: Gerd Neugebauer
-**===========================================================================*/
+/*** term.c ********************************************************************
+** 
+** This file is part of BibTool.
+** It is distributed under the GNU General Public License.
+** See the file COPYING for details.
+** 
+** (c) 2015 Gerd Neugebauer
+** 
+** Net: gene@gerd-neugebauer.de
+** 
+******************************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -104,13 +110,13 @@ Term new_term_string(op, s)			   /*                        */
 void free_term(t)				   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
-  switch (TermOp(t))
-  { case T_STRING:
-    case T_FIELD:
-    case T_NUMBER:
-      break;
-    default:
-      if (TermTerm(t)) { free_term(TermTerm(t)); }
+  switch (TermOp(t))				   /*                        */
+  { case T_STRING:				   /*                        */
+    case T_FIELD:				   /*                        */
+    case T_NUMBER:				   /*                        */
+      break;					   /*                        */
+    default:					   /*                        */
+      if (TermTerm(t)) { free_term(TermTerm(t)); } /*                        */
   }						   /*                        */
   if (TermArg2(t)) { free_term(TermArg2(t)); }	   /*                        */
   free(t);					   /*                        */
@@ -207,3 +213,10 @@ void dump_term(t) 				   /*                        */
   fputc('\n', stdout);				   /*                        */
 }						   /*------------------------*/
 
+ typedef struct
+ { char type;
+   union
+   { long num;
+     char * str;
+   } value;
+ } STaggedValue, *TaggedValue;
