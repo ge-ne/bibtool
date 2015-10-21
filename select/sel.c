@@ -10,11 +10,13 @@
 ** 
 ******************************************************************************/
 
-#include <stdio.h>
+#include <bibtool/general.h>
+#include "term.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
 /*===========================================================================*/
+ char* eval2string();
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -23,17 +25,94 @@
 /*---------------------------------------------------------------------------*/
 
 
-int eval_select(t)
-  Term t;
-{
-  if (t == TermNULL) return FALSE;
+/*-----------------------------------------------------------------------------
+** Function:	eval2string()
+** Type:	char*
+** Purpose:	
+**		
+** Arguments:
+**	t	
+** Returns:	
+**___________________________________________________			     */
+char* eval2string(t)				   /*                        */
+  Term t;					   /*                        */
+{						   /*                        */
+  if (t == TermNULL) return NULL;		   /*                        */
 
-  switch(TermType(t))
+  switch(TermOp(t))
+  { case T_STRING:
+      return TermString(t);
+    case T_FCT_LOWERCASE:
+      { char *s, *cp;
+	for(s=cp=eval2string(TermTerm(t));*cp;cp++)
+	{ *cp = tolower(*cp); }
+        return s;
+      }
+    case T_FCT_UPPERCASE:
+      { char *s, *cp;
+	for(s=cp=eval2string(TermTerm(t));*cp;cp++)
+	{ *cp = toupper(*cp); }
+        return s;
+      }
+      /*
+    case T_FCT_SUBSTRING:
+    case T_FCT_TRIM:
+      */
+  }
+  return NULL;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	eval2number()
+** Type:	long
+** Purpose:	
+**		
+** Arguments:
+**	t	
+** Returns:	
+**___________________________________________________			     */
+long eval2number(t)				   /*                        */
+  Term t;					   /*                        */
+{						   /*                        */
+  if (t == TermNULL) return 0L;			   /*                        */
+
+  switch(TermOp(t))
+  { case T_NUMBER:
+      return TermNumber(t);
+    case T_UMINUS:
+      return - eval2number(TermTerm(t));
+    case T_PLUS:
+      return eval2number(TermTerm(t)) + eval2number(TermArg2(t));
+    case T_MINUS:
+      return eval2number(TermTerm(t)) - eval2number(TermArg2(t));
+    case T_TIMES:
+      return eval2number(TermTerm(t)) * eval2number(TermArg2(t));
+    case T_DIVIDE:
+      return eval2number(TermTerm(t)) / eval2number(TermArg2(t));
+  }
+  return 0L;
+}
+
+/*-----------------------------------------------------------------------------
+** Function:	eval_select()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**	t	
+** Returns:	
+**___________________________________________________			     */
+int eval_select(t)				   /*                        */
+  Term t;					   /*                        */
+{						   /*                        */
+  if (t == TermNULL) return FALSE;		   /*                        */
+
+  switch(TermOp(t))
   {
     case T_AND:
-      return eval_select(TermTerm(t)) && eval_select(TermArg2(t);
+      return eval_select(TermTerm(t)) && eval_select(TermArg2(t));
     case T_OR:
-      return eval_select(TermTerm(t)) || eval_select(TermArg2(t);
+      return eval_select(TermTerm(t)) || eval_select(TermArg2(t));
     case T_NOT:
       return ! eval_select(TermTerm(t));
     case T_EQ:
@@ -44,7 +123,10 @@ int eval_select(t)
     case T_GE:
     case T_LIKE:
     case T_ILIKE:
+      { char * v = eval2string(TermTerm(t));
+	char * pattern = eval2string(TermArg2(t));
+      }
   }
 
-  return FALSE;
-}
+  return FALSE;					   /*                        */
+}						   /*------------------------*/
