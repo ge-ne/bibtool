@@ -8,7 +8,7 @@ config.status
 autom4te.cache
 *.orig
 *.log
-makefile
+/makefile
 *.gcov
 *.gcno
 *.bak
