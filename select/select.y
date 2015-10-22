@@ -38,7 +38,7 @@
 
 %start command
 
-%%
+%% /*------------------------------------------------------------------------*/
 
 command: term ';'
 	 { result = $1; }
@@ -46,7 +46,7 @@ command: term ';'
 term     : expr cmp expr
 	 { $$ = $2;
 	   TermTerm($$) = $1;
-	   TermArg2($$) = $3;
+	   TermTerm2($$) = $3;
 	 }
          | '(' term ')'
 	 { $$ = $2; }
@@ -91,7 +91,7 @@ expr     : FIELD
 	 | expr op expr
 	 { $$ = $2;
 	   TermTerm($$) = $1;
-	   TermArg2($$) = $3;
+	   TermTerm2($$) = $3;
 	 }
 	 | '-' expr    %prec  UMINUS
 	 { $$ = new_term(T_UMINUS, $2, TermNULL); }
@@ -118,11 +118,11 @@ opt_args :
 	 ;
 args	 : expr
 	 { $$ = new_term(T_PAIR, $1, TermNULL); }
-	 | expr ',' args
+	 | args ',' expr
 	 { $$ = new_term(T_PAIR, $1, $3); }
 	 ;
 
-%%
+%% /*------------------------------------------------------------------------*/
 
 static unsigned char * in;			   /*                        */
 static unsigned char * inp;			   /*                        */

@@ -45,8 +45,8 @@ int main(argc, argv)				   /*                        */
     if (strcmp("-t", argv[i]) == 0)		   /*                        */
     { in = run_tests();				   /*                        */
     } else					   /*                        */
-    { in = run_file(argv[i]);
-    }
+    { in = run_file(argv[i]);			   /*                        */
+    }						   /*                        */
   }						   /*                        */
  						   /*                        */
   if (in)					   /*                        */
@@ -56,7 +56,6 @@ int main(argc, argv)				   /*                        */
       sbputc(c, sb);				   /*                        */
     }						   /*                        */
     Term t = selection(sbflush(sb));		   /*                        */
-
     if (t) dump_term(t);  			   /*                        */
   }						   /*                        */
 }						   /*------------------------*/

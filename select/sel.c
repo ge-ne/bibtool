@@ -100,13 +100,13 @@ long eval2number(t)				   /*                        */
     case T_UMINUS:
       return - eval2number(TermTerm(t));
     case T_PLUS:
-      return eval2number(TermTerm(t)) + eval2number(TermArg2(t));
+      return eval2number(TermTerm(t)) + eval2number(TermTerm2(t));
     case T_MINUS:
-      return eval2number(TermTerm(t)) - eval2number(TermArg2(t));
+      return eval2number(TermTerm(t)) - eval2number(TermTerm2(t));
     case T_TIMES:
-      return eval2number(TermTerm(t)) * eval2number(TermArg2(t));
+      return eval2number(TermTerm(t)) * eval2number(TermTerm2(t));
     case T_DIVIDE:
-      return eval2number(TermTerm(t)) / eval2number(TermArg2(t));
+      return eval2number(TermTerm(t)) / eval2number(TermTerm2(t));
   }						   /*                        */
   return 0L;					   /*                        */
 }						   /*------------------------*/
@@ -130,9 +130,9 @@ int eval_select(rec, db, t)			   /*                        */
   switch(TermOp(t))				   /*                        */
   {						   /*                        */
     case T_AND:
-      return eval_select(TermTerm(t)) && eval_select(TermArg2(t));
+      return eval_select(TermTerm(t)) && eval_select(TermTerm2(t));
     case T_OR:
-      return eval_select(TermTerm(t)) || eval_select(TermArg2(t));
+      return eval_select(TermTerm(t)) || eval_select(TermTerm2(t));
     case T_NOT:
       return ! eval_select(TermTerm(t));
       /*
@@ -147,7 +147,7 @@ int eval_select(rec, db, t)			   /*                        */
     case T_LIKE:
     case T_ILIKE:
       { char * v = eval2string(TermTerm(t));
-	char * pattern = eval2string(TermArg2(t));
+	char * pattern = eval2string(TermTerm2(t));
       }
 #endif
   }						   /*                        */

@@ -54,7 +54,7 @@ Term new_term(op, a1, a2)			   /*                        */
  						   /*                        */
   TermOp(t) = op;				   /*                        */
   TermTerm(t) = a1;				   /*                        */
-  TermArg2(t) = a2;				   /*                        */
+  TermTerm2(t) = a2;				   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -73,7 +73,7 @@ Term new_term_num(n)				   /*                        */
   Term t = (Term)malloc(sizeof(STerm));		   /*                        */
   TermOp(t) = T_NUMBER;				   /*                        */
   TermNumber(t) = n;				   /*                        */
-  TermArg2(t) = TermNULL;			   /*                        */
+  TermTerm2(t) = TermNULL;			   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -94,7 +94,7 @@ Term new_term_string(op, s)			   /*                        */
   Term t = (Term)malloc(sizeof(STerm));		   /*                        */
   TermOp(t) = op;				   /*                        */
   TermString(t) = s;				   /*                        */
-  TermArg2(t) = TermNULL;			   /*                        */
+  TermTerm2(t) = TermNULL;			   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -118,7 +118,7 @@ void free_term(t)				   /*                        */
     default:					   /*                        */
       if (TermTerm(t)) { free_term(TermTerm(t)); } /*                        */
   }						   /*                        */
-  if (TermArg2(t)) { free_term(TermArg2(t)); }	   /*                        */
+  if (TermTerm2(t)) { free_term(TermTerm2(t)); }	   /*                        */
   free(t);					   /*                        */
 }						   /*------------------------*/
 
@@ -162,8 +162,8 @@ static void dump_t(stream, t, in)		   /*                        */
       return;
     case T_PAIR:
       in++;
-      for (; t; t = TermArg2(t))
-      { if (TermTerm(t)) dump_t(stream, TermTerm(t), in); }
+      for (; t; t = TermTerm(t))
+      { if (TermTerm2(t)) dump_t(stream, TermTerm2(t), in); }
       return;
   }
   fputc('(', stream);
@@ -191,9 +191,9 @@ static void dump_t(stream, t, in)		   /*                        */
       fprintf(stderr, "*** UNKNOWN OP CODE: %d\n", TermOp(t));
       return;
   }						   /*                        */
-  dump_t(stream, TermTerm(t), in+1);		   /*                        */
+  dump_t(stream, TermTerm(t), in + 1);		   /*                        */
   fputc(' ', stream);				   /*                        */
-  dump_t(stream, TermArg2(t), in);		   /*                        */
+  dump_t(stream, TermTerm2(t), in);		   /*                        */
   fputc(')', stream);				   /*                        */
 }						   /*------------------------*/
 

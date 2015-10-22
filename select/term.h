@@ -27,7 +27,7 @@ typedef struct S_TERM {
 #define TermTerm(T)   ((T)->arg1.term)
 #define TermString(T) ((T)->arg1.str)
 #define TermNumber(T) ((T)->arg1.num)
-#define TermArg2(T)   ((T)->arg2)
+#define TermTerm2(T)   ((T)->arg2)
 
 
 extern Term new_term();
