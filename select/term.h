@@ -39,8 +39,9 @@ extern void dump_term();
 #define T_EOF 0
 
 #define T_FIELD    1000
-#define T_STRING   1001
-#define T_NUMBER   1002
+#define T_NUMBER   1001
+#define T_STRING   1002
+#define T_BLOCK    1003
 
 #define T_PAIR     1010
 

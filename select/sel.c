@@ -10,7 +10,7 @@
 ** 
 ******************************************************************************/
 
-#include <bibtool/general.h>
+#include <bibtool/bibtool.h>
 #include "term.h"
 
 /*****************************************************************************/
@@ -40,7 +40,10 @@ char* eval2string(t)				   /*                        */
   if (t == TermNULL) return NULL;		   /*                        */
 
   switch(TermOp(t))
-  { case T_STRING:
+  { case T_FIELD:
+						   /* TODO*/
+      break;
+    case T_STRING:
       return TermString(t);
     case T_FCT_LOWERCASE:
       { char *s, *cp;
@@ -54,9 +57,21 @@ char* eval2string(t)				   /*                        */
 	{ *cp = toupper(*cp); }
         return s;
       }
+    case T_FCT_TRIM:
+      { char *s, *cp;
+	s = cp = eval2string(TermTerm(t));
+	if (isspace(*s)) {
+	  char* x = s;
+	  for (x++;isspace(*x);x++);
+	  while (*x) *(cp++) = *(x++);
+	  cp = s;
+	}
+	while (*cp) { cp++; }
+	while (cp >= s && isspace(*cp)) cp--;
+        return s;
+      }
       /*
     case T_FCT_SUBSTRING:
-    case T_FCT_TRIM:
       */
   }
   return NULL;					   /*                        */
@@ -75,9 +90,12 @@ long eval2number(t)				   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
   if (t == TermNULL) return 0L;			   /*                        */
-
-  switch(TermOp(t))
-  { case T_NUMBER:
+ 						   /*                        */
+  switch(TermOp(t))				   /*                        */
+  { case T_FIELD:
+						   /* TODO*/
+      break;
+    case T_NUMBER:
       return TermNumber(t);
     case T_UMINUS:
       return - eval2number(TermTerm(t));
@@ -89,9 +107,9 @@ long eval2number(t)				   /*                        */
       return eval2number(TermTerm(t)) * eval2number(TermArg2(t));
     case T_DIVIDE:
       return eval2number(TermTerm(t)) / eval2number(TermArg2(t));
-  }
-  return 0L;
-}
+  }						   /*                        */
+  return 0L;					   /*                        */
+}						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	eval_select()
@@ -102,31 +120,37 @@ long eval2number(t)				   /*                        */
 **	t	
 ** Returns:	
 **___________________________________________________			     */
-int eval_select(t)				   /*                        */
+int eval_select(rec, db, t)			   /*                        */
   Term t;					   /*                        */
+  DB db;					   /*                        */
+  Record rec;					   /*                        */
 {						   /*                        */
   if (t == TermNULL) return FALSE;		   /*                        */
-
-  switch(TermOp(t))
-  {
+ 						   /*                        */
+  switch(TermOp(t))				   /*                        */
+  {						   /*                        */
     case T_AND:
       return eval_select(TermTerm(t)) && eval_select(TermArg2(t));
     case T_OR:
       return eval_select(TermTerm(t)) || eval_select(TermArg2(t));
     case T_NOT:
       return ! eval_select(TermTerm(t));
+      /*
     case T_EQ:
     case T_NE:
     case T_LT:
     case T_LE:
     case T_GT:
     case T_GE:
+      */
+#ifdef REGEX
     case T_LIKE:
     case T_ILIKE:
       { char * v = eval2string(TermTerm(t));
 	char * pattern = eval2string(TermArg2(t));
       }
-  }
-
+#endif
+  }						   /*                        */
+ 						   /*                        */
   return FALSE;					   /*                        */
 }						   /*------------------------*/

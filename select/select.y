@@ -25,22 +25,22 @@
 
 %}
 
-%token FIELD STRING NUMBER
+%token FIELD STRING BLOCK NUMBER
 %token NOT
 %token AND OR
 %token LIKE ILIKE
-%token UMINUS
 
 %left  '+' '-'
 %left  '*' '/'
+%token UMINUS
 
 %right AND OR
 
-%start selection
+%start command
 
 %%
 
-selection: term
+command: term ';'
 	 { result = $1; }
 
 term     : expr cmp expr
@@ -194,7 +194,21 @@ int yylex()					   /*                        */
 	  yylval = new_term_string(T_FIELD, sbflush(sb));
 	  return FIELD;
 	}
-	
+      case '{':
+	{ StringBuffer *sb = sbopen();
+	  int n = 1;
+	  for (c = GETC; c; c = GETC)
+	  { if (c == '{')
+	    { n++;
+	    } else if (c == '}')
+	    { if (--n < 1) { break; }
+	    }
+	    sbputc(c, sb);
+	  }
+	  
+	  yylval = new_term_string(T_BLOCK, sbflush(sb));
+	  return BLOCK;
+	}
       case '0':
 	yylval = new_term_num(0);
 	c = GETC;
@@ -235,11 +249,14 @@ int yylex()					   /*                        */
 	UNGETC;
 	return NUMBER;
       default:
-	if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '$' || c == '@' || c == '_')
+	if ((c >= 'a' && c <= 'z') ||
+	    (c >= 'A' && c <= 'Z') ||
+	    c == '$' || c == '@' || c == '_' || c == '.')
 	{ StringBuffer *sb = sbopen();
 	  char* s;
 	  sbputc((char)c ,sb);
-	  for (c = GETC; isalpha(c) || c == '_'; c = GETC) { sbputc((char)c ,sb); }
+	  for (c = GETC; isalpha(c) || c == '_'; c = GETC)
+	  { sbputc((char)c ,sb); }
 	  UNGETC;
 	  s = sbflush(sb);
 	  if (strcmp("like", s) == 0)
