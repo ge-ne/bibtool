@@ -1,4 +1,4 @@
-/*** sel.c ********************************************************************
+/*** eval_term.c ***************************************************************
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
@@ -97,8 +97,9 @@ long eval2number(db, rec, t)			   /*                        */
  						   /*                        */
   switch(TermOp(t))				   /*                        */
   { case T_FIELD:
-						   /* TODO*/
-      break;
+      { char *s = get_field(db, rec, TermString(t));
+        return s ? atol(s) : 0L;
+      }
     case T_NUMBER:
       return TermNumber(t);
     case T_UMINUS:

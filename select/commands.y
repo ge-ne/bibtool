@@ -1,4 +1,4 @@
-/*** select.y *****************************************************************
+/*** commands.y *****************************************************************
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
@@ -10,11 +10,8 @@
 ** 
 ******************************************************************************/
 %{
-#include <stdio.h>
-#include <ctype.h>
-
+#include <bibtool/general.h>
 #include <bibtool/sbuffer.h>
-#include "select.h"
 #include "term.h"
 
 #define YYSTYPE Term
@@ -40,86 +37,88 @@
 
 %% /*------------------------------------------------------------------------*/
 
-command: term ';'
-	 { result = $1; }
-
+command  : FIELD term ';'
+		{ result = $1; }
+	 | FIELD expr ';'
+		{ result = $1; }
+	 ;
 term     : expr cmp expr
-	 { $$ = $2;
-	   TermTerm($$) = $1;
-	   TermTerm2($$) = $3;
-	 }
+		{ $$ = $2;
+		  TermTerm($$) = $1;
+		  TermTerm2($$) = $3;
+		}
          | '(' term ')'
-	 { $$ = $2; }
+		{ $$ = $2; }
 	 | NOT term
-	 { $$ = new_term(T_NOT, $2, TermNULL); }
+		{ $$ = new_term(T_NOT, $2, TermNULL); }
          | term AND term
-	 { $$ = new_term(T_AND, $1, $3); }
+		{ $$ = new_term(T_AND, $1, $3); }
          | term OR term
-	 { $$ = new_term(T_OR, $1, $3); }
+		{ $$ = new_term(T_OR, $1, $3); }
          ;
 
 cmp      : LIKE
-	 { $$ = new_term(T_LIKE, TermNULL, TermNULL); }
+		{ $$ = new_term(T_LIKE, TermNULL, TermNULL); }
     	 | ILIKE
-	 { $$ = new_term(T_ILIKE, TermNULL, TermNULL); }
+		{ $$ = new_term(T_ILIKE, TermNULL, TermNULL); }
 	 | '='
-	 { $$ = new_term(T_EQ, TermNULL, TermNULL); }
+		{ $$ = new_term(T_EQ, TermNULL, TermNULL); }
      	 | '!' '='
-	 { $$ = new_term(T_NE, TermNULL, TermNULL); }
+		{ $$ = new_term(T_NE, TermNULL, TermNULL); }
      	 | '>'
-	 { $$ = new_term(T_GT, TermNULL, TermNULL); }
+		{ $$ = new_term(T_GT, TermNULL, TermNULL); }
      	 | '>' '='
-	 { $$ = new_term(T_GE, TermNULL, TermNULL); }
+		{ $$ = new_term(T_GE, TermNULL, TermNULL); }
      	 | '<'
-	 { $$ = new_term(T_LT, TermNULL, TermNULL); }
+		{ $$ = new_term(T_LT, TermNULL, TermNULL); }
      	 | '<' '='
-	 { $$ = new_term(T_LE, TermNULL, TermNULL); }
+		{ $$ = new_term(T_LE, TermNULL, TermNULL); }
      	 ;
 
 op       : '+'
-	 { $$ = new_term(T_PLUS, TermNULL, TermNULL); }
+		{ $$ = new_term(T_PLUS, TermNULL, TermNULL); }
      	 | '-'
-	 { $$ = new_term(T_MINUS, TermNULL, TermNULL); }
+		{ $$ = new_term(T_MINUS, TermNULL, TermNULL); }
      	 | '*'
-	 { $$ = new_term(T_TIMES, TermNULL, TermNULL); }
+		{ $$ = new_term(T_TIMES, TermNULL, TermNULL); }
      	 | '/'
-	 { $$ = new_term(T_DIVIDE, TermNULL, TermNULL); }
+		{ $$ = new_term(T_DIVIDE, TermNULL, TermNULL); }
      	 ;
 expr     : FIELD
 	 | STRING
 	 | NUMBER
 	 | expr op expr
-	 { $$ = $2;
-	   TermTerm($$) = $1;
-	   TermTerm2($$) = $3;
-	 }
+		{ $$ = $2;
+		  TermTerm($$) = $1;
+		  TermTerm2($$) = $3;
+		}
 	 | '-' expr    %prec  UMINUS
-	 { $$ = new_term(T_UMINUS, $2, TermNULL); }
+		{ $$ = new_term(T_UMINUS, $2, TermNULL); }
 	 | '(' expr ')'
-	 { $$ = $2; }
+		{ $$ = $2; }
 	 | FIELD '(' opt_args ')'
-	 { int op = find_function_op(TermString($1));
-	   if (op < 0)
-	   { if ($3) free_term($3);
-	     free_term($1);
-	     error_msg = "unknown function";
-	     YYERROR;
-	   } else {
-	     $$	= $1;
-	     TermOp($$) = op;
-	     TermTerm($$) = $3;
-	   }
-	 }
+		{ int op = find_function_op(TermString($1));
+		  if (op < 0)
+		  { if ($3) free_term($3);
+		    free_term($1);
+		    error_msg = "unknown function";
+		    YYERROR;
+		  } else {
+		    $$	= $1;
+		    TermOp($$) = op;
+		    TermTerm($$) = $3;
+		  }
+		}
 	 ;
 
 opt_args :
-	 { $$ = TermNULL; }
+		{ $$ = TermNULL; }
 	 | args
 	 ;
 args	 : expr
-	 { $$ = new_term(T_PAIR, $1, TermNULL); }
+		{ $$ = new_term(T_PAIR, $1, TermNULL); }
 	 | args ',' expr
-	 { $$ = new_term(T_PAIR, $1, $3); }
+		{ $$ = new_term(T_PAIR, $1, $3); }
 	 ;
 
 %% /*------------------------------------------------------------------------*/
@@ -128,8 +127,8 @@ static unsigned char * in;			   /*                        */
 static unsigned char * inp;			   /*                        */
 
 /*-----------------------------------------------------------------------------
-** Function:	()
-** Type:	
+** Function:	yyerror()
+** Type:	int
 ** Purpose:	
 **		
 ** Arguments:
@@ -157,8 +156,8 @@ int yyerror(s)					   /*                        */
 #define UNGETC inp--
 
 /*-----------------------------------------------------------------------------
-** Function:	()
-** Type:	
+** Function:	yylex()
+** Type:	int
 ** Purpose:	
 **		
 ** Arguments:

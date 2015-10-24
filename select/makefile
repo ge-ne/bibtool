@@ -32,12 +32,12 @@ OFILES  = ../crossref.o	\
 	  ../wordlist.o	\
 	  ../regex.o
 
-all: sel_test
+all: com_test
 
-sel_test: sel_test.o term.o select.o $(OFILES) sel.o
+com_test: com_test.o term.o commands.o $(OFILES) eval_term.o
 	$(CC) -g -O2 -o $@ sel_test.o term.o select.o $(OFILES) sel.o -lkpathsea 
 
-select.o: select.h term.h
+commands.o: term.h
 
 term.o: term.h
 
