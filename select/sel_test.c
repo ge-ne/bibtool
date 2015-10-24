@@ -97,3 +97,14 @@ int run_tests()					   /*                        */
 {						   /*                        */
   return 0;
 }						   /*------------------------*/
+
+void save_input_file(file)
+  char *file;
+{}
+void save_macro_file(file)
+  char *file;
+{}
+void save_output_file(file)
+  char * file;
+{}
+

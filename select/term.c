@@ -152,6 +152,9 @@ static void dump_t(stream, t, in)		   /*                        */
     case T_STRING:
       fprintf(stream, "\"%s\"",TermString(t));
       return;
+    case T_BLOCK:
+      fprintf(stream, "{%s}",TermString(t));
+      return;
     case T_NUMBER:
       fprintf(stream, "%ld",TermNumber(t));
       return;
