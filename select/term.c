@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "term.h"
+#include "commands.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -71,7 +72,7 @@ Term new_term_num(n)				   /*                        */
   long n;					   /*                        */
 {						   /*                        */
   Term t = (Term)malloc(sizeof(STerm));		   /*                        */
-  TermOp(t) = T_NUMBER;				   /*                        */
+  TermOp(t) = NUMBER;				   /*                        */
   TermNumber(t) = n;				   /*                        */
   TermTerm2(t) = TermNULL;			   /*                        */
   return t;					   /*                        */
@@ -111,9 +112,9 @@ void free_term(t)				   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
   switch (TermOp(t))				   /*                        */
-  { case T_STRING:				   /*                        */
-    case T_FIELD:				   /*                        */
-    case T_NUMBER:				   /*                        */
+  { case STRING:				   /*                        */
+    case FIELD:				   /*                        */
+    case NUMBER:				   /*                        */
       break;					   /*                        */
     default:					   /*                        */
       if (TermTerm(t)) { free_term(TermTerm(t)); } /*                        */
@@ -146,24 +147,24 @@ static void dump_t(stream, t, in)		   /*                        */
  						   /*                        */
   switch (TermOp(t))
   {
-    case T_FIELD:
+    case FIELD:
       fputs(TermString(t), stream);
       return;
-    case T_STRING:
+    case STRING:
       fprintf(stream, "\"%s\"",TermString(t));
       return;
-    case T_BLOCK:
+    case BLOCK:
       fprintf(stream, "{%s}",TermString(t));
       return;
-    case T_NUMBER:
+    case NUMBER:
       fprintf(stream, "%ld",TermNumber(t));
       return;
-    case T_NOT:
+    case NOT:
       fputc('(', stream);
       dump_t(TermTerm(t), in+1);
       fputc(' ', stream);
       return;
-    case T_PAIR:
+    case PAIR:
       in++;
       for (; t; t = TermTerm(t))
       { if (TermTerm2(t)) dump_t(stream, TermTerm2(t), in); }
@@ -172,24 +173,24 @@ static void dump_t(stream, t, in)		   /*                        */
   fputc('(', stream);
   switch(TermOp(t))
   {
-    case T_EQ:     fputs("= ", stream); break;
-    case T_NE:     fputs("!= ", stream); break;
-    case T_LT:     fputs("< ", stream); break;
-    case T_LE:     fputs("<= ", stream); break;
-    case T_GT:     fputs("> ", stream); break;
-    case T_GE:     fputs(" >=", stream); break;
-    case T_LIKE:   fputs("like ", stream); break;
-    case T_ILIKE:  fputs("ilike ", stream); break;
-    case T_PLUS:   fputs("+ ", stream); break;
-    case T_MINUS:  fputs("- ", stream); break;
-    case T_TIMES:  fputs("* ", stream); break;
-    case T_DIVIDE: fputs("/ ", stream); break;
-    case T_AND:    fputs("and ", stream); break;
-    case T_OR:     fputs("or ", stream); break;
-    case T_FCT_LOWERCASE: fputs("lowercase ", stream); break;
-    case T_FCT_UPPERCASE: fputs("uppercase ", stream); break;
-    case T_FCT_SUBSTRING: fputs("substring ", stream); break;
-    case T_FCT_TRIM:      fputs("trim ", stream); break;
+    case EQ:     fputs("= ", stream); break;
+    case NE:     fputs("!= ", stream); break;
+    case LT:     fputs("< ", stream); break;
+    case LE:     fputs("<= ", stream); break;
+    case GT:     fputs("> ", stream); break;
+    case GE:     fputs(" >=", stream); break;
+    case LIKE:   fputs("like ", stream); break;
+    case ILIKE:  fputs("ilike ", stream); break;
+    case PLUS:   fputs("+ ", stream); break;
+    case MINUS:  fputs("- ", stream); break;
+    case TIMES:  fputs("* ", stream); break;
+    case DIVIDE: fputs("/ ", stream); break;
+    case AND:    fputs("and ", stream); break;
+    case OR:     fputs("or ", stream); break;
+    case FCT_LOWERCASE: fputs("lowercase ", stream); break;
+    case FCT_UPPERCASE: fputs("uppercase ", stream); break;
+    case FCT_SUBSTRING: fputs("substring ", stream); break;
+    case FCT_TRIM:      fputs("trim ", stream); break;
     default:
       fprintf(stderr, "*** UNKNOWN OP CODE: %d\n", TermOp(t));
       return;

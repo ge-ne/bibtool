@@ -1,2 +1,1 @@
-"1234" like substring(abc,123)
-;
+select "1234" like substring(abc,123)

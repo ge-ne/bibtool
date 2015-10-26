@@ -35,11 +35,16 @@ OFILES  = ../crossref.o	\
 all: com_test
 
 com_test: com_test.o term.o commands.o $(OFILES) eval_term.o
-	$(CC) -g -O2 -o $@ sel_test.o term.o select.o $(OFILES) sel.o -lkpathsea 
+	$(CC) -g -O2 -o $@ com_test.o term.o commands.o $(OFILES) eval_term.o -lkpathsea 
 
-commands.o: term.h
+commands.o: term.h commands.h
 
-term.o: term.h
+commands.c commands.h: commands.y
+	$(YACC) -d $<
+	mv y.tab.c commands.c
+	mv y.tab.h commands.h
+
+term.o: term.h commands.h
 
 clean:
 	rm -f *.o

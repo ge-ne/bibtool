@@ -11,6 +11,7 @@
 ******************************************************************************/
 
 #include <bibtool/bibtool.h>
+#include "commands.h"
 #include "term.h"
 
 /*****************************************************************************/
@@ -42,24 +43,24 @@ char* eval2string(db, rec, t)			   /*                        */
   if (t == TermNULL) return NULL;		   /*                        */
 
   switch(TermOp(t))
-  { case T_FIELD:
+  { case FIELD:
       s = get_field(db, rec, TermString(t));
       return s;
-    case T_STRING:
+    case STRING:
       return TermString(t);
-    case T_FCT_LOWERCASE:
+    case FCT_LOWERCASE:
       { char *cp;
 	for (s=cp=eval2string(db, rec, TermTerm(t));*cp;cp++)
 	{ *cp = tolower(*cp); }
         return s;
       }
-    case T_FCT_UPPERCASE:
+    case FCT_UPPERCASE:
       { char *cp;
 	for (s=cp=eval2string(db, rec, TermTerm(t));*cp;cp++)
 	{ *cp = toupper(*cp); }
         return s;
       }
-    case T_FCT_TRIM:
+    case FCT_TRIM:
       { char *cp;
 	s = cp = eval2string(db, rec, TermTerm(t));
 	if (isspace(*s)) {
@@ -73,7 +74,7 @@ char* eval2string(db, rec, t)			   /*                        */
         return s;
       }
       /*
-    case T_FCT_SUBSTRING:
+    case FCT_SUBSTRING:
       */
   }
   return NULL;					   /*                        */
@@ -96,24 +97,24 @@ long eval2number(db, rec, t)			   /*                        */
   if (t == TermNULL) return 0L;			   /*                        */
  						   /*                        */
   switch(TermOp(t))				   /*                        */
-  { case T_FIELD:
+  { case FIELD:
       { char *s = get_field(db, rec, TermString(t));
         return s ? atol(s) : 0L;
       }
-    case T_NUMBER:
+    case NUMBER:
       return TermNumber(t);
-    case T_UMINUS:
+    case UMINUS:
       return - eval2number(db, rec, TermTerm(t));
-    case T_PLUS:
+    case PLUS:
       return eval2number(db, rec, TermTerm(t)) +
 	eval2number(db, rec, TermTerm2(t));
-    case T_MINUS:
+    case MINUS:
       return eval2number(db, rec, TermTerm(t)) -
 	eval2number(db, rec, TermTerm2(t));
-    case T_TIMES:
+    case TIMES:
       return eval2number(db, rec, TermTerm(t)) *
 	eval2number(db, rec, TermTerm2(t));
-    case T_DIVIDE:
+    case DIVIDE:
       return eval2number(db, rec, TermTerm(t)) /
 	eval2number(db, rec, TermTerm2(t));
   }						   /*                        */
@@ -132,15 +133,15 @@ int eval_eq(db, rec, t1, t2)
   if (t2 == NULL) { return FALSE; }
 
   switch (TermOp(t1))
-  { case T_NUMBER:
+  { case NUMBER:
       switch (TermOp(t2))
-      { case T_NUMBER:
+      { case NUMBER:
 	  return TermNumber(t1) == TermNumber(t2);
-	case T_FIELD:
+	case FIELD:
 	  s2 = get_field(db, rec, TermString(t2));
 	  break;
-	case T_STRING:
-	case T_BLOCK:
+	case STRING:
+	case BLOCK:
 	  s2 = TermString(t2);
 	  break;
 	default:
@@ -149,11 +150,11 @@ int eval_eq(db, rec, t1, t2)
       sprintf(s,"%d",TermNumber(t1));
       return strcmp(s2, s);
       break;
-    case T_FIELD:
+    case FIELD:
       s1 = get_field(db, rec, TermString(t1));
       break;
-    case T_STRING:
-    case T_BLOCK:
+    case STRING:
+    case BLOCK:
       s1 = TermString(t1);
       break;
     default:
@@ -161,15 +162,15 @@ int eval_eq(db, rec, t1, t2)
   }
 
   switch (TermOp(t2))
-  { case T_FIELD:
+  { case FIELD:
       s2 = get_field(db, rec, TermString(t2));
       break;
-    case T_NUMBER:
+    case NUMBER:
       sprintf(s,"%d",TermNumber(t2));
       s2 = s;
       break;
-    case T_STRING:
-    case T_BLOCK:
+    case STRING:
+    case BLOCK:
       s2 = TermString(t2);
       break;
     default:
@@ -196,25 +197,25 @@ int eval_select(db, rec, t)			   /*                        */
  						   /*                        */
   switch(TermOp(t))				   /*                        */
   {						   /*                        */
-    case T_AND:
+    case AND:
       return eval_select(TermTerm(t)) && eval_select(TermTerm2(t));
-    case T_OR:
+    case OR:
       return eval_select(TermTerm(t)) || eval_select(TermTerm2(t));
-    case T_NOT:
+    case NOT:
       return ! eval_select(TermTerm(t));
-    case T_EQ:
+    case EQ:
       return eval_eq(db, rec, TermTerm(t), TermTerm2(t));
-    case T_NE:
+    case NE:
       return ! eval_eq(db, rec, TermTerm(t), TermTerm2(t));
       /*
-    case T_LT:
-    case T_LE:
-    case T_GT:
-    case T_GE:
+    case LT:
+    case LE:
+    case GT:
+    case GE:
       */
 #ifdef REGEX
-    case T_LIKE:
-    case T_ILIKE:
+    case LIKE:
+    case ILIKE:
       { char * v = eval2string(TermTerm(t));
 	char * pattern = eval2string(TermTerm2(t));
       }
