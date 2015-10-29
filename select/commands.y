@@ -20,8 +20,11 @@
   static Term t_false = TermNULL;
 
   static FILE* in_file;
-  static int linenum	   = 1;
+  static Term result = TermNULL;
+  static int linenum = 1;
   static char * error_msg = NULL;
+
+  static int save_term();
 
 %}
 
@@ -146,17 +149,79 @@
 
 %% /*------------------------------------------------------------------------*/
 
-command  : BIBTEX_ENV_NAME opt_eq string_expr
+command  : string_command opt_eq string_expr
+		{ save_term($1, $3); }
+	 | boolean_command opt_eq boolean
+		{ save_term($1, $3); }
+	 | num_command opt_eq num_expr
+		{ save_term($1, $3); }
 	 | INPUT opt_eq string_expr
 		{
 		}
-	 | QUIET opt_eq boolean
-		 { rsc_quiet = TermNumber($3); }
 	 | RESOURCE opt_eq string_expr
 		{ load_rsc(TermString($3)); }
 	 | SELECT opt_eq string_expr
 	 | SELECT term
-	 | SORT opt_eq boolean
+	 | error
+	 	{ yyclearin; }
+	 ;
+
+string_command: BIBTEX_ENV_NAME
+	 | BIBTEX_SEARCH_PATH
+	 | DIR_FILE_SEPARATOR
+	 | ENV_SEPARATOR
+	 | PRINT_ENTRY_TYPES
+	 | PRINT_DELETED_PREFIX
+	 | SELECT_BY_STRING_IGNORED
+	 | SELECT_FIELDS
+	 ;
+boolean_command: APPLY_ALIAS
+	 | APPLY_MODIFY
+	 | APPLY_INCLUDE
+	 | CHECK_DOUBLE
+	 | CHECK_DOUBLE_DELETE
+	 | CHECK_CASE_SENSITIVE
+	 | COUNT_ALL
+	 | COUNT_USED
+	 | DUMP_SYMBOLS
+	 | EXPAND_MACROS
+	 | EXPAND_CROSSREF
+	 | KEY_GENERATION
+	 | KEY_MAKE_ALIAS
+	 | KEY_EXPAND_MACROS
+	 | PASS_COMMENTS
+	 | PRESERVE_KEY_CASE
+	 | PRESERVE_KEYS
+	 | PRINT_ALL_STRINGS
+	 | PRINT_EQUAL_RIGHT
+	 | PRINT_BRACES
+	 | PRINT_COMMA_AT_END
+	 | PRINT_DELETED_ENTRIES
+	 | PRINT_PARENTHESES
+	 | PRINT_TERMINAL_COMMA
+	 | PRINT_USE_TAB
+	 | PRINT_WIDE_EQUAL
+	 | QUIET
+	 | REWRITE_CASE_SENSITIVE
+	 | SELECT_CASE_SENSITIVE
+	 | SELECT_CROSSREFS
+	 | SORT
+	 | SORT_CASED
+	 | SORT_MACROS
+	 | SORT_REVERSE
+	 | SUPPRESS_INITIAL_NEWLINE
+	 | VERBOSE
+	 ;
+num_command: CROSSREF_LIMIT
+	 | PRINT_ALIGN_STRING
+	 | PRINT_ALIGN_COMMENT
+	 | PRINT_ALIGN_PREAMBLE
+	 | PRINT_ALIGN_KEY
+	 | PRINT_ALIGN
+	 | PRINT_INDENT
+	 | PRINT_LINE_LENGTH
+	 | PRINT_NEWLINE
+	 | REWRITE_LIMIT
 	 ;
 
 opt_eq	 :
@@ -169,6 +234,8 @@ boolean  : B_ON
 	 ;
 string_expr: STRING
 	 | BLOCK
+	 ;
+num_expr: NUMBER
 	 ;
 
 term     : expr cmp expr
@@ -252,6 +319,15 @@ args	 : expr
 
 %% /*------------------------------------------------------------------------*/
 
+static int save_term(t, a)
+  Term t;
+  Term a;
+{
+  TermTerm2(t) = a; 
+  result = new_term(PAIR, t, result);
+  return 0;					   /*                        */
+}						   /*------------------------*/
+
 /*-----------------------------------------------------------------------------
 ** Function:	yyerror()
 ** Type:	int
@@ -270,13 +346,12 @@ int yyerror(s)					   /*                        */
     error_msg = NULL;				   /*                        */
   }						   /*                        */
  						   /*                        */
-  if (fgetc(in_file)  >= 0)			   /*                        */
+  if (fgetc(in_file)  > 0)			   /*                        */
   { fprintf(stderr,"*** %s at line %d\n%.32s\n",   /*                        */
 	    s, linenum, "");			   /*                        */
   } else					   /*                        */
   { fprintf(stderr, "*** %s at EOF\n", s);	   /*                        */
   }						   /*                        */
-  
 }						   /*------------------------*/
 
 #define GETC fgetc(in_file)
@@ -296,7 +371,7 @@ int yylex()					   /*                        */
 {					   	   /*                        */
   int c;					   /*                        */
   						   /*                        */
-  for (c = GETC; c >= 0; c = GETC)	   	   /*                        */
+  for (c = GETC; c > 0; c = GETC)	   	   /*                        */
   {						   /*                        */
     switch (c) {				   /*                        */
       case '\n':				   /*                        */
@@ -384,43 +459,148 @@ int yylex()					   /*                        */
 	  { sbputc((char)c ,sb); }		   /*                        */
 	  UNGETC(c);				   /*                        */
 	  s = sbflush(sb);			   /*                        */
-#define ON(S,T)  if (strcmp(S, s) == 0)	{ sbclose(sb); return T; }
+#define ON(S,T)  if (strcmp(S, s) == 0)	\
+	  { sbclose(sb); return T; }
+#define ON_T(S,T)  if (strcmp(S, s) == 0)	\
+	  { sbclose(sb);\
+	    yylval = new_term(T, new_term_string(S), TermNULL); return T; }
 	  switch (*s)				   /*                        */
 	  { case 'a':				   /*                        */
 	      ON("and", AND)			   /*                        */
+	      ON_T("add.field", ADD_FIELD)
+	      ON_T("apply.alias", APPLY_ALIAS)
+	      ON_T("apply.modify", APPLY_MODIFY)
+	      ON_T("apply.include", APPLY_INCLUDE)
 	      break;				   /*                        */
 	    case 'b':				   /*                        */
-	      ON("bibtex.env.name", BIBTEX_ENV_NAME)/*                       */
+	      ON_T("bibtex.env.name", BIBTEX_ENV_NAME)/*                       */
+	      ON_T("bibtex.search.path", BIBTEX_SEARCH_PATH)
+	      break;				   /*                        */
+	    case 'c':				   /*                        */
+	      ON_T("check.double", CHECK_DOUBLE)
+	      ON_T("check.double.delete", CHECK_DOUBLE_DELETE)
+	      ON_T("check.rule", CHECK_RULE)
+	      ON_T("check.case.sensitive", CHECK_CASE_SENSITIVE)
+	      ON_T("clear.ignored.words", CLEAR_IGNORED_WORDS)
+	      ON_T("count.all", COUNT_ALL)
+	      ON_T("count.used", COUNT_USED)
+	      ON_T("crossref.limit", CROSSREF_LIMIT)
+	      break;				   /*                        */
+	    case 'd':				   /*                        */
+	      ON_T("dir.file.separator", DIR_FILE_SEPARATOR)
+	      ON_T("default.key", DEFAULT_KEY)
+	      ON_T("delete.field", DELETE_FIELD)
+	      ON_T("dump.symbols", DUMP_SYMBOLS)
+	      break;				   /*                        */
+	    case 'e':				   /*                        */
+	      ON_T("env.separator", ENV_SEPARATOR)
+	      ON_T("extract.file", EXTRACT_FILE)
+	      ON_T("extract.regex", EXTRACT_REGEX)
+	      ON_T("expand.macros", EXPAND_MACROS)
+	      ON_T("expand.crossref", EXPAND_CROSSREF)
+	      break;				   /*                        */
+	    case 'f':				   /*                        */
+	      ON_T("fmt.inter.name", FMT_INTER_NAME)
+	      ON_T("fmt.name.pre", FMT_NAME_PRE)
+	      ON_T("fmt.name.name", FMT_NAME_NAME)
+	      ON_T("fmt.name.title", FMT_NAME_TITLE)
+	      ON_T("fmt.title.title", FMT_TITLE_TITLE)
+	      ON_T("fmt.et.al", FMT_ET_AL)
+	      ON_T("fmt.word.separator", FMT_WORD_SEPARATOR)
+	      ON_T("field.type", FIELD_TYPE)
 	      break;				   /*                        */
 	    case 'i':				   /*                        */
 	      ON("ilike", ILIKE)		   /*                        */
-	      ON("input", INPUT)		   /*                        */
+	      ON_T("input", INPUT)		   /*                        */
+	      ON_T("ignored.word", IGNORED_WORD)
+	      break;				   /*                        */
+	    case 'k':				   /*                        */
+	      ON_T("key.generation", KEY_GENERATION)
+	      ON_T("key.base", KEY_BASE)
+	      ON_T("key.format", KEY_FORMAT)
+	      ON_T("key.make.alias", KEY_MAKE_ALIAS)
+	      ON_T("key.number.separator", KEY_NUMBER_SEPARATOR)
+	      ON_T("key.expand.macros", KEY_EXPAND_MACROS)
 	      break;				   /*                        */
 	    case 'l':				   /*                        */
 	      ON("like", LIKE)			   /*                        */
 	      break;				   /*                        */
+	    case 'm':				   /*                        */
+	      ON_T("macro.file", MACRO_FILE)
+	      break;				   /*                        */
 	    case 'n':				   /*                        */
 	      ON("not", NOT)			   /*                        */
+	      ON_T("new.entry.type", NEW_ENTRY_TYPE)
+	      ON_T("new.field.type", NEW_FIELD_TYPE)
+	      ON_T("new.format.type", NEW_FORMAT_TYPE)
 	      break;				   /*                        */
 	    case 'o':				   /*                        */
 	      ON("off", B_OFF)			   /*                        */
 	      ON("on", B_ON)			   /*                        */
 	      ON("or", OR)			   /*                        */
+	      ON_T("output.file", OUTPUT_FILE)
 	      break;				   /*                        */
 	    case 'p':				   /*                        */
+	      ON_T("print.entry.types", PRINT_ENTRY_TYPES)
+	      ON_T("print.deleted.prefix", PRINT_DELETED_PREFIX)
+	      ON_T("pass.comments", PASS_COMMENTS)
+	      ON_T("preserve.key.case", PRESERVE_KEY_CASE)
+	      ON_T("preserve.keys", PRESERVE_KEYS)
+	      ON_T("print", PRINT)
+	      ON_T("print.align.string", PRINT_ALIGN_STRING)
+	      ON_T("print.align.comment", PRINT_ALIGN_COMMENT)
+	      ON_T("print.align.preamble", PRINT_ALIGN_PREAMBLE)
+	      ON_T("print.align.key", PRINT_ALIGN_KEY)
+	      ON_T("print.align", PRINT_ALIGN)
+	      ON_T("print.all.strings", PRINT_ALL_STRINGS)
+	      ON_T("print.equal.right", PRINT_EQUAL_RIGHT)
+	      ON_T("print.braces", PRINT_BRACES)
+	      ON_T("print.comma.at.end", PRINT_COMMA_AT_END)
+	      ON_T("print.deleted.entries", PRINT_DELETED_ENTRIES)
+	      ON_T("print.indent", PRINT_INDENT)
+	      ON_T("print.line.length", PRINT_LINE_LENGTH)
+	      ON_T("print.newline", PRINT_NEWLINE)
+	      ON_T("print.parentheses", PRINT_PARENTHESES)
+	      ON_T("print.terminal.comma", PRINT_TERMINAL_COMMA)
+	      ON_T("print.use.tab", PRINT_USE_TAB)
+	      ON_T("print.wide.equal", PRINT_WIDE_EQUAL)
 	      break;				   /*                        */
 	    case 'q':				   /*                        */
-	      ON("quiet", QUIET)		   /*                        */
+	      ON_T("quiet", QUIET)		   /*                        */
 	      break;				   /*                        */
 	    case 'r':				   /*                        */
-	      ON("resource", RESOURCE)		   /*                        */
+	      ON_T("regexp.syntax", REGEXP_SYNTAX)
+	      ON_T("rename.field", RENAME_FIELD)
+	      ON_T("resource", RESOURCE)
+	      ON_T("resource.search.path", RESOURCE_SEARCH_PATH)
+	      ON_T("rewrite.rule", REWRITE_RULE)
+	      ON_T("rewrite.case.sensitive", REWRITE_CASE_SENSITIVE)
+	      ON_T("rewrite.limit", REWRITE_LIMIT)
 	      break;				   /*                        */
 	    case 's':				   /*                        */
-	      ON("select", SELECT)		   /*                        */
-	      ON("sort", SORT)			   /*                        */
+	      ON_T("select.by.string.ignored", SELECT_BY_STRING_IGNORED)
+	      ON_T("select.fields", SELECT_FIELDS)
+	      ON_T("select", SELECT)
+	      ON_T("select.by.string", SELECT_BY_STRING)
+	      ON_T("select.by.non.string", SELECT_BY_NON_STRING)
+	      ON_T("select.case.sensitive", SELECT_CASE_SENSITIVE)
+	      ON_T("select.non", SELECT_NON)
+	      ON_T("select.crossrefs", SELECT_CROSSREFS)
+	      ON_T("sort", SORT)
+	      ON_T("sort.cased", SORT_CASED)
+	      ON_T("sort.macros", SORT_MACROS)
+	      ON_T("sort.reverse", SORT_REVERSE)
+	      ON_T("sort.order", SORT_ORDER)
+	      ON_T("sort.format", SORT_FORMAT)
+	      ON_T("suppress.initial.newline", SUPPRESS_INITIAL_NEWLINE)
+	      ON_T("symbol.type", SYMBOL_TYPE)
+	      break;				   /*                        */
+	    case 't':				   /*                        */
+	      ON_T("tex.define", TEX_DEFINE)
 	      break;				   /*                        */
 	    case 'v':				   /*                        */
-	      ON("verbose", VERBOSE)		   /*                        */
+	      ON_T("verbose", VERBOSE)		   /*                        */
+	      ON_T("version", VERSION)
 	      break;				   /*                        */
 	  }					   /*                        */
 	  yylval = new_term_string(FIELD, s);	   /*                        */
@@ -444,22 +624,24 @@ int yylex()					   /*                        */
 int find_function_op(s)				   /*                        */
   char * s;					   /*                        */
 {						   /*                        */
+#undef ON
+#define ON(S,T)  if (strcmp(S, s) == 0)	{ return T; }
   switch (*s)					   /*                        */
-  { case 'l':
-      if (strcmp("lowercase",s) == 0) return FCT_LOWERCASE;
-      break;
-    case 's':
-      if (strcmp("substring",s) == 0) return FCT_SUBSTRING;
-      break;
-    case 't':
-      if (strcmp("trim",s) == 0) return FCT_TRIM;
-      break;
-    case 'u':
-      if (strcmp("uppercase",s) == 0) return FCT_UPPERCASE;
-      break;
-  }
-  return -1;
-}
+  { case 'l':					   /*                        */
+      ON("lowercase", FCT_LOWERCASE);		   /*                        */
+      break;					   /*                        */
+    case 's':					   /*                        */
+      ON("substring", FCT_SUBSTRING);		   /*                        */
+      break;					   /*                        */
+    case 't':					   /*                        */
+      ON("trim", FCT_TRIM);			   /*                        */
+      break;					   /*                        */
+    case 'u':					   /*                        */
+      ON("uppercase", FCT_UPPERCASE);		   /*                        */
+      break;					   /*                        */
+  }						   /*                        */
+  return -1;					   /*                        */
+}						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	eval_command()
