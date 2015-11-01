@@ -22,7 +22,7 @@
 /* External Programs                                                         */
 /*===========================================================================*/
 
- extern Term selection();
+ extern Term eval_command();
 
 /*---------------------------------------------------------------------------*/
 
@@ -45,7 +45,8 @@ int main(argc, argv)				   /*                        */
     if (strcmp("-t", argv[i]) == 0)		   /*                        */
     { in = run_tests();				   /*                        */
     } else					   /*                        */
-    { in = eval_command(argv[i]);		   /*                        */
+    { Term t = eval_command(argv[i]);		   /*                        */
+      dump_term(t);
     }						   /*                        */
   }						   /*                        */
 }						   /*------------------------*/

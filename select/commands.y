@@ -26,6 +26,9 @@
 
   static int save_term();
 
+#define NewTerm(CODE) new_term(CODE, TermNULL, TermNULL)
+#define NewTerm1(CODE,ARG) new_term(CODE, ARG, TermNULL)
+
 %}
 
 %token B_ON B_OFF
@@ -161,7 +164,9 @@ command  : string_command opt_eq string_expr
 	 | RESOURCE opt_eq string_expr
 		{ load_rsc(TermString($3)); }
 	 | SELECT opt_eq string_expr
+		{ save_term($1, $3); }
 	 | SELECT term
+		{ save_term($1, $2); }
 	 | error
 	 	{ yyclearin; }
 	 ;
@@ -240,13 +245,12 @@ num_expr: NUMBER
 
 term     : expr cmp expr
 		{ $$ = $2;
-		  TermTerm($$) = $1;
-		  TermTerm2($$) = $3;
+		  TermTerm($$) = new_term(PAIR, $1, new_term(PAIR, $3, TermNULL));
 		}
          | '(' term ')'
 		{ $$ = $2; }
 	 | NOT term
-		{ $$ = new_term(NOT, $2, TermNULL); }
+		{ $$ = NewTerm1(NOT, $2); }
          | term AND term
 		{ $$ = new_term(AND, $1, $3); }
          | term OR term
@@ -254,31 +258,31 @@ term     : expr cmp expr
          ;
 
 cmp      : LIKE
-		{ $$ = new_term(LIKE, TermNULL, TermNULL); }
+		{ $$ = NewTerm(LIKE); }
     	 | ILIKE
-		{ $$ = new_term(ILIKE, TermNULL, TermNULL); }
+		{ $$ = NewTerm(ILIKE); }
 	 | '='
-		{ $$ = new_term(EQ, TermNULL, TermNULL); }
+		{ $$ = NewTerm(EQ); }
      	 | '!' '='
-		{ $$ = new_term(NE, TermNULL, TermNULL); }
+		{ $$ = NewTerm(NE); }
      	 | '>'
-		{ $$ = new_term(GT, TermNULL, TermNULL); }
+		{ $$ = NewTerm(GT); }
      	 | '>' '='
-		{ $$ = new_term(GE, TermNULL, TermNULL); }
+		{ $$ = NewTerm(GE); }
      	 | '<'
-		{ $$ = new_term(LT, TermNULL, TermNULL); }
+		{ $$ = NewTerm(LT); }
      	 | '<' '='
-		{ $$ = new_term(LE, TermNULL, TermNULL); }
+		{ $$ = NewTerm(LE); }
      	 ;
 
 op       : '+'
-		{ $$ = new_term(PLUS, TermNULL, TermNULL); }
+		{ $$ = NewTerm(PLUS); }
      	 | '-'
-		{ $$ = new_term(MINUS, TermNULL, TermNULL); }
+		{ $$ = NewTerm(MINUS); }
      	 | '*'
-		{ $$ = new_term(TIMES, TermNULL, TermNULL); }
+		{ $$ = NewTerm(TIMES); }
      	 | '/'
-		{ $$ = new_term(DIVIDE, TermNULL, TermNULL); }
+		{ $$ = NewTerm(DIVIDE); }
      	 ;
 expr     : FIELD
 	 | STRING
@@ -289,7 +293,7 @@ expr     : FIELD
 		  TermTerm2($$) = $3;
 		}
 	 | '-' expr    %prec  UMINUS
-		{ $$ = new_term(UMINUS, $2, TermNULL); }
+		{ $$ = NewTerm1(UMINUS, $2); }
 	 | '(' expr ')'
 		{ $$ = $2; }
 	 | FIELD '(' opt_args ')'
@@ -312,19 +316,30 @@ opt_args :
 	 | args
 	 ;
 args	 : expr
-		{ $$ = new_term(PAIR, $1, TermNULL); }
-	 | args ',' expr
+		{ $$ = NewTerm1(PAIR, $1); }
+	 | expr ',' args
 		{ $$ = new_term(PAIR, $1, $3); }
 	 ;
 
 %% /*------------------------------------------------------------------------*/
 
-static int save_term(t, a)
-  Term t;
-  Term a;
-{
-  TermTerm2(t) = a; 
-  result = new_term(PAIR, t, result);
+
+/*-----------------------------------------------------------------------------
+** Function:	save_term()
+** Type:	static int
+** Purpose:	
+**		
+** Arguments:
+**	t	
+**	 a	
+** Returns:	
+**___________________________________________________			     */
+static int save_term(t, a)			   /*                        */
+  Term t;					   /*                        */
+  Term a;					   /*                        */
+{						   /*                        */
+  TermTerm(t) = a; 				   /*                        */
+  result = new_term(PAIR, t, result);		   /*                        */
   return 0;					   /*                        */
 }						   /*------------------------*/
 
@@ -385,14 +400,14 @@ int yylex()					   /*                        */
 	{ StringBuffer *sb = sbopen();		   /*                        */
 	  for (c = GETC; c && c != '"'; c = GETC) { sbputc(c, sb); }/*       */
 	  					   /*                        */
-	  yylval = new_term_string(STRING, sbflush(sb));/*                 */
+	  yylval = new_term_string(STRING, sbflush(sb));/*                   */
 	  return STRING;			   /*                        */
 	}					   /*                        */
       case '\'':				   /*                        */
 	{ StringBuffer *sb = sbopen();		   /*                        */
 	  for (c = GETC; c && c != '\''; c = GETC) { sbputc(c, sb); }/*      */
 	  					   /*                        */
-	  yylval = new_term_string(FIELD, sbflush(sb));/*                  */
+	  yylval = new_term_string(FIELD, sbflush(sb));/*                    */
 	  return FIELD;				   /*                        */
 	}					   /*                        */
       case '{':					   /*                        */
@@ -407,7 +422,7 @@ int yylex()					   /*                        */
 	    sbputc(c, sb);			   /*                        */
 	  }					   /*                        */
 	  					   /*                        */
-	  yylval = new_term_string(BLOCK, sbflush(sb));/*                  */
+	  yylval = new_term_string(BLOCK, sbflush(sb));/*                    */
 	  return BLOCK;				   /*                        */
 	}					   /*                        */
       case '0':					   /*                        */
@@ -459,11 +474,11 @@ int yylex()					   /*                        */
 	  { sbputc((char)c ,sb); }		   /*                        */
 	  UNGETC(c);				   /*                        */
 	  s = sbflush(sb);			   /*                        */
-#define ON(S,T)  if (strcmp(S, s) == 0)	\
+#define ON(S,T)  if (strcmp(S, s) == 0)		\
 	  { sbclose(sb); return T; }
 #define ON_T(S,T)  if (strcmp(S, s) == 0)	\
-	  { sbclose(sb);\
-	    yylval = new_term(T, new_term_string(S), TermNULL); return T; }
+	  { sbclose(sb);			\
+	    yylval = NewTerm1(T, new_term_string(S)); return T; }
 	  switch (*s)				   /*                        */
 	  { case 'a':				   /*                        */
 	      ON("and", AND)			   /*                        */
@@ -652,17 +667,17 @@ int find_function_op(s)				   /*                        */
 **	fname	
 ** Returns:	
 **___________________________________________________			     */
-int eval_command(fname)			   	   /*                        */
+Term eval_command(fname)			   /*                        */
   char * fname;					   /*                        */
 {						   /*                        */
   if (t_true == TermNULL) t_true = new_term_num(1);/*                        */
   if (t_false == TermNULL) t_false = new_term_num(0);/*                      */
  						   /*                        */
   in_file = fopen(fname, "r");			   /*                        */
-  if (in_file == NULL) return 1;		   /*                        */
+  if (in_file == NULL) return TermNULL;		   /*                        */
  						   /*                        */
   while (yyparse()) ;		   		   /*                        */
  						   /*                        */
   fclose(in_file);				   /*                        */
-  return 0;					   /*                        */
+  return result;				   /*                        */
 }						   /*------------------------*/
