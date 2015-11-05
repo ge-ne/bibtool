@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 #include <bibtool/sbuffer.h>
-#include "term.h"
+#include "eval_term.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
