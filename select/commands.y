@@ -154,8 +154,8 @@
 
 command  : string_command opt_eq string_expr
 		{ save_term($1, $3); }
-	 | boolean_command opt_eq boolean
-		{ save_term($1, $3); }
+	 | boolean_command  opt_eq  boolean
+		 { save_term($1, $3); }
 	 | num_command opt_eq num_expr
 		{ save_term($1, $3); }
 	 | INPUT opt_eq string_expr
@@ -386,7 +386,7 @@ int yylex()					   /*                        */
 {					   	   /*                        */
   int c;					   /*                        */
   						   /*                        */
-  for (c = GETC; c > 0; c = GETC)	   	   /*                        */
+  for (c = GETC; c  >= 0; c = GETC)	   	   /*                        */
   {						   /*                        */
     switch (c) {				   /*                        */
       case '\n':				   /*                        */
@@ -515,6 +515,7 @@ int yylex()					   /*                        */
 	      ON_T("expand.crossref", EXPAND_CROSSREF)
 	      break;				   /*                        */
 	    case 'f':				   /*                        */
+	      ON("false", B_OFF)		   /*                        */
 	      ON_T("fmt.inter.name", FMT_INTER_NAME)
 	      ON_T("fmt.name.pre", FMT_NAME_PRE)
 	      ON_T("fmt.name.name", FMT_NAME_NAME)
@@ -612,6 +613,7 @@ int yylex()					   /*                        */
 	      break;				   /*                        */
 	    case 't':				   /*                        */
 	      ON_T("tex.define", TEX_DEFINE)
+	      ON("true", B_ON)			   /*                        */
 	      break;				   /*                        */
 	    case 'v':				   /*                        */
 	      ON_T("verbose", VERBOSE)		   /*                        */
@@ -655,7 +657,7 @@ int find_function_op(s)				   /*                        */
       ON("uppercase", FCT_UPPERCASE);		   /*                        */
       break;					   /*                        */
   }						   /*                        */
-  return -1;					   /*                        */
+  return 0;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

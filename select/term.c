@@ -125,17 +125,29 @@ void free_term(t)				   /*                        */
   free(t);					   /*                        */
 }						   /*------------------------*/
 
-static void dump_list(stream, t, in, s)
+/*-----------------------------------------------------------------------------
+** Function:	dump_list()
+** Type:	static void
+** Purpose:	
+**		
+** Arguments:
+**	stream	
+**	 t	
+**	 in	
+**	 s	
+** Returns:	nothing
+**___________________________________________________			     */
+static void dump_list(stream, t, in, s)		   /*                        */
   FILE * stream;				   /*                        */
   Term t;					   /*                        */
   int in;					   /*                        */
-{
-  for (; t && TermOp(t) == PAIR; t = TermTerm2(t))
-  { putchar(' ');
-    dump_t(stream, TermTerm(t), 0);
-  }
-  if (t) dump_t(stream, t, in);
-}
+{						   /*                        */
+  for (; t && TermOp(t) == PAIR; t = TermTerm2(t)) /*                        */
+  { putchar(' ');				   /*                        */
+    dump_t(stream, TermTerm(t), 0);		   /*                        */
+  }						   /*                        */
+  if (t) dump_t(stream, t, in);			   /*                        */
+}						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	dump_cmd()
@@ -185,10 +197,10 @@ static void dump_t(stream, t, in)		   /*                        */
       fputs("nil", stream);			   /*                        */
       return;					   /*                        */
     case PAIR:					   /*                        */
-      putchar('(');
-      dump_list(stream, t, ++in);
-      putchar(')');
-      return;
+      putchar('(');				   /*                        */
+      dump_list(stream, t, ++in);		   /*                        */
+      putchar(')');				   /*                        */
+      return;					   /*                        */
     case FIELD:					   /*                        */
       fprintf(stream, "'%s'",TermString(t));	   /*                        */
       return;					   /*                        */
