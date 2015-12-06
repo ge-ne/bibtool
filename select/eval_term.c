@@ -38,7 +38,7 @@ char* eval2string(db, rec, t)			   /*                        */
   Record rec;					   /*                        */
   Term t;					   /*                        */
 { char * s;					   /*                        */
-  if (t == TermNULL) return NULL;		   /*                        */
+  if (t == NIL) return NULL;		   /*                        */
 
   switch(TermOp(t))
   { case FIELD:
@@ -92,7 +92,7 @@ long eval2number(db, rec, t)			   /*                        */
   Record rec;					   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
-  if (t == TermNULL) return 0L;			   /*                        */
+  if (t == NIL) return 0L;			   /*                        */
  						   /*                        */
   switch(TermOp(t))				   /*                        */
   { case FIELD:
@@ -191,7 +191,7 @@ int eval_select(db, rec, t)			   /*                        */
   DB db;					   /*                        */
   Record rec;					   /*                        */
 {						   /*                        */
-  if (t == TermNULL) return FALSE;		   /*                        */
+  if (t == NIL) return FALSE;		   	   /*                        */
  						   /*                        */
   switch(TermOp(t))				   /*                        */
   {						   /*                        */

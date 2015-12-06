@@ -46,6 +46,8 @@ commands.c commands.h: commands.y
 
 term.o: term.h commands.h
 
+eval_term.o: term.h commands.h
+
 clean:
 	rm -f *.o
 

@@ -74,23 +74,26 @@
 #define YYSTYPE Term
 #include "commands.h"
 
-  static Term t_true = TermNULL;
-  static Term t_false = TermNULL;
+  static Term t_true  = NIL;
+  static Term t_false = NIL;
 
   static FILE* in_file;
-  static Term result = TermNULL;
+  static Term result     = NIL;
+  static Term result_end = NIL;
+
   static int linenum = 1;
   static char * error_msg = NULL;
 
-  static int save_term();
+  static void save_term();
 
-#define NewTerm(CODE) new_term(CODE, TermNULL, TermNULL)
-#define NewTerm1(CODE,ARG) new_term(CODE, ARG, TermNULL)
+#define NewTerm(CODE)      new_term(CODE, NIL, NIL)
+#define NewTerm1(CODE,ARG) new_term(CODE, ARG, NIL)
+#define NewCons(CAR,CDR)   new_term(CONS, CAR, CDR)
 
 
 
 /* Line 268 of yacc.c  */
-#line 94 "y.tab.c"
+#line 97 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -123,121 +126,122 @@
      STRING = 261,
      BLOCK = 262,
      NUMBER = 263,
-     NOT = 264,
-     AND = 265,
-     OR = 266,
-     LIKE = 267,
-     ILIKE = 268,
-     UMINUS = 269,
-     PLUS = 270,
-     MINUS = 271,
-     TIMES = 272,
-     DIVIDE = 273,
-     EQ = 274,
-     NE = 275,
-     LT = 276,
-     LE = 277,
-     GT = 278,
-     GE = 279,
-     FCT_LOWERCASE = 280,
-     FCT_UPPERCASE = 281,
-     FCT_SUBSTRING = 282,
-     FCT_TRIM = 283,
-     PAIR = 284,
-     ADD_FIELD = 285,
-     APPLY_ALIAS = 286,
-     APPLY_MODIFY = 287,
-     APPLY_INCLUDE = 288,
-     BIBTEX_ENV_NAME = 289,
-     BIBTEX_SEARCH_PATH = 290,
-     CHECK_DOUBLE = 291,
-     CHECK_DOUBLE_DELETE = 292,
-     CHECK_RULE = 293,
-     CHECK_CASE_SENSITIVE = 294,
-     CLEAR_IGNORED_WORDS = 295,
-     COUNT_ALL = 296,
-     COUNT_USED = 297,
-     CROSSREF_LIMIT = 298,
-     DEFAULT_KEY = 299,
-     DELETE_FIELD = 300,
-     DIR_FILE_SEPARATOR = 301,
-     DUMP_SYMBOLS = 302,
-     ENV_SEPARATOR = 303,
-     EXTRACT_FILE = 304,
-     EXTRACT_REGEX = 305,
-     EXPAND_MACROS = 306,
-     EXPAND_CROSSREF = 307,
-     FMT_INTER_NAME = 308,
-     FMT_NAME_PRE = 309,
-     FMT_NAME_NAME = 310,
-     FMT_NAME_TITLE = 311,
-     FMT_TITLE_TITLE = 312,
-     FMT_ET_AL = 313,
-     FMT_WORD_SEPARATOR = 314,
-     FIELD_TYPE = 315,
-     INPUT = 316,
-     IGNORED_WORD = 317,
-     KEY_GENERATION = 318,
-     KEY_BASE = 319,
-     KEY_FORMAT = 320,
-     KEY_MAKE_ALIAS = 321,
-     KEY_NUMBER_SEPARATOR = 322,
-     KEY_EXPAND_MACROS = 323,
-     MACRO_FILE = 324,
-     NEW_ENTRY_TYPE = 325,
-     NEW_FIELD_TYPE = 326,
-     NEW_FORMAT_TYPE = 327,
-     OUTPUT_FILE = 328,
-     PASS_COMMENTS = 329,
-     PRESERVE_KEY_CASE = 330,
-     PRESERVE_KEYS = 331,
-     PRINT = 332,
-     PRINT_ALIGN_STRING = 333,
-     PRINT_ALIGN_COMMENT = 334,
-     PRINT_ALIGN_PREAMBLE = 335,
-     PRINT_ALIGN_KEY = 336,
-     PRINT_ALIGN = 337,
-     PRINT_ALL_STRINGS = 338,
-     PRINT_ENTRY_TYPES = 339,
-     PRINT_EQUAL_RIGHT = 340,
-     PRINT_BRACES = 341,
-     PRINT_COMMA_AT_END = 342,
-     PRINT_DELETED_PREFIX = 343,
-     PRINT_DELETED_ENTRIES = 344,
-     PRINT_INDENT = 345,
-     PRINT_LINE_LENGTH = 346,
-     PRINT_NEWLINE = 347,
-     PRINT_PARENTHESES = 348,
-     PRINT_TERMINAL_COMMA = 349,
-     PRINT_USE_TAB = 350,
-     PRINT_WIDE_EQUAL = 351,
-     QUIET = 352,
-     REGEXP_SYNTAX = 353,
-     RENAME_FIELD = 354,
-     RESOURCE = 355,
-     RESOURCE_SEARCH_PATH = 356,
-     REWRITE_RULE = 357,
-     REWRITE_CASE_SENSITIVE = 358,
-     REWRITE_LIMIT = 359,
-     SELECT = 360,
-     SELECT_BY_STRING = 361,
-     SELECT_BY_NON_STRING = 362,
-     SELECT_BY_STRING_IGNORED = 363,
-     SELECT_CASE_SENSITIVE = 364,
-     SELECT_FIELDS = 365,
-     SELECT_NON = 366,
-     SELECT_CROSSREFS = 367,
-     SORT = 368,
-     SORT_CASED = 369,
-     SORT_MACROS = 370,
-     SORT_REVERSE = 371,
-     SORT_ORDER = 372,
-     SORT_FORMAT = 373,
-     SUPPRESS_INITIAL_NEWLINE = 374,
-     SYMBOL_TYPE = 375,
-     TEX_DEFINE = 376,
-     VERBOSE = 377,
-     VERSION = 378
+     BOOLEAN = 264,
+     NOT = 265,
+     AND = 266,
+     OR = 267,
+     LIKE = 268,
+     ILIKE = 269,
+     UMINUS = 270,
+     PLUS = 271,
+     MINUS = 272,
+     TIMES = 273,
+     DIVIDE = 274,
+     EQ = 275,
+     NE = 276,
+     LT = 277,
+     LE = 278,
+     GT = 279,
+     GE = 280,
+     FCT_LOWERCASE = 281,
+     FCT_UPPERCASE = 282,
+     FCT_SUBSTRING = 283,
+     FCT_TRIM = 284,
+     CONS = 285,
+     ADD_FIELD = 286,
+     APPLY_ALIAS = 287,
+     APPLY_MODIFY = 288,
+     APPLY_INCLUDE = 289,
+     BIBTEX_ENV_NAME = 290,
+     BIBTEX_SEARCH_PATH = 291,
+     CHECK_DOUBLE = 292,
+     CHECK_DOUBLE_DELETE = 293,
+     CHECK_RULE = 294,
+     CHECK_CASE_SENSITIVE = 295,
+     CLEAR_IGNORED_WORDS = 296,
+     COUNT_ALL = 297,
+     COUNT_USED = 298,
+     CROSSREF_LIMIT = 299,
+     DEFAULT_KEY = 300,
+     DELETE_FIELD = 301,
+     DIR_FILE_SEPARATOR = 302,
+     DUMP_SYMBOLS = 303,
+     ENV_SEPARATOR = 304,
+     EXTRACT_FILE = 305,
+     EXTRACT_REGEX = 306,
+     EXPAND_MACROS = 307,
+     EXPAND_CROSSREF = 308,
+     FMT_INTER_NAME = 309,
+     FMT_NAME_PRE = 310,
+     FMT_NAME_NAME = 311,
+     FMT_NAME_TITLE = 312,
+     FMT_TITLE_TITLE = 313,
+     FMT_ET_AL = 314,
+     FMT_WORD_SEPARATOR = 315,
+     FIELD_TYPE = 316,
+     INPUT = 317,
+     IGNORED_WORD = 318,
+     KEY_GENERATION = 319,
+     KEY_BASE = 320,
+     KEY_FORMAT = 321,
+     KEY_MAKE_ALIAS = 322,
+     KEY_NUMBER_SEPARATOR = 323,
+     KEY_EXPAND_MACROS = 324,
+     MACRO_FILE = 325,
+     NEW_ENTRY_TYPE = 326,
+     NEW_FIELD_TYPE = 327,
+     NEW_FORMAT_TYPE = 328,
+     OUTPUT_FILE = 329,
+     PASS_COMMENTS = 330,
+     PRESERVE_KEY_CASE = 331,
+     PRESERVE_KEYS = 332,
+     PRINT = 333,
+     PRINT_ALIGN_STRING = 334,
+     PRINT_ALIGN_COMMENT = 335,
+     PRINT_ALIGN_PREAMBLE = 336,
+     PRINT_ALIGN_KEY = 337,
+     PRINT_ALIGN = 338,
+     PRINT_ALL_STRINGS = 339,
+     PRINT_ENTRY_TYPES = 340,
+     PRINT_EQUAL_RIGHT = 341,
+     PRINT_BRACES = 342,
+     PRINT_COMMA_AT_END = 343,
+     PRINT_DELETED_PREFIX = 344,
+     PRINT_DELETED_ENTRIES = 345,
+     PRINT_INDENT = 346,
+     PRINT_LINE_LENGTH = 347,
+     PRINT_NEWLINE = 348,
+     PRINT_PARENTHESES = 349,
+     PRINT_TERMINAL_COMMA = 350,
+     PRINT_USE_TAB = 351,
+     PRINT_WIDE_EQUAL = 352,
+     QUIET = 353,
+     REGEXP_SYNTAX = 354,
+     RENAME_FIELD = 355,
+     RESOURCE = 356,
+     RESOURCE_SEARCH_PATH = 357,
+     REWRITE_RULE = 358,
+     REWRITE_CASE_SENSITIVE = 359,
+     REWRITE_LIMIT = 360,
+     SELECT = 361,
+     SELECT_BY_STRING = 362,
+     SELECT_BY_NON_STRING = 363,
+     SELECT_BY_STRING_IGNORED = 364,
+     SELECT_CASE_SENSITIVE = 365,
+     SELECT_FIELDS = 366,
+     SELECT_NON = 367,
+     SELECT_CROSSREFS = 368,
+     SORT = 369,
+     SORT_CASED = 370,
+     SORT_MACROS = 371,
+     SORT_REVERSE = 372,
+     SORT_ORDER = 373,
+     SORT_FORMAT = 374,
+     SUPPRESS_INITIAL_NEWLINE = 375,
+     SYMBOL_TYPE = 376,
+     TEX_DEFINE = 377,
+     VERBOSE = 378,
+     VERSION = 379
    };
 #endif
 /* Tokens.  */
@@ -247,121 +251,122 @@
 #define STRING 261
 #define BLOCK 262
 #define NUMBER 263
-#define NOT 264
-#define AND 265
-#define OR 266
-#define LIKE 267
-#define ILIKE 268
-#define UMINUS 269
-#define PLUS 270
-#define MINUS 271
-#define TIMES 272
-#define DIVIDE 273
-#define EQ 274
-#define NE 275
-#define LT 276
-#define LE 277
-#define GT 278
-#define GE 279
-#define FCT_LOWERCASE 280
-#define FCT_UPPERCASE 281
-#define FCT_SUBSTRING 282
-#define FCT_TRIM 283
-#define PAIR 284
-#define ADD_FIELD 285
-#define APPLY_ALIAS 286
-#define APPLY_MODIFY 287
-#define APPLY_INCLUDE 288
-#define BIBTEX_ENV_NAME 289
-#define BIBTEX_SEARCH_PATH 290
-#define CHECK_DOUBLE 291
-#define CHECK_DOUBLE_DELETE 292
-#define CHECK_RULE 293
-#define CHECK_CASE_SENSITIVE 294
-#define CLEAR_IGNORED_WORDS 295
-#define COUNT_ALL 296
-#define COUNT_USED 297
-#define CROSSREF_LIMIT 298
-#define DEFAULT_KEY 299
-#define DELETE_FIELD 300
-#define DIR_FILE_SEPARATOR 301
-#define DUMP_SYMBOLS 302
-#define ENV_SEPARATOR 303
-#define EXTRACT_FILE 304
-#define EXTRACT_REGEX 305
-#define EXPAND_MACROS 306
-#define EXPAND_CROSSREF 307
-#define FMT_INTER_NAME 308
-#define FMT_NAME_PRE 309
-#define FMT_NAME_NAME 310
-#define FMT_NAME_TITLE 311
-#define FMT_TITLE_TITLE 312
-#define FMT_ET_AL 313
-#define FMT_WORD_SEPARATOR 314
-#define FIELD_TYPE 315
-#define INPUT 316
-#define IGNORED_WORD 317
-#define KEY_GENERATION 318
-#define KEY_BASE 319
-#define KEY_FORMAT 320
-#define KEY_MAKE_ALIAS 321
-#define KEY_NUMBER_SEPARATOR 322
-#define KEY_EXPAND_MACROS 323
-#define MACRO_FILE 324
-#define NEW_ENTRY_TYPE 325
-#define NEW_FIELD_TYPE 326
-#define NEW_FORMAT_TYPE 327
-#define OUTPUT_FILE 328
-#define PASS_COMMENTS 329
-#define PRESERVE_KEY_CASE 330
-#define PRESERVE_KEYS 331
-#define PRINT 332
-#define PRINT_ALIGN_STRING 333
-#define PRINT_ALIGN_COMMENT 334
-#define PRINT_ALIGN_PREAMBLE 335
-#define PRINT_ALIGN_KEY 336
-#define PRINT_ALIGN 337
-#define PRINT_ALL_STRINGS 338
-#define PRINT_ENTRY_TYPES 339
-#define PRINT_EQUAL_RIGHT 340
-#define PRINT_BRACES 341
-#define PRINT_COMMA_AT_END 342
-#define PRINT_DELETED_PREFIX 343
-#define PRINT_DELETED_ENTRIES 344
-#define PRINT_INDENT 345
-#define PRINT_LINE_LENGTH 346
-#define PRINT_NEWLINE 347
-#define PRINT_PARENTHESES 348
-#define PRINT_TERMINAL_COMMA 349
-#define PRINT_USE_TAB 350
-#define PRINT_WIDE_EQUAL 351
-#define QUIET 352
-#define REGEXP_SYNTAX 353
-#define RENAME_FIELD 354
-#define RESOURCE 355
-#define RESOURCE_SEARCH_PATH 356
-#define REWRITE_RULE 357
-#define REWRITE_CASE_SENSITIVE 358
-#define REWRITE_LIMIT 359
-#define SELECT 360
-#define SELECT_BY_STRING 361
-#define SELECT_BY_NON_STRING 362
-#define SELECT_BY_STRING_IGNORED 363
-#define SELECT_CASE_SENSITIVE 364
-#define SELECT_FIELDS 365
-#define SELECT_NON 366
-#define SELECT_CROSSREFS 367
-#define SORT 368
-#define SORT_CASED 369
-#define SORT_MACROS 370
-#define SORT_REVERSE 371
-#define SORT_ORDER 372
-#define SORT_FORMAT 373
-#define SUPPRESS_INITIAL_NEWLINE 374
-#define SYMBOL_TYPE 375
-#define TEX_DEFINE 376
-#define VERBOSE 377
-#define VERSION 378
+#define BOOLEAN 264
+#define NOT 265
+#define AND 266
+#define OR 267
+#define LIKE 268
+#define ILIKE 269
+#define UMINUS 270
+#define PLUS 271
+#define MINUS 272
+#define TIMES 273
+#define DIVIDE 274
+#define EQ 275
+#define NE 276
+#define LT 277
+#define LE 278
+#define GT 279
+#define GE 280
+#define FCT_LOWERCASE 281
+#define FCT_UPPERCASE 282
+#define FCT_SUBSTRING 283
+#define FCT_TRIM 284
+#define CONS 285
+#define ADD_FIELD 286
+#define APPLY_ALIAS 287
+#define APPLY_MODIFY 288
+#define APPLY_INCLUDE 289
+#define BIBTEX_ENV_NAME 290
+#define BIBTEX_SEARCH_PATH 291
+#define CHECK_DOUBLE 292
+#define CHECK_DOUBLE_DELETE 293
+#define CHECK_RULE 294
+#define CHECK_CASE_SENSITIVE 295
+#define CLEAR_IGNORED_WORDS 296
+#define COUNT_ALL 297
+#define COUNT_USED 298
+#define CROSSREF_LIMIT 299
+#define DEFAULT_KEY 300
+#define DELETE_FIELD 301
+#define DIR_FILE_SEPARATOR 302
+#define DUMP_SYMBOLS 303
+#define ENV_SEPARATOR 304
+#define EXTRACT_FILE 305
+#define EXTRACT_REGEX 306
+#define EXPAND_MACROS 307
+#define EXPAND_CROSSREF 308
+#define FMT_INTER_NAME 309
+#define FMT_NAME_PRE 310
+#define FMT_NAME_NAME 311
+#define FMT_NAME_TITLE 312
+#define FMT_TITLE_TITLE 313
+#define FMT_ET_AL 314
+#define FMT_WORD_SEPARATOR 315
+#define FIELD_TYPE 316
+#define INPUT 317
+#define IGNORED_WORD 318
+#define KEY_GENERATION 319
+#define KEY_BASE 320
+#define KEY_FORMAT 321
+#define KEY_MAKE_ALIAS 322
+#define KEY_NUMBER_SEPARATOR 323
+#define KEY_EXPAND_MACROS 324
+#define MACRO_FILE 325
+#define NEW_ENTRY_TYPE 326
+#define NEW_FIELD_TYPE 327
+#define NEW_FORMAT_TYPE 328
+#define OUTPUT_FILE 329
+#define PASS_COMMENTS 330
+#define PRESERVE_KEY_CASE 331
+#define PRESERVE_KEYS 332
+#define PRINT 333
+#define PRINT_ALIGN_STRING 334
+#define PRINT_ALIGN_COMMENT 335
+#define PRINT_ALIGN_PREAMBLE 336
+#define PRINT_ALIGN_KEY 337
+#define PRINT_ALIGN 338
+#define PRINT_ALL_STRINGS 339
+#define PRINT_ENTRY_TYPES 340
+#define PRINT_EQUAL_RIGHT 341
+#define PRINT_BRACES 342
+#define PRINT_COMMA_AT_END 343
+#define PRINT_DELETED_PREFIX 344
+#define PRINT_DELETED_ENTRIES 345
+#define PRINT_INDENT 346
+#define PRINT_LINE_LENGTH 347
+#define PRINT_NEWLINE 348
+#define PRINT_PARENTHESES 349
+#define PRINT_TERMINAL_COMMA 350
+#define PRINT_USE_TAB 351
+#define PRINT_WIDE_EQUAL 352
+#define QUIET 353
+#define REGEXP_SYNTAX 354
+#define RENAME_FIELD 355
+#define RESOURCE 356
+#define RESOURCE_SEARCH_PATH 357
+#define REWRITE_RULE 358
+#define REWRITE_CASE_SENSITIVE 359
+#define REWRITE_LIMIT 360
+#define SELECT 361
+#define SELECT_BY_STRING 362
+#define SELECT_BY_NON_STRING 363
+#define SELECT_BY_STRING_IGNORED 364
+#define SELECT_CASE_SENSITIVE 365
+#define SELECT_FIELDS 366
+#define SELECT_NON 367
+#define SELECT_CROSSREFS 368
+#define SORT 369
+#define SORT_CASED 370
+#define SORT_MACROS 371
+#define SORT_REVERSE 372
+#define SORT_ORDER 373
+#define SORT_FORMAT 374
+#define SUPPRESS_INITIAL_NEWLINE 375
+#define SYMBOL_TYPE 376
+#define TEX_DEFINE 377
+#define VERBOSE 378
+#define VERSION 379
 
 
 
@@ -378,7 +383,7 @@ typedef int YYSTYPE;
 
 
 /* Line 343 of yacc.c  */
-#line 382 "y.tab.c"
+#line 387 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -597,20 +602,20 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  75
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   188
+#define YYLAST   189
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  135
+#define YYNTOKENS  136
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  15
 /* YYNRULES -- Number of rules.  */
 #define YYNRULES  98
 /* YYNRULES -- Number of states.  */
-#define YYNSTATES  126
+#define YYNSTATES  127
 
 /* YYTRANSLATE(YYLEX) -- Bison symbol number corresponding to YYLEX.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   378
+#define YYMAXUTOK   379
 
 #define YYTRANSLATE(YYX)						\
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -621,10 +626,10 @@ static const yytype_uint8 yytranslate[] =
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,   131,     2,     2,     2,     2,     2,     2,
-     129,   130,    16,    14,   134,    15,     2,    17,     2,     2,
+       2,     2,     2,   132,     2,     2,     2,     2,     2,     2,
+     130,   131,    17,    15,   135,    16,     2,    18,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-     133,   128,   132,     2,     2,     2,     2,     2,     2,     2,
+     134,   129,   133,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -644,7 +649,7 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7,     8,     9,    10,    11,    12,    13,    18,
+       5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       19,    20,    21,    22,    23,    24,    25,    26,    27,    28,
       29,    30,    31,    32,    33,    34,    35,    36,    37,    38,
       39,    40,    41,    42,    43,    44,    45,    46,    47,    48,
@@ -655,7 +660,7 @@ static const yytype_uint8 yytranslate[] =
       89,    90,    91,    92,    93,    94,    95,    96,    97,    98,
       99,   100,   101,   102,   103,   104,   105,   106,   107,   108,
      109,   110,   111,   112,   113,   114,   115,   116,   117,   118,
-     119,   120,   121,   122,   123,   124,   125,   126,   127
+     119,   120,   121,   122,   123,   124,   125,   126,   127,   128
 };
 
 #if YYDEBUG
@@ -670,52 +675,53 @@ static const yytype_uint8 yyprhs[] =
       92,    94,    96,    98,   100,   102,   104,   106,   108,   110,
      112,   114,   116,   118,   120,   122,   124,   126,   128,   130,
      132,   134,   136,   138,   140,   141,   143,   145,   147,   149,
-     151,   153,   157,   161,   164,   168,   172,   174,   176,   178,
-     181,   183,   186,   188,   191,   193,   195,   197,   199,   201,
-     203,   205,   209,   212,   216,   221,   222,   224,   226
+     151,   153,   157,   161,   164,   168,   172,   174,   176,   179,
+     182,   184,   187,   189,   192,   194,   196,   198,   200,   202,
+     204,   206,   210,   213,   217,   222,   223,   225,   227
 };
 
 /* YYRHS -- A `-1'-separated list of the rules' RHS.  */
 static const yytype_int16 yyrhs[] =
 {
-     136,     0,    -1,   137,   140,   142,    -1,   138,   140,   141,
-      -1,   139,   140,   143,    -1,    65,   140,   142,    -1,   104,
-     140,   142,    -1,   109,   140,   142,    -1,   109,   144,    -1,
-       1,    -1,    38,    -1,    39,    -1,    50,    -1,    52,    -1,
-      88,    -1,    92,    -1,   112,    -1,   114,    -1,    35,    -1,
-      36,    -1,    37,    -1,    40,    -1,    41,    -1,    43,    -1,
-      45,    -1,    46,    -1,    51,    -1,    55,    -1,    56,    -1,
-      67,    -1,    70,    -1,    72,    -1,    78,    -1,    79,    -1,
-      80,    -1,    87,    -1,    89,    -1,    90,    -1,    91,    -1,
-      93,    -1,    97,    -1,    98,    -1,    99,    -1,   100,    -1,
-     101,    -1,   107,    -1,   113,    -1,   116,    -1,   117,    -1,
-     118,    -1,   119,    -1,   120,    -1,   123,    -1,   126,    -1,
-      47,    -1,    82,    -1,    83,    -1,    84,    -1,    85,    -1,
-      86,    -1,    94,    -1,    95,    -1,    96,    -1,   108,    -1,
-      -1,   128,    -1,     3,    -1,     4,    -1,     6,    -1,     7,
-      -1,     8,    -1,   147,   145,   147,    -1,   129,   144,   130,
-      -1,     9,   144,    -1,   144,    10,   144,    -1,   144,    11,
-     144,    -1,    12,    -1,    13,    -1,   128,    -1,   131,   128,
-      -1,   132,    -1,   132,   128,    -1,   133,    -1,   133,   128,
-      -1,    14,    -1,    15,    -1,    16,    -1,    17,    -1,     5,
-      -1,     6,    -1,     8,    -1,   147,   146,   147,    -1,    15,
-     147,    -1,   129,   147,   130,    -1,     5,   129,   148,   130,
-      -1,    -1,   149,    -1,   147,    -1,   147,   134,   149,    -1
+     137,     0,    -1,   138,   141,   143,    -1,   139,   141,   142,
+      -1,   140,   141,   144,    -1,    66,   141,   143,    -1,   105,
+     141,   143,    -1,   110,   141,   143,    -1,   110,   145,    -1,
+       1,    -1,    39,    -1,    40,    -1,    51,    -1,    53,    -1,
+      89,    -1,    93,    -1,   113,    -1,   115,    -1,    36,    -1,
+      37,    -1,    38,    -1,    41,    -1,    42,    -1,    44,    -1,
+      46,    -1,    47,    -1,    52,    -1,    56,    -1,    57,    -1,
+      68,    -1,    71,    -1,    73,    -1,    79,    -1,    80,    -1,
+      81,    -1,    88,    -1,    90,    -1,    91,    -1,    92,    -1,
+      94,    -1,    98,    -1,    99,    -1,   100,    -1,   101,    -1,
+     102,    -1,   108,    -1,   114,    -1,   117,    -1,   118,    -1,
+     119,    -1,   120,    -1,   121,    -1,   124,    -1,   127,    -1,
+      48,    -1,    83,    -1,    84,    -1,    85,    -1,    86,    -1,
+      87,    -1,    95,    -1,    96,    -1,    97,    -1,   109,    -1,
+      -1,   129,    -1,     3,    -1,     4,    -1,     6,    -1,     7,
+      -1,     8,    -1,   148,   146,   148,    -1,   130,   145,   131,
+      -1,    10,   145,    -1,   145,    11,   145,    -1,   145,    12,
+     145,    -1,    13,    -1,    14,    -1,   129,   129,    -1,   132,
+     129,    -1,   133,    -1,   133,   129,    -1,   134,    -1,   134,
+     129,    -1,    15,    -1,    16,    -1,    17,    -1,    18,    -1,
+       5,    -1,     6,    -1,     8,    -1,   148,   147,   148,    -1,
+      16,   148,    -1,   130,   148,   131,    -1,     5,   130,   149,
+     131,    -1,    -1,   150,    -1,   148,    -1,   148,   135,   150,
+      -1
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   155,   155,   157,   159,   161,   164,   166,   168,   170,
-     174,   175,   176,   177,   178,   179,   180,   181,   183,   184,
-     185,   186,   187,   188,   189,   190,   191,   192,   193,   194,
-     195,   196,   197,   198,   199,   200,   201,   202,   203,   204,
-     205,   206,   207,   208,   209,   210,   211,   212,   213,   214,
-     215,   216,   217,   218,   220,   221,   222,   223,   224,   225,
-     226,   227,   228,   229,   232,   233,   235,   237,   240,   241,
-     243,   246,   250,   252,   254,   256,   260,   262,   264,   266,
-     268,   270,   272,   274,   278,   280,   282,   284,   287,   288,
-     289,   290,   295,   297,   299,   315,   316,   318,   320
+       0,   158,   158,   160,   162,   164,   167,   169,   171,   173,
+     177,   178,   179,   180,   181,   182,   183,   184,   186,   187,
+     188,   189,   190,   191,   192,   193,   194,   195,   196,   197,
+     198,   199,   200,   201,   202,   203,   204,   205,   206,   207,
+     208,   209,   210,   211,   212,   213,   214,   215,   216,   217,
+     218,   219,   220,   221,   223,   224,   225,   226,   227,   228,
+     229,   230,   231,   232,   235,   236,   238,   240,   243,   245,
+     247,   250,   254,   256,   258,   260,   264,   266,   268,   270,
+     272,   274,   276,   278,   282,   284,   286,   288,   291,   292,
+     293,   294,   299,   301,   303,   319,   320,   322,   324
 };
 #endif
 
@@ -725,10 +731,10 @@ static const yytype_uint16 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "B_ON", "B_OFF", "FIELD", "STRING",
-  "BLOCK", "NUMBER", "NOT", "AND", "OR", "LIKE", "ILIKE", "'+'", "'-'",
-  "'*'", "'/'", "UMINUS", "PLUS", "MINUS", "TIMES", "DIVIDE", "EQ", "NE",
-  "LT", "LE", "GT", "GE", "FCT_LOWERCASE", "FCT_UPPERCASE",
-  "FCT_SUBSTRING", "FCT_TRIM", "PAIR", "ADD_FIELD", "APPLY_ALIAS",
+  "BLOCK", "NUMBER", "BOOLEAN", "NOT", "AND", "OR", "LIKE", "ILIKE", "'+'",
+  "'-'", "'*'", "'/'", "UMINUS", "PLUS", "MINUS", "TIMES", "DIVIDE", "EQ",
+  "NE", "LT", "LE", "GT", "GE", "FCT_LOWERCASE", "FCT_UPPERCASE",
+  "FCT_SUBSTRING", "FCT_TRIM", "CONS", "ADD_FIELD", "APPLY_ALIAS",
   "APPLY_MODIFY", "APPLY_INCLUDE", "BIBTEX_ENV_NAME", "BIBTEX_SEARCH_PATH",
   "CHECK_DOUBLE", "CHECK_DOUBLE_DELETE", "CHECK_RULE",
   "CHECK_CASE_SENSITIVE", "CLEAR_IGNORED_WORDS", "COUNT_ALL", "COUNT_USED",
@@ -766,7 +772,7 @@ static const char *const yytname[] =
 static const yytype_uint16 yytoknum[] =
 {
        0,   256,   257,   258,   259,   260,   261,   262,   263,   264,
-     265,   266,   267,   268,    43,    45,    42,    47,   269,   270,
+     265,   266,   267,   268,   269,    43,    45,    42,    47,   270,
      271,   272,   273,   274,   275,   276,   277,   278,   279,   280,
      281,   282,   283,   284,   285,   286,   287,   288,   289,   290,
      291,   292,   293,   294,   295,   296,   297,   298,   299,   300,
@@ -777,24 +783,24 @@ static const yytype_uint16 yytoknum[] =
      341,   342,   343,   344,   345,   346,   347,   348,   349,   350,
      351,   352,   353,   354,   355,   356,   357,   358,   359,   360,
      361,   362,   363,   364,   365,   366,   367,   368,   369,   370,
-     371,   372,   373,   374,   375,   376,   377,   378,    61,    40,
-      41,    33,    62,    60,    44
+     371,   372,   373,   374,   375,   376,   377,   378,   379,    61,
+      40,    41,    33,    62,    60,    44
 };
 # endif
 
 /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,   135,   136,   136,   136,   136,   136,   136,   136,   136,
-     137,   137,   137,   137,   137,   137,   137,   137,   138,   138,
-     138,   138,   138,   138,   138,   138,   138,   138,   138,   138,
-     138,   138,   138,   138,   138,   138,   138,   138,   138,   138,
-     138,   138,   138,   138,   138,   138,   138,   138,   138,   138,
-     138,   138,   138,   138,   139,   139,   139,   139,   139,   139,
-     139,   139,   139,   139,   140,   140,   141,   141,   142,   142,
-     143,   144,   144,   144,   144,   144,   145,   145,   145,   145,
-     145,   145,   145,   145,   146,   146,   146,   146,   147,   147,
-     147,   147,   147,   147,   147,   148,   148,   149,   149
+       0,   136,   137,   137,   137,   137,   137,   137,   137,   137,
+     138,   138,   138,   138,   138,   138,   138,   138,   139,   139,
+     139,   139,   139,   139,   139,   139,   139,   139,   139,   139,
+     139,   139,   139,   139,   139,   139,   139,   139,   139,   139,
+     139,   139,   139,   139,   139,   139,   139,   139,   139,   139,
+     139,   139,   139,   139,   140,   140,   140,   140,   140,   140,
+     140,   140,   140,   140,   141,   141,   142,   142,   143,   143,
+     144,   145,   145,   145,   145,   145,   146,   146,   146,   146,
+     146,   146,   146,   146,   147,   147,   147,   147,   148,   148,
+     148,   148,   148,   148,   148,   149,   149,   150,   150
 };
 
 /* YYR2[YYN] -- Number of symbols composing right hand side of rule YYN.  */
@@ -807,7 +813,7 @@ static const yytype_uint8 yyr2[] =
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
        1,     1,     1,     1,     0,     1,     1,     1,     1,     1,
-       1,     3,     3,     2,     3,     3,     1,     1,     1,     2,
+       1,     3,     3,     2,     3,     3,     1,     1,     2,     2,
        1,     2,     1,     2,     1,     1,     1,     1,     1,     1,
        1,     3,     2,     3,     4,     0,     1,     1,     3
 };
@@ -826,10 +832,10 @@ static const yytype_uint8 yydefact[] =
       64,    64,    64,    65,     0,     0,    88,    89,    90,     0,
        0,     0,     0,     8,     0,     1,     0,     0,     0,    68,
       69,     5,     6,    95,    73,     0,    92,     0,     0,     7,
-       0,     0,    76,    77,    84,    85,    86,    87,    78,     0,
+       0,     0,    76,    77,    84,    85,    86,    87,     0,     0,
       80,    82,     0,     0,     2,    66,    67,     3,    70,     4,
-      97,     0,    96,     0,    72,    93,    74,    75,    79,    81,
-      83,    71,    91,     0,    94,    98
+      97,     0,    96,     0,    72,    93,    74,    75,    78,    79,
+      81,    83,    71,    91,     0,    94,    98
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
@@ -841,29 +847,29 @@ static const yytype_int8 yydefgoto[] =
 
 /* YYPACT[STATE-NUM] -- Index in YYTABLE of the portion describing
    STATE-NUM.  */
-#define YYPACT_NINF -124
-static const yytype_int8 yypact[] =
+#define YYPACT_NINF -125
+static const yytype_int16 yypact[] =
 {
-      -1,  -124,  -124,  -124,  -124,  -124,  -124,  -124,  -124,  -124,
-    -124,  -124,  -124,  -124,  -124,  -124,  -124,  -124,  -123,  -124,
-    -124,  -124,  -124,  -124,  -124,  -124,  -124,  -124,  -124,  -124,
-    -124,  -124,  -124,  -124,  -124,  -124,  -124,  -124,  -124,  -124,
-    -124,  -124,  -124,  -124,  -124,  -123,  -124,  -124,    -2,  -124,
-    -124,  -124,  -124,  -124,  -124,  -124,  -124,  -124,  -124,    10,
-    -123,  -123,  -123,  -124,    41,    41,  -113,  -124,  -124,     3,
-       9,     3,    41,    52,    44,  -124,    41,    98,    15,  -124,
-    -124,  -124,  -124,     9,    52,     9,   114,    -9,    13,  -124,
-       3,     3,  -124,  -124,  -124,  -124,  -124,  -124,  -124,   -96,
-     -87,   -85,     9,     9,  -124,  -124,  -124,  -124,  -124,  -124,
-       5,   -65,  -124,    58,  -124,  -124,    52,    52,  -124,  -124,
-    -124,   114,   114,     9,  -124,  -124
+      -1,  -125,  -125,  -125,  -125,  -125,  -125,  -125,  -125,  -125,
+    -125,  -125,  -125,  -125,  -125,  -125,  -125,  -125,  -124,  -125,
+    -125,  -125,  -125,  -125,  -125,  -125,  -125,  -125,  -125,  -125,
+    -125,  -125,  -125,  -125,  -125,  -125,  -125,  -125,  -125,  -125,
+    -125,  -125,  -125,  -125,  -125,  -124,  -125,  -125,    -2,  -125,
+    -125,  -125,  -125,  -125,  -125,  -125,  -125,  -125,  -125,     9,
+    -124,  -124,  -124,  -125,    42,    42,  -123,  -125,  -125,     5,
+      11,     5,    42,    57,    44,  -125,    42,    50,     4,  -125,
+    -125,  -125,  -125,    11,    57,    11,   135,   -10,    15,  -125,
+       5,     5,  -125,  -125,  -125,  -125,  -125,  -125,  -111,  -109,
+    -103,   -95,    11,    11,  -125,  -125,  -125,  -125,  -125,  -125,
+       7,   -65,  -125,    58,  -125,  -125,    57,    57,  -125,  -125,
+    -125,  -125,   135,   135,    11,  -125,  -125
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-    -124,  -124,  -124,  -124,  -124,    92,  -124,    83,  -124,   -38,
-    -124,  -124,    64,  -124,   -56
+    -125,  -125,  -125,  -125,  -125,    77,  -125,    64,  -125,   -27,
+    -125,  -125,    60,  -125,   -53
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]].  What to do in state STATE-NUM.  If
@@ -872,73 +878,73 @@ static const yytype_int8 yypgoto[] =
 #define YYTABLE_NINF -1
 static const yytype_uint8 yytable[] =
 {
-       1,    90,    91,    66,    67,    63,    68,    69,    66,    67,
-      75,    68,    69,    70,    66,    67,    83,    68,    70,    94,
-      95,    96,    97,   108,    70,    92,    93,    94,    95,    96,
-      97,    84,   118,    87,     2,     3,     4,     5,     6,     7,
-       8,   119,     9,   120,    10,    11,    12,    79,    80,    13,
-      14,    15,   116,   117,    16,    17,    92,    93,    94,    95,
-      96,    97,    90,    91,    18,   124,    19,   125,     0,    20,
-       0,    21,    94,    95,    96,    97,     0,    22,    23,    24,
-       0,    25,    26,    27,    28,    29,    30,    31,    32,    33,
-      34,    35,    36,    37,    38,    39,    40,    41,    42,    43,
-      44,   105,   106,    45,     0,     0,    46,    47,    48,     0,
-       0,    49,    50,    51,     0,    52,    53,    54,    55,    56,
-       0,   114,    57,     0,     0,    58,    63,    71,    94,    95,
-      96,    97,    71,     0,    86,    88,     0,    65,    85,   123,
-      72,    98,     0,   115,    99,   100,   101,   110,    82,   113,
-       0,     0,    76,    77,    78,    89,     0,     0,     0,   104,
-       0,     0,     0,     0,     0,     0,   121,   122,     0,     0,
-       0,     0,    98,     0,     0,    99,   100,   101,     0,     0,
-       0,     0,     0,     0,     0,     0,     0,   110,   115
+       1,    90,    91,    66,    67,    63,    68,    83,    69,    75,
+      66,    67,   108,    68,    70,    69,    66,    67,   118,    68,
+     119,    70,    94,    95,    96,    97,   120,    70,    92,    93,
+      94,    95,    96,    97,   121,     2,     3,     4,     5,     6,
+       7,     8,    84,     9,    87,    10,    11,    12,    79,    80,
+      13,    14,    15,   105,   106,    16,    17,    92,    93,    94,
+      95,    96,    97,   116,   117,    18,   125,    19,    90,    91,
+      20,   126,    21,    94,    95,    96,    97,     0,    22,    23,
+      24,     0,    25,    26,    27,    28,    29,    30,    31,    32,
+      33,    34,    35,    36,    37,    38,    39,    40,    41,    42,
+      43,    44,     0,     0,    45,     0,     0,    46,    47,    48,
+       0,     0,    49,    50,    51,     0,    52,    53,    54,    55,
+      56,   114,    65,    57,     0,    72,    58,    63,    71,    82,
+      86,    88,     0,     0,     0,    71,    89,    76,    77,    78,
+     104,    85,   124,   110,    98,   113,   115,    99,   100,   101,
+      94,    95,    96,    97,     0,     0,     0,     0,     0,     0,
+       0,     0,   122,   123,     0,     0,     0,     0,     0,     0,
+       0,     0,     0,    98,     0,     0,    99,   100,   101,     0,
+       0,     0,     0,     0,   110,     0,     0,     0,     0,   115
 };
 
 #define yypact_value_is_default(yystate) \
-  ((yystate) == (-124))
+  ((yystate) == (-125))
 
 #define yytable_value_is_error(yytable_value) \
   YYID (0)
 
 static const yytype_int16 yycheck[] =
 {
-       1,    10,    11,     5,     6,   128,     8,     9,     5,     6,
-       0,     8,     9,    15,     5,     6,   129,     8,    15,    14,
-      15,    16,    17,     8,    15,    12,    13,    14,    15,    16,
-      17,    69,   128,    71,    35,    36,    37,    38,    39,    40,
-      41,   128,    43,   128,    45,    46,    47,     6,     7,    50,
-      51,    52,    90,    91,    55,    56,    12,    13,    14,    15,
-      16,    17,    10,    11,    65,   130,    67,   123,    -1,    70,
-      -1,    72,    14,    15,    16,    17,    -1,    78,    79,    80,
-      -1,    82,    83,    84,    85,    86,    87,    88,    89,    90,
+       1,    11,    12,     5,     6,   129,     8,   130,    10,     0,
+       5,     6,     8,     8,    16,    10,     5,     6,   129,     8,
+     129,    16,    15,    16,    17,    18,   129,    16,    13,    14,
+      15,    16,    17,    18,   129,    36,    37,    38,    39,    40,
+      41,    42,    69,    44,    71,    46,    47,    48,     6,     7,
+      51,    52,    53,     3,     4,    56,    57,    13,    14,    15,
+      16,    17,    18,    90,    91,    66,   131,    68,    11,    12,
+      71,   124,    73,    15,    16,    17,    18,    -1,    79,    80,
+      81,    -1,    83,    84,    85,    86,    87,    88,    89,    90,
       91,    92,    93,    94,    95,    96,    97,    98,    99,   100,
-     101,     3,     4,   104,    -1,    -1,   107,   108,   109,    -1,
-      -1,   112,   113,   114,    -1,   116,   117,   118,   119,   120,
-      -1,   130,   123,    -1,    -1,   126,   128,   129,    14,    15,
-      16,    17,   129,    -1,    70,    71,    -1,    45,   129,   134,
-      48,   128,    -1,   130,   131,   132,   133,    83,    65,    85,
-      -1,    -1,    60,    61,    62,    72,    -1,    -1,    -1,    76,
-      -1,    -1,    -1,    -1,    -1,    -1,   102,   103,    -1,    -1,
-      -1,    -1,   128,    -1,    -1,   131,   132,   133,    -1,    -1,
-      -1,    -1,    -1,    -1,    -1,    -1,    -1,   123,   130
+     101,   102,    -1,    -1,   105,    -1,    -1,   108,   109,   110,
+      -1,    -1,   113,   114,   115,    -1,   117,   118,   119,   120,
+     121,   131,    45,   124,    -1,    48,   127,   129,   130,    65,
+      70,    71,    -1,    -1,    -1,   130,    72,    60,    61,    62,
+      76,   130,   135,    83,   129,    85,   131,   132,   133,   134,
+      15,    16,    17,    18,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,   102,   103,    -1,    -1,    -1,    -1,    -1,    -1,
+      -1,    -1,    -1,   129,    -1,    -1,   132,   133,   134,    -1,
+      -1,    -1,    -1,    -1,   124,    -1,    -1,    -1,    -1,   131
 };
 
 /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
    symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     1,    35,    36,    37,    38,    39,    40,    41,    43,
-      45,    46,    47,    50,    51,    52,    55,    56,    65,    67,
-      70,    72,    78,    79,    80,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,    91,    92,    93,    94,    95,    96,
-      97,    98,    99,   100,   101,   104,   107,   108,   109,   112,
-     113,   114,   116,   117,   118,   119,   120,   123,   126,   136,
-     137,   138,   139,   128,   140,   140,     5,     6,     8,     9,
-      15,   129,   140,   144,   147,     0,   140,   140,   140,     6,
-       7,   142,   142,   129,   144,   129,   147,   144,   147,   142,
-      10,    11,    12,    13,    14,    15,    16,    17,   128,   131,
-     132,   133,   145,   146,   142,     3,     4,   141,     8,   143,
-     147,   148,   149,   147,   130,   130,   144,   144,   128,   128,
-     128,   147,   147,   134,   130,   149
+       0,     1,    36,    37,    38,    39,    40,    41,    42,    44,
+      46,    47,    48,    51,    52,    53,    56,    57,    66,    68,
+      71,    73,    79,    80,    81,    83,    84,    85,    86,    87,
+      88,    89,    90,    91,    92,    93,    94,    95,    96,    97,
+      98,    99,   100,   101,   102,   105,   108,   109,   110,   113,
+     114,   115,   117,   118,   119,   120,   121,   124,   127,   137,
+     138,   139,   140,   129,   141,   141,     5,     6,     8,    10,
+      16,   130,   141,   145,   148,     0,   141,   141,   141,     6,
+       7,   143,   143,   130,   145,   130,   148,   145,   148,   143,
+      11,    12,    13,    14,    15,    16,    17,    18,   129,   132,
+     133,   134,   146,   147,   143,     3,     4,   142,     8,   144,
+     148,   149,   150,   148,   131,   131,   145,   145,   129,   129,
+     129,   129,   148,   148,   135,   131,   150
 };
 
 #define yyerrok		(yyerrstatus = 0)
@@ -1775,28 +1781,28 @@ yyreduce:
         case 2:
 
 /* Line 1806 of yacc.c  */
-#line 156 "commands.y"
+#line 159 "commands.y"
     { save_term((yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); }
     break;
 
   case 3:
 
 /* Line 1806 of yacc.c  */
-#line 158 "commands.y"
+#line 161 "commands.y"
     { save_term((yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); }
     break;
 
   case 4:
 
 /* Line 1806 of yacc.c  */
-#line 160 "commands.y"
+#line 163 "commands.y"
     { save_term((yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); }
     break;
 
   case 5:
 
 /* Line 1806 of yacc.c  */
-#line 162 "commands.y"
+#line 165 "commands.y"
     {
 		}
     break;
@@ -1804,170 +1810,177 @@ yyreduce:
   case 6:
 
 /* Line 1806 of yacc.c  */
-#line 165 "commands.y"
+#line 168 "commands.y"
     { load_rsc(TermString((yyvsp[(3) - (3)]))); }
     break;
 
   case 7:
 
 /* Line 1806 of yacc.c  */
-#line 167 "commands.y"
+#line 170 "commands.y"
     { save_term((yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); }
     break;
 
   case 8:
 
 /* Line 1806 of yacc.c  */
-#line 169 "commands.y"
+#line 172 "commands.y"
     { save_term((yyvsp[(1) - (2)]), (yyvsp[(2) - (2)])); }
     break;
 
   case 9:
 
 /* Line 1806 of yacc.c  */
-#line 171 "commands.y"
+#line 174 "commands.y"
     { yyclearin; }
     break;
 
   case 66:
 
 /* Line 1806 of yacc.c  */
-#line 236 "commands.y"
+#line 239 "commands.y"
     { (yyval) = t_true; }
     break;
 
   case 67:
 
 /* Line 1806 of yacc.c  */
-#line 238 "commands.y"
+#line 241 "commands.y"
     { (yyval) = t_false; }
+    break;
+
+  case 68:
+
+/* Line 1806 of yacc.c  */
+#line 244 "commands.y"
+    { printf("string_expr %lx\n", TermOp((yyval))); }
     break;
 
   case 71:
 
 /* Line 1806 of yacc.c  */
-#line 247 "commands.y"
+#line 251 "commands.y"
     { (yyval) = (yyvsp[(2) - (3)]);
-		  TermTerm((yyval)) = new_term(PAIR, (yyvsp[(1) - (3)]), new_term(PAIR, (yyvsp[(3) - (3)]), TermNULL));
+		  TermTerm((yyval)) = NewCons((yyvsp[(1) - (3)]), NewCons((yyvsp[(3) - (3)]), NIL));
 		}
     break;
 
   case 72:
 
 /* Line 1806 of yacc.c  */
-#line 251 "commands.y"
+#line 255 "commands.y"
     { (yyval) = (yyvsp[(2) - (3)]); }
     break;
 
   case 73:
 
 /* Line 1806 of yacc.c  */
-#line 253 "commands.y"
+#line 257 "commands.y"
     { (yyval) = NewTerm1(NOT, (yyvsp[(2) - (2)])); }
     break;
 
   case 74:
 
 /* Line 1806 of yacc.c  */
-#line 255 "commands.y"
+#line 259 "commands.y"
     { (yyval) = new_term(AND, (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); }
     break;
 
   case 75:
 
 /* Line 1806 of yacc.c  */
-#line 257 "commands.y"
+#line 261 "commands.y"
     { (yyval) = new_term(OR, (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); }
     break;
 
   case 76:
 
 /* Line 1806 of yacc.c  */
-#line 261 "commands.y"
+#line 265 "commands.y"
     { (yyval) = NewTerm(LIKE); }
     break;
 
   case 77:
 
 /* Line 1806 of yacc.c  */
-#line 263 "commands.y"
+#line 267 "commands.y"
     { (yyval) = NewTerm(ILIKE); }
     break;
 
   case 78:
 
 /* Line 1806 of yacc.c  */
-#line 265 "commands.y"
+#line 269 "commands.y"
     { (yyval) = NewTerm(EQ); }
     break;
 
   case 79:
 
 /* Line 1806 of yacc.c  */
-#line 267 "commands.y"
+#line 271 "commands.y"
     { (yyval) = NewTerm(NE); }
     break;
 
   case 80:
 
 /* Line 1806 of yacc.c  */
-#line 269 "commands.y"
+#line 273 "commands.y"
     { (yyval) = NewTerm(GT); }
     break;
 
   case 81:
 
 /* Line 1806 of yacc.c  */
-#line 271 "commands.y"
+#line 275 "commands.y"
     { (yyval) = NewTerm(GE); }
     break;
 
   case 82:
 
 /* Line 1806 of yacc.c  */
-#line 273 "commands.y"
+#line 277 "commands.y"
     { (yyval) = NewTerm(LT); }
     break;
 
   case 83:
 
 /* Line 1806 of yacc.c  */
-#line 275 "commands.y"
+#line 279 "commands.y"
     { (yyval) = NewTerm(LE); }
     break;
 
   case 84:
 
 /* Line 1806 of yacc.c  */
-#line 279 "commands.y"
+#line 283 "commands.y"
     { (yyval) = NewTerm(PLUS); }
     break;
 
   case 85:
 
 /* Line 1806 of yacc.c  */
-#line 281 "commands.y"
+#line 285 "commands.y"
     { (yyval) = NewTerm(MINUS); }
     break;
 
   case 86:
 
 /* Line 1806 of yacc.c  */
-#line 283 "commands.y"
+#line 287 "commands.y"
     { (yyval) = NewTerm(TIMES); }
     break;
 
   case 87:
 
 /* Line 1806 of yacc.c  */
-#line 285 "commands.y"
+#line 289 "commands.y"
     { (yyval) = NewTerm(DIVIDE); }
     break;
 
   case 91:
 
 /* Line 1806 of yacc.c  */
-#line 291 "commands.y"
+#line 295 "commands.y"
     { (yyval) = (yyvsp[(2) - (3)]);
 		  TermTerm((yyval)) = (yyvsp[(1) - (3)]);
 		  TermTerm2((yyval)) = (yyvsp[(3) - (3)]);
@@ -1977,21 +1990,21 @@ yyreduce:
   case 92:
 
 /* Line 1806 of yacc.c  */
-#line 296 "commands.y"
+#line 300 "commands.y"
     { (yyval) = NewTerm1(UMINUS, (yyvsp[(2) - (2)])); }
     break;
 
   case 93:
 
 /* Line 1806 of yacc.c  */
-#line 298 "commands.y"
+#line 302 "commands.y"
     { (yyval) = (yyvsp[(2) - (3)]); }
     break;
 
   case 94:
 
 /* Line 1806 of yacc.c  */
-#line 300 "commands.y"
+#line 304 "commands.y"
     { int op = find_function_op(TermString((yyvsp[(1) - (4)])));
 		  if (op < 0)
 		  { if ((yyvsp[(3) - (4)])) free_term((yyvsp[(3) - (4)]));
@@ -2009,28 +2022,28 @@ yyreduce:
   case 95:
 
 /* Line 1806 of yacc.c  */
-#line 315 "commands.y"
-    { (yyval) = TermNULL; }
+#line 319 "commands.y"
+    { (yyval) = NIL; }
     break;
 
   case 97:
 
 /* Line 1806 of yacc.c  */
-#line 319 "commands.y"
-    { (yyval) = NewTerm1(PAIR, (yyvsp[(1) - (1)])); }
+#line 323 "commands.y"
+    { (yyval) = NewCons((yyvsp[(1) - (1)]), NIL); }
     break;
 
   case 98:
 
 /* Line 1806 of yacc.c  */
-#line 321 "commands.y"
-    { (yyval) = new_term(PAIR, (yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); }
+#line 325 "commands.y"
+    { (yyval) = NewCons((yyvsp[(1) - (3)]), (yyvsp[(3) - (3)])); }
     break;
 
 
 
 /* Line 1806 of yacc.c  */
-#line 2034 "y.tab.c"
+#line 2047 "y.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2261,13 +2274,13 @@ yyreturn:
 
 
 /* Line 2067 of yacc.c  */
-#line 324 "commands.y"
+#line 328 "commands.y"
  /*------------------------------------------------------------------------*/
 
 
 /*-----------------------------------------------------------------------------
 ** Function:	save_term()
-** Type:	static int
+** Type:	static void
 ** Purpose:	
 **		
 ** Arguments:
@@ -2275,13 +2288,19 @@ yyreturn:
 **	 a	
 ** Returns:	
 **___________________________________________________			     */
-static int save_term(t, a)			   /*                        */
+static void save_term(t, a)			   /*                        */
   Term t;					   /*                        */
   Term a;					   /*                        */
 {						   /*                        */
   TermTerm(t) = a; 				   /*                        */
-  result = new_term(PAIR, t, result);		   /*                        */
-  return 0;					   /*                        */
+ 						   /*                        */
+  if (result == NIL)				   /*                        */
+  { result     = NewCons(t, NIL);		   /*                        */
+    result_end = result;			   /*                        */
+  } else 					   /*                        */
+  { TermTerm2(result_end) = NewCons(t, NIL);  	   /*                        */
+    result_end = TermTerm2(result_end);		   /*                        */
+  }						   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -2303,11 +2322,12 @@ int yyerror(s)					   /*                        */
   }						   /*                        */
  						   /*                        */
   if (fgetc(in_file)  > 0)			   /*                        */
-  { fprintf(stderr,"*** %s at line %d\n%.32s\n",   /*                        */
+  { fprintf(stderr, "*** %s at line %d\n%.32s\n",  /*                        */
 	    s, linenum, "");			   /*                        */
   } else					   /*                        */
   { fprintf(stderr, "*** %s at EOF\n", s);	   /*                        */
   }						   /*                        */
+  return 0;					   /*                        */
 }						   /*------------------------*/
 
 #define GETC fgetc(in_file)
@@ -2400,7 +2420,8 @@ int yylex()					   /*                        */
       case '9':					   /*                        */
 	yylval = new_term_num(c - '0');		   /*                        */
 	for (c = GETC; c >= '0' && c <= '9'; c = GETC)/*                     */
-	{ TermNumber(yylval) = TermNumber(yylval) * 10 + c - '0';/*          */
+	{ TermNumber(yylval) = 			   /*                        */
+	    TermNumber(yylval) * 10 + c - '0';	   /*                        */
 	}					   /*                        */
 	UNGETC(c);				   /*                        */
 	return NUMBER;				   /*                        */
@@ -2411,7 +2432,7 @@ int yylex()					   /*                        */
 	{ StringBuffer *sb = sbopen();		   /*                        */
 	  char* s;				   /*                        */
 	  sbputc((char)c ,sb);			   /*                        */
-	  for (c = GETC; isalpha(c) || c == '_' || c == '.'; c = GETC)/*     */
+	  for (c = GETC; isalpha(c) || c == '_' || c == '.'; c = GETC) /*    */
 	  { sbputc((char)c ,sb); }		   /*                        */
 	  UNGETC(c);				   /*                        */
 	  s = sbflush(sb);			   /*                        */
@@ -2419,146 +2440,147 @@ int yylex()					   /*                        */
 	  { sbclose(sb); return T; }
 #define ON_T(S,T)  if (strcmp(S, s) == 0)	\
 	  { sbclose(sb);			\
-	    yylval = NewTerm1(T, new_term_string(S)); return T; }
+	    yylval = NewTerm(T);		\
+	    return T; }
 	  switch (*s)				   /*                        */
 	  { case 'a':				   /*                        */
 	      ON("and", AND)			   /*                        */
-	      ON_T("add.field", ADD_FIELD)
-	      ON_T("apply.alias", APPLY_ALIAS)
-	      ON_T("apply.modify", APPLY_MODIFY)
-	      ON_T("apply.include", APPLY_INCLUDE)
+	      ON_T("add.field", ADD_FIELD)	   /*                        */
+	      ON_T("apply.alias", APPLY_ALIAS)	   /*                        */
+	      ON_T("apply.modify", APPLY_MODIFY)   /*                        */
+	      ON_T("apply.include", APPLY_INCLUDE) /*                        */
 	      break;				   /*                        */
 	    case 'b':				   /*                        */
-	      ON_T("bibtex.env.name", BIBTEX_ENV_NAME)/*                       */
-	      ON_T("bibtex.search.path", BIBTEX_SEARCH_PATH)
+	      ON_T("bibtex.env.name", BIBTEX_ENV_NAME)/*                     */
+	      ON_T("bibtex.search.path", BIBTEX_SEARCH_PATH)/*               */
 	      break;				   /*                        */
 	    case 'c':				   /*                        */
-	      ON_T("check.double", CHECK_DOUBLE)
-	      ON_T("check.double.delete", CHECK_DOUBLE_DELETE)
-	      ON_T("check.rule", CHECK_RULE)
-	      ON_T("check.case.sensitive", CHECK_CASE_SENSITIVE)
-	      ON_T("clear.ignored.words", CLEAR_IGNORED_WORDS)
-	      ON_T("count.all", COUNT_ALL)
-	      ON_T("count.used", COUNT_USED)
-	      ON_T("crossref.limit", CROSSREF_LIMIT)
+	      ON_T("check.double", CHECK_DOUBLE)   /*                        */
+	      ON_T("check.double.delete", CHECK_DOUBLE_DELETE)/*             */
+	      ON_T("check.rule", CHECK_RULE)	   /*                        */
+	      ON_T("check.case.sensitive", CHECK_CASE_SENSITIVE)/*           */
+	      ON_T("clear.ignored.words", CLEAR_IGNORED_WORDS)/*             */
+	      ON_T("count.all", COUNT_ALL)	   /*                        */
+	      ON_T("count.used", COUNT_USED)	   /*                        */
+	      ON_T("crossref.limit", CROSSREF_LIMIT)/*                       */
 	      break;				   /*                        */
 	    case 'd':				   /*                        */
-	      ON_T("dir.file.separator", DIR_FILE_SEPARATOR)
-	      ON_T("default.key", DEFAULT_KEY)
-	      ON_T("delete.field", DELETE_FIELD)
-	      ON_T("dump.symbols", DUMP_SYMBOLS)
+	      ON_T("dir.file.separator", DIR_FILE_SEPARATOR)/*               */
+	      ON_T("default.key", DEFAULT_KEY)	   /*                        */
+	      ON_T("delete.field", DELETE_FIELD)   /*                        */
+	      ON_T("dump.symbols", DUMP_SYMBOLS)   /*                        */
 	      break;				   /*                        */
 	    case 'e':				   /*                        */
-	      ON_T("env.separator", ENV_SEPARATOR)
-	      ON_T("extract.file", EXTRACT_FILE)
-	      ON_T("extract.regex", EXTRACT_REGEX)
-	      ON_T("expand.macros", EXPAND_MACROS)
-	      ON_T("expand.crossref", EXPAND_CROSSREF)
+	      ON_T("env.separator", ENV_SEPARATOR) /*                        */
+	      ON_T("extract.file", EXTRACT_FILE)   /*                        */
+	      ON_T("extract.regex", EXTRACT_REGEX) /*                        */
+	      ON_T("expand.macros", EXPAND_MACROS) /*                        */
+	      ON_T("expand.crossref", EXPAND_CROSSREF)/*                     */
 	      break;				   /*                        */
 	    case 'f':				   /*                        */
 	      ON("false", B_OFF)		   /*                        */
-	      ON_T("fmt.inter.name", FMT_INTER_NAME)
-	      ON_T("fmt.name.pre", FMT_NAME_PRE)
-	      ON_T("fmt.name.name", FMT_NAME_NAME)
-	      ON_T("fmt.name.title", FMT_NAME_TITLE)
-	      ON_T("fmt.title.title", FMT_TITLE_TITLE)
-	      ON_T("fmt.et.al", FMT_ET_AL)
-	      ON_T("fmt.word.separator", FMT_WORD_SEPARATOR)
-	      ON_T("field.type", FIELD_TYPE)
+	      ON_T("fmt.inter.name", FMT_INTER_NAME)/*                       */
+	      ON_T("fmt.name.pre", FMT_NAME_PRE)   /*                        */
+	      ON_T("fmt.name.name", FMT_NAME_NAME) /*                        */
+	      ON_T("fmt.name.title", FMT_NAME_TITLE)/*                       */
+	      ON_T("fmt.title.title", FMT_TITLE_TITLE)/*                     */
+	      ON_T("fmt.et.al", FMT_ET_AL)	   /*                        */
+	      ON_T("fmt.word.separator", FMT_WORD_SEPARATOR)/*               */
+	      ON_T("field.type", FIELD_TYPE)	   /*                        */
 	      break;				   /*                        */
 	    case 'i':				   /*                        */
 	      ON("ilike", ILIKE)		   /*                        */
 	      ON_T("input", INPUT)		   /*                        */
-	      ON_T("ignored.word", IGNORED_WORD)
+	      ON_T("ignored.word", IGNORED_WORD)   /*                        */
 	      break;				   /*                        */
 	    case 'k':				   /*                        */
-	      ON_T("key.generation", KEY_GENERATION)
-	      ON_T("key.base", KEY_BASE)
-	      ON_T("key.format", KEY_FORMAT)
-	      ON_T("key.make.alias", KEY_MAKE_ALIAS)
-	      ON_T("key.number.separator", KEY_NUMBER_SEPARATOR)
-	      ON_T("key.expand.macros", KEY_EXPAND_MACROS)
+	      ON_T("key.generation", KEY_GENERATION)/*                       */
+	      ON_T("key.base", KEY_BASE)	   /*                        */
+	      ON_T("key.format", KEY_FORMAT)	   /*                        */
+	      ON_T("key.make.alias", KEY_MAKE_ALIAS)/*                       */
+	      ON_T("key.number.separator", KEY_NUMBER_SEPARATOR)/*           */
+	      ON_T("key.expand.macros", KEY_EXPAND_MACROS)/*                 */
 	      break;				   /*                        */
 	    case 'l':				   /*                        */
 	      ON("like", LIKE)			   /*                        */
 	      break;				   /*                        */
 	    case 'm':				   /*                        */
-	      ON_T("macro.file", MACRO_FILE)
+	      ON_T("macro.file", MACRO_FILE)	   /*                        */
 	      break;				   /*                        */
 	    case 'n':				   /*                        */
 	      ON("not", NOT)			   /*                        */
-	      ON_T("new.entry.type", NEW_ENTRY_TYPE)
-	      ON_T("new.field.type", NEW_FIELD_TYPE)
-	      ON_T("new.format.type", NEW_FORMAT_TYPE)
+	      ON_T("new.entry.type", NEW_ENTRY_TYPE)/*                       */
+	      ON_T("new.field.type", NEW_FIELD_TYPE)/*                       */
+	      ON_T("new.format.type", NEW_FORMAT_TYPE)/*                     */
 	      break;				   /*                        */
 	    case 'o':				   /*                        */
 	      ON("off", B_OFF)			   /*                        */
 	      ON("on", B_ON)			   /*                        */
 	      ON("or", OR)			   /*                        */
-	      ON_T("output.file", OUTPUT_FILE)
+	      ON_T("output.file", OUTPUT_FILE)	   /*                        */
 	      break;				   /*                        */
 	    case 'p':				   /*                        */
-	      ON_T("print.entry.types", PRINT_ENTRY_TYPES)
-	      ON_T("print.deleted.prefix", PRINT_DELETED_PREFIX)
-	      ON_T("pass.comments", PASS_COMMENTS)
-	      ON_T("preserve.key.case", PRESERVE_KEY_CASE)
-	      ON_T("preserve.keys", PRESERVE_KEYS)
-	      ON_T("print", PRINT)
-	      ON_T("print.align.string", PRINT_ALIGN_STRING)
-	      ON_T("print.align.comment", PRINT_ALIGN_COMMENT)
-	      ON_T("print.align.preamble", PRINT_ALIGN_PREAMBLE)
-	      ON_T("print.align.key", PRINT_ALIGN_KEY)
-	      ON_T("print.align", PRINT_ALIGN)
-	      ON_T("print.all.strings", PRINT_ALL_STRINGS)
-	      ON_T("print.equal.right", PRINT_EQUAL_RIGHT)
-	      ON_T("print.braces", PRINT_BRACES)
-	      ON_T("print.comma.at.end", PRINT_COMMA_AT_END)
-	      ON_T("print.deleted.entries", PRINT_DELETED_ENTRIES)
-	      ON_T("print.indent", PRINT_INDENT)
-	      ON_T("print.line.length", PRINT_LINE_LENGTH)
-	      ON_T("print.newline", PRINT_NEWLINE)
-	      ON_T("print.parentheses", PRINT_PARENTHESES)
-	      ON_T("print.terminal.comma", PRINT_TERMINAL_COMMA)
-	      ON_T("print.use.tab", PRINT_USE_TAB)
-	      ON_T("print.wide.equal", PRINT_WIDE_EQUAL)
+	      ON_T("print.entry.types", PRINT_ENTRY_TYPES)/*                 */
+	      ON_T("print.deleted.prefix", PRINT_DELETED_PREFIX)/*           */
+	      ON_T("pass.comments", PASS_COMMENTS) /*                        */
+	      ON_T("preserve.key.case", PRESERVE_KEY_CASE)/*                 */
+	      ON_T("preserve.keys", PRESERVE_KEYS) /*                        */
+	      ON_T("print", PRINT)		   /*                        */
+	      ON_T("print.align.string", PRINT_ALIGN_STRING)/*               */
+	      ON_T("print.align.comment", PRINT_ALIGN_COMMENT)/*             */
+	      ON_T("print.align.preamble", PRINT_ALIGN_PREAMBLE)/*           */
+	      ON_T("print.align.key", PRINT_ALIGN_KEY)/*                     */
+	      ON_T("print.align", PRINT_ALIGN)	   /*                        */
+	      ON_T("print.all.strings", PRINT_ALL_STRINGS)/*                 */
+	      ON_T("print.equal.right", PRINT_EQUAL_RIGHT)/*                 */
+	      ON_T("print.braces", PRINT_BRACES)   /*                        */
+	      ON_T("print.comma.at.end", PRINT_COMMA_AT_END)/*               */
+	      ON_T("print.deleted.entries", PRINT_DELETED_ENTRIES)/*         */
+	      ON_T("print.indent", PRINT_INDENT)   /*                        */
+	      ON_T("print.line.length", PRINT_LINE_LENGTH)/*                 */
+	      ON_T("print.newline", PRINT_NEWLINE) /*                        */
+	      ON_T("print.parentheses", PRINT_PARENTHESES)/*                 */
+	      ON_T("print.terminal.comma", PRINT_TERMINAL_COMMA)/*           */
+	      ON_T("print.use.tab", PRINT_USE_TAB) /*                        */
+	      ON_T("print.wide.equal", PRINT_WIDE_EQUAL)/*                   */
 	      break;				   /*                        */
 	    case 'q':				   /*                        */
 	      ON_T("quiet", QUIET)		   /*                        */
 	      break;				   /*                        */
 	    case 'r':				   /*                        */
-	      ON_T("regexp.syntax", REGEXP_SYNTAX)
-	      ON_T("rename.field", RENAME_FIELD)
-	      ON_T("resource", RESOURCE)
-	      ON_T("resource.search.path", RESOURCE_SEARCH_PATH)
-	      ON_T("rewrite.rule", REWRITE_RULE)
-	      ON_T("rewrite.case.sensitive", REWRITE_CASE_SENSITIVE)
-	      ON_T("rewrite.limit", REWRITE_LIMIT)
+	      ON_T("regexp.syntax", REGEXP_SYNTAX) /*                        */
+	      ON_T("rename.field", RENAME_FIELD)   /*                        */
+	      ON_T("resource", RESOURCE)	   /*                        */
+	      ON_T("resource.search.path", RESOURCE_SEARCH_PATH)/*           */
+	      ON_T("rewrite.rule", REWRITE_RULE)   /*                        */
+	      ON_T("rewrite.case.sensitive", REWRITE_CASE_SENSITIVE)/*       */
+	      ON_T("rewrite.limit", REWRITE_LIMIT) /*                        */
 	      break;				   /*                        */
 	    case 's':				   /*                        */
-	      ON_T("select.by.string.ignored", SELECT_BY_STRING_IGNORED)
-	      ON_T("select.fields", SELECT_FIELDS)
-	      ON_T("select", SELECT)
-	      ON_T("select.by.string", SELECT_BY_STRING)
-	      ON_T("select.by.non.string", SELECT_BY_NON_STRING)
-	      ON_T("select.case.sensitive", SELECT_CASE_SENSITIVE)
-	      ON_T("select.non", SELECT_NON)
-	      ON_T("select.crossrefs", SELECT_CROSSREFS)
-	      ON_T("sort", SORT)
-	      ON_T("sort.cased", SORT_CASED)
-	      ON_T("sort.macros", SORT_MACROS)
-	      ON_T("sort.reverse", SORT_REVERSE)
-	      ON_T("sort.order", SORT_ORDER)
-	      ON_T("sort.format", SORT_FORMAT)
-	      ON_T("suppress.initial.newline", SUPPRESS_INITIAL_NEWLINE)
-	      ON_T("symbol.type", SYMBOL_TYPE)
+	      ON_T("select.by.string.ignored", SELECT_BY_STRING_IGNORED)/*   */
+	      ON_T("select.fields", SELECT_FIELDS) /*                        */
+	      ON_T("select", SELECT)		   /*                        */
+	      ON_T("select.by.string", SELECT_BY_STRING)/*                   */
+	      ON_T("select.by.non.string", SELECT_BY_NON_STRING)/*           */
+	      ON_T("select.case.sensitive", SELECT_CASE_SENSITIVE)/*         */
+	      ON_T("select.non", SELECT_NON)	   /*                        */
+	      ON_T("select.crossrefs", SELECT_CROSSREFS)/*                   */
+	      ON_T("sort", SORT)		   /*                        */
+	      ON_T("sort.cased", SORT_CASED)	   /*                        */
+	      ON_T("sort.macros", SORT_MACROS)	   /*                        */
+	      ON_T("sort.reverse", SORT_REVERSE)   /*                        */
+	      ON_T("sort.order", SORT_ORDER)	   /*                        */
+	      ON_T("sort.format", SORT_FORMAT)	   /*                        */
+	      ON_T("suppress.initial.newline", SUPPRESS_INITIAL_NEWLINE)/*   */
+	      ON_T("symbol.type", SYMBOL_TYPE)	   /*                        */
 	      break;				   /*                        */
 	    case 't':				   /*                        */
-	      ON_T("tex.define", TEX_DEFINE)
+	      ON_T("tex.define", TEX_DEFINE)	   /*                        */
 	      ON("true", B_ON)			   /*                        */
 	      break;				   /*                        */
 	    case 'v':				   /*                        */
 	      ON_T("verbose", VERBOSE)		   /*                        */
-	      ON_T("version", VERSION)
+	      ON_T("version", VERSION)		   /*                        */
 	      break;				   /*                        */
 	  }					   /*                        */
 	  yylval = new_term_string(FIELD, s);	   /*                        */
@@ -2613,11 +2635,17 @@ int find_function_op(s)				   /*                        */
 Term eval_command(fname)			   /*                        */
   char * fname;					   /*                        */
 {						   /*                        */
-  if (t_true == TermNULL) t_true = new_term_num(1);/*                        */
-  if (t_false == TermNULL) t_false = new_term_num(0);/*                      */
- 						   /*                        */
+  if (t_true == NIL)			   /*                        */
+  { t_true	   = new_term_num(1);		   /*                        */
+    TermOp(t_true) = BOOLEAN;			   /*                        */
+  }						   /*                        */
+  if (t_false == NIL)			   /*                        */
+  { t_false = new_term_num(0);			   /*                        */
+    TermOp(t_false) = BOOLEAN;			   /*                        */
+  }						   /*                        */
+  						   /*                        */
   in_file = fopen(fname, "r");			   /*                        */
-  if (in_file == NULL) return TermNULL;		   /*                        */
+  if (in_file == NULL) return NIL;		   /*                        */
  						   /*                        */
   while (yyparse()) ;		   		   /*                        */
  						   /*                        */
