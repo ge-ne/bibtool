@@ -53,7 +53,7 @@ bibtool.ind ind index: bibtool.idx
 
 ##-----------------------------------------------------------------------------
 
-config.tex: ..$(DIR_SEP)version.c
+config.tex: ..$(DIR_SEP)version.c .$(DIR_SEP)make_version.pl
 	.$(DIR_SEP)make_version.pl ..$(DIR_SEP)version.c > $*.tex
 
 ##-----------------------------------------------------------------------------

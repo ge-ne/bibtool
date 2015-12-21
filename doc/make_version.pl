@@ -57,7 +57,7 @@ my $year = 1900 + $_[5];
 
 while(<>) {
   $version = $1 if m/bibtool_version *= *"([0-9.]*)/;
-  $year = $1 if m/\$Id: make_version.pl,v 1.3 2011-11-27 14:25:46 gene Exp $/;
+  $year    = $1 if m/bibtool_year *= *"([0-9]*)/;
 }
 
 die "*** Missing version\n" if not defined $version;
