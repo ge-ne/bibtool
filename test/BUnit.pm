@@ -67,7 +67,7 @@ our $VERSION = ('$Revision: 1.17 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
 # Variable:	$BIBTOOL
 # Description:	
 #
-our $BIBTOOL = '../bibtool';
+our $BIBTOOL = $ENV{'BIBTOOL_PRG'} || '../bibtool';
 
 #------------------------------------------------------------------------------
 # Variable:	%summary
@@ -81,13 +81,13 @@ our %summary = ();
 #
 our %names = ();
 
-our ($success,$ignored,$failure);
+our ($success, $ignored, $failure);
 
 #------------------------------------------------------------------------------
 # Function:	out
 #
 sub out (@) {
-  print STDERR @_ if $verbose;
+  print @_ if $verbose;
 }
 
 #------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ sub run {
   my $prepare = $a{prepare};
 
   if (defined $names{$name}) {
-    out "*** Warning: Multiple test cases named $name\n";
+    print STDERR "*** Warning: Multiple test cases named $name\n";
   } else {
     $names{$name} = 1;
   }
@@ -147,7 +147,7 @@ sub run {
 # Function:	store_file
 #
 sub store_file  {
-  my ($file,$content, $ret) = @_;
+  my ($file, $content, $ret) = @_;
   return '' if not defined $content;
 
   local $_ = new FileHandle($file,'w') || die "$file: $!\n";
@@ -183,7 +183,7 @@ sub check {
       my $fd = new FileHandle("$file-expected",'w') || die("$file-expected: $!\n");
       print $fd $expected;
       $fd->close();
-      out "\n***\tSee actual $type in $file; ";
+      print STDERR "\n***\tSee actual $type in $file; " if $verbose;
       return 1;
     }
   }

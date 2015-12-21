@@ -26,13 +26,13 @@
 EXT =
 
 # -----------------------------------------------------------------------------
-BIBTOOL  = ../bibtool$(EXT)
-PERL     = perl
+BIBTOOL_PRG  = ../bibtool$(EXT)
+PERL         = perl
 
-default all: $(BIBTOOL) $(SUITES)
-	@${PERL} -MBUnit -e "exit all()"
+default check all: $(BIBTOOL_PRG) $(SUITES)
+	@BIBTOOL_PRG=$(BIBTOOL_PRG) ${PERL} -MBUnit -e "exit all()"
 
-$(BIBTOOL): ../*.c ../*.h ../include/bibtool/*.h ../regex-0.12/*.[ch]
+../bibtool$(EXT): ../*.c ../*.h ../include/bibtool/*.h ../regex-0.12/*.[ch]
 	(cd ..; make)
 
 clean:
@@ -44,7 +44,7 @@ distclean: clean
 
 .SUFFIXES: .t .test $(SUFFIXES)
 
-.t.test: $(BIBTOOL)
-	@${PERL} -I. $<
+.t.test: $(BIBTOOL_PRG)
+	@BIBTOOL_PRG=$(BIBTOOL_PRG) $(PERL) -I. $<
 
 #
