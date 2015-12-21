@@ -3,6 +3,8 @@
 %%-----------------------------------------------------------------------------
 \documentclass[11pt,a4paper]{scrartcl}
 
+\usepackage{multicol}
+
 \newenvironment{Developers}{}{}
 \newcommand\Developer[3]{}
 \newcommand\Arg[1]{\texttt{#1}}
@@ -11,7 +13,10 @@
 \newcommand\BibTool{\textsc{BibTool}}
 \newcommand\BibTcl{\textsc{BibTcl}}
 \newcommand\BibTeX{\textsc{Bib}\TeX}
-\newenvironment{Release}[2]{\section*{Release #1}\begin{itemize}}{\end{itemize}}
+\newenvironment{Release}[2]{%
+  \section*{Release #1 {\normalsize[#2]}}
+  \begin{itemize}
+}{\end{itemize}}
 \newenvironment{Fix}[1]{\item }{}
 \newenvironment{New}[1]{\item }{}
 \newenvironment{Doc}[1]{\item }{}
@@ -22,12 +27,14 @@
 
 \title{\BibTool{} Change Log}
 \author{Gerd Neugebauer}
-%\date{}
+\date{}
 \maketitle
 
 \begin{Developers}
   \Developer{gene}{Gerd Neugebauer}{gene@gerd-neugebauer.de}
 \end{Developers}
+
+\begin{multicols}2
 
  % =====================================================================
  \begin{Release}{2.62}{?? ??, 2015}
@@ -47,7 +54,7 @@
     field.
   \end{New}
   \begin{Update}{gene}
-    Typedef |String| for |Uchar*| and used across.
+    Typedef \verb|String| for \verb|Uchar*| and used across.
   \end{Update}
   \begin{Fix}{gene}
     Duplicate file \File{doc/bibtool.tex} in the distribution tar ball
@@ -58,8 +65,9 @@
  % =====================================================================
  \begin{Release}{2.60}{June 9, 2015}
   \begin{Fix}{gene}
-    The field name and other symbols may start with any allowed character.
-    Non-alpha characters at the beginning are treated as warning only.
+    The field name and other symbols may start with any allowed
+    character. Non-alpha characters at the beginning are treated as
+    warning only.
   \end{Fix}
  \end{Release}
 
@@ -184,8 +192,8 @@
  % =====================================================================
  \begin{Release}{2.52}{June 6, 2011}
   \begin{Fix}{gene}
-    A few incompatibilities with signed and unsigned characters which showed up
-    on MacOS only have been fixed.
+    A few incompatibilities with signed and unsigned characters which
+    showed up on MacOS only have been fixed.
   \end{Fix}
  % \end{Release}
  % =====================================================================
@@ -206,16 +214,17 @@
  % =====================================================================
  \begin{Release}{2.50}{May 12, 2010}
   \begin{Fix}{gene}
-    Bugfix in \File{names.c}: The classification of name parts erroneously has
-    used a wrong translation under certain circumstances.
+    Bugfix in \File{names.c}: The classification of name parts
+    erroneously has used a wrong translation under certain
+    circumstances.
   \end{Fix}
  %\end{Release}
  % =====================================================================
  %\begin{Release}{2.50}{February 6, 2010}
   \begin{Fix}{gene}
-    Bugfix in \File{key.c}: The classification of name parts erroneously has
-    considered, to be a first name under certain circumstances. This has been
-    improved.
+    Bugfix in \File{key.c}: The classification of name parts
+    erroneously has considered, to be a first name under certain
+    circumstances. This has been improved.
   \end{Fix}
   \begin{Fix}{gene}
     Improvement in \File{names.c} and \File{key.c} concerning printing in
@@ -227,30 +236,33 @@
  \begin{Release}{2.49}{February 8, 2007}
   \begin{New}{gene}
     New resource \rsc{expand.crossref} introduced. This resource
-    enables the expansion of fields inherited via the crossref mechanism.
+    enables the expansion of fields inherited via the crossref
+    mechanism.
   \end{New}
   \begin{Fix}{gene}
-    Bugfix in \File{names.c}: The classification of name parts erroneously has
-    considered the initials V., I., and X. to be Roman numerals belonging to
-    the jr part under special circumstances. This has been improved.
+    Bugfix in \File{names.c}: The classification of name parts
+    erroneously has considered the initials V., I., and X. to be Roman
+    numerals belonging to the jr part under special circumstances.
+    This has been improved.
   \end{Fix}
 
  % =====================================================================
  %\begin{Release}{2.49}{January 5, 2010}
   \begin{New}{gene}
-    Name formatting now uses a fractional part to restrict the number of name
-    parts considered.
+    Name formatting now uses a fractional part to restrict the number
+    of name parts considered.
   \end{New}
 
  % =====================================================================
  %\begin{Release}{2.49}{February 8, 2007}
   \begin{New}{gene}
     New resource \rsc{expand.crossref} introduced. This resource
-    enables the expansion of fields inherited via the crossref mechanism.
+    enables the expansion of fields inherited via the crossref
+    mechanism.
   \end{New}
   \begin{Fix}{gene}
-    Bugfix in \File{print.c}: Some national characters have been lost. It was
-    necessary to use an unsigned character as elsewhere.
+    Bugfix in \File{print.c}: Some national characters have been lost.
+    It was necessary to use an unsigned character as elsewhere.
   \end{Fix}
  \end{Release}
 
@@ -258,8 +270,8 @@
  \begin{Release}{2.48}{August 6, 2004}
   \begin{New}{gene}
     Resource \rsc{print.terminal.comma} introduced. This resource can
-    be used to request commas after the last record even if it contradicts the
-    rules of \BibTeX.
+    be used to request commas after the last record even if it
+    contradicts the rules of \BibTeX.
   \end{New}
   \begin{New}{gene}
     \File{makefile.in} for configure extended to support the variable
@@ -267,7 +279,8 @@
     directories.
   \end{New}
   \begin{Fix}{gene}
-    Bugfix in \File{main.c}: Some compilers didn't like the method true().
+    Bugfix in \File{main.c}: Some compilers didn't like the method
+    true().
   \end{Fix}
   \begin{Fix}{gene}
     Bugfix for kpathsea under Suse 9.1.
@@ -315,11 +328,12 @@
   \end{Fix}
   \begin{Fix}{gene}
     Bugfix: Bug in parsing of backslashes in resources has been fixed.
-    Unfortunately this bug appeared in one of the examples in the manual.
+    Unfortunately this bug appeared in one of the examples in the
+    manual.
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfix: Bug in expansion introduced in 2.47 has been fixed. An error
-    occurred when expanding macros.
+    Bugfix: Bug in expansion introduced in 2.47 has been fixed. An
+    error occurred when expanding macros.
   \end{Fix}
   \begin{New}{gene}
     The resource loading with \rsc{resource} now issues a warning when
@@ -330,16 +344,16 @@
     documented.
   \end{Doc}
   \begin{Fix}{gene}
-    Bugfix: \BibTool{} has misinterpreted pre for the format specifier \%t and
-  \%T due to an over-optimization. This has been fixed.
+    Bugfix: \BibTool{} has misinterpreted pre for the format specifier
+    \%t and \%T due to an over-optimization. This has been fixed.
   \end{Fix}
   \begin{Fix}{gene}
     Bugfix: \BibTool{} has ignored \rsc{preserve.key.case} for
     cross-referenced keys. This has been fixed.
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfix: Some compilers don't like it if static strings are modified. Thus
-    I have made them dynamic.
+    Bugfix: Some compilers don't like it if static strings are
+    modified. Thus I have made them dynamic.
   \end{Fix}
   \begin{New}{gene}
     Experimental feature \rsc{regexp.syntax} added.
@@ -358,20 +372,22 @@
   \end{Doc}
   \begin{New}{gene}
     Resource \rsc{fmt.word.separator} introduced. This resource can be
-    used to mark additional characters to be considered as word separators.
+    used to mark additional characters to be considered as word
+    separators.
   \end{New}
   \begin{Fix}{gene}
     Bugfix: \BibTool{} looped when a malformed string of some kind was
     given to expansion. This has been fixed in \verb|expand()|.
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfix: \BibTool{} crashed when called with empty format string due to an
-    uninitialized variable. This has been fixed in \verb|parse_fmt()|.
+    Bugfix: \BibTool{} crashed when called with empty format string
+    due to an uninitialized variable. This has been fixed in
+    \verb|parse_fmt()|.
   \end{Fix}
   \begin{Doc}{gene}
-    Bugfix: Documentation bug fixed. The default for
-    \rsc{sort.key} should be \verb|%s($key)|. This
-    has been fixed in \File{Lib/default.rsc} and the manual.
+    Bugfix: Documentation bug fixed. The default for \rsc{sort.key}
+    should be \verb|%s($key)|. This has been fixed in
+    \File{Lib/default.rsc} and the manual.
   \end{Doc}
  \end{Release}
 
@@ -379,8 +395,8 @@
  \begin{Release}{2.46}{February 12 2002}
   \begin{New}{gene}
     Resource \rsc{sort.cased} introduced to allow the sorting order to
-    take advantage of upper and lower case characters. The default is false
-    which is the previous behavior.
+    take advantage of upper and lower case characters. The default is
+    false which is the previous behavior.
   \end{New}
  \end{Release}
 
@@ -391,12 +407,13 @@
     empty line at the beginning of the output file.
   \end{New}
   \begin{Fix}{gene}
-    Bugfix: Some C compilers don't like the initialization of static variables
-    with \texttt{stderr}. The code has been moved to a initialization routine.
+    Bugfix: Some C compilers don't like the initialization of static
+    variables with \texttt{stderr}. The code has been moved to a
+    initialization routine.
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfix: \texttt{-R} disables the reading of the resource at the end of
-    processing of command line arguments.
+    Bugfix: \texttt{-R} disables the reading of the resource at the
+    end of processing of command line arguments.
   \end{Fix}
   \begin{Fix}{gene}
     Bugfix: Parsing of select arguments with backslashes were not treated
@@ -410,18 +427,18 @@
  % =====================================================================
  \begin{Release}{2.44}{April 7 1999}
   \begin{Fix}{gene}
-    Key generation fixed to expand \BibTeX{} strings. The current behavior is
-    likely to change again in a future release.
+    Key generation fixed to expand \BibTeX{} strings. The current
+    behavior is likely to change again in a future release.
   \end{Fix}
   \begin{Update}{gene}
     Updated to work with kpathsea 3.1 (partially).
   \end{Update}
   \begin{New}{gene}
-    Searching for the kpathsea library is now the default in the configure
-    script. Thus it is possible to simply place \BibTool{} in a web2c tree.
-    This only requires that the directory is named bibtool and bibtool is
-    added to the filelists in Makefile, configure, and configure.in of the
-    web2c main directory.
+    Searching for the kpathsea library is now the default in the
+    configure script. Thus it is possible to simply place \BibTool{}
+    in a web2c tree. This only requires that the directory is named
+    bibtool and bibtool is added to the filelists in Makefile,
+    configure, and configure.in of the web2c main directory.
   \end{New}
   \begin{Fix}{gene}
     \rsc{check.double} message improved.
@@ -430,19 +447,21 @@
     Initialization bug for kpathsea fixed.
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfix for cross referencing: normalization to lowercase was missing
-    twice.
+    Bugfix for cross referencing: normalization to lowercase was
+    missing twice.
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfix in the \TeX{} reading routines: spaces after active characters are
-    not ignored. All characters are treated as unsigned. This seems to be
-    preferrable for extended ASCII characters.
+    Bugfix in the \TeX{} reading routines: spaces after active
+    characters are not ignored. All characters are treated as
+    unsigned. This seems to be preferrable for extended ASCII
+    characters.
   \end{Fix}
   \begin{Update}{gene}
-    Key generation routines adapted to work with multiple databases. The
-    symbol table is no longer abused to store information for the key
-    generation. This may slow down the key generation a little bit. If it
-    turns out to be a problem I will use a better algorithm.
+    Key generation routines adapted to work with multiple databases.
+    The symbol table is no longer abused to store information for the
+    key generation. This may slow down the key generation a little
+    bit. If it turns out to be a problem I will use a better
+    algorithm.
   \end{Update}
   \begin{Update}{gene}
     Minor modifications in makefiles.
@@ -451,8 +470,9 @@
     The configuration of \BibTcl{} is now done automatically.
   \end{New}
   \begin{New}{gene}
-    New datatype introduced: \verb|Uchar| will hold UniCode characters in a
-    future release. I just have to find regexp routines to work with UTF-8.
+    New datatype introduced: \verb|Uchar| will hold UniCode characters
+    in a future release. I just have to find regexp routines to work
+    with UTF-8.
   \end{New}
   \begin{Update}{gene}
     Extraction extended to allow negation of the regular
@@ -481,10 +501,10 @@
     Minor bugfix in rewriting code: empty pattern works again.
   \end{Fix}
   \begin{Fix}{gene}
-    The regression tests have revealed a bugfix in the key generation code. I
-    am not aware of the change that has let to this effect but the new
-    behaviour is correct. Before, the macro expansion was suppressed under
-    certain circumstances.
+    The regression tests have revealed a bugfix in the key generation
+    code. I am not aware of the change that has let to this effect but
+    the new behaviour is correct. Before, the macro expansion was
+    suppressed under certain circumstances.
   \end{Fix}
   \begin{New}{gene}
     \BibTcl: \verb|bibtool count db| added.
@@ -1362,6 +1382,7 @@
   \item[]
  \end{Release}
 
+\end{multicols}
 
 \end{document}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
