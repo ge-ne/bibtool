@@ -46,6 +46,8 @@ sub usage
 #
 my $verbose = 0;
 
+my $LIBDIR = '/usr/local/lib/BibTool'
+
 use Getopt::Long;
 GetOptions("h|help"	=> \&usage,
 	   "v|verbose"	=> \$verbose,
@@ -74,7 +76,7 @@ print <<__EOF__;
 %% Net: gene\@gerd-neugebauer.de
 %%
 %%********************************************************
-\\newcommand\\LIBDIR{/usr/local/lib/BibTool}
+\\newcommand\\LIBDIR{$LIBDIR}
 \\newcommand\\Year{$year}
 \\newcommand\\Version{$version}
 __EOF__
