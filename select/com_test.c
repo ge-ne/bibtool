@@ -26,6 +26,7 @@
 
 /*---------------------------------------------------------------------------*/
 
+  int verbose = FALSE;			   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	usage()
@@ -55,7 +56,6 @@ int main(argc, argv)				   /*                        */
   char *argv[];					   /*                        */
 { int i;					   /*                        */
   int in	  = 1;				   /*                        */
-  int verbose = FALSE;			   	   /*                        */
  						   /*                        */
   for (i = 1; i < argc; i++)			   /*                        */
   {						   /*                        */
@@ -72,102 +72,6 @@ int main(argc, argv)				   /*                        */
     { dump_term(stdout, eval_command(argv[i]));	   /*                        */
     }						   /*                        */
   }						   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	fail()
-** Type:	int
-** Purpose:	
-**		
-** Arguments:
-**	id	
-**	 msg	
-** Returns:	
-**___________________________________________________			     */
-int fail(id, msg)				   /*                        */
-  char * id;					   /*                        */
-  char * msg;					   /*                        */
-{						   /*                        */
-  fprintf(stderr,"--- %s: %s\n", id, msg);	   /*                        */
-  return 0;					   /*                        */
-}						   /*------------------------*/
-
-#define TEST_FILE ".test"
-#define TEST_OUT ".test-out"
-
-/*-----------------------------------------------------------------------------
-** Function:	expect()
-** Type:	int
-** Purpose:	
-**		
-** Arguments:
-**	id	
-**	 in	
-**	 out	
-** Returns:	
-**___________________________________________________			     */
-int expect(id, in, out)				   /*                        */
-  char *id;					   /*                        */
-  char *in;					   /*                        */
-  char *out;					   /*                        */
-{						   /*                        */
-  int size;					   /*                        */
-  char * s;					   /*                        */
-  FILE * is = fopen(TEST_FILE, "w");		   /*                        */
-  if (is == NULL) return fail(id, "Opening .test failed");/*                 */
-  fputs(in, is);				   /*                        */
-  fclose(is);					   /*                        */
- 						   /*                        */
-  Term t = eval_command(TEST_FILE);		   /*                        */
-  if (t == NIL) return fail(id, "Parsing failed"); /*                        */
-  FILE *os = fopen(TEST_OUT, "w");		   /*                        */
-  if (os == NULL) return fail(id, "Opening .test-out failed");/*             */
-  fclose(os);					   /*                        */
- 						   /*                        */
-  FILE * fp = fopen(TEST_OUT, "r");		   /*                        */
-  if (fp == NULL) return fail(id, "Opening .test-out for reading failed");/* */
-  fseek(fp, 0L, SEEK_END);			   /*                        */
-  size = ftell(fp);				   /*                        */
-  fseek(fp, 0L, SEEK_SET);			   /*                        */
-  s = malloc(size);				   /*                        */
-  read(fp, s, size);
-  fclose(fp);					   /*                        */
-
-  if (strcmp(out,s) != 0) {
-    fprintf(stderr, "*** %s\n>%s\n<%s\n", id, s, out);
-    return 1;
-  }
-  return 0;
-}						   /*------------------------*/
-
-/*---------------------------------------------------------------------------*/
-void select_1()					   /*                        */
-{ expect("select_1", "verbose = on\n", "");	   /*                        */
-}						   /*------------------------*/
-
-/*---------------------------------------------------------------------------*/
-void select_num_1()				   /*                        */
-{ expect("select_num_1", "crossref.limit = 123\n", "");/*                    */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	run_tests()
-** Type:	int
-** Purpose:	
-**		
-** Arguments:
-**		
-** Returns:	
-**___________________________________________________			     */
-int run_tests(s)				   /*                        */
-  char * s;
-{						   /*                        */
-#define TEST(CASE, FCT)  if (s == NULL || strcmp(s, CASE) == 0) FCT
-
-  TEST("select_num_1", select_num_1());
-  TEST("select_1", select_1());
-
-  return 0;
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -209,4 +113,100 @@ void save_output_file(file)			   /*                        */
   char * file;					   /*                        */
 {}						   /*                        */
 
+/*-----------------------------------------------------------------------------
+** Function:	fail()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**	id	
+**	 msg	
+** Returns:	
+**___________________________________________________			     */
+int fail(id, msg)				   /*                        */
+  char * id;					   /*                        */
+  char * msg;					   /*                        */
+{						   /*                        */
+  fprintf(stderr,"--- %s: %s\n", id, msg);	   /*                        */
+  return 0;					   /*                        */
+}						   /*------------------------*/
 
+#define TEST_FILE ".test"
+#define TEST_OUT ".test-out"
+
+/*-----------------------------------------------------------------------------
+** Function:	expect()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**	id	
+**	 in	
+**	 out	
+** Returns:	
+**___________________________________________________			     */
+int expect(id, in, out)				   /*                        */
+  char *id;					   /*                        */
+  char *in;					   /*                        */
+  char *out;					   /*                        */
+{ int size;					   /*                        */
+  char * s;					   /*                        */
+  FILE * is = fopen(TEST_FILE, "w");		   /*                        */
+  if (is == NULL) return fail(id, "Opening .test failed");/*                 */
+  fputs(in, is);				   /*                        */
+  fclose(is);					   /*                        */
+ 						   /*                        */
+  Term t = eval_command(TEST_FILE);		   /*                        */
+  if (t == NIL) return fail(id, "Parsing failed"); /*                        */
+  FILE *os = fopen(TEST_OUT, "w");		   /*                        */
+  if (os == NULL) return fail(id, "Opening .test-out failed");/*             */
+  fclose(os);					   /*                        */
+ 						   /*                        */
+  FILE * fp = fopen(TEST_OUT, "r");		   /*                        */
+  if (fp == NULL) return fail(id, "Opening .test-out for reading failed");/* */
+  fseek(fp, 0L, SEEK_END);			   /*                        */
+  size = ftell(fp);				   /*                        */
+  fseek(fp, 0L, SEEK_SET);			   /*                        */
+  s = malloc(size);				   /*                        */
+  read(fp, s, size);
+  fclose(fp);					   /*                        */
+
+  if (strcmp(out,s) != 0)
+  { fprintf(stderr, "*** %s\n>%s\n<%s\n", id, s, out);
+    return 1;
+  }
+  if ( verbose)
+  { fprintf(stderr, "*** %s\n>%s\n<%s\n", id, s, out);
+  }
+  return 0;
+}						   /*------------------------*/
+
+/*---------------------------------------------------------------------------*/
+void verbose_1()				   /*                        */
+{ expect("verbose_1", "verbose = on\n", "");	   /*                        */
+}						   /*------------------------*/
+
+/*---------------------------------------------------------------------------*/
+void select_num_1()				   /*                        */
+{ expect("select_num_1", "crossref.limit = 123\n", "");/*                    */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	run_tests()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**		
+** Returns:	
+**___________________________________________________			     */
+int run_tests(s)				   /*                        */
+  char * s;
+{						   /*                        */
+#define TEST(CASE, FCT)  if (s == NULL || strcmp(s, CASE) == 0) FCT
+
+  TEST("select_num_1", select_num_1());
+  TEST("verbose_1", verbose_1());
+
+  return 0;
+}						   /*------------------------*/
