@@ -2508,6 +2508,7 @@ int yylex()					   /*                        */
 	      ON_T("macro.file", MACRO_FILE)	   /*                        */
 	      break;				   /*                        */
 	    case 'n':				   /*                        */
+	      ON("no", B_OFF)			   /*                        */
 	      ON("not", NOT)			   /*                        */
 	      ON_T("new.entry.type", NEW_ENTRY_TYPE)/*                       */
 	      ON_T("new.field.type", NEW_FIELD_TYPE)/*                       */
@@ -2581,6 +2582,9 @@ int yylex()					   /*                        */
 	    case 'v':				   /*                        */
 	      ON_T("verbose", VERBOSE)		   /*                        */
 	      ON_T("version", VERSION)		   /*                        */
+	      break;				   /*                        */
+	    case 'y':				   /*                        */
+	      ON("yes", B_ON)			   /*                        */
 	      break;				   /*                        */
 	  }					   /*                        */
 	  yylval = new_term_string(FIELD, s);	   /*                        */
