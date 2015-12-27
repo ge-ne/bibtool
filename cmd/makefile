@@ -46,4 +46,15 @@ test_t: test_t.o t_parser.o t_stack.o term.o symdef.o $(OFILES)
 clean:
 	rm -f *.o
 
+distclean: clean
+
+# -----------------------------------------------------------------------------
+
+TEST_PRG=test_t
+.SUFFIXES: .t .test $(SUFFIXES)
+
+.t.test: $(TEST_PRG)
+	@TEST_PRG=$(TEST_PRG) $(PERL) -I. $<
+
 #
+
