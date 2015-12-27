@@ -76,13 +76,12 @@ static Term scan_block()			   /*                        */
   Term t;					   /*                        */
  						   /*                        */
   for (c = GetC; c; c = GetC)		   	   /*                        */
-  { if (c == '{') { n++; }			   /*                        */
+  { if      (c == '{') { n++; }			   /*                        */
     else if (c == '}') { if (--n < 1) break; }	   /*                        */
     sbputc(c, sb);			   	   /*                        */
   }					   	   /*                        */
 					       	   /*                        */
-  t = new_t_string(sym_block,	   	   	   /*                        */
-		   symbol((String)sbflush(sb)));   /*                        */
+  t = BlockTerm((String)sbflush(sb));      	   /*                        */
   sbclose(sb);				   	   /*                        */
   return t;			   	   	   /*                        */
 }						   /*------------------------*/
@@ -134,6 +133,7 @@ static Term scan_string(s, c_end)		   /*                        */
   return t;			   		   /*                        */
 }						   /*------------------------*/
 
+#define Return(VAL) yylval = (VAL); return TSym(yylval)
 
 /*-----------------------------------------------------------------------------
 ** Function:	scan()
@@ -180,8 +180,7 @@ static SymDef scan()				   /*                        */
 	return TSym(yylval);			   /*                        */
 	  					   /*                        */
       case '{':					   /*                        */
-	yylval = scan_block();
-	return TSym(yylval);			   /*                        */
+	Return(scan_block());			   /*                        */
 	  					   /*                        */
       case '0':					   /*                        */
 	{ register long num = 0;		   /*                        */
@@ -202,8 +201,7 @@ static SymDef scan()				   /*                        */
 	    { num = num * 8 + c - '0'; }	   /*                        */
 	  }					   /*                        */
 	  if (c > 0) UnGetC(c);			   /*                        */
-	  yylval = new_term_num(num);		   /*                        */
-	  return TSym(yylval);			   /*                        */
+	  Return(new_term_num(num));		   /*                        */
 	}					   /*                        */
 	  					   /*                        */
       case '1': case '2': case '3': case '4':	   /*                        */
@@ -213,8 +211,7 @@ static SymDef scan()				   /*                        */
 	  for (c = GetC; c >= '0' && c <= '9'; c = GetC)/*                   */
 	  { num = num * 10 + c - '0'; }	   	   /*                        */
 	  UnGetC(c);				   /*                        */
-	  yylval = new_term_num(num);		   /*                        */
-	  return TSym(yylval);			   /*                        */
+	  Return(new_term_num(num));		   /*                        */
 	}					   /*                        */
 	  					   /*                        */
       case '[':					   /*                        */
@@ -224,43 +221,35 @@ static SymDef scan()				   /*                        */
 	  return sym_cons;			   /*                        */
 	}					   /*                        */
 	UnGetC(c);				   /*                        */
-	yylval = Cons(NIL, NIL);   	   	   /*                        */
-	return TSym(yylval);			   /*                        */
+	Return(Cons(NIL, NIL));   	   	   /*                        */
 	  					   /*                        */
       case '=':					   /*                        */
 	if ((c=GetC) == '=') {			   /*                        */
-	  yylval = new_term(sym_eq, NIL, NIL);	   /*                        */
-	  return TSym(yylval);			   /*                        */
+	  Return(new_term(sym_eq, NIL, NIL));	   /*                        */
 	}					   /*                        */
 	UnGetC(c);				   /*                        */
-	yylval = SymTerm(sym_char['=']); 	   /*                        */
-	return TSym(yylval);			   /*                        */
+	Return(SymCharTerm('=')); 	   	   /*                        */
 	  					   /*                        */
       case '!':					   /*                        */
 	if ((c=GetC) == '=') {			   /*                        */
-	  yylval = new_term(sym_ne, NIL, NIL);	   /*                        */
-	  return sym_char['='];			   /*                        */
+	  Return(new_term(sym_ne, NIL, NIL));	   /*                        */
 	}					   /*                        */
 	UnGetC(c);				   /*                        */
 	break;					   /*                        */
 	  					   /*                        */
       case '>':					   /*                        */
 	if ((c=GetC) == '=') {			   /*                        */
-	  yylval = new_term(sym_ge, NIL, NIL);	   /*                        */
-	  return TSym(yylval);			   /*                        */
+	  Return(new_term(sym_ge, NIL, NIL));	   /*                        */
 	}					   /*                        */
 	UnGetC(c);				   /*                        */
-	yylval = SymTerm(sym_char[c]);	   	   /*                        */
-	return TSym(yylval);			   /*                        */
+	Return(SymCharTerm(c));	   	   	   /*                        */
 	  					   /*                        */
       case '<':					   /*                        */
 	if ((c=GetC) == '=') {			   /*                        */
-	  yylval = new_term(sym_le, NIL, NIL);	   /*                        */
-	  return TSym(yylval);			   /*                        */
+	  Return(new_term(sym_le, NIL, NIL));	   /*                        */
 	}					   /*                        */
 	UnGetC(c);				   /*                        */
-	yylval = SymTerm(sym_char[c]);	   	   /*                        */
-	return TSym(yylval);			   /*                        */
+	Return(SymCharTerm(c));	   	   	   /*                        */
 	  					   /*                        */
       case 'a': case 'b': case 'c': case 'd':	   /*                        */
       case 'e': case 'f': case 'g': case 'h':	   /*                        */
@@ -309,15 +298,14 @@ static SymDef scan()				   /*                        */
 	    } else ON("mod")			   /*                        */
 	    { yylval = SymCharTerm('%');	   /*                        */
 	    } else {				   /*                        */
-	      yylval = new_t_string(sym_field, s); /*                        */
+	      yylval = FieldTerm(s); 		   /*                        */
 	    }					   /*                        */
 	  }					   /*                        */
 	  return TSym(yylval);			   /*                        */
 	}					   /*                        */
  						   /*                        */
       default:					   /*                        */
-	yylval = SymCharTerm(c);	   	   /*                        */
-	return SymChar(c); 			   /*                        */
+	Return(SymCharTerm(c));	   	   	   /*                        */
     }						   /*                        */
     return c < 0 ? SymDefNull : SymChar(c & 0xff); /*                        */
   }						   /*                        */
@@ -352,9 +340,9 @@ static Term read_list(t)			   /*                        */
     s = scan();					   /*                        */
     if (SymIs(s, ']')) { return t; }		   /*                        */
     if (!SymIs(s, ','))				   /*                        */
-    { Error("Missing comma\n", 0, 0); }		   /*                        */
+    { Error("Missing comma", 0, 0); }		   /*                        */
   }						   /*                        */
-  Error("Unclosed list\n", 0, 0);	   	   /*                        */
+  Error("Unclosed list", 0, 0);	   	   	   /*                        */
   return NIL;					   /* This will never happen */
 }						   /*------------------------*/
 
@@ -378,15 +366,15 @@ Term read_builtin(Term t)			   /*                        */
     if (   SymIs(s, '#')			   /*                        */
 	|| SymIs(s, '=')) continue;
 
-    unscan(s, yylval);
-
-    if (   SymIs(s, ';')
-	|| SymIs(s, ')')
-	|| SymIs(s, ']')) {
-      break;
-    }
-    *tp = Cons(read_expr(), NIL);
-    tp = &(Cdr(*tp));
+    unscan(s, yylval);				   /*                        */
+ 						   /*                        */
+    if (   SymIs(s, ';')			   /*                        */
+	|| SymIs(s, ')')			   /*                        */
+	|| SymIs(s, ']')) {			   /*                        */
+      break;					   /*                        */
+    }						   /*                        */
+    *tp = Cons(read_expr(), NIL);		   /*                        */
+    tp = &(Cdr(*tp));				   /*                        */
   }						   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
@@ -409,7 +397,7 @@ static TStack reduce(stack)			   /*                        */
   { int n = 0;				   	   /*                        */
     for (sp = stack; sp; sp = TSPrev(sp))	   /*                        */
     { int op = SymOp(TSSym(sp));		   /*                        */
-      if (op > 0 && op > n) n = op;		   /*                        */
+      if (op > n) n = op;		   	   /*                        */
     }						   /*                        */
     if (n <= 0) Error("no red",0,0);	   	   /*                        */
     						   /*                        */
@@ -421,20 +409,20 @@ static TStack reduce(stack)			   /*                        */
 #ifdef DEBUG
       puts("reduce");
 #endif
-      t = Cons(TSTerm(TSPrev(sp)), NIL);
-      
-      if ((n & 1) == 0)
-      { Cdr(t) = Cons(NIL,
-		      Cons(TSTerm(sp),
-			   NIL));
-	TSPrev(sp)  = ts_pop(TSPrev(sp));
-	Car(Cdr(t)) = TSTerm(TSPrev(sp));
-      } else {
-	Cdr(t) = Cons(TSTerm(sp), NIL);
-      }
-      TSTerm(sp) = t;
-      TSSym(sp)  = sym_group;
-      TSPrev(sp) = ts_pop(TSPrev(sp));
+      t = Cons(TSTerm(TSPrev(sp)), NIL);	   /*                        */
+       						   /*                        */
+      if ((n & 1) == 0)				   /*                        */
+      { Cdr(t) = Cons(NIL,			   /*                        */
+		      Cons(TSTerm(sp),		   /*                        */
+			   NIL));		   /*                        */
+	TSPrev(sp)  = ts_pop(TSPrev(sp));	   /*                        */
+	Car(Cdr(t)) = TSTerm(TSPrev(sp));	   /*                        */
+      } else {					   /*                        */
+	Cdr(t) = Cons(TSTerm(sp), NIL);		   /*                        */
+      }						   /*                        */
+      TSTerm(sp) = t;				   /*                        */
+      TSSym(sp)  = sym_group;			   /*                        */
+      TSPrev(sp) = ts_pop(TSPrev(sp));		   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */

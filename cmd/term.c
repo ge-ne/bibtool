@@ -25,9 +25,7 @@
 #define _ARG(A) ()
 #endif
 
-Term new_term _ARG((SymDef sym, Term a, Term b));
-void free_term _ARG((Term t));
-void print_term _ARG((FILE * file, Term t));
+
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -36,11 +34,10 @@ void print_term _ARG((FILE * file, Term t));
 /*---------------------------------------------------------------------------*/
 
 
-Term term_eof;
-Term term_true;
-Term term_false;
-
-Term term_mod;
+ Term term_eof;
+ Term term_true;
+ Term term_false;
+ Term term_mod;
 
 /*-----------------------------------------------------------------------------
 ** Function:	new_term()

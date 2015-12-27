@@ -37,6 +37,8 @@ typedef struct S_TERM {
 
 #define Cons(CAR, CDR) new_term(sym_cons, CAR, CDR)
 
+#define BlockTerm(S) new_t_string(sym_block, symbol(S))
+#define FieldTerm(S) new_t_string(sym_filed, symbol(S))
 
 /*---------------------------------------------------------------------------*/
 
