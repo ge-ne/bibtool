@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <bibtool/error.h>
 #include "term.h"
 
 /*****************************************************************************/
@@ -58,7 +59,7 @@ Term new_term(sym, a1, a2)			   /*                        */
   Term a2;					   /*                        */
 {						   /*                        */
   Term t = (Term)malloc(sizeof(STerm));		   /*                        */
- 						   /*                        */
+  if (t	 == NIL) OUT_OF_MEMORY("term");		   /*                        */
   TSym(t) = sym;			   	   /*                        */
   Car(t) = a1;				   	   /*                        */
   Cdr(t) = a2;				   	   /*                        */

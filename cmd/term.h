@@ -32,8 +32,8 @@ typedef struct S_TERM {
 #define TString(T) ((T)->a.string)
 #define TNumber(T) ((T)->a.number)
 
-#define TIsNumber(T)	(TSym(T) == sym_number)
-#define TIsEOF(T)	(TSym(T) == SymDefNull)
+#define TermIsNumber(T)	(TSym(T) == sym_number)
+#define TermIsEOF(T)	(TSym(T) == SymDefNull)
 
 #define Cons(CAR, CDR) new_term(sym_cons, CAR, CDR)
 

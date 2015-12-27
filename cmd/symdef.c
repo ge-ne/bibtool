@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <bibtool/error.h>
 #include <ctype.h>
 #include "term.h"
 
@@ -224,6 +225,7 @@ static SymDef sym_def(name, op, term, parse, print)/*                        */
   int (*print)_ARG((FILE*, Term));		   /*                        */
 {						   /*                        */
   SymDef sym    = (SymDef) malloc(sizeof(SSymDef));/*                        */
+  if (sym == SymDefNull) OUT_OF_MEMORY("symdef");  /*                        */
   SymName(sym)  = name;				   /*                        */
   SymOp(sym)    = op;				   /*                        */
   SymTerm(sym)  = term;				   /*                        */

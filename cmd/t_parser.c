@@ -76,11 +76,8 @@ static Term scan_block()			   /*                        */
   Term t;					   /*                        */
  						   /*                        */
   for (c = GetC; c; c = GetC)		   	   /*                        */
-  { if (c == '{')			   	   /*                        */
-    { n++;				   	   /*                        */
-    } else if (c == '}')		   	   /*                        */
-    { if (--n < 1) { break; }		   	   /*                        */
-    }					   	   /*                        */
+  { if (c == '{') { n++; }			   /*                        */
+    else if (c == '}') { if (--n < 1) break; }	   /*                        */
     sbputc(c, sb);			   	   /*                        */
   }					   	   /*                        */
 					       	   /*                        */
@@ -379,22 +376,20 @@ Term read_builtin(Term t)			   /*                        */
   for (s = scan(); s; s = scan())		   /*                        */
   {						   /*                        */
     if (   SymIs(s, '#')			   /*                        */
-	|| SymIs(s, '=')) {
-    } else if (   SymIs(s, ';')
-	       || SymIs(s, ')')
-	       || SymIs(s, ']')) {
-      unscan(s, yylval);
-      return t;
-    } else {
-      unscan(s, yylval);
-      yylval = read_expr();
-      *tp = Cons(yylval, NIL);
-      tp = &(Cdr(*tp));
+	|| SymIs(s, '=')) continue;
+
+    unscan(s, yylval);
+
+    if (   SymIs(s, ';')
+	|| SymIs(s, ')')
+	|| SymIs(s, ']')) {
+      break;
     }
+    *tp = Cons(read_expr(), NIL);
+    tp = &(Cdr(*tp));
   }						   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
-
 
 /*-----------------------------------------------------------------------------
 ** Function:	reduce()
@@ -483,10 +478,10 @@ static Term read_expr()				   /*                        */
  						   /*                        */
     } else if (SymIs(s, '-')) {			   /*                        */
       Term t = read_expr();			   /*                        */
-      if (TIsNumber(t))				   /*                        */
+      if (TermIsNumber(t))			   /*                        */
       { TNumber(t) = -TNumber(t);		   /*                        */
 	Shift(sym_number, t);			   /*                        */
-      } else if (TIsEOF(t))			   /*                        */
+      } else if (TermIsEOF(t))			   /*                        */
       { Error("Unexpected end-of-file",0,0);	   /*                        */
       } else {					   /*                        */
 	s = SymChar('-');		   	   /*                        */
@@ -542,10 +537,10 @@ static Term read_expr()				   /*                        */
 static Term read_cmd()				   /*                        */
 { SymDef s;					   /*                        */
   Term t = read_expr();				   /*                        */
-  if (t && TIsEOF(t)) return t;		   	   /*                        */
+  if (t && TermIsEOF(t)) return t;		   /*                        */
   						   /*                        */
   s = scan();					   /*                        */
-  if (s != sym_char[';'])			   /*                        */
+  if (!SymIs(s, ';'))			   	   /*                        */
   { Error("Semicolon expected instead of ",  	   /*                        */
 	  (s ? (char*)SymName(s) : "EOF"),"");	   /*                        */
   }						   /*                        */
