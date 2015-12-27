@@ -36,10 +36,11 @@ all: test_t
 
 term.o: term.c term.h symdef.h
 symdef.o: symdef.c term.h symdef.h
+t_stack.o: t_stack.c t_stack.h term.h symdef.h
 t_parser.o: t_parser.c term.h symdef.h
 test_t.o: term.h symdef.h
 
-test_t: test_t.o t_parser.o term.o symdef.o $(OFILES)
+test_t: test_t.o t_parser.o t_stack.o term.o symdef.o $(OFILES)
 	@$(CC) -g -O2 -o $@ $^ -lkpathsea
 
 clean:

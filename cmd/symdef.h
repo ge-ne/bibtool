@@ -28,8 +28,8 @@
 **___________________________________________________			     */
 typedef struct S_SYMDEF {			   /*                        */
   String name;				   	   /*                        */
-  void * value;					   /*                        */
   int op;					   /*                        */
+  struct S_TERM * term;	   			   /*                        */
   struct S_TERM * (*parse)_ARG((FILE*));	   /*                        */
   int (*print)_ARG((FILE*, struct S_TERM *));	   /*                        */
 } SSymDef, *SymDef;				   /*------------------------*/
@@ -38,11 +38,18 @@ typedef struct S_SYMDEF {			   /*                        */
 
 #define SymName(T)   ((T)->name)
 #define SymOp(T)     ((T)->op)
-#define SymValue(T)  ((T)->value)
+#define SymTerm(T)   ((T)->term)
 #define SymParse(T)  ((T)->parse)
 #define SymPrint(T)  ((T)->print)
 
+#define BinarySym(S) ((SymOp(S) & 1) == 0)
+#define UnarySym(S) ((SymOp(S) & 1) != 0)
+
 #define SymIs(S,C) ((S) == sym_char[C]) 
+
+#define SymChar(C) sym_char[C]
+#define SymCharName(C) SymName(sym_char[C])
+#define SymCharTerm(C) SymTerm(sym_char[C])
 
 #define Declare(T,N,V) extern T N
 
@@ -53,34 +60,28 @@ extern void init_symdef();
 #endif
 /*---------------------------------------------------------------------------*/
 
-Declare(SymDef, sym_number   , sym_def(NULL,     -1, NULL, p_term_num));
-Declare(SymDef, sym_string   , sym_def(NULL,     -2, NULL, p_term_str));
-Declare(SymDef, sym_field    , sym_def(NULL,     -3, NULL, p_term_field));
-Declare(SymDef, sym_builtin  , sym_def(NULL,     -4, NULL, p_term_field));
-Declare(SymDef, sym_block    , sym_def(NULL,     -6, NULL, NULL));
+Declare(SymDef, sym_number , sym_def("number", -1, NIL, NULL, p_term_num));
+Declare(SymDef, sym_string , sym_def("string", -2, NIL, NULL, p_term_str));
+Declare(SymDef, sym_block  , sym_def("block",  -3, NIL, NULL, NULL));
+Declare(SymDef, sym_field  , sym_def("field",  -4, NIL, NULL, p_term_field));
+Declare(SymDef, sym_builtin, sym_def("builtin",-5, NIL, NULL, p_term_field));
+Declare(SymDef, sym_group  , sym_def("group",  -6, NIL, NULL, NULL));
 
-Declare(SymDef, sym_true     , sym_def("true", -100, NULL, p_sym_name));
-Declare(SymDef, sym_false    , sym_def("false",-101, NULL, p_sym_name));
+Declare(SymDef, sym_true   , sym_def("true", -100, NIL, NULL, p_sym_name));
+Declare(SymDef, sym_false  , sym_def("false",-101, NIL, NULL, p_sym_name));
 
-Declare(SymDef, sym_cons     , sym_def("cons", 1000, NULL, p_cons));
-Declare(SymDef, sym_and      , sym_def("and",   100, NULL, p_sym_name));
-Declare(SymDef, sym_or       , sym_def("or",    100, NULL, p_sym_name));
-Declare(SymDef, sym_not      , sym_def("not",    90, NULL, p_sym_name));
-Declare(SymDef, sym_eq       , sym_def("==",     80, NULL, p_sym_name));
-Declare(SymDef, sym_gt       , sym_def(">",      80, NULL, p_sym_name));
-Declare(SymDef, sym_ge       , sym_def(">=",     80, NULL, p_sym_name));
-Declare(SymDef, sym_lt       , sym_def("<",      80, NULL, p_sym_name));
-Declare(SymDef, sym_le       , sym_def("<=",     80, NULL, p_sym_name));
-Declare(SymDef, sym_ne       , sym_def("!=",     80, NULL, p_sym_name));
-Declare(SymDef, sym_setq     , sym_def("=",      80, NULL, p_sym_name));
-Declare(SymDef, sym_plus     , sym_def("+",     200, NULL, p_sym_name));
-Declare(SymDef, sym_minus    , sym_def("-",     200, NULL, p_sym_name));
-Declare(SymDef, sym_times    , sym_def("*",     300, NULL, p_sym_name));
-Declare(SymDef, sym_div      , sym_def("/",     300, NULL, p_sym_name));
-Declare(SymDef, sym_mod      , sym_def("%",     300, NULL, p_sym_name));
-Declare(SymDef, sym_hash     , sym_def("#",     100, NULL, p_sym_name));
+Declare(SymDef, sym_cons   , sym_def(".",      90, NIL, NULL, p_cons));
+Declare(SymDef, sym_and    , sym_def("and",    10, NIL, NULL, p_sym_name));
+Declare(SymDef, sym_or     , sym_def("or",     10, NIL, NULL, p_sym_name));
+Declare(SymDef, sym_not    , sym_def("not",    21, NIL, NULL, p_sym_name));
+Declare(SymDef, sym_eq     , sym_def("==",     30, NIL, NULL, p_sym_name));
+Declare(SymDef, sym_ge     , sym_def(">=",     30, NIL, NULL, p_sym_name));
+Declare(SymDef, sym_le     , sym_def("<=",     30, NIL, NULL, p_sym_name));
+Declare(SymDef, sym_ne     , sym_def("!=",     30, NIL, NULL, p_sym_name));
 
-Declare(SymDef*, sym_char    , (SymDef*)calloc(256, sizeof(SymDef)));
+Declare(SymDef, sym_mod    , sym_def("mod",    60, NIL, NULL, p_sym_name));
+
+Declare(SymDef*, sym_char  , (SymDef*)calloc(256, sizeof(SymDef)));
 
 /*---------------------------------------------------------------------------*/
 #undef Declare

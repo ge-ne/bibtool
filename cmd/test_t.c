@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <bibtool/error.h>
 #include "term.h"
 
 /*****************************************************************************/
@@ -89,6 +90,7 @@ int main(argc, argv)				   /*                        */
   char *arg;					   /*                        */
 #define ArgIs(A,B) strcmp(A, arg) == 0 || strcmp(B, arg) == 0
  						   /*                        */
+  init_error(stderr);				   /*                        */
   init_symdef();				   /*                        */
  						   /*                        */
   for (i = 1; i < argc; i++)			   /*                        */

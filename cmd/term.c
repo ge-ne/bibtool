@@ -36,14 +36,9 @@ void print_term _ARG((FILE * file, Term t));
 
 
 Term term_eof;
-Term term_semicolon;
 Term term_true;
 Term term_false;
 
-Term term_plus;
-Term term_minus;
-Term term_times;
-Term term_div;
 Term term_mod;
 
 /*-----------------------------------------------------------------------------
@@ -65,8 +60,8 @@ Term new_term(sym, a1, a2)			   /*                        */
   Term t = (Term)malloc(sizeof(STerm));		   /*                        */
  						   /*                        */
   TSym(t) = sym;			   	   /*                        */
-  TTerm(t) = a1;				   /*                        */
-  TArg(t) = a2;				   	   /*                        */
+  Car(t) = a1;				   	   /*                        */
+  Cdr(t) = a2;				   	   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -82,10 +77,10 @@ Term new_term(sym, a1, a2)			   /*                        */
 Term new_term_num(n)				   /*                        */
   long n;					   /*                        */
 {						   /*                        */
-  Term t = (Term)malloc(sizeof(STerm));		   /*                        */
-  TSym(t) = sym_number;			   	   /*                        */
+  Term t     = (Term)malloc(sizeof(STerm));	   /*                        */
+  TSym(t)    = sym_number;			   /*                        */
   TNumber(t) = n;				   /*                        */
-  TArg(t) = NIL;			   	   /*                        */
+  Cdr(t)     = NIL;				   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -106,7 +101,7 @@ Term new_t_string(sym, s)		   	   /*                        */
   Term t     = (Term)malloc(sizeof(STerm));	   /*                        */
   TSym(t)    = sym;			   	   /*                        */
   TString(t) = s;				   /*                        */
-  TArg(t)    = NIL;			   	   /*                        */
+  Cdr(t)     = NIL;			   	   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -129,9 +124,9 @@ void free_term(t)				   /*                        */
     case NUMBER:				   /*                        */
       break;					   /*                        */
     default:					   /*                        */
-      if (TTerm(t)) { free_term(TTerm(t)); } 	   /*                        */
+      if (Car(t)) { free_term(Car(t)); } 	   /*                        */
   }						   /*                        */
-  if (TArg(t)) { free_term(TArg(t)); }   	   /*                        */
+  if (Cdr(t)) { free_term(Cdr(t)); }   	   	   /*                        */
 #endif
   free(t);					   /*                        */
 }						   /*------------------------*/
@@ -159,4 +154,5 @@ void print_term(file, t)
   } else {
     fputs(" ??? ", file);
   }
+
 }

@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 #include "term.h"
 
 /*****************************************************************************/
@@ -92,8 +93,8 @@ static int p_sym_name(file, t)			   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
   print_quoted(file, SymName(TSym(t)));		   /*                        */
-  if (TTerm(t)) { print_term(TTerm(t)); }	   /*                        */
-  if (TArg(t)) { print_term(TArg(t)); }		   /*                        */
+  if (Car(t)) { print_term(Car(t)); }	   	   /*                        */
+  if (Cdr(t)) { print_term(Cdr(t)); }		   /*                        */
   return 0;					   /*                        */
 }						   /*------------------------*/
 
@@ -186,15 +187,15 @@ static int p_cons(file, t)			   /*                        */
   FILE * file;					   /*                        */
   Term t;					   /*                        */
 { fputc('(', file);				   /*                        */
-  print_term(file, TTerm(t));			   /*                        */
-  while (TArg(t))				   /*                        */
-  { t = TArg(t);				   /*                        */
+  print_term(file, Car(t));			   /*                        */
+  while (Cdr(t))				   /*                        */
+  { t = Cdr(t);				   	   /*                        */
     if (t && TSym(t) == sym_cons)		   /*                        */
-    { fputc(' ', file);				   /*                        */
-      print_term(file, TTerm(t));		   /*                        */
+    { fputs("  ", file);			   /*                        */
+      print_term(file, Car(t));		   	   /*                        */
     } else					   /*                        */
     { fputs(" . ", file);			   /*                        */
-      print_term(file, TArg(t));		   /*                        */
+      print_term(file, Cdr(t));		   	   /*                        */
       break;					   /*                        */
     }						   /*                        */
   }						   /*                        */
@@ -209,19 +210,23 @@ static int p_cons(file, t)			   /*                        */
 **		
 ** Arguments:
 **	name	
-**	 parse	
+**	op	
+**	term	
+**	parse	
+**	print	
 ** Returns:	
 **___________________________________________________			     */
-static SymDef sym_def(name, op, parse, print)	   /*                        */
+static SymDef sym_def(name, op, term, parse, print)/*                        */
   String name;					   /*                        */
   int op;					   /*                        */
+  Term term;					   /*                        */
   Term (*parse)_ARG((FILE*));			   /*                        */
   int (*print)_ARG((FILE*, Term));		   /*                        */
 {						   /*                        */
   SymDef sym    = (SymDef) malloc(sizeof(SSymDef));/*                        */
   SymName(sym)  = name;				   /*                        */
   SymOp(sym)    = op;				   /*                        */
-  SymValue(sym) = 0L;				   /*                        */
+  SymTerm(sym)  = term;				   /*                        */
   SymParse(sym) = parse;			   /*                        */
   SymPrint(sym) = print;			   /*                        */
   return sym;					   /*                        */
@@ -238,27 +243,53 @@ static SymDef sym_def(name, op, parse, print)	   /*                        */
 **___________________________________________________			     */
 void init_symdef()				   /*                        */
 { int i;					   /*                        */
+  char * s;					   /*                        */
  						   /*                        */
 #define Declare(T,N,V) N = V
 #include "symdef.h"
+
+#define InitSymChar(I,S,OP)				       \
+  sym_char[I] = sym_def(S, OP, NIL, NULL, p_sym_name);	       \
+  SymTerm(sym_char[I]) = new_term(sym_char[I], NIL, NIL)
  						   /*                        */
-  for (i = 0; i < 256; i++) {			   /*                        */
-    char * s 	= malloc(2 * sizeof(char));	   /*                        */
-    *s 		= (char)i;			   /*                        */
-    *(s+1)	= '\0';				   /*                        */
-    sym_char[i]	= sym_def(s, 0, NULL, p_sym_name); /*                        */
+  for (i = 1; i < 256; i++) {			   /*                        */
+ 						   /*                        */
+    switch (i)					   /*                        */
+    { case '=':	InitSymChar(i, "=", 30); break;
+      case '<':	InitSymChar(i, "<", 30); break;
+      case '>':	InitSymChar(i, ">", 30); break;
+      case '#':	InitSymChar(i, "#", 40); break;
+      case '+':	InitSymChar(i, "+", 50); break;
+      case '-':	InitSymChar(i, "-", 50); break;
+      case '*':	InitSymChar(i, "*", 60); break;
+      case '/':	InitSymChar(i, "/", 60); break;
+      case '%':	InitSymChar(i, "mod", 60); break;
+      default:					   /*                        */
+	if (isalnum(i)				   /*                        */
+	    || isspace(i)			   /*                        */
+	    || i == '"'				   /*                        */
+	    || i == '\''			   /*                        */
+	    || i == '_'				   /*                        */
+	    || i == '.'				   /*                        */
+	    || i == '@'				   /*                        */
+	    || i == '$') break;			   /*                        */
+ 						   /*                        */
+	s 	= malloc(2 * sizeof(char));	   /*                        */
+	*s 	= (char)i;			   /*                        */
+	*(s+1)	= '\0';				   /*                        */
+	sym_char[i] = sym_def(s,		   /*                        */
+			      0,		   /*                        */
+			      NIL,		   /*                        */
+			      NULL,		   /*                        */
+			      p_sym_name); 	   /*                        */
+    }						   /*                        */
   }						   /*                        */
  						   /*                        */
   term_eof	 = new_term(NULL, NIL, NIL);	   /*                        */
-  term_semicolon = new_term(sym_char[';'], NIL, NIL);/*                      */
   term_true  	 = new_term(sym_true, NIL, NIL);   /*                        */
   term_false	 = new_term(sym_false, NIL, NIL);  /*                        */
-
-  term_plus	 = new_term(sym_plus, NIL, NIL);
-  term_minus	 = new_term(sym_minus, NIL, NIL);
-  term_times	 = new_term(sym_times, NIL, NIL);
-  term_div	 = new_term(sym_div, NIL, NIL);
-  term_mod	 = new_term(sym_mod, NIL, NIL);
+ 						   /*                        */
+  term_mod	 = new_term(sym_mod, NIL, NIL);	   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/
