@@ -59,7 +59,7 @@ Term new_term(sym, a1, a2)			   /*                        */
   Term a2;					   /*                        */
 {						   /*                        */
   Term t = (Term)malloc(sizeof(STerm));		   /*                        */
-  if (t	 == NIL) OUT_OF_MEMORY("term");		   /*                        */
+  if (t == NIL) OUT_OF_MEMORY("term");		   /*                        */
   TSym(t) = sym;			   	   /*                        */
   Car(t) = a1;				   	   /*                        */
   Cdr(t) = a2;				   	   /*                        */
@@ -79,6 +79,7 @@ Term new_term_num(n)				   /*                        */
   long n;					   /*                        */
 {						   /*                        */
   Term t     = (Term)malloc(sizeof(STerm));	   /*                        */
+  if (t == NIL) OUT_OF_MEMORY("term");		   /*                        */
   TSym(t)    = sym_number;			   /*                        */
   TNumber(t) = n;				   /*                        */
   Cdr(t)     = NIL;				   /*                        */
@@ -100,6 +101,7 @@ Term new_t_string(sym, s)		   	   /*                        */
   String s;					   /*                        */
 {						   /*                        */
   Term t     = (Term)malloc(sizeof(STerm));	   /*                        */
+  if (t == NIL) OUT_OF_MEMORY("term");		   /*                        */
   TSym(t)    = sym;			   	   /*                        */
   TString(t) = s;				   /*                        */
   Cdr(t)     = NIL;			   	   /*                        */
