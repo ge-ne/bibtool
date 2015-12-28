@@ -189,9 +189,9 @@ static SymDef scan()				   /*                        */
 	    { if (c >= '0' && c <= '9')		   /*                        */
 	      { num = num * 16 + c - '0';	   /*                        */
 	      } else if (c >= 'a' && c <= 'f')	   /*                        */
-	      { num = num * 16 + c - 'a';	   /*                        */
+	      { num = num * 16 + 10 + c - 'a';	   /*                        */
 	      } else if (c >= 'A' && c <= 'F')	   /*                        */
-	      { num = num * 16 + c - 'A';	   /*                        */
+	      { num = num * 16 + 10 + c - 'A';	   /*                        */
 	      } else 				   /*                        */
 	      { break; }			   /*                        */
 	    }					   /*                        */

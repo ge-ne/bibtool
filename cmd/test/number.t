@@ -13,11 +13,11 @@
 
 =head1 NAME
 
-error.t - Test suite for BibTool errors.
+number.t - Test suite for BibTool numbers.
 
 =head1 SYNOPSIS
 
-error.t
+number.t
 
 =head1 DESCRIPTION
 
@@ -40,34 +40,53 @@ use strict;
 use BUnit;
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-1',
+BUnit::run(name         => 'number-0',
 	   resource	=> <<__EOF__ ,
-+
+0;
 __EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected operator +
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+0
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-2',
+BUnit::run(name         => 'number-1',
 	   resource	=> <<__EOF__ ,
--+
+123;
 __EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected operator +
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+123
 __EOF__
-
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-3',
+BUnit::run(name         => 'number-2',
 	   resource	=> <<__EOF__ ,
--
+-123;
 __EOF__
-	   expected_err => <<__EOF__ );
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+-123
+__EOF__
 
-*** BibTool ERROR:  (line 2 in _test.rsc): Unexpected end-of-file
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'number-3',
+	   resource	=> <<__EOF__ ,
+0xff;
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+255
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'number-4',
+	   resource	=> <<__EOF__ ,
+077;
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+63
 __EOF__
 
 

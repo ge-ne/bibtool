@@ -13,11 +13,11 @@
 
 =head1 NAME
 
-error.t - Test suite for BibTool errors.
+field.t - Test suite for BibTool fields.
 
 =head1 SYNOPSIS
 
-error.t
+field.t
 
 =head1 DESCRIPTION
 
@@ -40,34 +40,23 @@ use strict;
 use BUnit;
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-1',
+BUnit::run(name         => 'field-1',
 	   resource	=> <<__EOF__ ,
-+
+abc;
 __EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected operator +
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+abc
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-2',
+BUnit::run(name         => 'field-2',
 	   resource	=> <<__EOF__ ,
--+
+'abc';
 __EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected operator +
-__EOF__
-
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'error-3',
-	   resource	=> <<__EOF__ ,
--
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Unexpected end-of-file
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+abc
 __EOF__
 
 

@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2011-2015 Gerd Neugebauer
+#  (c) 2015 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -13,7 +13,7 @@
 
 =head1 NAME
 
-arith.t - Test suite for BibTool arithmetic expresions.
+arith.t - Test suite for BibTool arithmetic expressions.
 
 =head1 SYNOPSIS
 
@@ -33,16 +33,6 @@ none
 =head1 AUTHOR
 
 Gerd Neugebauer
-
-=head1 BUGS
-
-=over 4
-
-=item *
-
-...
-
-=back
 
 =cut
 
@@ -118,7 +108,6 @@ __EOF__
 	   expected_out => <<__EOF__ );
 (+  1  (+  2  3))
 __EOF__
-
 
 
 1;

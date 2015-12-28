@@ -13,11 +13,11 @@
 
 =head1 NAME
 
-error.t - Test suite for BibTool errors.
+plus.t - Test suite for BibTool plus operator.
 
 =head1 SYNOPSIS
 
-error.t
+plus.t
 
 =head1 DESCRIPTION
 
@@ -40,34 +40,33 @@ use strict;
 use BUnit;
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-1',
+BUnit::run(name         => 'plus-1',
 	   resource	=> <<__EOF__ ,
-+
+123+456;
 __EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected operator +
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(+  123  456)
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-2',
+BUnit::run(name         => 'plus-2',
 	   resource	=> <<__EOF__ ,
--+
+123 + -456;
 __EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected operator +
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(+  123  -456)
 __EOF__
-
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-3',
+BUnit::run(name         => 'plus-3',
 	   resource	=> <<__EOF__ ,
--
+-123 + -456;
 __EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Unexpected end-of-file
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(+  -123  -456)
 __EOF__
 
 

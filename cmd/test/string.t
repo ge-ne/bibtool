@@ -13,11 +13,11 @@
 
 =head1 NAME
 
-error.t - Test suite for BibTool errors.
+string.t - Test suite for BibTool string expressions.
 
 =head1 SYNOPSIS
 
-error.t
+string.t
 
 =head1 DESCRIPTION
 
@@ -40,34 +40,33 @@ use strict;
 use BUnit;
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-1',
+BUnit::run(name         => 'string-1',
 	   resource	=> <<__EOF__ ,
-+
+"";
 __EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected operator +
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+""
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-2',
+BUnit::run(name         => 'string-2',
 	   resource	=> <<__EOF__ ,
--+
+"a";
 __EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected operator +
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+"a"
 __EOF__
-
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-3',
+BUnit::run(name         => 'string-3',
 	   resource	=> <<__EOF__ ,
--
+"a\\"b";
 __EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Unexpected end-of-file
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+"a\\"b"
 __EOF__
 
 

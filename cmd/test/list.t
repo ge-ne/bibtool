@@ -13,11 +13,11 @@
 
 =head1 NAME
 
-error.t - Test suite for BibTool errors.
+list.t - Test suite for BibTool list expressions.
 
 =head1 SYNOPSIS
 
-error.t
+list.t
 
 =head1 DESCRIPTION
 
@@ -39,35 +39,55 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'error-1',
-	   resource	=> <<__EOF__ ,
-+
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected operator +
-__EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-2',
+BUnit::run(name         => 'list-1',
 	   resource	=> <<__EOF__ ,
--+
+[];
 __EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected operator +
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+ nil 
 __EOF__
-
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-3',
+BUnit::run(name         => 'list-2',
 	   resource	=> <<__EOF__ ,
--
+[ ];
 __EOF__
-	   expected_err => <<__EOF__ );
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+ nil 
+__EOF__
 
-*** BibTool ERROR:  (line 2 in _test.rsc): Unexpected end-of-file
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-3',
+	   resource	=> <<__EOF__ ,
+nil;
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+ nil 
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-10',
+	   resource	=> <<__EOF__ ,
+[123];
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(123) 
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-20',
+	   resource	=> <<__EOF__ ,
+[123, "abc"];
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(123 "abc")
 __EOF__
 
 
