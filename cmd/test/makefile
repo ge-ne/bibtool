@@ -23,7 +23,7 @@ TEST_PRG=../test_t
 all: test
 
 test tests: $(TEST_PRG)
-	@BIBTOOL_PRG=$(TEST_PRG) ${PERL} -I../../test -MBUnit -e "exit all()"
+	@BIBTOOL_PRG=$(TEST_PRG) ${PERL} -I../../test/lib -MBUnit -e "exit all()"
 
 clean:
 	$(RM) *.out *.err *.err-expected *.out-expected *~
@@ -33,6 +33,6 @@ clean:
 .SUFFIXES: .t .test $(SUFFIXES)
 
 .t.test: $(TEST_PRG)
-	@BIBTOOL_PRG=$(TEST_PRG) $(PERL) -I../../test $<
+	@BIBTOOL_PRG=$(TEST_PRG) $(PERL) -I../../test/lib -I. $<
 
 #

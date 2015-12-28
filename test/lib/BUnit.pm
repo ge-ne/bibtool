@@ -138,7 +138,7 @@ sub run {
   }
   unlink(TEST_RSC) if -e TEST_RSC;
   unlink(TEST_BIB) if -e TEST_BIB;
-  my $post      = $a{post};
+  my $post = $a{post};
   &{$post}($name) if defined $post;
 
   return 1;
@@ -209,7 +209,6 @@ sub suites {
   my $suite;
 
   $ENV{HOME} = getcwd;
-
 
   die "*** '$BIBTOOL' executable not found\n" if not -x $BIBTOOL;
   die "*** Current dircetory is not writable\n" if not -w '.';

@@ -90,7 +90,7 @@ HFILES	      = ${CPATH}config.h		\
 		${HPATH}wordlist.h
 
 default check all: $(BIBTOOL_PRG) $(SUITES)
-	@BIBTOOL_PRG=$(BIBTOOL_PRG) ${PERL} -MBUnit -e "exit all()"
+	@BIBTOOL_PRG=$(BIBTOOL_PRG) ${PERL} -Ilib -MBUnit -e "exit all()"
 
 ../bibtool$(EXT): $(CFILES) $(HFILES)
 	(cd ..; make)
@@ -105,6 +105,6 @@ distclean: clean
 .SUFFIXES: .t .test $(SUFFIXES)
 
 .t.test: $(BIBTOOL_PRG)
-	@BIBTOOL_PRG=$(BIBTOOL_PRG) $(PERL) -I. $<
+	@BIBTOOL_PRG=$(BIBTOOL_PRG) $(PERL) -Ilib $<
 
 #
