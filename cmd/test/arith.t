@@ -47,37 +47,41 @@ Gerd Neugebauer
 =cut
 
 use strict;
-use PUnit;
+use BUnit;
+
 
 #------------------------------------------------------------------------------
-PUnit::run(name         => 'arith-1',
+BUnit::run(name         => 'arith-1',
 	   resource	=> <<__EOF__ ,
 123;
 __EOF__
+	   expected_err => '',
 	   expected_out => <<__EOF__ );
 123
 __EOF__
 
 #------------------------------------------------------------------------------
-PUnit::run(name         => 'arith-2',
+BUnit::run(name         => 'arith-2',
 	   resource	=> <<__EOF__ ,
 -123;
 __EOF__
+	   expected_err => '',
 	   expected_out => <<__EOF__ );
 -123
 __EOF__
 
 #------------------------------------------------------------------------------
-PUnit::run(name         => 'arith-3',
+BUnit::run(name         => 'arith-3',
 	   resource	=> <<__EOF__ ,
 -   123;
 __EOF__
+	   expected_err => '',
 	   expected_out => <<__EOF__ );
 -123
 __EOF__
 
 #------------------------------------------------------------------------------
-PUnit::run(name         => 'arith-10',
+BUnit::run(name         => 'arith-10',
 	   resource	=> <<__EOF__ ,
 2 * 3 + 4;
 __EOF__
@@ -86,22 +90,35 @@ __EOF__
 __EOF__
 
 #------------------------------------------------------------------------------
-PUnit::run(name         => 'arith-11',
+BUnit::run(name         => 'arith-11',
 	   resource	=> <<__EOF__ ,
 2 + 3 * 4;
 __EOF__
+	   expected_err => '',
 	   expected_out => <<__EOF__ );
 (+  2  (*  3  4))
 __EOF__
 
 #------------------------------------------------------------------------------
-PUnit::run(name         => 'arith-12',
+BUnit::run(name         => 'arith-12',
 	   resource	=> <<__EOF__ ,
 1 * (3 + 4);
 __EOF__
+	   expected_err => '',
 	   expected_out => <<__EOF__ );
 (*  1  (+  3  4))
 __EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'arith-21',
+	   resource	=> <<__EOF__ ,
+1 + 2 + 3;
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(+  1  (+  2  3))
+__EOF__
+
 
 
 1;
