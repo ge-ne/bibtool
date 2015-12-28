@@ -42,7 +42,7 @@ package BUnit;
 use strict;
 use Exporter;
 use base qw(Exporter);
-our @EXPORT    = qw(all summary);
+our @EXPORT    = qw(all summary run);
 our @EXPORT_OK = qw();
 
 use Cwd;
@@ -61,7 +61,7 @@ our $verbose = 1;
 # Variable:	$VERSION
 # Description:	
 #
-our $VERSION = ('$Revision: 1.17 $ ' =~ m/[0-9.]+/ ? $& : '0.0' );
+our $VERSION = '1.17';
 
 #------------------------------------------------------------------------------
 # Variable:	$BIBTOOL
@@ -120,9 +120,10 @@ sub run {
   my $err  = "$name.err";
   my $null = "/dev/null";
 
-  my $rsc  = store_file(TEST_RSC, $a{resource}, "-r ".TEST_RSC);
-  my $bib  = store_file(TEST_BIB, $a{bib}, TEST_BIB);
   my $args = $a{args} || '';
+  my $rsc  = store_file(TEST_RSC, $a{resource}, "-r ".TEST_RSC);
+  my $bib  = store_file(TEST_BIB, $a{bib}, TEST_BIB) if $a{bib};
+  $bib 	   = '' if not $bib;
 
   `$BIBTOOL $rsc $args $bib <$null 1>$out 2>$err`;
 
