@@ -257,7 +257,8 @@ void init_symdef()				   /*                        */
   for (i = 1; i < 256; i++) {			   /*                        */
  						   /*                        */
     switch (i)					   /*                        */
-    { case '=':	InitSymChar(i, "=", 30); break;
+    { case ';':	InitSymChar(i, ";",  0); break;
+      case '=':	InitSymChar(i, "=", 30); break;
       case '<':	InitSymChar(i, "<", 30); break;
       case '>':	InitSymChar(i, ">", 30); break;
       case '#':	InitSymChar(i, "#", 40); break;

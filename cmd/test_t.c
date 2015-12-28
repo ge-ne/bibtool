@@ -105,6 +105,8 @@ int main(argc, argv)				   /*                        */
 	}					   /*                        */
 	run_test(argv[i]);			   /*                        */
 	ok = 1;					   /*                        */
+      } else if (ArgIs("-r", "--resource"))   	   /* for comparibility      */
+      {						   /*  to BibTool            */
       } else if (ArgIs("-h", "--help"))   	   /*                        */
       { fprintf(stderr,			   	   /*                        */
 		"Usage: %s [-i] [infile]\n",	   /*                        */

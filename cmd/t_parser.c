@@ -157,8 +157,7 @@ static SymDef scan()				   /*                        */
   yylval = NIL;				   	   /*                        */
     						   /*                        */
   for (c = GetC; c >= 0; c = GetC)	   	   /*                        */
-  {						   /*                        */
-    switch (c) {				   /*                        */
+  { switch (c) {				   /*                        */
       case '\n':				   /*                        */
 	linenum++;				   /*                        */
       case ' ':					   /*                        */
@@ -305,7 +304,8 @@ static SymDef scan()				   /*                        */
 	}					   /*                        */
  						   /*                        */
       default:					   /*                        */
-	Return(SymCharTerm(c));	   	   	   /*                        */
+	yylval = (SymCharTerm(c));		   /*                        */
+	return yylval ? TSym(yylval) : SymDefNull;
     }						   /*                        */
     return c < 0 ? SymDefNull : SymChar(c & 0xff); /*                        */
   }						   /*                        */
@@ -524,6 +524,7 @@ static Term read_expr()				   /*                        */
 **___________________________________________________			     */
 static Term read_cmd()				   /*                        */
 { SymDef s;					   /*                        */
+ 						   /*                        */
   Term t = read_expr();				   /*                        */
   if (t && TermIsEOF(t)) return t;		   /*                        */
   						   /*                        */
