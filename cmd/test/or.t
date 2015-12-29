@@ -13,11 +13,11 @@
 
 =head1 NAME
 
-ne.t - Test suite for BibTool != operator.
+or.t - Test suite for BibTool && operator.
 
 =head1 SYNOPSIS
 
-ne.t
+or.t
 
 =head1 DESCRIPTION
 
@@ -40,53 +40,84 @@ use strict;
 use BUnit;
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'ne-err-1',
+BUnit::run(name         => 'or-err-1',
 	   resource	=> <<__EOF__ ,
-123 !=
+123 ||
 __EOF__
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for !=
+*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for or
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'ne-err-2',
+BUnit::run(name         => 'or-err-2',
 	   resource	=> <<__EOF__ ,
-123 !
+123 or
 __EOF__
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 1 in _test.rsc): Semicolon expected instead of !
+*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for or
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'ne-1',
+BUnit::run(name         => 'or-1',
 	   resource	=> <<__EOF__ ,
-123!=456;
+123||456;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(!= 123 456)
+(or 123 456)
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'ne-2',
+BUnit::run(name         => 'or-2',
 	   resource	=> <<__EOF__ ,
-123 != -456;
+123 || -456;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(!= 123 -456)
+(or 123 -456)
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'ne-3',
+BUnit::run(name         => 'or-3',
 	   resource	=> <<__EOF__ ,
--123 != -456;
+-123 || -456;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(!= -123 -456)
+(or -123 -456)
+__EOF__
+
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'or-11',
+	   resource	=> <<__EOF__ ,
+123or 456;
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(or 123 456)
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'or-12',
+	   resource	=> <<__EOF__ ,
+123 or -456;
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(or 123 -456)
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'or-13',
+	   resource	=> <<__EOF__ ,
+-123 or -456;
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(or -123 -456)
 __EOF__
 
 

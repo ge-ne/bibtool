@@ -42,6 +42,9 @@
  Term term_true;
  Term term_false;
  Term term_mod;
+ Term term_and;
+ Term term_or;
+ Term term_not;
 
 /*-----------------------------------------------------------------------------
 ** Function:	new_term()

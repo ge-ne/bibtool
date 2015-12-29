@@ -13,11 +13,11 @@
 
 =head1 NAME
 
-ne.t - Test suite for BibTool != operator.
+apply_modify.t - Test suite for the BibTool built-in apply.modify.
 
 =head1 SYNOPSIS
 
-ne.t
+apply_modify.t
 
 =head1 DESCRIPTION
 
@@ -40,55 +40,34 @@ use strict;
 use BUnit;
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'ne-err-1',
-	   resource	=> <<__EOF__ ,
-123 !=
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for !=
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'ne-err-2',
-	   resource	=> <<__EOF__ ,
-123 !
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 1 in _test.rsc): Semicolon expected instead of !
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'ne-1',
-	   resource	=> <<__EOF__ ,
-123!=456;
+BUnit::run(name         => 'apply.modify-0',
+	   resource => <<__EOF__ ,
+-apply.modify;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(!= 123 456)
+(- apply.modify)
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'ne-2',
-	   resource	=> <<__EOF__ ,
-123 != -456;
+BUnit::run(name         => 'apply.modify-1',
+	   resource => <<__EOF__ ,
+apply.modify = true;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(!= 123 -456)
+(apply.modify true)
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'ne-3',
-	   resource	=> <<__EOF__ ,
--123 != -456;
+BUnit::run(name         => 'apply.modify-2',
+	   resource => <<__EOF__ ,
+apply.modify true;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(!= -123 -456)
+(apply.modify true)
 __EOF__
-
 
 1;
 #------------------------------------------------------------------------------

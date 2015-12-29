@@ -82,6 +82,8 @@ Declare(SymDef, sym_le     , sym_def("<=",     30, NIL, NULL, p_sym_name));
 Declare(SymDef, sym_ne     , sym_def("!=",     30, NIL, NULL, p_sym_name));
 
 Declare(SymDef, sym_mod    , sym_def("mod",    60, NIL, NULL, p_sym_name));
+Declare(SymDef, sym_like   , sym_def("like",   22, NIL, NULL, p_sym_name));
+Declare(SymDef, sym_ilike  , sym_def("ilike",  22, NIL, NULL, p_sym_name));
 
 Declare(SymDef*, sym_char  , (SymDef*)calloc(256, sizeof(SymDef)));
 

@@ -46,6 +46,9 @@ extern Term term_eof;
 extern Term term_true;
 extern Term term_false;
 extern Term term_mod;
+extern Term term_and;
+extern Term term_or;
+extern Term term_not;
 
 extern Term new_term();
 extern Term new_term_num();

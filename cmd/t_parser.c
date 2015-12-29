@@ -166,7 +166,7 @@ static SymDef scan()				   /*                        */
   for (c = GetC; c >= 0; c = GetC)	   	   /*                        */
   {						   /*                        */
 #ifdef DEBUG
-    fprintf(stderr, "--- scan %c %d\n",c,c);
+    fprintf(stderr, "--- scan %c %d\n",c,c);	   /*                        */
 #endif
     switch (c) {				   /*                        */
       case '\n':				   /*                        */
@@ -238,12 +238,27 @@ static SymDef scan()				   /*                        */
 	UnGetC(c);				   /*                        */
 	Return(SymCharTerm('=')); 	   	   /*                        */
 	  					   /*                        */
+      case '&':					   /*                        */
+	if ((c=GetC) == '&') {			   /*                        */
+	  Return(new_term(sym_and, NIL, NIL));	   /*                        */
+	}					   /*                        */
+	UnGetC(c);				   /*                        */
+	Return(SymCharTerm('&')); 	   	   /*                        */
+	  					   /*                        */
+      case '|':					   /*                        */
+	if ((c=GetC) == '|') {			   /*                        */
+	  Return(new_term(sym_or, NIL, NIL));	   /*                        */
+	}					   /*                        */
+	UnGetC(c);				   /*                        */
+	Return(SymCharTerm('|')); 	   	   /*                        */
+	  					   /*                        */
       case '!':					   /*                        */
 	if ((c=GetC) == '=') {			   /*                        */
 	  Return(new_term(sym_ne, NIL, NIL));	   /*                        */
 	}					   /*                        */
 	UnGetC(c);				   /*                        */
-	break;					   /*                        */
+	c = '!';				   /*                        */
+	break; 	   	   			   /*                        */
 	  					   /*                        */
       case '>':					   /*                        */
 	if ((c=GetC) == '=') {			   /*                        */
@@ -303,6 +318,12 @@ static SymDef scan()				   /*                        */
 	    { yylval = term_true;		   /*                        */
 	    } else ON("false")			   /*                        */
 	    { yylval = term_false;		   /*                        */
+	    } else ON("and")			   /*                        */
+	    { yylval = term_and;		   /*                        */
+	    } else ON("or")			   /*                        */
+	    { yylval = term_or;		   	   /*                        */
+	    } else ON("not")			   /*                        */
+	    { yylval = term_not;		   /*                        */
 	    } else ON("mod")			   /*                        */
 	    { yylval = SymCharTerm('%');	   /*                        */
 	    } else {				   /*                        */

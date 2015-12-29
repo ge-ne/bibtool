@@ -292,6 +292,9 @@ void init_symdef()				   /*                        */
   term_false	 = new_term(sym_false, NIL, NIL);  /*                        */
  						   /*                        */
   term_mod	 = new_term(sym_mod, NIL, NIL);	   /*                        */
+  term_and	 = new_term(sym_and, NIL, NIL);	   /*                        */
+  term_or	 = new_term(sym_or, NIL, NIL);	   /*                        */
+  term_not	 = new_term(sym_not, NIL, NIL);	   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/
