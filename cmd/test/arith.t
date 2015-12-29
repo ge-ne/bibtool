@@ -39,6 +39,17 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'arith-err-1',
+	   resource	=> <<__EOF__ ,
+(
+
+
+__EOF__
+	   expected_err => <<__EOF__ );
+
+*** BibTool ERROR:  (line 1 in _test.rsc): Missing ) before end of file
+__EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'arith-1',

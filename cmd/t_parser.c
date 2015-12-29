@@ -168,7 +168,6 @@ static SymDef scan()				   /*                        */
 #ifdef DEBUG
     fprintf(stderr, "--- scan %c %d\n",c,c);
 #endif
-
     switch (c) {				   /*                        */
       case '\n':				   /*                        */
 	linenum++;				   /*                        */
@@ -183,12 +182,10 @@ static SymDef scan()				   /*                        */
 	continue;				   /*                        */
 						   /*                        */
       case '"':					   /*                        */
-	yylval = scan_string(sym_string ,'"');	   /*                        */
-	return TSym(yylval);			   /*                        */
+	Return(scan_string(sym_string ,'"'));	   /*                        */
 	  					   /*                        */
       case '\'':				   /*                        */
-	yylval = scan_string(sym_field ,'\'');	   /*                        */
-	return TSym(yylval);			   /*                        */
+	Return(scan_string(sym_field ,'\''));	   /*                        */
 	  					   /*                        */
       case '{':					   /*                        */
 	Return(scan_block());			   /*                        */
@@ -386,7 +383,7 @@ Term read_builtin(Term t)			   /*                        */
 #endif
     } else if (   SymIs(s, ';')			   /*                        */
 	     || SymIs(s, ')')			   /*                        */
-	     || SymIs(s, ']')
+	     || SymIs(s, ']')			   /*                        */
 	     || SymOp(s) > 0) {			   /*                        */
       unscan(s, yylval);			   /*                        */
 #ifdef DEBUG
@@ -397,7 +394,7 @@ Term read_builtin(Term t)			   /*                        */
       unscan(s, yylval);			   /*                        */
       *tp = Cons(read_expr(), NIL);		   /*                        */
       tp = &(Cdr(*tp));				   /*                        */
-    }
+    }						   /*                        */
   }						   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
@@ -505,28 +502,20 @@ static Term read_expr()				   /*                        */
       { Shift(s, yylval);
       }
  						   /*                        */
-#ifdef NEVER
-	t = read_expr();			   /*                        */
-	s = SymChar('-');		   	   /*                        */
-	Shift(s, 				   /*                        */
-	      Cons(SymTerm(s),			   /*                        */
-		   Cons(t, NIL)));		   /*                        */
-      if (TermIsEOF(t))			   /*                        */
-      { Error("Unexpected end-of-file",0,0);	   /*                        */
-      }
-#endif
+    } else if (SymIs(s, '(')) {			   /*                        */
+      int lno = linenum;			   /*                        */
+      Term t  = read_expr();			   /*                        */
+      s	      = scan();				   /*                        */
+      if (! SymIs(s, ')'))			   /*                        */
+      { linenum = lno;				   /*                        */
+	Error("Missing ) before ",		   /*                        */
+	      s ? SymName(s) : (String)"end of file",0); }/*                 */
+      Shift(sym_group, t);			   /*                        */
  						   /*                        */
     } else if (SymOp(s) > 0) {		   	   /*                        */
       if (stack	== TStackNULL && BinarySym(s) )	   /*                        */
       { Error("Unexpected operator ", SymName(s), 0); }/*                    */
       Shift(s, yylval);				   /*                        */
- 						   /*                        */
-    } else if (SymIs(s, '(')) {			   /*                        */
-      Term t = read_expr();			   /*                        */
-      s = scan();				   /*                        */
-      if (! SymIs(s, ')'))			   /*                        */
-      { Error("Missing ) instead of ", SymName(s),0); }/*                    */
-      Shift(sym_group, t);			   /*                        */
  						   /*                        */
     } else {					   /*                        */
 #ifdef NEVER
