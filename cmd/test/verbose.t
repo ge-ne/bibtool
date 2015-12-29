@@ -46,7 +46,7 @@ verbose = true;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(verbose  true)
+(verbose true)
 __EOF__
 
 #------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ verbose true;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(verbose  true)
+(verbose true)
 __EOF__
 
 1;

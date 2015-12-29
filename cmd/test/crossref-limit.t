@@ -46,7 +46,7 @@ crossref.limit = 123;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(crossref.limit  123)
+(crossref.limit 123)
 __EOF__
 
 1;

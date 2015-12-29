@@ -155,6 +155,8 @@ static SymDef scan()				   /*                        */
     return sd;			   		   /*                        */
   }						   /*                        */
     						   /*                        */
+  yylval = NIL;				   	   /*                        */
+ 						   /*                        */
   for (c = GetC; c >= 0; c = GetC)	   	   /*                        */
   {						   /*                        */
 #ifdef DEBUG
@@ -311,10 +313,8 @@ static SymDef scan()				   /*                        */
 	yylval = (SymCharTerm(c));		   /*                        */
 	return yylval ? TSym(yylval) : SymChar(c);
     }						   /*                        */
-    yylval = NIL;				   /*                        */
     return c < 0 ? SymDefNull : SymChar(c & 0xff); /*                        */
   }						   /*                        */
-  yylval = NIL;				   	   /*                        */
   return SymDefNull;				   /*                        */
 }						   /*------------------------*/
 
@@ -369,19 +369,29 @@ Term read_builtin(Term t)			   /*                        */
   						   /*                        */
   for (s = scan(); s; s = scan())		   /*                        */
   {						   /*                        */
+#ifdef DEBUG
+    printf("--- %s\n", SymName(s));
+#endif
     if (   SymIs(s, '#')			   /*                        */
-	|| SymIs(s, '=')) continue;
-
-    if (   SymIs(s, ';')			   /*                        */
-	|| SymIs(s, ')')			   /*                        */
-	|| SymIs(s, ']')
-	|| SymOp(s) > 0) {			   /*                        */
+	|| SymIs(s, '='))
+    {
+#ifdef DEBUG
+      puts("skip");
+#endif
+    } else if (   SymIs(s, ';')			   /*                        */
+	     || SymIs(s, ')')			   /*                        */
+	     || SymIs(s, ']')
+	     || SymOp(s) > 0) {			   /*                        */
+      unscan(s, yylval);			   /*                        */
+#ifdef DEBUG
+      puts("break");
+#endif
       break;					   /*                        */
-    }						   /*                        */
- 						   /*                        */
-    unscan(s, yylval);				   /*                        */
-    *tp = Cons(read_expr(), NIL);		   /*                        */
-    tp = &(Cdr(*tp));				   /*                        */
+    } else {					   /*                        */
+      unscan(s, yylval);			   /*                        */
+      *tp = Cons(read_expr(), NIL);		   /*                        */
+      tp = &(Cdr(*tp));				   /*                        */
+    }
   }						   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
@@ -461,7 +471,7 @@ static Term read_expr()				   /*                        */
   for (s = scan(); s; s = scan())		   /*                        */
   {						   /*                        */
 #ifdef DEBUG
-    fprintf(stderr, "--- read_expr(): %s %d\n",
+    fprintf(stderr, "--- read_expr(): '%s' %d\n",
 	    SymName(s), SymOp(s));
 #endif
     if (s == sym_builtin			   /*                        */
@@ -472,24 +482,33 @@ static Term read_expr()				   /*                        */
 	|| s == sym_false) {		   	   /*                        */
       Shift(s, yylval);				   /*                        */
        						   /*                        */
-    } else if (s == sym_cons) {			   /*                        */
+    }						   /*                        */
+    else if (s == sym_cons) {			   /*                        */
       Shift(s, (yylval == NIL			   /*                        */
 		? NIL				   /*                        */
 		: read_list(yylval)));		   /*                        */
  						   /*                        */
-    } else if (SymIs(s, '-')) {			   /*                        */
-      Term t = read_expr();			   /*                        */
-      if (TermIsNumber(t))			   /*                        */
-      { TNumber(t) = -TNumber(t);		   /*                        */
-	Shift(sym_number, t);			   /*                        */
-      } else if (TermIsEOF(t))			   /*                        */
-      { Error("Unexpected end-of-file",0,0);	   /*                        */
-      } else {					   /*                        */
+    }						   /*                        */
+    else if (SymIs(s, '-')) {			   /*                        */
+      s = scan();				   /*                        */
+      if ( SymIsNumber(s) )			   /*                        */
+      { TNumber(yylval) = -TNumber(yylval);	   /*                        */
+	Shift(s, yylval);		   	   /*                        */
+      }						   /*                        */
+      else					   /*                        */
+      { Shift(s, yylval);
+      }
+ 						   /*                        */
+#ifdef NEVER
+	t = read_expr();			   /*                        */
 	s = SymChar('-');		   	   /*                        */
 	Shift(s, 				   /*                        */
 	      Cons(SymTerm(s),			   /*                        */
 		   Cons(t, NIL)));		   /*                        */
-      }						   /*                        */
+      if (TermIsEOF(t))			   /*                        */
+      { Error("Unexpected end-of-file",0,0);	   /*                        */
+      }
+#endif
  						   /*                        */
     } else if (SymOp(s) > 0) {		   	   /*                        */
       if (stack	== TStackNULL && BinarySym(s) )	   /*                        */
@@ -504,12 +523,13 @@ static Term read_expr()				   /*                        */
       Shift(sym_group, t);			   /*                        */
  						   /*                        */
     } else {					   /*                        */
+#ifdef NEVER
       if (stack	== TStackNULL)			   /*                        */
       { Error("Unexpected: ", SymName(s), 0); }	   /*                        */
+#endif
  						   /*                        */
       unscan(s, yylval);			   /*                        */
-      stack = reduce(stack);			   /*                        */
-      return TSTerm(stack);			   /*                        */
+      return stack ? TSTerm(reduce(stack)) : NIL;  /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -530,13 +550,15 @@ static Term read_expr()				   /*                        */
 **___________________________________________________			     */
 static Term read_cmd()				   /*                        */
 { SymDef s = scan();				   /*                        */
+  Term t;				   	   /*                        */
  						   /*                        */
-  if (s == sym_builtin)
-  { return read_builtin(yylval); }
-
-  unscan(s, yylval);
-  Term t = read_expr();				   /*                        */
-  if (t && TermIsEOF(t)) return t;		   /*                        */
+  if (s == sym_builtin)				   /*                        */
+  { t = read_builtin(yylval); }			   /*                        */
+  else						   /*                        */
+  { unscan(s, yylval);				   /*                        */
+    t = read_expr();				   /*                        */
+    if (t && TermIsEOF(t)) return t;		   /*                        */
+  }						   /*                        */
   						   /*                        */
   s = scan();					   /*                        */
   if (!SymIs(s, ';'))			   	   /*                        */

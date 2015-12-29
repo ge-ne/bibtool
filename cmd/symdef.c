@@ -89,14 +89,17 @@ static void print_quoted(file, s)		   /*                        */
 **	 t	
 ** Returns:	
 **___________________________________________________			     */
-static int p_sym_name(file, t)			   /*                        */
+static void p_sym_name(file, t)			   /*                        */
   FILE * file;					   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
+  if (t == NIL)
+  { fputs("??",file);
+    return;					   /*                        */
+  }
   print_quoted(file, SymName(TSym(t)));		   /*                        */
   if (Car(t)) { print_term(Car(t)); }	   	   /*                        */
   if (Cdr(t)) { print_term(Cdr(t)); }		   /*                        */
-  return 0;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -109,12 +112,11 @@ static int p_sym_name(file, t)			   /*                        */
 **	 t	
 ** Returns:	
 **___________________________________________________			     */
-static int p_term_num(file, t)			   /*                        */
+static void p_term_num(file, t)			   /*                        */
   FILE * file;					   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
   fprintf(file, "%ld", TNumber(t));		   /*                        */
-  return 0;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -127,14 +129,13 @@ static int p_term_num(file, t)			   /*                        */
 **	 t	
 ** Returns:	
 **___________________________________________________			     */
-static int p_term_str(file, t)			   /*                        */
+static void p_term_str(file, t)			   /*                        */
   FILE * file;					   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
   fputc('"', file);				   /*                        */
   print_quoted(file, TString(t));		   /*                        */
   fputc('"', file);				   /*                        */
-  return 0;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -147,7 +148,7 @@ static int p_term_str(file, t)			   /*                        */
 **	 t	
 ** Returns:	
 **___________________________________________________			     */
-static int p_term_field(file, t)		   /*                        */
+static void p_term_field(file, t)		   /*                        */
   FILE * file;					   /*                        */
   Term t;					   /*                        */
 { int q	 = 0;					   /*                        */
@@ -171,7 +172,6 @@ static int p_term_field(file, t)		   /*                        */
   if (q) fputc('\'', file);			   /*                        */
   print_quoted(file, TString(t));		   /*                        */
   if (q) fputc('\'', file);			   /*                        */
-  return 0;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -184,7 +184,7 @@ static int p_term_field(file, t)		   /*                        */
 **	 t	
 ** Returns:	
 **___________________________________________________			     */
-static int p_cons(file, t)			   /*                        */
+static void p_cons(file, t)			   /*                        */
   FILE * file;					   /*                        */
   Term t;					   /*                        */
 { fputc('(', file);				   /*                        */
@@ -192,7 +192,7 @@ static int p_cons(file, t)			   /*                        */
   while (Cdr(t))				   /*                        */
   { t = Cdr(t);				   	   /*                        */
     if (t && TSym(t) == sym_cons)		   /*                        */
-    { fputs("  ", file);			   /*                        */
+    { fputc(' ', file);			   	   /*                        */
       print_term(file, Car(t));		   	   /*                        */
     } else					   /*                        */
     { fputs(" . ", file);			   /*                        */
@@ -201,7 +201,6 @@ static int p_cons(file, t)			   /*                        */
     }						   /*                        */
   }						   /*                        */
   fputc(')', file);				   /*                        */
-  return 0;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -222,7 +221,7 @@ static SymDef sym_def(name, op, term, parse, print)/*                        */
   int op;					   /*                        */
   Term term;					   /*                        */
   Term (*parse)_ARG((FILE*));			   /*                        */
-  int (*print)_ARG((FILE*, Term));		   /*                        */
+  void (*print)_ARG((FILE*, Term));		   /*                        */
 {						   /*                        */
   SymDef sym    = (SymDef) malloc(sizeof(SSymDef));/*                        */
   if (sym == SymDefNull) OUT_OF_MEMORY("symdef");  /*                        */
@@ -257,16 +256,16 @@ void init_symdef()				   /*                        */
   for (i = 1; i < 256; i++) {			   /*                        */
  						   /*                        */
     switch (i)					   /*                        */
-    { case ';':	InitSymChar(i, ";",  0); break;
-      case '=':	InitSymChar(i, "=", 30); break;
-      case '<':	InitSymChar(i, "<", 30); break;
-      case '>':	InitSymChar(i, ">", 30); break;
-      case '#':	InitSymChar(i, "#", 40); break;
-      case '+':	InitSymChar(i, "+", 50); break;
-      case '-':	InitSymChar(i, "-", 50); break;
-      case '*':	InitSymChar(i, "*", 60); break;
-      case '/':	InitSymChar(i, "/", 60); break;
-      case '%':	InitSymChar(i, "mod", 60); break;
+    { case ';':	InitSymChar(i,  ";",   0); break;  /*                        */
+      case '=':	InitSymChar(i,  "=",  30); break;  /*                        */
+      case '<':	InitSymChar(i,  "<",  30); break;  /*                        */
+      case '>':	InitSymChar(i,  ">",  30); break;  /*                        */
+      case '#':	InitSymChar(i,  "#",  40); break;  /*                        */
+      case '+':	InitSymChar(i,  "+",  50); break;  /*                        */
+      case '-':	InitSymChar(i,  "-",  52); break;  /*                        */
+      case '*':	InitSymChar(i,  "*",  60); break;  /*                        */
+      case '/':	InitSymChar(i,  "/",  60); break;  /*                        */
+      case '%':	InitSymChar(i, "mod", 60); break;  /*                        */
       default:					   /*                        */
 	if (isalnum(i)				   /*                        */
 	    || isspace(i)			   /*                        */

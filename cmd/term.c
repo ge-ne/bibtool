@@ -25,7 +25,11 @@
 #define _ARG(A) ()
 #endif
 
-
+ Term new_t_string();
+ Term new_term();
+ Term new_term_num();
+ void free_term();
+ void print_term();
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -141,18 +145,17 @@ void free_term(t)				   /*                        */
 **	 t	
 ** Returns:	nothing
 **___________________________________________________			     */
-void print_term(file, t)
-  FILE * file;
-  Term t;
-{
-  if (t == NIL) {
-    fputs(" nil ", file);
-    return;
-  }
-  if (TSym(t) != NULL && SymPrint(TSym(t)) != NULL) {
-    SymPrint(TSym(t))(file, t);
-  } else {
-    fputs(" ??? ", file);
-  }
-
-}
+void print_term(file, t)			   /*                        */
+  FILE * file;					   /*                        */
+  Term t;					   /*                        */
+{						   /*                        */
+  if (t == NIL) {				   /*                        */
+    fputs("nil", file);				   /*                        */
+    return;					   /*                        */
+  }						   /*                        */
+  if (TSym(t) != NULL && SymPrint(TSym(t)) != NULL) {/*                      */
+    SymPrint(TSym(t))(file, t);			   /*                        */
+  } else {					   /*                        */
+    fputs("???", file);				   /*                        */
+  }						   /*                        */
+}						   /*------------------------*/

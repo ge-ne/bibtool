@@ -31,7 +31,7 @@ typedef struct S_SYMDEF {			   /*                        */
   int op;					   /*                        */
   struct S_TERM * term;	   			   /*                        */
   struct S_TERM * (*parse)_ARG((FILE*));	   /*                        */
-  int (*print)_ARG((FILE*, struct S_TERM *));	   /*                        */
+  void (*print)_ARG((FILE*, struct S_TERM *));	   /*                        */
 } SSymDef, *SymDef;				   /*------------------------*/
 
 #define SymDefNull ((SymDef)0)
@@ -45,6 +45,7 @@ typedef struct S_SYMDEF {			   /*                        */
 #define BinarySym(S) ((SymOp(S) & 1) == 0)
 #define UnarySym(S) ((SymOp(S) & 1) != 0)
 
+#define SymIsNumber(S) ((S) == sym_number) 
 #define SymIs(S,C) ((S) == sym_char[C]) 
 
 #define SymChar(C) sym_char[C]

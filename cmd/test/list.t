@@ -47,7 +47,7 @@ BUnit::run(name         => 'list-1',
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
- nil 
+nil
 __EOF__
 
 #------------------------------------------------------------------------------
@@ -57,7 +57,7 @@ BUnit::run(name         => 'list-2',
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
- nil 
+nil
 __EOF__
 
 #------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ nil;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
- nil 
+nil
 __EOF__
 
 #------------------------------------------------------------------------------
@@ -87,7 +87,7 @@ BUnit::run(name         => 'list-20',
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(123  "abc")
+(123 "abc")
 __EOF__
 
 

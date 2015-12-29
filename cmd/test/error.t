@@ -56,7 +56,7 @@ BUnit::run(name         => 'error-2',
 __EOF__
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected operator +
+*** BibTool ERROR:  (line 2 in _test.rsc): Unexpected end-of-file
 __EOF__
 
 
