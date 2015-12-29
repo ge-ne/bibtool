@@ -219,7 +219,7 @@ sub suites {
 
   foreach $_ (@a) {
     my $l = length($_);
-    $len  = $l if $l> $len;
+    $len  = $l if $l > $len;
   }
 
   foreach $_ (@a) {
@@ -243,12 +243,12 @@ sub suites {
   $success = 0;
   $ignored = 0;
   $failure = 0;
-  print "\n";
+  printf("\n%-${len}s  success ignored failure\n", '') if $verbose;
 
   foreach $suite (@a) {
     $_ = $suite;
     s/\.t$//;
-    printf("%-${len}ssuccess: %3d  ignored: %3d  failure: %3d\n", $_,
+    printf("%-${len}s%7d %7d %7d\n", $_,
 	     $summary{$suite}[0], $summary{$suite}[1], $summary{$suite}[2])
 	if $verbose;
     $success += $summary{$suite}[0];
@@ -258,13 +258,12 @@ sub suites {
 
   $_ = $success + $failure;
   if ($_ == 0) { $_ = 100 } else { $_ = 100. * $success/$_; }
-  printf("%s\n%-${len}ssuccess: %3d  ignored: %3d  failure: %3d\n%${len}ssucess rate: %3.2f%%\n",
+  printf("%s\n%-${len}s%7d %7d %7d\nSuccess rate: %3.2f%%\n",
 	 ('_' x ($len+40)),
 	 'TOTAL',
 	 $success,
 	 $ignored,
 	 $failure,
-	 '',
 	 $_) if $verbose;
 
   return $failure;
