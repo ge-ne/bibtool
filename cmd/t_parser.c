@@ -101,13 +101,16 @@ static Term scan_string(s, c_end)		   /*                        */
 { Term t;					   /*                        */
   StringBuffer *sb = sbopen();		   	   /*                        */
   int c;					   /*                        */
- 						   /*                        */
-  for (c = GetC; c && c != c_end; c = GetC)  	   /*                        */
+  int lno = linenum;				   /*                        */
+  						   /*                        */
+  for (c = GetC; c != c_end; c = GetC)	   	   /*                        */
   { if ( c == '\\')			   	   /*                        */
     { c = GetC;				   	   /*                        */
       switch (c)			   	   /*                        */
-      { case 0:				   	   /*                        */
-	  break;			   	   /*                        */
+      { case EOF:				   /*                        */
+	case 0:				   	   /*                        */
+	  linenum = lno;			   /*                        */
+	  Error("Missing closing delimiter ", (c =='"' ? "\"": "'"), 0);/*   */
 	case 'n':			   	   /*                        */
 	  sbputc('\n', sb);		   	   /*                        */
 	  break;			   	   /*                        */
@@ -123,7 +126,10 @@ static Term scan_string(s, c_end)		   /*                        */
 	default:			   	   /*                        */
 	  sbputc(c, sb);		   	   /*                        */
       }					   	   /*                        */
-    } else {				   	   /*                        */
+    } else if ( c <= 0)			   	   /*                        */
+    { linenum = lno;				   /*                        */
+      Error("Missing closing delimiter ", (c =='"' ? "\"": "'"), 0);/*       */
+    } else{				   	   /*                        */
       sbputc(c, sb);			   	   /*                        */
     }					   	   /*                        */
   }					   	   /*                        */

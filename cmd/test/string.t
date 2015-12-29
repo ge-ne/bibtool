@@ -69,6 +69,32 @@ __EOF__
 "a\\"b"
 __EOF__
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-err-1',
+	   resource	=> <<__EOF__ ,
+"abc
+__EOF__
+	   expected_err => <<__EOF__ );
+
+*** BibTool ERROR:  (line 1 in _test.rsc): Missing closing delimiter '
+__EOF__
+
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-err-2',
+	   resource	=> <<__EOF__ ,
+"abc
+d
+e
+f
+__EOF__
+	   expected_err => <<__EOF__ );
+
+*** BibTool ERROR:  (line 1 in _test.rsc): Missing closing delimiter '
+__EOF__
+
+
+
 
 1;
 #------------------------------------------------------------------------------

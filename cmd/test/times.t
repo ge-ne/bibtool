@@ -13,11 +13,11 @@
 
 =head1 NAME
 
-list.t - Test suite for BibTool list expressions.
+times.t - Test suite for BibTool times operator.
 
 =head1 SYNOPSIS
 
-list.t
+times.t
 
 =head1 DESCRIPTION
 
@@ -39,66 +39,34 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
-
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'list-1',
+BUnit::run(name         => 'times-1',
 	   resource	=> <<__EOF__ ,
-[];
+123*456;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-nil
+(* 123 456)
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'list-2',
+BUnit::run(name         => 'times-2',
 	   resource	=> <<__EOF__ ,
-[ ];
+123 * -456;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-nil
+(* 123 -456)
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'list-3',
+BUnit::run(name         => 'times-3',
 	   resource	=> <<__EOF__ ,
-nil;
+-123 * -456;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-nil
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'list-10',
-	   resource	=> <<__EOF__ ,
-[123];
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(123)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'list-20',
-	   resource	=> <<__EOF__ ,
-[123, "abc"];
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(123 "abc")
-__EOF__
-
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'list-21',
-	   resource	=> <<__EOF__ ,
-[123, abc];
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(123 abc)
+(* -123 -456)
 __EOF__
 
 

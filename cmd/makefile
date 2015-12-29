@@ -51,8 +51,9 @@ test_t.o: term.h symdef.h
 test_t: test_t.o t_parser.o t_stack.o term.o symdef.o $(OFILES)
 	@$(CC) -g -O2 -o $@ $^ -lkpathsea
 
-test: test_t test/*.t
-	(cd test: make)
+test: do_test
+do_test: test_t test/*.t
+	(cd test; make)
 
 clean:
 	rm -f *.o
