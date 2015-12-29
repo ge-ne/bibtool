@@ -13,11 +13,11 @@
 
 =head1 NAME
 
-plus.t - Test suite for BibTool plus operator.
+le.t - Test suite for BibTool <= operator.
 
 =head1 SYNOPSIS
 
-plus.t
+le.t
 
 =head1 DESCRIPTION
 
@@ -40,53 +40,43 @@ use strict;
 use BUnit;
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'plus-err-0',
+BUnit::run(name         => 'le-err-1',
 	   resource	=> <<__EOF__ ,
-+
+123 <=
 __EOF__
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected operator +
+*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for <=
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'plus-err-1',
+BUnit::run(name         => 'le-1',
 	   resource	=> <<__EOF__ ,
-123 +
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for +
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'plus-1',
-	   resource	=> <<__EOF__ ,
-123+456;
+123<=456;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(+ 123 456)
+(<= 123 456)
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'plus-2',
+BUnit::run(name         => 'le-2',
 	   resource	=> <<__EOF__ ,
-123 + -456;
+123 <= -456;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(+ 123 -456)
+(<= 123 -456)
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'plus-3',
+BUnit::run(name         => 'le-3',
 	   resource	=> <<__EOF__ ,
--123 + -456;
+-123 <= -456;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(+ -123 -456)
+(<= -123 -456)
 __EOF__
 
 

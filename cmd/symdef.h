@@ -46,6 +46,7 @@ typedef struct S_SYMDEF {			   /*                        */
 #define UnarySym(S) ((SymOp(S) & 1) != 0)
 
 #define SymIsNumber(S) ((S) == sym_number) 
+#define SymIsOperator(S) (SymOp(S) > 0) 
 #define SymIs(S,C) ((S) == sym_char[C]) 
 
 #define SymChar(C) sym_char[C]

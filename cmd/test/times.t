@@ -40,6 +40,16 @@ use strict;
 use BUnit;
 
 #------------------------------------------------------------------------------
+BUnit::run(name         => 'times-err-1',
+	   resource	=> <<__EOF__ ,
+123 *
+__EOF__
+	   expected_err => <<__EOF__ );
+
+*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for *
+__EOF__
+
+#------------------------------------------------------------------------------
 BUnit::run(name         => 'times-1',
 	   resource	=> <<__EOF__ ,
 123*456;

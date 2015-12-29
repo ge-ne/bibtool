@@ -13,11 +13,11 @@
 
 =head1 NAME
 
-plus.t - Test suite for BibTool plus operator.
+divide.t - Test suite for BibTool divide operator.
 
 =head1 SYNOPSIS
 
-plus.t
+divide.t
 
 =head1 DESCRIPTION
 
@@ -40,53 +40,53 @@ use strict;
 use BUnit;
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'plus-err-0',
+BUnit::run(name         => 'divide-err-1',
 	   resource	=> <<__EOF__ ,
-+
+123 /
 __EOF__
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected operator +
+*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for /
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'plus-err-1',
+BUnit::run(name         => 'divide-0',
 	   resource	=> <<__EOF__ ,
-123 +
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for +
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'plus-1',
-	   resource	=> <<__EOF__ ,
-123+456;
+123/0;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(+ 123 456)
+(/ 123 0)
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'plus-2',
+BUnit::run(name         => 'divide-1',
 	   resource	=> <<__EOF__ ,
-123 + -456;
+123/456;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(+ 123 -456)
+(/ 123 456)
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'plus-3',
+BUnit::run(name         => 'divide-2',
 	   resource	=> <<__EOF__ ,
--123 + -456;
+123 / -456;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(+ -123 -456)
+(/ 123 -456)
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'divide-3',
+	   resource	=> <<__EOF__ ,
+-123 / -456;
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(/ -123 -456)
 __EOF__
 
 

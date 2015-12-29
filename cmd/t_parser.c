@@ -250,14 +250,14 @@ static SymDef scan()				   /*                        */
 	  Return(new_term(sym_ge, NIL, NIL));	   /*                        */
 	}					   /*                        */
 	UnGetC(c);				   /*                        */
-	Return(SymCharTerm(c));	   	   	   /*                        */
+	Return(SymCharTerm('>'));		   /*                        */
 	  					   /*                        */
       case '<':					   /*                        */
 	if ((c=GetC) == '=') {			   /*                        */
 	  Return(new_term(sym_le, NIL, NIL));	   /*                        */
 	}					   /*                        */
 	UnGetC(c);				   /*                        */
-	Return(SymCharTerm(c));	   	   	   /*                        */
+	Return(SymCharTerm('<'));		   /*                        */
 	  					   /*                        */
       case 'a': case 'b': case 'c': case 'd':	   /*                        */
       case 'e': case 'f': case 'g': case 'h':	   /*                        */
@@ -412,9 +412,26 @@ static TStack reduce(stack)			   /*                        */
   TStack stack;					   /*                        */
 { TStack sp;					   /*                        */
   Term t;					   /*                        */
+  int n;					   /*                        */
+   						   /*                        */
+  for (sp = stack;				   /*                        */
+       sp && TSPrev(sp);			   /*                        */
+       sp = TSPrev(sp))			   	   /*                        */
+  { TStack ts = TSPrev(sp);
+    if (SymIs(TSSym(ts), '-'))
+    {
+      if (TSPrev(ts) == NULL
+	  || SymIsOperator(TSSym(TSPrev(ts))))
+      { TSTerm(sp) = Cons(TSTerm(ts),
+			  Cons(TSTerm(sp),NIL));
+	TSSym(sp)  = sym_cons;
+	TSPrev(sp) = ts_pop(TSPrev(sp));	   /*                        */
+      }						   /*                        */
+    }						   /*                        */
+  }						   /*                        */
  						   /*                        */
   while (TSPrev(stack))			   	   /*                        */
-  { int n = 0;				   	   /*                        */
+  { n = 0;				   	   /*                        */
     for (sp = stack; sp; sp = TSPrev(sp))	   /*                        */
     { int op = SymOp(TSSym(sp));		   /*                        */
       if (op > n) n = op;		   	   /*                        */
@@ -427,18 +444,18 @@ static TStack reduce(stack)			   /*                        */
     {						   /*                        */
       if (SymOp(TSSym(TSPrev(sp))) != n) continue; /*                        */
 #ifdef DEBUG
-      puts("reduce");
+      fputs("reduce", stderr);			   /*                        */
 #endif
       t = Cons(TSTerm(TSPrev(sp)), NIL);	   /*                        */
        						   /*                        */
-      if ((n & 1) == 0)				   /*                        */
-      { Cdr(t) = Cons(NIL,			   /*                        */
+      if ((n & 1) == 1)				   /*                        */
+      { Cdr(t) = Cons(TSTerm(sp), NIL);		   /*                        */
+      } else {					   /*                        */
+        Cdr(t) = Cons(NIL,			   /*                        */
 		      Cons(TSTerm(sp),		   /*                        */
 			   NIL));		   /*                        */
 	TSPrev(sp)  = ts_pop(TSPrev(sp));	   /*                        */
 	Car(Cdr(t)) = TSTerm(TSPrev(sp));	   /*                        */
-      } else {					   /*                        */
-	Cdr(t) = Cons(TSTerm(sp), NIL);		   /*                        */
       }						   /*                        */
       TSTerm(sp) = t;				   /*                        */
       TSSym(sp)  = sym_group;			   /*                        */
@@ -447,7 +464,7 @@ static TStack reduce(stack)			   /*                        */
   }						   /*                        */
  						   /*                        */
 #ifdef DEBUG
-      puts("... reduced");			   /*                        */
+  fputs("... reduced", stderr);			   /*                        */
 #endif
   return stack;					   /*                        */
 }						   /*------------------------*/
@@ -474,8 +491,8 @@ static Term read_expr()				   /*                        */
   for (s = scan(); s; s = scan())		   /*                        */
   {						   /*                        */
 #ifdef DEBUG
-    fprintf(stderr, "--- read_expr(): '%s' %d\n",
-	    SymName(s), SymOp(s));
+    fprintf(stderr, "--- read_expr(): '%s' %d\n",  /*                        */
+	    SymName(s), SymOp(s));		   /*                        */
 #endif
     if (s == sym_builtin			   /*                        */
 	|| s == sym_field			   /*                        */
@@ -494,13 +511,14 @@ static Term read_expr()				   /*                        */
     }						   /*                        */
     else if (SymIs(s, '-')) {			   /*                        */
       s = scan();				   /*                        */
-      if ( SymIsNumber(s) )			   /*                        */
-      { TNumber(yylval) = -TNumber(yylval);	   /*                        */
-	Shift(s, yylval);		   	   /*                        */
-      }						   /*                        */
+      if (s == SymDefNull)			   /*                        */
+      { Error("Missing operator for -", 0,0); }	   /*                        */
+ 						   /*                        */
+      if ( SymIsNumber(s) )		   	   /*                        */
+      { TNumber(yylval) = -TNumber(yylval); }	   /*                        */
       else					   /*                        */
-      { Shift(s, yylval);
-      }
+      { Shift(SymChar('-'), SymCharTerm('-')); }   /*                        */
+      Shift(s, yylval);		   	   	   /*                        */
  						   /*                        */
     } else if (SymIs(s, '(')) {			   /*                        */
       int lno = linenum;			   /*                        */
@@ -518,18 +536,19 @@ static Term read_expr()				   /*                        */
       Shift(s, yylval);				   /*                        */
  						   /*                        */
     } else {					   /*                        */
-#ifdef NEVER
-      if (stack	== TStackNULL)			   /*                        */
-      { Error("Unexpected: ", SymName(s), 0); }	   /*                        */
-#endif
- 						   /*                        */
       unscan(s, yylval);			   /*                        */
       return stack ? TSTerm(reduce(stack)) : NIL;  /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
   if (stack)			   		   /*                        */
-  { Error("Unexpected end-of-file",0,0); }	   /*                        */
+  { s = TSSym(stack);				   /*                        */
+    if (SymOp(s) > 0) {				   /*                        */
+      Error("Missing operator for ", SymName(s),0);/*                        */
+    } else {					   /*                        */
+      Error("Unexpected end-of-file",0,0);	   /*                        */
+    }						   /*                        */
+  }	   					   /*                        */
   return term_eof;				   /*                        */
 }						   /*------------------------*/
 #undef Shift

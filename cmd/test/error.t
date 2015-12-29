@@ -40,23 +40,13 @@ use strict;
 use BUnit;
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-1',
-	   resource	=> <<__EOF__ ,
-+
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected operator +
-__EOF__
-
-#------------------------------------------------------------------------------
 BUnit::run(name         => 'error-2',
 	   resource	=> <<__EOF__ ,
 -+
 __EOF__
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 2 in _test.rsc): Unexpected end-of-file
+*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for +
 __EOF__
 
 
@@ -67,7 +57,7 @@ BUnit::run(name         => 'error-3',
 __EOF__
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 2 in _test.rsc): Unexpected end-of-file
+*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for -
 __EOF__
 
 #------------------------------------------------------------------------------

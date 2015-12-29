@@ -13,11 +13,11 @@
 
 =head1 NAME
 
-plus.t - Test suite for BibTool plus operator.
+mod.t - Test suite for BibTool mod operator.
 
 =head1 SYNOPSIS
 
-plus.t
+mod.t
 
 =head1 DESCRIPTION
 
@@ -40,53 +40,43 @@ use strict;
 use BUnit;
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'plus-err-0',
+BUnit::run(name         => 'mod-err-1',
 	   resource	=> <<__EOF__ ,
-+
+123 mod
 __EOF__
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected operator +
+*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for mod
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'plus-err-1',
+BUnit::run(name         => 'mod-1',
 	   resource	=> <<__EOF__ ,
-123 +
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for +
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'plus-1',
-	   resource	=> <<__EOF__ ,
-123+456;
+123 mod 456;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(+ 123 456)
+(mod 123 456)
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'plus-2',
+BUnit::run(name         => 'mod-2',
 	   resource	=> <<__EOF__ ,
-123 + -456;
+123 mod -456;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(+ 123 -456)
+(mod 123 -456)
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'plus-3',
+BUnit::run(name         => 'mod-3',
 	   resource	=> <<__EOF__ ,
--123 + -456;
+-123 mod -456;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(+ -123 -456)
+(mod -123 -456)
 __EOF__
 
 

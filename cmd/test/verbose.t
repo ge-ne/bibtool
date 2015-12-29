@@ -40,6 +40,16 @@ use strict;
 use BUnit;
 
 #------------------------------------------------------------------------------
+BUnit::run(name         => 'verbose-0',
+	   resource => <<__EOF__ ,
+-verbose;
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(- verbose)
+__EOF__
+
+#------------------------------------------------------------------------------
 BUnit::run(name         => 'verbose-1',
 	   resource => <<__EOF__ ,
 verbose = true;
