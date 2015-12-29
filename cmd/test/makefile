@@ -4,7 +4,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2011-2015 Gerd Neugebauer
+#  (c) 2015 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -20,13 +20,13 @@
 PERL = perl
 TEST_PRG=../test_t
 
-all: test
+all: clean test
 
 test tests: $(TEST_PRG)
 	@BIBTOOL_PRG=$(TEST_PRG) ${PERL} -I../../test/lib -MBUnit -e "exit all()"
 
 clean:
-	$(RM) *.out *.err *.err-expected *.out-expected *~
+	@$(RM) *.out *.err *.err-expected *.out-expected *~
 
 # -----------------------------------------------------------------------------
 

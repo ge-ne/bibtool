@@ -45,21 +45,6 @@ int action(t)					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	run_one_test()
-** Type:	void
-** Purpose:	
-**		
-** Arguments:
-**	file	
-** Returns:	nothing
-**___________________________________________________			     */
-void run_one_test(file)				   /*                        */
-  char * file;					   /*                        */
-{						   /*                        */
-  parse_term(file, action);			   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
 ** Function:	run_test()
 ** Type:	void
 ** Purpose:	
@@ -71,7 +56,10 @@ void run_one_test(file)				   /*                        */
 void run_test(file)				   /*                        */
   char * file;					   /*                        */
 {						   /*                        */
-  run_one_test(file);				   /*                        */
+  if (verbose)					   /*                        */
+    fprintf(stderr, "--- reading %s\n", file);	   /*                        */
+ 						   /*                        */
+  parse_term(file, action);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -97,16 +85,16 @@ int main(argc, argv)				   /*                        */
   { arg = argv[i];				   /*                        */
     if (*arg == '-')			   	   /*                        */
     {						   /*                        */
-      if (ArgIs("-i", "--input"))		   /*                        */
-      { if (++i >= argc)			   /*                        */
+      if (ArgIs("-i", "--input") ||		   /*                        */
+	  ArgIs("-r", "--resource"))   	   	   /* for comparibility      */
+      {						   /*  to BibTool            */
+        if (++i >= argc)			   /*                        */
 	{ fprintf(stderr,			   /*                        */
 		  "Missing input file name\n");	   /*                        */
 	  return -1;				   /*                        */
 	}					   /*                        */
 	run_test(argv[i]);			   /*                        */
 	ok = 1;					   /*                        */
-      } else if (ArgIs("-r", "--resource"))   	   /* for comparibility      */
-      {						   /*  to BibTool            */
       } else if (ArgIs("-h", "--help"))   	   /*                        */
       { fprintf(stderr,			   	   /*                        */
 		"Usage: %s [-i] [infile]\n",	   /*                        */

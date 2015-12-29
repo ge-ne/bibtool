@@ -154,10 +154,14 @@ static SymDef scan()				   /*                        */
     look_ahead	  = NIL;			   /*                        */
     return sd;			   		   /*                        */
   }						   /*                        */
-  yylval = NIL;				   	   /*                        */
     						   /*                        */
   for (c = GetC; c >= 0; c = GetC)	   	   /*                        */
-  { switch (c) {				   /*                        */
+  {						   /*                        */
+#ifdef DEBUG
+    fprintf(stderr, "--- scan %c %d\n",c,c);
+#endif
+
+    switch (c) {				   /*                        */
       case '\n':				   /*                        */
 	linenum++;				   /*                        */
       case ' ':					   /*                        */
@@ -305,10 +309,12 @@ static SymDef scan()				   /*                        */
  						   /*                        */
       default:					   /*                        */
 	yylval = (SymCharTerm(c));		   /*                        */
-	return yylval ? TSym(yylval) : SymDefNull;
+	return yylval ? TSym(yylval) : SymChar(c);
     }						   /*                        */
+    yylval = NIL;				   /*                        */
     return c < 0 ? SymDefNull : SymChar(c & 0xff); /*                        */
   }						   /*                        */
+  yylval = NIL;				   	   /*                        */
   return SymDefNull;				   /*                        */
 }						   /*------------------------*/
 
@@ -366,13 +372,14 @@ Term read_builtin(Term t)			   /*                        */
     if (   SymIs(s, '#')			   /*                        */
 	|| SymIs(s, '=')) continue;
 
-    unscan(s, yylval);				   /*                        */
- 						   /*                        */
     if (   SymIs(s, ';')			   /*                        */
 	|| SymIs(s, ')')			   /*                        */
-	|| SymIs(s, ']')) {			   /*                        */
+	|| SymIs(s, ']')
+	|| SymOp(s) > 0) {			   /*                        */
       break;					   /*                        */
     }						   /*                        */
+ 						   /*                        */
+    unscan(s, yylval);				   /*                        */
     *tp = Cons(read_expr(), NIL);		   /*                        */
     tp = &(Cdr(*tp));				   /*                        */
   }						   /*                        */
@@ -454,10 +461,16 @@ static Term read_expr()				   /*                        */
   for (s = scan(); s; s = scan())		   /*                        */
   {						   /*                        */
 #ifdef DEBUG
-    printf("--- read_expr(): %s %d\n", SymName(s), SymOp(s));
+    fprintf(stderr, "--- read_expr(): %s %d\n",
+	    SymName(s), SymOp(s));
 #endif
-    if (s == sym_builtin) {			   /*                        */
-      Shift(s, read_builtin(yylval));		   /*                        */
+    if (s == sym_builtin			   /*                        */
+	|| s == sym_field			   /*                        */
+	|| s == sym_string		   	   /*                        */
+	|| s == sym_number		   	   /*                        */
+	|| s == sym_true			   /*                        */
+	|| s == sym_false) {		   	   /*                        */
+      Shift(s, yylval);				   /*                        */
        						   /*                        */
     } else if (s == sym_cons) {			   /*                        */
       Shift(s, (yylval == NIL			   /*                        */
@@ -477,13 +490,6 @@ static Term read_expr()				   /*                        */
 	      Cons(SymTerm(s),			   /*                        */
 		   Cons(t, NIL)));		   /*                        */
       }						   /*                        */
- 						   /*                        */
-    } else if (s == sym_field			   /*                        */
-	       || s == sym_string		   /*                        */
-	       || s == sym_number		   /*                        */
-	       || s == sym_true			   /*                        */
-	       || s == sym_false) {		   /*                        */
-      Shift(s, yylval);				   /*                        */
  						   /*                        */
     } else if (SymOp(s) > 0) {		   	   /*                        */
       if (stack	== TStackNULL && BinarySym(s) )	   /*                        */
@@ -523,15 +529,19 @@ static Term read_expr()				   /*                        */
 ** Returns:	
 **___________________________________________________			     */
 static Term read_cmd()				   /*                        */
-{ SymDef s;					   /*                        */
+{ SymDef s = scan();				   /*                        */
  						   /*                        */
+  if (s == sym_builtin)
+  { return read_builtin(yylval); }
+
+  unscan(s, yylval);
   Term t = read_expr();				   /*                        */
   if (t && TermIsEOF(t)) return t;		   /*                        */
   						   /*                        */
   s = scan();					   /*                        */
   if (!SymIs(s, ';'))			   	   /*                        */
   { Error("Semicolon expected instead of ",  	   /*                        */
-	  (s ? (char*)SymName(s) : "EOF"),"");	   /*                        */
+	  (s ? (char*)SymName(s) : "end-of-file"),"");/*                     */
   }						   /*                        */
    						   /*                        */
   return t;			   		   /*                        */
