@@ -295,6 +295,8 @@ void init_symdef()				   /*                        */
   term_and	 = new_term(sym_and, NIL, NIL);	   /*                        */
   term_or	 = new_term(sym_or, NIL, NIL);	   /*                        */
   term_not	 = new_term(sym_not, NIL, NIL);	   /*                        */
+  term_like	 = new_term(sym_like, NIL, NIL);   /*                        */
+  term_like	 = new_term(sym_ilike, NIL, NIL);  /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

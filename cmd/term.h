@@ -49,6 +49,8 @@ extern Term term_mod;
 extern Term term_and;
 extern Term term_or;
 extern Term term_not;
+extern Term term_like;
+extern Term term_ilike;
 
 extern Term new_term();
 extern Term new_term_num();

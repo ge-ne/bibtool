@@ -110,7 +110,8 @@ static Term scan_string(s, c_end)		   /*                        */
       { case EOF:				   /*                        */
 	case 0:				   	   /*                        */
 	  linenum = lno;			   /*                        */
-	  Error("Missing closing delimiter ", (c =='"' ? "\"": "'"), 0);/*   */
+	  Error("Missing closing delimiter ",	   /*                        */
+		(c =='"' ? "\"": "'"), 0);	   /*                        */
 	case 'n':			   	   /*                        */
 	  sbputc('\n', sb);		   	   /*                        */
 	  break;			   	   /*                        */
@@ -128,7 +129,8 @@ static Term scan_string(s, c_end)		   /*                        */
       }					   	   /*                        */
     } else if ( c <= 0)			   	   /*                        */
     { linenum = lno;				   /*                        */
-      Error("Missing closing delimiter ", (c =='"' ? "\"": "'"), 0);/*       */
+      Error("Missing closing delimiter ",	   /*                        */
+	    (c =='"' ? "\"": "'"), 0);		   /*                        */
     } else{				   	   /*                        */
       sbputc(c, sb);			   	   /*                        */
     }					   	   /*                        */
@@ -324,6 +326,10 @@ static SymDef scan()				   /*                        */
 	    { yylval = term_or;		   	   /*                        */
 	    } else ON("not")			   /*                        */
 	    { yylval = term_not;		   /*                        */
+	    } else ON("like")			   /*                        */
+	    { yylval = term_like;		   /*                        */
+	    } else ON("ilike")			   /*                        */
+	    { yylval = term_ilike;		   /*                        */
 	    } else ON("mod")			   /*                        */
 	    { yylval = SymCharTerm('%');	   /*                        */
 	    } else {				   /*                        */
@@ -439,15 +445,18 @@ static TStack reduce(stack)			   /*                        */
        sp && TSPrev(sp);			   /*                        */
        sp = TSPrev(sp))			   	   /*                        */
   { TStack ts = TSPrev(sp);
-    if (SymIs(TSSym(ts), '-'))
+    if (SymIs(TSSym(ts), '-')
+       && (TSPrev(ts) == NULL
+	   || SymIsOperator(TSSym(TSPrev(ts)))))
     {
-      if (TSPrev(ts) == NULL
-	  || SymIsOperator(TSSym(TSPrev(ts))))
-      { TSTerm(sp) = Cons(TSTerm(ts),
+      if ( SymIsNumber(TSSym(sp)) )
+      { TNumber(TSTerm(sp)) = -TNumber(TSTerm(sp));
+      } else {
+	TSTerm(sp) = Cons(TSTerm(ts),
 			  Cons(TSTerm(sp),NIL));
 	TSSym(sp)  = sym_cons;
-	TSPrev(sp) = ts_pop(TSPrev(sp));	   /*                        */
-      }						   /*                        */
+      }
+      TSPrev(sp) = ts_pop(TSPrev(sp));	   	   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -457,7 +466,7 @@ static TStack reduce(stack)			   /*                        */
     { int op = SymOp(TSSym(sp));		   /*                        */
       if (op > n) n = op;		   	   /*                        */
     }						   /*                        */
-    if (n <= 0) Error("no red",0,0);	   	   /*                        */
+    if (n <= 0) Error("Syntax error",0,0);	   /*                        */
     						   /*                        */
     for (sp = stack;				   /*                        */
 	 sp && TSPrev(sp);			   /*                        */
@@ -523,23 +532,10 @@ static Term read_expr()				   /*                        */
 	|| s == sym_false) {		   	   /*                        */
       Shift(s, yylval);				   /*                        */
        						   /*                        */
-    }						   /*                        */
-    else if (s == sym_cons) {			   /*                        */
+    } else if (s == sym_cons) {			   /*                        */
       Shift(s, (yylval == NIL			   /*                        */
 		? NIL				   /*                        */
 		: read_list(yylval)));		   /*                        */
- 						   /*                        */
-    }						   /*                        */
-    else if (SymIs(s, '-')) {			   /*                        */
-      s = scan();				   /*                        */
-      if (s == SymDefNull)			   /*                        */
-      { Error("Missing operator for -", 0,0); }	   /*                        */
- 						   /*                        */
-      if ( SymIsNumber(s) )		   	   /*                        */
-      { TNumber(yylval) = -TNumber(yylval); }	   /*                        */
-      else					   /*                        */
-      { Shift(SymChar('-'), SymCharTerm('-')); }   /*                        */
-      Shift(s, yylval);		   	   	   /*                        */
  						   /*                        */
     } else if (SymIs(s, '(')) {			   /*                        */
       int lno = linenum;			   /*                        */
@@ -550,6 +546,9 @@ static Term read_expr()				   /*                        */
 	Error("Missing ) before ",		   /*                        */
 	      s ? SymName(s) : (String)"end of file",0); }/*                 */
       Shift(sym_group, t);			   /*                        */
+ 						   /*                        */
+    } else if (SymIs(s, '-')) {			   /*                        */
+      Shift(s, yylval);		   	   	   /*                        */
  						   /*                        */
     } else if (SymOp(s) > 0) {		   	   /*                        */
       if (stack	== TStackNULL && BinarySym(s) )	   /*                        */

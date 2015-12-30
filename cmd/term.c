@@ -45,6 +45,8 @@
  Term term_and;
  Term term_or;
  Term term_not;
+ Term term_like;
+ Term term_ilike;
 
 /*-----------------------------------------------------------------------------
 ** Function:	new_term()
