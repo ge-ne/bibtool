@@ -1,4 +1,4 @@
-/*** xxx.c *****************************************************************
+/*** test_t.c *****************************************************************
 ** 
 ** This file is distributed under the GNU General Public License.
 ** See the file COPYING for details.
@@ -42,7 +42,6 @@ int action(t)					   /*                        */
 {						   /*                        */
   print_term(stdout, t);			   /*                        */
   putchar('\n');				   /*                        */
-
   return 0;					   /*                        */
 }						   /*------------------------*/
 
@@ -64,6 +63,8 @@ void run_test(file)				   /*                        */
   read_loop(file, action);			   /*                        */
 }						   /*------------------------*/
 
+#define ArgIs(A,B) strcmp(A, arg) == 0 || strcmp(B, arg) == 0
+
 /*-----------------------------------------------------------------------------
 ** Function:    main()
 ** Purpose:     Main rountine
@@ -78,7 +79,6 @@ int main(argc, argv)				   /*                        */
 { int i;					   /*                        */
   int ok = 0;					   /*                        */
   char *arg;					   /*                        */
-#define ArgIs(A,B) strcmp(A, arg) == 0 || strcmp(B, arg) == 0
  						   /*                        */
   init_error(stderr);				   /*                        */
   init_symdef();				   /*                        */
