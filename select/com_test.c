@@ -65,7 +65,7 @@ int main(argc, argv)				   /*                        */
     } else if (strcmp("--help", argv[i]) == 0 	   /*                        */
 	      || strcmp("-h", argv[i]) == 0)	   /*                        */
     { usage(argv[0]);				   /*                        */
-    } else if (strcmp("--verbode", argv[i]) == 0   /*                        */
+    } else if (strcmp("--verbose", argv[i]) == 0   /*                        */
 	      || strcmp("-v", argv[i]) == 0)	   /*                        */
     { verbose = TRUE;				   /*                        */
     } else					   /*                        */
