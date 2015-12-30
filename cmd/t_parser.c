@@ -258,9 +258,7 @@ static SymDef scan()				   /*                        */
 	if ((c=GetC) == '=') {			   /*                        */
 	  Return(new_term(sym_ne, NIL, NIL));	   /*                        */
 	}					   /*                        */
-	UnGetC(c);				   /*                        */
-	c = '!';				   /*                        */
-	break; 	   	   			   /*                        */
+	Return(SymTerm(sym_not));		   /*                        */
 	  					   /*                        */
       case '>':					   /*                        */
 	if ((c=GetC) == '=') {			   /*                        */
@@ -408,10 +406,10 @@ Term read_builtin(Term t)			   /*                        */
 #ifdef DEBUG
       puts("skip");
 #endif
-    } else if (   SymIs(s, ';')			   /*                        */
-	     || SymIs(s, ')')			   /*                        */
-	     || SymIs(s, ']')			   /*                        */
-	     || SymOp(s) > 0) {			   /*                        */
+    } else if (SymIsOperator(s)		   	   /*                        */
+	       || SymIs(s, ';')			   /*                        */
+	       || SymIs(s, ')')			   /*                        */
+	       || SymIs(s, ']')) {		   /*                        */
       unscan(s, yylval);			   /*                        */
 #ifdef DEBUG
       puts("break");
@@ -429,7 +427,8 @@ Term read_builtin(Term t)			   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	reduce()
 ** Type:	static TStack
-** Purpose:	
+** Purpose:	Analyze the stack and make a tree of the sequential
+**		operators and terms.
 **		
 ** Arguments:
 **	stack	
@@ -442,54 +441,54 @@ static TStack reduce(stack)			   /*                        */
   int n;					   /*                        */
    						   /*                        */
   for (sp = stack;				   /*                        */
-       sp && TSPrev(sp);			   /*                        */
-       sp = TSPrev(sp))			   	   /*                        */
-  { TStack ts = TSPrev(sp);
-    if (SymIs(TSSym(ts), '-')
-       && (TSPrev(ts) == NULL
-	   || SymIsOperator(TSSym(TSPrev(ts)))))
+       sp && StackPrev(sp);			   /*                        */
+       sp = StackPrev(sp))			   /*                        */
+  { TStack ts = StackPrev(sp);			   /*                        */
+    if (StackSymIs(ts, '-')
+       && (StackPrev(ts) == NULL
+	   || SymIsOperator(StackSym(StackPrev(ts)))))
     {
-      if ( SymIsNumber(TSSym(sp)) )
-      { TNumber(TSTerm(sp)) = -TNumber(TSTerm(sp));
+      if ( SymIsNumber(StackSym(sp)) )
+      { TNumber(StackTerm(sp)) = -TNumber(StackTerm(sp));
       } else {
-	TSTerm(sp) = Cons(TSTerm(ts),
-			  Cons(TSTerm(sp),NIL));
-	TSSym(sp)  = sym_cons;
+	StackTerm(sp) = Cons(StackTerm(ts),
+			  Cons(StackTerm(sp), NIL));
+	StackSym(sp)  = sym_cons;
       }
-      TSPrev(sp) = ts_pop(TSPrev(sp));	   	   /*                        */
+      StackPrev(sp) = ts_pop(StackPrev(sp));	   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
-  while (TSPrev(stack))			   	   /*                        */
+  while (StackPrev(stack))			   /*                        */
   { n = 0;				   	   /*                        */
-    for (sp = stack; sp; sp = TSPrev(sp))	   /*                        */
-    { int op = SymOp(TSSym(sp));		   /*                        */
+    for (sp = stack; sp; sp = StackPrev(sp))	   /*                        */
+    { int op = StackSymOp(sp);		   	   /*                        */
       if (op > n) n = op;		   	   /*                        */
     }						   /*                        */
     if (n <= 0) Error("Syntax error",0,0);	   /*                        */
     						   /*                        */
     for (sp = stack;				   /*                        */
-	 sp && TSPrev(sp);			   /*                        */
-	 sp = TSPrev(sp))			   /*                        */
+	 sp && StackPrev(sp);			   /*                        */
+	 sp = StackPrev(sp))			   /*                        */
     {						   /*                        */
-      if (SymOp(TSSym(TSPrev(sp))) != n) continue; /*                        */
+      if (SymOp(StackSym(StackPrev(sp))) != n) continue;/*                   */
 #ifdef DEBUG
       fputs("reduce", stderr);			   /*                        */
 #endif
-      t = Cons(TSTerm(TSPrev(sp)), NIL);	   /*                        */
+      t = Cons(StackTerm(StackPrev(sp)), NIL);	   /*                        */
        						   /*                        */
       if ((n & 1) == 1)				   /*                        */
-      { Cdr(t) = Cons(TSTerm(sp), NIL);		   /*                        */
+      { Cdr(t) = Cons(StackTerm(sp), NIL);	   /*                        */
       } else {					   /*                        */
         Cdr(t) = Cons(NIL,			   /*                        */
-		      Cons(TSTerm(sp),		   /*                        */
+		      Cons(StackTerm(sp),	   /*                        */
 			   NIL));		   /*                        */
-	TSPrev(sp)  = ts_pop(TSPrev(sp));	   /*                        */
-	Car(Cdr(t)) = TSTerm(TSPrev(sp));	   /*                        */
+	StackPrev(sp)  = ts_pop(StackPrev(sp));	   /*                        */
+	Car(Cdr(t)) = StackTerm(StackPrev(sp));	   /*                        */
       }						   /*                        */
-      TSTerm(sp) = t;				   /*                        */
-      TSSym(sp)  = sym_group;			   /*                        */
-      TSPrev(sp) = ts_pop(TSPrev(sp));		   /*                        */
+      StackTerm(sp) = t;			   /*                        */
+      StackSym(sp)  = sym_group;		   /*                        */
+      StackPrev(sp) = ts_pop(StackPrev(sp));	   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -516,7 +515,7 @@ static TStack reduce(stack)			   /*                        */
 **___________________________________________________			     */
 static Term read_expr()				   /*                        */
 { SymDef s;					   /*                        */
-  TStack stack = (TStack)NULL;			   /*                        */
+  TStack stack = StackNULL;			   /*                        */
  						   /*                        */
   for (s = scan(); s; s = scan())		   /*                        */
   {						   /*                        */
@@ -550,20 +549,20 @@ static Term read_expr()				   /*                        */
     } else if (SymIs(s, '-')) {			   /*                        */
       Shift(s, yylval);		   	   	   /*                        */
  						   /*                        */
-    } else if (SymOp(s) > 0) {		   	   /*                        */
-      if (stack	== TStackNULL && BinarySym(s) )	   /*                        */
+    } else if (SymIsOperator(s)) {		   /*                        */
+      if (stack	== StackNULL && BinarySym(s) )	   /*                        */
       { Error("Unexpected operator ", SymName(s), 0); }/*                    */
       Shift(s, yylval);				   /*                        */
  						   /*                        */
     } else {					   /*                        */
       unscan(s, yylval);			   /*                        */
-      return stack ? TSTerm(reduce(stack)) : NIL;  /*                        */
+      return stack ? StackTerm(reduce(stack)) : NIL;/*                       */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
   if (stack)			   		   /*                        */
-  { s = TSSym(stack);				   /*                        */
-    if (SymOp(s) > 0) {				   /*                        */
+  { s = StackSym(stack);			   /*                        */
+    if (SymIsOperator(s)) {			   /*                        */
       Error("Missing operator for ", SymName(s),0);/*                        */
     } else {					   /*                        */
       Error("Unexpected end-of-file",0,0);	   /*                        */

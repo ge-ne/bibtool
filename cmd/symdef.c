@@ -296,7 +296,14 @@ void init_symdef()				   /*                        */
   term_or	 = new_term(sym_or, NIL, NIL);	   /*                        */
   term_not	 = new_term(sym_not, NIL, NIL);	   /*                        */
   term_like	 = new_term(sym_like, NIL, NIL);   /*                        */
-  term_like	 = new_term(sym_ilike, NIL, NIL);  /*                        */
+  term_ilike	 = new_term(sym_ilike, NIL, NIL);  /*                        */
+
+  SymTerm(sym_and)   = term_and;
+  SymTerm(sym_or)    = term_or;
+  SymTerm(sym_not)   = term_not;
+  SymTerm(sym_like)  = term_like;
+  SymTerm(sym_ilike) = term_ilike;
+  SymTerm(sym_mod)   = term_mod;
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

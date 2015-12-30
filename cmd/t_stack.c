@@ -17,8 +17,8 @@
 /* Internal Programs                                                         */
 /*===========================================================================*/
 
-TStack ts_pop _ARG((TStack ts));
-TStack ts_push _ARG((TStack ts, SymDef sym, Term t));
+ TStack ts_pop _ARG((TStack ts));
+ TStack ts_push _ARG((TStack ts, SymDef sym, Term t));
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -38,7 +38,7 @@ TStack ts_push _ARG((TStack ts, SymDef sym, Term t));
 **___________________________________________________			     */
 TStack ts_pop(ts)				   /*                        */
   TStack ts;					   /*                        */
-{ TStack prev = TSPrev(ts);			   /*                        */
+{ TStack prev = StackPrev(ts);			   /*                        */
   free((void*)ts);				   /*                        */
   return prev;					   /*                        */
 }						   /*------------------------*/
@@ -59,12 +59,20 @@ TStack ts_push(ts, sym, t)			   /*                        */
   SymDef sym;					   /*                        */
   Term t;					   /*                        */
 { TStack frame = (TStack)malloc(sizeof(STStack));  /*                        */
-  if (frame == NULL)				   /*                        */
+  if (frame == StackNULL)			   /*                        */
   { OUT_OF_MEMORY("term stack"); }		   /*                        */
+ 						   /*                        */
+  StackSym(frame)  = sym;			   /*                        */
+  StackTerm(frame) = t;				   /*                        */
+  StackPrev(frame) = ts;			   /*                        */
 
-  frame->sym = sym;				   /*                        */
-  frame->term = t;				   /*                        */
-  frame->prev = ts;				   /*                        */
+#ifdef NEVER
+  if (t) {
+    if (TSym(t) != sym)  printf("AAAAAAAAAAAAAAAA %s %s\n",SymName(sym), SymName(TSym(t)));
+  } else {
+    if (sym != sym_cons) puts("CCCCCCCCCCCCCCCC");
+  }
+#endif
 
   return frame;					   /*                        */
 }						   /*------------------------*/

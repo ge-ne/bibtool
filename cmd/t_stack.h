@@ -12,10 +12,13 @@ typedef struct T_STACK {
   struct T_STACK * prev;
 } STStack, *TStack;
 
-#define TStackNULL	(TStack)NULL
-#define TSSym(TS)	((TS)->sym)
-#define TSTerm(TS)	((TS)->term)
-#define TSPrev(TS)	((TS)->prev)
+#define StackNULL	(TStack)NULL
+#define StackSym(TS)	((TS)->sym)
+#define StackTerm(TS)	((TS)->term)
+#define StackPrev(TS)	((TS)->prev)
+
+#define StackSymIs(STACK, C) SymIs(StackSym(STACK), C)
+#define StackSymOp(STACK) SymOp(StackSym(STACK))
 
 /*---------------------------------------------------------------------------*/
 
