@@ -16,7 +16,7 @@
 #include <bibtool/sbuffer.h>
 #include <bibtool/symbols.h>
 #include <bibtool/error.h>
-#include "t_stack.h"
+#include "tstack.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -29,7 +29,7 @@
 #endif
 
  static SymDef scan();
- int parse_term();
+ int read_loop();
  static Term read_cmd();
  static Term read_expr();
  static Term yylval;
@@ -41,12 +41,12 @@
 /*---------------------------------------------------------------------------*/
 
 
-static Term yylval;
-static char * filename;
-static FILE * in_file;
-static int linenum;
-static SymDef sd_look_ahead = 0L;
-static Term look_ahead = NIL;
+ static Term yylval;
+ static char * filename;
+ static FILE * in_file;
+ static int linenum;
+ static SymDef sd_look_ahead = 0L;
+ static Term look_ahead = NIL;
 
 #define unscan(S,T) (sd_look_ahead = S, look_ahead = T)
 
@@ -167,7 +167,7 @@ static SymDef scan()				   /*                        */
  						   /*                        */
   for (c = GetC; c >= 0; c = GetC)	   	   /*                        */
   {						   /*                        */
-#ifdef DEBUG
+#ifdef DEBUG_PARSER
     fprintf(stderr, "--- scan %c %d\n",c,c);	   /*                        */
 #endif
     switch (c) {				   /*                        */
@@ -397,13 +397,13 @@ Term read_builtin(Term t)			   /*                        */
   						   /*                        */
   for (s = scan(); s; s = scan())		   /*                        */
   {						   /*                        */
-#ifdef DEBUG
+#ifdef DEBUG_PARSER
     printf("--- %s\n", SymName(s));
 #endif
     if (   SymIs(s, '#')			   /*                        */
 	|| SymIs(s, '='))
     {
-#ifdef DEBUG
+#ifdef DEBUG_PARSER
       puts("skip");
 #endif
     } else if (SymIsOperator(s)		   	   /*                        */
@@ -411,7 +411,7 @@ Term read_builtin(Term t)			   /*                        */
 	       || SymIs(s, ')')			   /*                        */
 	       || SymIs(s, ']')) {		   /*                        */
       unscan(s, yylval);			   /*                        */
-#ifdef DEBUG
+#ifdef DEBUG_PARSER
       puts("break");
 #endif
       break;					   /*                        */
@@ -472,7 +472,7 @@ static TStack reduce(stack)			   /*                        */
 	 sp = StackPrev(sp))			   /*                        */
     {						   /*                        */
       if (SymOp(StackSym(StackPrev(sp))) != n) continue;/*                   */
-#ifdef DEBUG
+#ifdef DEBUG_PARSER
       fputs("reduce", stderr);			   /*                        */
 #endif
       t = Cons(StackTerm(StackPrev(sp)), NIL);	   /*                        */
@@ -492,14 +492,14 @@ static TStack reduce(stack)			   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
-#ifdef DEBUG
+#ifdef DEBUG_PARSER
   fputs("... reduced", stderr);			   /*                        */
 #endif
   return stack;					   /*                        */
 }						   /*------------------------*/
 
 #define Shift(S,T) stack = ts_push(stack, S, T)
-#ifdef DEBUG
+#ifdef DEBUG_PARSER
 #undef Shift
 #define Shift(S,T) stack = ts_push(stack, S, T); \
   printf("shift %s\n", SymName(S))
@@ -519,7 +519,7 @@ static Term read_expr()				   /*                        */
  						   /*                        */
   for (s = scan(); s; s = scan())		   /*                        */
   {						   /*                        */
-#ifdef DEBUG
+#ifdef DEBUG_PARSER
     fprintf(stderr, "--- read_expr(): '%s' %d\n",  /*                        */
 	    SymName(s), SymOp(s));		   /*                        */
 #endif
@@ -603,7 +603,7 @@ static Term read_cmd()				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	parse_term()
+** Function:	read_loop()
 ** Type:	int
 ** Purpose:	
 **		
@@ -611,7 +611,7 @@ static Term read_cmd()				   /*                        */
 **	filename	
 ** Returns:	
 **___________________________________________________			     */
-int parse_term(file, action)			   /*                        */
+int read_loop(file, action)			   /*                        */
   char * file;				   	   /*                        */
   int (*action)_ARG((Term t));			   /*                        */
 { Term t;					   /*                        */

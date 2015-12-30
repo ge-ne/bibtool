@@ -1,4 +1,4 @@
-/*** xxx.c *****************************************************************
+/*** tstack.c *****************************************************************
 ** 
 ** This file is distributed under the GNU General Public License.
 ** See the file COPYING for details.
@@ -9,7 +9,7 @@
 ** 
 ******************************************************************************/
 
-#include "t_stack.h"
+#include "tstack.h"
 #include <stdlib.h>
 #include <bibtool/error.h>
 

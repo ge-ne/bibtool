@@ -22,9 +22,11 @@
 /* External Programs                                                         */
 /*===========================================================================*/
 
+ extern int read_loop();
+
 /*---------------------------------------------------------------------------*/
 
-int verbose = 0;
+ int verbose = 0;
 
 /*-----------------------------------------------------------------------------
 ** Function:	action()
@@ -59,7 +61,7 @@ void run_test(file)				   /*                        */
   if (verbose)					   /*                        */
     fprintf(stderr, "--- reading %s\n", file);	   /*                        */
  						   /*                        */
-  parse_term(file, action);			   /*                        */
+  read_loop(file, action);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -97,7 +99,7 @@ int main(argc, argv)				   /*                        */
 	ok = 1;					   /*                        */
       } else if (ArgIs("-h", "--help"))   	   /*                        */
       { fprintf(stderr,			   	   /*                        */
-		"Usage: %s [-i] [infile]\n",	   /*                        */
+		"Usage: %s [-v] [-i|-r|--infile|--resource] <file>\n",/*     */
 		argv[0]);			   /*                        */
       } else if (ArgIs("-v", "--verbose"))	   /*                        */
       { verbose = 1;	   			   /*                        */

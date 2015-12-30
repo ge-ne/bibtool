@@ -13,11 +13,11 @@
 
 =head1 NAME
 
-error.t - Test suite for BibTool errors.
+language.t - Test suite for the BibTool 3 resource language.
 
 =head1 SYNOPSIS
 
-error.t
+language.t
 
 =head1 DESCRIPTION
 
@@ -40,7 +40,15 @@ use strict;
 use BUnit;
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-2',
+BUnit::run(name         => 'comment-1',
+	   resource	=> <<__EOF__ ,
+% a b c d
+__EOF__
+	   expected_err => '',
+	   expected_out => '');
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'error-1',
 	   resource	=> <<__EOF__ ,
 -+
 __EOF__
@@ -49,9 +57,8 @@ __EOF__
 *** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for +
 __EOF__
 
-
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-3',
+BUnit::run(name         => 'error-2',
 	   resource	=> <<__EOF__ ,
 -
 __EOF__

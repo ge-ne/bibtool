@@ -14,15 +14,21 @@
 
 /*---------------------------------------------------------------------------*/
 
-typedef struct S_TERM {
-  SymDef sym;
-  union {
-    struct S_TERM * car;
-    unsigned char * string;
-    long number;
-  } a;
-  struct S_TERM * cdr;
-} STerm, *Term;
+/*-----------------------------------------------------------------------------
+** Typedef:	STerm
+** Purpose:	
+**		
+**		
+**___________________________________________________			     */
+typedef struct S_TERM {				   /*                        */
+  SymDef sym;					   /*                        */
+  union {					   /*                        */
+    struct S_TERM * car;			   /*                        */
+    unsigned char * string;			   /*                        */
+    long number;				   /*                        */
+  } a;						   /*                        */
+  struct S_TERM * cdr;				   /*                        */
+} STerm, *Term;					   /*------------------------*/
 
 #define NIL ((Term)0)
 
