@@ -31,7 +31,6 @@
  static SymDef scan();
  int read_loop();
  static Term read_cmd();
- static Term read_group();
  static Term read_expr();
  static Term yylval;
 
@@ -41,7 +40,7 @@
 
 /*---------------------------------------------------------------------------*/
 
- 
+
  static Term yylval;
  static char * filename;
  static FILE * in_file;
@@ -63,7 +62,7 @@
 
 /*-----------------------------------------------------------------------------
 ** Function:	scan_block()
-** Type:	Term
+** Type:	static SymDef
 ** Purpose:	
 **		
 ** Arguments:
@@ -89,7 +88,7 @@ static Term scan_block()			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	scan_string()
-** Type:	Term
+** Type:	static Term
 ** Purpose:	
 **		
 ** Arguments:
@@ -190,10 +189,8 @@ static SymDef scan()				   /*                        */
       case '\'':				   /*                        */
 	Return(scan_string(sym_field ,'\''));	   /*                        */
 	  					   /*                        */
-#ifdef NEVER
       case '{':					   /*                        */
 	Return(scan_block());			   /*                        */
-#endif
 	  					   /*                        */
       case '0':					   /*                        */
 	{ register long num = 0;		   /*                        */
@@ -310,28 +307,39 @@ static SymDef scan()				   /*                        */
 #define RscString(A,B,C,D)  ON(A) {yylval = new_t_string(sym_builtin, s);}
 #define RscBoolean(A,B,C,D) ON(A) {yylval = new_t_string(sym_builtin, s);}
 #define RscByFct(A,B,C)     ON(A) {yylval = new_t_string(sym_builtin, s);}
-#define RscTerm(A,B)	    ON(A) {B;}
-#define RSC_INIT_NIL	    yylval = NIL;return sym_cons
-#define RSC_INIT_TRUE	    yylval = term_true
-#define RSC_INIT_FALSE	    yylval = term_false
-#define RSC_INIT_AND	    yylval = term_and
-#define RSC_INIT_OR	    yylval = term_or
-#define RSC_INIT_NOT	    yylval = term_not
-#define RSC_INIT_MOD	    yylval = term_mod
-#define RSC_INIT_LIKE	    yylval = term_like
-#define RSC_INIT_ILIKE	    yylval = term_ilike
- 						   /*                        */
 	  switch (*s) {				   /*                        */
 #include <bibtool/resource.h>
 	  }					   /*                        */
 	  if (yylval == NIL)		   	   /*                        */
-	  { yylval = FieldTerm(s); }		   /*                        */
+	  { ON("nil")				   /*                        */
+	    { yylval = NIL;		   	   /*                        */
+	      return sym_cons;			   /*                        */
+	    } else ON("true")			   /*                        */
+	    { yylval = term_true;		   /*                        */
+	    } else ON("false")			   /*                        */
+	    { yylval = term_false;		   /*                        */
+	    } else ON("and")			   /*                        */
+	    { yylval = term_and;		   /*                        */
+	    } else ON("or")			   /*                        */
+	    { yylval = term_or;		   	   /*                        */
+	    } else ON("not")			   /*                        */
+	    { yylval = term_not;		   /*                        */
+	    } else ON("like")			   /*                        */
+	    { yylval = term_like;		   /*                        */
+	    } else ON("ilike")			   /*                        */
+	    { yylval = term_ilike;		   /*                        */
+	    } else ON("mod")			   /*                        */
+	    { yylval = SymCharTerm('%');	   /*                        */
+	    } else {				   /*                        */
+	      yylval = FieldTerm(s); 		   /*                        */
+	    }					   /*                        */
+	  }					   /*                        */
 	  return TSym(yylval);			   /*                        */
 	}					   /*                        */
  						   /*                        */
       default:					   /*                        */
-	yylval = SymCharTerm(c);		   /*                        */
-	return yylval ? TSym(yylval) : SymChar(c); /*                        */
+	yylval = (SymCharTerm(c));		   /*                        */
+	return yylval ? TSym(yylval) : SymChar(c);
     }						   /*                        */
     return c < 0 ? SymDefNull : SymChar(c & 0xff); /*                        */
   }						   /*                        */
@@ -340,7 +348,7 @@ static SymDef scan()				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_list()
-** Type:	Term
+** Type:	static Term
 ** Purpose:	
 **		
 ** Arguments:
@@ -372,13 +380,6 @@ static Term read_list(t)			   /*                        */
   return NIL;					   /* This will never happen */
 }						   /*------------------------*/
 
-Term read_group()
-{
-
-  puts("xxxxxxxxxxxx");
-  return NIL;
-}
-
 /*-----------------------------------------------------------------------------
 ** Function:	read_builtin()
 ** Type:	Term
@@ -388,7 +389,7 @@ Term read_group()
 **	Term t	
 ** Returns:	
 **___________________________________________________			     */
-static Term read_builtin(Term t)		   /*                        */
+Term read_builtin(Term t)			   /*                        */
 { SymDef s;					   /*                        */
   Term *tp;					   /*                        */
   t  = Cons(t, NIL);			   	   /*                        */
@@ -397,32 +398,27 @@ static Term read_builtin(Term t)		   /*                        */
   for (s = scan(); s; s = scan())		   /*                        */
   {						   /*                        */
 #ifdef DEBUG_PARSER
-    fprintf(stderr, "--- %s\n", SymName(s));	   /*                        */
+    printf("--- %s\n", SymName(s));
 #endif
-    if (SymIs(s, '='))				   /*                        */
-    {						   /*                        */
-#ifdef DEBUG_PARSER
-      fputs("--- skip =", stderr);		   /*                        */
-#endif
-    } else if ( SymIs(s, '{'))		   	   /*                        */
+    if (   SymIs(s, '#')			   /*                        */
+	|| SymIs(s, '='))
     {
-      *tp = Cons(scan_block(), NIL);		   /*                        */
-      tp = &(Cdr(*tp));				   /*                        */
-      break;					   /*                        */
+#ifdef DEBUG_PARSER
+      puts("skip");
+#endif
     } else if (SymIsOperator(s)		   	   /*                        */
 	       || SymIs(s, ';')			   /*                        */
 	       || SymIs(s, ')')			   /*                        */
 	       || SymIs(s, ']')) {		   /*                        */
       unscan(s, yylval);			   /*                        */
 #ifdef DEBUG_PARSER
-      fputs("break", stderr);			   /*                        */
+      puts("break");
 #endif
       break;					   /*                        */
     } else {					   /*                        */
       unscan(s, yylval);			   /*                        */
       *tp = Cons(read_expr(), NIL);		   /*                        */
       tp = &(Cdr(*tp));				   /*                        */
-      break;					   /*                        */
     }						   /*                        */
   }						   /*                        */
   return t;					   /*                        */
@@ -448,17 +444,17 @@ static TStack reduce(stack)			   /*                        */
        sp && StackPrev(sp);			   /*                        */
        sp = StackPrev(sp))			   /*                        */
   { TStack ts = StackPrev(sp);			   /*                        */
-    if (StackSymIs(ts, '-')			   /*                        */
-       && (StackPrev(ts) == NULL		   /*                        */
-	   || StackSymIsOperator(StackPrev(ts))))  /*                        */
-    { if ( StackSymIsNumber(sp) )		   /*                        */
-      { TNumber(StackTerm(sp)) =		   /*                        */
-	  -TNumber(StackTerm(sp));		   /*                        */
-      } else {					   /*                        */
-	StackTerm(sp) = Cons(StackTerm(ts),	   /*                        */
-			  Cons(StackTerm(sp), NIL));/*                       */
-	StackSym(sp)  = sym_cons;		   /*                        */
-      }						   /*                        */
+    if (StackSymIs(ts, '-')
+       && (StackPrev(ts) == NULL
+	   || SymIsOperator(StackSym(StackPrev(ts)))))
+    {
+      if ( SymIsNumber(StackSym(sp)) )
+      { TNumber(StackTerm(sp)) = -TNumber(StackTerm(sp));
+      } else {
+	StackTerm(sp) = Cons(StackTerm(ts),
+			  Cons(StackTerm(sp), NIL));
+	StackSym(sp)  = sym_cons;
+      }
       StackPrev(sp) = ts_pop(StackPrev(sp));	   /*                        */
     }						   /*                        */
   }						   /*                        */
@@ -539,16 +535,6 @@ static Term read_expr()				   /*                        */
       Shift(s, (yylval == NIL			   /*                        */
 		? NIL				   /*                        */
 		: read_list(yylval)));		   /*                        */
- 						   /*                        */
-    } else if (SymIs(s, '{')) {			   /*                        */
-      int lno = linenum;			   /*                        */
-      Term t  = read_expr();			   /*                        */
-      s	      = scan();				   /*                        */
-      if (! SymIs(s, '}'))			   /*                        */
-      { linenum = lno;				   /*                        */
-	Error("Missing } before ",		   /*                        */
-	      s ? SymName(s) : (String)"end of file",0); }/*                 */
-      Shift(sym_group, t);			   /*                        */
  						   /*                        */
     } else if (SymIs(s, '(')) {			   /*                        */
       int lno = linenum;			   /*                        */
