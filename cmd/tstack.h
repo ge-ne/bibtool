@@ -30,6 +30,8 @@ typedef struct T_STACK {			   /*                        */
 #define StackPrev(TS)	((TS)->prev)
 
 #define StackSymIs(STACK, C) SymIs(StackSym(STACK), C)
+#define StackSymIsNumber(STACK) SymIsNumber(StackSym(STACK))
+#define StackSymIsOperator(STACK) SymIsOperator(StackSym(STACK))
 #define StackSymOp(STACK) SymOp(StackSym(STACK))
 
 /*---------------------------------------------------------------------------*/

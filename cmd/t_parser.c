@@ -40,7 +40,7 @@
 
 /*---------------------------------------------------------------------------*/
 
-
+ 
  static Term yylval;
  static char * filename;
  static FILE * in_file;
@@ -62,7 +62,7 @@
 
 /*-----------------------------------------------------------------------------
 ** Function:	scan_block()
-** Type:	static SymDef
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
@@ -88,7 +88,7 @@ static Term scan_block()			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	scan_string()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
@@ -307,39 +307,28 @@ static SymDef scan()				   /*                        */
 #define RscString(A,B,C,D)  ON(A) {yylval = new_t_string(sym_builtin, s);}
 #define RscBoolean(A,B,C,D) ON(A) {yylval = new_t_string(sym_builtin, s);}
 #define RscByFct(A,B,C)     ON(A) {yylval = new_t_string(sym_builtin, s);}
+#define RscTerm(A,B)	    ON(A) {B;}
+#define RSC_INIT_NIL	    yylval = NIL;return sym_cons
+#define RSC_INIT_TRUE	    yylval = term_true
+#define RSC_INIT_FALSE	    yylval = term_false
+#define RSC_INIT_AND	    yylval = term_and
+#define RSC_INIT_OR	    yylval = term_or
+#define RSC_INIT_NOT	    yylval = term_not
+#define RSC_INIT_MOD	    yylval = term_mod
+#define RSC_INIT_LIKE	    yylval = term_like
+#define RSC_INIT_ILIKE	    yylval = term_ilike
+ 						   /*                        */
 	  switch (*s) {				   /*                        */
 #include <bibtool/resource.h>
 	  }					   /*                        */
 	  if (yylval == NIL)		   	   /*                        */
-	  { ON("nil")				   /*                        */
-	    { yylval = NIL;		   	   /*                        */
-	      return sym_cons;			   /*                        */
-	    } else ON("true")			   /*                        */
-	    { yylval = term_true;		   /*                        */
-	    } else ON("false")			   /*                        */
-	    { yylval = term_false;		   /*                        */
-	    } else ON("and")			   /*                        */
-	    { yylval = term_and;		   /*                        */
-	    } else ON("or")			   /*                        */
-	    { yylval = term_or;		   	   /*                        */
-	    } else ON("not")			   /*                        */
-	    { yylval = term_not;		   /*                        */
-	    } else ON("like")			   /*                        */
-	    { yylval = term_like;		   /*                        */
-	    } else ON("ilike")			   /*                        */
-	    { yylval = term_ilike;		   /*                        */
-	    } else ON("mod")			   /*                        */
-	    { yylval = SymCharTerm('%');	   /*                        */
-	    } else {				   /*                        */
-	      yylval = FieldTerm(s); 		   /*                        */
-	    }					   /*                        */
-	  }					   /*                        */
+	  { yylval = FieldTerm(s); }		   /*                        */
 	  return TSym(yylval);			   /*                        */
 	}					   /*                        */
  						   /*                        */
       default:					   /*                        */
-	yylval = (SymCharTerm(c));		   /*                        */
-	return yylval ? TSym(yylval) : SymChar(c);
+	yylval = SymCharTerm(c);		   /*                        */
+	return yylval ? TSym(yylval) : SymChar(c); /*                        */
     }						   /*                        */
     return c < 0 ? SymDefNull : SymChar(c & 0xff); /*                        */
   }						   /*                        */
@@ -348,7 +337,7 @@ static SymDef scan()				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_list()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
@@ -389,7 +378,7 @@ static Term read_list(t)			   /*                        */
 **	Term t	
 ** Returns:	
 **___________________________________________________			     */
-Term read_builtin(Term t)			   /*                        */
+static Term read_builtin(Term t)		   /*                        */
 { SymDef s;					   /*                        */
   Term *tp;					   /*                        */
   t  = Cons(t, NIL);			   	   /*                        */
@@ -398,13 +387,13 @@ Term read_builtin(Term t)			   /*                        */
   for (s = scan(); s; s = scan())		   /*                        */
   {						   /*                        */
 #ifdef DEBUG_PARSER
-    printf("--- %s\n", SymName(s));
+    fprintf(stderr, "--- %s\n", SymName(s));
 #endif
     if (   SymIs(s, '#')			   /*                        */
 	|| SymIs(s, '='))
     {
 #ifdef DEBUG_PARSER
-      puts("skip");
+      fputs("skip", stderr);
 #endif
     } else if (SymIsOperator(s)		   	   /*                        */
 	       || SymIs(s, ';')			   /*                        */
@@ -412,7 +401,7 @@ Term read_builtin(Term t)			   /*                        */
 	       || SymIs(s, ']')) {		   /*                        */
       unscan(s, yylval);			   /*                        */
 #ifdef DEBUG_PARSER
-      puts("break");
+      fputs("break", stderr);
 #endif
       break;					   /*                        */
     } else {					   /*                        */
@@ -444,17 +433,17 @@ static TStack reduce(stack)			   /*                        */
        sp && StackPrev(sp);			   /*                        */
        sp = StackPrev(sp))			   /*                        */
   { TStack ts = StackPrev(sp);			   /*                        */
-    if (StackSymIs(ts, '-')
-       && (StackPrev(ts) == NULL
-	   || SymIsOperator(StackSym(StackPrev(ts)))))
-    {
-      if ( SymIsNumber(StackSym(sp)) )
-      { TNumber(StackTerm(sp)) = -TNumber(StackTerm(sp));
-      } else {
-	StackTerm(sp) = Cons(StackTerm(ts),
-			  Cons(StackTerm(sp), NIL));
-	StackSym(sp)  = sym_cons;
-      }
+    if (StackSymIs(ts, '-')			   /*                        */
+       && (StackPrev(ts) == NULL		   /*                        */
+	   || StackSymIsOperator(StackPrev(ts))))  /*                        */
+    { if ( StackSymIsNumber(sp) )		   /*                        */
+      { TNumber(StackTerm(sp)) =		   /*                        */
+	  -TNumber(StackTerm(sp));		   /*                        */
+      } else {					   /*                        */
+	StackTerm(sp) = Cons(StackTerm(ts),	   /*                        */
+			  Cons(StackTerm(sp), NIL));/*                       */
+	StackSym(sp)  = sym_cons;		   /*                        */
+      }						   /*                        */
       StackPrev(sp) = ts_pop(StackPrev(sp));	   /*                        */
     }						   /*                        */
   }						   /*                        */
