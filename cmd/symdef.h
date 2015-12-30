@@ -64,7 +64,7 @@ extern void init_symdef();
 
 Declare(SymDef, sym_number , sym_def("number", -1, NIL, NULL, p_term_num));
 Declare(SymDef, sym_string , sym_def("string", -2, NIL, NULL, p_term_str));
-Declare(SymDef, sym_block  , sym_def("block",  -3, NIL, NULL, NULL));
+Declare(SymDef, sym_block  , sym_def("block",  -3, NIL, NULL, p_term_block));
 Declare(SymDef, sym_field  , sym_def("field",  -4, NIL, NULL, p_term_field));
 Declare(SymDef, sym_builtin, sym_def("builtin",-5, NIL, NULL, p_term_field));
 Declare(SymDef, sym_group  , sym_def("group",  -6, NIL, NULL, NULL));

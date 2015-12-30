@@ -69,6 +69,28 @@ __EOF__
 (verbose true)
 __EOF__
 
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'verbose-3',
+	   resource => <<__EOF__ ,
+verbose = "true";
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(verbose "true")
+__EOF__
+
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'verbose-4',
+	   resource => <<__EOF__ ,
+verbose = {true};
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(verbose {true})
+__EOF__
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

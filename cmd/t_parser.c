@@ -31,6 +31,7 @@
  static SymDef scan();
  int read_loop();
  static Term read_cmd();
+ static Term read_group();
  static Term read_expr();
  static Term yylval;
 
@@ -189,8 +190,10 @@ static SymDef scan()				   /*                        */
       case '\'':				   /*                        */
 	Return(scan_string(sym_field ,'\''));	   /*                        */
 	  					   /*                        */
+#ifdef NEVER
       case '{':					   /*                        */
 	Return(scan_block());			   /*                        */
+#endif
 	  					   /*                        */
       case '0':					   /*                        */
 	{ register long num = 0;		   /*                        */
@@ -369,6 +372,13 @@ static Term read_list(t)			   /*                        */
   return NIL;					   /* This will never happen */
 }						   /*------------------------*/
 
+Term read_group()
+{
+
+  puts("xxxxxxxxxxxx");
+  return NIL;
+}
+
 /*-----------------------------------------------------------------------------
 ** Function:	read_builtin()
 ** Type:	Term
@@ -387,27 +397,32 @@ static Term read_builtin(Term t)		   /*                        */
   for (s = scan(); s; s = scan())		   /*                        */
   {						   /*                        */
 #ifdef DEBUG_PARSER
-    fprintf(stderr, "--- %s\n", SymName(s));
+    fprintf(stderr, "--- %s\n", SymName(s));	   /*                        */
 #endif
-    if (   SymIs(s, '#')			   /*                        */
-	|| SymIs(s, '='))
-    {
+    if (SymIs(s, '='))				   /*                        */
+    {						   /*                        */
 #ifdef DEBUG_PARSER
-      fputs("skip", stderr);
+      fputs("--- skip =", stderr);		   /*                        */
 #endif
+    } else if ( SymIs(s, '{'))		   	   /*                        */
+    {
+      *tp = Cons(scan_block(), NIL);		   /*                        */
+      tp = &(Cdr(*tp));				   /*                        */
+      break;					   /*                        */
     } else if (SymIsOperator(s)		   	   /*                        */
 	       || SymIs(s, ';')			   /*                        */
 	       || SymIs(s, ')')			   /*                        */
 	       || SymIs(s, ']')) {		   /*                        */
       unscan(s, yylval);			   /*                        */
 #ifdef DEBUG_PARSER
-      fputs("break", stderr);
+      fputs("break", stderr);			   /*                        */
 #endif
       break;					   /*                        */
     } else {					   /*                        */
       unscan(s, yylval);			   /*                        */
       *tp = Cons(read_expr(), NIL);		   /*                        */
       tp = &(Cdr(*tp));				   /*                        */
+      break;					   /*                        */
     }						   /*                        */
   }						   /*                        */
   return t;					   /*                        */
@@ -524,6 +539,16 @@ static Term read_expr()				   /*                        */
       Shift(s, (yylval == NIL			   /*                        */
 		? NIL				   /*                        */
 		: read_list(yylval)));		   /*                        */
+ 						   /*                        */
+    } else if (SymIs(s, '{')) {			   /*                        */
+      int lno = linenum;			   /*                        */
+      Term t  = read_expr();			   /*                        */
+      s	      = scan();				   /*                        */
+      if (! SymIs(s, '}'))			   /*                        */
+      { linenum = lno;				   /*                        */
+	Error("Missing } before ",		   /*                        */
+	      s ? SymName(s) : (String)"end of file",0); }/*                 */
+      Shift(sym_group, t);			   /*                        */
  						   /*                        */
     } else if (SymIs(s, '(')) {			   /*                        */
       int lno = linenum;			   /*                        */

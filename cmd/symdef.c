@@ -93,10 +93,10 @@ static void p_sym_name(file, t)			   /*                        */
   FILE * file;					   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
-  if (t == NIL)
-  { fputs("??",file);
+  if (t == NIL)					   /*                        */
+  { fputs("??",file);				   /*                        */
     return;					   /*                        */
-  }
+  }						   /*                        */
   print_quoted(file, SymName(TSym(t)));		   /*                        */
   if (Car(t)) { print_term(Car(t)); }	   	   /*                        */
   if (Cdr(t)) { print_term(Cdr(t)); }		   /*                        */
@@ -136,6 +136,25 @@ static void p_term_str(file, t)			   /*                        */
   fputc('"', file);				   /*                        */
   print_quoted(file, TString(t));		   /*                        */
   fputc('"', file);				   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	p_term_str()
+** Type:	static int
+** Purpose:	
+**		
+** Arguments:
+**	file	
+**	 t	
+** Returns:	
+**___________________________________________________			     */
+static void p_term_block(file, t)		   /*                        */
+  FILE * file;					   /*                        */
+  Term t;					   /*                        */
+{						   /*                        */
+  fputc('{', file);				   /*                        */
+  fputs(TString(t), file);	   		   /*                        */
+  fputc('}', file);				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
