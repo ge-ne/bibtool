@@ -70,6 +70,12 @@ our $VERSION = '1.17';
 our $BIBTOOL = $ENV{'BIBTOOL_PRG'} || '../bibtool';
 
 #------------------------------------------------------------------------------
+# Variable:	$name_prefix
+# Description:	
+#
+our $name_prefix = '';
+
+#------------------------------------------------------------------------------
 # Variable:	%summary
 # Description:	
 #
@@ -95,7 +101,7 @@ sub out (@) {
 #
 sub run {
   my %a	      = @_;
-  my $name    = $a{name};
+  my $name    = $name_prefix . $a{name};
   my $prepare = $a{prepare};
 
   if (defined $names{$name}) {
@@ -107,7 +113,7 @@ sub run {
   &{$prepare}($name) if defined $prepare;
 
   local $_ = '';
-  $_ 	   = '.' x (32-length($name)) if length($name) < 32;
+  $_ 	   = '.' x (40-length($name)) if length($name) < 40;
   out "  ",$name,$_;
 
   if ($a{ignore}) {

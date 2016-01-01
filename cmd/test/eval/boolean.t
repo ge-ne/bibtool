@@ -39,8 +39,10 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
+$BUnit::name_prefix = 'eval/';
+
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'eval/boolean-0',
+BUnit::run(name         => 'boolean-0',
 	   args	        => '--eval',
 	   resource     => <<__EOF__ ,
 false;
@@ -51,7 +53,7 @@ false
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'eval/boolean-1',
+BUnit::run(name         => 'boolean-1',
 	   args	        => '--eval',
 	   resource	=> <<__EOF__ ,
 true;

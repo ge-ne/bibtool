@@ -39,6 +39,8 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
+$BUnit::name_prefix = 'parse/';
+
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'arith-err-1',
 	   resource	=> <<__EOF__ ,

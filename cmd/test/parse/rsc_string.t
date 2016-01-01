@@ -39,7 +39,13 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
+$BUnit::name_prefix = 'parse/';
 
+#------------------------------------------------------------------------------
+# Function:	string_tests
+# Arguments:	
+# Description:	
+#
 sub string_tests
 { my $cmd = shift;
   #------------------------------------------------------------------------------

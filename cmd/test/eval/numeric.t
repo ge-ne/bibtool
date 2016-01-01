@@ -39,8 +39,10 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
+$BUnit::name_prefix = 'eval/';
+
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'eval/numeric-0',
+BUnit::run(name         => 'numeric-0',
 	   args	        => '--eval',
 	   resource     => <<__EOF__ ,
 0;
@@ -51,7 +53,7 @@ __EOF__
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'eval/numeric-1',
+BUnit::run(name         => 'numeric-1',
 	   args	        => '--eval',
 	   resource	=> <<__EOF__ ,
 123;
@@ -62,7 +64,7 @@ __EOF__
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'eval/numeric-2',
+BUnit::run(name         => 'numeric-2',
 	   args	        => '--eval',
 	   resource	=> <<__EOF__ ,
 -123;

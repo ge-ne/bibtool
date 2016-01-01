@@ -39,8 +39,10 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
+$BUnit::name_prefix = 'eval/';
+
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'eval/string-0',
+BUnit::run(name         => 'string-0',
 	   args	        => '--eval',
 	   resource     => <<__EOF__ ,
 "";
@@ -51,7 +53,7 @@ __EOF__
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'eval/string-1',
+BUnit::run(name         => 'string-1',
 	   args	        => '--eval',
 	   resource	=> <<__EOF__ ,
 "123";

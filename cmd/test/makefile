@@ -26,7 +26,7 @@ test tests: $(TEST_PRG)
 	@BIBTOOL_PRG=$(TEST_PRG) ${PERL} -I../../test/lib -MBUnit -e "exit all()"
 
 clean:
-	@$(RM) *.out *.err *.err-expected *.out-expected *~
+	@$(RM) */*.out */*.err */*.err-expected */*.out-expected */*~ *~
 
 # -----------------------------------------------------------------------------
 

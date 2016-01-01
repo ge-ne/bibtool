@@ -39,6 +39,8 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
+$BUnit::name_prefix = 'parse/';
+
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'comment-1',
 	   resource	=> <<__EOF__ ,
@@ -46,6 +48,16 @@ BUnit::run(name         => 'comment-1',
 __EOF__
 	   expected_err => '',
 	   expected_out => '');
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'quote-1',
+	   resource	=> <<__EOF__ ,
+\'[123];
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(quote (123))
+__EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'error-1',
