@@ -13,11 +13,11 @@
 
 =head1 NAME
 
-field.t - Test suite for BibTool fields.
+string.t - Test suite for BibTool string values.
 
 =head1 SYNOPSIS
 
-field.t
+string.t
 
 =head1 DESCRIPTION
 
@@ -40,36 +40,26 @@ use strict;
 use BUnit;
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'field-1',
-	   resource	=> <<__EOF__ ,
-abc;
+BUnit::run(name         => 'eval/string-0',
+	   args	        => '--eval',
+	   resource     => <<__EOF__ ,
+"";
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-abc
+""
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'field-2',
+BUnit::run(name         => 'eval/string-1',
+	   args	        => '--eval',
 	   resource	=> <<__EOF__ ,
-`abc`;
+"123";
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-abc
+"123"
 __EOF__
-
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'field-3',
-	   resource	=> <<__EOF__ ,
-`ver bose`;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-`ver bose`
-__EOF__
-
 
 1;
 #------------------------------------------------------------------------------

@@ -13,11 +13,11 @@
 
 =head1 NAME
 
-field.t - Test suite for BibTool fields.
+numeric.t - Test suite for BibTool numeric values.
 
 =head1 SYNOPSIS
 
-field.t
+numeric.t
 
 =head1 DESCRIPTION
 
@@ -40,36 +40,37 @@ use strict;
 use BUnit;
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'field-1',
-	   resource	=> <<__EOF__ ,
-abc;
+BUnit::run(name         => 'eval/numeric-0',
+	   args	        => '--eval',
+	   resource     => <<__EOF__ ,
+0;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-abc
+0
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'field-2',
+BUnit::run(name         => 'eval/numeric-1',
+	   args	        => '--eval',
 	   resource	=> <<__EOF__ ,
-`abc`;
+123;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-abc
+123
 __EOF__
-
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'field-3',
+BUnit::run(name         => 'eval/numeric-2',
+	   args	        => '--eval',
 	   resource	=> <<__EOF__ ,
-`ver bose`;
+-123;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-`ver bose`
+-123
 __EOF__
-
 
 1;
 #------------------------------------------------------------------------------
