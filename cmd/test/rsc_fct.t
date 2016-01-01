@@ -54,13 +54,11 @@ sub fct_tests
 	   expected_out => "($cmd \"123\")\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-3",
-	     ignore	=> 1,
 	   resource	=> "$cmd = \{123\};\n" ,
 	   expected_err	=> '',
 	   expected_out	=> "($cmd \{123\})\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-4",
-	     ignore	=> 1,
 	   resource	=> "$cmd \{123\};\n" ,
 	   expected_err	=> '',
 	   expected_out	=> "($cmd \{123\})\n" );
