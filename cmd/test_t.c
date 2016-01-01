@@ -13,6 +13,7 @@
 #include <string.h>
 #include <bibtool/error.h>
 #include "term.h"
+#include "symdef.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */

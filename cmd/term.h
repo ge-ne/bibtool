@@ -10,15 +10,50 @@
 ** 
 ******************************************************************************/
 
-#include "symdef.h"
+#include <bibtool/type.h>
 
 /*---------------------------------------------------------------------------*/
 
 #ifndef TERM_H
 #define TERM_H
 
+
 /*-----------------------------------------------------------------------------
-** Typedef:	STerm
+** Typedef:	SymDef
+** Purpose:	
+**		
+**___________________________________________________			     */
+typedef struct S_SYMDEF {			   /*                        */
+  String name;				   	   /*                        */
+  int op;					   /*                        */
+  struct S_TERM * term;	   			   /*                        */
+  struct S_TERM * (*eval)();			   /*                        */
+  struct S_TERM * (*parse)();			   /*                        */
+  void (*print)();				   /*                        */
+} SSymDef, *SymDef;				   /*------------------------*/
+
+#define SymDefNull ((SymDef)0)
+
+#define SymName(T)   ((T)->name)
+#define SymOp(T)     ((T)->op)
+#define SymTerm(T)   ((T)->term)
+#define SymParse(T)  ((T)->parse)
+#define SymPrint(T)  ((T)->print)
+#define SymEval(T)   ((T)->eval)
+
+#define BinarySym(S) ((SymOp(S) & 1) == 0)
+#define UnarySym(S) ((SymOp(S) & 1) != 0)
+
+#define SymIsNumber(S) ((S) == sym_number) 
+#define SymIsOperator(S) (SymOp(S) > 0) 
+#define SymIs(S,C) ((S) == sym_char[C]) 
+
+#define SymChar(C) sym_char[C]
+#define SymCharName(C) SymName(sym_char[C])
+#define SymCharTerm(C) SymTerm(sym_char[C])
+
+/*-----------------------------------------------------------------------------
+** Typedef:	Term
 ** Purpose:	
 **		
 **		
@@ -48,6 +83,33 @@ typedef struct S_TERM {				   /*                        */
 
 #define BlockTerm(S) new_t_string(sym_block, symbol(S))
 #define FieldTerm(S) new_t_string(sym_field, symbol(S))
+
+
+/*-----------------------------------------------------------------------------
+** Typedef:	BJunk
+** Purpose:	
+**		
+**		
+**___________________________________________________			     */
+typedef struct S_BJUNK				   /*                        */
+{ String key;
+  Term value;
+  struct S_BJUNK * next;
+} SBJunk, *BJunk;				   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Typedef:	Binding
+** Purpose:	
+**		
+**		
+**___________________________________________________			     */
+typedef struct S_BINDING			   /*                        */
+{ int junk_size;
+  BJunk junks;
+  struct S_BINDING *next;
+} SBinding, *Binding;				   /*------------------------*/
+
+
 
 /*---------------------------------------------------------------------------*/
 

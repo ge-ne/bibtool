@@ -13,6 +13,8 @@
 #include <stdlib.h>
 #include <bibtool/error.h>
 #include "binding.h"
+#include "term.h"
+#include "symdef.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -30,7 +32,18 @@
 
 /*---------------------------------------------------------------------------*/
 
-
+#define Error(X,Y)					\
+	error(ERR_ERROR|ERR_EXIT,(String)X,		\
+	      (String)Y,(String)0,(String)0,(String)0,0,NULL)
+/*-----------------------------------------------------------------------------
+** Function:	binding()
+** Type:	Binding
+** Purpose:	
+**		
+** Arguments:
+**	term	
+** Returns:	
+**___________________________________________________			     */
 Binding binding(term)			   	   /*                        */
   Term term;					   /*                        */
 {						   /*                        */
@@ -42,12 +55,29 @@ Binding binding(term)			   	   /*                        */
   return bind;				   	   /*                        */
 }						   /*------------------------*/
 
-Term eval_term(binding, term)
-  Binding binding;
-  Term term;
-{
-  return NIL;
-}
+/*-----------------------------------------------------------------------------
+** Function:	eval_term()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term eval_term(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ SymDef symdef;				   /*                        */
+  if (term == NIL) return NIL;			   /*                        */
+ 						   /*                        */
+  symdef = TSym(term);				   /*                        */
+  if (SymEval(symdef) == NULL)			   /*                        */
+  { Error("Undefined function ",		   /*                        */
+	   SymName(symdef)); }		   	   /*                        */
+ 						   /*                        */
+  return (*SymEval(symdef))(binding, term);	   /*                        */
+}						   /*------------------------*/
 
 
 /*---------------------------------------------------------------------------*/

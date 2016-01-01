@@ -17,6 +17,8 @@
 #include <bibtool/symbols.h>
 #include <bibtool/error.h>
 #include "tstack.h"
+#include "term.h"
+#include "symdef.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -31,7 +33,6 @@
  static SymDef scan();
  int read_loop();
  static Term read_cmd();
- static Term read_group();
  static Term read_expr();
  static Term yylval;
 
@@ -371,13 +372,6 @@ static Term read_list(t)			   /*                        */
   Error("Unclosed list", 0, 0);	   	   	   /*                        */
   return NIL;					   /* This will never happen */
 }						   /*------------------------*/
-
-Term read_group()
-{
-
-  puts("xxxxxxxxxxxx");
-  return NIL;
-}
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_builtin()

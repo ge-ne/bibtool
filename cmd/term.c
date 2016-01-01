@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <bibtool/error.h>
 #include "term.h"
+#include "symdef.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -48,6 +49,8 @@
  Term term_like;
  Term term_ilike;
 
+ static Term terms = NIL;
+
 /*-----------------------------------------------------------------------------
 ** Function:	new_term()
 ** Type:	Term
@@ -63,8 +66,13 @@ Term new_term(sym, a1, a2)			   /*                        */
   SymDef sym;				   	   /*                        */
   Term a1;					   /*                        */
   Term a2;					   /*                        */
-{						   /*                        */
-  Term t = (Term)malloc(sizeof(STerm));		   /*                        */
+{ Term t = terms;				   /*                        */
+  
+  if (terms)
+  { terms = Car(terms);
+  } else
+  { t = (Term)malloc(sizeof(STerm));		   /*                        */
+  }
   if (t == NIL) OUT_OF_MEMORY("term");		   /*                        */
   TSym(t) = sym;			   	   /*                        */
   Car(t) = a1;				   	   /*                        */
@@ -84,7 +92,7 @@ Term new_term(sym, a1, a2)			   /*                        */
 Term new_term_num(n)				   /*                        */
   long n;					   /*                        */
 {						   /*                        */
-  Term t     = (Term)malloc(sizeof(STerm));	   /*                        */
+  Term t = (Term)malloc(sizeof(STerm));	   	   /*                        */
   if (t == NIL) OUT_OF_MEMORY("term");		   /*                        */
   TSym(t)    = sym_number;			   /*                        */
   TNumber(t) = n;				   /*                        */
@@ -127,6 +135,7 @@ void free_term(t)				   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
 #ifdef NEVER
+  
   switch (TOp(t))				   /*                        */
   { case STRING:				   /*                        */
     case FIELD:				   	   /*                        */
@@ -136,8 +145,8 @@ void free_term(t)				   /*                        */
       if (Car(t)) { free_term(Car(t)); } 	   /*                        */
   }						   /*                        */
   if (Cdr(t)) { free_term(Cdr(t)); }   	   	   /*                        */
-#endif
   free(t);					   /*                        */
+#endif
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
