@@ -54,46 +54,49 @@
 /*-----------------------------------------------------------------------------
 ** Function:	new_term()
 ** Type:	Term
-** Purpose:	
+** Purpose:	Allocate a new term and initialize it.
 **		
 ** Arguments:
-**	op	
-**	 a1	
-**	 a2	
+**	sym	the symdef
+**	car	the car
+**	cdr	the cdr
 ** Returns:	
 **___________________________________________________			     */
-Term new_term(sym, a1, a2)			   /*                        */
+Term new_term(sym, car, cdr)			   /*                        */
   SymDef sym;				   	   /*                        */
-  Term a1;					   /*                        */
-  Term a2;					   /*                        */
-{ Term t = terms;				   /*                        */
-  
-  if (terms)
-  { terms = Car(terms);
-  } else
+  Term car;					   /*                        */
+  Term cdr;					   /*                        */
+{ register Term t = terms;			   /*                        */
+  						   /*                        */
+  if (t) { terms = Car(t); }			   /*                        */
+  else						   /*                        */
   { t = (Term)malloc(sizeof(STerm));		   /*                        */
-  }
-  if (t == NIL) OUT_OF_MEMORY("term");		   /*                        */
+    if (t == NIL) OUT_OF_MEMORY("term");	   /*                        */
+  }	   					   /*                        */
   TSym(t) = sym;			   	   /*                        */
-  Car(t) = a1;				   	   /*                        */
-  Cdr(t) = a2;				   	   /*                        */
+  Car(t)  = car;				   /*                        */
+  Cdr(t)  = cdr;				   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	new_term_num()
 ** Type:	Term
-** Purpose:	
+** Purpose:	Allocate a new term and initialize it as number.
 **		
 ** Arguments:
-**	n	
+**	n	the numeric value
 ** Returns:	
 **___________________________________________________			     */
 Term new_term_num(n)				   /*                        */
   long n;					   /*                        */
-{						   /*                        */
-  Term t = (Term)malloc(sizeof(STerm));	   	   /*                        */
-  if (t == NIL) OUT_OF_MEMORY("term");		   /*                        */
+{ register Term t = terms;			   /*                        */
+  						   /*                        */
+  if (t) { terms = Car(t); }			   /*                        */
+  else						   /*                        */
+  { t = (Term)malloc(sizeof(STerm));		   /*                        */
+    if (t == NIL) OUT_OF_MEMORY("term");	   /*                        */
+  }	   					   /*                        */
   TSym(t)    = sym_number;			   /*                        */
   TNumber(t) = n;				   /*                        */
   Cdr(t)     = NIL;				   /*                        */
@@ -103,19 +106,23 @@ Term new_term_num(n)				   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	new_t_string()
 ** Type:	Term
-** Purpose:	
+** Purpose:	Allocate a new term and initialize it as string type.
 **		
 ** Arguments:
-**	op	
-**	 s	
+**	sym	the symdef
+**	s	the string value, i.e. a symbol
 ** Returns:	
 **___________________________________________________			     */
 Term new_t_string(sym, s)		   	   /*                        */
   SymDef sym;					   /*                        */
   String s;					   /*                        */
-{						   /*                        */
-  Term t     = (Term)malloc(sizeof(STerm));	   /*                        */
-  if (t == NIL) OUT_OF_MEMORY("term");		   /*                        */
+{ register Term t = terms;			   /*                        */
+  						   /*                        */
+  if (t) { terms = Car(t); }			   /*                        */
+  else						   /*                        */
+  { t = (Term)malloc(sizeof(STerm));		   /*                        */
+    if (t == NIL) OUT_OF_MEMORY("term");	   /*                        */
+  }	   					   /*                        */
   TSym(t)    = sym;			   	   /*                        */
   TString(t) = s;				   /*                        */
   Cdr(t)     = NIL;			   	   /*                        */
@@ -125,28 +132,39 @@ Term new_t_string(sym, s)		   	   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	free_term()
 ** Type:	void
-** Purpose:	
+** Purpose:	Free the memory of a term and arrange for reuse.
+**		The term odes are linked into the |terms| list to be reused.
+**		This happens only for those term nodes which are not locked.
 **		
 ** Arguments:
 **	t	
 ** Returns:	nothing
 **___________________________________________________			     */
 void free_term(t)				   /*                        */
-  Term t;					   /*                        */
-{						   /*                        */
-#ifdef NEVER
-  
-  switch (TOp(t))				   /*                        */
-  { case STRING:				   /*                        */
-    case FIELD:				   	   /*                        */
-    case NUMBER:				   /*                        */
+  register Term t;				   /*                        */
+{ Term cdr;					   /*                        */
+ 						   /*                        */
+  if (t == NIL) return;				   /*                        */
+ 						   /*                        */
+  cdr = Cdr(t);					   /*                        */
+ 						   /*                        */
+  switch (TermOp(t))				   /*                        */
+  { case -10:					   /* list type              */
+      free_term(Car(t));			   /*                        */
       break;					   /*                        */
-    default:					   /*                        */
-      if (Car(t)) { free_term(Car(t)); } 	   /*                        */
+    case -11:					   /* number type            */
+    case -12:					   /* string type            */
+      break;					   /*                        */
+    default:					   /* locked                 */
+      return;					   /*                        */
   }						   /*                        */
-  if (Cdr(t)) { free_term(Cdr(t)); }   	   	   /*                        */
-  free(t);					   /*                        */
-#endif
+  Car(t) = terms;				   /*                        */
+  terms = t;					   /*                        */
+ 						   /*                        */
+  if (cdr)					   /*                        */
+  { free_term(cdr);			   	   /*                        */
+    Cdr(t) = NIL;				   /*                        */
+  }						   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -156,7 +174,7 @@ void free_term(t)				   /*                        */
 **		
 ** Arguments:
 **	file	
-**	 t	
+**	t	
 ** Returns:	nothing
 **___________________________________________________			     */
 void print_term(file, t)			   /*                        */

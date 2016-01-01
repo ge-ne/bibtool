@@ -15,4 +15,14 @@
 
 #include "term.h"
 
+#ifdef __STDC__
+#define _ARG(A) A
+#else
+#define _ARG(A) ()
+#endif
+
+extern Binding binding _ARG((Term term));
+extern Term eval_term _ARG((Binding binding, Term term));
+extern Term eval_self _ARG((Binding binding, Term term));
+
 #endif

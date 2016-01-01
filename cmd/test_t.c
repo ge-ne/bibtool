@@ -14,6 +14,7 @@
 #include <bibtool/error.h>
 #include "term.h"
 #include "symdef.h"
+#include "binding.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -28,6 +29,7 @@
 /*---------------------------------------------------------------------------*/
 
  int verbose = 0;
+ int eval = 0;
 
 /*-----------------------------------------------------------------------------
 ** Function:	action()
@@ -41,6 +43,7 @@
 int action(t)					   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
+  if (eval) t = eval_term(NULL, t);
   print_term(stdout, t);			   /*                        */
   putchar('\n');				   /*                        */
   return 0;					   /*                        */
@@ -100,8 +103,10 @@ int main(argc, argv)				   /*                        */
 	ok = 1;					   /*                        */
       } else if (ArgIs("-h", "--help"))   	   /*                        */
       { fprintf(stderr,			   	   /*                        */
-		"Usage: %s [-v] [-i|-r|--infile|--resource] <file>\n",/*     */
+		"Usage: %s [-v] [-e||--eval] [-i|-r|--infile|--resource] <file>\n",/*     */
 		argv[0]);			   /*                        */
+      } else if (ArgIs("-e", "--eval"))	   	   /*                        */
+      { eval = 1;	   			   /*                        */
       } else if (ArgIs("-v", "--verbose"))	   /*                        */
       { verbose = 1;	   			   /*                        */
       } else {					   /*                        */

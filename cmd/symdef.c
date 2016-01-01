@@ -189,9 +189,9 @@ static void p_term_field(file, t)		   /*                        */
       }						   /*                        */
     }						   /*                        */
   }						   /*                        */
-  if (q) fputc('\'', file);			   /*                        */
+  if (q) fputc('`', file);			   /*                        */
   print_quoted(file, TString(t));		   /*                        */
-  if (q) fputc('\'', file);			   /*                        */
+  if (q) fputc('`', file);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -269,23 +269,24 @@ void init_symdef()				   /*                        */
 #define Declare(T,N,V) N = V
 #include "symdef.h"
 
-#define InitSymChar(I,S,OP, EVAL)			       \
-  sym_char[I] = sym_def(S, OP, NIL, EVAL, p_sym_name);	       \
-  SymTerm(sym_char[I]) = new_term(sym_char[I], NIL, NIL)
+#define InitSymChar(S,OP, EVAL)				       \
+  sym_char[i] = sym_def(S, OP, NIL, EVAL, p_sym_name);	       \
+  SymTerm(sym_char[i]) = new_term(sym_char[i], NIL, NIL)
  						   /*                        */
   for (i = 1; i < 256; i++) {			   /*                        */
  						   /*                        */
-    switch (i)					   /*                        */
-    { case ';':	InitSymChar(i,  ";",   0, NULL); break;/*                    */
-      case '=':	InitSymChar(i,  "=",  30, NULL); break;/*                    */
-      case '<':	InitSymChar(i,  "<",  30, NULL); break;/*                    */
-      case '>':	InitSymChar(i,  ">",  30, NULL); break;/*                    */
-      case '#':	InitSymChar(i,  "#",  40, NULL); break;/*                    */
-      case '+':	InitSymChar(i,  "+",  50, NULL); break;/*                    */
-      case '-':	InitSymChar(i,  "-",  52, NULL); break;/*                    */
-      case '*':	InitSymChar(i,  "*",  60, NULL); break;/*                    */
-      case '/':	InitSymChar(i,  "/",  60, NULL); break;/*                    */
-      case '%':	InitSymChar(i, "mod", 60, NULL); break;/*                    */
+    switch (i)			   		   /*                        */
+    { case ';':	InitSymChar( ";",     0, NULL); break;/*                     */
+      case '=':	InitSymChar( "=",    30, NULL); break;/*                     */
+      case '<':	InitSymChar( "<",    30, NULL); break;/*                     */
+      case '>':	InitSymChar( ">",    30, NULL); break;/*                     */
+      case '#':	InitSymChar( "#",    40, NULL); break;/*                     */
+      case '+':	InitSymChar( "+",    50, NULL); break;/*                     */
+      case '-':	InitSymChar( "-",    52, NULL); break;/*                     */
+      case '*':	InitSymChar( "*",    60, NULL); break;/*                     */
+      case '/':	InitSymChar( "/",    60, NULL); break;/*                     */
+      case '%':	InitSymChar("mod",   60, NULL); break;/*                     */
+      case '\'':InitSymChar("quote", 70, NULL); break;/*                     */
       case '"':					   /*                        */
       case '\'':				   /*                        */
       case '_':					   /*                        */

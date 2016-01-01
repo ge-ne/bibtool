@@ -25,6 +25,9 @@
 #else
 #define _ARG(A) ()
 #endif
+Binding binding _ARG((Term term));
+Term eval_term _ARG((Binding binding, Term term));
+Term eval_self _ARG((Binding binding, Term term));
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -79,5 +82,21 @@ Term eval_term(binding, term)			   /*                        */
   return (*SymEval(symdef))(binding, term);	   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	eval_self()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term eval_self(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  register Term term;				   /*                        */
+{						   /*                        */
+  return term;					   /*                        */
+}						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

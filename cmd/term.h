@@ -10,13 +10,12 @@
 ** 
 ******************************************************************************/
 
-#include <bibtool/type.h>
-
-/*---------------------------------------------------------------------------*/
-
 #ifndef TERM_H
 #define TERM_H
 
+#include <bibtool/type.h>
+
+/*---------------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Typedef:	SymDef
@@ -76,14 +75,15 @@ typedef struct S_TERM {				   /*                        */
 #define TString(T) ((T)->a.string)
 #define TNumber(T) ((T)->a.number)
 
+#define TermOp(T)  SymOp(TSym(T))
 #define TermIsNumber(T)	(TSym(T) == sym_number)
+#define TermIsString(T)	(TSym(T) == sym_string)
 #define TermIsEOF(T)	(TSym(T) == SymDefNull)
 
 #define Cons(CAR, CDR) new_term(sym_cons, CAR, CDR)
 
 #define BlockTerm(S) new_t_string(sym_block, symbol(S))
 #define FieldTerm(S) new_t_string(sym_field, symbol(S))
-
 
 /*-----------------------------------------------------------------------------
 ** Typedef:	BJunk
@@ -92,9 +92,9 @@ typedef struct S_TERM {				   /*                        */
 **		
 **___________________________________________________			     */
 typedef struct S_BJUNK				   /*                        */
-{ String key;
-  Term value;
-  struct S_BJUNK * next;
+{ String key;					   /*                        */
+  Term value;					   /*                        */
+  struct S_BJUNK * next;			   /*                        */
 } SBJunk, *BJunk;				   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -104,12 +104,10 @@ typedef struct S_BJUNK				   /*                        */
 **		
 **___________________________________________________			     */
 typedef struct S_BINDING			   /*                        */
-{ int junk_size;
-  BJunk junks;
-  struct S_BINDING *next;
+{ int junk_size;				   /*                        */
+  BJunk junks;					   /*                        */
+  struct S_BINDING *next;			   /*                        */
 } SBinding, *Binding;				   /*------------------------*/
-
-
 
 /*---------------------------------------------------------------------------*/
 

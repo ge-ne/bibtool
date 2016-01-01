@@ -42,13 +42,13 @@
 
 /*---------------------------------------------------------------------------*/
 
- 
- static Term yylval;
- static char * filename;
- static FILE * in_file;
- static int linenum;
- static SymDef sd_look_ahead = 0L;
- static Term look_ahead = NIL;
+
+ static Term yylval;				   /*                        */
+ static char * filename;			   /*                        */
+ static FILE * in_file;				   /*                        */
+ static int linenum;				   /*                        */
+ static SymDef sd_look_ahead = 0L;		   /*                        */
+ static Term look_ahead = NIL;			   /*                        */
 
 #define unscan(S,T) (sd_look_ahead = S, look_ahead = T)
 
@@ -188,8 +188,8 @@ static SymDef scan()				   /*                        */
       case '"':					   /*                        */
 	Return(scan_string(sym_string ,'"'));	   /*                        */
 	  					   /*                        */
-      case '\'':				   /*                        */
-	Return(scan_string(sym_field ,'\''));	   /*                        */
+      case '`':				   	   /*                        */
+	Return(scan_string(sym_field ,'`'));	   /*                        */
 	  					   /*                        */
 #ifdef NEVER
       case '{':					   /*                        */
