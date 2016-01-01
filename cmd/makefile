@@ -53,7 +53,7 @@ test_t: test_t.o t_parser.o tstack.o term.o symdef.o binding.o $(OFILES)
 	@$(CC) -g -O2 -o $@ $^ -lkpathsea
 
 test: do_test
-do_test: test_t test/*.t
+do_test: test_t test/*/*.t
 	(cd test; make)
 
 clean:
