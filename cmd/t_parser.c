@@ -552,7 +552,13 @@ static Term read_expr()				   /*                        */
       { linenum = lno;				   /*                        */
 	Error("Missing ) before ",		   /*                        */
 	      s ? SymName(s) : (String)"end of file",0); }/*                 */
-      Shift(sym_group, t);			   /*                        */
+      Shift(sym_cons, t);			   /*                        */
+ 						   /*                        */
+    } else if (SymIs(s, '\'')) {		   /*                        */
+      SymDef qs = s;
+      Term q	= SymTerm(s);
+      Term t	= read_expr();			   /*                        */
+      Shift(qs, Cons(q, Cons(t, NIL)));		   /*                        */
  						   /*                        */
     } else if (SymIs(s, '-')) {			   /*                        */
       Shift(s, yylval);		   	   	   /*                        */

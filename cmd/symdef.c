@@ -286,9 +286,8 @@ void init_symdef()				   /*                        */
       case '*':	InitSymChar( "*",    60, NULL); break;/*                     */
       case '/':	InitSymChar( "/",    60, NULL); break;/*                     */
       case '%':	InitSymChar("mod",   60, NULL); break;/*                     */
-      case '\'':InitSymChar("quote", 70, NULL); break;/*                     */
+      case '\'':InitSymChar("quote", 71, NULL); break;/*                     */
       case '"':					   /*                        */
-      case '\'':				   /*                        */
       case '_':					   /*                        */
       case '@':					   /*                        */
       case '$':					   /*                        */
