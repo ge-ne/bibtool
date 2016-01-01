@@ -40,20 +40,20 @@ OFILES  = ../crossref.o	\
 	  ../wordlist.o	\
 	  ../regex.o
 
-all: test_t
+all: tester
 
 term.o: term.c term.h symdef.h
 symdef.o: symdef.c term.h symdef.h
 tstack.o: tstack.c tstack.h term.h symdef.h
-t_parser.o: t_parser.c term.h symdef.h
-test_t.o: test_t.c term.h symdef.h
+lreader.o: lreader.c term.h symdef.h
+tester.o: tester.c term.h symdef.h binding.h
 binding.o: binding.c binding.h
 
-test_t: test_t.o t_parser.o tstack.o term.o symdef.o binding.o $(OFILES)
+tester: tester.o lreader.o tstack.o term.o symdef.o binding.o $(OFILES)
 	@$(CC) -g -O2 -o $@ $^ -lkpathsea
 
 test: do_test
-do_test: test_t test/*/*.t
+do_test: tester test/*/*.t
 	(cd test; make)
 
 clean:

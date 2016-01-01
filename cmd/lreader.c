@@ -1,4 +1,4 @@
-/*** t_parser.c ****************************************************************
+/*** lreader.c ****************************************************************
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
@@ -555,8 +555,8 @@ static Term read_expr()				   /*                        */
       Shift(sym_cons, t);			   /*                        */
  						   /*                        */
     } else if (SymIs(s, '\'')) {		   /*                        */
-      SymDef qs = s;
-      Term q	= SymTerm(s);
+      SymDef qs = s;				   /*                        */
+      Term q	= SymTerm(s);			   /*                        */
       Term t	= read_expr();			   /*                        */
       Shift(qs, Cons(q, Cons(t, NIL)));		   /*                        */
  						   /*                        */
