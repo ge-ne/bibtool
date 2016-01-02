@@ -40,7 +40,7 @@ Declare(SymDef, sym_number , sym_def("number", -12, NIL, eval_self, p_term_num))
 Declare(SymDef, sym_field  , sym_def("field",   -1, NIL, NULL, p_term_field));
 Declare(SymDef, sym_true   , sym_def("true",    -1, NIL, eval_self, p_sym_name));
 Declare(SymDef, sym_false  , sym_def("false",   -1, NIL, eval_self, p_sym_name));
-Declare(SymDef, sym_builtin, sym_def("builtin", -1, NIL, NULL, p_term_field));
+Declare(SymDef, sym_builtin, sym_def("builtin", -1, NIL, eval_builtin, p_term_field));
 
 Declare(SymDef, sym_and    , sym_def("and",     10, NIL, NULL, p_sym_name));
 Declare(SymDef, sym_or     , sym_def("or",      10, NIL, NULL, p_sym_name));
@@ -51,8 +51,8 @@ Declare(SymDef, sym_le     , sym_def("<=",      30, NIL, NULL, p_sym_name));
 Declare(SymDef, sym_ne     , sym_def("!=",      30, NIL, NULL, p_sym_name));
 
 Declare(SymDef, sym_mod    , sym_def("mod",     60, NIL, NULL, p_sym_name));
-Declare(SymDef, sym_like   , sym_def("like",   22, NIL, NULL, p_sym_name));
-Declare(SymDef, sym_ilike  , sym_def("ilike",  22, NIL, NULL, p_sym_name));
+Declare(SymDef, sym_like   , sym_def("like",    30, NIL, NULL, p_sym_name));
+Declare(SymDef, sym_ilike  , sym_def("ilike",   30, NIL, NULL, p_sym_name));
 
 Declare(SymDef*, sym_char  , (SymDef*)calloc(256, sizeof(SymDef)));
 

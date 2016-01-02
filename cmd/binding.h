@@ -21,8 +21,10 @@
 #define _ARG(A) ()
 #endif
 
-extern Binding binding _ARG((Term term));
+extern Binding binding _ARG((unsigned int size));
+extern Binding def_binding();
 extern Term eval_term _ARG((Binding binding, Term term));
 extern Term eval_self _ARG((Binding binding, Term term));
+extern Term eval_builtin _ARG((Binding binding, Term term));
 
 #endif

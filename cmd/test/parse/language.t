@@ -61,49 +61,47 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'error-1',
-	   resource	=> <<__EOF__ ,
--+
-__EOF__
+	   resource	=> '-+',
+	   expected_out => '',
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for +
+*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator for +
 __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'error-2',
-	   resource	=> <<__EOF__ ,
--
-__EOF__
+	   resource	=> '-',
+	   expected_out => '',
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for -
+*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator for -
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-10',
-	   resource	=> <<__EOF__ ,
-123
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Unexpected end-of-file
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'error-20',
-	   resource	=> <<__EOF__ ,
-?
-__EOF__
-	   expected_err => <<__EOF__ );
+BUnit::run(name         => 'error-3',
+	   ignore	=> 'TODO',
+	   resource	=> '?',
+	   expected_out	=> '',
+	   expected_err	=> <<__EOF__ );
 
 *** BibTool ERROR:  (line 1 in _test.rsc): Semicolon expected instead of ?
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'error-21',
-	   resource	=> <<__EOF__ ,
-\\
+BUnit::run(name         => 'error-4',
+	   ignore	=> 'TODO',
+	   resource	=> '\\' ,
+	   expected_out => '',
+	   expected_err => <<__EOF__ );
+
+*** BibTool ERROR:  (line 1 in _test.rsc): Semicolon expected instead of \\
 __EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'error-5',
+	   ignore	=> 'TODO',
+	   resource	=> '\\ \n' ,
+	   expected_out => '',
 	   expected_err => <<__EOF__ );
 
 *** BibTool ERROR:  (line 1 in _test.rsc): Semicolon expected instead of \\

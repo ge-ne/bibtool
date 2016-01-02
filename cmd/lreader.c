@@ -102,7 +102,7 @@ static Term scan_string(s, c_end)		   /*                        */
   char   c_end;					   /*                        */
 { Term t;					   /*                        */
   StringBuffer *sb = sbopen();		   	   /*                        */
-  int c;					   /*                        */
+  register int c;				   /*                        */
   int lno = linenum;				   /*                        */
   						   /*                        */
   for (c = GetC; c != c_end; c = GetC)	   	   /*                        */
@@ -113,7 +113,7 @@ static Term scan_string(s, c_end)		   /*                        */
 	case 0:				   	   /*                        */
 	  linenum = lno;			   /*                        */
 	  Error("Missing closing delimiter ",	   /*                        */
-		(c =='"' ? "\"": "'"), 0);	   /*                        */
+		(c_end =='"' ? "\"": "`"), 0);	   /*                        */
 	case 'n':			   	   /*                        */
 	  sbputc('\n', sb);		   	   /*                        */
 	  break;			   	   /*                        */
@@ -132,7 +132,7 @@ static Term scan_string(s, c_end)		   /*                        */
     } else if ( c <= 0)			   	   /*                        */
     { linenum = lno;				   /*                        */
       Error("Missing closing delimiter ",	   /*                        */
-	    (c =='"' ? "\"": "'"), 0);		   /*                        */
+	    (c_end =='"' ? "\"": "`"), 0);	   /*                        */
     } else{				   	   /*                        */
       sbputc(c, sb);			   	   /*                        */
     }					   	   /*                        */
@@ -384,9 +384,6 @@ static Term read_list(t)			   /*                        */
 **___________________________________________________			     */
 static Term read_builtin(Term t)		   /*                        */
 { SymDef s;					   /*                        */
-  Term *tp;					   /*                        */
-  t  = Cons(t, NIL);			   	   /*                        */
-  tp = &Cdr(t);				   	   /*                        */
   						   /*                        */
   for (s = scan(); s; s = scan())		   /*                        */
   {						   /*                        */
@@ -400,8 +397,7 @@ static Term read_builtin(Term t)		   /*                        */
 #endif
     } else if ( SymIs(s, '{'))		   	   /*                        */
     {
-      *tp = Cons(scan_block(), NIL);		   /*                        */
-      tp = &(Cdr(*tp));				   /*                        */
+      Car(t) = scan_block();		   	   /*                        */
       break;					   /*                        */
     } else if (SymIsOperator(s)		   	   /*                        */
 	       || SymIs(s, ';')			   /*                        */
@@ -414,8 +410,7 @@ static Term read_builtin(Term t)		   /*                        */
       break;					   /*                        */
     } else {					   /*                        */
       unscan(s, yylval);			   /*                        */
-      *tp = Cons(read_expr(), NIL);		   /*                        */
-      tp = &(Cdr(*tp));				   /*                        */
+      Cdr(t) = read_expr();		   	   /*                        */
       break;					   /*                        */
     }						   /*                        */
   }						   /*                        */
@@ -578,9 +573,9 @@ static Term read_expr()				   /*                        */
   { s = StackSym(stack);			   /*                        */
     if (SymIsOperator(s)) {			   /*                        */
       Error("Missing operator for ", SymName(s),0);/*                        */
-    } else {					   /*                        */
-      Error("Unexpected end-of-file",0,0);	   /*                        */
     }						   /*                        */
+    stack = reduce(stack);
+    return StackTerm(stack);
   }	   					   /*                        */
   return term_eof;				   /*                        */
 }						   /*------------------------*/
@@ -596,24 +591,26 @@ static Term read_expr()				   /*                        */
 ** Returns:	
 **___________________________________________________			     */
 static Term read_cmd()				   /*                        */
-{ SymDef s = scan();				   /*                        */
-  Term t;				   	   /*                        */
+{ register SymDef s;			   	   /*                        */
  						   /*                        */
-  if (s == sym_builtin)				   /*                        */
-  { t = read_builtin(yylval); }			   /*                        */
-  else						   /*                        */
-  { unscan(s, yylval);				   /*                        */
-    t = read_expr();				   /*                        */
-    if (t && TermIsEOF(t)) return t;		   /*                        */
+  for (s = scan(); s; s = scan())		   /*                        */
+  {						   /*                        */
+    if (s == sym_builtin)			   /*                        */
+    { return read_builtin(yylval); }		   /*                        */
+    else if (!SymIs(s, ';'))			   /*                        */
+    { unscan(s, yylval);			   /*                        */
+      return read_expr();			   /*                        */
+    }						   /*                        */
   }						   /*                        */
-  						   /*                        */
-  s = scan();					   /*                        */
+
+#ifdef NEVER
   if (!SymIs(s, ';'))			   	   /*                        */
   { Error("Semicolon expected instead of ",  	   /*                        */
 	  (s ? (char*)SymName(s) : "end-of-file"),"");/*                     */
   }						   /*                        */
+#endif
    						   /*                        */
-  return t;			   		   /*                        */
+  return term_eof;				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

@@ -24,7 +24,7 @@
 **___________________________________________________			     */
 typedef struct S_SYMDEF {			   /*                        */
   String name;				   	   /*                        */
-  int op;					   /*                        */
+  short int op;					   /*                        */
   struct S_TERM * term;	   			   /*                        */
   struct S_TERM * (*eval)();			   /*                        */
   struct S_TERM * (*parse)();			   /*                        */
@@ -75,7 +75,8 @@ typedef struct S_TERM {				   /*                        */
 #define TString(T) ((T)->a.string)
 #define TNumber(T) ((T)->a.number)
 
-#define TermOp(T)  SymOp(TSym(T))
+#define TermName(T)	SymName(TSym(T))
+#define TermOp(T)	SymOp(TSym(T))
 #define TermIsNumber(T)	(TSym(T) == sym_number)
 #define TermIsString(T)	(TSym(T) == sym_string)
 #define TermIsEOF(T)	(TSym(T) == SymDefNull)
@@ -94,8 +95,16 @@ typedef struct S_TERM {				   /*                        */
 typedef struct S_BJUNK				   /*                        */
 { String key;					   /*                        */
   Term value;					   /*                        */
+  Term (*get)();				   /*                        */
+  void (*set)();				   /*                        */
   struct S_BJUNK * next;			   /*                        */
 } SBJunk, *BJunk;				   /*------------------------*/
+
+#define JKey(BJ)	((BJ)->key)
+#define JValue(BJ)	((BJ)->value)
+#define JGet(BJ)	((BJ)->get)
+#define JSet(BJ)	((BJ)->set)
+#define NextJunk(BJ)	((BJ)->next)
 
 /*-----------------------------------------------------------------------------
 ** Typedef:	Binding
@@ -105,9 +114,15 @@ typedef struct S_BJUNK				   /*                        */
 **___________________________________________________			     */
 typedef struct S_BINDING			   /*                        */
 { int junk_size;				   /*                        */
-  BJunk junks;					   /*                        */
+  BJunk *junks;					   /*                        */
   struct S_BINDING *next;			   /*                        */
 } SBinding, *Binding;				   /*------------------------*/
+
+#define BindingNULL ((Binding)NULL)
+
+#define BSize(B)	((B)->junk_size)
+#define BJunks(B)	((B)->junks)
+#define NextBinding(B)	((B)->next)
 
 /*---------------------------------------------------------------------------*/
 

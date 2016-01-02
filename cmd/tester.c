@@ -1,4 +1,4 @@
-/*** test_t.c *****************************************************************
+/*** tester.c *****************************************************************
 ** 
 ** This file is distributed under the GNU General Public License.
 ** See the file COPYING for details.
@@ -29,7 +29,8 @@
 /*---------------------------------------------------------------------------*/
 
  int verbose = 0;
- int eval = 0;
+ int eval    = 0;
+ Binding b   = BindingNULL;
 
 /*-----------------------------------------------------------------------------
 ** Function:	action()
@@ -43,7 +44,10 @@
 int action(t)					   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
-  if (eval) t = eval_term(NULL, t);
+  if (eval)					   /*                        */
+  { if (b == BindingNULL)  b = def_binding();	   /*                        */
+    t = eval_term(b, t);		   	   /*                        */
+  }						   /*                        */
   print_term(stdout, t);			   /*                        */
   putchar('\n');				   /*                        */
   return 0;					   /*                        */
