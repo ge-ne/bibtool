@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 2015 Gerd Neugebauer
+** (c) 2015-2016 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -63,28 +63,6 @@ Binding binding(size)			   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	hash()
-** Type:	int
-** Purpose:	
-**		
-** Arguments:
-**	s	
-**	 size	
-** Returns:	
-**___________________________________________________			     */
-int hash(s, size)				   /*                        */
-  register String s;				   /*                        */
-  unsigned int size;				   /*                        */
-{ register unsigned int hash = 0;		   /*                        */
-  unsigned int i 	     = 0;		   /*                        */
- 						   /*                        */
-  while (*s)					   /*                        */
-  { hash += (*s++) >> ((i++)&7); }		   /*                        */
-  						   /*                        */
-  return hash % size;				   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
 ** Function:	get_bind()
 ** Type:	BJunk
 ** Purpose:	
@@ -97,19 +75,19 @@ int hash(s, size)				   /*                        */
 BJunk get_bind(binding, key)			   /*                        */
   Binding binding;				   /*                        */
   String key;					   /*                        */
-{ unsigned int h = hash(key, BSize(binding));
-  BJunk junk;
-  
-  for (;;)
-  {
-    for (junk = BJunks(binding)[h];
-	 junk;
-	 junk = NextJunk(junk))
-    { if (strcmp((char*)JKey(junk), (char*)key) == 0)
-      { return junk; }
-    }
-    binding = NextBinding(binding);
-    if (binding == BindingNULL) return NULL;
+{ unsigned int h = hash(key) % BSize(binding);	   /*                        */
+  BJunk junk;					   /*                        */
+  						   /*                        */
+  for (;;)					   /*                        */
+  {						   /*                        */
+    for (junk = BJunks(binding)[h];		   /*                        */
+	 junk;					   /*                        */
+	 junk = NextJunk(junk))			   /*                        */
+    { if (strcmp((char*)JKey(junk), (char*)key) == 0)/*                      */
+      { return junk; }				   /*                        */
+    }						   /*                        */
+    binding = NextBinding(binding);		   /*                        */
+    if (binding == BindingNULL) return NULL;	   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
@@ -120,10 +98,10 @@ BJunk get_bind(binding, key)			   /*                        */
 **		
 ** Arguments:
 **	b	
-**	 key	
-**	 term	
-**	 get	
-**	 set	
+**	key	
+**	term	
+**	get	
+**	set	
 ** Returns:	nothing
 **___________________________________________________			     */
 void bind(b, key, term, get, set)		   /*                        */
@@ -132,8 +110,8 @@ void bind(b, key, term, get, set)		   /*                        */
   Term term;					   /*                        */
   Term (*get)();				   /*                        */
   void (*set)();				   /*                        */
-{ unsigned int h = hash(key, BSize(b));
-  BJunk junk;
+{ unsigned int h = hash(key) % BSize(b);	   /*                        */
+  BJunk junk;					   /*                        */
   
   for (junk = BJunks(b)[h]; junk; junk = NextJunk(junk))
   { if (strcmp((char*)JKey(junk), (char*)key) == 0)
@@ -147,24 +125,31 @@ void bind(b, key, term, get, set)		   /*                        */
 
   junk = (BJunk) malloc(sizeof(SBJunk));	   /*                        */
   if (junk == NULL) OUT_OF_MEMORY("binding");	   /*                        */
-  JKey(junk)     = key;
-  JValue(junk)   = term;
-  JGet(junk)     = get;
-  JSet(junk)     = set;
-  NextJunk(junk) = BJunks(b)[h];
-  BJunks(b)[h]   = junk;
+  JKey(junk)     = key;				   /*                        */
+  JValue(junk)   = term;			   /*                        */
+  JGet(junk)     = get;				   /*                        */
+  JSet(junk)     = set;				   /*                        */
+  NextJunk(junk) = BJunks(b)[h];		   /*                        */
+  BJunks(b)[h]   = junk;			   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	g_print()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
 Term g_print(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{
-  print_term(stdout, Cdr(term));
-
+{						   /*                        */
+  print_term(stdout, Cdr(term));		   /*                        */
   return NIL;			   		   /*                        */
 }						   /*------------------------*/
-
-
 
 /*-----------------------------------------------------------------------------
 ** Function:	def_binding()
@@ -178,29 +163,109 @@ Term g_print(binding, term)			   /*                        */
 Binding def_binding()				   /*                        */
 { Binding b = binding(511);			   /*                        */
 
-  bind(b, "true", term_true, NULL, NULL);
-  bind(b, "false", term_false, NULL, NULL);
-
-#define RSC_INIT_AND   term_and,   NULL
-#define RSC_INIT_FALSE term_false, eval_self
-#define RSC_INIT_ILIKE term_ilike, NULL
-#define RSC_INIT_LIKE  term_like,  NULL
-#define RSC_INIT_MOD   term_mod,   NULL
-#define RSC_INIT_NOT   term_not,   NULL
-#define RSC_INIT_NIL   NIL,        NULL
-#define RSC_INIT_OR    term_or,    NULL
-#define RSC_INIT_TRUE  term_true,  eval_self
-#define RSC_FIRST(C)
-#define RSC_NEXT(C)
-#define RscTerm(NAME,VALUE)	bind(b, NAME, VALUE, NULL);
-#define RscBoolean(NAME,B,C,D)	bind(b, NAME, NIL, NULL, NULL);
-#define RscString(NAME,B,C,D)	bind(b, NAME, NIL, NULL, NULL);
-#define RscNumeric(NAME,B,C,D)	bind(b, NAME, NIL, NULL, NULL);
-#define RscByFct(NAME,B,FCT)	bind(b, NAME, NIL, NULL, NULL);
-
-#include <bibtool/resource.h>
-
-  bind(b, "print", NIL, g_print, NULL);
+  bind(b, "add.field"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "apply.alias"			, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "apply.modify"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "apply.include"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "and"				, NIL, NULL, NULL);   /* RscTerm	*/ 	
+  bind(b, "bibtex.env.name"		, NIL, NULL, NULL);   /* RscString	*/ 	
+  bind(b, "bibtex.search.path"		, NIL, NULL, NULL);   /* RscString	*/ 	
+  bind(b, "check.double"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "check.double.delete"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "check.rule"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "check.case.sensitive"	, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "clear.ignored.words"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "count.all"			, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "count.used"			, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "crossref.limit"		, NIL, NULL, NULL);   /* RscNumeric	*/ 	
+  bind(b, "default.key"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "delete.field"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "dir.file.separator"		, NIL, NULL, NULL);   /* RscString	*/ 	
+  bind(b, "dump.symbols"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "env.separator"		, NIL, NULL, NULL);   /* RscString	*/ 	
+  bind(b, "extract.file"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "extract.regex"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "expand.macros"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "expand.crossref"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "fmt.inter.name"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "fmt.name.pre"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "fmt.name.name"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "fmt.name.title"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "fmt.title.title"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "fmt.et.al"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "fmt.word.separator"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "field.type"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "false"			, term_false, NULL, NULL);   /* RscTerm	*/ 	
+  bind(b, "input"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "ignored.word"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "ilike"			, NIL, NULL, NULL);   /* RscTerm	*/ 	
+  bind(b, "key.generation"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "key.base"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "key.format"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "key.make.alias"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "key.number.separator"	, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "key.expand.macros"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "like"			, NIL, NULL, NULL);   /* RscTerm	*/ 	
+  bind(b, "macro.file"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "mod"				, NIL, NULL, NULL);   /* RscTerm	*/ 	
+  bind(b, "new.entry.type"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "new.field.type"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "new.format.type"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "not"				, NIL, NULL, NULL);   /* RscTerm	*/ 	
+  bind(b, "nil"				, NIL, NULL, NULL);   /* RscTerm	*/ 	
+  bind(b, "output.file"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "or"				, NIL, NULL, NULL);   /* RscTerm	*/ 	
+  bind(b, "pass.comments"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "preserve.key.case"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "preserve.keys"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "print"			, NIL, g_print, NULL);   /* RscByFct	*/ 	
+  bind(b, "print.align.string"		, NIL, NULL, NULL);   /* RscNumeric	*/ 	
+  bind(b, "print.align.comment"		, NIL, NULL, NULL);   /* RscNumeric	*/ 	
+  bind(b, "print.align.preamble"	, NIL, NULL, NULL);   /* RscNumeric	*/ 	
+  bind(b, "print.align.key"		, NIL, NULL, NULL);   /* RscNumeric	*/ 	
+  bind(b, "print.align"			, NIL, NULL, NULL);   /* RscNumeric	*/ 	
+  bind(b, "print.all.strings"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "print.entry.types"		, NIL, NULL, NULL);   /* RscString	*/ 	
+  bind(b, "print.equal.right"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "print.braces"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "print.comma.at.end"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "print.deleted.prefix"	, NIL, NULL, NULL);   /* RscString	*/ 	
+  bind(b, "print.deleted.entries"	, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "print.indent"		, NIL, NULL, NULL);   /* RscNumeric	*/ 	
+  bind(b, "print.line.length"		, NIL, NULL, NULL);   /* RscNumeric	*/ 	
+  bind(b, "print.newline"		, NIL, NULL, NULL);   /* RscNumeric	*/ 	
+  bind(b, "print.parentheses"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "print.terminal.comma"	, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "print.use.tab"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "print.wide.equal"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "quiet"			, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "regexp.syntax"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "rename.field"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "resource"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "resource.search.path"	, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "rewrite.rule"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "rewrite.case.sensitive"	, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "rewrite.limit"		, NIL, NULL, NULL);   /* RscNumeric	*/ 	
+  bind(b, "select"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "select.by.string"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "select.by.non.string"	, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "select.by.string.ignored"	, NIL, NULL, NULL);   /* RscString	*/ 	
+  bind(b, "select.case.sensitive"	, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "select.fields"		, NIL, NULL, NULL);   /* RscString	*/ 	
+  bind(b, "select.non"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "select.crossrefs"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "sort"			, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "sort.cased"			, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "sort.macros"			, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "sort.reverse"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "sort.order"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "sort.format"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "suppress.initial.newline"	, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "symbol.type"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "tex.define"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+  bind(b, "true"			, term_true, NULL, NULL);   /* RscTerm	*/ 	
+  bind(b, "verbose"			, NIL, NULL, NULL);   /* RscBoolean	*/ 	
+  bind(b, "version"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
 
   return b;				   	   /*                        */
 }						   /*------------------------*/

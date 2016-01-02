@@ -26,6 +26,7 @@
 /*---------------------------------------------------------------------------*/
 
 extern void init_symdef();
+extern unsigned int hash();
 
 #endif
 /*---------------------------------------------------------------------------*/
@@ -40,10 +41,10 @@ Declare(SymDef, sym_number , sym_def("number",   -12, NIL, p_term_num));
 Declare(SymDef, sym_field  , sym_def("field",     -1, NIL, p_term_field));
 Declare(SymDef, sym_true   , sym_def("true",      -1, NIL, p_sym_name));
 Declare(SymDef, sym_false  , sym_def("false",     -1, NIL, p_sym_name));
-Declare(SymDef, sym_r_n    , sym_def("builtin n", -1, NIL, p_rsc));
-Declare(SymDef, sym_r_s    , sym_def("builtin s", -1, NIL, p_rsc));
-Declare(SymDef, sym_r_b    , sym_def("builtin b", -1, NIL, p_rsc));
-Declare(SymDef, sym_r_f    , sym_def("builtin f", -1, NIL, p_rsc));
+Declare(SymDef, sym_r_n    , sym_def("built-in n",-1, NIL, p_rsc));
+Declare(SymDef, sym_r_s    , sym_def("built-in s",-1, NIL, p_rsc));
+Declare(SymDef, sym_r_b    , sym_def("built-in b",-1, NIL, p_rsc));
+Declare(SymDef, sym_r_f    , sym_def("built-in f",-1, NIL, p_rsc));
 
 Declare(SymDef, sym_and    , sym_def("and",       10, NIL, p_sym_name));
 Declare(SymDef, sym_or     , sym_def("or",        10, NIL, p_sym_name));

@@ -249,6 +249,27 @@ static void p_cons(file, t)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	hash()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**	s	
+**	 size	
+** Returns:	
+**___________________________________________________			     */
+int hash(s)				   	   /*                        */
+  register String s;				   /*                        */
+{ register unsigned int hash = 0;		   /*                        */
+  unsigned int i 	     = 0;		   /*                        */
+ 						   /*                        */
+  while (*s)					   /*                        */
+  { hash += (*s++) >> ((i++)&7); }		   /*                        */
+  						   /*                        */
+  return hash;				   	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	sym_def()
 ** Type:	static SymDef
 ** Purpose:	
@@ -269,6 +290,7 @@ static SymDef sym_def(name, op, term, print) 	   /*                        */
   SymDef sym    = (SymDef) malloc(sizeof(SSymDef));/*                        */
   if (sym == SymDefNull) OUT_OF_MEMORY("symdef");  /*                        */
   SymName(sym)  = name;				   /*                        */
+  SymHash(sym)  = hash(name);
   SymOp(sym)    = op;				   /*                        */
   SymTerm(sym)  = term;				   /*                        */
   SymPrint(sym) = print;			   /*                        */

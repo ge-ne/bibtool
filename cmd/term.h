@@ -24,6 +24,7 @@
 **___________________________________________________			     */
 typedef struct S_SYMDEF {			   /*                        */
   String name;				   	   /*                        */
+  short int hash;				   /*                        */
   short int op;					   /*                        */
   struct S_TERM * term;	   			   /*                        */
   void (*print)();				   /*                        */
@@ -32,6 +33,7 @@ typedef struct S_SYMDEF {			   /*                        */
 #define SymDefNull ((SymDef)0)
 
 #define SymName(T)   ((T)->name)
+#define SymHash(T)   ((T)->hash)
 #define SymOp(T)     ((T)->op)
 #define SymTerm(T)   ((T)->term)
 #define SymPrint(T)  ((T)->print)
