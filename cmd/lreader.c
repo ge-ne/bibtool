@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 2015 Gerd Neugebauer
+** (c) 2015-2016 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -307,10 +307,10 @@ static SymDef scan()				   /*                        */
 #define RSC_FIRST(C)	    case C:
 #define RSC_NEXT(C)	    break; case C:
 #define ON(A)		    if (strcmp((char*)s, A) == 0)
-#define RscNumeric(A,B,C,D) ON(A) {yylval = new_t_string(sym_builtin, s);}
-#define RscString(A,B,C,D)  ON(A) {yylval = new_t_string(sym_builtin, s);}
-#define RscBoolean(A,B,C,D) ON(A) {yylval = new_t_string(sym_builtin, s);}
-#define RscByFct(A,B,C)     ON(A) {yylval = new_t_string(sym_builtin, s);}
+#define RscNumeric(A,B,C,D) ON(A) {yylval = new_t_string(sym_r_n, s);}
+#define RscString(A,B,C,D)  ON(A) {yylval = new_t_string(sym_r_s, s);}
+#define RscBoolean(A,B,C,D) ON(A) {yylval = new_t_string(sym_r_b, s);}
+#define RscByFct(A,B,C)     ON(A) {yylval = new_t_string(sym_r_f, s);}
 #define RscTerm(A,B)	    ON(A) {B;}
 #define RSC_INIT_NIL	    yylval = NIL;return sym_cons
 #define RSC_INIT_TRUE	    yylval = term_true
@@ -397,7 +397,7 @@ static Term read_builtin(Term t)		   /*                        */
 #endif
     } else if ( SymIs(s, '{'))		   	   /*                        */
     {
-      Car(t) = scan_block();		   	   /*                        */
+      Cdr(t) = scan_block();		   	   /*                        */
       break;					   /*                        */
     } else if (SymIsOperator(s)		   	   /*                        */
 	       || SymIs(s, ';')			   /*                        */
@@ -516,7 +516,10 @@ static Term read_expr()				   /*                        */
     fprintf(stderr, "--- read_expr(): '%s' %d\n",  /*                        */
 	    SymName(s), SymOp(s));		   /*                        */
 #endif
-    if (s == sym_builtin			   /*                        */
+    if (s == sym_r_n			   	   /*                        */
+	|| s == sym_r_s			   	   /*                        */
+	|| s == sym_r_b			   	   /*                        */
+	|| s == sym_r_f			   	   /*                        */
 	|| s == sym_field			   /*                        */
 	|| s == sym_string		   	   /*                        */
 	|| s == sym_number		   	   /*                        */
@@ -595,7 +598,10 @@ static Term read_cmd()				   /*                        */
  						   /*                        */
   for (s = scan(); s; s = scan())		   /*                        */
   {						   /*                        */
-    if (s == sym_builtin)			   /*                        */
+    if (s == sym_r_b				   /*                        */
+	|| s == sym_r_s				   /*                        */
+	|| s == sym_r_n				   /*                        */
+	|| s == sym_r_f)			   /*                        */
     { return read_builtin(yylval); }		   /*                        */
     else if (!SymIs(s, ';'))			   /*                        */
     { unscan(s, yylval);			   /*                        */

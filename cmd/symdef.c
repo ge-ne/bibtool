@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 2015 Gerd Neugebauer
+** (c) 2015-2016 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -195,6 +195,31 @@ static void p_term_field(file, t)		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	p_builtin()
+** Type:	static void
+** Purpose:	
+**		
+** Arguments:
+**	file	
+**	 t	
+** Returns:	nothing
+**___________________________________________________			     */
+static void p_rsc(file, t)		   	   /*                        */
+  FILE * file;					   /*                        */
+  Term t;					   /*                        */
+{						   /*                        */
+  if (Cdr(t))
+  { fputc('(', file);			   	   /*                        */
+    fputs((char*)TString(t), file);		   /*                        */
+    fputc(' ', file);			   	   /*                        */
+    print_term(file, Cdr(t));	   		   /*                        */
+    fputc(')', file);			   	   /*                        */
+  } else {
+    fputs((char*)TString(t), file);		   /*                        */
+  }
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	p_cons()
 ** Type:	static int
 ** Purpose:	
@@ -232,15 +257,13 @@ static void p_cons(file, t)			   /*                        */
 **	name	
 **	op	
 **	term	
-**	parse	
 **	print	
 ** Returns:	
 **___________________________________________________			     */
-static SymDef sym_def(name, op, term, eval, print) /*                        */
+static SymDef sym_def(name, op, term, print) 	   /*                        */
   String name;					   /*                        */
   int op;					   /*                        */
   Term term;					   /*                        */
-  Term (*eval)_ARG((Binding bind, Term t));	   /*                        */
   void (*print)_ARG((FILE*, Term));		   /*                        */
 {						   /*                        */
   SymDef sym    = (SymDef) malloc(sizeof(SSymDef));/*                        */
@@ -248,7 +271,6 @@ static SymDef sym_def(name, op, term, eval, print) /*                        */
   SymName(sym)  = name;				   /*                        */
   SymOp(sym)    = op;				   /*                        */
   SymTerm(sym)  = term;				   /*                        */
-  SymEval(sym)  = eval;			   	   /*                        */
   SymPrint(sym) = print;			   /*                        */
   return sym;					   /*                        */
 }						   /*------------------------*/
@@ -269,24 +291,24 @@ void init_symdef()				   /*                        */
 #define Declare(T,N,V) N = V
 #include "symdef.h"
 
-#define InitSymChar(S,OP, EVAL)				       \
-  sym_char[i] = sym_def(S, OP, NIL, EVAL, p_sym_name);	       \
+#define InitSymChar(S,OP)				       \
+  sym_char[i] = sym_def(S, OP, NIL, p_sym_name);	       \
   SymTerm(sym_char[i]) = new_term(sym_char[i], NIL, NIL)
  						   /*                        */
   for (i = 1; i < 256; i++) {			   /*                        */
  						   /*                        */
     switch (i)			   		   /*                        */
-    { case ';':	InitSymChar( ";",     0, NULL); break;/*                     */
-      case '=':	InitSymChar( "=",    30, NULL); break;/*                     */
-      case '<':	InitSymChar( "<",    30, NULL); break;/*                     */
-      case '>':	InitSymChar( ">",    30, NULL); break;/*                     */
-      case '#':	InitSymChar( "#",    40, NULL); break;/*                     */
-      case '+':	InitSymChar( "+",    50, NULL); break;/*                     */
-      case '-':	InitSymChar( "-",    52, NULL); break;/*                     */
-      case '*':	InitSymChar( "*",    60, NULL); break;/*                     */
-      case '/':	InitSymChar( "/",    60, NULL); break;/*                     */
-      case '%':	InitSymChar("mod",   60, NULL); break;/*                     */
-      case '\'':InitSymChar("quote", 71, NULL); break;/*                     */
+    { case ';':	InitSymChar( ";",     0); break;   /*                        */
+      case '=':	InitSymChar( "=",    30); break;   /*                        */
+      case '<':	InitSymChar( "<",    30); break;   /*                        */
+      case '>':	InitSymChar( ">",    30); break;   /*                        */
+      case '#':	InitSymChar( "#",    40); break;   /*                        */
+      case '+':	InitSymChar( "+",    50); break;   /*                        */
+      case '-':	InitSymChar( "-",    52); break;   /*                        */
+      case '*':	InitSymChar( "*",    60); break;   /*                        */
+      case '/':	InitSymChar( "/",    60); break;   /*                        */
+      case '%':	InitSymChar("mod",   60); break;   /*                        */
+      case '\'':InitSymChar("quote", 71); break;   /*                        */
       case '"':					   /*                        */
       case '_':					   /*                        */
       case '@':					   /*                        */
@@ -303,7 +325,6 @@ void init_symdef()				   /*                        */
 	sym_char[i] = sym_def(s,		   /*                        */
 			      0,		   /*                        */
 			      NIL,		   /*                        */
-			      NULL,		   /*                        */
 			      p_sym_name); 	   /*                        */
     }						   /*                        */
   }						   /*                        */

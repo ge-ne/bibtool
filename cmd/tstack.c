@@ -3,7 +3,7 @@
 ** This file is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 2015 Gerd Neugebauer
+** (c) 2015-2016 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -50,8 +50,8 @@ TStack ts_pop(ts)				   /*                        */
 **		
 ** Arguments:
 **	ts	
-**	 sym	
-**	 t	
+**	sym	
+**	t	
 ** Returns:	
 **___________________________________________________			     */
 TStack ts_push(ts, sym, t)			   /*                        */
@@ -65,15 +65,6 @@ TStack ts_push(ts, sym, t)			   /*                        */
   StackSym(frame)  = sym;			   /*                        */
   StackTerm(frame) = t;				   /*                        */
   StackPrev(frame) = ts;			   /*                        */
-
-#ifdef NEVER
-  if (t) {
-    if (TSym(t) != sym)  printf("AAAAAAAAAAAAAAAA %s %s\n",SymName(sym), SymName(TSym(t)));
-  } else {
-    if (sym != sym_cons) puts("CCCCCCCCCCCCCCCC");
-  }
-#endif
-
   return frame;					   /*                        */
 }						   /*------------------------*/
 

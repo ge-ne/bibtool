@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 2015 Gerd Neugebauer
+** (c) 2015-2016 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -26,8 +26,6 @@ typedef struct S_SYMDEF {			   /*                        */
   String name;				   	   /*                        */
   short int op;					   /*                        */
   struct S_TERM * term;	   			   /*                        */
-  struct S_TERM * (*eval)();			   /*                        */
-  struct S_TERM * (*parse)();			   /*                        */
   void (*print)();				   /*                        */
 } SSymDef, *SymDef;				   /*------------------------*/
 
@@ -36,9 +34,7 @@ typedef struct S_SYMDEF {			   /*                        */
 #define SymName(T)   ((T)->name)
 #define SymOp(T)     ((T)->op)
 #define SymTerm(T)   ((T)->term)
-#define SymParse(T)  ((T)->parse)
 #define SymPrint(T)  ((T)->print)
-#define SymEval(T)   ((T)->eval)
 
 #define BinarySym(S) ((SymOp(S) & 1) == 0)
 #define UnarySym(S) ((SymOp(S) & 1) != 0)

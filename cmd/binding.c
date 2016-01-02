@@ -53,10 +53,10 @@ Binding binding(size)			   	   /*                        */
 {						   /*                        */
   Binding bind = (Binding) malloc(sizeof(SBinding));/*                       */
   if (bind == BindingNULL) OUT_OF_MEMORY("binding");/*                       */
-
+ 						   /*                        */
   BJunks(bind) = (BJunk*) calloc(size, sizeof(BJunk));/*                     */
   if (BJunks(bind) == NULL) OUT_OF_MEMORY("binding");/*                      */
-
+ 						   /*                        */
   BSize(bind) = size;				   /*                        */
   NextBinding(bind) = BindingNULL;		   /*                        */
   return bind;				   	   /*                        */
@@ -84,6 +84,16 @@ int hash(s, size)				   /*                        */
   return hash % size;				   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	get_bind()
+** Type:	BJunk
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 key	
+** Returns:	
+**___________________________________________________			     */
 BJunk get_bind(binding, key)			   /*                        */
   Binding binding;				   /*                        */
   String key;					   /*                        */
@@ -100,9 +110,22 @@ BJunk get_bind(binding, key)			   /*                        */
     }
     binding = NextBinding(binding);
     if (binding == BindingNULL) return NULL;
-  }
-}
+  }						   /*                        */
+}						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	bind()
+** Type:	void
+** Purpose:	
+**		
+** Arguments:
+**	b	
+**	 key	
+**	 term	
+**	 get	
+**	 set	
+** Returns:	nothing
+**___________________________________________________			     */
 void bind(b, key, term, get, set)		   /*                        */
   Binding b;				   	   /*                        */
   String key;					   /*                        */
@@ -132,6 +155,26 @@ void bind(b, key, term, get, set)		   /*                        */
   BJunks(b)[h]   = junk;
 }						   /*------------------------*/
 
+Term g_print(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{
+  print_term(stdout, Cdr(term));
+
+  return NIL;			   		   /*                        */
+}						   /*------------------------*/
+
+
+
+/*-----------------------------------------------------------------------------
+** Function:	def_binding()
+** Type:	Binding
+** Purpose:	
+**		
+** Arguments:
+**		
+** Returns:	
+**___________________________________________________			     */
 Binding def_binding()				   /*                        */
 { Binding b = binding(511);			   /*                        */
 
@@ -156,6 +199,8 @@ Binding def_binding()				   /*                        */
 #define RscByFct(NAME,B,FCT)	bind(b, NAME, NIL, NULL, NULL);
 
 #include <bibtool/resource.h>
+
+  bind(b, "print", NIL, g_print, NULL);
 
   return b;				   	   /*                        */
 }						   /*------------------------*/
