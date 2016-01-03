@@ -17,8 +17,9 @@
 /* Internal Programs                                                         */
 /*===========================================================================*/
 
- TStack ts_pop _ARG((TStack ts));
- TStack ts_push _ARG((TStack ts, SymDef sym, Term t));
+TStack ts_pop _ARG((TStack ts));
+TStack ts_push _ARG((TStack ts, int c, Term t));
+void dump_tstack _ARG((FILE* file, TStack stack));
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -50,21 +51,44 @@ TStack ts_pop(ts)				   /*                        */
 **		
 ** Arguments:
 **	ts	
-**	sym	
+**	c	
 **	t	
 ** Returns:	
 **___________________________________________________			     */
-TStack ts_push(ts, sym, t)			   /*                        */
+TStack ts_push(ts, c, t)			   /*                        */
   TStack ts;					   /*                        */
-  SymDef sym;					   /*                        */
+  int c;					   /*                        */
   Term t;					   /*                        */
 { TStack frame = (TStack)malloc(sizeof(STStack));  /*                        */
   if (frame == StackNULL)			   /*                        */
   { OUT_OF_MEMORY("term stack"); }		   /*                        */
  						   /*                        */
-  StackSym(frame)  = sym;			   /*                        */
+  StackChar(frame) = c;			   	   /*                        */
   StackTerm(frame) = t;				   /*                        */
   StackPrev(frame) = ts;			   /*                        */
   return frame;					   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	dump_tstack()
+** Type:	void
+** Purpose:	
+**		
+** Arguments:
+**	file	
+**	 stack	
+** Returns:	nothing
+**___________________________________________________			     */
+void dump_tstack(file, stack)			   /*                        */
+  FILE* file;					   /*                        */
+  TStack stack;					   /*                        */
+{						   /*                        */
+  if (stack)
+  { dump_tstack(file, StackPrev(stack));
+    fprintf(file," %d ", StackChar(stack));
+    print_term(file, StackTerm(stack));
+    fprintf(file,"\n");
+  } else {
+    fprintf(file,"-----\n");
+  }
+}						   /*------------------------*/

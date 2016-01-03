@@ -19,13 +19,13 @@
 **		
 **___________________________________________________			     */
 typedef struct T_STACK {			   /*                        */
-  SymDef sym;					   /*                        */
+  int c;					   /*                        */
   Term term;					   /*                        */
   struct T_STACK * prev;			   /*                        */
 } STStack, *TStack;				   /*------------------------*/
 
 #define StackNULL	(TStack)NULL
-#define StackSym(TS)	((TS)->sym)
+#define StackChar(TS)	((TS)->c)
 #define StackTerm(TS)	((TS)->term)
 #define StackPrev(TS)	((TS)->prev)
 
@@ -37,6 +37,7 @@ typedef struct T_STACK {			   /*                        */
 /*---------------------------------------------------------------------------*/
 
 extern TStack ts_pop _ARG((TStack ts));
-extern TStack ts_push _ARG((TStack ts, SymDef sym, Term t));
+extern TStack ts_push _ARG((TStack ts, int c, Term t));
+extern void dump_tstack _ARG((FILE* file, TStack stack));
 
 /*---------------------------------------------------------------------------*/
