@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2011-2015 Gerd Neugebauer
+#  (c) 2011-2016 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -47,6 +47,8 @@ our @EXPORT_OK = qw();
 
 use Cwd;
 use FileHandle;
+
+use Time::HiRes qw/gettimeofday/;
 
 use constant TEST_RSC =>'_test.rsc';
 use constant TEST_BIB =>'_test.bib';
@@ -228,6 +230,8 @@ sub suites {
     $len  = $l if $l > $len;
   }
 
+  my $time = gettimeofday; 
+
   foreach $_ (@a) {
     $success = 0;
     $ignored = 0;
@@ -262,8 +266,12 @@ sub suites {
     $failure += $summary{$suite}[2];;
   }
 
-  $_ = $success + $failure;
-  if ($_ == 0) { $_ = 100 } else { $_ = 100. * $success/$_; }
+  $time = gettimeofday - $time;
+
+  my $no = $success + $failure;
+  if ($no == 0) { $_ = 100 }
+  else { $_ = 100. * $success/$no; }
+
   printf("%s\n%-${len}s%7d %7d %7d\nSuccess rate: %3.2f%%\n",
 	 ('_' x ($len+40)),
 	 'TOTAL',
@@ -271,6 +279,8 @@ sub suites {
 	 $ignored,
 	 $failure,
 	 $_) if $verbose;
+  printf("Run time:     %1.2fs\tAverage: %1.0fms\n\n",
+	 $time, $time*1000/$no) if $verbose;
 
   return $failure;
 }
