@@ -26,6 +26,20 @@ This is the test driver for unit tests of BibTool.
 
 =head1 Methods
 
+=head2 all()
+
+This method collects all files with the extension .t and executes them as test
+cases.
+
+=head2 suites()
+
+This method takes a glob pattern as argument and executes all matching files
+as test cases.
+
+=head2 run()
+
+This method defines a single test case.
+
 =head1 AUTHOR
 
 Gerd Neugebauer
