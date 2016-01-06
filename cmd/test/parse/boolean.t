@@ -61,440 +61,85 @@ __EOF__
 true
 __EOF__
 
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'eq-err-1',
-	   resource	=> <<__EOF__ ,
-123 ==
-__EOF__
-	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for ==
-__EOF__
+sub boolean_tests
+{ my ($key, $op) = @_;
 
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'eq-1',
-	   resource	=> <<__EOF__ ,
-123==456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(== 123 456)
-__EOF__
+  #----------------------------------------------------------------------------
+  BUnit::run(name         => "$key-err-1",
+	     resource	  => "123 $op\n",
+	     expected_err => "\n*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for $op\n");
+  #------------------------------------------------------------------------------
+  BUnit::run(name         => "$key-1",
+	     resource	  => "123${op}456",
+	     expected_err => '',
+	     expected_out => "($op 123 456)\n" );
+  #------------------------------------------------------------------------------
+  BUnit::run(name         => "$key-2",
+	     resource	  => "123 $op -456",
+	     expected_err => '',
+	     expected_out => "($op 123 -456)\n" );
+  #------------------------------------------------------------------------------
+  BUnit::run(name         => "$key-3",
+	     resource	  => "-123 $op -456",
+	     expected_err => '',
+	     expected_out => "($op -123 -456)\n" );
+}
 
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'eq-2',
-	   resource	=> <<__EOF__ ,
-123 == -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(== 123 -456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'eq-3',
-	   resource	=> <<__EOF__ ,
--123 == -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(== -123 -456)
-__EOF__
+boolean_tests('eq','==');
+boolean_tests('ge','>=');
+boolean_tests('gt','>');
+boolean_tests('le','<=');
+boolean_tests('lt','<');
+boolean_tests('ne','!=');
 
 
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'ge-err-1',
-	   resource	=> <<__EOF__ ,
-123 >=
-__EOF__
-	   expected_err => <<__EOF__ );
+sub and_or_tests
+{ my ($key, $op) = @_;
 
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for >=
-__EOF__
+  #------------------------------------------------------------------------------
+  BUnit::run(name         => "$key-err-1",
+	     resource	  => "123 $op\n",
+	     expected_err => "\n*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for $key\n" );
+  #------------------------------------------------------------------------------
+  BUnit::run(name         => "$key-err-2",
+	     resource	  => "123 $op;\n",
+	     expected_err => "\n*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator after $key\n" );
+  #------------------------------------------------------------------------------
+  BUnit::run(name         => "$key-1",
+	     resource	  => "123${op}456",
+	     expected_err => '',
+	     expected_out => "($key 123 456)\n" );
+  #------------------------------------------------------------------------------
+  BUnit::run(name         => "$key-2",
+	     resource	  => "123 $op -456",
+	     expected_err => '',
+	     expected_out => "($key 123 -456)\n" );
+  #------------------------------------------------------------------------------
+  BUnit::run(name         => "$key-3",
+	     resource	  => "-123 $op -456",
+	     expected_err => '',
+	     expected_out => "($key -123 -456)\n" );
+  #------------------------------------------------------------------------------
+  BUnit::run(name         => "$key-11",
+	     resource	  => "-123 $key 456",
+	     expected_err => '',
+	     expected_out => "($key -123 456)\n" );
+  #------------------------------------------------------------------------------
+  BUnit::run(name         => "$key-12",
+	     resource	  => "123 $key -456",
+	     expected_err => '',
+	     expected_out => "($key 123 -456)\n" );
+  #------------------------------------------------------------------------------
+  BUnit::run(name         => "$key-13",
+	     resource	  => "-123 $key -456",
+	     expected_err => '',
+	     expected_out => "($key -123 -456)\n" );
+}
 
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'ge-1',
-	   resource	=> <<__EOF__ ,
-123>=456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(>= 123 456)
-__EOF__
+and_or_tests('and','&&');
+and_or_tests('or','||');
 
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'ge-2',
-	   resource	=> <<__EOF__ ,
-123 >= -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(>= 123 -456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'ge-3',
-	   resource	=> <<__EOF__ ,
--123 >= -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(>= -123 -456)
-__EOF__
-
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'gt-err-1',
-	   resource	=> <<__EOF__ ,
-123 >
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for >
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'gt-1',
-	   resource	=> <<__EOF__ ,
-123>456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(> 123 456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'gt-2',
-	   resource	=> <<__EOF__ ,
-123 > -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(> 123 -456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'gt-3',
-	   resource	=> <<__EOF__ ,
--123 > -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(> -123 -456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'le-err-1',
-	   resource	=> <<__EOF__ ,
-123 <=
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for <=
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'le-1',
-	   resource	=> <<__EOF__ ,
-123<=456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(<= 123 456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'le-2',
-	   resource	=> <<__EOF__ ,
-123 <= -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(<= 123 -456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'le-3',
-	   resource	=> <<__EOF__ ,
--123 <= -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(<= -123 -456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'lt-err-1',
-	   resource	=> <<__EOF__ ,
-123 <
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for <
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'lt-1',
-	   resource	=> <<__EOF__ ,
-123<456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(< 123 456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'lt-2',
-	   resource	=> <<__EOF__ ,
-123 < -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(< 123 -456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'lt-3',
-	   resource	=> <<__EOF__ ,
--123 < -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(< -123 -456)
-__EOF__
-
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'ne-err-1',
-	   resource	=> <<__EOF__ ,
-123 !=
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for !=
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'ne-err-2',
-	   resource	=> <<__EOF__ ,
-123 !
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator for not
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'ne-1',
-	   resource	=> <<__EOF__ ,
-123!=456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(!= 123 456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'ne-2',
-	   resource	=> <<__EOF__ ,
-123 != -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(!= 123 -456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'ne-3',
-	   resource	=> <<__EOF__ ,
--123 != -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(!= -123 -456)
-__EOF__
-
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'and-err-1',
-	   resource	=> <<__EOF__ ,
-123 &&
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for and
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'and-err-2',
-	   resource	=> <<__EOF__ ,
-123 and
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for and
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'and-1',
-	   resource	=> <<__EOF__ ,
-123&&456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(and 123 456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'and-2',
-	   resource	=> <<__EOF__ ,
-123 && -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(and 123 -456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'and-3',
-	   resource	=> <<__EOF__ ,
--123 && -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(and -123 -456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'and-11',
-	   resource	=> <<__EOF__ ,
-123and 456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(and 123 456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'and-12',
-	   resource	=> <<__EOF__ ,
-123 and -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(and 123 -456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'and-13',
-	   resource	=> <<__EOF__ ,
--123 and -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(and -123 -456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'or-err-1',
-	   resource	=> <<__EOF__ ,
-123 ||
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for or
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'or-err-2',
-	   resource	=> <<__EOF__ ,
-123 or
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for or
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'or-1',
-	   resource	=> <<__EOF__ ,
-123||456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(or 123 456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'or-2',
-	   resource	=> <<__EOF__ ,
-123 || -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(or 123 -456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'or-3',
-	   resource	=> <<__EOF__ ,
--123 || -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(or -123 -456)
-__EOF__
-
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'or-11',
-	   resource	=> <<__EOF__ ,
-123or 456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(or 123 456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'or-12',
-	   resource	=> <<__EOF__ ,
-123 or -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(or 123 -456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'or-13',
-	   resource	=> <<__EOF__ ,
--123 or -456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(or -123 -456)
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'not-err-1',
-	   resource	=> <<__EOF__ ,
-123 not
-__EOF__
-	   expected_err => <<__EOF__ );
-
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for not
-__EOF__
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'not-1',
-	   resource	=> <<__EOF__ ,
-not 456;
-__EOF__
-	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(not 456)
-__EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'not-2',

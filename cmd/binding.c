@@ -288,22 +288,23 @@ Binding def_binding()				   /*                        */
   BIND("verbose"		);   		   /* RscBoolean	     */
   BIND("version"		);   		   /* RscByFct	             */
 
+  Bind("cons"		, sym_cons);		   /*                        */
   Bind("="		, sym_set);		   /*                        */
   Bind("=="		, sym_eq);		   /*                        */
   Bind("<="		, sym_le);		   /*                        */
-  BIND("<"		);			   /*                        */
-  BIND(">="		);			   /*                        */
-  BIND(">"		);			   /*                        */
-  BIND("!="		);			   /*                        */
-  BIND("+"		);			   /*                        */
-  BIND("-"		);			   /*                        */
-  BIND("*"		);			   /*                        */
+  Bind("<"		, sym_lt);		   /*                        */
+  Bind(">="		, sym_ge);		   /*                        */
+  Bind(">"		, sym_gt);		   /*                        */
+  Bind("!="		, sym_ne);		   /*                        */
+  Bind("+"		, sym_plus);		   /*                        */
+  Bind("-"		, sym_minus);		   /*                        */
+  Bind("*"		, sym_times);		   /*                        */
+  Bind("/"		, sym_div);		   /*                        */
   Bind("&&"		, sym_and);		   /*                        */
   Bind("||"		, sym_or);		   /*                        */
   Bind("!"		, sym_not);		   /*                        */
   Bind("'"		, sym_quote);		   /*                        */
   BIND("`"		);			   /*                        */
-  Bind("cons"		, sym_cons);		   /*                        */
   return b;				   	   /*                        */
 }						   /*------------------------*/
 

@@ -117,6 +117,15 @@ BUnit::run(name         => 'error-5',
 *** BibTool ERROR:  (line 1 in _test.rsc): Semicolon expected instead of \\
 __EOF__
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'error-6',
+	   resource	=> 'a b c' ,
+	   expected_out => '',
+	   expected_err => <<__EOF__ );
+
+*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator after field
+__EOF__
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

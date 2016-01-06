@@ -45,7 +45,7 @@
 #define L_NOT		0x451
 
 #define L_IS_OPERATOR(C) ((C) >= 0x400)
-#define L_IS_BINARY(C)   (((C) & 1) == 0)
+#define L_IS_BINARY(C)   (((C) & 0x401) == 0x400)
 
 #ifdef __STDC__
 #define _ARG(A) A

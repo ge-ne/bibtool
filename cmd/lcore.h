@@ -59,7 +59,9 @@ Declare(SymDef, sym_or     , symdef("or",     L_OR,     NIL, p_sym_name));
 Declare(SymDef, sym_not    , symdef("not",    L_NOT,    NIL, p_sym_name));
 Declare(SymDef, sym_eq     , symdef("==",     L_EQ,     NIL, p_sym_name));
 Declare(SymDef, sym_ge     , symdef(">=",     L_GE,     NIL, p_sym_name));
+Declare(SymDef, sym_gt     , symdef(">",      L_GT,     NIL, p_sym_name));
 Declare(SymDef, sym_le     , symdef("<=",     L_LE,     NIL, p_sym_name));
+Declare(SymDef, sym_lt     , symdef("<",      L_LT,     NIL, p_sym_name));
 Declare(SymDef, sym_ne     , symdef("!=",     L_NE,     NIL, p_sym_name));
 
 Declare(SymDef, sym_mod    , symdef("mod",    L_MOD,    NIL, p_sym_name));

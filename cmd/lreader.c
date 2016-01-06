@@ -215,7 +215,7 @@ static Term scan_string(s, c_end)		   /*                        */
 **___________________________________________________			     */
 static int scan(b)			   	   /*                        */
   Binding b;					   /*                        */
-{ int c;					   /*                        */
+{ register int c;				   /*                        */
  						   /*                        */
   if (c_look_ahead)			   	   /*                        */
   { c		 = c_look_ahead;		   /*                        */
@@ -494,29 +494,30 @@ static Term read_builtin(b, t)	   		   /*                        */
 **___________________________________________________			     */
 static TStack reduce(stack)			   /*                        */
   TStack stack;					   /*                        */
-{ TStack sp;					   /*                        */
+{ TStack current, prev;				   /*                        */
   Term t;					   /*                        */
   int n, op;					   /*                        */
    						   /*                        */
 #ifdef DEBUG_PARSER
   fputs("--- reduce\n", stderr);		   /*                        */
 #endif
-  for (sp = stack;				   /*                        */
-       sp && StackPrev(sp);			   /*                        */
-       sp = StackPrev(sp))			   /*                        */
-  { TStack ts = StackPrev(sp);			   /*                        */
-    if (StackChar(ts) == L_MINUS		   /*                        */
-       && (StackPrev(ts) == NULL		   /*                        */
-	   || L_IS_OPERATOR(StackChar(StackPrev(ts)))))/*                    */
-    { if ( TSym(StackTerm(sp)) == sym_number )     /*                        */
-      { TNumber(StackTerm(sp)) =		   /*                        */
-	  -TNumber(StackTerm(sp));		   /*                        */
+  for (current = stack;				   /*                        */
+       current && StackPrev(current);		   /*                        */
+       current = StackPrev(current))		   /*                        */
+  { prev = StackPrev(current);		   	   /*                        */
+    if (StackChar(prev) == L_MINUS		   /*                        */
+	&& (StackPrev(prev) == NULL		   /*                        */
+	    || L_IS_OPERATOR(StackChar(StackPrev(prev)))))/*                 */
+    { if ( TSym(StackTerm(current)) == sym_number )/*                        */
+      { TNumber(StackTerm(current)) =		   /*                        */
+	  -TNumber(StackTerm(current));		   /*                        */
       } else {					   /*                        */
-	StackTerm(sp) = Cons(StackTerm(ts),	   /*                        */
-			  Cons(StackTerm(sp), NIL));/*                       */
-	StackChar(sp) = L_LIST;		   	   /*                        */
+	StackTerm(current) = Cons(StackTerm(prev), /*                        */
+				  Cons(StackTerm(current),/*                 */
+				       NIL));	   /*                        */
+	StackChar(current) = L_LIST;		   /*                        */
       }						   /*                        */
-      StackPrev(sp) = ts_pop(StackPrev(sp));	   /*                        */
+      StackPrev(current) = ts_pop(StackPrev(current));/*                     */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -526,10 +527,10 @@ static TStack reduce(stack)			   /*                        */
 #endif
   while (StackPrev(stack))			   /*                        */
   { n = 0x400;				   	   /*                        */
-    for (sp = StackPrev(stack);			   /*                        */
-	 sp;					   /*                        */
-	 sp = StackPrev(sp))	   		   /*                        */
-    { op = StackChar(sp);		   	   /*                        */
+    for (current = StackPrev(stack);		   /*                        */
+	 current;				   /*                        */
+	 current = StackPrev(current))		   /*                        */
+    { op = StackChar(current);		   	   /*                        */
 #ifdef DEBUG_PARSER
       fprintf(stderr,"--- op = 0x%x\n", op);   	   /*                        */
 #endif
@@ -538,31 +539,40 @@ static TStack reduce(stack)			   /*                        */
 #ifdef DEBUG_PARSER
     fprintf(stderr,"--- n = 0x%x\n", n);   	   /*                        */
 #endif
-    if (n <= 0x400) Error("Syntax error",0,0);	   /*                        */
+    if (n <= 0x400)				   /*                        */
+      Error("Missing operator after ",		   /*                        */
+	    TermName(StackTerm(stack)), 0);	   /*                        */
     						   /*                        */
-    for (sp = stack;				   /*                        */
-	 sp && StackPrev(sp);			   /*                        */
-	 sp = StackPrev(sp))			   /*                        */
-    {						   /*                        */
-      if (StackChar(StackPrev(sp)) != n) continue; /*                        */
+    for (current = stack;			   /*                        */
+	 current && StackPrev(current);		   /*                        */
+	 current = StackPrev(current))		   /*                        */
+    { prev = StackPrev(current);		   /*                        */
+      if (StackChar(prev) != n) continue;	   /*                        */
 #ifdef DEBUG_PARSER
       fprintf(stderr,"--- reducing at 0x%x\n", n); /*                        */
       dump_tstack(stderr, stack);		   /*                        */
 #endif
-      t = Cons(StackTerm(StackPrev(sp)), NIL);	   /*                        */
+      t = Cons(StackTerm(prev), NIL);		   /*                        */
        						   /*                        */
       if (L_IS_BINARY(n))			   /*                        */
-      { Cdr(t) = Cons(NIL,			   /*                        */
-		      Cons(StackTerm(sp),	   /*                        */
+      {						   /*                        */
+	if (L_IS_BINARY(StackChar(StackPrev(prev))))/*                       */
+	{ Error("First operator for ",		   /*                        */
+		TermName(StackTerm(prev)),	   /*                        */
+		" missing");			   /*                        */
+	}					   /*                        */
+ 						   /*                        */
+	Cdr(t) = Cons(NIL,			   /*                        */
+		      Cons(StackTerm(current),	   /*                        */
 			   NIL));		   /*                        */
-	StackPrev(sp)  = ts_pop(StackPrev(sp));	   /*                        */
-	Car(Cdr(t)) = StackTerm(StackPrev(sp));	   /*                        */
+	StackPrev(current) = ts_pop(prev);	   /*                        */
+	Car(Cdr(t)) = StackTerm(StackPrev(current));/*                       */
       } else {					   /*                        */
-        Cdr(t) = Cons(StackTerm(sp), NIL);	   /*                        */
+        Cdr(t) = Cons(StackTerm(current), NIL);	   /*                        */
       }						   /*                        */
-      StackTerm(sp) = t;			   /*                        */
-      StackChar(sp) = L_LIST;		   	   /*                        */
-      StackPrev(sp) = ts_pop(StackPrev(sp));	   /*                        */
+      StackTerm(current) = t;			   /*                        */
+      StackChar(current) = L_LIST;		   /*                        */
+      StackPrev(current) = ts_pop(StackPrev(current));/*                     */
 #ifdef DEBUG_PARSER
       fputs("--- pop\n", stderr);		   /*                        */
       dump_tstack(stderr, stack);		   /*                        */
