@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2015 Gerd Neugebauer
+#  (c) 2015-2016 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -115,7 +115,25 @@ __EOF__
 *** BibTool ERROR:  (line 1 in _test.rsc): Missing closing delimiter "
 __EOF__
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'like-1',
+	   resource	=> <<__EOF__ ,
+a like "abc";
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(like a "abc")
+__EOF__
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ilike-1',
+	   resource	=> <<__EOF__ ,
+a ilike "abc";
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(ilike a "abc")
+__EOF__
 
 
 1;

@@ -218,14 +218,14 @@ Binding def_binding()				   /*                        */
   Bind("false"			, sym_false);      /* RscTerm	             */
   BIND("input"			);   		   /* RscByFct	             */
   BIND("ignored.word"		);   		   /* RscByFct	             */
-  BIND("ilike"			);   		   /* RscTerm	             */
+  Bind("ilike"			, sym_ilike);	   /* RscTerm	             */
   BIND("key.generation"		);   		   /* RscBoolean	     */
   BIND("key.base"		);   		   /* RscByFct	             */
   BIND("key.format"		);   		   /* RscByFct	             */
   BIND("key.make.alias"		);   		   /* RscBoolean	     */
   BIND("key.number.separator"	);   		   /* RscByFct	             */
   BIND("key.expand.macros"	);   		   /* RscBoolean	     */
-  BIND("like"			);   		   /* RscTerm	             */
+  Bind("like"			, sym_like);	   /* RscTerm	             */
   BIND("macro.file"		);   		   /* RscByFct	             */
   Bind("mod"			, sym_mod);	   /* RscTerm	             */
   BIND("new.entry.type"		);   		   /* RscByFct	             */
