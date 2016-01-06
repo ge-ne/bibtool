@@ -14,7 +14,7 @@
 #include <stdlib.h>
 #include <bibtool/error.h>
 #include "term.h"
-#include "symdef.h"
+#include "lcore.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -40,14 +40,6 @@
 
 
  Term term_eof;
- Term term_true;
- Term term_false;
- Term term_mod;
- Term term_and;
- Term term_or;
- Term term_not;
- Term term_like;
- Term term_ilike;
 
  static Term terms = NIL;
 
@@ -148,6 +140,7 @@ void free_term(t)				   /*                        */
  						   /*                        */
   cdr = Cdr(t);					   /*                        */
  						   /*                        */
+#ifdef TODO
   switch (TermOp(t))				   /*                        */
   { case -10:					   /* list type              */
       free_term(Car(t));			   /*                        */
@@ -158,6 +151,7 @@ void free_term(t)				   /*                        */
     default:					   /* locked                 */
       return;					   /*                        */
   }						   /*                        */
+#endif
   Car(t) = terms;				   /*                        */
   terms = t;					   /*                        */
  						   /*                        */
@@ -191,3 +185,36 @@ void print_term(file, t)			   /*                        */
     fputs("???", file);				   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	symdef()
+** Type:	SymDef
+** Purpose:	
+**		
+** Arguments:
+**	name	
+**	op	
+**	term	
+**	print	
+** Returns:	
+**___________________________________________________			     */
+SymDef symdef(name, op, term, print) 	   	   /*                        */
+  String name;					   /*                        */
+  int op;					   /*                        */
+  Term term;					   /*                        */
+  void (*print)_ARG((FILE*, Term));		   /*                        */
+{						   /*                        */
+  SymDef sym    = (SymDef) malloc(sizeof(SSymDef));/*                        */
+  if (sym == SymDefNULL) OUT_OF_MEMORY("symdef");  /*                        */
+  SymName(sym)  = name;				   /*                        */
+  SymOp(sym)    = op;				   /*                        */
+  SymHash(sym)  = hash(name);			   /*                        */
+  SymTerm(sym)  = term;				   /*                        */
+  SymValue(sym) = NIL;				   /*                        */
+  SymPrint(sym) = print;			   /*                        */
+  SymGet(sym)   = NULL;			   	   /*                        */
+  SymSet(sym)   = NULL;			   	   /*                        */
+  return sym;					   /*                        */
+}						   /*------------------------*/
+
+/*---------------------------------------------------------------------------*/

@@ -509,11 +509,31 @@ __EOF__
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'not-3',
 	   resource	=> <<__EOF__ ,
-not 123 - 456;
+not not a;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(not (- 123 456))
+(not (not a))
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'not-10',
+	   resource	=> <<__EOF__ ,
+not a and b;
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(and (not a) b)
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'not-11',
+	   resource	=> <<__EOF__ ,
+not a or b;
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+(or (not a) b)
 __EOF__
 
 1;

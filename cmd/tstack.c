@@ -25,6 +25,8 @@ void dump_tstack _ARG((FILE* file, TStack stack));
 /* External Programs                                                         */
 /*===========================================================================*/
 
+extern char* tag_id();
+
 /*---------------------------------------------------------------------------*/
 
 
@@ -83,12 +85,13 @@ void dump_tstack(file, stack)			   /*                        */
   FILE* file;					   /*                        */
   TStack stack;					   /*                        */
 {						   /*                        */
-  if (stack)
-  { dump_tstack(file, StackPrev(stack));
-    fprintf(file," %d ", StackChar(stack));
-    print_term(file, StackTerm(stack));
-    fprintf(file,"\n");
-  } else {
-    fprintf(file,"-----\n");
-  }
+  if (stack)					   /*                        */
+  { dump_tstack(file, StackPrev(stack));	   /*                        */
+    fprintf(file,"    %-8s\t",			   /*                        */
+	    tag_id(StackChar(stack)));		   /*                        */
+    print_term(file, StackTerm(stack));		   /*                        */
+    fprintf(file,"\n");				   /*                        */
+  } else {					   /*                        */
+    fprintf(file,"+++\n");			   /*                        */
+  }						   /*                        */
 }						   /*------------------------*/

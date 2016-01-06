@@ -24,25 +24,30 @@
 **___________________________________________________			     */
 typedef struct S_SYMDEF {			   /*                        */
   String name;				   	   /*                        */
+  short int op;				   	   /*                        */
   short int hash;				   /*                        */
-  short int op;					   /*                        */
+  struct S_SYMDEF * next;			   /*                        */
   struct S_TERM * term;	   			   /*                        */
+  struct S_TERM * value;			   /*                        */
+  struct S_TERM * (*get)();			   /*                        */
+  void (*set)();				   /*                        */
   void (*print)();				   /*                        */
 } SSymDef, *SymDef;				   /*------------------------*/
 
-#define SymDefNull ((SymDef)0)
+#define SymDefNULL ((SymDef)0)
 
-#define SymName(T)   ((T)->name)
-#define SymHash(T)   ((T)->hash)
-#define SymOp(T)     ((T)->op)
-#define SymTerm(T)   ((T)->term)
-#define SymPrint(T)  ((T)->print)
-
-#define BinarySym(S) ((SymOp(S) & 1) == 0)
-#define UnarySym(S) ((SymOp(S) & 1) != 0)
+#define SymName(SYM)	((SYM)->name)
+#define SymOp(SYM)	((SYM)->op)
+#define SymHash(SYM)	((SYM)->hash)
+#define SymTerm(SYM)	((SYM)->term)
+#define SymKey(SYM)	((SYM)->key)
+#define SymValue(SYM)	((SYM)->value)
+#define SymGet(SYM)	((SYM)->get)
+#define SymSet(SYM)	((SYM)->set)
+#define SymPrint(SYM)	((SYM)->print)
+#define NextJunk(SYM)	((SYM)->next)
 
 #define SymIsNumber(S) ((S) == sym_number) 
-#define SymIsOperator(S) (SymOp(S) > 0) 
 #define SymIs(S,C) ((S) == sym_char[C]) 
 
 #define SymChar(C) sym_char[C]
@@ -77,32 +82,13 @@ typedef struct S_TERM {				   /*                        */
 #define TermOp(T)	SymOp(TSym(T))
 #define TermIsNumber(T)	(TSym(T) == sym_number)
 #define TermIsString(T)	(TSym(T) == sym_string)
-#define TermIsEOF(T)	(TSym(T) == SymDefNull)
+#define TermIsEOF(T)	(TSym(T) == SymDefNULL)
 
 #define Cons(CAR, CDR) new_term(sym_cons, CAR, CDR)
 
-#define BlockTerm(S) new_t_string(sym_block, symbol(S))
-#define FieldTerm(S) new_t_string(sym_field, symbol(S))
-
-/*-----------------------------------------------------------------------------
-** Typedef:	BJunk
-** Purpose:	
-**		
-**		
-**___________________________________________________			     */
-typedef struct S_BJUNK				   /*                        */
-{ String key;					   /*                        */
-  Term value;					   /*                        */
-  Term (*get)();				   /*                        */
-  void (*set)();				   /*                        */
-  struct S_BJUNK * next;			   /*                        */
-} SBJunk, *BJunk;				   /*------------------------*/
-
-#define JKey(BJ)	((BJ)->key)
-#define JValue(BJ)	((BJ)->value)
-#define JGet(BJ)	((BJ)->get)
-#define JSet(BJ)	((BJ)->set)
-#define NextJunk(BJ)	((BJ)->next)
+#define SymdefTerm(S) new_term(S, NIL, NIL)
+#define BlockTerm(S)  new_t_string(sym_block, symbol(S))
+#define FieldTerm(S)  new_t_string(sym_field, symbol(S))
 
 /*-----------------------------------------------------------------------------
 ** Typedef:	Binding
@@ -111,8 +97,8 @@ typedef struct S_BJUNK				   /*                        */
 **		
 **___________________________________________________			     */
 typedef struct S_BINDING			   /*                        */
-{ int junk_size;				   /*                        */
-  BJunk *junks;					   /*                        */
+{ unsigned int junk_size;			   /*                        */
+  SymDef *junks;				   /*                        */
   struct S_BINDING *next;			   /*                        */
 } SBinding, *Binding;				   /*------------------------*/
 
@@ -125,14 +111,6 @@ typedef struct S_BINDING			   /*                        */
 /*---------------------------------------------------------------------------*/
 
 extern Term term_eof;
-extern Term term_true;
-extern Term term_false;
-extern Term term_mod;
-extern Term term_and;
-extern Term term_or;
-extern Term term_not;
-extern Term term_like;
-extern Term term_ilike;
 
 extern Term new_term();
 extern Term new_term_num();
@@ -141,6 +119,8 @@ extern void free_term();
 extern void print_term();
 
 extern int parse_term _ARG((char* file, int(*action)(Term t)));
+
+extern SymDef symdef();
 
 /*---------------------------------------------------------------------------*/
 #endif

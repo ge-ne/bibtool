@@ -12,10 +12,11 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <bibtool/symbols.h>
 #include <bibtool/error.h>
 #include "binding.h"
-#include "term.h"
-#include "symdef.h"
+
+#include "lcore.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -51,44 +52,15 @@ Term eval_self _ARG((Binding binding, Term term));
 Binding binding(size)			   	   /*                        */
   unsigned int size;				   /*                        */
 {						   /*                        */
-  Binding bind = (Binding) malloc(sizeof(SBinding));/*                       */
-  if (bind == BindingNULL) OUT_OF_MEMORY("binding");/*                       */
+  Binding b = (Binding) malloc(sizeof(SBinding));  /*                        */
+  if (b == BindingNULL) OUT_OF_MEMORY("binding");  /*                        */
  						   /*                        */
-  BJunks(bind) = (BJunk*) calloc(size, sizeof(BJunk));/*                     */
-  if (BJunks(bind) == NULL) OUT_OF_MEMORY("binding");/*                      */
+  BJunks(b) = (SymDef*) calloc(size, sizeof(SymDef));/*                      */
+  if (BJunks(b) == NULL) OUT_OF_MEMORY("binding"); /*                        */
  						   /*                        */
-  BSize(bind) = size;				   /*                        */
-  NextBinding(bind) = BindingNULL;		   /*                        */
-  return bind;				   	   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	get_bind()
-** Type:	BJunk
-** Purpose:	
-**		
-** Arguments:
-**	binding	
-**	 key	
-** Returns:	
-**___________________________________________________			     */
-BJunk get_bind(binding, key)			   /*                        */
-  Binding binding;				   /*                        */
-  String key;					   /*                        */
-{ unsigned int h = hash(key) % BSize(binding);	   /*                        */
-  BJunk junk;					   /*                        */
-  						   /*                        */
-  for (;;)					   /*                        */
-  {						   /*                        */
-    for (junk = BJunks(binding)[h];		   /*                        */
-	 junk;					   /*                        */
-	 junk = NextJunk(junk))			   /*                        */
-    { if (strcmp((char*)JKey(junk), (char*)key) == 0)/*                      */
-      { return junk; }				   /*                        */
-    }						   /*                        */
-    binding = NextBinding(binding);		   /*                        */
-    if (binding == BindingNULL) return NULL;	   /*                        */
-  }						   /*                        */
+  BSize(b) = size;				   /*                        */
+  NextBinding(b) = BindingNULL;		   	   /*                        */
+  return b;				   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -104,33 +76,70 @@ BJunk get_bind(binding, key)			   /*                        */
 **	set	
 ** Returns:	nothing
 **___________________________________________________			     */
-void bind(b, key, term, get, set)		   /*                        */
+void bind(b, sym)		   		   /*                        */
+  Binding b;				   	   /*                        */
+  SymDef sym;					   /*                        */
+{ String key 	 = SymName(sym);		   /*                        */
+  unsigned int h = hash(key) % BSize(b);	   /*                        */
+  SymDef junk;					   /*                        */
+   						   /*                        */
+  for (junk = BJunks(b)[h]; junk; junk = NextJunk(junk))/*                   */
+  { if (strcmp((char*)SymName(junk), (char*)key) == 0)/*                     */
+    {						   /*                        */
+      SymValue(junk) = SymValue(sym);		   /*                        */
+      SymGet(junk)   = SymGet(sym);		   /*                        */
+      SymSet(junk)   = SymSet(sym);		   /*                        */
+      return;					   /*                        */
+    }						   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  NextJunk(sym) = BJunks(b)[h];		   	   /*                        */
+  BJunks(b)[h]  = sym;			   	   /*                        */
+}						   /*------------------------*/
+
+#undef DEBUG_BIND
+
+/*-----------------------------------------------------------------------------
+** Function:	get_bind()
+** Type:	SymDef
+** Purpose:	
+**		
+** Arguments:
+**	b	
+**	key	
+** Returns:	
+**___________________________________________________			     */
+SymDef get_bind(b, key)			   	   /*                        */
   Binding b;				   	   /*                        */
   String key;					   /*                        */
-  Term term;					   /*                        */
-  Term (*get)();				   /*                        */
-  void (*set)();				   /*                        */
-{ unsigned int h = hash(key) % BSize(b);	   /*                        */
-  BJunk junk;					   /*                        */
-  
-  for (junk = BJunks(b)[h]; junk; junk = NextJunk(junk))
-  { if (strcmp((char*)JKey(junk), (char*)key) == 0)
-    {
-      JValue(junk) = term;
-      JGet(junk)   = get;
-      JSet(junk)   = set;
-      return;
-    }
-  }
+{ SymDef s;					   /*                        */
+  unsigned int h = hash(key) % BSize(b);	   /*                        */
+  						   /*                        */
 
-  junk = (BJunk) malloc(sizeof(SBJunk));	   /*                        */
-  if (junk == NULL) OUT_OF_MEMORY("binding");	   /*                        */
-  JKey(junk)     = key;				   /*                        */
-  JValue(junk)   = term;			   /*                        */
-  JGet(junk)     = get;				   /*                        */
-  JSet(junk)     = set;				   /*                        */
-  NextJunk(junk) = BJunks(b)[h];		   /*                        */
-  BJunks(b)[h]   = junk;			   /*                        */
+#ifdef DEBUG_BIND
+  dump_binding(b, stdout);
+  fprintf(stdout, "--- lookup %s at %d\n", (char*)key, h);
+#endif
+  while (b)					   /*                        */
+  {						   /*                        */
+    for (s = BJunks(b)[h];		   	   /*                        */
+	 s;					   /*                        */
+	 s = NextJunk(s))			   /*                        */
+    {						   /*                        */
+#ifdef DEBUG_BIND
+      printf("--- cmp %s\n",(char*)SymName(s));	   /*                        */
+#endif
+      if (strcmp((char*)SymName(s),		   /*                        */
+		 (char*)key) == 0) {		   /*                        */
+#ifdef DEBUG_BIND
+	puts(">>> found");			   /*                        */
+#endif
+	return s; 	   			   /*                        */
+      }						   /*                        */
+    }						   /*                        */
+    b = NextBinding(b);		   		   /*                        */
+  }						   /*                        */
+  return SymDefNULL; 	   			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -151,6 +160,14 @@ Term g_print(binding, term)			   /*                        */
   return NIL;			   		   /*                        */
 }						   /*------------------------*/
 
+Term g_cons(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{						   /*                        */
+  print_term(stdout, Cdr(term));		   /*                        */
+  return NIL;			   		   /*                        */
+}						   /*------------------------*/
+
 /*-----------------------------------------------------------------------------
 ** Function:	def_binding()
 ** Type:	Binding
@@ -163,111 +180,164 @@ Term g_print(binding, term)			   /*                        */
 Binding def_binding()				   /*                        */
 { Binding b = binding(511);			   /*                        */
 
-  bind(b, "add.field"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "apply.alias"			, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "apply.modify"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "apply.include"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "and"				, NIL, NULL, NULL);   /* RscTerm	*/ 	
-  bind(b, "bibtex.env.name"		, NIL, NULL, NULL);   /* RscString	*/ 	
-  bind(b, "bibtex.search.path"		, NIL, NULL, NULL);   /* RscString	*/ 	
-  bind(b, "check.double"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "check.double.delete"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "check.rule"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "check.case.sensitive"	, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "clear.ignored.words"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "count.all"			, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "count.used"			, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "crossref.limit"		, NIL, NULL, NULL);   /* RscNumeric	*/ 	
-  bind(b, "default.key"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "delete.field"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "dir.file.separator"		, NIL, NULL, NULL);   /* RscString	*/ 	
-  bind(b, "dump.symbols"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "env.separator"		, NIL, NULL, NULL);   /* RscString	*/ 	
-  bind(b, "extract.file"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "extract.regex"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "expand.macros"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "expand.crossref"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "fmt.inter.name"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "fmt.name.pre"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "fmt.name.name"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "fmt.name.title"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "fmt.title.title"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "fmt.et.al"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "fmt.word.separator"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "field.type"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "false"			, term_false, NULL, NULL);   /* RscTerm	*/ 	
-  bind(b, "input"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "ignored.word"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "ilike"			, NIL, NULL, NULL);   /* RscTerm	*/ 	
-  bind(b, "key.generation"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "key.base"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "key.format"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "key.make.alias"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "key.number.separator"	, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "key.expand.macros"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "like"			, NIL, NULL, NULL);   /* RscTerm	*/ 	
-  bind(b, "macro.file"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "mod"				, NIL, NULL, NULL);   /* RscTerm	*/ 	
-  bind(b, "new.entry.type"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "new.field.type"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "new.format.type"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "not"				, NIL, NULL, NULL);   /* RscTerm	*/ 	
-  bind(b, "nil"				, NIL, NULL, NULL);   /* RscTerm	*/ 	
-  bind(b, "output.file"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "or"				, NIL, NULL, NULL);   /* RscTerm	*/ 	
-  bind(b, "pass.comments"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "preserve.key.case"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "preserve.keys"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "print"			, NIL, g_print, NULL);   /* RscByFct	*/ 	
-  bind(b, "print.align.string"		, NIL, NULL, NULL);   /* RscNumeric	*/ 	
-  bind(b, "print.align.comment"		, NIL, NULL, NULL);   /* RscNumeric	*/ 	
-  bind(b, "print.align.preamble"	, NIL, NULL, NULL);   /* RscNumeric	*/ 	
-  bind(b, "print.align.key"		, NIL, NULL, NULL);   /* RscNumeric	*/ 	
-  bind(b, "print.align"			, NIL, NULL, NULL);   /* RscNumeric	*/ 	
-  bind(b, "print.all.strings"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "print.entry.types"		, NIL, NULL, NULL);   /* RscString	*/ 	
-  bind(b, "print.equal.right"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "print.braces"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "print.comma.at.end"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "print.deleted.prefix"	, NIL, NULL, NULL);   /* RscString	*/ 	
-  bind(b, "print.deleted.entries"	, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "print.indent"		, NIL, NULL, NULL);   /* RscNumeric	*/ 	
-  bind(b, "print.line.length"		, NIL, NULL, NULL);   /* RscNumeric	*/ 	
-  bind(b, "print.newline"		, NIL, NULL, NULL);   /* RscNumeric	*/ 	
-  bind(b, "print.parentheses"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "print.terminal.comma"	, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "print.use.tab"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "print.wide.equal"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "quiet"			, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "regexp.syntax"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "rename.field"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "resource"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "resource.search.path"	, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "rewrite.rule"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "rewrite.case.sensitive"	, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "rewrite.limit"		, NIL, NULL, NULL);   /* RscNumeric	*/ 	
-  bind(b, "select"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "select.by.string"		, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "select.by.non.string"	, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "select.by.string.ignored"	, NIL, NULL, NULL);   /* RscString	*/ 	
-  bind(b, "select.case.sensitive"	, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "select.fields"		, NIL, NULL, NULL);   /* RscString	*/ 	
-  bind(b, "select.non"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "select.crossrefs"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "sort"			, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "sort.cased"			, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "sort.macros"			, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "sort.reverse"		, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "sort.order"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "sort.format"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "suppress.initial.newline"	, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "symbol.type"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "tex.define"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
-  bind(b, "true"			, term_true, NULL, NULL);   /* RscTerm	*/ 	
-  bind(b, "verbose"			, NIL, NULL, NULL);   /* RscBoolean	*/ 	
-  bind(b, "version"			, NIL, NULL, NULL);   /* RscByFct	*/ 	
+#define BIND(NAME)   	bind(b, symdef(symbol((String)NAME), L_FIELD, NIL, NULL))
+#define Bind(NAME, SYM) bind(b, SYM)
 
+  BIND("add.field"		);   		   /* RscByFct	             */
+  BIND("apply.alias"		);   		   /* RscBoolean	     */
+  BIND("apply.modify"		);   		   /* RscBoolean	     */
+  BIND("apply.include"		);   		   /* RscBoolean	     */
+  Bind("and"			, sym_and);   	   /* RscTerm	             */
+  BIND("bibtex.env.name"	);   		   /* RscString	             */
+  BIND("bibtex.search.path"	);   		   /* RscString	             */
+  BIND("check.double"		);   		   /* RscBoolean	     */
+  BIND("check.double.delete"	);   		   /* RscBoolean	     */
+  BIND("check.rule"		);   		   /* RscByFct	             */
+  BIND("check.case.sensitive"	);   		   /* RscBoolean	     */
+  BIND("clear.ignored.words"	);   		   /* RscByFct	             */
+  BIND("count.all"		);   		   /* RscBoolean	     */
+  BIND("count.used"		);   		   /* RscBoolean	     */
+  BIND("crossref.limit"		);   		   /* RscNumeric	     */
+  BIND("default.key"		);   		   /* RscByFct	             */
+  BIND("delete.field"		);   		   /* RscByFct	             */
+  BIND("dir.file.separator"	);   		   /* RscString	             */
+  BIND("dump.symbols"		);   		   /* RscBoolean	     */
+  BIND("env.separator"		);   		   /* RscString	             */
+  BIND("extract.file"		);   		   /* RscByFct	             */
+  BIND("extract.regex"		);   		   /* RscByFct	             */
+  BIND("expand.macros"		);   		   /* RscBoolean	     */
+  BIND("expand.crossref"	);   		   /* RscBoolean	     */
+  BIND("fmt.inter.name"		);   		   /* RscByFct	             */
+  BIND("fmt.name.pre"		);   		   /* RscByFct	             */
+  BIND("fmt.name.name"		);   		   /* RscByFct	             */
+  BIND("fmt.name.title"		);   		   /* RscByFct	             */
+  BIND("fmt.title.title"	);   		   /* RscByFct	             */
+  BIND("fmt.et.al"		);   		   /* RscByFct	             */
+  BIND("fmt.word.separator"	);   		   /* RscByFct	             */
+  BIND("field.type"		);   		   /* RscByFct	             */
+  Bind("false"			, sym_false);      /* RscTerm	             */
+  BIND("input"			);   		   /* RscByFct	             */
+  BIND("ignored.word"		);   		   /* RscByFct	             */
+  BIND("ilike"			);   		   /* RscTerm	             */
+  BIND("key.generation"		);   		   /* RscBoolean	     */
+  BIND("key.base"		);   		   /* RscByFct	             */
+  BIND("key.format"		);   		   /* RscByFct	             */
+  BIND("key.make.alias"		);   		   /* RscBoolean	     */
+  BIND("key.number.separator"	);   		   /* RscByFct	             */
+  BIND("key.expand.macros"	);   		   /* RscBoolean	     */
+  BIND("like"			);   		   /* RscTerm	             */
+  BIND("macro.file"		);   		   /* RscByFct	             */
+  Bind("mod"			, sym_mod);	   /* RscTerm	             */
+  BIND("new.entry.type"		);   		   /* RscByFct	             */
+  BIND("new.field.type"		);   		   /* RscByFct	             */
+  BIND("new.format.type"	);   		   /* RscByFct	             */
+  Bind("not"			,sym_not);   	   /* RscTerm	             */
+  BIND("nil"			);   		   /* RscTerm	             */
+  BIND("output.file"		);   		   /* RscByFct	             */
+  Bind("or"			,sym_or);   	   /* RscTerm	             */
+  BIND("pass.comments"		);   		   /* RscBoolean	     */
+  BIND("preserve.key.case"	);   		   /* RscBoolean	     */
+  BIND("preserve.keys"		);   		   /* RscBoolean	     */
+  BIND("print"			);   		   /* RscByFct	             */
+  BIND("print.align.string"	);   		   /* RscNumeric	     */
+  BIND("print.align.comment"	);   		   /* RscNumeric	     */
+  BIND("print.align.preamble"	);   		   /* RscNumeric	     */
+  BIND("print.align.key"	);   		   /* RscNumeric	     */
+  BIND("print.align"		);   		   /* RscNumeric	     */
+  BIND("print.all.strings"	);   		   /* RscBoolean	     */
+  BIND("print.entry.types"	);   		   /* RscString	             */
+  BIND("print.equal.right"	);   		   /* RscBoolean	     */
+  BIND("print.braces"		);   		   /* RscBoolean	     */
+  BIND("print.comma.at.end"	);   		   /* RscBoolean	     */
+  BIND("print.deleted.prefix"	);   		   /* RscString	             */
+  BIND("print.deleted.entries"	);   		   /* RscBoolean	     */
+  BIND("print.indent"		);   		   /* RscNumeric	     */
+  BIND("print.line.length"	);   		   /* RscNumeric	     */
+  BIND("print.newline"		);   		   /* RscNumeric	     */
+  BIND("print.parentheses"	);   		   /* RscBoolean	     */
+  BIND("print.terminal.comma"	);   		   /* RscBoolean	     */
+  BIND("print.use.tab"		);   		   /* RscBoolean	     */
+  BIND("print.wide.equal"	);   		   /* RscBoolean	     */
+  Bind("quote"			, sym_quote);	   /*	                     */
+  BIND("quiet"			);   		   /* RscBoolean	     */
+  BIND("regexp.syntax"		);   		   /* RscByFct	             */
+  BIND("rename.field"		);   		   /* RscByFct	             */
+  BIND("resource"		);   		   /* RscByFct	             */
+  BIND("resource.search.path"	);   		   /* RscByFct	             */
+  BIND("rewrite.rule"		);   		   /* RscByFct	             */
+  BIND("rewrite.case.sensitive"	);   		   /* RscBoolean	     */
+  BIND("rewrite.limit"		);   		   /* RscNumeric	     */
+  BIND("select"			);   		   /* RscByFct	             */
+  BIND("select.by.string"	);   		   /* RscByFct	             */
+  BIND("select.by.non.string"	);   		   /* RscByFct	             */
+  BIND("select.by.string.ignored");   		   /* RscString	             */
+  BIND("select.case.sensitive"	);   		   /* RscBoolean	     */
+  BIND("select.fields"		);   		   /* RscString	             */
+  BIND("select.non"		);   		   /* RscByFct	             */
+  BIND("select.crossrefs"	);   		   /* RscBoolean	     */
+  BIND("sort"			);   		   /* RscBoolean	     */
+  BIND("sort.cased"		);   		   /* RscBoolean	     */
+  BIND("sort.macros"		);   		   /* RscBoolean	     */
+  BIND("sort.reverse"		);   		   /* RscBoolean	     */
+  BIND("sort.order"		);   		   /* RscByFct	             */
+  BIND("sort.format"		);   		   /* RscByFct	             */
+  BIND("suppress.initial.newline");   		   /* RscBoolean	     */
+  BIND("symbol.type"		);   		   /* RscByFct	             */
+  BIND("tex.define"		);   		   /* RscByFct	             */
+  Bind("true"			,sym_true);   	   /* RscTerm	             */
+  BIND("verbose"		);   		   /* RscBoolean	     */
+  BIND("version"		);   		   /* RscByFct	             */
+
+  Bind("="		, sym_set);		   /*                        */
+  Bind("=="		, sym_eq);		   /*                        */
+  Bind("<="		, sym_le);		   /*                        */
+  BIND("<"		);			   /*                        */
+  BIND(">="		);			   /*                        */
+  BIND(">"		);			   /*                        */
+  BIND("!="		);			   /*                        */
+  BIND("+"		);			   /*                        */
+  BIND("-"		);			   /*                        */
+  BIND("*"		);			   /*                        */
+  Bind("&&"		, sym_and);		   /*                        */
+  Bind("||"		, sym_or);		   /*                        */
+  Bind("!"		, sym_not);		   /*                        */
+  Bind("'"		, sym_quote);		   /*                        */
+  BIND("`"		);			   /*                        */
+  Bind("cons"		, sym_cons);		   /*                        */
   return b;				   	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	dump_binding()
+** Type:	void
+** Purpose:	
+**		
+** Arguments:
+**	b	
+**	 file	
+** Returns:	nothing
+**___________________________________________________			     */
+void dump_binding(b, file)			   /*                        */
+  Binding b;					   /*                        */
+  FILE* file;					   /*                        */
+{ int i;					   /*                        */
+  SymDef s;					   /*                        */
+ 						   /*                        */
+  for (; b; b = NextBinding(b))			   /*                        */
+  {						   /*                        */
+    fprintf(file, "--- 0x%lx [%d] ---\n", (unsigned long)b, BSize(b));/*     */
+    for (i = 0; i < BSize(b); i++)		   /*                        */
+    { s = BJunks(b)[i];				   /*                        */
+      if (s) {					   /*                        */
+	fprintf(file, "    #%d\n", i);		   /*                        */
+	for (; s; s = NextJunk(s))		   /*                        */
+	{ fprintf(file,				   /*                        */
+		  "\t%s\n",			   /*                        */
+		  SymName(s));			   /*                        */
+	}					   /*                        */
+      }						   /*                        */
+    }						   /*                        */
+  }						   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -283,58 +353,31 @@ Binding def_binding()				   /*                        */
 Term eval_term(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ BJunk junk;					   /*                        */
+{ SymDef junk;					   /*                        */
+  String key;
  						   /*                        */
   if (term == NIL) return NIL;			   /*                        */
+
+  if (TSym(term) == sym_cons)
+  { Term t = Car(term);
+
+    if (t == NIL || TSym(term) != sym_field)
+    { Error("Undefined function ", TermName(term)); }/*                        */
+
+    key = SymName(TSym(t));
+
+  } else {
+    key = TermName(term);
+  }
  						   /*                        */
-  junk = get_bind(binding, TermName(term));	   /*                        */
+  junk = get_bind(binding, key);	   	   /*                        */
  						   /*                        */
   if (junk == NULL)	   			   /*                        */
-  { Error("Undefined function ", TermName(term)); }/*                        */
-  if (JGet(junk) == NULL)	   		   /*                        */
-  { Error("Undefined getter for ", TermName(term)); }/*                      */
+  { Error("Undefined function ", key); }	   /*                        */
+  if (SymGet(junk) == NULL)	   		   /*                        */
+  { Error("Undefined getter for ", key); }	   /*                        */
  						   /*                        */
-  return (*JGet(junk))(binding, term);	   	   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	eval_self()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	
-**	 term	
-** Returns:	
-**___________________________________________________			     */
-Term eval_self(binding, term)			   /*                        */
-  Binding binding;				   /*                        */
-  register Term term;				   /*                        */
-{						   /*                        */
-  return term;					   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	eval_cons()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	
-**	 term	
-** Returns:	
-**___________________________________________________			     */
-Term eval_builtin(binding, term)		   /*                        */
-  Binding binding;				   /*                        */
-  register Term term;				   /*                        */
-{						   /*                        */
-
-  if (strcmp((char*)TString(term), "print") == 0) {
-    print_term(stdout,
-	       eval_term(binding, Cdr(term)));
-  }
-
-  return NIL;					   /*                        */
+  return (*SymGet(junk))(binding, term);	   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

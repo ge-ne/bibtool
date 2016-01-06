@@ -13,6 +13,7 @@
 #ifndef BINDING_H
 #define BINDING_H
 
+#include <stdio.h>
 #include "term.h"
 
 #ifdef __STDC__
@@ -23,8 +24,10 @@
 
 extern Binding binding _ARG((unsigned int size));
 extern Binding def_binding();
+extern SymDef get_bind _ARG((Binding binding, String key));
 extern Term eval_term _ARG((Binding binding, Term term));
 extern Term eval_self _ARG((Binding binding, Term term));
 extern Term eval_builtin _ARG((Binding binding, Term term));
+extern void dump_binding _ARG((Binding binding, FILE* file));
 
 #endif

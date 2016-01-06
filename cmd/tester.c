@@ -13,8 +13,9 @@
 #include <string.h>
 #include <bibtool/error.h>
 #include "term.h"
-#include "symdef.h"
 #include "binding.h"
+#include "lcore.h"
+#include "lreader.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -30,7 +31,6 @@
 
  int verbose = 0;
  int eval    = 0;
- Binding b   = BindingNULL;
 
 /*-----------------------------------------------------------------------------
 ** Function:	action()
@@ -41,12 +41,12 @@
 **	t	
 ** Returns:	
 **___________________________________________________			     */
-int action(t)					   /*                        */
+int action(b, t)				   /*                        */
+  Binding b;					   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
   if (eval)					   /*                        */
-  { if (b == BindingNULL)  b = def_binding();	   /*                        */
-    t = eval_term(b, t);		   	   /*                        */
+  { t = eval_term(b, t);		   	   /*                        */
   }						   /*                        */
   print_term(stdout, t);			   /*                        */
   putchar('\n');				   /*                        */
@@ -64,11 +64,12 @@ int action(t)					   /*                        */
 **___________________________________________________			     */
 void run_test(file)				   /*                        */
   char * file;					   /*                        */
-{						   /*                        */
+{ Binding b = def_binding();	   		   /*                        */
+					       	   /*                        */
   if (verbose)					   /*                        */
     fprintf(stderr, "--- reading %s\n", file);	   /*                        */
- 						   /*                        */
-  read_loop(file, action);			   /*                        */
+   						   /*                        */
+  read_loop(b, file, action);			   /*                        */
 }						   /*------------------------*/
 
 #define ArgIs(A,B) strcmp(A, arg) == 0 || strcmp(B, arg) == 0
@@ -84,12 +85,12 @@ void run_test(file)				   /*                        */
 int main(argc, argv)				   /*                        */
   int  argc;					   /*                        */
   char *argv[];					   /*                        */
-{ int i;					   /*                        */
-  int ok = 0;					   /*                        */
+{ int  ok = 0;					   /*                        */
+  int  i;					   /*                        */
   char *arg;					   /*                        */
  						   /*                        */
   init_error(stderr);				   /*                        */
-  init_symdef();				   /*                        */
+  init_lreader();				   /*                        */
  						   /*                        */
   for (i = 1; i < argc; i++)			   /*                        */
   { arg = argv[i];				   /*                        */

@@ -55,8 +55,8 @@ sub boolean_tests
 	   expected_out => "(- $cmd)\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-1",
-	   resource     => "$cmd = true;\n" ,
-	   expected_err => '',
+	   resource	=> "$cmd = true;\n" ,
+	   expected_err	=> '',
 	   expected_out => "($cmd true)\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-2",

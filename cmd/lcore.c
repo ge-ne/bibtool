@@ -16,6 +16,7 @@
 #include <ctype.h>
 #include "term.h"
 #include "binding.h"
+#include "lcore.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -35,7 +36,7 @@
 
 
 #define Declare(T,N,V) T N
-#include "symdef.h"
+#include "lcore.h"
 
 /*-----------------------------------------------------------------------------
 ** Function:	print_quoted()
@@ -258,7 +259,7 @@ void p_cons(file, t)			   	   /*                        */
 **	 size	
 ** Returns:	
 **___________________________________________________			     */
-int hash(s)				   	   /*                        */
+unsigned int hash(s)				   /*                        */
   register String s;				   /*                        */
 { register unsigned int hash = 0;		   /*                        */
   unsigned int i 	     = 0;		   /*                        */
@@ -270,34 +271,68 @@ int hash(s)				   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	symdef()
-** Type:	static SymDef
+** Function:	init_symdef()
+** Type:	void
 ** Purpose:	
 **		
 ** Arguments:
-**	name	
-**	op	
-**	term	
-**	print	
-** Returns:	
+**		
+** Returns:	nothing
 **___________________________________________________			     */
-SymDef symdef(name, op, term, print) 	   	   /*                        */
-  String name;					   /*                        */
-  int op;					   /*                        */
-  Term term;					   /*                        */
-  void (*print)_ARG((FILE*, Term));		   /*                        */
-{						   /*                        */
-  SymDef sym    = (SymDef) malloc(sizeof(SSymDef));/*                        */
-  if (sym == SymDefNULL) OUT_OF_MEMORY("symdef");  /*                        */
-  SymName(sym)  = name;				   /*                        */
-  SymHash(sym)  = hash(name);			   /*                        */
-  SymOp(sym)    = op;				   /*                        */
-  SymTerm(sym)  = term;				   /*                        */
-  SymValue(sym) = NIL;				   /*                        */
-  SymPrint(sym) = print;			   /*                        */
-  SymGet(sym)   = NULL;			   	   /*                        */
-  SymSet(sym)   = NULL;			   	   /*                        */
-  return sym;					   /*                        */
+void init_lreader()				   /*                        */
+{ int i;					   /*                        */
+  char * s;					   /*                        */
+ 						   /*                        */
+#define Declare(T,N,V) N = V
+#include "lcore.h"
+ 						   /*                        */
+#define InitSymChar(S,OP)				       \
+  sym_char[i] = symdef(S, NIL, p_sym_name);		       \
+  SymTerm(sym_char[i]) = new_term(sym_char[i], NIL, NIL)
+ 						   /*                        */
+  for (i = 1; i < 256; i++) {			   /*                        */
+ 						   /*                        */
+    switch (i)			   		   /*                        */
+    { case ';':	InitSymChar( ";",    ';'); break;  /*                        */
+      case '=':	InitSymChar( "=",  L_SET); break;  /*                        */
+      case '<':	InitSymChar( "<",   L_LT); break;  /*                        */
+      case '>':	InitSymChar( ">",   L_GT); break;  /*                        */
+      case '#':	InitSymChar( "#",    '#'); break;  /*                        */
+      case '+':	InitSymChar( "+", L_PLUS); break;  /*                        */
+      case '-':	InitSymChar( "-",L_MINUS); break;  /*                        */
+      case '*':	InitSymChar( "*",L_TIMES); break;  /*                        */
+      case '/':	InitSymChar( "/",  L_DIV); break;  /*                        */
+      case '%':	InitSymChar("mod", L_MOD); break;  /*                        */
+      case '\'':InitSymChar("quote",L_QUOTE); break;/*                       */
+      case '"':					   /*                        */
+      case '_':					   /*                        */
+      case '@':					   /*                        */
+      case '$':					   /*                        */
+      case '.':					   /*                        */
+	break;					   /*                        */
+      default:					   /*                        */
+	if (isalnum(i) || isspace(i)) break;	   /*                        */
+ 						   /*                        */
+	s     = malloc(2 * sizeof(char));	   /*                        */
+	if (s == NULL) OUT_OF_MEMORY("symdef");	   /*                        */
+	*s     = (char)i;			   /*                        */
+	*(s+1) = '\0';				   /*                        */
+	sym_char[i] = symdef(s,		   	   /*                        */
+			     i,		   	   /*                        */
+			     NIL,		   /*                        */
+			     p_sym_name); 	   /*                        */
+    }						   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  term_eof	     = SymdefTerm(NULL);	   /*                        */
+ 						   /*                        */
+  SymTerm(sym_quote) = SymdefTerm(sym_quote);	   /*                        */
+  SymTerm(sym_mod)   = SymdefTerm(sym_mod);	   /*                        */
+  SymTerm(sym_and)   = SymdefTerm(sym_and);	   /*                        */
+  SymTerm(sym_or)    = SymdefTerm(sym_or);	   /*                        */
+  SymTerm(sym_not)   = SymdefTerm(sym_not);	   /*                        */
+  SymTerm(sym_like)  = SymdefTerm(sym_like);	   /*                        */
+  SymTerm(sym_ilike) = SymdefTerm(sym_ilike);	   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

@@ -42,7 +42,7 @@ use BUnit;
 $BUnit::name_prefix = 'parse/';
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'number-0',
+BUnit::run(name         => 'numeric-0',
 	   resource	=> <<__EOF__ ,
 0;
 __EOF__
@@ -52,7 +52,7 @@ __EOF__
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'number-o0',
+BUnit::run(name         => 'numeric-o0',
 	   resource	=> <<__EOF__ ,
 00;
 __EOF__
@@ -62,7 +62,7 @@ __EOF__
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'number-x0',
+BUnit::run(name         => 'numeric-x0',
 	   resource	=> <<__EOF__ ,
 0x0;
 __EOF__
@@ -72,7 +72,7 @@ __EOF__
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'number-1',
+BUnit::run(name         => 'numeric-1',
 	   resource	=> <<__EOF__ ,
 123;
 __EOF__
@@ -82,7 +82,7 @@ __EOF__
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'number-2',
+BUnit::run(name         => 'numeric-2',
 	   resource	=> <<__EOF__ ,
 -123;
 __EOF__
@@ -92,7 +92,7 @@ __EOF__
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'number-3',
+BUnit::run(name         => 'numeric-3',
 	   resource	=> <<__EOF__ ,
 0xff;
 __EOF__
@@ -102,7 +102,7 @@ __EOF__
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'number-4',
+BUnit::run(name         => 'numeric-4',
 	   resource	=> <<__EOF__ ,
 077;
 __EOF__
