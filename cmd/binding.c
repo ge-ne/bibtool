@@ -70,10 +70,7 @@ Binding binding(size)			   	   /*                        */
 **		
 ** Arguments:
 **	b	
-**	key	
-**	term	
-**	get	
-**	set	
+**	sym	
 ** Returns:	nothing
 **___________________________________________________			     */
 void bind(b, sym)		   		   /*                        */
@@ -155,18 +152,91 @@ SymDef get_bind(b, key)			   	   /*                        */
 Term g_print(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{						   /*                        */
-  print_term(stdout, Cdr(term));		   /*                        */
+{ 					   	   /*                        */
+  for (term = Cdr(term); term ; term = Cdr(term))  /*                        */
+  { Term t = Car(term);
+    if (t == NIL || TSym(t) == SymDefNULL) continue;
+    switch(SymOp(TSym(t)))
+    { case L_STRING:
+      case L_BLOCK:
+	fputs((char*)TString(t), stdout);
+	break;
+      case L_NUMBER:
+	fprintf(stdout, "%ld", TNumber(t));
+	break;
+      case L_FIELD:
+	fputs((char*)TString(t), stdout);
+	break;
+      case L_TRUE:
+	fputs("true", stdout);
+	break;
+      case L_FALSE:
+	fputs("false", stdout);
+	break;
+#ifdef DEBUG
+      default:
+	printf("--- 0x%x",SymOp(TSym(t)));
+#endif
+    }
+  }		   				   /*                        */
   return NIL;			   		   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	g_cons()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
 Term g_cons(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{						   /*                        */
-  print_term(stdout, Cdr(term));		   /*                        */
-  return NIL;			   		   /*                        */
+{ String key;					   /*                        */
+  SymDef sym;					   /*                        */
+						   /*                        */
+  if (term == NIL) return NIL;			   /*                        */
+ 						   /*                        */
+  if (TSym(term) == sym_cons)
+  { Term t = Car(term);
+
+    if (t == NIL || TSym(t) != sym_field)
+    { Error("Undefined function ", TermName(term)); }/*                      */
+
+    key = TString(t);
+
+  } else {
+    key = TermName(term);
+  }
+ 						   /*                        */
+  sym = get_bind(binding, key);	   	   	   /*                        */
+ 						   /*                        */
+  if (sym == NULL)	   			   /*                        */
+  { Error("Undefined function ", key); }	   /*                        */
+  if (SymGet(sym) == NULL)	   		   /*                        */
+  { Error("Undefined getter for ", key); }	   /*                        */
+ 						   /*                        */
+  return (*SymGet(sym))(binding, term);	   	   /*                        */
 }						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	g_self()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term g_self(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ return term;					   /*                        */
+}
 
 /*-----------------------------------------------------------------------------
 ** Function:	def_binding()
@@ -180,14 +250,15 @@ Term g_cons(binding, term)			   /*                        */
 Binding def_binding()				   /*                        */
 { Binding b = binding(511);			   /*                        */
 
-#define BIND(NAME)   	bind(b, symdef(symbol((String)NAME), L_FIELD, NIL, NULL))
-#define Bind(NAME, SYM) bind(b, SYM)
+#define BIND(NAME)   	bind(b, symdef(symbol((String)NAME), L_FIELD, NIL, NULL, NULL))
+#define BindGet(NAME,GET) bind(b, symdef(symbol((String)NAME), L_FIELD, NIL, NULL, GET))
+#define Bind(NAME, SYM, GET) bind(b, SYM)
 
   BIND("add.field"		);   		   /* RscByFct	             */
   BIND("apply.alias"		);   		   /* RscBoolean	     */
   BIND("apply.modify"		);   		   /* RscBoolean	     */
   BIND("apply.include"		);   		   /* RscBoolean	     */
-  Bind("and"			, sym_and);   	   /* RscTerm	             */
+  Bind("and"			, sym_and, NULL);  /* RscTerm	             */
   BIND("bibtex.env.name"	);   		   /* RscString	             */
   BIND("bibtex.search.path"	);   		   /* RscString	             */
   BIND("check.double"		);   		   /* RscBoolean	     */
@@ -215,30 +286,30 @@ Binding def_binding()				   /*                        */
   BIND("fmt.et.al"		);   		   /* RscByFct	             */
   BIND("fmt.word.separator"	);   		   /* RscByFct	             */
   BIND("field.type"		);   		   /* RscByFct	             */
-  Bind("false"			, sym_false);      /* RscTerm	             */
+  Bind("false"			, sym_false, NULL);/* RscTerm	             */
   BIND("input"			);   		   /* RscByFct	             */
   BIND("ignored.word"		);   		   /* RscByFct	             */
-  Bind("ilike"			, sym_ilike);	   /* RscTerm	             */
+  Bind("ilike"			, sym_ilike, NULL);/* RscTerm	             */
   BIND("key.generation"		);   		   /* RscBoolean	     */
   BIND("key.base"		);   		   /* RscByFct	             */
   BIND("key.format"		);   		   /* RscByFct	             */
   BIND("key.make.alias"		);   		   /* RscBoolean	     */
   BIND("key.number.separator"	);   		   /* RscByFct	             */
   BIND("key.expand.macros"	);   		   /* RscBoolean	     */
-  Bind("like"			, sym_like);	   /* RscTerm	             */
+  Bind("like"			, sym_like, NULL); /* RscTerm	             */
   BIND("macro.file"		);   		   /* RscByFct	             */
-  Bind("mod"			, sym_mod);	   /* RscTerm	             */
+  Bind("mod"			, sym_mod, NULL);  /* RscTerm	             */
   BIND("new.entry.type"		);   		   /* RscByFct	             */
   BIND("new.field.type"		);   		   /* RscByFct	             */
   BIND("new.format.type"	);   		   /* RscByFct	             */
-  Bind("not"			,sym_not);   	   /* RscTerm	             */
+  Bind("not"			,sym_not, NULL);   /* RscTerm	             */
   BIND("nil"			);   		   /* RscTerm	             */
   BIND("output.file"		);   		   /* RscByFct	             */
-  Bind("or"			,sym_or);   	   /* RscTerm	             */
+  Bind("or"			,sym_or, NULL);	   /* RscTerm	             */
   BIND("pass.comments"		);   		   /* RscBoolean	     */
   BIND("preserve.key.case"	);   		   /* RscBoolean	     */
   BIND("preserve.keys"		);   		   /* RscBoolean	     */
-  BIND("print"			);   		   /* RscByFct	             */
+  BindGet("print"		, g_print);	   /* RscByFct	             */
   BIND("print.align.string"	);   		   /* RscNumeric	     */
   BIND("print.align.comment"	);   		   /* RscNumeric	     */
   BIND("print.align.preamble"	);   		   /* RscNumeric	     */
@@ -258,7 +329,7 @@ Binding def_binding()				   /*                        */
   BIND("print.terminal.comma"	);   		   /* RscBoolean	     */
   BIND("print.use.tab"		);   		   /* RscBoolean	     */
   BIND("print.wide.equal"	);   		   /* RscBoolean	     */
-  Bind("quote"			, sym_quote);	   /*	                     */
+  Bind("quote"			, sym_quote, NULL);/*	                     */
   BIND("quiet"			);   		   /* RscBoolean	     */
   BIND("regexp.syntax"		);   		   /* RscByFct	             */
   BIND("rename.field"		);   		   /* RscByFct	             */
@@ -284,26 +355,26 @@ Binding def_binding()				   /*                        */
   BIND("suppress.initial.newline");   		   /* RscBoolean	     */
   BIND("symbol.type"		);   		   /* RscByFct	             */
   BIND("tex.define"		);   		   /* RscByFct	             */
-  Bind("true"			,sym_true);   	   /* RscTerm	             */
+  Bind("true"			,sym_true, NULL);  /* RscTerm	             */
   BIND("verbose"		);   		   /* RscBoolean	     */
   BIND("version"		);   		   /* RscByFct	             */
-
-  Bind("cons"		, sym_cons);		   /*                        */
-  Bind("="		, sym_set);		   /*                        */
-  Bind("=="		, sym_eq);		   /*                        */
-  Bind("<="		, sym_le);		   /*                        */
-  Bind("<"		, sym_lt);		   /*                        */
-  Bind(">="		, sym_ge);		   /*                        */
-  Bind(">"		, sym_gt);		   /*                        */
-  Bind("!="		, sym_ne);		   /*                        */
-  Bind("+"		, sym_plus);		   /*                        */
-  Bind("-"		, sym_minus);		   /*                        */
-  Bind("*"		, sym_times);		   /*                        */
-  Bind("/"		, sym_div);		   /*                        */
-  Bind("&&"		, sym_and);		   /*                        */
-  Bind("||"		, sym_or);		   /*                        */
-  Bind("!"		, sym_not);		   /*                        */
-  Bind("'"		, sym_quote);		   /*                        */
+ 						   /*                        */
+  Bind("cons"		, sym_cons,  NULL);	   /*                        */
+  Bind("="		, sym_set,   NULL);	   /*                        */
+  Bind("=="		, sym_eq,    NULL);	   /*                        */
+  Bind("<="		, sym_le,    NULL);	   /*                        */
+  Bind("<"		, sym_lt,    NULL);	   /*                        */
+  Bind(">="		, sym_ge,    NULL);	   /*                        */
+  Bind(">"		, sym_gt,    NULL);	   /*                        */
+  Bind("!="		, sym_ne,    NULL);	   /*                        */
+  Bind("+"		, sym_plus,  NULL);	   /*                        */
+  Bind("-"		, sym_minus, NULL);	   /*                        */
+  Bind("*"		, sym_times, NULL);	   /*                        */
+  Bind("/"		, sym_div,   NULL);	   /*                        */
+  Bind("&&"		, sym_and,   NULL);	   /*                        */
+  Bind("||"		, sym_or,    NULL);	   /*                        */
+  Bind("!"		, sym_not,   NULL);	   /*                        */
+  Bind("'"		, sym_quote, NULL);	   /*                        */
   BIND("`"		);			   /*                        */
   return b;				   	   /*                        */
 }						   /*------------------------*/
@@ -354,31 +425,11 @@ void dump_binding(b, file)			   /*                        */
 Term eval_term(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ SymDef junk;					   /*                        */
-  String key;
+{ SymDef sym = (term ? TSym(term) : SymDefNULL);   /*                        */
  						   /*                        */
-  if (term == NIL) return NIL;			   /*                        */
-
-  if (TSym(term) == sym_cons)
-  { Term t = Car(term);
-
-    if (t == NIL || TSym(term) != sym_field)
-    { Error("Undefined function ", TermName(term)); }/*                        */
-
-    key = SymName(TSym(t));
-
-  } else {
-    key = TermName(term);
-  }
- 						   /*                        */
-  junk = get_bind(binding, key);	   	   /*                        */
- 						   /*                        */
-  if (junk == NULL)	   			   /*                        */
-  { Error("Undefined function ", key); }	   /*                        */
-  if (SymGet(junk) == NULL)	   		   /*                        */
-  { Error("Undefined getter for ", key); }	   /*                        */
- 						   /*                        */
-  return (*SymGet(junk))(binding, term);	   /*                        */
+  return ((sym && SymGet(sym)) 			   /*                        */
+	  ? (*SymGet(sym))(binding, term)	   /*                        */
+	  : NIL);	   			   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

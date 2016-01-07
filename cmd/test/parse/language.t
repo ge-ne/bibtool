@@ -89,32 +89,29 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'error-3',
-	   ignore	=> 'TODO',
 	   resource	=> '?',
 	   expected_out	=> '',
 	   expected_err	=> <<__EOF__ );
 
-*** BibTool ERROR:  (line 1 in _test.rsc): Semicolon expected instead of ?
+*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected character '?' found
 __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'error-4',
-	   ignore	=> 'TODO',
 	   resource	=> '\\' ,
 	   expected_out => '',
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 1 in _test.rsc): Semicolon expected instead of \\
+*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected character '\\' found
 __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'error-5',
-	   ignore	=> 'TODO',
 	   resource	=> '\\ \n' ,
 	   expected_out => '',
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 1 in _test.rsc): Semicolon expected instead of \\
+*** BibTool ERROR:  (line 1 in _test.rsc): Unexpected character '\\' found
 __EOF__
 
 #------------------------------------------------------------------------------

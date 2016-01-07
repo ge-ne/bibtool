@@ -30,4 +30,7 @@ extern Term eval_self _ARG((Binding binding, Term term));
 extern Term eval_builtin _ARG((Binding binding, Term term));
 extern void dump_binding _ARG((Binding binding, FILE* file));
 
+extern Term g_cons _ARG((Binding binding, Term term));
+extern Term g_self _ARG((Binding binding, Term term));
+
 #endif

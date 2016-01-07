@@ -468,7 +468,7 @@ static Term read_builtin(b, t)	   		   /*                        */
 #endif
     } else if (c == '{')		   	   /*                        */
     { return Cons(t, Cons(scan_block(), NIL));	   /*                        */
-    } else if (L_IS_OPERATOR(c)		   	   /*                        */
+    } else if ((c != L_MINUS && L_IS_OPERATOR(c))  /*                        */
 	       || c == ';'			   /*                        */
 	       || c == ')'			   /*                        */
 	       || c == ']') {		   	   /*                        */
@@ -721,8 +721,13 @@ static Term read_cmd(b)				   /*                        */
       { return read_builtin(b, yylval); }	   /*                        */
     }						   /*                        */
  						   /*                        */
-    if (c != ';')			   	   /*                        */
-    { unscan(c, yylval);			   /*                        */
+    if (c != ';')				   /*                        */
+    { if ( c >= 0 && c <= 0xff && c != '('	   /*                        */
+	  && yylval == SymCharTerm(c))		   /*                        */
+	Error("Unexpected character '",		   /*                        */
+	      tag_id(c),			   /*                        */
+	      "' found");			   /*                        */
+      unscan(c, yylval);			   /*                        */
       return read_expr(b);			   /*                        */
     }						   /*                        */
   }						   /*                        */

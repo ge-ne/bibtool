@@ -320,7 +320,7 @@ void init_lreader()				   /*                        */
 	sym_char[i] = symdef(s,		   	   /*                        */
 			     i,		   	   /*                        */
 			     NIL,		   /*                        */
-			     p_sym_name); 	   /*                        */
+			     p_sym_name, NULL);	   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */

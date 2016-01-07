@@ -29,8 +29,8 @@
 
 /*---------------------------------------------------------------------------*/
 
- int verbose = 0;
- int eval    = 0;
+ int verbose  = 0;
+ int evaluate = 0;
 
 /*-----------------------------------------------------------------------------
 ** Function:	action()
@@ -45,9 +45,7 @@ int action(b, t)				   /*                        */
   Binding b;					   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
-  if (eval)					   /*                        */
-  { t = eval_term(b, t);		   	   /*                        */
-  }						   /*                        */
+  if (evaluate)	{ t = eval_term(b, t); }	   /*                        */
   print_term(stdout, t);			   /*                        */
   putchar('\n');				   /*                        */
   return 0;					   /*                        */
@@ -111,7 +109,7 @@ int main(argc, argv)				   /*                        */
 		"Usage: %s [-v] [-e||--eval] [-i|-r|--infile|--resource] <file>\n",/*     */
 		argv[0]);			   /*                        */
       } else if (ArgIs("-e", "--eval"))	   	   /*                        */
-      { eval = 1;	   			   /*                        */
+      { evaluate = 1;	   			   /*                        */
       } else if (ArgIs("-v", "--verbose"))	   /*                        */
       { verbose = 1;	   			   /*                        */
       } else {					   /*                        */

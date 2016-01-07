@@ -198,11 +198,12 @@ void print_term(file, t)			   /*                        */
 **	print	
 ** Returns:	
 **___________________________________________________			     */
-SymDef symdef(name, op, term, print) 	   	   /*                        */
+SymDef symdef(name, op, term, print, get)	   /*                        */
   String name;					   /*                        */
   int op;					   /*                        */
   Term term;					   /*                        */
   void (*print)_ARG((FILE*, Term));		   /*                        */
+  Term (*get)_ARG((Binding, Term));		   /*                        */
 {						   /*                        */
   SymDef sym    = (SymDef) malloc(sizeof(SSymDef));/*                        */
   if (sym == SymDefNULL) OUT_OF_MEMORY("symdef");  /*                        */
@@ -212,7 +213,7 @@ SymDef symdef(name, op, term, print) 	   	   /*                        */
   SymTerm(sym)  = term;				   /*                        */
   SymValue(sym) = NIL;				   /*                        */
   SymPrint(sym) = print;			   /*                        */
-  SymGet(sym)   = NULL;			   	   /*                        */
+  SymGet(sym)   = get;			   	   /*                        */
   SymSet(sym)   = NULL;			   	   /*                        */
   return sym;					   /*                        */
 }						   /*------------------------*/

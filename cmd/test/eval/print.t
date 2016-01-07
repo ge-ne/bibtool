@@ -49,29 +49,30 @@ print 123
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-123
+123nil
 __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'print-2',
-	   args	        => '--eval',
+	   debug        => 1,
+	   args	        => '-e',
 	   resource     => <<__EOF__ ,
 print "123"
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-123
+123nil
 __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'print-3',
 	   args	        => '--eval',
 	   resource     => <<__EOF__ ,
-print `author
+print `author`
 __EOF__
 	   expected_err => '', #`
 	   expected_out => <<__EOF__ );
-author
+authornil
 __EOF__
 
 1;

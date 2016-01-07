@@ -17,9 +17,9 @@
 #include "term.h"
 
 #define L_STRING	0x200
-#define L_BLOCK		0x201
+#define L_BLOCK		0x210
+#define L_NUMBER	0x201
 #define L_FIELD		0x202
-#define L_NUMBER	0x203
 #define L_LIST		0x204
 #define L_GROUP		0x205
 #define L_TRUE		0x206

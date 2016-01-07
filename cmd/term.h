@@ -78,6 +78,8 @@ typedef struct S_TERM {				   /*                        */
 #define TString(T) ((T)->a.string)
 #define TNumber(T) ((T)->a.number)
 
+#define Cadr(T)		Car(Cdr(T))
+
 #define TermName(T)	SymName(TSym(T))
 #define TermOp(T)	SymOp(TSym(T))
 #define TermIsNumber(T)	(TSym(T) == sym_number)

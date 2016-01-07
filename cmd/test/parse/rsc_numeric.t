@@ -60,7 +60,6 @@ sub numeric_tests
 	   expected_out => "($cmd 123)\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-3",
-	     ignore	=> 'TODO',
 	   resource	=> "$cmd = -123;\n" ,
 	   expected_err	=> '',
 	   expected_out	=> "($cmd -123)\n" );
