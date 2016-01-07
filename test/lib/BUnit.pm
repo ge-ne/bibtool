@@ -142,12 +142,14 @@ sub run {
   my $err  = "$name.err";
   my $null = "/dev/null";
 
-  my $args = $a{args} || '';
+  my $args = ($a{args} || '');
   my $rsc  = store_file(TEST_RSC, $a{resource}, "-r ".TEST_RSC);
   my $bib  = store_file(TEST_BIB, $a{bib}, TEST_BIB) if $a{bib};
   $bib 	   = '' if not $bib;
 
-  `$BIBTOOL $rsc $args $bib <$null 1>$out 2>$err`;
+  print "\n$BIBTOOL $args $rsc $bib <$null 1>$out 2>$err\n" if $a{debug};
+
+  `$BIBTOOL $args $rsc $bib <$null 1>$out 2>$err`;
 
   if ( run_check($name, $a{check}) +
        check($a{expected_out}, $out, 'out', $a{fct_out}) +
