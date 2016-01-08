@@ -381,15 +381,15 @@ static int scan(b)			   	   /*                        */
 	  sbclose(sb);				   /*                        */
  						   /*                        */
 	  sym = get_bind(b, s);			   /*                        */
-	  if (sym)
+	  if (sym)				   /*                        */
 	  { yylval = SymTerm(sym);	   	   /*                        */
 	    c 	   = SymOp(sym);		   /*                        */
-	  } else {
-	    c = L_FIELD;
-	  }
+	  } else {				   /*                        */
+	    c = L_FIELD;			   /*                        */
+	  }					   /*                        */
 	  if (yylval == NIL)			   /*                        */
 	  { yylval = FieldTerm(s);		   /*                        */
-	  }
+	  }					   /*                        */
 #ifdef DEBUG_PARSER
 	  printf("--- scan: word %s 0x%x\n",	   /*                        */
 		 (char*)s, c);	   		   /*                        */
@@ -439,6 +439,40 @@ static Term read_list(b, t)			   /*                        */
     if (c != ',') Error("Missing comma", 0, 0);	   /*                        */
   }						   /*                        */
   Error("Unclosed list", 0, 0);	   	   	   /*                        */
+  return NIL;					   /* This will never happen */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	read_fct()
+** Type:	static Term
+** Purpose:	
+**		
+** Arguments:
+**	b	
+**	 t	
+** Returns:	
+**___________________________________________________			     */
+static Term read_fct(b, t)			   /*                        */
+  Binding b;					   /*                        */
+  Term t;					   /*                        */
+{ Term a;					   /*                        */
+  Term x = t = Cons(t, NIL);			   /*                        */
+  int c  = scan(b);				   /*                        */
+ 						   /*                        */
+  if (c == ')') { return t; }			   /*                        */
+  unscan(c, yylval);				   /*                        */
+ 						   /*                        */
+  for (a = read_expr(b);			   /*                        */
+       a != term_eof;				   /*                        */
+       a = read_expr(b))			   /*                        */
+  {						   /*                        */
+    Cdr(x) = Cons(a, NIL);			   /*                        */
+    x = Cdr(x);				   	   /*                        */
+    c = scan(b);				   /*                        */
+    if (c == ')') return t;		   	   /*                        */
+    if (c != ',') Error("Missing comma", 0, 0);	   /*                        */
+  }						   /*                        */
+  Error("Unclosed parameter list", 0, 0);	   /*                        */
   return NIL;					   /* This will never happen */
 }						   /*------------------------*/
 
@@ -654,9 +688,21 @@ static Term read_expr(b)			   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
 						   /*                        */
+      case L_FIELD:				   /*                        */
+	{ Term t = yylval;			   /*                        */
+	  c = scan(b);				   /*                        */
+	  if (c != '(')				   /*                        */
+	  { unscan(c, yylval);			   /*                        */
+ 	    Shift(L_FIELD, t);		   	   /*                        */
+	    break;				   /*                        */
+	  }					   /*                        */
+	  t = read_fct(b, t);			   /*                        */
+	  Shift(L_LIST, t);		   	   /*                        */
+	}					   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
       case L_STRING:				   /*                        */
       case L_NUMBER:				   /*                        */
-      case L_FIELD:				   /*                        */
       case L_QUOTE:				   /*                        */
       case L_TRUE:				   /*                        */
       case L_FALSE:				   /*                        */

@@ -252,13 +252,13 @@ Binding def_binding()				   /*                        */
 
 #define BIND(NAME)   	bind(b, symdef(symbol((String)NAME), L_FIELD, NIL, NULL, NULL))
 #define BindGet(NAME,GET) bind(b, symdef(symbol((String)NAME), L_FIELD, NIL, NULL, GET))
-#define Bind(NAME, SYM, GET) bind(b, SYM)
+#define Bind(NAME, SYM) bind(b, SYM)
 
   BIND("add.field"		);   		   /* RscByFct	             */
   BIND("apply.alias"		);   		   /* RscBoolean	     */
   BIND("apply.modify"		);   		   /* RscBoolean	     */
   BIND("apply.include"		);   		   /* RscBoolean	     */
-  Bind("and"			, sym_and, NULL);  /* RscTerm	             */
+  Bind("and"			, sym_and);  	   /* RscTerm	             */
   BIND("bibtex.env.name"	);   		   /* RscString	             */
   BIND("bibtex.search.path"	);   		   /* RscString	             */
   BIND("check.double"		);   		   /* RscBoolean	     */
@@ -286,26 +286,26 @@ Binding def_binding()				   /*                        */
   BIND("fmt.et.al"		);   		   /* RscByFct	             */
   BIND("fmt.word.separator"	);   		   /* RscByFct	             */
   BIND("field.type"		);   		   /* RscByFct	             */
-  Bind("false"			, sym_false, NULL);/* RscTerm	             */
+  Bind("false"			, sym_false);	   /* RscTerm	             */
   BIND("input"			);   		   /* RscByFct	             */
   BIND("ignored.word"		);   		   /* RscByFct	             */
-  Bind("ilike"			, sym_ilike, NULL);/* RscTerm	             */
+  Bind("ilike"			, sym_ilike);	   /* RscTerm	             */
   BIND("key.generation"		);   		   /* RscBoolean	     */
   BIND("key.base"		);   		   /* RscByFct	             */
   BIND("key.format"		);   		   /* RscByFct	             */
   BIND("key.make.alias"		);   		   /* RscBoolean	     */
   BIND("key.number.separator"	);   		   /* RscByFct	             */
   BIND("key.expand.macros"	);   		   /* RscBoolean	     */
-  Bind("like"			, sym_like, NULL); /* RscTerm	             */
+  Bind("like"			, sym_like); 	   /* RscTerm	             */
   BIND("macro.file"		);   		   /* RscByFct	             */
-  Bind("mod"			, sym_mod, NULL);  /* RscTerm	             */
+  Bind("mod"			, sym_mod);  	   /* RscTerm	             */
   BIND("new.entry.type"		);   		   /* RscByFct	             */
   BIND("new.field.type"		);   		   /* RscByFct	             */
   BIND("new.format.type"	);   		   /* RscByFct	             */
-  Bind("not"			,sym_not, NULL);   /* RscTerm	             */
+  Bind("not"			,sym_not);   	   /* RscTerm	             */
   BIND("nil"			);   		   /* RscTerm	             */
   BIND("output.file"		);   		   /* RscByFct	             */
-  Bind("or"			,sym_or, NULL);	   /* RscTerm	             */
+  Bind("or"			,sym_or);	   /* RscTerm	             */
   BIND("pass.comments"		);   		   /* RscBoolean	     */
   BIND("preserve.key.case"	);   		   /* RscBoolean	     */
   BIND("preserve.keys"		);   		   /* RscBoolean	     */
@@ -329,7 +329,7 @@ Binding def_binding()				   /*                        */
   BIND("print.terminal.comma"	);   		   /* RscBoolean	     */
   BIND("print.use.tab"		);   		   /* RscBoolean	     */
   BIND("print.wide.equal"	);   		   /* RscBoolean	     */
-  Bind("quote"			, sym_quote, NULL);/*	                     */
+  Bind("quote"			, sym_quote);	   /*	                     */
   BIND("quiet"			);   		   /* RscBoolean	     */
   BIND("regexp.syntax"		);   		   /* RscByFct	             */
   BIND("rename.field"		);   		   /* RscByFct	             */
@@ -355,26 +355,26 @@ Binding def_binding()				   /*                        */
   BIND("suppress.initial.newline");   		   /* RscBoolean	     */
   BIND("symbol.type"		);   		   /* RscByFct	             */
   BIND("tex.define"		);   		   /* RscByFct	             */
-  Bind("true"			,sym_true, NULL);  /* RscTerm	             */
+  Bind("true"			,sym_true);  	   /* RscTerm	             */
   BIND("verbose"		);   		   /* RscBoolean	     */
   BIND("version"		);   		   /* RscByFct	             */
  						   /*                        */
-  Bind("cons"		, sym_cons,  NULL);	   /*                        */
-  Bind("="		, sym_set,   NULL);	   /*                        */
-  Bind("=="		, sym_eq,    NULL);	   /*                        */
-  Bind("<="		, sym_le,    NULL);	   /*                        */
-  Bind("<"		, sym_lt,    NULL);	   /*                        */
-  Bind(">="		, sym_ge,    NULL);	   /*                        */
-  Bind(">"		, sym_gt,    NULL);	   /*                        */
-  Bind("!="		, sym_ne,    NULL);	   /*                        */
-  Bind("+"		, sym_plus,  NULL);	   /*                        */
-  Bind("-"		, sym_minus, NULL);	   /*                        */
-  Bind("*"		, sym_times, NULL);	   /*                        */
-  Bind("/"		, sym_div,   NULL);	   /*                        */
-  Bind("&&"		, sym_and,   NULL);	   /*                        */
-  Bind("||"		, sym_or,    NULL);	   /*                        */
-  Bind("!"		, sym_not,   NULL);	   /*                        */
-  Bind("'"		, sym_quote, NULL);	   /*                        */
+  Bind("cons"		, sym_cons);	   	   /*                        */
+  Bind("="		, sym_set);	   	   /*                        */
+  Bind("=="		, sym_eq);	   	   /*                        */
+  Bind("<="		, sym_le);	   	   /*                        */
+  Bind("<"		, sym_lt);	   	   /*                        */
+  Bind(">="		, sym_ge);	   	   /*                        */
+  Bind(">"		, sym_gt);	   	   /*                        */
+  Bind("!="		, sym_ne);	   	   /*                        */
+  Bind("+"		, sym_plus);	   	   /*                        */
+  Bind("-"		, sym_minus);	   	   /*                        */
+  Bind("*"		, sym_times);	   	   /*                        */
+  Bind("/"		, sym_div);	   	   /*                        */
+  Bind("&&"		, sym_and);	   	   /*                        */
+  Bind("||"		, sym_or);	   	   /*                        */
+  Bind("!"		, sym_not);	   	   /*                        */
+  Bind("'"		, sym_quote);	   	   /*                        */
   BIND("`"		);			   /*                        */
   return b;				   	   /*                        */
 }						   /*------------------------*/
@@ -397,7 +397,9 @@ void dump_binding(b, file)			   /*                        */
  						   /*                        */
   for (; b; b = NextBinding(b))			   /*                        */
   {						   /*                        */
+#ifdef DEBUG
     fprintf(file, "--- 0x%lx [%d] ---\n", (unsigned long)b, BSize(b));/*     */
+#endif
     for (i = 0; i < BSize(b); i++)		   /*                        */
     { s = BJunks(b)[i];				   /*                        */
       if (s) {					   /*                        */

@@ -333,6 +333,9 @@ void init_lreader()				   /*                        */
   SymTerm(sym_not)   = SymdefTerm(sym_not);	   /*                        */
   SymTerm(sym_like)  = SymdefTerm(sym_like);	   /*                        */
   SymTerm(sym_ilike) = SymdefTerm(sym_ilike);	   /*                        */
+
+  SymGet(sym_true)   = g_self;
+  SymGet(sym_false)  = g_self;
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/
