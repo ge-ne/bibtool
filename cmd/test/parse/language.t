@@ -70,8 +70,14 @@ __EOF__
 __EOF__
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'fct-1',
+BUnit::run(name         => 'fct-0',
 	   resource	=> "a()\n",
+	   expected_err => '',
+	   expected_out => "(a)\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'fct-1',
+	   resource	=> "a ( )\n",
 	   expected_err => '',
 	   expected_out => "(a)\n");
 
@@ -98,6 +104,18 @@ BUnit::run(name         => 'fct-5',
 	   resource	=> "a(a(b))\n",
 	   expected_err => '',
 	   expected_out => "(a (a b))\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'fct-err-1',
+	   resource	=> "a(",
+	   expected_err => "\n*** BibTool ERROR:  (line 1 in _test.rsc): Unclosed parameter list\n",
+	   expected_out => '');
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'fct-err-2',
+	   resource	=> "a(\n\n\n",
+	   expected_err => "\n*** BibTool ERROR:  (line 1 in _test.rsc): Unclosed parameter list\n",
+	   expected_out => '');
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'error-1',

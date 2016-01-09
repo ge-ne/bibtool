@@ -1,4 +1,4 @@
-/*** symdef.c ******************************************************************
+/*** lcore.c ******************************************************************
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
@@ -324,18 +324,20 @@ void init_lreader()				   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
-  term_eof	     = SymdefTerm(NULL);	   /*                        */
+  term_eof = SymdefTerm(NULL);	   		   /*                        */
  						   /*                        */
-  SymTerm(sym_quote) = SymdefTerm(sym_quote);	   /*                        */
-  SymTerm(sym_mod)   = SymdefTerm(sym_mod);	   /*                        */
-  SymTerm(sym_and)   = SymdefTerm(sym_and);	   /*                        */
-  SymTerm(sym_or)    = SymdefTerm(sym_or);	   /*                        */
-  SymTerm(sym_not)   = SymdefTerm(sym_not);	   /*                        */
-  SymTerm(sym_like)  = SymdefTerm(sym_like);	   /*                        */
-  SymTerm(sym_ilike) = SymdefTerm(sym_ilike);	   /*                        */
-
-  SymGet(sym_true)   = g_self;
-  SymGet(sym_false)  = g_self;
+  MakeSymTerm(sym_quote);	   		   /*                        */
+  MakeSymTerm(sym_mod);	   			   /*                        */
+  MakeSymTerm(sym_and);	   			   /*                        */
+  MakeSymTerm(sym_or);	   			   /*                        */
+  MakeSymTerm(sym_not);	   			   /*                        */
+  MakeSymTerm(sym_like);	   		   /*                        */
+  MakeSymTerm(sym_ilike);	   		   /*                        */
+  MakeSymTerm(sym_true);	   		   /*                        */
+  MakeSymTerm(sym_false);	   		   /*                        */
+ 						   /*                        */
+  SymGet(sym_true)   = g_self;			   /*                        */
+  SymGet(sym_false)  = g_self;			   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

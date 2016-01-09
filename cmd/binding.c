@@ -236,7 +236,7 @@ Term g_self(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { return term;					   /*                        */
-}
+}						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	def_binding()
@@ -421,7 +421,7 @@ void dump_binding(b, file)			   /*                        */
 **		
 ** Arguments:
 **	binding	
-**	 term	
+**	term	
 ** Returns:	
 **___________________________________________________			     */
 Term eval_term(binding, term)			   /*                        */

@@ -86,11 +86,12 @@ typedef struct S_TERM {				   /*                        */
 #define TermIsString(T)	(TSym(T) == sym_string)
 #define TermIsEOF(T)	(TSym(T) == SymDefNULL)
 
-#define Cons(CAR, CDR) new_term(sym_cons, CAR, CDR)
+#define Cons(CAR, CDR)	new_term(sym_cons, CAR, CDR)
 
-#define SymdefTerm(S) new_term(S, NIL, NIL)
-#define BlockTerm(S)  new_t_string(sym_block, symbol(S))
-#define FieldTerm(S)  new_t_string(sym_field, symbol(S))
+#define MakeSymTerm(S)	SymTerm(S) = SymdefTerm(S)
+#define SymdefTerm(S)	new_term(S, NIL, NIL)
+#define BlockTerm(S)	new_t_string(sym_block, symbol(S))
+#define FieldTerm(S)	new_t_string(sym_field, symbol(S))
 
 /*-----------------------------------------------------------------------------
 ** Typedef:	Binding

@@ -380,6 +380,15 @@ static int scan(b)			   	   /*                        */
 	  s = symbol((String)sbflush(sb));	   /*                        */
 	  sbclose(sb);				   /*                        */
  						   /*                        */
+	  if (strcmp((char*)s, "true") == 0)	   /*                        */
+	  { yylval = SymTerm(sym_true);		   /*                        */
+	    return L_TRUE;			   /*                        */
+	  }					   /*                        */
+	  if (strcmp((char*)s, "false") == 0)	   /*                        */
+	  { yylval = SymTerm(sym_false);	   /*                        */
+	    return L_FALSE;			   /*                        */
+	  }					   /*                        */
+ 						   /*                        */
 	  sym = get_bind(b, s);			   /*                        */
 	  if (sym)				   /*                        */
 	  { yylval = SymTerm(sym);	   	   /*                        */
@@ -456,8 +465,9 @@ static Term read_fct(b, t)			   /*                        */
   Binding b;					   /*                        */
   Term t;					   /*                        */
 { Term a;					   /*                        */
-  Term x = t = Cons(t, NIL);			   /*                        */
-  int c  = scan(b);				   /*                        */
+  int lno = linenum;				   /*                        */
+  Term x  = t = Cons(t, NIL);			   /*                        */
+  int c	  = scan(b);				   /*                        */
  						   /*                        */
   if (c == ')') { return t; }			   /*                        */
   unscan(c, yylval);				   /*                        */
@@ -465,13 +475,13 @@ static Term read_fct(b, t)			   /*                        */
   for (a = read_expr(b);			   /*                        */
        a != term_eof;				   /*                        */
        a = read_expr(b))			   /*                        */
-  {						   /*                        */
-    Cdr(x) = Cons(a, NIL);			   /*                        */
+  { Cdr(x) = Cons(a, NIL);			   /*                        */
     x = Cdr(x);				   	   /*                        */
     c = scan(b);				   /*                        */
     if (c == ')') return t;		   	   /*                        */
     if (c != ',') Error("Missing comma", 0, 0);	   /*                        */
   }						   /*                        */
+  linenum = lno;				   /*                        */
   Error("Unclosed parameter list", 0, 0);	   /*                        */
   return NIL;					   /* This will never happen */
 }						   /*------------------------*/
