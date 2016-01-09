@@ -44,21 +44,21 @@ $BUnit::name_prefix = 'eval/';
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-err-1',
 	   args	        => '--eval',
-	   resource     => "a()",
+	   resource     => "a();",
 	   expected_err => "\n*** BibTool ERROR: Undefined function a\n",
 	   expected_out => '');
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-err-2',
 	   args	        => '--eval',
-	   resource     => "a(1)",
+	   resource     => "a(1);",
 	   expected_err => "\n*** BibTool ERROR: Undefined function a\n",
 	   expected_out => '');
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-err-3',
 	   args	        => '--eval',
-	   resource     => "a(1, \"\")",
+	   resource     => "a(1, \"\");",
 	   expected_err => "\n*** BibTool ERROR: Undefined function a\n",
 	   expected_out => '');
 

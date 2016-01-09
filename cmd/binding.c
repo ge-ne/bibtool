@@ -37,9 +37,7 @@ Term eval_self _ARG((Binding binding, Term term));
 
 /*---------------------------------------------------------------------------*/
 
-#define Error(X,Y)					\
-	error(ERR_ERROR|ERR_EXIT,(String)X,		\
-	      (String)Y,(String)0,(String)0,(String)0,0,NULL)
+
 /*-----------------------------------------------------------------------------
 ** Function:	binding()
 ** Type:	Binding
@@ -112,8 +110,8 @@ SymDef get_bind(b, key)			   	   /*                        */
 { SymDef s;					   /*                        */
   unsigned int h = hash(key) % BSize(b);	   /*                        */
   						   /*                        */
-
 #ifdef DEBUG_BIND
+  puts("BINDING");
   dump_binding(b, stdout);
   fprintf(stdout, "--- lookup %s at %d\n", (char*)key, h);
 #endif
@@ -204,7 +202,7 @@ Term g_cons(binding, term)			   /*                        */
   { Term t = Car(term);
 
     if (t == NIL || TSym(t) != sym_field)
-    { Error("Undefined function ", TermName(term)); }/*                      */
+    { ErrorNF("--Undefined function ", TermName(term)); }/*                    */
 
     key = TString(t);
 
@@ -215,27 +213,11 @@ Term g_cons(binding, term)			   /*                        */
   sym = get_bind(binding, key);	   	   	   /*                        */
  						   /*                        */
   if (sym == NULL)	   			   /*                        */
-  { Error("Undefined function ", key); }	   /*                        */
+  { ErrorNF("++Undefined function ", key); }	   /*                        */
   if (SymGet(sym) == NULL)	   		   /*                        */
-  { Error("Undefined getter for ", key); }	   /*                        */
+  { ErrorNF("Undefined getter for ", key); }	   /*                        */
  						   /*                        */
   return (*SymGet(sym))(binding, term);	   	   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	g_self()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	
-**	 term	
-** Returns:	
-**___________________________________________________			     */
-Term g_self(binding, term)			   /*                        */
-  Binding binding;				   /*                        */
-  Term term;					   /*                        */
-{ return term;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

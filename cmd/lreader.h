@@ -55,4 +55,11 @@
 
 extern void init_lreader();
 
+#define Error(X,Y,Z)						\
+	error(ERR_ERROR|ERR_FILE|ERR_EXIT,(String)X,		\
+	      (String)Y,(String)Z,(String)0,(String)0,linenum,filename)
+#define ErrorNF(X,Y)						\
+	error(ERR_ERROR|ERR_EXIT,(String)X,			\
+	      (String)Y,(String)0,(String)0,(String)0,0,NULL)
+
 #endif

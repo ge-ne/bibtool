@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <bibtool/error.h>
 #include <ctype.h>
 #include "term.h"
@@ -250,6 +251,95 @@ void p_cons(file, t)			   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	g_self()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term g_self(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ return term;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	g_fct()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	term	the
+** Returns:	
+**___________________________________________________			     */
+Term g_fct(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ SymDef sym;					   /*                        */
+  Term f = Car(term);				   /*                        */
+  if (f == NIL) ErrorNF("No function",0);	   /*                        */
+  						   /*                        */
+  if (TString(f))				   /*                        */
+  { sym = get_bind(binding, TString(f));	   /*                        */
+    if (sym && SymGet(sym))			   /*                        */
+      return (*SymGet(sym))(binding, term);	   /*                        */
+  }						   /*                        */
+						   /*                        */
+  sym = TSym(f);   				   /*                        */
+  if (sym && SymGet(sym))			   /*                        */
+    return (*SymGet(sym))(binding, term);	   /*                        */
+ 						   /*                        */
+  ErrorNF("Undefined function ",
+	  TString(f) ? TString(f) : SymName(sym)); /*                        */
+  return NIL;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	g_eq()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	term	
+** Returns:	
+**___________________________________________________			     */
+Term g_eq(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ int val;					   /*                        */
+  Term a, b;					   /*                        */
+ 						   /*                        */
+  term = Cdr(term);				   /*                        */
+ 						   /*                        */
+  if (list_length(term) != 2)			   /*                        */
+  { ErrorNF("Wrong number of arguments for ==",0); }/*                       */
+  a = eval_term(binding, Car(term));
+  b = eval_term(binding, Cadr(term));
+
+  if (a	== NIL) { val = (b == NIL ? 1 : 0); }
+  else if (TermIsNumber(a))
+  { val = (b && TermIsNumber(b) && TNumber(a) == TNumber(b) ? 1 : 0);
+  }
+  else if (TermIsString(a))
+  { val = (b
+	   && TermIsString(b)
+	   && strcmp((char*)TString(a), (char*)TString(b)) == 0 ? 1 : 0);
+  }
+  else if (TSym(a) == sym_true)
+  { val = (TSym(b) == TSym(a)); }
+  else if (TSym(a) == sym_false)
+  { val = (TSym(b) == TSym(a)); }
+  else val = 0;					   /*                        */
+ 						   /*                        */
+  return SymTerm(val ? sym_true : sym_false );	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	hash()
 ** Type:	int
 ** Purpose:	
@@ -336,8 +426,10 @@ void init_lreader()				   /*                        */
   MakeSymTerm(sym_true);	   		   /*                        */
   MakeSymTerm(sym_false);	   		   /*                        */
  						   /*                        */
-  SymGet(sym_true)   = g_self;			   /*                        */
-  SymGet(sym_false)  = g_self;			   /*                        */
+  SymGet(sym_true)  = g_self;			   /*                        */
+  SymGet(sym_false) = g_self;			   /*                        */
+  SymGet(sym_cons)  = g_fct;			   /*                        */
+  SymGet(sym_eq)    = g_eq;			   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

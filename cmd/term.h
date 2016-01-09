@@ -79,11 +79,13 @@ typedef struct S_TERM {				   /*                        */
 #define TNumber(T) ((T)->a.number)
 
 #define Cadr(T)		Car(Cdr(T))
+#define Cddr(T)		Cdr(Cdr(T))
 
 #define TermName(T)	SymName(TSym(T))
 #define TermOp(T)	SymOp(TSym(T))
 #define TermIsNumber(T)	(TSym(T) == sym_number)
 #define TermIsString(T)	(TSym(T) == sym_string)
+#define TermIsCons(T)	(TSym(T) == sym_cons)
 #define TermIsEOF(T)	(TSym(T) == SymDefNULL)
 
 #define Cons(CAR, CDR)	new_term(sym_cons, CAR, CDR)
@@ -121,6 +123,7 @@ extern Term new_t_string _ARG((SymDef symdef, unsigned char* s));
 extern void free_term();
 extern void print_term();
 
+extern int list_length _ARG((Term t));
 extern int parse_term _ARG((char* file, int(*action)(Term t)));
 
 extern SymDef symdef();
