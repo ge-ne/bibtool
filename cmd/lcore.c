@@ -36,8 +36,10 @@
 /*---------------------------------------------------------------------------*/
 
 
-#define Declare(T,N,V) T N
+#define Declare(SYM,VAL) SymDef SYM
 #include "lcore.h"
+
+SymDef* sym_char;
 
 /*-----------------------------------------------------------------------------
 ** Function:	print_quoted()
@@ -340,6 +342,46 @@ Term g_eq(binding, term)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	g_ne()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term g_ne(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ return SymTerm(g_eq(binding, term) == SymTerm(sym_true)/*                  */
+		 ? sym_false: sym_true);	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	g_not()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	term	
+** Returns:	
+**___________________________________________________			     */
+Term g_not(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{
+  term = eval_term(binding, Cadr(term));
+  if (term == NIL ||
+      (   TSym(term) != sym_true
+       && TSym(term) != sym_false))
+    ErrorNF("Type error: boolean expected",0);
+  return SymTerm(TSym(term) == sym_true		   /*                        */
+		 ? sym_false: sym_true);	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	hash()
 ** Type:	int
 ** Purpose:	
@@ -360,6 +402,10 @@ unsigned int hash(s)				   /*                        */
   return hash;				   	   /*                        */
 }						   /*------------------------*/
 
+#define InitSymChar(S,OP)				       \
+  SymChar(i) = symdef(S, NIL, p_sym_name);		       \
+  SymTerm(SymChar(i)) = new_term(SymChar(i), NIL, NIL)
+
 /*-----------------------------------------------------------------------------
 ** Function:	init_symdef()
 ** Type:	void
@@ -373,16 +419,10 @@ void init_lreader()				   /*                        */
 { int i;					   /*                        */
   char * s;					   /*                        */
  						   /*                        */
-#define Declare(T,N,V) N = V
-#include "lcore.h"
+  sym_char = (SymDef*)calloc(256, sizeof(SymDef)); /*                        */
  						   /*                        */
-#define InitSymChar(S,OP)				       \
-  sym_char[i] = symdef(S, NIL, p_sym_name);		       \
-  SymTerm(sym_char[i]) = new_term(sym_char[i], NIL, NIL)
- 						   /*                        */
-  for (i = 1; i < 256; i++) {			   /*                        */
- 						   /*                        */
-    switch (i)			   		   /*                        */
+  for (i = 1; i < 256; i++)			   /*                        */
+  { switch (i)			   		   /*                        */
     { case ';':	InitSymChar( ";",    ';'); break;  /*                        */
       case '=':	InitSymChar( "=",  L_SET); break;  /*                        */
       case '<':	InitSymChar( "<",   L_LT); break;  /*                        */
@@ -402,34 +442,18 @@ void init_lreader()				   /*                        */
 	break;					   /*                        */
       default:					   /*                        */
 	if (isalnum(i) || isspace(i)) break;	   /*                        */
- 						   /*                        */
-	s     = malloc(2 * sizeof(char));	   /*                        */
+	s = malloc(2 * sizeof(char));	   	   /*                        */
 	if (s == NULL) OUT_OF_MEMORY("symdef");	   /*                        */
 	*s     = (char)i;			   /*                        */
 	*(s+1) = '\0';				   /*                        */
-	sym_char[i] = symdef(s,		   	   /*                        */
-			     i,		   	   /*                        */
-			     NIL,		   /*                        */
-			     p_sym_name, NULL);	   /*                        */
+	SymChar(i) = symdef(s,i,NIL,p_sym_name,NULL);/*                      */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
   term_eof = SymdefTerm(NULL);	   		   /*                        */
  						   /*                        */
-  MakeSymTerm(sym_quote);	   		   /*                        */
-  MakeSymTerm(sym_mod);	   			   /*                        */
-  MakeSymTerm(sym_and);	   			   /*                        */
-  MakeSymTerm(sym_or);	   			   /*                        */
-  MakeSymTerm(sym_not);	   			   /*                        */
-  MakeSymTerm(sym_like);	   		   /*                        */
-  MakeSymTerm(sym_ilike);	   		   /*                        */
-  MakeSymTerm(sym_true);	   		   /*                        */
-  MakeSymTerm(sym_false);	   		   /*                        */
- 						   /*                        */
-  SymGet(sym_true)  = g_self;			   /*                        */
-  SymGet(sym_false) = g_self;			   /*                        */
-  SymGet(sym_cons)  = g_fct;			   /*                        */
-  SymGet(sym_eq)    = g_eq;			   /*                        */
+#define Declare(SYM,VAL) SYM = VAL; MakeSymTerm(SYM)
+#include "lcore.h"
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

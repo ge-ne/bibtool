@@ -44,24 +44,30 @@ $BUnit::name_prefix = 'eval/';
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'boolean-0',
 	   args	        => '--eval',
-	   resource     => <<__EOF__ ,
-false;
-__EOF__
+	   resource     => 'false;',
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-false
-__EOF__
+	   expected_out => "false\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'boolean-1',
 	   args	        => '--eval',
-	   resource	=> <<__EOF__ ,
-true;
-__EOF__
+	   resource     => 'true;',
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-true
-__EOF__
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'not-0',
+	   args	        => '--eval',
+	   resource     => 'not false;',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'not-1',
+	   args	        => '--eval',
+	   resource     => 'not true;',
+	   expected_err => '',
+	   expected_out => "false\n" );
 
 1;
 #------------------------------------------------------------------------------
