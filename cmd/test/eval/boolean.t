@@ -69,6 +69,91 @@ BUnit::run(name         => 'not-1',
 	   expected_err => '',
 	   expected_out => "false\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'not-10',
+	   args	        => '--eval',
+	   resource     => 'not(true);',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'not-err-1',
+	   args	        => '--eval',
+	   resource     => 'not 1;',
+	   expected_err => "\n*** BibTool ERROR: Type error: boolean expected\n",
+	   expected_out => '' );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'not-err-2',
+	   args		=> '--eval',
+	   ignore	=> 1,
+	   resource	=> 'not(true, true);',
+	   expected_err	=> "\n*** BibTool ERROR: Type error: boolean expected\n",
+	   expected_out	=> '' );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'not-err-2',
+	   args	        => '--eval',
+	   resource     => 'not "1";',
+	   expected_err => "\n*** BibTool ERROR: Type error: boolean expected\n",
+	   expected_out => '' );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'and-1',
+	   args	        => '--eval',
+	   resource     => 'true and true;',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'and-2',
+	   args	        => '--eval',
+	   resource     => 'true and false;',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'and-3',
+	   args	        => '--eval',
+	   resource     => 'false and true;',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'and-4',
+	   args	        => '--eval',
+	   resource     => 'false and false;',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'or-1',
+	   args	        => '--eval',
+	   resource     => 'true or true;',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'or-2',
+	   args	        => '--eval',
+	   resource     => 'true or false;',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'or-3',
+	   args	        => '--eval',
+	   resource     => 'false or true;',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'or-4',
+	   args	        => '--eval',
+	   resource     => 'false or false;',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

@@ -359,6 +359,29 @@ Term g_ne(binding, term)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	eval_bool()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term eval_bool(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ 						   /*                        */
+  term = eval_term(binding, term);		   /*                        */
+ 						   /*                        */
+  if (term == NIL ||				   /*                        */
+      (   TSym(term) != sym_true		   /*                        */
+       && TSym(term) != sym_false))		   /*                        */
+    ErrorNF("Type error: boolean expected",0);	   /*                        */
+  return term;	   				   /*                        */
+}
+
+/*-----------------------------------------------------------------------------
 ** Function:	g_not()
 ** Type:	Term
 ** Purpose:	
@@ -371,14 +394,52 @@ Term g_ne(binding, term)			   /*                        */
 Term g_not(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{
-  term = eval_term(binding, Cadr(term));
-  if (term == NIL ||
-      (   TSym(term) != sym_true
-       && TSym(term) != sym_false))
-    ErrorNF("Type error: boolean expected",0);
+{						   /*                        */
+  term = eval_bool(binding, Cadr(term));	   /*                        */
   return SymTerm(TSym(term) == sym_true		   /*                        */
 		 ? sym_false: sym_true);	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	g_and()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term g_and(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ Term t;					   /*                        */
+ 						   /*                        */
+  term = Cdr(term);				   /*                        */
+ 						   /*                        */
+  if (list_length(term) != 2)			   /*                        */
+  { ErrorNF("Wrong number of arguments for and",0); }/*                      */
+ 						   /*                        */
+  t = eval_bool(binding, Car(term));		   /*                        */
+  if (TermIsFalse(t)) return t;		   	   /*                        */
+ 						   /*                        */
+  return eval_bool(binding, Cadr(term));	   /*                        */
+}						   /*------------------------*/
+
+Term g_or(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ Term t;					   /*                        */
+ 						   /*                        */
+  term = Cdr(term);				   /*                        */
+ 						   /*                        */
+  if (list_length(term) != 2)			   /*                        */
+  { ErrorNF("Wrong number of arguments for or",0); }/*                       */
+ 						   /*                        */
+  t = eval_bool(binding, Car(term));		   /*                        */
+  if (TermIsTrue(t)) return t;		   	   /*                        */
+ 						   /*                        */
+  return eval_bool(binding, Cadr(term));	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

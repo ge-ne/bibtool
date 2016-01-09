@@ -87,6 +87,8 @@ typedef struct S_TERM {				   /*                        */
 #define TermIsString(T)	(TSym(T) == sym_string)
 #define TermIsCons(T)	(TSym(T) == sym_cons)
 #define TermIsEOF(T)	(TSym(T) == SymDefNULL)
+#define TermIsTrue(T)	(TSym(T) == sym_true)
+#define TermIsFalse(T)	(TSym(T) == sym_false)
 
 #define Cons(CAR, CDR)	new_term(sym_cons, CAR, CDR)
 
