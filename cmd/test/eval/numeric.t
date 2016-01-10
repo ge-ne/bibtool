@@ -77,6 +77,42 @@ BUnit::run(name         => 'plus-2',
 	   expected_out => "1\n" );
 
 #------------------------------------------------------------------------------
+BUnit::run(name         => 'plus-11',
+	   args	        => '--eval',
+	   resource	=> '"2"+3;',
+	   expected_err => '',
+	   expected_out => "5\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'plus-12',
+	   args	        => '--eval',
+	   resource	=> '2+"3";',
+	   expected_err => '',
+	   expected_out => "5\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'plus-13',
+	   args	        => '--eval',
+	   resource	=> '"abc 2"+3;',
+	   expected_err => '',
+	   expected_out => "5\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'plus-14',
+	   args	        => '--eval',
+	   resource	=> '2+"abc3";',
+	   expected_err => '',
+	   expected_out => "5\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'plus-21',
+	   args		=> '--eval',
+	   ignore	=> 1,
+	   resource	=> '2+[1];',
+	   expected_err	=> '',
+	   expected_out	=> "3\n" );
+
+#------------------------------------------------------------------------------
 BUnit::run(name         => 'minus-1',
 	   args	        => '--eval',
 	   resource	=> '-(123);',
@@ -159,6 +195,20 @@ BUnit::run(name         => 'div-err-1',
 	   resource	=> '3/0;',
 	   expected_err => "\n*** BibTool ERROR: Divide by 0\n",
 	   expected_out => '' );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'mod-1',
+	   args	        => '--eval',
+	   resource	=> '3 mod 2;',
+	   expected_err => '',
+	   expected_out => "1\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'mod-2',
+	   args	        => '--eval',
+	   resource	=> '3 mod 0;',
+	   expected_err => "\n*** BibTool ERROR: Modulo by 0\n",
+	   expected_out => "" );
 
 1;
 #------------------------------------------------------------------------------

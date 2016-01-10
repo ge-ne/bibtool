@@ -55,7 +55,7 @@ Declare(sym_plus  , symdef("+",      L_PLUS,   NIL, p_sym_name,   g_plus));
 Declare(sym_minus , symdef("-",      L_MINUS,  NIL, p_sym_name,   g_minus));
 Declare(sym_times , symdef("*",      L_TIMES,  NIL, p_sym_name,   g_times));
 Declare(sym_div   , symdef("/",      L_DIV,    NIL, p_sym_name,   g_div));
-Declare(sym_mod   , symdef("mod",    L_MOD,    NIL, p_sym_name,   NULL));
+Declare(sym_mod   , symdef("mod",    L_MOD,    NIL, p_sym_name,   g_mod));
 
 Declare(sym_and   , symdef("and",    L_AND,    NIL, p_sym_name,   g_and));
 Declare(sym_or    , symdef("or",     L_OR,     NIL, p_sym_name,   g_or));
