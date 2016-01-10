@@ -90,6 +90,34 @@ BUnit::run(name         => 'minus-4',
 	   expected_err => '',
 	   expected_out => "-1\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'times-1',
+	   args	        => '--eval',
+	   resource	=> '2*3;',
+	   expected_err => '',
+	   expected_out => "6\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'times-2',
+	   args	        => '--eval',
+	   resource	=> '2*-3;',
+	   expected_err => '',
+	   expected_out => "-6\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'times-3',
+	   args	        => '--eval',
+	   resource	=> '0*0;',
+	   expected_err => '',
+	   expected_out => "0\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'times-4',
+	   args	        => '--eval',
+	   resource	=> '-3*-2;',
+	   expected_err => '',
+	   expected_out => "6\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 
