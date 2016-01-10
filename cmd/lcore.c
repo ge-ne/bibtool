@@ -426,6 +426,16 @@ Term g_and(binding, term)			   /*                        */
   return eval_bool(binding, Cadr(term));	   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	g_or()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
 Term g_or(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
@@ -440,6 +450,61 @@ Term g_or(binding, term)			   /*                        */
   if (TermIsTrue(t)) return t;		   	   /*                        */
  						   /*                        */
   return eval_bool(binding, Cadr(term));	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	eval_num()
+** Type:	long
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term eval_num(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ 						   /*                        */
+  term = eval_term(binding, term);		   /*                        */
+ 						   /*                        */
+  if (term == NIL || TSym(term) != sym_number)	   /*                        */
+    ErrorNF("Type error: number expected",0);	   /*                        */
+  return term;				   	   /*                        */
+}
+
+/*-----------------------------------------------------------------------------
+** Function:	g_minus()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	term	
+** Returns:	
+**___________________________________________________			     */
+Term g_minus(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ Term t;					   /*                        */
+  long val;
+ 						   /*                        */
+  term = Cdr(term);				   /*                        */
+ 						   /*                        */
+  switch (list_length(term))			   /*                        */
+  { case 1:
+      t = eval_num(binding, Car(term));
+      return NumberTerm(-TNumber(t));
+    case 2:
+      t	  = eval_num(binding, Car(term));
+      val = TNumber(t);
+      t	  = eval_num(binding, Cadr(term));
+      val -= TNumber(t);
+      return NumberTerm(val);
+    default:
+      ErrorNF("Wrong number of arguments for -",0);
+      return 0;	   				   /*                        */
+  }						   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

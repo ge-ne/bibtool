@@ -96,6 +96,7 @@ typedef struct S_TERM {				   /*                        */
 #define SymdefTerm(S)	new_term(S, NIL, NIL)
 #define BlockTerm(S)	new_t_string(sym_block, symbol(S))
 #define FieldTerm(S)	new_t_string(sym_field, symbol(S))
+#define NumberTerm(N)	new_term_num(N)
 
 /*-----------------------------------------------------------------------------
 ** Typedef:	Binding

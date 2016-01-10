@@ -247,16 +247,16 @@ static int scan(b)			   	   /*                        */
 	       L_FIELD);  			   /*                        */
  	  					   /*                        */
       case '+':					   /*                        */
-	Return(SymCharTerm('+'), L_PLUS);	   /*                        */
+	Return(SymTerm(sym_plus), L_PLUS);	   /*                        */
 	  					   /*                        */
       case '-':					   /*                        */
-	Return(SymCharTerm('-'), L_MINUS);	   /*                        */
+	Return(SymTerm(sym_minus), L_MINUS);	   /*                        */
 	  					   /*                        */
       case '*':					   /*                        */
-	Return(SymCharTerm('*'), L_TIMES);	   /*                        */
+	Return(SymTerm(sym_times), L_TIMES);	   /*                        */
 	  					   /*                        */
       case '/':					   /*                        */
-	Return(SymCharTerm('/'), L_DIV);	   /*                        */
+	Return(SymTerm(sym_div), L_DIV);	   /*                        */
 	  					   /*                        */
       case '\'':				   /*                        */
 	Return(SymCharTerm('\''), L_QUOTE);	   /*                        */

@@ -44,35 +44,51 @@ $BUnit::name_prefix = 'eval/';
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'numeric-0',
 	   args	        => '--eval',
-	   resource     => <<__EOF__ ,
-0;
-__EOF__
+	   resource     => '0;',
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-0
-__EOF__
+	   expected_out => "0\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'numeric-1',
 	   args	        => '--eval',
-	   resource	=> <<__EOF__ ,
-123;
-__EOF__
+	   resource	=> '123;',
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-123
-__EOF__
+	   expected_out => "123\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'numeric-2',
 	   args	        => '--eval',
-	   resource	=> <<__EOF__ ,
--123;
-__EOF__
+	   resource	=> '-123;',
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
--123
-__EOF__
+	   expected_out => "-123\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'minus-1',
+	   args	        => '--eval',
+	   resource	=> '-(123);',
+	   expected_err => '',
+	   expected_out => "-123\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'minus-2',
+	   args	        => '--eval',
+	   resource	=> '1-1;',
+	   expected_err => '',
+	   expected_out => "0\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'minus-3',
+	   args	        => '--eval',
+	   resource	=> '2-1;',
+	   expected_err => '',
+	   expected_out => "1\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'minus-4',
+	   args	        => '--eval',
+	   resource	=> '1-2;',
+	   expected_err => '',
+	   expected_out => "-1\n" );
 
 1;
 #------------------------------------------------------------------------------

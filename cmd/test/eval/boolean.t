@@ -92,7 +92,7 @@ BUnit::run(name         => 'not-err-2',
 	   expected_out	=> '' );
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'not-err-2',
+BUnit::run(name         => 'not-err-3',
 	   args	        => '--eval',
 	   resource     => 'not "1";',
 	   expected_err => "\n*** BibTool ERROR: Type error: boolean expected\n",
