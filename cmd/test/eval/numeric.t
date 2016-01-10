@@ -118,6 +118,34 @@ BUnit::run(name         => 'times-4',
 	   expected_err => '',
 	   expected_out => "6\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'div-1',
+	   args	        => '--eval',
+	   resource	=> '3/2;',
+	   expected_err => '',
+	   expected_out => "1\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'div-2',
+	   args	        => '--eval',
+	   resource	=> '6/-2;',
+	   expected_err => '',
+	   expected_out => "-3\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'div-3',
+	   args	        => '--eval',
+	   resource	=> '5/1;',
+	   expected_err => '',
+	   expected_out => "5\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'div-err-1',
+	   args	        => '--eval',
+	   resource	=> '3/0;',
+	   expected_err => "\n*** BibTool ERROR: Divide by 0\n",
+	   expected_out => '' );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

@@ -536,6 +536,34 @@ Term g_times(binding, term)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	g_div()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term g_div(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ Term t;					   /*                        */
+  long val, d;					   /*                        */
+ 						   /*                        */
+  term = Cdr(term);				   /*                        */
+ 						   /*                        */
+  if (list_length(term) != 2)			   /*                        */
+      ErrorNF("Wrong number of arguments for -",0);/*                        */
+ 						   /*                        */
+  val = TNumber(eval_num(binding, Car(term)));	   /*                        */
+  d   = TNumber(eval_num(binding, Cadr(term)));	   /*                        */
+  if (d	== 0)					   /*                        */
+      ErrorNF("Divide by 0",0);			   /*                        */
+  return NumberTerm(val/d);			   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	hash()
 ** Type:	int
 ** Purpose:	
