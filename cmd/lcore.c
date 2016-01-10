@@ -474,6 +474,31 @@ Term eval_num(binding, term)			   /*                        */
 }
 
 /*-----------------------------------------------------------------------------
+** Function:	g_plus()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term g_plus(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ long val;					   /*                        */
+ 						   /*                        */
+  term = Cdr(term);				   /*                        */
+ 						   /*                        */
+  if (list_length(term) != 2)			   /*                        */
+      ErrorNF("Wrong number of arguments for +",0);/*                        */
+ 						   /*                        */
+  val = TNumber(eval_num(binding, Car(term)));	   /*                        */
+  val += TNumber(eval_num(binding, Cadr(term)));   /*                        */
+  return NumberTerm(val);			   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	g_minus()
 ** Type:	Term
 ** Purpose:	
@@ -520,18 +545,15 @@ Term g_minus(binding, term)			   /*                        */
 Term g_times(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ Term t;					   /*                        */
-  long val;					   /*                        */
+{ long val;					   /*                        */
  						   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
   if (list_length(term) != 2)			   /*                        */
-      ErrorNF("Wrong number of arguments for -",0);/*                        */
+      ErrorNF("Wrong number of arguments for *",0);/*                        */
  						   /*                        */
-  t   = eval_num(binding, Car(term));	   	   /*                        */
-  val = TNumber(t);				   /*                        */
-  t   = eval_num(binding, Cadr(term));	   	   /*                        */
-  val *= TNumber(t);			   	   /*                        */
+  val = TNumber(eval_num(binding, Car(term)));	   /*                        */
+  val *= TNumber(eval_num(binding, Cadr(term)));   /*                        */
   return NumberTerm(val);			   /*                        */
 }						   /*------------------------*/
 
@@ -548,13 +570,12 @@ Term g_times(binding, term)			   /*                        */
 Term g_div(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ Term t;					   /*                        */
-  long val, d;					   /*                        */
+{ long val, d;					   /*                        */
  						   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
   if (list_length(term) != 2)			   /*                        */
-      ErrorNF("Wrong number of arguments for -",0);/*                        */
+      ErrorNF("Wrong number of arguments for /",0);/*                        */
  						   /*                        */
   val = TNumber(eval_num(binding, Car(term)));	   /*                        */
   d   = TNumber(eval_num(binding, Cadr(term)));	   /*                        */

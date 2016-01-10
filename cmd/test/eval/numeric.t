@@ -63,6 +63,20 @@ BUnit::run(name         => 'numeric-2',
 	   expected_out => "-123\n" );
 
 #------------------------------------------------------------------------------
+BUnit::run(name         => 'plus-1',
+	   args	        => '--eval',
+	   resource	=> '2+3;',
+	   expected_err => '',
+	   expected_out => "5\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'plus-2',
+	   args	        => '--eval',
+	   resource	=> '2+-1;',
+	   expected_err => '',
+	   expected_out => "1\n" );
+
+#------------------------------------------------------------------------------
 BUnit::run(name         => 'minus-1',
 	   args	        => '--eval',
 	   resource	=> '-(123);',
