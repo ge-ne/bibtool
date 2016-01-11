@@ -84,6 +84,7 @@ String tag_id(c)			   	   /*                        */
   { case L_STRING: return (String)"string";	   /*                        */
     case L_FIELD:  return (String)"field";	   /*                        */
     case L_NUMBER: return (String)"number";	   /*                        */
+    case L_CONS:   return (String)"cons";	   /*                        */
     case L_LIST:   return (String)"list";	   /*                        */
     case L_GROUP:  return (String)"group";	   /*                        */
     case L_TRUE:   return (String)"true";	   /*                        */
@@ -433,7 +434,7 @@ static Term read_list(b, t)			   /*                        */
       Car(t) = a;				   /*                        */
       tp     = &Cdr(t);				   /*                        */
     } else {					   /*                        */
-      *tp = Cons(a, NIL);			   /*                        */
+      *tp = List(a, NIL);			   /*                        */
       tp  = &Cdr(*tp);				   /*                        */
     }						   /*                        */
     c = scan(b);				   /*                        */

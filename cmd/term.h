@@ -91,6 +91,7 @@ typedef struct S_TERM {				   /*                        */
 #define TermIsFalse(T)	(TSym(T) == sym_false)
 
 #define Cons(CAR, CDR)	new_term(sym_cons, CAR, CDR)
+#define List(CAR, CDR)	new_term(sym_list, CAR, CDR)
 
 #define MakeSymTerm(S)	SymTerm(S) = SymdefTerm(S)
 #define SymdefTerm(S)	new_term(S, NIL, NIL)
@@ -129,7 +130,7 @@ extern void print_term();
 extern int list_length _ARG((Term t));
 extern int parse_term _ARG((char* file, int(*action)(Term t)));
 
-extern SymDef symdef();
+extern SymDef symdef _ARG((String name, int op, void(*print)(), Term(*get)()));
 
 /*---------------------------------------------------------------------------*/
 #endif

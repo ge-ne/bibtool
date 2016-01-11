@@ -240,7 +240,7 @@ void p_cons(file, t)			   	   /*                        */
   print_term(file, Car(t));			   /*                        */
   while (Cdr(t))				   /*                        */
   { t = Cdr(t);				   	   /*                        */
-    if (t && TSym(t) == sym_cons)		   /*                        */
+    if (t && (TSym(t) == sym_cons || TSym(t) == sym_list))/*                 */
     { fputc(' ', file);			   	   /*                        */
       print_term(file, Car(t));		   	   /*                        */
     } else					   /*                        */
@@ -662,8 +662,8 @@ unsigned int hash(s)				   /*                        */
   return hash;				   	   /*                        */
 }						   /*------------------------*/
 
-#define InitSymChar(S,OP)				       \
-  SymChar(i) = symdef(S, NIL, p_sym_name);		       \
+#define InitSymChar(S,OP)				     \
+  SymChar(i) = symdef((String)S, 0, p_sym_name, NULL);       \
   SymTerm(SymChar(i)) = new_term(SymChar(i), NIL, NIL)
 
 /*-----------------------------------------------------------------------------
@@ -706,7 +706,7 @@ void init_lreader()				   /*                        */
 	if (s == NULL) OUT_OF_MEMORY("symdef");	   /*                        */
 	*s     = (char)i;			   /*                        */
 	*(s+1) = '\0';				   /*                        */
-	SymChar(i) = symdef(s,i,NIL,p_sym_name,NULL);/*                      */
+	SymChar(i) = symdef((String)s,i,p_sym_name,NULL);/*                  */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */

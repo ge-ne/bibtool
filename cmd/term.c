@@ -213,14 +213,13 @@ int list_length(t)				   /*                        */
 ** Arguments:
 **	name	
 **	op	
-**	term	
 **	print	
+**	get	
 ** Returns:	
 **___________________________________________________			     */
-SymDef symdef(name, op, term, print, get)	   /*                        */
+SymDef symdef(name, op, print, get)	   	   /*                        */
   String name;					   /*                        */
   int op;					   /*                        */
-  Term term;					   /*                        */
   void (*print)_ARG((FILE*, Term));		   /*                        */
   Term (*get)_ARG((Binding, Term));		   /*                        */
 {						   /*                        */
@@ -229,7 +228,7 @@ SymDef symdef(name, op, term, print, get)	   /*                        */
   SymName(sym)  = name;				   /*                        */
   SymOp(sym)    = op;				   /*                        */
   SymHash(sym)  = hash(name);			   /*                        */
-  SymTerm(sym)  = term;				   /*                        */
+  SymTerm(sym)  = NIL;				   /*                        */
   SymValue(sym) = NIL;				   /*                        */
   SymPrint(sym) = print;			   /*                        */
   SymGet(sym)   = get;			   	   /*                        */

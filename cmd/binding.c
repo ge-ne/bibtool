@@ -232,9 +232,9 @@ Term g_cons(binding, term)			   /*                        */
 Binding def_binding()				   /*                        */
 { Binding b = binding(511);			   /*                        */
 
-#define BIND(NAME)   	bind(b, symdef(symbol((String)NAME), L_FIELD, NIL, NULL, NULL))
-#define BindGet(NAME,GET) bind(b, symdef(symbol((String)NAME), L_FIELD, NIL, NULL, GET))
-#define Bind(NAME, SYM) bind(b, SYM)
+#define BIND(NAME)   	  bind(b, symdef(symbol((String)NAME), L_FIELD, NULL, NULL))
+#define BindGet(NAME,GET) bind(b, symdef(symbol((String)NAME), L_FIELD, NULL, GET))
+#define Bind(NAME, SYM)   bind(b, SYM)
 
   BIND("add.field"		);   		   /* RscByFct	             */
   BIND("apply.alias"		);   		   /* RscBoolean	     */
