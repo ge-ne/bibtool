@@ -74,6 +74,7 @@ Declare(sym_ilike , SYMDEF("ilike",  L_ILIKE,  p_sym_name,   NULL));
 
 Declare(sym_if    , SYMDEF("if",     L_IF,     p_sym_name,   NULL));
 Declare(sym_while , SYMDEF("while",  L_WHILE,  p_sym_name,   NULL));
+Declare(sym_with  , SYMDEF("with",   L_WITH,   p_sym_name,   NULL));
 
 /*---------------------------------------------------------------------------*/
 #undef Declare
