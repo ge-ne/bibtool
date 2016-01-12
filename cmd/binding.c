@@ -198,18 +198,18 @@ Term g_cons(binding, term)			   /*                        */
 						   /*                        */
   if (term == NIL) return NIL;			   /*                        */
  						   /*                        */
-  if (TSym(term) == sym_cons)
-  { Term t = Car(term);
-
-    if (t == NIL || TSym(t) != sym_field)
-    { ErrorNF("--Undefined function ", TermName(term)); }/*                    */
-
-    key = TString(t);
-
-  } else {
-    key = TermName(term);
-  }
+  if (TSym(term) == sym_cons)			   /*                        */
+  { Term t = Car(term);				   /*                        */
  						   /*                        */
+    if (t == NIL || TSym(t) != sym_field)	   /*                        */
+    { ErrorNF("Undefined function ", TermName(term)); }/*                    */
+ 						   /*                        */
+    key = TString(t);				   /*                        */
+ 						   /*                        */
+  } else {					   /*                        */
+    key = TermName(term);			   /*                        */
+  }						   /*                        */
+  						   /*                        */
   sym = get_bind(binding, key);	   	   	   /*                        */
  						   /*                        */
   if (sym == NULL)	   			   /*                        */
@@ -339,7 +339,7 @@ Binding def_binding()				   /*                        */
   BIND("tex.define"		);   		   /* RscByFct	             */
   Bind("true"			,sym_true);  	   /* RscTerm	             */
   BIND("verbose"		);   		   /* RscBoolean	     */
-  BIND("version"		);   		   /* RscByFct	             */
+  BindGet("version"		, g_version);	   /* RscByFct	             */
  						   /*                        */
   Bind("cons"		, sym_cons);	   	   /*                        */
   Bind("="		, sym_set);	   	   /*                        */
@@ -410,7 +410,7 @@ Term eval_term(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { SymDef sym = (term ? TSym(term) : SymDefNULL);   /*                        */
- 						   /*                        */
+					       	   /*                        */
   return ((sym && SymGet(sym)) 			   /*                        */
 	  ? (*SymGet(sym))(binding, term)	   /*                        */
 	  : NIL);	   			   /*                        */

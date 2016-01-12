@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <bibtool/error.h>
+#include <bibtool/symbols.h>
 #include <ctype.h>
 #include "term.h"
 #include "binding.h"
@@ -32,6 +33,9 @@
 /*****************************************************************************/
 /* External Programs                                                         */
 /*===========================================================================*/
+
+
+ extern char* bibtool_version;
 
 /*---------------------------------------------------------------------------*/
 
@@ -285,13 +289,10 @@ Term g_fct(binding, term)			   /*                        */
   Term f = Car(term);				   /*                        */
   if (f == NIL) ErrorNF("No function",0);	   /*                        */
   						   /*                        */
-  if (TString(f))				   /*                        */
-  { sym = get_bind(binding, TString(f));	   /*                        */
-    if (sym && SymGet(sym))			   /*                        */
-      return (*SymGet(sym))(binding, term);	   /*                        */
-  }						   /*                        */
-						   /*                        */
-  sym = TSym(f);   				   /*                        */
+  sym = (TString(f)				   /*                        */
+	 ? get_bind(binding, TString(f))	   /*                        */
+	 : TSym(f));				   /*                        */
+ 						   /*                        */
   if (sym && SymGet(sym))			   /*                        */
     return (*SymGet(sym))(binding, term);	   /*                        */
  						   /*                        */
@@ -323,15 +324,15 @@ Term g_eq(binding, term)			   /*                        */
   a = eval_term(binding, Car(term));		   /*                        */
   b = eval_term(binding, Cadr(term));		   /*                        */
  						   /*                        */
-  if (a	== NIL) { val = (b == NIL ? 1 : 0); }
-  else if (TermIsNumber(a))
-  { val = (b && TermIsNumber(b) && TNumber(a) == TNumber(b) ? 1 : 0);
-  }
-  else if (TermIsString(a))
-  { val = (b
-	   && TermIsString(b)
-	   && strcmp((char*)TString(a),
-		     (char*)TString(b)) == 0 ? 1 : 0);
+  if (a	== NIL) { val = (b == NIL ? 1 : 0); }	   /*                        */
+  else if (TermIsNumber(a))			   /*                        */
+  { val = (b && TermIsNumber(b) && TNumber(a) == TNumber(b) ? 1 : 0);/*      */
+  }						   /*                        */
+  else if (TermIsString(a))			   /*                        */
+  { val = (b					   /*                        */
+	   && TermIsString(b)			   /*                        */
+	   && strcmp((char*)TString(a),		   /*                        */
+		     (char*)TString(b)) == 0 ? 1 : 0);/*                     */
   }						   /*                        */
   else if (TSym(a) == sym_true)			   /*                        */
   { val = (TSym(b) == TSym(a)); }		   /*                        */
@@ -451,6 +452,33 @@ Term g_or(binding, term)			   /*                        */
   if (TermIsTrue(t)) return t;		   	   /*                        */
  						   /*                        */
   return eval_bool(binding, Cadr(term));	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	g_version()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term g_version(binding, term)		   	   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{						   /*                        */
+  switch (list_length(term))			   /*                        */
+  { case 0:
+      break;
+    case 1:
+    case 2:
+      ErrorNF("Parameter version is immutable",0); /*                        */
+    default:
+      ErrorNF("Wrong number of arguments for version",0);/*                  */
+  }
+ 						   /*                        */
+  return new_t_string(sym_string, symbol((String)bibtool_version));/*        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -579,7 +607,7 @@ Term g_minus(binding, term)			   /*                        */
 **		
 ** Arguments:
 **	binding	
-**	 term	
+**	term	
 ** Returns:	
 **___________________________________________________			     */
 Term g_times(binding, term)			   /*                        */
@@ -604,7 +632,7 @@ Term g_times(binding, term)			   /*                        */
 **		
 ** Arguments:
 **	binding	
-**	 term	
+**	term	
 ** Returns:	
 **___________________________________________________			     */
 Term g_div(binding, term)			   /*                        */
@@ -624,6 +652,16 @@ Term g_div(binding, term)			   /*                        */
   return NumberTerm(val/d);			   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	g_mod()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	term	
+** Returns:	
+**___________________________________________________			     */
 Term g_mod(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
