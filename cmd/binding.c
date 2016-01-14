@@ -127,7 +127,7 @@ SymDef get_bind(b, key)			   	   /*                        */
       if (strcmp((char*)SymName(s),		   /*                        */
 		 (char*)key) == 0) {		   /*                        */
 #ifdef DEBUG_BIND
-	puts(">>> found");			   /*                        */
+	printf("--- found 0x%x\n",s ? SymOp(s):0); /*                        */
 #endif
 	return s; 	   			   /*                        */
       }						   /*                        */
@@ -152,30 +152,30 @@ Term g_print(binding, term)			   /*                        */
   Term term;					   /*                        */
 { 					   	   /*                        */
   for (term = Cdr(term); term ; term = Cdr(term))  /*                        */
-  { Term t = Car(term);
-    if (t == NIL || TSym(t) == SymDefNULL) continue;
-    switch(SymOp(TSym(t)))
-    { case L_STRING:
-      case L_BLOCK:
-	fputs((char*)TString(t), stdout);
-	break;
-      case L_NUMBER:
-	fprintf(stdout, "%ld", TNumber(t));
-	break;
-      case L_FIELD:
-	fputs((char*)TString(t), stdout);
-	break;
-      case L_TRUE:
-	fputs("true", stdout);
-	break;
-      case L_FALSE:
-	fputs("false", stdout);
-	break;
+  { Term t = Car(term);				   /*                        */
+    if (t == NIL || TSym(t) == SymDefNULL) continue;/*                       */
+    switch(SymOp(TSym(t)))			   /*                        */
+    { case L_STRING:				   /*                        */
+      case L_BLOCK:				   /*                        */
+	fputs((char*)TString(t), stdout);	   /*                        */
+	break;					   /*                        */
+      case L_NUMBER:				   /*                        */
+	fprintf(stdout, "%ld", TNumber(t));	   /*                        */
+	break;					   /*                        */
+      case L_FIELD:				   /*                        */
+	fputs((char*)TString(t), stdout);	   /*                        */
+	break;					   /*                        */
+      case L_TRUE:				   /*                        */
+	fputs("true", stdout);			   /*                        */
+	break;					   /*                        */
+      case L_FALSE:				   /*                        */
+	fputs("false", stdout);			   /*                        */
+	break;					   /*                        */
 #ifdef DEBUG
-      default:
-	printf("--- 0x%x",SymOp(TSym(t)));
+      default:					   /*                        */
+	printf("--- 0x%x",SymOp(TSym(t)));	   /*                        */
 #endif
-    }
+    }						   /*                        */
   }		   				   /*                        */
   return NIL;			   		   /*                        */
 }						   /*------------------------*/

@@ -46,7 +46,7 @@ Declare(sym_string, SYMDEF("string", L_STRING, p_term_str,   g_self));
 Declare(sym_block , SYMDEF("block",  L_BLOCK,  p_term_block, g_self));
 Declare(sym_number, SYMDEF("number", L_NUMBER, p_term_num,   g_self));
 
-Declare(sym_field , SYMDEF("field",  L_FIELD,  p_term_field, g_version));
+Declare(sym_field , SYMDEF("field",  L_FIELD,  p_term_field, g_empty));
 Declare(sym_true  , SYMDEF("true",   L_TRUE,   p_sym_name,   g_self));
 Declare(sym_false , SYMDEF("false",  L_FALSE,  p_sym_name,   g_self));
 

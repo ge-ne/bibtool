@@ -95,6 +95,7 @@ typedef struct S_TERM {				   /*                        */
 
 #define MakeSymTerm(S)	SymTerm(S) = SymdefTerm(S)
 #define SymdefTerm(S)	new_term(S, NIL, NIL)
+#define StringTerm(S)	new_t_string(sym_string, symbol(S))
 #define BlockTerm(S)	new_t_string(sym_block, symbol(S))
 #define FieldTerm(S)	new_t_string(sym_field, symbol(S))
 #define NumberTerm(N)	new_term_num(N)

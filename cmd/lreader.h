@@ -27,10 +27,10 @@
 #define L_TRUE		0x207
 #define L_FALSE		0x208
 
-
-#define L_IF		0x220
-#define L_WHILE		0x221
-#define L_WITH		0x222
+#define L_DEFUN		0x220
+#define L_IF		0x221
+#define L_WHILE		0x222
+#define L_WITH		0x223
 
 #define L_QUOTE		0x401
 #define L_MINUS		0x412
