@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2015 Gerd Neugebauer
+** (c) 1996-2016 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -155,7 +155,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) 2015 Gerd Neugebauer",
+    "Copyright (C) 2016 Gerd Neugebauer",
     "gene@gerd-neugebauer.de"
   };
 
@@ -641,7 +641,7 @@ int main(argc,argv)				   /*			     */
 		   cnt[i]);		   	   /*			     */
       }						   /*			     */
     }						   /*			     */
-    free(c);
+    free(c);					   /*                        */
   }						   /*                        */
 						   /*			     */
 #ifdef SYMBOL_DUMP

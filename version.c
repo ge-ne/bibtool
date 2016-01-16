@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2015 Gerd Neugebauer
+** (c) 1996-2016 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -22,7 +22,7 @@
 **		numbers.  In addition a post-fix like |alpha| or a
 **		patch level like |p1| can be present.
 **___________________________________________________			     */
-char * bibtool_version = "2.62-alpha";		   /*                        */
+char * bibtool_version = "2.62";		   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Variable:	bibtool_year
@@ -30,7 +30,7 @@ char * bibtool_version = "2.62-alpha";		   /*                        */
 ** Purpose:	This string variable contains the publication year for this
 **		version. 
 **___________________________________________________			     */
-char * bibtool_year = "2015";			   /*                        */
+char * bibtool_year = "2016";			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	show_version()

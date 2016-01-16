@@ -1,13 +1,11 @@
 #!/usr/local/bin/perl
 ##*****************************************************************************
-## $Id: bibtool.pl,v 1.3 2007-02-08 05:35:57 gene Exp $
-##=============================================================================
 ## 
 ## This file is part of BibTool.
 ## It is distributed under the GNU General Public License.
 ## See the file COPYING for details.
 ## 
-## (c) 1996-2002 Gerd Neugebauer
+## (c) 1996-2016 Gerd Neugebauer
 ## 
 ## Net: gene@gerd-neugebauer.de
 ## 
@@ -21,7 +19,6 @@
 #
 
 $file=$ARGV[0];	# take the first argument as file name
-
 
 open(FD,"bibtool -q -- expand.macros=on -- pass.comments=off -- print.line.length=999999 -- print.indent=0 -- print.align=0 $file |");
 $bibtool_is_in_record = 0;

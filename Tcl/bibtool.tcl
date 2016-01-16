@@ -1,7 +1,5 @@
 #!/usr/local/bin/tclsh
 ##*****************************************************************************
-## $Id: bibtool.tcl,v 1.1.1.1 2007-02-07 21:28:51 gene Exp $
-##=============================================================================
 ## 
 ## This file is part of BibTool.
 ## It is distributed under the GNU General Public License.
@@ -9,7 +7,7 @@
 ## 
 ## (c) 1996-1997 Gerd Neugebauer
 ## 
-## Net: gerd@informatik.uni-koblenz.de
+## Net: gene@gerd-neugebauer.de
 ## 
 ##*****************************************************************************
 #
