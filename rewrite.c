@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2015 Gerd Neugebauer
+** (c) 1996-2016 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -234,6 +234,18 @@ static Rule new_rule(field, value, pattern, frame, flags, casep)/*           */
   { RuleFlag(rule) = (flags & ~RULE_REGEXP);	   /*                        */
   }						   /*                        */
 #endif
+
+  DebugPrint2("pattern = ",pattern);		   /*			     */
+  DebugPrint2("frame   = ",frame);		   /*			     */
+  DebugPrintF1("+++ BibTool: flags   =");	   /*			     */
+  DebugPrintF1(flags & RULE_NOT ? " NOT" : "");	   /*                        */
+  DebugPrintF1(flags & RULE_ADD ? " ADD" : "");	   /*                        */
+  DebugPrintF1(flags & RULE_RENAME ? " RENAME" : "");/*                      */
+  DebugPrintF1(flags & RULE_REGEXP ? " REGEXP" : "");/*                      */
+  DebugPrintF1("\n");		   		   /*			     */
+  DebugPrintF2("+++ BibTool: New rule = %lx\n",	   /*                        */
+	       (long)rule);			   /*                        */
+ 						   /*                        */
   return rule;					   /*			     */
 }						   /*------------------------*/
 
@@ -295,24 +307,23 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
   }						   /*                        */
   stackp = 0;					   /*                        */
 						   /*			     */
-  DebugPrint2("Adding rule: Parsing from: ",s);	   /*			     */
+  DebugPrint2("Adding rule: Parsing from: ", s);   /*			     */
   (void)sp_open(s);				   /*			     */
   (void)SParseSkip(&s);				   /*			     */
 						   /*			     */
   while (*s && *s != '"')			   /*                        */
-  {
-    DebugPrint2("\tlooking for symbol in: ",s);	   /*			     */
+  {						   /*                        */
+    DebugPrint2("\tlooking for symbol in: ", s);   /*			     */
     field = SParseSymbol(&s);			   /*                        */
-    DebugPrint2("\tok ",s);
-    if ( field == NULL)	   			   /*                        */
-    {						   /*                        */
-      DebugPrint2("\tno symbol found in: ",s);	   /*			     */
-      return; }					   /*                        */
-    DebugPrint1("\tok ");
+    DebugPrint2("\tok ",s);			   /*                        */
+    if (field == NULL)	   			   /*                        */
+    { DebugPrint2("\tno symbol found in: ", s);	   /*			     */
+      return;					   /*                        */
+    }					   	   /*                        */
     DebugPrint2("field   = ",field);	   	   /*			     */
     (void)SParseSkip(&s);			   /*                        */
 						   /*			     */
-    if ( stackp >= stacksize )			   /*                        */
+    if (stackp >= stacksize)			   /*                        */
     { stacksize += 8;				   /*                        */
       if ( (stack=(String*)realloc((char*)stack,   /*                        */
 				   stacksize*sizeof(char*)))==NULL)/*        */
@@ -328,7 +339,6 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
     return;					   /*			     */
   }						   /*                        */
 						   /*			     */
-  DebugPrint2("pattern = ",pattern);		   /*			     */
   (void)SParseSkip(&s);				   /*			     */
 						   /*			     */
   if ( *s == '\0' )				   /*			     */
@@ -337,16 +347,8 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
   { return; }					   /*			     */
   else						   /*			     */
   { (void)SParseEOS(&s); }			   /*			     */
-  DebugPrint2("frame  = ",frame);		   /*			     */
-#ifdef DEBUG
-  DebugPrintF1("+++ BibTool: flags   = ");	   /*			     */
-  if (flags & RULE_NOT) DebugPrintF1(" NOT"); 	   /*                        */
-  if (flags & RULE_ADD) DebugPrintF1(" ADD"); 	   /*                        */
-  if (flags & RULE_REGEXP) DebugPrintF1(" REGEXP"); /*                       */
-  DebugPrintF1("\n");		   		   /*			     */
-#endif
 						   /*			     */
-  if ( stackp == 0 )				   /* No field specified.    */
+  if (stackp == 0)				   /* No field specified.    */
   { rule = new_rule(StringNULL,			   /*                        */
 		    StringNULL,			   /*                        */
 		    pattern,			   /*                        */
@@ -395,8 +397,7 @@ static void rewrite_1(frame,sb,match,db,rec)	   /*			     */
 {						   /*			     */
   for ( ; *frame; frame++ )			   /*			     */
   { if ( *frame == '%' )			   /*	                     */
-    { frame = fmt_expand(sb,frame,db,rec);	   /*                        */
-    }		   				   /*	                     */
+    { frame = fmt_expand(sb, frame, db, rec); }	   /*	                     */
     else if ( *frame != '\\' )			   /* Transfer normal	     */
     { (void)sbputchar(*frame,sb); }		   /*	characters.	     */
     else					   /*			     */
@@ -499,8 +500,8 @@ static String repl_regex(field, value, rule, db, rec)/*			     */
 						   /*			     */
   if (rule == RuleNULL) return value;		   /*			     */
 						   /*			     */
-  if ( s1 == NULL ) { s1 = sbopen(); s2 = sbopen(); }/*			     */
-  else		    { sbrewind(s1);  sbrewind(s2);  }/*			     */
+  if (s1 == NULL) { s1 = sbopen(); s2 = sbopen(); }/*			     */
+  else		  { sbrewind(s1);  sbrewind(s2);  }/*			     */
 						   /*			     */
   (void)sbputs((char*)value, s1);		   /*			     */
   value     = (String)sbflush(s1);		   /*			     */
@@ -513,10 +514,16 @@ static String repl_regex(field, value, rule, db, rec)/*			     */
     once_more = FALSE;				   /*                        */
     while (rule != RuleNULL)			   /*                        */
     {						   /*                        */
+#ifdef DEBUG
+	printf("+++ BibTool: repl_regex rule:0x%lx flags:0x%x field:%s <> %s\n",
+	       (long)rule,
+	       RuleFlag(rule),
+	       RuleField(rule), field);
+#endif
       if ((RuleFlag(rule) & RULE_RENAME) != 0)	   /*                        */
       {						   /*                        */
-	if (RuleField(rule) == field &&
-	    selector_hits(rule, db, rec))
+	if (RuleField(rule) == field &&		   /*                        */
+	    selector_hits(rule, db, rec))	   /*                        */
 	{ int i;				   /*                        */
 	  String *hp;				   /*                        */
 	  for (i = RecordFree(rec), hp = RecordHeap(rec);/*		     */
@@ -524,14 +531,14 @@ static String repl_regex(field, value, rule, db, rec)/*			     */
 	       i -= 2, hp += 2)			   /*			     */
 	  {					   /*			     */
 	    if (*hp == field)	   		   /*			     */
-	    { *hp = RuleValue(rule);
-	      break;
-	    }
-	  }
-	}
+	    { field = *hp = RuleValue(rule);	   /*                        */
+	      break;				   /*                        */
+	    }					   /*                        */
+	  }					   /*                        */
+	}					   /*                        */
 	rule = NextRule(rule);			   /*                        */
 	limit = rsc_rewrite_limit;		   /*			     */
-      }
+      }						   /*                        */
       else if ( ( RuleField(rule) == NULL	   /*			     */
 	    || RuleField(rule) == field ) &&	   /*			     */
 	   (RuleFlag(rule) & RULE_ADD) == 0 &&	   /*                        */
@@ -699,6 +706,8 @@ void rename_field(spec)				   /*			     */
 void add_rewrite_rule(s)			   /*			     */
   String s;				   	   /*			     */
 {						   /*			     */
+  DebugPrintF1("add rewrite rule\n");		   /*			     */
+ 						   /*                        */
   add_rule(s,					   /*                        */
 	   &r_rule,				   /*                        */
 	   &r_rule_end,				   /*                        */
@@ -719,6 +728,7 @@ void add_rewrite_rule(s)			   /*			     */
 void add_check_rule(s)				   /*			     */
   String s;				   	   /*			     */
 {						   /*			     */
+  DebugPrintF1("add check rule\n");		   /*			     */
   add_rule(s,					   /*                        */
 	   &c_rule,				   /*                        */
 	   &c_rule_end,				   /*                        */
@@ -761,13 +771,13 @@ void rewrite_record(db, rec)			   /*			     */
     }						   /*			     */
   }						   /*			     */
 						   /*			     */
-  if ( r_rule != RuleNULL )			   /*			     */
+  if (r_rule != RuleNULL)			   /*			     */
   {   						   /*			     */
     for (i = RecordFree(rec), hp = RecordHeap(rec);/*			     */
 	 i > 0;					   /*			     */
 	 i -= 2, hp += 2)			   /*			     */
     {						   /*			     */
-      if ( *hp && *(hp+1) )			   /*			     */
+      if (*hp && *(hp+1))			   /*			     */
       {						   /*			     */
 	cp = repl_regex(*hp,*(hp+1),r_rule,db,rec);/*			     */
 	if ( cp == StringNULL )		   	   /*			     */
