@@ -1,6 +1,3 @@
-s
--2015
--2016
 /* Definitions for data structures and routines for the regular
    expression library, version 0.12.
 
