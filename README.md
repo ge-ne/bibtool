@@ -59,6 +59,10 @@ systems like flavors of UN*X and MSDOG machines.  It is distributed in
 source code.   No compiled  versions  are  available from  the  author
 (Useless to ask!).
 
+
+# CTAN Download
+
+
 BibTool can be obtained from the CTAN archives:
 
 * http://mirrors.ctan.org/biblio/bibtex/utils/bibtool
@@ -74,6 +78,28 @@ installation instructions in the file install.tex.
 A signature for  the source bundle is provided as  well. My public key
 can be  found on http://pgp.mit.edu/.  You should search for  my email
 address.
+
+
+# Licenses
+
+
+The sources of BibTool are distributed under the GNU General Public
+License version 2 or later.
+
+The documentation is distributed under the Creative Commons
+Attributation-Share Alike 3.0 License.
+
+The distribution of BibTool contains the following third-party
+software which is released under their own licenses:
+
+
+* GNU regex library 0.12 is located in the directory regex-0.12. It is
+  distributed under the GNU General Public License version 2 or later.
+
+* mkdirchain consists of the file mkdirchain. It is in the public domain.
+
+* install-sh consists of the file install-sh. It is distributed under
+  the MIT license contained in this file.
 
 ----------------------------------------------------------------------
 Enjoy it!
