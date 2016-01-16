@@ -36,7 +36,7 @@
 **		numbers.  In addition a post-fix like |alpha| or a
 **		patch level like |p1| can be present.
 **___________________________________________________			     */
-char * bibtool_version = "2.62";		   /*                        */
+char * bibtool_version = "2.63";		   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Variable:	bibtool_year
