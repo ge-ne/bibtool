@@ -40,7 +40,7 @@ DISTFILES += 	AutoConf/config.h.in 	\
 		configure.in		\
 		install-sh		\
 		mkdirchain		\
-		test/BUnit.pm		\
+		test/lib/BUnit.pm	\
 		test/makefile		\
 		test/bib/*.bib		\
 		test/*.t

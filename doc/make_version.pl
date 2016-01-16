@@ -46,7 +46,7 @@ sub usage
 #
 my $verbose = 0;
 
-my $LIBDIR = '/usr/local/lib/BibTool'
+my $LIBDIR = '/usr/local/lib/BibTool';
 
 use Getopt::Long;
 GetOptions("h|help"	=> \&usage,
