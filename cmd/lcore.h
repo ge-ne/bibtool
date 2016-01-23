@@ -33,6 +33,7 @@ extern unsigned int hash();
 extern Term g_version();
 extern Term g_field();
 extern void print_quoted();			   /*                        */
+extern Term eval_bool _ARG((Binding b, Term t));   /*                        */
 
 extern SymDef* sym_char;			   /*                        */
 

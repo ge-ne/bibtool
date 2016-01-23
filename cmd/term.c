@@ -65,9 +65,10 @@ Term new_term(type, car, cdr)			   /*                        */
   { t = (Term)malloc(sizeof(STerm));		   /*                        */
     if (t == NIL) OUT_OF_MEMORY("term");	   /*                        */
   }	   					   /*                        */
-  TermOp(t) = type;			   	   /*                        */
-  Car(t)    = car;				   /*                        */
-  Cdr(t)    = cdr;				   /*                        */
+  TermOp(t)       = type;			   /*                        */
+  Car(t)          = car;			   /*                        */
+  Cdr(t)          = cdr;			   /*                        */
+  TermRefCount(t) = 1L;				   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -89,9 +90,10 @@ Term new_term_num(n)				   /*                        */
   { t = (Term)malloc(sizeof(STerm));		   /*                        */
     if (t == NIL) OUT_OF_MEMORY("term");	   /*                        */
   }	   					   /*                        */
-  TermOp(t)  = L_NUMBER;			   /*                        */
-  TNumber(t) = n;				   /*                        */
-  Cdr(t)     = NIL;				   /*                        */
+  TermOp(t)       = L_NUMBER;			   /*                        */
+  TNumber(t)      = n;				   /*                        */
+  Cdr(t)          = NIL;			   /*                        */
+  TermRefCount(t) = 1L;				   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -115,9 +117,10 @@ Term new_t_string(type, s)		   	   /*                        */
   { t = (Term)malloc(sizeof(STerm));		   /*                        */
     if (t == NIL) OUT_OF_MEMORY("term");	   /*                        */
   }	   					   /*                        */
-  TermOp(t)  = type;			   	   /*                        */
-  TString(t) = s;				   /*                        */
-  Cdr(t)     = NIL;			   	   /*                        */
+  TermOp(t)       = type;			   /*                        */
+  TString(t)      = s;				   /*                        */
+  Cdr(t)          = NIL;			   /*                        */
+  TermRefCount(t) = 1L;				   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 

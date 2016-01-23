@@ -273,16 +273,46 @@ Term g_fct(binding, term)			   /*                        */
   return (*SymGet(sym))(binding, term);	   	   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	bool_rsc()
+** Type:	static Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 name	
+**	 term	
+**	 rp	
+** Returns:	
+**___________________________________________________			     */
+static Term bool_rsc(binding, name, term, rp)	   /*                        */
+    Binding binding;				   /*                        */
+    char * name;				   /*                        */
+    Term term;					   /*                        */
+    int * rp;					   /*                        */
+{ switch (list_length(Cdr(term)))		   /*                        */
+  { case 0:					   /*                        */
+      break;					   /*                        */
+    case 1:					   /*                        */
+      term = eval_bool(binding, Cadr(term));	   /*                        */
+      *rp  = (TermOp(term) == L_TRUE ? 1 : 0 );	   /*                        */
+      UnlinkTerm(term);				   /*                        */
+      break;					   /*                        */
+    default:					   /*                        */
+      ErrorNF("Too many arguments for ", name);	   /*                        */
+  }						   /*                        */
+  return SymTerm(*rp ? sym_true : sym_false);	   /*                        */
+}						   /*------------------------*/
+
 #define BIND(NAME)
 #define BindGet(NAME,GET)
 #define Bind(NAME, SYM)
-#define BindBool(NAME,G,R)			\
-  Term G (binding, term)			\
-    Binding binding;				\
-    Term term;					\
-  { extern int R;				\
-    return SymTerm(R ? sym_true : sym_false);	\
-  }
+#define BindBool(NAME,GETTER,RSC)			\
+  extern int RSC;					\
+  static Term GETTER (binding, term)			\
+    Binding binding;					\
+    Term term;						\
+  { return bool_rsc(binding, NAME, term, &RSC); }
 #include "builtin.h"
 
 #undef BIND

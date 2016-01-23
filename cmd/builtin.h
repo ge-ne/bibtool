@@ -46,10 +46,10 @@
   BIND("input"			);   		   /* RscByFct	             */
   BIND("ignored.word"		);   		   /* RscByFct	             */
   Bind("ilike"			, sym_ilike);	   /* RscTerm	             */
-  BindBool("key.generation"		, g_key_generation, rsc_make_key);/* RscBoolean*/
+  BindBool("key.generation"	, g_make_key, rsc_make_key);/* RscBoolean    */
   BIND("key.base"		);   		   /* RscByFct	             */
   BIND("key.format"		);   		   /* RscByFct	             */
-  BindBool("key.make.alias"		, g_key_make_alias, rsc_make_alias);/* RscBoolean*/
+  BindBool("key.make.alias"	, g_key_make_alias, rsc_make_alias);/* RscBoolean*/
   BIND("key.number.separator"	);   		   /* RscByFct	             */
   BindBool("key.expand.macros"	, g_key_expand_macros, rsc_key_expand_macros);/* RscBoolean*/
   Bind("like"			, sym_like); 	   /* RscTerm	             */
@@ -62,9 +62,9 @@
   BIND("nil"			);   		   /* RscTerm	             */
   BIND("output.file"		);   		   /* RscByFct	             */
   Bind("or"			,sym_or);	   /* RscTerm	             */
-  BindBool("pass.comments"		, g_pass_comments, rsc_pass_comment);/* RscBoolean*/
+  BindBool("pass.comments"	, g_pass_comments, rsc_pass_comment);/* RscBoolean*/
   BindBool("preserve.key.case"	, g_preserve_key_case, rsc_key_case);/* RscBoolean*/
-  BindBool("preserve.keys"		, g_preserve_keys, rsc_key_preserve);/* RscBoolean*/
+  BindBool("preserve.keys"	, g_preserve_keys, rsc_key_preserve);/* RscBoolean*/
   BindGet("print"		, g_print);	   /* RscByFct	             */
   BIND("print.align.string"	);   		   /* RscNumeric	     */
   BIND("print.align.comment"	);   		   /* RscNumeric	     */
@@ -73,16 +73,16 @@
   BIND("print.align"		);   		   /* RscNumeric	     */
   BindBool("print.all.strings"	, g_print_all_strings, rsc_all_macs);/* RscBoolean*/
   BIND("print.entry.types"	);   		   /* RscString	             */
-  BindBool("print.equal.right"	, g_print_equal_right, rsc_eq_right);/* RscBoolean*/
-  BindBool("print.braces"		, g_print_braces, rsc_braces);/* RscBoolean*/
-  BindBool("print.comma.at.end"	, g_print_comma_at_end, rsc_print_ce);/* RscBoolean*/
+  BindBool("print.equal.right"	, g_eq_right, rsc_eq_right);/* RscBoolean    */
+  BindBool("print.braces"	, g_braces, rsc_braces);/* RscBoolean        */
+  BindBool("print.comma.at.end"	, g_print_ce, rsc_print_ce);/* RscBoolean    */
   BIND("print.deleted.prefix"	);   		   /* RscString	             */
-  BindBool("print.deleted.entries"	, g_print_deleted_entries, rsc_del_q);/* RscBoolean*/
+  BindBool("print.deleted.entries", g_del_q_entries, rsc_del_q);/* RscBoolean*/
   BIND("print.indent"		);   		   /* RscNumeric	     */
   BIND("print.line.length"	);   		   /* RscNumeric	     */
   BIND("print.newline"		);   		   /* RscNumeric	     */
   BindBool("print.parentheses"	, g_parentheses, rsc_parentheses);/* RscBoolean*/
-  BindBool("print.terminal.comma"	, g_print_terminal_comma, rsc_print_tc);/* RscBoolean*/
+  BindBool("print.terminal.comma", g_print_tc, rsc_print_tc);/* RscBoolean   */
   BindBool("print.use.tab"	, g_use_tabs, rsc_use_tabs);/* RscBoolean    */
   BindBool("print.wide.equal"	, g_print_we, rsc_print_we);/* RscBoolean    */
   Bind("quote"			, sym_quote);	   /*	                     */
@@ -92,23 +92,23 @@
   BIND("resource"		);   		   /* RscByFct	             */
   BIND("resource.search.path"	);   		   /* RscByFct	             */
   BIND("rewrite.rule"		);   		   /* RscByFct	             */
-  BindBool("rewrite.case.sensitive"	, g_rewrite_case_sensitive, rsc_case_rewrite);/* RscBoolean*/
+  BindBool("rewrite.case.sensitive", g_case_rewrite, rsc_case_rewrite);/* RscBoolean*/
   BIND("rewrite.limit"		);   		   /* RscNumeric	     */
   BIND("select"			);   		   /* RscByFct	             */
   BIND("select.by.string"	);   		   /* RscByFct	             */
   BIND("select.by.non.string"	);   		   /* RscByFct	             */
   BIND("select.by.string.ignored");   		   /* RscString	             */
-  BindBool("select.case.sensitive"	, g_select_case_sensitive, rsc_case_select);/* RscBoolean*/
+  BindBool("select.case.sensitive", g_case_select, rsc_case_select);/* RscBoolean*/
   BIND("select.fields"		);   		   /* RscString	             */
   BIND("select.non"		);   		   /* RscByFct	             */
-  BindBool("select.crossrefs"	, g_select_crossrefs, rsc_xref_select);/* RscBoolean*/
-  BindBool("sort"			, g_sort, rsc_sort);/* RscBoolean	*/
+  BindBool("select.crossrefs"	, g_xref_select, rsc_xref_select);/* RscBoolean*/
+  BindBool("sort"		, g_sort, rsc_sort);/* RscBoolean	     */
   BindBool("sort.cased"		, g_sort_cased, rsc_sort_cased);/* RscBoolean*/
-  BindBool("sort.macros"		, g_sort_macros, rsc_srt_macs);/* RscBoolean*/
-  BindBool("sort.reverse"		, g_sort_reverse, rsc_sort_reverse);/* RscBoolean*/
+  BindBool("sort.macros"	, g_srt_macs, rsc_srt_macs);/* RscBoolean    */
+  BindBool("sort.reverse"	, g_sort_reverse, rsc_sort_reverse);/* RscBoolean*/
   BIND("sort.order"		);   		   /* RscByFct	             */
   BIND("sort.format"		);   		   /* RscByFct	             */
-  BindBool("suppress.initial.newline", g_suppress_initial_newline, rsc_no_nl);/* RscBoolean*/
+  BindBool("suppress.initial.newline", g_no_nl, rsc_no_nl);/* RscBoolean     */
   BIND("symbol.type"		);   		   /* RscByFct	             */
   BIND("tex.define"		);   		   /* RscByFct	             */
   Bind("true"			, sym_true);  	   /* RscTerm	             */

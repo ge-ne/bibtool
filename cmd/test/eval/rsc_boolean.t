@@ -58,17 +58,27 @@ sub boolean_tests
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-2",
 	   args	        => '--eval',
-	   ignore	=> 1,
 	   resource     => "$cmd true; $cmd;\n" ,
 	   expected_err => '',
 	   expected_out => "true\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-3",
 	   args	        => '--eval',
-	   ignore	=> 1,
 	   resource     => "$cmd false; $cmd;\n" ,
 	   expected_err	=> '',
 	   expected_out	=> "false\n" );
+  #------------------------------------------------------------------------------
+  BUnit::run(name       => "$cmd-10",
+	   args	        => '--eval',
+	   resource     => "$cmd 0;\n" ,
+	   expected_err	=> '',
+	   expected_out	=> "false\n" );
+  #------------------------------------------------------------------------------
+  BUnit::run(name       => "$cmd-11",
+	   args	        => '--eval',
+	   resource     => "$cmd 42;\n" ,
+	   expected_err	=> '',
+	   expected_out	=> "true\n" );
 }
 
   boolean_tests( "apply.alias"			, "false"   );
@@ -106,7 +116,7 @@ sub boolean_tests
   boolean_tests( "sort.macros"			, "true"    );
   boolean_tests( "sort.reverse"			, "false"   );
   boolean_tests( "suppress.initial.newline"	, "false"   );
-  boolean_tests( "verbose"			, "false"   ) ;
+  boolean_tests( "verbose"			, "false"   );
 
 1;
 #------------------------------------------------------------------------------

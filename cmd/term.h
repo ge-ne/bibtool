@@ -66,6 +66,7 @@ typedef struct S_TERM {				   /*                        */
     long number;				   /*                        */
   } a;						   /*                        */
   struct S_TERM * cdr;				   /*                        */
+  long ref_count;
 } STerm, *Term;					   /*------------------------*/
 
 #define NIL ((Term)0)
@@ -75,6 +76,10 @@ typedef struct S_TERM {				   /*                        */
 #define Cdr(T)		((T)->cdr)
 #define TString(T)	((T)->a.string)
 #define TNumber(T)	((T)->a.number)
+#define TermRefCount(T)	((T)->ref_count)
+
+#define LinkTerm(T)	TermRefCount(T)++
+#define UnlinkTerm(T)	TermRefCount(T)--
 
 #define Cadr(T)		Car(Cdr(T))
 #define Cddr(T)		Cdr(Cdr(T))

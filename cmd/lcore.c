@@ -35,15 +35,13 @@
 /*===========================================================================*/
 
 
- extern char* bibtool_version;
-
 /*---------------------------------------------------------------------------*/
 
 
 #define Declare(SYM,VAL) SymDef SYM
 #include "lcore.h"
 
-SymDef* sym_char;
+SymDef* sym_char;				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	print_quoted()
@@ -86,60 +84,6 @@ void print_quoted(file, s)		   	   /*                        */
 	fputc((char)*s, file);			   /*                        */
     }						   /*                        */
   }						   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	p_builtin()
-** Type:	static void
-** Purpose:	
-**		
-** Arguments:
-**	file	
-**	 t	
-** Returns:	nothing
-**___________________________________________________			     */
-void p_rsc(file, t)		   	   	   /*                        */
-  FILE * file;					   /*                        */
-  Term t;					   /*                        */
-{						   /*                        */
-  if (Cdr(t))					   /*                        */
-  { fputc('(', file);			   	   /*                        */
-    fputs((char*)TString(t), file);		   /*                        */
-    fputc(' ', file);			   	   /*                        */
-    print_term(file, Cdr(t));	   		   /*                        */
-    fputc(')', file);			   	   /*                        */
-  } else {					   /*                        */
-    fputs((char*)TString(t), file);		   /*                        */
-  }						   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	p_cons()
-** Type:	static int
-** Purpose:	
-**		
-** Arguments:
-**	file	
-**	 t	
-** Returns:	
-**___________________________________________________			     */
-void p_cons(file, t)			   	   /*                        */
-  FILE * file;					   /*                        */
-  Term t;					   /*                        */
-{ fputc('(', file);				   /*                        */
-  print_term(file, Car(t));			   /*                        */
-  while (Cdr(t))				   /*                        */
-  { t = Cdr(t);				   	   /*                        */
-    if (t && (TermOp(t) == L_FUNCTION || TermOp(t) == L_LIST))/*             */
-    { fputc(' ', file);			   	   /*                        */
-      print_term(file, Car(t));		   	   /*                        */
-    } else					   /*                        */
-    { fputs(" . ", file);			   /*                        */
-      print_term(file, Cdr(t));		   	   /*                        */
-      break;					   /*                        */
-    }						   /*                        */
-  }						   /*                        */
-  fputc(')', file);				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -223,8 +167,8 @@ Term g_ne(binding, term)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term eval_bool(binding, term)			   /*                        */
@@ -233,12 +177,29 @@ Term eval_bool(binding, term)			   /*                        */
 { 						   /*                        */
   term = eval_term(binding, term);		   /*                        */
  						   /*                        */
-  if (term == NIL ||				   /*                        */
-      (   TermOp(term) != L_TRUE		   /*                        */
-       && TermOp(term) != L_FALSE))		   /*                        */
-    ErrorNF("Type error: boolean expected",0);	   /*                        */
+  if (term == NIL) return SymTerm(sym_false);	   /*                        */
+ 						   /*                        */
+  switch (TermOp(term))				   /*                        */
+  { case L_LIST:				   /*                        */
+      return SymTerm(sym_true);			   /*                        */
+    case L_NUMBER:				   /*                        */
+      return TNumber(term)			   /*                        */
+	? SymTerm(sym_true)			   /*                        */
+	: SymTerm(sym_false);			   /*                        */
+    case L_BLOCK:				   /*                        */
+    case L_STRING:				   /*                        */
+      return *TString(term)			   /*                        */
+	? SymTerm(sym_true)			   /*                        */
+	: SymTerm(sym_false);			   /*                        */
+    case L_TRUE:				   /*                        */
+    case L_FALSE:				   /*                        */
+      break;					   /*                        */
+    default:					   /*                        */
+      ErrorNF("Type error: boolean expected",0);   /*                        */
+  }						   /*                        */
+ 						   /*                        */
   return term;	   				   /*                        */
-}
+}						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	g_not()
@@ -324,7 +285,8 @@ Term g_or(binding, term)			   /*                        */
 Term g_version(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{						   /*                        */
+{ extern char* bibtool_version;			   /*                        */
+ 						   /*                        */
   switch (list_length(Cdr(term)))		   /*                        */
   { case 0:					   /*                        */
       break;					   /*                        */
@@ -386,12 +348,12 @@ Term g_setq(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 {						   /*                        */
-  if (Car(term) == NIL) ErrorNF("Undefined lhs",0);
-
+  if (Car(term) == NIL) ErrorNF("Undefined lhs",0);/*                        */
+ 						   /*                        */
   return setq(binding,
 	      TString(Car(term)),
 	      Cadr(term)
-	     );
+	     );					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
