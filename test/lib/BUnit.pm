@@ -303,7 +303,7 @@ sub suites {
   else { $_ = 100. * $success/$no; }
 
   printf("%s\n%-${len}s%7d %7d %7d\nSuccess rate: %3.2f%%\n",
-	 ('_' x ($len+40)),
+	 ('_' x ($len+24)),
 	 'TOTAL',
 	 $success,
 	 $ignored,
