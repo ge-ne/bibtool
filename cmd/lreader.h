@@ -22,7 +22,7 @@
 #define L_FIELD		0x202
 #define L_BUILTIN	0x203
 #define L_FUNCTION	0x204
-#define L_LIST		0x205
+#define L_CONS		0x205
 #define L_GROUP		0x206
 #define L_TRUE		0x207
 #define L_FALSE		0x208

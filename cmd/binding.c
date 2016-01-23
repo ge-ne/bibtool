@@ -286,10 +286,10 @@ Term g_fct(binding, term)			   /*                        */
 ** Returns:	
 **___________________________________________________			     */
 static Term bool_rsc(binding, name, term, rp)	   /*                        */
-    Binding binding;				   /*                        */
-    char * name;				   /*                        */
-    Term term;					   /*                        */
-    int * rp;					   /*                        */
+  Binding binding;				   /*                        */
+  char * name;				   	   /*                        */
+  Term term;					   /*                        */
+  int * rp;					   /*                        */
 { switch (list_length(Cdr(term)))		   /*                        */
   { case 0:					   /*                        */
       break;					   /*                        */
@@ -304,21 +304,58 @@ static Term bool_rsc(binding, name, term, rp)	   /*                        */
   return SymTerm(*rp ? sym_true : sym_false);	   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	num_rsc()
+** Type:	static Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 name	
+**	 term	
+**	 rp	
+** Returns:	
+**___________________________________________________			     */
+static Term num_rsc(binding, name, term, rp)	   /*                        */
+  Binding binding;				   /*                        */
+  char * name;				   	   /*                        */
+  Term term;					   /*                        */
+  int * rp;					   /*                        */
+{ switch (list_length(Cdr(term)))		   /*                        */
+  { case 0:					   /*                        */
+      break;					   /*                        */
+    case 1:					   /*                        */
+      term = eval_num(binding, Cadr(term));	   /*                        */
+      *rp  = TNumber(term);	   		   /*                        */
+      return term;				   /*                        */
+    default:					   /*                        */
+      ErrorNF("Too many arguments for ", name);	   /*                        */
+  }						   /*                        */
+  return NumberTerm(*rp);	   		   /*                        */
+}						   /*------------------------*/
+
 #define BIND(NAME)
 #define BindGet(NAME,GET)
 #define Bind(NAME, SYM)
 #define BindBool(NAME,GETTER,RSC)			\
-  extern int RSC;					\
   static Term GETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
-  { return bool_rsc(binding, NAME, term, &RSC); }
+  { extern int RSC;					\
+    return bool_rsc(binding, NAME, term, &RSC); }
+#define BindNum(NAME,GETTER,RSC)			\
+  static Term GETTER (binding, term)			\
+    Binding binding;					\
+    Term term;						\
+  { extern int RSC;					\
+    return num_rsc(binding, NAME, term, &RSC); }
 #include "builtin.h"
 
 #undef BIND
 #undef Bind
 #undef BindGet
 #undef BindBool
+#undef BindNum
 
 /*-----------------------------------------------------------------------------
 ** Function:	def_binding()
@@ -335,7 +372,8 @@ Binding def_binding()				   /*                        */
 #define BIND(NAME)   	  bind(b, symdef(symbol((String)NAME), L_FIELD, NULL))
 #define BindGet(NAME,GET) bind(b, symdef(symbol((String)NAME), L_FIELD, GET))
 #define BindBool(NAME,GET,R) BindGet(NAME, GET)
-#define Bind(NAME, SYM)   bind(b, SYM)
+#define BindNum(NAME,GET,R)  BindGet(NAME, GET)
+#define Bind(NAME, SYM)      bind(b, SYM)
  						   /*                        */
 #include "builtin.h"
   return b;				   	   /*                        */
@@ -398,7 +436,7 @@ Term eval_term(binding, term)			   /*                        */
     case L_NUMBER:				   /*                        */
     case L_TRUE:				   /*                        */
     case L_FALSE:				   /*                        */
-    case L_LIST:				   /*                        */
+    case L_CONS:				   /*                        */
     case L_GROUP:				   /*                        */
       return term;				   /*                        */
     case 0:					   /*                        */

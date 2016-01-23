@@ -180,7 +180,7 @@ Term eval_bool(binding, term)			   /*                        */
   if (term == NIL) return SymTerm(sym_false);	   /*                        */
  						   /*                        */
   switch (TermOp(term))				   /*                        */
-  { case L_LIST:				   /*                        */
+  { case L_CONS:				   /*                        */
       return SymTerm(sym_true);			   /*                        */
     case L_NUMBER:				   /*                        */
       return TNumber(term)			   /*                        */
@@ -403,11 +403,13 @@ Term eval_num(binding, term)			   /*                        */
 { 						   /*                        */
   term = eval_term(binding, term);		   /*                        */
  						   /*                        */
-  if (term == NIL)				   /*                        */
+  if (term == NIL || TermOp(term) == L_FALSE)	   /*                        */
     return NumberTerm(0L);			   /*                        */
+  if (TermOp(term) == L_TRUE)	   		   /*                        */
+    return NumberTerm(1L);			   /*                        */
   if (TermIsNumber(term))	   		   /*                        */
     return term;				   /*                        */
-  if (TermIsCons(term))				   /*                        */
+  if (TermIsList(term))				   /*                        */
     return NumberTerm((long)list_length(term));	   /*                        */
   if (TermIsString(term))			   /*                        */
     return NumberTerm(scanf_num(TString(term)));   /*                        */

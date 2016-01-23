@@ -34,6 +34,7 @@ extern Term g_version();
 extern Term g_field();
 extern void print_quoted();			   /*                        */
 extern Term eval_bool _ARG((Binding b, Term t));   /*                        */
+extern Term eval_num _ARG((Binding b, Term t));    /*                        */
 
 extern SymDef* sym_char;			   /*                        */
 
@@ -42,7 +43,7 @@ extern SymDef* sym_char;			   /*                        */
 #define SYMDEF(S,N,G) symdef((String)S,N,G)
 
 Declare(sym_group,  SYMDEF("group",    L_GROUP,		NULL));
-Declare(sym_list,   SYMDEF("list",     L_LIST,		NULL));
+Declare(sym_list,   SYMDEF("cons",     L_CONS,		NULL));
 Declare(sym_fct,    SYMDEF("function", L_FUNCTION,	NULL));
 
 Declare(sym_string, SYMDEF("string",   L_STRING,	NULL));

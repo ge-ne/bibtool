@@ -85,7 +85,7 @@ String tag_id(c)			   	   /*                        */
     case L_FIELD:    return (String)"field";	   /*                        */
     case L_NUMBER:   return (String)"number";	   /*                        */
     case L_FUNCTION: return (String)"function";	   /*                        */
-    case L_LIST:     return (String)"list";	   /*                        */
+    case L_CONS:     return (String)"cons";	   /*                        */
     case L_GROUP:    return (String)"group";	   /*                        */
     case L_TRUE:     return (String)"true";	   /*                        */
     case L_FALSE:    return (String)"false";	   /*                        */
@@ -298,9 +298,9 @@ static int scan(b)			   	   /*                        */
 	  					   /*                        */
       case '[':					   /*                        */
 	for (c = GetC; c && isspace(c); c = GetC); /*                        */
-	if (c == ']') {	Return(NIL, L_LIST); }	   /*                        */
+	if (c == ']') {	Return(NIL, L_CONS); }	   /*                        */
 	UnGetC(c);				   /*                        */
-	Return(List(NIL, NIL), L_LIST);		   /*                        */
+	Return(Cons1(NIL), L_CONS);		   /*                        */
 	  					   /*                        */
       case '=':					   /*                        */
 	if ((c=GetC) == '=') { ReturnTerm(L_EQ); } /*                        */
@@ -359,7 +359,7 @@ static int scan(b)			   	   /*                        */
 	  sbclose(sb);				   /*                        */
  						   /*                        */
 	  if (strcmp((char*)s, "nil") == 0)	   /*                        */
-	  { Return(NIL, L_LIST); }		   /*                        */
+	  { Return(NIL, L_CONS); }		   /*                        */
 	  if (strcmp((char*)s, "true") == 0)	   /*                        */
 	  { Return(SymTerm(sym_true), L_TRUE); }   /*                        */
 	  if (strcmp((char*)s, "false") == 0)	   /*                        */
@@ -425,7 +425,7 @@ static Term read_list(b, t)			   /*                        */
       Car(t) = a;				   /*                        */
       tp     = &Cdr(t);				   /*                        */
     } else {					   /*                        */
-      *tp = List(a, NIL);			   /*                        */
+      *tp = Cons1(a);			   	   /*                        */
       tp  = &Cdr(*tp);				   /*                        */
     }						   /*                        */
     c = scan(b);				   /*                        */
@@ -460,7 +460,7 @@ static Term read_fct(b, t)			   /*                        */
   for (a = read_expr(b);			   /*                        */
        a != term_eof;				   /*                        */
        a = read_expr(b))			   /*                        */
-  { Cdr(x) = Cons(a, NIL);			   /*                        */
+  { Cdr(x) = Cons1(a);			   	   /*                        */
     x = Cdr(x);				   	   /*                        */
     c = scan(b);				   /*                        */
     if (c == ')') return t;		   	   /*                        */
@@ -501,7 +501,7 @@ static Term read_builtin(b, t)	   		   /*                        */
       fputs("--- skip =\n", stderr);		   /*                        */
 #endif
     } else if (c == '{')		   	   /*                        */
-    { Cdr(t) = Cons(scan_block(),NIL);		   /*                        */
+    { Cdr(t) = Cons1(scan_block());		   /*                        */
       return t;	   				   /*                        */
     } else if ((c != L_MINUS && L_IS_OPERATOR(c))  /*                        */
 	       || c == ';'			   /*                        */
@@ -511,7 +511,7 @@ static Term read_builtin(b, t)	   		   /*                        */
       return t;					   /*                        */
     } else {					   /*                        */
       unscan(c, yylval);			   /*                        */
-      Cdr(t) = Cons(read_expr(b),NIL);		   /*                        */
+      Cdr(t) = Cons1(read_expr(b));		   /*                        */
       return t;	   				   /*                        */
     }						   /*                        */
   }						   /*                        */
@@ -550,7 +550,7 @@ static TStack reduce(stack)			   /*                        */
       } else {					   /*                        */
 	Term t	  = StackTerm(prev);		   /*                        */
 	TermOp(t) = L_UMINUS;			   /*                        */
-	Cdr(t)    = Cons(StackTerm(current), NIL); /*                        */
+	Cdr(t)    = Cons1(StackTerm(current)); 	   /*                        */
 						   /*                        */
 	StackTerm(current) = t;	   		   /*                        */
 	StackChar(current) = L_UMINUS;		   /*                        */
@@ -601,15 +601,14 @@ static TStack reduce(stack)			   /*                        */
 	}					   /*                        */
  						   /*                        */
 	Cdr(t) = Cons(NIL,			   /*                        */
-		      Cons(StackTerm(current),	   /*                        */
-			   NIL));		   /*                        */
+		      Cons1(StackTerm(current)));  /*                        */
 	StackPrev(current) = ts_pop(prev);	   /*                        */
 	Car(Cdr(t)) = StackTerm(StackPrev(current));/*                       */
       } else {					   /*                        */
-        Cdr(t) = Cons(StackTerm(current), NIL);	   /*                        */
+        Cdr(t) = Cons1(StackTerm(current));	   /*                        */
       }						   /*                        */
       StackTerm(current) = t;			   /*                        */
-      StackChar(current) = L_LIST;		   /*                        */
+      StackChar(current) = L_CONS;		   /*                        */
       StackPrev(current) = ts_pop(StackPrev(current));/*                     */
 #ifdef DEBUG_PARSER
       fputs("--- pop\n", stderr);		   /*                        */
@@ -674,12 +673,12 @@ static Term read_expr(b)			   /*                        */
 	  { linenum = lno;			   /*                        */
 	    Error("Missing ) before ",		   /*                        */
 		  tag_id(c), 0); }		   /*                        */
-	  Shift(L_LIST, t);		   	   /*                        */
+	  Shift(L_CONS, t);		   	   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
  						   /*                        */
-      case L_LIST:				   /*                        */
-	Shift(L_LIST, (yylval == NIL	   	   /*                        */
+      case L_CONS:				   /*                        */
+	Shift(L_CONS, (yylval == NIL	   	   /*                        */
 		       ? NIL			   /*                        */
 		       : read_list(b, yylval)));   /*                        */
 	break;					   /*                        */
@@ -688,7 +687,7 @@ static Term read_expr(b)			   /*                        */
 	Shift(L_QUOTE,				   /*                        */
 	      new_term(L_QUOTE,			   /*                        */
 		       NIL,			   /*                        */
-		       Cons(read_expr(b), NIL)));  /*                        */
+		       Cons1(read_expr(b))));  	   /*                        */
 	break;					   /*                        */
 						   /*                        */
       case L_FIELD:				   /*                        */

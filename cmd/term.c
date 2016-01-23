@@ -265,7 +265,7 @@ void print_term(file, term)			   /*                        */
     case L_FALSE:				   /*                        */
       fputs("false", file);			   /*                        */
       return;					   /*                        */
-    case L_LIST:				   /*                        */
+    case L_CONS:				   /*                        */
       fputs("[", file);			   	   /*                        */
       prt_args(file, term);		   	   /*                        */
       fputs("]", file);			   	   /*                        */
@@ -327,7 +327,7 @@ void print_term(file, term)			   /*                        */
 int list_length(t)				   /*                        */
   Term t;					   /*                        */
 { int i = 0;					   /*                        */
-  while (t && TermIsCons(t))			   /*                        */
+  while (t && TermIsList(t))			   /*                        */
   { i++;					   /*                        */
     t = Cdr(t);					   /*                        */
   }						   /*                        */

@@ -24,7 +24,7 @@
   BIND("clear.ignored.words"	);   		   /* RscByFct	             */
   BindBool("count.all"		, g_count_all, rsc_cnt_all);/* RscBoolean	*/
   BindBool("count.used"		, g_count_used, rsc_cnt_used);/* RscBoolean*/
-  BIND("crossref.limit"		);   		   /* RscNumeric	     */
+  BindNum( "crossref.limit"	   , g_xref_limit     ,rsc_xref_limit     );
   BIND("default.key"		);   		   /* RscByFct	             */
   BIND("delete.field"		);   		   /* RscByFct	             */
   BIND("dir.file.separator"	);   		   /* RscString	             */
@@ -66,11 +66,11 @@
   BindBool("preserve.key.case"	, g_preserve_key_case, rsc_key_case);/* RscBoolean*/
   BindBool("preserve.keys"	, g_preserve_keys, rsc_key_preserve);/* RscBoolean*/
   BindGet("print"		, g_print);	   /* RscByFct	             */
-  BIND("print.align.string"	);   		   /* RscNumeric	     */
-  BIND("print.align.comment"	);   		   /* RscNumeric	     */
-  BIND("print.align.preamble"	);   		   /* RscNumeric	     */
-  BIND("print.align.key"	);   		   /* RscNumeric	     */
-  BIND("print.align"		);   		   /* RscNumeric	     */
+  BindNum( "print.align.string"    , g_col_s	  ,rsc_col_s	  );
+  BindNum( "print.align.comment"   , g_col_c	  ,rsc_col_c	  );
+  BindNum( "print.align.preamble"  , g_col_p	  ,rsc_col_p	  );
+  BindNum( "print.align.key"	   , g_col_key	  ,rsc_col_key	  );
+  BindNum( "print.align"	   , g_col		  ,rsc_col		  );
   BindBool("print.all.strings"	, g_print_all_strings, rsc_all_macs);/* RscBoolean*/
   BIND("print.entry.types"	);   		   /* RscString	             */
   BindBool("print.equal.right"	, g_eq_right, rsc_eq_right);/* RscBoolean    */
@@ -78,9 +78,9 @@
   BindBool("print.comma.at.end"	, g_print_ce, rsc_print_ce);/* RscBoolean    */
   BIND("print.deleted.prefix"	);   		   /* RscString	             */
   BindBool("print.deleted.entries", g_del_q_entries, rsc_del_q);/* RscBoolean*/
-  BIND("print.indent"		);   		   /* RscNumeric	     */
-  BIND("print.line.length"	);   		   /* RscNumeric	     */
-  BIND("print.newline"		);   		   /* RscNumeric	     */
+  BindNum( "print.indent"	   , g_indent	  ,rsc_indent	  );
+  BindNum( "print.line.length"     , g_linelen	  ,rsc_linelen	  );
+  BindNum( "print.newline"         , g_newlines	  ,rsc_newlines	  );
   BindBool("print.parentheses"	, g_parentheses, rsc_parentheses);/* RscBoolean*/
   BindBool("print.terminal.comma", g_print_tc, rsc_print_tc);/* RscBoolean   */
   BindBool("print.use.tab"	, g_use_tabs, rsc_use_tabs);/* RscBoolean    */
@@ -93,7 +93,7 @@
   BIND("resource.search.path"	);   		   /* RscByFct	             */
   BIND("rewrite.rule"		);   		   /* RscByFct	             */
   BindBool("rewrite.case.sensitive", g_case_rewrite, rsc_case_rewrite);/* RscBoolean*/
-  BIND("rewrite.limit"		);   		   /* RscNumeric	     */
+  BindNum( "rewrite.limit"	   , g_rewrite_limit  ,rsc_rewrite_limit  );
   BIND("select"			);   		   /* RscByFct	             */
   BIND("select.by.string"	);   		   /* RscByFct	             */
   BIND("select.by.non.string"	);   		   /* RscByFct	             */
