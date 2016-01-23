@@ -52,7 +52,6 @@ sub boolean_tests
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-1",
 	   args		=> '--eval',
-	   ignore	=> 1,
 	   resource	=> "$cmd;\n",
 	   expected_err	=> '',
 	   expected_out	=> "$value\n" );
@@ -72,42 +71,42 @@ sub boolean_tests
 	   expected_out	=> "false\n" );
 }
 
-  boolean_tests('apply.alias', "true");
-  boolean_tests('apply.modify', "true");
-  boolean_tests('apply.include', "true");
-  boolean_tests('check.double', "true");
-  boolean_tests('check.double.delete', "true");
-  boolean_tests('check.case.sensitive', "true");
-  boolean_tests('count.all', "true");
-  boolean_tests('count.used', "true");
-  boolean_tests('dump.symbols', "true");
-  boolean_tests('expand.macros', "true");
-  boolean_tests('expand.crossref', "true");
-  boolean_tests('key.generation', "true");
-  boolean_tests('key.make.alias', "true");
-  boolean_tests('key.expand.macros', "true");
-  boolean_tests('pass.comments', "true");
-  boolean_tests('preserve.key.case', "true");
-  boolean_tests('preserve.keys', "true");
-  boolean_tests('print.all.strings', "true");
-  boolean_tests('print.equal.right', "true");
-  boolean_tests('print.braces', "true");
-  boolean_tests('print.comma.at.end', "true");
-  boolean_tests('print.deleted.entries', "true");
-  boolean_tests('print.parentheses', "true");
-  boolean_tests('print.terminal.comma', "true");
-  boolean_tests('print.use.tab', "true");
-  boolean_tests('print.wide.equal', "true");
-  boolean_tests('quiet', "false");
-  boolean_tests('rewrite.case.sensitive', "true");
-  boolean_tests('select.case.sensitive', "true");
-  boolean_tests('select.crossrefs', "true");
-  boolean_tests('sort', "true");
-  boolean_tests('sort.cased', "true");
-  boolean_tests('sort.macros', "true");
-  boolean_tests('sort.reverse', "true");
-  boolean_tests('suppress.initial.newline', "true");
-  boolean_tests('verbose', "false");
+  boolean_tests( "apply.alias"			, "false"   );
+  boolean_tests( "apply.modify"			, "false"   );
+  boolean_tests( "apply.include"		, "false"   );
+  boolean_tests( "check.double"			, "false"   );
+  boolean_tests( "check.double.delete"		, "false"   );
+  boolean_tests( "check.case.sensitive" 	, "true"    );
+  boolean_tests( "count.all"			, "false"   );
+  boolean_tests( "count.used"			, "false"   );
+  boolean_tests( "dump.symbols"			, "false"   );
+  boolean_tests( "expand.macros"		, "false"   );
+  boolean_tests( "expand.crossref"		, "false"   );
+  boolean_tests( "key.generation"		, "false"   );
+  boolean_tests( "key.make.alias"		, "false"   );
+  boolean_tests( "key.expand.macros"		, "true"    );
+  boolean_tests( "pass.comments"		, "false"   );
+  boolean_tests( "preserve.key.case"		, "false"   );
+  boolean_tests( "preserve.keys"		, "false"   );
+  boolean_tests( "print.all.strings"		, "true"    );
+  boolean_tests( "print.equal.right"		, "true"    );
+  boolean_tests( "print.braces"			, "true"    );
+  boolean_tests( "print.comma.at.end"		, "true"    );
+  boolean_tests( "print.deleted.entries"	, "true"    );
+  boolean_tests( "print.parentheses"		, "false"   );
+  boolean_tests( "print.terminal.comma" 	, "false"   );
+  boolean_tests( "print.use.tab"		, "true"    );
+  boolean_tests( "print.wide.equal"		, "false"   );
+  boolean_tests( "quiet"			, "false"   );
+  boolean_tests( "rewrite.case.sensitive"	, "true"    );
+  boolean_tests( "select.case.sensitive"	, "false"   );
+  boolean_tests( "select.crossrefs"		, "false"   );
+  boolean_tests( "sort"				, "false"   );
+  boolean_tests( "sort.cased"			, "false"   );
+  boolean_tests( "sort.macros"			, "true"    );
+  boolean_tests( "sort.reverse"			, "false"   );
+  boolean_tests( "suppress.initial.newline"	, "false"   );
+  boolean_tests( "verbose"			, "false"   ) ;
 
 1;
 #------------------------------------------------------------------------------

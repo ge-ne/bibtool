@@ -212,6 +212,17 @@ Term g_print(binding, term)			   /*                        */
   return NIL;			   		   /*                        */
 }						   /*------------------------*/
 
+#ifdef NEVER
+/*-----------------------------------------------------------------------------
+** Function:	g_verbose()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
 Term g_verbose(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
@@ -219,6 +230,7 @@ Term g_verbose(binding, term)			   /*                        */
 
   return SymTerm(rsc_verbose ? sym_true : sym_false);/*                      */
 }						   /*------------------------*/
+#endif
 
 /*-----------------------------------------------------------------------------
 ** Function:	g_fct()
@@ -261,6 +273,23 @@ Term g_fct(binding, term)			   /*                        */
   return (*SymGet(sym))(binding, term);	   	   /*                        */
 }						   /*------------------------*/
 
+#define BIND(NAME)
+#define BindGet(NAME,GET)
+#define Bind(NAME, SYM)
+#define BindBool(NAME,G,R)			\
+  Term G (binding, term)			\
+    Binding binding;				\
+    Term term;					\
+  { extern int R;				\
+    return SymTerm(R ? sym_true : sym_false);	\
+  }
+#include "builtin.h"
+
+#undef BIND
+#undef Bind
+#undef BindGet
+#undef BindBool
+
 /*-----------------------------------------------------------------------------
 ** Function:	def_binding()
 ** Type:	Binding
@@ -275,6 +304,7 @@ Binding def_binding()				   /*                        */
  						   /*                        */
 #define BIND(NAME)   	  bind(b, symdef(symbol((String)NAME), L_FIELD, NULL))
 #define BindGet(NAME,GET) bind(b, symdef(symbol((String)NAME), L_FIELD, GET))
+#define BindBool(NAME,GET,R) BindGet(NAME, GET)
 #define Bind(NAME, SYM)   bind(b, SYM)
  						   /*                        */
 #include "builtin.h"

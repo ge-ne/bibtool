@@ -11,29 +11,29 @@
 ******************************************************************************/
 
   BIND("add.field"		);   		   /* RscByFct	             */
-  BIND("apply.alias"		);   		   /* RscBoolean	     */
-  BIND("apply.modify"		);   		   /* RscBoolean	     */
-  BIND("apply.include"		);   		   /* RscBoolean	     */
+  BindBool("apply.alias"		, g_apply_alias, rsc_apply_alias);/* RscBoolean*/
+  BindBool("apply.modify"		, g_apply_modify, rsc_apply_modify);/* RscBoolean*/
+  BindBool("apply.include"		, g_apply_include, rsc_apply_include);/* RscBoolean*/
   Bind("and"			, sym_and);  	   /* RscTerm	             */
   BIND("bibtex.env.name"	);   		   /* RscString	             */
   BIND("bibtex.search.path"	);   		   /* RscString	             */
-  BIND("check.double"		);   		   /* RscBoolean	     */
-  BIND("check.double.delete"	);   		   /* RscBoolean	     */
+  BindBool("check.double"		, g_check_double, rsc_double_check);/* RscBoolean*/
+  BindBool("check.double.delete"	, g_check_double_delete, rsc_del_dbl);/* RscBoolean*/
   BIND("check.rule"		);   		   /* RscByFct	             */
-  BIND("check.case.sensitive"	);   		   /* RscBoolean	     */
+  BindBool("check.case.sensitive"	, g_check_case_sensitive, rsc_case_check);/* RscBoolean*/
   BIND("clear.ignored.words"	);   		   /* RscByFct	             */
-  BIND("count.all"		);   		   /* RscBoolean	     */
-  BIND("count.used"		);   		   /* RscBoolean	     */
+  BindBool("count.all"		, g_count_all, rsc_cnt_all);/* RscBoolean	*/
+  BindBool("count.used"		, g_count_used, rsc_cnt_used);/* RscBoolean*/
   BIND("crossref.limit"		);   		   /* RscNumeric	     */
   BIND("default.key"		);   		   /* RscByFct	             */
   BIND("delete.field"		);   		   /* RscByFct	             */
   BIND("dir.file.separator"	);   		   /* RscString	             */
-  BIND("dump.symbols"		);   		   /* RscBoolean	     */
+  BindBool("dump.symbols"		, g_dump_symbols, rsc_dump_symbols);/* RscBoolean*/
   BIND("env.separator"		);   		   /* RscString	             */
   BIND("extract.file"		);   		   /* RscByFct	             */
   BIND("extract.regex"		);   		   /* RscByFct	             */
-  BIND("expand.macros"		);   		   /* RscBoolean	     */
-  BIND("expand.crossref"	);   		   /* RscBoolean	     */
+  BindBool("expand.macros"		, g_expand_macros, rsc_expand_macros);/* RscBoolean*/
+  BindBool("expand.crossref"	, g_expand_crossref, rsc_expand_crossref);/* RscBoolean*/
   BIND("fmt.inter.name"		);   		   /* RscByFct	             */
   BIND("fmt.name.pre"		);   		   /* RscByFct	             */
   BIND("fmt.name.name"		);   		   /* RscByFct	             */
@@ -46,12 +46,12 @@
   BIND("input"			);   		   /* RscByFct	             */
   BIND("ignored.word"		);   		   /* RscByFct	             */
   Bind("ilike"			, sym_ilike);	   /* RscTerm	             */
-  BIND("key.generation"		);   		   /* RscBoolean	     */
+  BindBool("key.generation"		, g_key_generation, rsc_make_key);/* RscBoolean*/
   BIND("key.base"		);   		   /* RscByFct	             */
   BIND("key.format"		);   		   /* RscByFct	             */
-  BIND("key.make.alias"		);   		   /* RscBoolean	     */
+  BindBool("key.make.alias"		, g_key_make_alias, rsc_make_alias);/* RscBoolean*/
   BIND("key.number.separator"	);   		   /* RscByFct	             */
-  BIND("key.expand.macros"	);   		   /* RscBoolean	     */
+  BindBool("key.expand.macros"	, g_key_expand_macros, rsc_key_expand_macros);/* RscBoolean*/
   Bind("like"			, sym_like); 	   /* RscTerm	             */
   BIND("macro.file"		);   		   /* RscByFct	             */
   Bind("mod"			, sym_mod);  	   /* RscTerm	             */
@@ -62,57 +62,57 @@
   BIND("nil"			);   		   /* RscTerm	             */
   BIND("output.file"		);   		   /* RscByFct	             */
   Bind("or"			,sym_or);	   /* RscTerm	             */
-  BIND("pass.comments"		);   		   /* RscBoolean	     */
-  BIND("preserve.key.case"	);   		   /* RscBoolean	     */
-  BIND("preserve.keys"		);   		   /* RscBoolean	     */
+  BindBool("pass.comments"		, g_pass_comments, rsc_pass_comment);/* RscBoolean*/
+  BindBool("preserve.key.case"	, g_preserve_key_case, rsc_key_case);/* RscBoolean*/
+  BindBool("preserve.keys"		, g_preserve_keys, rsc_key_preserve);/* RscBoolean*/
   BindGet("print"		, g_print);	   /* RscByFct	             */
   BIND("print.align.string"	);   		   /* RscNumeric	     */
   BIND("print.align.comment"	);   		   /* RscNumeric	     */
   BIND("print.align.preamble"	);   		   /* RscNumeric	     */
   BIND("print.align.key"	);   		   /* RscNumeric	     */
   BIND("print.align"		);   		   /* RscNumeric	     */
-  BIND("print.all.strings"	);   		   /* RscBoolean	     */
+  BindBool("print.all.strings"	, g_print_all_strings, rsc_all_macs);/* RscBoolean*/
   BIND("print.entry.types"	);   		   /* RscString	             */
-  BIND("print.equal.right"	);   		   /* RscBoolean	     */
-  BIND("print.braces"		);   		   /* RscBoolean	     */
-  BIND("print.comma.at.end"	);   		   /* RscBoolean	     */
+  BindBool("print.equal.right"	, g_print_equal_right, rsc_eq_right);/* RscBoolean*/
+  BindBool("print.braces"		, g_print_braces, rsc_braces);/* RscBoolean*/
+  BindBool("print.comma.at.end"	, g_print_comma_at_end, rsc_print_ce);/* RscBoolean*/
   BIND("print.deleted.prefix"	);   		   /* RscString	             */
-  BIND("print.deleted.entries"	);   		   /* RscBoolean	     */
+  BindBool("print.deleted.entries"	, g_print_deleted_entries, rsc_del_q);/* RscBoolean*/
   BIND("print.indent"		);   		   /* RscNumeric	     */
   BIND("print.line.length"	);   		   /* RscNumeric	     */
   BIND("print.newline"		);   		   /* RscNumeric	     */
-  BIND("print.parentheses"	);   		   /* RscBoolean	     */
-  BIND("print.terminal.comma"	);   		   /* RscBoolean	     */
-  BIND("print.use.tab"		);   		   /* RscBoolean	     */
-  BIND("print.wide.equal"	);   		   /* RscBoolean	     */
+  BindBool("print.parentheses"	, g_parentheses, rsc_parentheses);/* RscBoolean*/
+  BindBool("print.terminal.comma"	, g_print_terminal_comma, rsc_print_tc);/* RscBoolean*/
+  BindBool("print.use.tab"	, g_use_tabs, rsc_use_tabs);/* RscBoolean    */
+  BindBool("print.wide.equal"	, g_print_we, rsc_print_we);/* RscBoolean    */
   Bind("quote"			, sym_quote);	   /*	                     */
-  BIND("quiet"			);   		   /* RscBoolean	     */
+  BindBool("quiet"		, g_quiet, rsc_quiet);/* RscBoolean	     */
   BIND("regexp.syntax"		);   		   /* RscByFct	             */
   BIND("rename.field"		);   		   /* RscByFct	             */
   BIND("resource"		);   		   /* RscByFct	             */
   BIND("resource.search.path"	);   		   /* RscByFct	             */
   BIND("rewrite.rule"		);   		   /* RscByFct	             */
-  BIND("rewrite.case.sensitive"	);   		   /* RscBoolean	     */
+  BindBool("rewrite.case.sensitive"	, g_rewrite_case_sensitive, rsc_case_rewrite);/* RscBoolean*/
   BIND("rewrite.limit"		);   		   /* RscNumeric	     */
   BIND("select"			);   		   /* RscByFct	             */
   BIND("select.by.string"	);   		   /* RscByFct	             */
   BIND("select.by.non.string"	);   		   /* RscByFct	             */
   BIND("select.by.string.ignored");   		   /* RscString	             */
-  BIND("select.case.sensitive"	);   		   /* RscBoolean	     */
+  BindBool("select.case.sensitive"	, g_select_case_sensitive, rsc_case_select);/* RscBoolean*/
   BIND("select.fields"		);   		   /* RscString	             */
   BIND("select.non"		);   		   /* RscByFct	             */
-  BIND("select.crossrefs"	);   		   /* RscBoolean	     */
-  BIND("sort"			);   		   /* RscBoolean	     */
-  BIND("sort.cased"		);   		   /* RscBoolean	     */
-  BIND("sort.macros"		);   		   /* RscBoolean	     */
-  BIND("sort.reverse"		);   		   /* RscBoolean	     */
+  BindBool("select.crossrefs"	, g_select_crossrefs, rsc_xref_select);/* RscBoolean*/
+  BindBool("sort"			, g_sort, rsc_sort);/* RscBoolean	*/
+  BindBool("sort.cased"		, g_sort_cased, rsc_sort_cased);/* RscBoolean*/
+  BindBool("sort.macros"		, g_sort_macros, rsc_srt_macs);/* RscBoolean*/
+  BindBool("sort.reverse"		, g_sort_reverse, rsc_sort_reverse);/* RscBoolean*/
   BIND("sort.order"		);   		   /* RscByFct	             */
   BIND("sort.format"		);   		   /* RscByFct	             */
-  BIND("suppress.initial.newline");   		   /* RscBoolean	     */
+  BindBool("suppress.initial.newline", g_suppress_initial_newline, rsc_no_nl);/* RscBoolean*/
   BIND("symbol.type"		);   		   /* RscByFct	             */
   BIND("tex.define"		);   		   /* RscByFct	             */
   Bind("true"			, sym_true);  	   /* RscTerm	             */
-  BindGet("verbose"		, g_verbose);	   /* RscBoolean	     */
+  BindBool("verbose"		, g_verbose, rsc_verbose);/* RscBoolean      */
   BindGet("version"		, g_version);	   /* RscByFct	             */
  						   /*                        */
   Bind("function"	, sym_fct);	   	   /*                        */
