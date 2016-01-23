@@ -36,37 +36,35 @@ typedef struct S_TERM {				   /*                        */
 
 #define NIL ((Term)0)
 
-#define TermOp(T)	((T)->type)
-#define Car(T)		((T)->a.car)
-#define Cdr(T)		((T)->cdr)
-#define TString(T)	((T)->a.string)
-#define TNumber(T)	((T)->a.number)
-#define TermRefCount(T)	((T)->ref_count)
+#define TType(T)		((T)->type)
+#define Car(T)			((T)->a.car)
+#define Cdr(T)			((T)->cdr)
+#define TString(T)		((T)->a.string)
+#define TNumber(T)		((T)->a.number)
+#define TRefCount(T)		((T)->ref_count)
 
-#define LinkTerm(T)		TermRefCount(T)++
-#define UnlinkTerm(T)		TermRefCount(T)--
+#define LinkTerm(T)		TRefCount(T)++
+#define UnlinkTerm(T)		TRefCount(T)--
 
 #define Cadr(T)			Car(Cdr(T))
 #define Cddr(T)			Cdr(Cdr(T))
 
-#define TermIsNumber(T)		(TermOp(T) == L_NUMBER)
-#define TermIsString(T)		(TermOp(T) == L_STRING)
-#define TermIsList(T)		(TermOp(T) == L_CONS)
-#define TermIsFunction(T)	(TermOp(T) == L_FUNCTION)
-#define TermIsEOF(T)		(TermOp(T) == L_EOF)
-#define TermIsTrue(T)		(TermOp(T) == L_TRUE)
-#define TermIsFalse(T)		(TermOp(T) == L_FALSE)
+#define TermIsNumber(T)		(TType(T) == L_NUMBER)
+#define TermIsString(T)		(TType(T) == L_STRING)
+#define TermIsList(T)		(TType(T) == L_CONS)
+#define TermIsFunction(T)	(TType(T) == L_FUNCTION)
+#define TermIsEOF(T)		(TType(T) == L_EOF)
+#define TermIsTrue(T)		(TType(T) == L_TRUE)
+#define TermIsFalse(T)		(TType(T) == L_FALSE)
 
 #define Cons(CAR, CDR)		new_term(L_CONS, CAR, CDR)
 #define Cons1(CAR)		Cons(CAR, NIL)
 
-#define MakeSymTerm(S)		SymTerm(S) = SymdefTerm(S)
-#define SymdefTerm(S)		new_term(SymOp(S), NIL, NIL)
 #define StringTerm(S)		new_t_string(L_STRING, symbol(S))
 #define BlockTerm(S)		new_t_string(L_BLOCK, symbol(S))
 #define FieldTerm(S)		new_t_string(L_FIELD, symbol(S))
 #define NumberTerm(N)		new_term_num(N)
-#define NewTerm(N)		new_term(N,NIL,NIL)
+#define NewTerm(N)		new_term(N, NIL, NIL)
 
 /*---------------------------------------------------------------------------*/
 
@@ -83,10 +81,9 @@ typedef struct S_SYMDEF {			   /*                        */
   Term term;	   			   	   /*                        */
   Term value;			   		   /*                        */
   Term (*get)();			   	   /*                        */
-  void (*set)();				   /*                        */
 } SSymDef, *SymDef;				   /*------------------------*/
 
-#define SymDefNULL ((SymDef)0)
+#define SymDefNULL	((SymDef)0)
 
 #define SymName(SYM)	((SYM)->name)
 #define SymOp(SYM)	((SYM)->op)
@@ -95,15 +92,9 @@ typedef struct S_SYMDEF {			   /*                        */
 #define SymKey(SYM)	((SYM)->key)
 #define SymValue(SYM)	((SYM)->value)
 #define SymGet(SYM)	((SYM)->get)
-#define SymSet(SYM)	((SYM)->set)
 #define NextJunk(SYM)	((SYM)->next)
 
-#define SymIsNumber(S)	((S) == sym_number) 
-#define SymIs(S,C)	((S) == sym_char[C]) 
-
-#define SymChar(C)	sym_char[C]
-#define SymCharName(C)  SymName(sym_char[C])
-#define SymCharTerm(C)  SymTerm(sym_char[C])
+#define MakeSymTerm(S)	SymTerm(S) = NewTerm(SymOp(S))
 
 /*---------------------------------------------------------------------------*/
 

@@ -29,11 +29,6 @@ typedef struct T_STACK {			   /*                        */
 #define StackTerm(TS)	((TS)->term)
 #define StackPrev(TS)	((TS)->prev)
 
-#define StackSymIs(STACK, C)      SymIs(StackSym(STACK), C)
-#define StackSymIsNumber(STACK)   SymIsNumber(StackSym(STACK))
-#define StackSymIsOperator(STACK) SymIsOperator(StackSym(STACK))
-#define StackSymOp(STACK)         SymOp(StackSym(STACK))
-
 /*---------------------------------------------------------------------------*/
 
 extern TStack ts_pop _ARG((TStack ts));

@@ -11,9 +11,6 @@
 ******************************************************************************/
 
 #include "lreader.h"
-
-#ifndef Declare
-
 #include <stdio.h>
 #include <bibtool/type.h>
 
@@ -22,8 +19,6 @@
 #else
 #define _ARG(A) ()
 #endif
-
-#define Declare(SYM,VAL) extern SymDef SYM
 
 /*---------------------------------------------------------------------------*/
 
@@ -37,50 +32,20 @@ extern Term eval_bool _ARG((Binding b, Term t));   /*                        */
 extern Term eval_num _ARG((Binding b, Term t));    /*                        */
 extern Term eval_str _ARG((Binding b, Term t));    /*                        */
 
+extern Term g_and _ARG((Binding b, Term t));       /*                        */
+extern Term g_not _ARG((Binding b, Term t));       /*                        */
+extern Term g_or _ARG((Binding b, Term t));        /*                        */
+extern Term g_setq _ARG((Binding b, Term t));	   /*                        */
+extern Term g_eq _ARG((Binding b, Term t));	   /*                        */
+extern Term g_ne _ARG((Binding b, Term t));	   /*                        */
+extern Term g_plus _ARG((Binding b, Term t));	   /*                        */
+extern Term g_minus _ARG((Binding b, Term t));	   /*                        */
+extern Term g_div _ARG((Binding b, Term t));	   /*                        */
+extern Term g_times _ARG((Binding b, Term t));	   /*                        */
+extern Term g_mod _ARG((Binding b, Term t));	   /*                        */
+
 extern SymDef* sym_char;			   /*                        */
-
-#endif
-/*---------------------------------------------------------------------------*/
-#define SYMDEF(S,N,G) symdef((String)S,N,G)
-
-Declare(sym_group,  SYMDEF("group",    L_GROUP,		NULL));
-Declare(sym_list,   SYMDEF("cons",     L_CONS,		NULL));
-Declare(sym_fct,    SYMDEF("function", L_FUNCTION,	NULL));
-
-Declare(sym_string, SYMDEF("string",   L_STRING,	NULL));
-Declare(sym_block,  SYMDEF("block",    L_BLOCK,		NULL));
-Declare(sym_number, SYMDEF("number",   L_NUMBER,	NULL));
-
-Declare(sym_field,  SYMDEF("field",    L_FIELD,		NULL));
-Declare(sym_true,   SYMDEF("true",     L_TRUE,		g_self));
-Declare(sym_false,  SYMDEF("false",    L_FALSE,		g_self));
-
-Declare(sym_set,    SYMDEF("=",	       L_SET,		g_setq));
-
-Declare(sym_quote,  SYMDEF("quote",    L_QUOTE,		NULL));
-
-Declare(sym_plus,   SYMDEF("+",	       L_PLUS,		g_plus));
-Declare(sym_minus,  SYMDEF("-",	       L_MINUS,		g_minus));
-Declare(sym_times,  SYMDEF("*",	       L_TIMES,		g_times));
-Declare(sym_div,    SYMDEF("/",	       L_DIV,		g_div));
-Declare(sym_mod,    SYMDEF("%",	       L_MOD,		g_mod));
-
-Declare(sym_and,    SYMDEF("&&",       L_AND,		g_and));
-Declare(sym_or,	    SYMDEF("||",       L_OR,		g_or));
-Declare(sym_not,    SYMDEF("!",	       L_NOT,		g_not));
-Declare(sym_eq,	    SYMDEF("==",       L_EQ,		g_eq));
-Declare(sym_ne,	    SYMDEF("!=",       L_NE,		g_ne));
-Declare(sym_ge,	    SYMDEF(">=",       L_GE,		NULL));
-Declare(sym_gt,	    SYMDEF(">",	       L_GT,		NULL));
-Declare(sym_le,	    SYMDEF("<=",       L_LE,		NULL));
-Declare(sym_lt,	    SYMDEF("<",	       L_LT,		NULL));
-
-Declare(sym_like,   SYMDEF("like",     L_LIKE,		NULL));
-Declare(sym_ilike,  SYMDEF("ilike",    L_ILIKE,		NULL));
-
-Declare(sym_if,	    SYMDEF("if",       L_IF,		NULL));
-Declare(sym_while,  SYMDEF("while",    L_WHILE,		NULL));
-Declare(sym_with,   SYMDEF("with",     L_WITH,		NULL));
+extern SymDef sym_true;			   	   /*                        */
+extern SymDef sym_false;			   /*                        */
 
 /*---------------------------------------------------------------------------*/
-#undef Declare

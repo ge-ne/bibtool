@@ -65,10 +65,10 @@ Term new_term(type, car, cdr)			   /*                        */
   { t = (Term)malloc(sizeof(STerm));		   /*                        */
     if (t == NIL) OUT_OF_MEMORY("term");	   /*                        */
   }	   					   /*                        */
-  TermOp(t)       = type;			   /*                        */
-  Car(t)          = car;			   /*                        */
-  Cdr(t)          = cdr;			   /*                        */
-  TermRefCount(t) = 1L;				   /*                        */
+  TType(t)     = type;			   	   /*                        */
+  Car(t)       = car;			   	   /*                        */
+  Cdr(t)       = cdr;			   	   /*                        */
+  TRefCount(t) = 1L;				   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -90,10 +90,10 @@ Term new_term_num(n)				   /*                        */
   { t = (Term)malloc(sizeof(STerm));		   /*                        */
     if (t == NIL) OUT_OF_MEMORY("term");	   /*                        */
   }	   					   /*                        */
-  TermOp(t)       = L_NUMBER;			   /*                        */
-  TNumber(t)      = n;				   /*                        */
-  Cdr(t)          = NIL;			   /*                        */
-  TermRefCount(t) = 1L;				   /*                        */
+  TType(t)     = L_NUMBER;			   /*                        */
+  TNumber(t)   = n;				   /*                        */
+  Cdr(t)       = NIL;			   	   /*                        */
+  TRefCount(t) = 1L;				   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -117,10 +117,10 @@ Term new_t_string(type, s)		   	   /*                        */
   { t = (Term)malloc(sizeof(STerm));		   /*                        */
     if (t == NIL) OUT_OF_MEMORY("term");	   /*                        */
   }	   					   /*                        */
-  TermOp(t)       = type;			   /*                        */
-  TString(t)      = s;				   /*                        */
-  Cdr(t)          = NIL;			   /*                        */
-  TermRefCount(t) = 1L;				   /*                        */
+  TType(t)     = type;			   	   /*                        */
+  TString(t)   = s;				   /*                        */
+  Cdr(t)       = NIL;			   	   /*                        */
+  TRefCount(t) = 1L;				   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -144,7 +144,7 @@ void free_term(t)				   /*                        */
   cdr = Cdr(t);					   /*                        */
  						   /*                        */
 #ifdef TODO
-  switch (TermOp(t))				   /*                        */
+  switch (TType(t))				   /*                        */
   { case -10:					   /* list type              */
       free_term(Car(t));			   /*                        */
       break;					   /*                        */
@@ -171,10 +171,10 @@ void free_term(t)				   /*                        */
 **		
 ** Arguments:
 **	file	
-**	 t	
+**	t	
 ** Returns:	
 **___________________________________________________			     */
-void prt_field(file, t)		   	   /*                        */
+void prt_field(file, t)		   	   	   /*                        */
   FILE * file;					   /*                        */
   Term t;					   /*                        */
 { int q	 = 0;					   /*                        */
@@ -207,7 +207,7 @@ void prt_field(file, t)		   	   /*                        */
 **		
 ** Arguments:
 **	file	
-**	 t	
+**	t	
 ** Returns:	nothing
 **___________________________________________________			     */
 static void prt_args(file, term)		   /*                        */
@@ -217,7 +217,7 @@ static void prt_args(file, term)		   /*                        */
   if (term == NIL) return;			   /*                        */
  						   /*                        */
   print_term(file, Car(term));		   	   /*                        */
-  for (term = Cdr(term); term; term= Cdr(term))	   /*                        */
+  for (term = Cdr(term); term; term = Cdr(term))   /*                        */
   { fputs(" ", file);			   	   /*                        */
     print_term(file, Car(term));		   /*                        */
   }						   /*                        */
@@ -242,7 +242,7 @@ void print_term(file, term)			   /*                        */
     return;					   /*                        */
   }						   /*                        */
  						   /*                        */
-  switch (TermOp(term))				   /*                        */
+  switch (TType(term))				   /*                        */
   { case L_STRING:				   /*                        */
       fputc('"', file);	   			   /*                        */
       print_quoted(file, TString(term));	   /*                        */
@@ -297,11 +297,11 @@ void print_term(file, term)			   /*                        */
     case L_AND:      key = " and ";          break;/*                        */
     case L_OR:       key = " or ";           break;/*                        */
     default:					   /*                        */
-      fprintf(file, "?0x%x?", TermOp(term));	   /*                        */
+      fprintf(file, "?0x%x?", TType(term));	   /*                        */
       return;					   /*                        */
   }						   /*                        */
  						   /*                        */
-  if (L_IS_BINARY(TermOp(term)) )		   /*                        */
+  if (L_IS_BINARY(TType(term)) )		   /*                        */
   { term = Cdr(term);				   /*                        */
     fputc('(', file);				   /*                        */
     print_term(file, Car(term));		   /*                        */
@@ -358,7 +358,6 @@ SymDef symdef(name, op, get)	   	   	   /*                        */
   SymTerm(sym)  = NIL;				   /*                        */
   SymValue(sym) = NIL;				   /*                        */
   SymGet(sym)   = get;			   	   /*                        */
-  SymSet(sym)   = NULL;			   	   /*                        */
   return sym;					   /*                        */
 }						   /*------------------------*/
 

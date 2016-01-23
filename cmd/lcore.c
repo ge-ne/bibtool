@@ -39,9 +39,8 @@
 /*---------------------------------------------------------------------------*/
 
 
-#define Declare(SYM,VAL) SymDef SYM
-#include "lcore.h"
-
+SymDef sym_true;
+SymDef sym_false;
 SymDef* sym_char;				   /*                        */
 
 /*-----------------------------------------------------------------------------
@@ -50,8 +49,8 @@ SymDef* sym_char;				   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	file	
-**	 s	
+**	file	the output stream
+**	s	the string to be printed
 ** Returns:	nothing
 **___________________________________________________			     */
 void print_quoted(file, s)		   	   /*                        */
@@ -93,8 +92,8 @@ void print_quoted(file, s)		   	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_self(binding, term)			   /*                        */
@@ -109,8 +108,8 @@ Term g_self(binding, term)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_eq(binding, term)			   /*                        */
@@ -136,10 +135,10 @@ Term g_eq(binding, term)			   /*                        */
 	   && strcmp((char*)TString(a),		   /*                        */
 		     (char*)TString(b)) == 0 ? 1 : 0);/*                     */
   }						   /*                        */
-  else if (TermOp(a) == L_TRUE)			   /*                        */
-  { val = (TermOp(b) == TermOp(a)); }		   /*                        */
-  else if (TermOp(a) == L_FALSE)		   /*                        */
-  { val = (TermOp(b) == TermOp(a)); }		   /*                        */
+  else if (TermIsTrue(a))			   /*                        */
+  { val = (TType(b) == TType(a)); }		   /*                        */
+  else if (TermIsFalse(a))		   	   /*                        */
+  { val = (TType(b) == TType(a)); }		   /*                        */
   else val = 0;					   /*                        */
  						   /*                        */
   return SymTerm(val ? sym_true : sym_false );	   /*                        */
@@ -151,14 +150,14 @@ Term g_eq(binding, term)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_ne(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ return SymTerm(TermOp(g_eq(binding, term)) == L_TRUE/*                     */
+{ return SymTerm(TermIsTrue(g_eq(binding, term))   /*                        */
 		 ? sym_false: sym_true);	   /*                        */
 }						   /*------------------------*/
 
@@ -180,7 +179,7 @@ Term eval_bool(binding, term)			   /*                        */
  						   /*                        */
   if (term == NIL) return SymTerm(sym_false);	   /*                        */
  						   /*                        */
-  switch (TermOp(term))				   /*                        */
+  switch (TType(term))				   /*                        */
   { case L_CONS:				   /*                        */
       return SymTerm(sym_true);			   /*                        */
     case L_NUMBER:				   /*                        */
@@ -217,7 +216,7 @@ Term g_not(binding, term)			   /*                        */
   Term term;					   /*                        */
 {						   /*                        */
   term = eval_bool(binding, Cadr(term));	   /*                        */
-  return SymTerm(TermOp(term) == L_TRUE		   /*                        */
+  return SymTerm(TermIsTrue(term)		   /*                        */
 		 ? sym_false: sym_true);	   /*                        */
 }						   /*------------------------*/
 
@@ -404,9 +403,9 @@ Term eval_num(binding, term)			   /*                        */
 { 						   /*                        */
   term = eval_term(binding, term);		   /*                        */
  						   /*                        */
-  if (term == NIL || TermOp(term) == L_FALSE)	   /*                        */
+  if (term == NIL || TermIsFalse(term))	   	   /*                        */
     return NumberTerm(0L);			   /*                        */
-  if (TermOp(term) == L_TRUE)	   		   /*                        */
+  if (TermIsTrue(term))	   		   	   /*                        */
     return NumberTerm(1L);			   /*                        */
   if (TermIsNumber(term))	   		   /*                        */
     return term;				   /*                        */
@@ -445,9 +444,9 @@ Term eval_str(binding, term)			   /*                        */
     sbclose(sb);				   /*                        */
     return term;	   			   /*                        */
   }						   /*                        */
-  if (TermOp(term) == L_TRUE)
+  if (TermIsTrue(term))
     return StringTerm((String)"true");		   /*                        */
-  if (TermOp(term) == L_FALSE)	   		   /*                        */
+  if (TermIsFalse(term))	   		   /*                        */
     return StringTerm((String)"false");		   /*                        */
   if (TermIsNumber(term))	   		   /*                        */
   { long n = TNumber(term);
@@ -641,10 +640,6 @@ unsigned int hash(s)				   /*                        */
   return hash;				   	   /*                        */
 }						   /*------------------------*/
 
-#define InitSymChar(S,OP)				\
-  SymChar(i) = symdef((String)S, *(S), NULL);		\
-  SymTerm(SymChar(i)) = new_term(*(S), NIL, NIL)
-
 /*-----------------------------------------------------------------------------
 ** Function:	init_symdef()
 ** Type:	void
@@ -655,44 +650,13 @@ unsigned int hash(s)				   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void init_lreader()				   /*                        */
-{ int i;					   /*                        */
-  char * s;					   /*                        */
- 						   /*                        */
-  sym_char = (SymDef*)calloc(256, sizeof(SymDef)); /*                        */
- 						   /*                        */
-  for (i = 1; i < 256; i++)			   /*                        */
-  { switch (i)			   		   /*                        */
-    { case ';':	InitSymChar( ";",    ';'); break;  /*                        */
-      case '=':	InitSymChar( "=",  L_SET); break;  /*                        */
-      case '<':	InitSymChar( "<",   L_LT); break;  /*                        */
-      case '>':	InitSymChar( ">",   L_GT); break;  /*                        */
-      case '#':	InitSymChar( "#",    '#'); break;  /*                        */
-      case '+':	InitSymChar( "+", L_PLUS); break;  /*                        */
-      case '-':	InitSymChar( "-",L_MINUS); break;  /*                        */
-      case '*':	InitSymChar( "*",L_TIMES); break;  /*                        */
-      case '/':	InitSymChar( "/",  L_DIV); break;  /*                        */
-      case '%':	InitSymChar("mod", L_MOD); break;  /*                        */
-      case '\'':InitSymChar("quote",L_QUOTE); break;/*                       */
-      case '"':					   /*                        */
-      case '_':					   /*                        */
-      case '@':					   /*                        */
-      case '$':					   /*                        */
-      case '.':					   /*                        */
-	break;					   /*                        */
-      default:					   /*                        */
-	if (isalnum(i) || isspace(i)) break;	   /*                        */
-	s = malloc(2 * sizeof(char));	   	   /*                        */
-	if (s == NULL) OUT_OF_MEMORY("symdef");	   /*                        */
-	*s     = (char)i;			   /*                        */
-	*(s+1) = '\0';				   /*                        */
-	SymChar(i) = symdef(symbol((String)s), i, NULL);/*                   */
-    }						   /*                        */
-  }						   /*                        */
- 						   /*                        */
+{						   /*                        */
   term_eof = NewTerm(-1);	   	   	   /*                        */
  						   /*                        */
 #define Declare(SYM,VAL) SYM = VAL; MakeSymTerm(SYM)
-#include "lcore.h"
+ 						   /*                        */
+  Declare(sym_true,   symdef((String)"true",     L_TRUE,	g_self));/*  */
+  Declare(sym_false,  symdef((String)"false",    L_FALSE,	g_self));/*  */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

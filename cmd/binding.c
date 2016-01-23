@@ -81,9 +81,9 @@ void bind(b, sym)		   		   /*                        */
   for (junk = BJunks(b)[h]; junk; junk = NextJunk(junk))/*                   */
   { if (strcmp((char*)SymName(junk), (char*)key) == 0)/*                     */
     {						   /*                        */
+      SymTerm(junk)  = SymTerm(sym);		   /*                        */
       SymValue(junk) = SymValue(sym);		   /*                        */
       SymGet(junk)   = SymGet(sym);		   /*                        */
-      SymSet(junk)   = SymSet(sym);		   /*                        */
       return;					   /*                        */
     }						   /*                        */
   }						   /*                        */
@@ -186,7 +186,7 @@ Term g_print(binding, term)			   /*                        */
   for (term = Cdr(term); term ; term = Cdr(term))  /*                        */
   { Term t = Car(term);				   /*                        */
     if (t == NIL) continue;			   /*                        */
-    switch(TermOp(t))			   	   /*                        */
+    switch(TType(t))			   	   /*                        */
     { case L_STRING:				   /*                        */
       case L_BLOCK:				   /*                        */
 	fputs((char*)TString(t), stdout);	   /*                        */
@@ -205,7 +205,7 @@ Term g_print(binding, term)			   /*                        */
 	break;					   /*                        */
 #ifdef DEBUG
       default:					   /*                        */
-	printf("--- 0x%x",TermOp(t));	   	   /*                        */
+	printf("--- 0x%x",TType(t));	   	   /*                        */
 #endif
     }						   /*                        */
   }		   				   /*                        */
@@ -230,10 +230,10 @@ Term g_fct(binding, term)			   /*                        */
 						   /*                        */
   if (term == NIL) return NIL;			   /*                        */
  						   /*                        */
-  if (TermOp(term) == L_FUNCTION)		   /*                        */
+  if (TermIsFunction(term))		   	   /*                        */
   { Term t = Car(term);				   /*                        */
  						   /*                        */
-    if (t == NIL || TermOp(t) != L_FIELD)	   /*                        */
+    if (t == NIL || TType(t) != L_FIELD)	   /*                        */
     { ErrorNF("Undefined function ",		   /*                        */
 	      (String)"nil"); }  		   /*                        */
  						   /*                        */
@@ -275,7 +275,7 @@ static Term bool_rsc(binding, name, term, rp)	   /*                        */
       break;					   /*                        */
     case 1:					   /*                        */
       term = eval_bool(binding, Cadr(term));	   /*                        */
-      *rp  = (TermOp(term) == L_TRUE ? 1 : 0 );	   /*                        */
+      *rp  = (TermIsTrue(term) ? 1 : 0 );	   /*                        */
       UnlinkTerm(term);				   /*                        */
       break;					   /*                        */
     default:					   /*                        */
@@ -344,9 +344,8 @@ static Term str_rsc(binding, name, term, rp)	   /*                        */
    return StringTerm(*rp ? *rp : (String)"");	   /*                        */
 }						   /*------------------------*/
 
-#define BIND(NAME)
-#define BindGet(NAME,GET)
-#define Bind(NAME, SYM)
+#define Bind(NAME,OP,GET)
+#define BindSym(NAME,SYM)
 #define BindBool(NAME,GETTER,RSC)			\
   static Term GETTER (binding, term)			\
     Binding binding;					\
@@ -373,9 +372,8 @@ static Term str_rsc(binding, name, term, rp)	   /*                        */
     return str_rsc(binding, NAME, term, &RSC); }
 #include "builtin.h"
 
-#undef BIND
 #undef Bind
-#undef BindGet
+#undef BindSym
 #undef BindBool
 #undef BindNum
 #undef BindStr
@@ -392,12 +390,11 @@ static Term str_rsc(binding, name, term, rp)	   /*                        */
 Binding root_binding()				   /*                        */
 { Binding b = binding(511);			   /*                        */
  						   /*                        */
-#define BindGet(NAME,GET)    bind(b, symdef(symbol((String)NAME),L_FIELD,GET))
-#define BIND(NAME)   	     BindGet(NAME, NULL)
-#define BindBool(NAME,GET,R) BindGet(NAME, GET)
-#define BindNum(NAME,GET,R)  BindGet(NAME, GET)
-#define BindStr(NAME,GET,R)  BindGet(NAME, GET)
-#define Bind(NAME, SYM)      bind(b, SYM)
+#define BindBool(NAME,GET,R) Bind(NAME, L_FIELD, GET)
+#define BindNum(NAME,GET,R)  Bind(NAME, L_FIELD, GET)
+#define BindStr(NAME,GET,R)  Bind(NAME, L_FIELD, GET)
+#define Bind(NAME,OP,GET)    bind(b, symdef(symbol((String)NAME),OP,GET))
+#define BindSym(NAME,SYM)    bind(b, SYM)
  						   /*                        */
 #include "builtin.h"
   return b;				   	   /*                        */
@@ -455,7 +452,7 @@ Term eval_term(binding, term)			   /*                        */
   String key = NULL;				   /*                        */
   if (term == NIL) return NIL;			   /*                        */
  						   /*                        */
-  switch (TermOp(term))				   /*                        */
+  switch (TType(term))				   /*                        */
   { case L_STRING:				   /*                        */
     case L_NUMBER:				   /*                        */
     case L_TRUE:				   /*                        */

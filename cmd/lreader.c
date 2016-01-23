@@ -203,11 +203,12 @@ static Term scan_string(type, c_end)		   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	scan()
 ** Type:	SymDef
-** Purpose:	
-**		
+** Purpose:	Scan the input stream in_file for the next token.
+**		The token code is returned and the token value is stored in
+**		the global variable yylval.
 ** Arguments:
-**		
-** Returns:	
+**	b	the bindings in effect
+** Returns:	the token code
 **___________________________________________________			     */
 static int scan(b)			   	   /*                        */
   Binding b;					   /*                        */
@@ -310,16 +311,16 @@ static int scan(b)			   	   /*                        */
       case '&':					   /*                        */
 	if ((c=GetC) == '&') { ReturnTerm(L_AND); }/*                        */
 	UnGetC(c);				   /*                        */
-	Return(SymCharTerm('&'), '&'); 	   	   /*                        */
+	return '&'; 	   	   		   /*                        */
 	  					   /*                        */
       case '|':					   /*                        */
 	if ((c=GetC) == '|') { ReturnTerm(L_OR); } /*                        */
 	UnGetC(c);				   /*                        */
-	Return(SymCharTerm('|'), '|'); 	   	   /*                        */
+	return '|'; 	   	   		   /*                        */
 	  					   /*                        */
       case '!':					   /*                        */
 	if ((c=GetC) == '=') { ReturnTerm(L_NE); } /*                        */
-	Return(SymTerm(sym_not), L_NOT);	   /*                        */
+	ReturnTerm(L_NOT);	   		   /*                        */
 	  					   /*                        */
       case '>':					   /*                        */
 	if ((c=GetC) == '=') { ReturnTerm(L_GE); } /*                        */
@@ -355,46 +356,29 @@ static int scan(b)			   	   /*                        */
 	       c = GetC) 			   /*                        */
 	  { sbputc((char)c ,sb); }		   /*                        */
 	  UnGetC(c);				   /*                        */
-	  s = (String)sbflush(sb);	   	   /*                        */
+	  s = symbol((String)sbflush(sb));	   /*                        */
 	  sbclose(sb);				   /*                        */
- 						   /*                        */
-	  if (strcmp((char*)s, "nil") == 0)	   /*                        */
-	  { Return(NIL, L_CONS); }		   /*                        */
-	  if (strcmp((char*)s, "true") == 0)	   /*                        */
-	  { Return(SymTerm(sym_true), L_TRUE); }   /*                        */
-	  if (strcmp((char*)s, "false") == 0)	   /*                        */
-	  { Return(SymTerm(sym_false), L_FALSE); } /*                        */
-	  if (strcmp((char*)s, "not") == 0)	   /*                        */
-	  { ReturnTerm(L_NOT); }		   /*                        */
-	  if (strcmp((char*)s, "and") == 0)	   /*                        */
-	  { ReturnTerm(L_AND); }		   /*                        */
-	  if (strcmp((char*)s, "or") == 0)	   /*                        */
-	  { ReturnTerm(L_OR); }			   /*                        */
-	  if (strcmp((char*)s, "mod") == 0)	   /*                        */
-	  { ReturnTerm(L_MOD); }		   /*                        */
-	  if (strcmp((char*)s, "quote") == 0)	   /*                        */
-	  { ReturnTerm(L_QUOTE); }		   /*                        */
- 						   /*                        */
-	  s = symbol(s);	   		   /*                        */
 	  sym = get_bind(b, s);			   /*                        */
 	  if (sym)				   /*                        */
-	  { yylval = SymTerm(sym);	   	   /*                        */
-	    c 	   = SymOp(sym);		   /*                        */
-	  } else {				   /*                        */
-	    c = L_FIELD;			   /*                        */
-	  }					   /*                        */
-	  if (yylval == NIL) yylval = FieldTerm(s);/*                        */
+	  { c 	   = SymOp(sym);		   /*                        */
+	    yylval = SymTerm(sym);	   	   /*                        */
+	    if (yylval == NIL && c != L_CONS)	   /*                        */
+	      yylval = (c == L_FIELD		   /*                        */
+			? FieldTerm(s)		   /*                        */
+			: NewTerm(c));		   /*                        */
 #ifdef DEBUG_PARSER
-	  printf("--- scan: word %s 0x%x\n",	   /*                        */
-		 (char*)s, c);	   		   /*                        */
+	    printf("--- scan: word %s 0x%x\n",	   /*                        */
+		   (char*)s, c);		   /*                        */
 #endif
-	  return c;	   			   /*                        */
+	    return c;	   			   /*                        */
+	  }					   /*                        */
+	  Return(FieldTerm(s), L_FIELD);	   /*                        */
 	}					   /*                        */
  						   /*                        */
       default:					   /*                        */
-        Return(SymCharTerm(c), c);		   /*                        */
+        return c;		   		   /*                        */
     }						   /*                        */
-    return c < 0 ? EOF : c; 			   /*                        */
+    return c <= 0 ? EOF : c; 			   /*                        */
   }						   /*                        */
   return EOF;				   	   /*                        */
 }						   /*------------------------*/
@@ -443,7 +427,7 @@ static Term read_list(b, t)			   /*                        */
 **		
 ** Arguments:
 **	b	
-**	 t	
+**	t	
 ** Returns:	
 **___________________________________________________			     */
 static Term read_fct(b, t)			   /*                        */
@@ -486,7 +470,7 @@ static Term read_builtin(b, t)	   		   /*                        */
   Term t;					   /*                        */
 { int c;					   /*                        */
   						   /*                        */
-  TermOp(t) = L_FUNCTION;			   /*                        */
+  TType(t) = L_FUNCTION;			   /*                        */
 #ifdef DEBUG_PARSER
   fprintf(stderr, "--- read_builtin (%s)\n", TString(t));/*                  */
 #endif
@@ -525,7 +509,7 @@ static Term read_builtin(b, t)	   		   /*                        */
 **		operators and terms.
 **		
 ** Arguments:
-**	stack	
+**	stack	the term stack
 ** Returns:	
 **___________________________________________________			     */
 static TStack reduce(stack)			   /*                        */
@@ -544,12 +528,12 @@ static TStack reduce(stack)			   /*                        */
     if (StackChar(prev) == L_MINUS		   /*                        */
 	&& (StackPrev(prev) == NULL		   /*                        */
 	    || L_IS_OPERATOR(StackChar(StackPrev(prev)))))/*                 */
-    { if ( TermOp(StackTerm(current)) == L_NUMBER )/*                        */
+    { if ( TType(StackTerm(current)) == L_NUMBER ) /*                        */
       { TNumber(StackTerm(current)) =		   /*                        */
 	  -TNumber(StackTerm(current));		   /*                        */
       } else {					   /*                        */
 	Term t	  = StackTerm(prev);		   /*                        */
-	TermOp(t) = L_UMINUS;			   /*                        */
+	TType(t) = L_UMINUS;			   /*                        */
 	Cdr(t)    = Cons1(StackTerm(current)); 	   /*                        */
 						   /*                        */
 	StackTerm(current) = t;	   		   /*                        */
@@ -579,7 +563,7 @@ static TStack reduce(stack)			   /*                        */
 #endif
     if (n <= 0x400)				   /*                        */
       Error("Missing operator after ",		   /*                        */
-	    tag_id(TermOp(StackTerm(stack))), 0);  /*                        */
+	    tag_id(TType(StackTerm(stack))), 0);   /*                        */
     						   /*                        */
     for (current = stack;			   /*                        */
 	 current && StackPrev(current);		   /*                        */
@@ -596,7 +580,7 @@ static TStack reduce(stack)			   /*                        */
       {						   /*                        */
 	if (L_IS_BINARY(StackChar(StackPrev(prev))))/*                       */
 	{ Error("First operator for ",		   /*                        */
-		tag_id(TermOp(StackTerm(prev))),   /*                        */
+		tag_id(TType(StackTerm(prev))),    /*                        */
 		" missing");			   /*                        */
 	}					   /*                        */
  						   /*                        */
@@ -772,7 +756,7 @@ static Term read_cmd(b)				   /*                        */
  						   /*                        */
     if (c != ';')				   /*                        */
     { if ( c >= 0 && c <= 0xff && c != '('	   /*                        */
-	  && yylval == SymCharTerm(c))		   /*                        */
+	  && yylval == NIL)		   	   /*                        */
 	Error("Unexpected character '",		   /*                        */
 	      tag_id(c),			   /*                        */
 	      "' found");			   /*                        */
