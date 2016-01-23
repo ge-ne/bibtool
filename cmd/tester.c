@@ -62,12 +62,12 @@ int action(b, t)				   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	file	
+**	file	the name of the file to read from
 ** Returns:	nothing
 **___________________________________________________			     */
 void run_test(file)				   /*                        */
   char * file;					   /*                        */
-{ Binding b = def_binding();	   		   /*                        */
+{ Binding b = root_binding();	   		   /*                        */
 					       	   /*                        */
   if (verbose)					   /*                        */
     fprintf(stderr, "--- reading %s\n", file);	   /*                        */

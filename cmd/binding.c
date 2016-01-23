@@ -67,8 +67,8 @@ Binding binding(size)			   	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	b	
-**	sym	
+**	b	the binding
+**	sym	the symbol definition
 ** Returns:	nothing
 **___________________________________________________			     */
 void bind(b, sym)		   		   /*                        */
@@ -98,9 +98,9 @@ void bind(b, sym)		   		   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	b	
-**	 key	
-**	 term	
+**	b	the binding
+**	key	the key
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term setq(b, key, term)		   		   /*                        */
@@ -143,9 +143,9 @@ SymDef get_bind(b, key)			   	   /*                        */
   unsigned int h = hash(key) % BSize(b);	   /*                        */
   						   /*                        */
 #ifdef DEBUG_BIND
-  puts("BINDING");
-  dump_binding(b, stdout);
-  fprintf(stdout, "--- lookup %s at %d\n", (char*)key, h);
+  puts("BINDING");				   /*                        */
+  dump_binding(b, stdout);			   /*                        */
+  printf("--- lookup %s at %d\n", (char*)key, h);  /*                        */
 #endif
   while (b)					   /*                        */
   {						   /*                        */
@@ -175,8 +175,8 @@ SymDef get_bind(b, key)			   	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_print(binding, term)			   /*                        */
@@ -211,26 +211,6 @@ Term g_print(binding, term)			   /*                        */
   }		   				   /*                        */
   return NIL;			   		   /*                        */
 }						   /*------------------------*/
-
-#ifdef NEVER
-/*-----------------------------------------------------------------------------
-** Function:	g_verbose()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	
-**	 term	
-** Returns:	
-**___________________________________________________			     */
-Term g_verbose(binding, term)			   /*                        */
-  Binding binding;				   /*                        */
-  Term term;					   /*                        */
-{ extern int rsc_verbose;
-
-  return SymTerm(rsc_verbose ? sym_true : sym_false);/*                      */
-}						   /*------------------------*/
-#endif
 
 /*-----------------------------------------------------------------------------
 ** Function:	g_fct()
@@ -334,6 +314,36 @@ static Term num_rsc(binding, name, term, rp)	   /*                        */
   return NumberTerm(*rp);	   		   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	str_rsc()
+** Type:	static Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	name	
+**	term	
+**	rp	
+** Returns:	
+**___________________________________________________			     */
+static Term str_rsc(binding, name, term, rp)	   /*                        */
+  Binding binding;				   /*                        */
+  char *name;				   	   /*                        */
+  Term term;					   /*                        */
+  String *rp;					   /*                        */
+{ switch (list_length(Cdr(term)))		   /*                        */
+  { case 0:					   /*                        */
+      break;					   /*                        */
+    case 1:					   /*                        */
+      term = eval_str(binding, Cadr(term));	   /*                        */
+      *rp  = TString(term);	   		   /*                        */
+      return term;				   /*                        */
+    default:					   /*                        */
+      ErrorNF("Too many arguments for ", name);	   /*                        */
+  }						   /*                        */
+   return StringTerm(*rp ? *rp : (String)"");	   /*                        */
+}						   /*------------------------*/
+
 #define BIND(NAME)
 #define BindGet(NAME,GET)
 #define Bind(NAME, SYM)
@@ -349,6 +359,18 @@ static Term num_rsc(binding, name, term, rp)	   /*                        */
     Term term;						\
   { extern int RSC;					\
     return num_rsc(binding, NAME, term, &RSC); }
+#define BindBool(NAME,GETTER,RSC)			\
+  static Term GETTER (binding, term)			\
+    Binding binding;					\
+    Term term;						\
+  { extern int RSC;					\
+    return bool_rsc(binding, NAME, term, &RSC); }
+#define BindStr(NAME,GETTER,RSC)			\
+  static Term GETTER (binding, term)			\
+    Binding binding;					\
+    Term term;						\
+  { extern char* RSC;					\
+    return str_rsc(binding, NAME, term, &RSC); }
 #include "builtin.h"
 
 #undef BIND
@@ -356,23 +378,25 @@ static Term num_rsc(binding, name, term, rp)	   /*                        */
 #undef BindGet
 #undef BindBool
 #undef BindNum
+#undef BindStr
 
 /*-----------------------------------------------------------------------------
-** Function:	def_binding()
+** Function:	root_binding()
 ** Type:	Binding
-** Purpose:	
+** Purpose:	Create a new binding and initialize it with the BibTool
+**		defaults.
 **		
-** Arguments:
-**		
-** Returns:	
+** Arguments:	none
+** Returns:	the new binding
 **___________________________________________________			     */
-Binding def_binding()				   /*                        */
+Binding root_binding()				   /*                        */
 { Binding b = binding(511);			   /*                        */
  						   /*                        */
-#define BIND(NAME)   	  bind(b, symdef(symbol((String)NAME), L_FIELD, NULL))
-#define BindGet(NAME,GET) bind(b, symdef(symbol((String)NAME), L_FIELD, GET))
+#define BindGet(NAME,GET)    bind(b, symdef(symbol((String)NAME),L_FIELD,GET))
+#define BIND(NAME)   	     BindGet(NAME, NULL)
 #define BindBool(NAME,GET,R) BindGet(NAME, GET)
 #define BindNum(NAME,GET,R)  BindGet(NAME, GET)
+#define BindStr(NAME,GET,R)  BindGet(NAME, GET)
 #define Bind(NAME, SYM)      bind(b, SYM)
  						   /*                        */
 #include "builtin.h"

@@ -15,6 +15,7 @@
 #include <string.h>
 #include <bibtool/error.h>
 #include <bibtool/symbols.h>
+#include <bibtool/sbuffer.h>
 #include <ctype.h>
 #include "term.h"
 #include "binding.h"
@@ -415,7 +416,70 @@ Term eval_num(binding, term)			   /*                        */
     return NumberTerm(scanf_num(TString(term)));   /*                        */
  						   /*                        */
   ErrorNF("Type error: number expected",0);	   /*                        */
-  return NIL;				   	   /*                        */
+  return NIL;				   	   /* This will never happen */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	eval_str()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term eval_str(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ 						   /*                        */
+  term = eval_term(binding, term);		   /*                        */
+ 						   /*                        */
+  if (term == NIL)	   			   /*                        */
+    return StringTerm((String)"");		   /*                        */
+  if (TermIsString(term)) return term;		   /*                        */
+  if (TermIsList(term))				   /*                        */
+  { StringBuffer *sb = sbopen();
+						 /*TODO*/
+    term = StringTerm((String)sbflush(sb));	   /*                        */
+    sbclose(sb);				   /*                        */
+    return term;	   			   /*                        */
+  }						   /*                        */
+  if (TermOp(term) == L_TRUE)
+    return StringTerm((String)"true");		   /*                        */
+  if (TermOp(term) == L_FALSE)	   		   /*                        */
+    return StringTerm((String)"false");		   /*                        */
+  if (TermIsNumber(term))	   		   /*                        */
+  { long n = TNumber(term);
+    StringBuffer *sb;
+    char *s, *t;
+    if (n == 0) return StringTerm((String)"0");
+    sb = sbopen(); 
+    if (n < 0)
+    { sbputc('-', sb);
+      n = -n;
+    }
+    while (n > 0)
+    { sbputc((n%10) + '0', sb);
+      n = n/10;
+    }
+    s = t = sbflush(sb);
+    while (*t) t++;
+    t--;
+    if (*s == '-') s++;
+    while (s < t)
+    { char c = *s;
+      *(s++) = *t;
+      *(t--) = c;
+    }
+
+    term = StringTerm((String)sbflush(sb));
+    sbclose(sb);
+    return term;	   			   /*                        */
+  }
+ 						   /*                        */
+  ErrorNF("Type error: string expected",0);	   /*                        */
+  return NIL;				   	   /* This will never happen */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

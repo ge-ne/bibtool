@@ -18,41 +18,6 @@
 /*---------------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Typedef:	SymDef
-** Purpose:	
-**		
-**___________________________________________________			     */
-typedef struct S_SYMDEF {			   /*                        */
-  String name;				   	   /*                        */
-  short int op;				   	   /*                        */
-  short int hash;				   /*                        */
-  struct S_SYMDEF * next;			   /*                        */
-  struct S_TERM * term;	   			   /*                        */
-  struct S_TERM * value;			   /*                        */
-  struct S_TERM * (*get)();			   /*                        */
-  void (*set)();				   /*                        */
-} SSymDef, *SymDef;				   /*------------------------*/
-
-#define SymDefNULL ((SymDef)0)
-
-#define SymName(SYM)	((SYM)->name)
-#define SymOp(SYM)	((SYM)->op)
-#define SymHash(SYM)	((SYM)->hash)
-#define SymTerm(SYM)	((SYM)->term)
-#define SymKey(SYM)	((SYM)->key)
-#define SymValue(SYM)	((SYM)->value)
-#define SymGet(SYM)	((SYM)->get)
-#define SymSet(SYM)	((SYM)->set)
-#define NextJunk(SYM)	((SYM)->next)
-
-#define SymIsNumber(S)	((S) == sym_number) 
-#define SymIs(S,C)	((S) == sym_char[C]) 
-
-#define SymChar(C)	sym_char[C]
-#define SymCharName(C)  SymName(sym_char[C])
-#define SymCharTerm(C)  SymTerm(sym_char[C])
-
-/*-----------------------------------------------------------------------------
 ** Typedef:	Term
 ** Purpose:	
 **		
@@ -78,11 +43,11 @@ typedef struct S_TERM {				   /*                        */
 #define TNumber(T)	((T)->a.number)
 #define TermRefCount(T)	((T)->ref_count)
 
-#define LinkTerm(T)	TermRefCount(T)++
-#define UnlinkTerm(T)	TermRefCount(T)--
+#define LinkTerm(T)		TermRefCount(T)++
+#define UnlinkTerm(T)		TermRefCount(T)--
 
-#define Cadr(T)		Car(Cdr(T))
-#define Cddr(T)		Cdr(Cdr(T))
+#define Cadr(T)			Car(Cdr(T))
+#define Cddr(T)			Cdr(Cdr(T))
 
 #define TermIsNumber(T)		(TermOp(T) == L_NUMBER)
 #define TermIsString(T)		(TermOp(T) == L_STRING)
@@ -95,13 +60,52 @@ typedef struct S_TERM {				   /*                        */
 #define Cons(CAR, CDR)		new_term(L_CONS, CAR, CDR)
 #define Cons1(CAR)		Cons(CAR, NIL)
 
-#define MakeSymTerm(S)	SymTerm(S) = SymdefTerm(S)
-#define SymdefTerm(S)	new_term(SymOp(S), NIL, NIL)
-#define StringTerm(S)	new_t_string(L_STRING, symbol(S))
-#define BlockTerm(S)	new_t_string(L_BLOCK, symbol(S))
-#define FieldTerm(S)	new_t_string(L_FIELD, symbol(S))
-#define NumberTerm(N)	new_term_num(N)
-#define NewTerm(N)	new_term(N,NIL,NIL)
+#define MakeSymTerm(S)		SymTerm(S) = SymdefTerm(S)
+#define SymdefTerm(S)		new_term(SymOp(S), NIL, NIL)
+#define StringTerm(S)		new_t_string(L_STRING, symbol(S))
+#define BlockTerm(S)		new_t_string(L_BLOCK, symbol(S))
+#define FieldTerm(S)		new_t_string(L_FIELD, symbol(S))
+#define NumberTerm(N)		new_term_num(N)
+#define NewTerm(N)		new_term(N,NIL,NIL)
+
+/*---------------------------------------------------------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Typedef:	SymDef
+** Purpose:	
+**		
+**___________________________________________________			     */
+typedef struct S_SYMDEF {			   /*                        */
+  String name;				   	   /*                        */
+  short int op;				   	   /*                        */
+  short int hash;				   /*                        */
+  struct S_SYMDEF * next;			   /*                        */
+  Term term;	   			   	   /*                        */
+  Term value;			   		   /*                        */
+  Term (*get)();			   	   /*                        */
+  void (*set)();				   /*                        */
+} SSymDef, *SymDef;				   /*------------------------*/
+
+#define SymDefNULL ((SymDef)0)
+
+#define SymName(SYM)	((SYM)->name)
+#define SymOp(SYM)	((SYM)->op)
+#define SymHash(SYM)	((SYM)->hash)
+#define SymTerm(SYM)	((SYM)->term)
+#define SymKey(SYM)	((SYM)->key)
+#define SymValue(SYM)	((SYM)->value)
+#define SymGet(SYM)	((SYM)->get)
+#define SymSet(SYM)	((SYM)->set)
+#define NextJunk(SYM)	((SYM)->next)
+
+#define SymIsNumber(S)	((S) == sym_number) 
+#define SymIs(S,C)	((S) == sym_char[C]) 
+
+#define SymChar(C)	sym_char[C]
+#define SymCharName(C)  SymName(sym_char[C])
+#define SymCharTerm(C)  SymTerm(sym_char[C])
+
+/*---------------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Typedef:	Binding
