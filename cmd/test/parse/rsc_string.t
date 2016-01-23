@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2015 Gerd Neugebauer
+#  (c) 2015-2016 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -52,22 +52,22 @@ sub string_tests
   BUnit::run(name       => "$cmd-1",
 	   resource     => "$cmd = \"123\";\n" ,
 	   expected_err => '',
-	   expected_out => "($cmd \"123\")\n" );
+	   expected_out => "$cmd(\"123\")\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-2",
 	   resource     => "$cmd \"123\";\n" ,
 	   expected_err => '',
-	   expected_out => "($cmd \"123\")\n" );
+	   expected_out => "$cmd(\"123\")\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-3",
 	   resource	=> "$cmd = \{123\};\n" ,
 	   expected_err	=> '',
-	   expected_out	=> "($cmd \{123\})\n" );
+	   expected_out	=> "$cmd(\{123\})\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-4",
 	   resource	=> "$cmd \{123\};\n" ,
 	   expected_err	=> '',
-	   expected_out	=> "($cmd \{123\})\n" );
+	   expected_out	=> "$cmd(\{123\})\n" );
 }
 
 string_tests('bibtex.env.name');

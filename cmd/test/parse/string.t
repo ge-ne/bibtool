@@ -117,22 +117,18 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'like-1',
-	   resource	=> <<__EOF__ ,
-a like "abc";
-__EOF__
+	   resource	=> 'a like "abc";',
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(like a "abc")
+(a like "abc")
 __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'ilike-1',
-	   resource	=> <<__EOF__ ,
-a ilike "abc";
-__EOF__
+	   resource	=> 'a ilike "abc";',
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(ilike a "abc")
+(a ilike "abc")
 __EOF__
 
 

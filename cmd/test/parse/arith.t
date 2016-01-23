@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2015 Gerd Neugebauer
+#  (c) 2015-2016 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -89,7 +89,7 @@ BUnit::run(name         => 'arith-10',
 2 * 3 + 4;
 __EOF__
 	   expected_out => <<__EOF__ );
-(+ (* 2 3) 4)
+((2 * 3) + 4)
 __EOF__
 
 #------------------------------------------------------------------------------
@@ -99,7 +99,7 @@ BUnit::run(name         => 'arith-11',
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(+ 2 (* 3 4))
+(2 + (3 * 4))
 __EOF__
 
 #------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ BUnit::run(name         => 'arith-12',
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(* 1 (+ 3 4))
+(1 * (3 + 4))
 __EOF__
 
 #------------------------------------------------------------------------------
@@ -119,7 +119,7 @@ BUnit::run(name         => 'arith-21',
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(+ 1 (+ 2 3))
+(1 + (2 + 3))
 __EOF__
 
 

@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2015 Gerd Neugebauer
+#  (c) 2015-2016 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -78,7 +78,7 @@ BUnit::run(name         => 'list-10',
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(123)
+[123]
 __EOF__
 
 #------------------------------------------------------------------------------
@@ -88,7 +88,7 @@ BUnit::run(name         => 'list-20',
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(123 "abc")
+[123 "abc"]
 __EOF__
 
 
@@ -99,7 +99,7 @@ BUnit::run(name         => 'list-21',
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(123 abc)
+[123 abc]
 __EOF__
 
 

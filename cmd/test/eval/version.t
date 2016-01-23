@@ -42,6 +42,11 @@ use FileHandle;
 
 $BUnit::name_prefix = 'eval/';
 
+#------------------------------------------------------------------------------
+# Function:	retrieveVersion
+# Arguments:	
+# Description:	
+#
 sub retrieveVersion
 { local $_;
   my $fd = new FileHandle('../../version.c' ,'r') || die " File not found\n";

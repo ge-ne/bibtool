@@ -89,120 +89,6 @@ void print_quoted(file, s)		   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	p_sym_name()
-** Type:	static int
-** Purpose:	
-**		
-** Arguments:
-**	file	
-**	 t	
-** Returns:	
-**___________________________________________________			     */
-void p_sym_name(file, t)			   /*                        */
-  FILE * file;					   /*                        */
-  Term t;					   /*                        */
-{						   /*                        */
-  if (t == NIL)					   /*                        */
-  { fputs("??",file);				   /*                        */
-    return;					   /*                        */
-  }						   /*                        */
-  print_quoted(file, SymName(TSym(t)));		   /*                        */
-  if (Car(t)) { print_term(Car(t)); }	   	   /*                        */
-  if (Cdr(t)) { print_term(Cdr(t)); }		   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	p_term_num()
-** Type:	static int
-** Purpose:	
-**		
-** Arguments:
-**	file	
-**	 t	
-** Returns:	
-**___________________________________________________			     */
-void p_term_num(file, t)			   /*                        */
-  FILE * file;					   /*                        */
-  Term t;					   /*                        */
-{						   /*                        */
-  fprintf(file, "%ld", TNumber(t));		   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	p_term_str()
-** Type:	static int
-** Purpose:	
-**		
-** Arguments:
-**	file	
-**	 t	
-** Returns:	
-**___________________________________________________			     */
-void p_term_str(file, t)			   /*                        */
-  FILE * file;					   /*                        */
-  Term t;					   /*                        */
-{						   /*                        */
-  fputc('"', file);				   /*                        */
-  print_quoted(file, TString(t));		   /*                        */
-  fputc('"', file);				   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	p_term_str()
-** Type:	static int
-** Purpose:	
-**		
-** Arguments:
-**	file	
-**	 t	
-** Returns:	
-**___________________________________________________			     */
-static void p_term_block(file, t)		   /*                        */
-  FILE * file;					   /*                        */
-  Term t;					   /*                        */
-{						   /*                        */
-  fputc('{', file);				   /*                        */
-  fputs((char*)TString(t), file);		   /*                        */
-  fputc('}', file);				   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	p_term_field()
-** Type:	static int
-** Purpose:	
-**		
-** Arguments:
-**	file	
-**	 t	
-** Returns:	
-**___________________________________________________			     */
-void p_term_field(file, t)		   	   /*                        */
-  FILE * file;					   /*                        */
-  Term t;					   /*                        */
-{ int q	 = 0;					   /*                        */
-  String s = TString(t);			   /*                        */
-  if (*s >= '0' && *s <= '9') {			   /*                        */
-    q = 1;					   /*                        */
-  } else {					   /*                        */
-    for (; *s; s++)				   /*                        */
-    { if (!(   (*s >='a' && *s <='z') 		   /*                        */
-	    || (*s >='A' && *s <='Z')		   /*                        */
-	    || (*s >='0' && *s <='9')		   /*                        */
-	    || *s == '@'			   /*                        */
-	    || *s == '$'			   /*                        */
-	    || *s == '_'			   /*                        */
-	    || *s == '.'))			   /*                        */
-      { q = 1;					   /*                        */
-	break;					   /*                        */
-      }						   /*                        */
-    }						   /*                        */
-  }						   /*                        */
-  if (q) fputc('`', file);			   /*                        */
-  print_quoted(file, TString(t));		   /*                        */
-  if (q) fputc('`', file);			   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
 ** Function:	p_builtin()
 ** Type:	static void
 ** Purpose:	
@@ -244,7 +130,7 @@ void p_cons(file, t)			   	   /*                        */
   print_term(file, Car(t));			   /*                        */
   while (Cdr(t))				   /*                        */
   { t = Cdr(t);				   	   /*                        */
-    if (t && (TSym(t) == sym_cons || TSym(t) == sym_list))/*                 */
+    if (t && (TermOp(t) == L_FUNCTION || TermOp(t) == L_LIST))/*             */
     { fputc(' ', file);			   	   /*                        */
       print_term(file, Car(t));		   	   /*                        */
     } else					   /*                        */
@@ -270,35 +156,6 @@ Term g_self(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { return term;					   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	g_fct()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	the binding
-**	term	the
-** Returns:	
-**___________________________________________________			     */
-Term g_fct(binding, term)			   /*                        */
-  Binding binding;				   /*                        */
-  Term term;					   /*                        */
-{ SymDef sym;					   /*                        */
-  Term f = Car(term);				   /*                        */
-  if (f == NIL) ErrorNF("No function",0);	   /*                        */
-  						   /*                        */
-  sym = (TString(f)				   /*                        */
-	 ? get_bind(binding, TString(f))	   /*                        */
-	 : TSym(f));				   /*                        */
- 						   /*                        */
-  if (sym && SymGet(sym))			   /*                        */
-    return (*SymGet(sym))(binding, term);	   /*                        */
- 						   /*                        */
-  ErrorNF("Undefined function ",		   /*                        */
-	  TString(f) ? TString(f) : SymName(sym)); /*                        */
-  return NIL;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -334,10 +191,10 @@ Term g_eq(binding, term)			   /*                        */
 	   && strcmp((char*)TString(a),		   /*                        */
 		     (char*)TString(b)) == 0 ? 1 : 0);/*                     */
   }						   /*                        */
-  else if (TSym(a) == sym_true)			   /*                        */
-  { val = (TSym(b) == TSym(a)); }		   /*                        */
-  else if (TSym(a) == sym_false)		   /*                        */
-  { val = (TSym(b) == TSym(a)); }		   /*                        */
+  else if (TermOp(a) == L_TRUE)			   /*                        */
+  { val = (TermOp(b) == TermOp(a)); }		   /*                        */
+  else if (TermOp(a) == L_FALSE)		   /*                        */
+  { val = (TermOp(b) == TermOp(a)); }		   /*                        */
   else val = 0;					   /*                        */
  						   /*                        */
   return SymTerm(val ? sym_true : sym_false );	   /*                        */
@@ -356,7 +213,7 @@ Term g_eq(binding, term)			   /*                        */
 Term g_ne(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ return SymTerm(g_eq(binding, term) == SymTerm(sym_true)/*                  */
+{ return SymTerm(TermOp(g_eq(binding, term)) == L_TRUE/*                     */
 		 ? sym_false: sym_true);	   /*                        */
 }						   /*------------------------*/
 
@@ -377,8 +234,8 @@ Term eval_bool(binding, term)			   /*                        */
   term = eval_term(binding, term);		   /*                        */
  						   /*                        */
   if (term == NIL ||				   /*                        */
-      (   TSym(term) != sym_true		   /*                        */
-       && TSym(term) != sym_false))		   /*                        */
+      (   TermOp(term) != L_TRUE		   /*                        */
+       && TermOp(term) != L_FALSE))		   /*                        */
     ErrorNF("Type error: boolean expected",0);	   /*                        */
   return term;	   				   /*                        */
 }
@@ -398,7 +255,7 @@ Term g_not(binding, term)			   /*                        */
   Term term;					   /*                        */
 {						   /*                        */
   term = eval_bool(binding, Cadr(term));	   /*                        */
-  return SymTerm(TSym(term) == sym_true		   /*                        */
+  return SymTerm(TermOp(term) == L_TRUE		   /*                        */
 		 ? sym_false: sym_true);	   /*                        */
 }						   /*------------------------*/
 
@@ -468,17 +325,17 @@ Term g_version(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 {						   /*                        */
-  switch (list_length(term))			   /*                        */
-  { case 0:
-      break;
-    case 1:
-    case 2:
+  switch (list_length(Cdr(term)))		   /*                        */
+  { case 0:					   /*                        */
+      break;					   /*                        */
+    case 1:					   /*                        */
+    case 2:					   /*                        */
       ErrorNF("Parameter version is immutable",0); /*                        */
-    default:
+    default:					   /*                        */
       ErrorNF("Wrong number of arguments for version",0);/*                  */
-  }
+  }						   /*                        */
  						   /*                        */
-  return new_t_string(sym_string, symbol((String)bibtool_version));/*        */
+  return StringTerm((String)bibtool_version);	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -496,6 +353,45 @@ Term g_empty(binding, term)		   	   /*                        */
   Term term;					   /*                        */
 {						   /*                        */
   return StringTerm((String)"");		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	g_field()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term g_field(binding, term)		   	   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ SymDef sym = get_bind(binding, TString(term));   /*                        */
+  return sym ? SymValue(sym) : NIL;		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	g_field()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term g_setq(binding, term)		   	   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{						   /*                        */
+  if (Car(term) == NIL) ErrorNF("Undefined lhs",0);
+
+  return setq(binding,
+	      TString(Car(term)),
+	      Cadr(term)
+	     );
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -717,9 +613,9 @@ unsigned int hash(s)				   /*                        */
   return hash;				   	   /*                        */
 }						   /*------------------------*/
 
-#define InitSymChar(S,OP)				     \
-  SymChar(i) = symdef((String)S, 0, p_sym_name, NULL);       \
-  SymTerm(SymChar(i)) = new_term(SymChar(i), NIL, NIL)
+#define InitSymChar(S,OP)				\
+  SymChar(i) = symdef((String)S, *(S), NULL);		\
+  SymTerm(SymChar(i)) = new_term(*(S), NIL, NIL)
 
 /*-----------------------------------------------------------------------------
 ** Function:	init_symdef()
@@ -761,11 +657,11 @@ void init_lreader()				   /*                        */
 	if (s == NULL) OUT_OF_MEMORY("symdef");	   /*                        */
 	*s     = (char)i;			   /*                        */
 	*(s+1) = '\0';				   /*                        */
-	SymChar(i) = symdef((String)s,i,p_sym_name,NULL);/*                  */
+	SymChar(i) = symdef(symbol((String)s), i, NULL);/*                   */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
-  term_eof = SymdefTerm(NULL);	   		   /*                        */
+  term_eof = NewTerm(-1);	   	   	   /*                        */
  						   /*                        */
 #define Declare(SYM,VAL) SYM = VAL; MakeSymTerm(SYM)
 #include "lcore.h"

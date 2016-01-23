@@ -31,7 +31,6 @@ typedef struct S_SYMDEF {			   /*                        */
   struct S_TERM * value;			   /*                        */
   struct S_TERM * (*get)();			   /*                        */
   void (*set)();				   /*                        */
-  void (*print)();				   /*                        */
 } SSymDef, *SymDef;				   /*------------------------*/
 
 #define SymDefNULL ((SymDef)0)
@@ -44,15 +43,14 @@ typedef struct S_SYMDEF {			   /*                        */
 #define SymValue(SYM)	((SYM)->value)
 #define SymGet(SYM)	((SYM)->get)
 #define SymSet(SYM)	((SYM)->set)
-#define SymPrint(SYM)	((SYM)->print)
 #define NextJunk(SYM)	((SYM)->next)
 
-#define SymIsNumber(S) ((S) == sym_number) 
-#define SymIs(S,C) ((S) == sym_char[C]) 
+#define SymIsNumber(S)	((S) == sym_number) 
+#define SymIs(S,C)	((S) == sym_char[C]) 
 
-#define SymChar(C) sym_char[C]
-#define SymCharName(C) SymName(sym_char[C])
-#define SymCharTerm(C) SymTerm(sym_char[C])
+#define SymChar(C)	sym_char[C]
+#define SymCharName(C)  SymName(sym_char[C])
+#define SymCharTerm(C)  SymTerm(sym_char[C])
 
 /*-----------------------------------------------------------------------------
 ** Typedef:	Term
@@ -61,7 +59,7 @@ typedef struct S_SYMDEF {			   /*                        */
 **		
 **___________________________________________________			     */
 typedef struct S_TERM {				   /*                        */
-  SymDef sym;					   /*                        */
+  short int type;				   /*                        */
   union {					   /*                        */
     struct S_TERM * car;			   /*                        */
     unsigned char * string;			   /*                        */
@@ -72,33 +70,32 @@ typedef struct S_TERM {				   /*                        */
 
 #define NIL ((Term)0)
 
-#define TSym(T)    ((T)->sym)
-#define Car(T)     ((T)->a.car)
-#define Cdr(T)     ((T)->cdr)
-#define TString(T) ((T)->a.string)
-#define TNumber(T) ((T)->a.number)
+#define TermOp(T)	((T)->type)
+#define Car(T)		((T)->a.car)
+#define Cdr(T)		((T)->cdr)
+#define TString(T)	((T)->a.string)
+#define TNumber(T)	((T)->a.number)
 
 #define Cadr(T)		Car(Cdr(T))
 #define Cddr(T)		Cdr(Cdr(T))
 
-#define TermName(T)	SymName(TSym(T))
-#define TermOp(T)	SymOp(TSym(T))
-#define TermIsNumber(T)	(TSym(T) == sym_number)
-#define TermIsString(T)	(TSym(T) == sym_string)
-#define TermIsCons(T)	(TSym(T) == sym_cons)
-#define TermIsEOF(T)	(TSym(T) == SymDefNULL)
-#define TermIsTrue(T)	(TSym(T) == sym_true)
-#define TermIsFalse(T)	(TSym(T) == sym_false)
+#define TermIsNumber(T)	(TermOp(T) == L_NUMBER)
+#define TermIsString(T)	(TermOp(T) == L_STRING)
+#define TermIsCons(T)	(TermOp(T) == L_FUNCTION)
+#define TermIsEOF(T)	(TermOp(T) == L_EOF)
+#define TermIsTrue(T)	(TermOp(T) == L_TRUE)
+#define TermIsFalse(T)	(TermOp(T) == L_FALSE)
 
-#define Cons(CAR, CDR)	new_term(sym_cons, CAR, CDR)
-#define List(CAR, CDR)	new_term(sym_list, CAR, CDR)
+#define Cons(CAR, CDR)	new_term(L_FUNCTION, CAR, CDR)
+#define List(CAR, CDR)	new_term(L_LIST, CAR, CDR)
 
 #define MakeSymTerm(S)	SymTerm(S) = SymdefTerm(S)
-#define SymdefTerm(S)	new_term(S, NIL, NIL)
-#define StringTerm(S)	new_t_string(sym_string, symbol(S))
-#define BlockTerm(S)	new_t_string(sym_block, symbol(S))
-#define FieldTerm(S)	new_t_string(sym_field, symbol(S))
+#define SymdefTerm(S)	new_term(SymOp(S), NIL, NIL)
+#define StringTerm(S)	new_t_string(L_STRING, symbol(S))
+#define BlockTerm(S)	new_t_string(L_BLOCK, symbol(S))
+#define FieldTerm(S)	new_t_string(L_FIELD, symbol(S))
 #define NumberTerm(N)	new_term_num(N)
+#define NewTerm(N)	new_term(N,NIL,NIL)
 
 /*-----------------------------------------------------------------------------
 ** Typedef:	Binding
@@ -122,16 +119,16 @@ typedef struct S_BINDING			   /*                        */
 
 extern Term term_eof;
 
-extern Term new_term();
-extern Term new_term_num();
-extern Term new_t_string _ARG((SymDef symdef, unsigned char* s));
-extern void free_term();
-extern void print_term();
+extern Term new_term _ARG((short int type, Term car, Term cdr ));
+extern Term new_term_num _ARG((long value));
+extern Term new_t_string _ARG((short int type, unsigned char* s));
+extern void free_term _ARG((Term term));
+extern void print_term _ARG((FILE* file, Term term));
 
 extern int list_length _ARG((Term t));
 extern int parse_term _ARG((char* file, int(*action)(Term t)));
 
-extern SymDef symdef _ARG((String name, int op, void(*print)(), Term(*get)()));
+extern SymDef symdef _ARG((String name, int op, Term(*get)()));
 
 /*---------------------------------------------------------------------------*/
 #endif

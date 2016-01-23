@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2015 Gerd Neugebauer
+#  (c) 2015-2016 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -51,59 +51,51 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'quote-1',
-	   resource	=> <<__EOF__ ,
-\'[123];
-__EOF__
+	   resource	=> '\'[123];',
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(quote (123))
-__EOF__
+	   expected_out => "\'([123])\n" );
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'quote-2',
-	   resource	=> <<__EOF__ ,
-quote [123];
-__EOF__
+BUnit::run(name         => 'quote-1',
+	   resource	=> 'quote [123];',
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-(quote (123))
-__EOF__
+	   expected_out => "\'([123])\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-0',
 	   resource	=> "a()\n",
 	   expected_err => '',
-	   expected_out => "(a)\n");
+	   expected_out => "a()\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-1',
 	   resource	=> "a ( )\n",
 	   expected_err => '',
-	   expected_out => "(a)\n");
+	   expected_out => "a()\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-2',
 	   resource	=> "a(1)\n",
 	   expected_err => '',
-	   expected_out => "(a 1)\n");
+	   expected_out => "a(1)\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-3',
 	   resource	=> "a(\"12\")\n",
 	   expected_err => '',
-	   expected_out => "(a \"12\")\n");
+	   expected_out => "a(\"12\")\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-4',
 	   resource	=> "a(ab)\n",
 	   expected_err => '',
-	   expected_out => "(a ab)\n");
+	   expected_out => "a(ab)\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-5',
 	   resource	=> "a(a(b))\n",
 	   expected_err => '',
-	   expected_out => "(a (a b))\n");
+	   expected_out => "a(a(b))\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-err-1',

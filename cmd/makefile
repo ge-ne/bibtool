@@ -52,7 +52,7 @@ term.o:    term.c term.h lcore.h
 lcore.o:   lcore.c lcore.h term.h
 tstack.o:  tstack.c tstack.h lcore.h term.h binding.h
 lreader.o: lreader.c lreader.h lreader.h term.h lcore.h tstack.h binding.h
-binding.o: binding.c binding.h term.h lcore.h lreader.h
+binding.o: binding.c binding.h term.h lcore.h lreader.h builtin.h
 tester.o:  tester.c term.h lcore.h lreader.h binding.h tstack.h
 
 tester: tester.o $(L_OFILES) $(OFILES)

@@ -51,19 +51,22 @@ sub boolean_tests
   my $value = shift;
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-1",
-	   args	        => '--eval',
-	   resource     => "$cmd;\n",
-	   expected_err => '',
-	   expected_out => "$value\n" );
+	   args		=> '--eval',
+	   ignore	=> 1,
+	   resource	=> "$cmd;\n",
+	   expected_err	=> '',
+	   expected_out	=> "$value\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-2",
 	   args	        => '--eval',
+	   ignore	=> 1,
 	   resource     => "$cmd true; $cmd;\n" ,
 	   expected_err => '',
 	   expected_out => "true\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-3",
 	   args	        => '--eval',
+	   ignore	=> 1,
 	   resource     => "$cmd false; $cmd;\n" ,
 	   expected_err	=> '',
 	   expected_out	=> "false\n" );

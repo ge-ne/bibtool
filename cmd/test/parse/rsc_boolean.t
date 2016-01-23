@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2015 Gerd Neugebauer
+#  (c) 2015-2016 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -52,27 +52,27 @@ sub boolean_tests
   BUnit::run(name       => "$cmd-0",
 	   resource     => "-$cmd;\n",
 	   expected_err => '',
-	   expected_out => "(- $cmd)\n" );
+	   expected_out => "-$cmd\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-1",
 	   resource	=> "$cmd = true;\n" ,
 	   expected_err	=> '',
-	   expected_out => "($cmd true)\n" );
+	   expected_out => "$cmd(true)\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-2",
 	   resource     => "$cmd true;\n" ,
 	   expected_err => '',
-	   expected_out => "($cmd true)\n" );
+	   expected_out => "$cmd(true)\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-3",
 	   resource     => "$cmd = \"true\";\n" ,
 	   expected_err	=> '',
-	   expected_out	=> "($cmd \"true\")\n" );
+	   expected_out	=> "$cmd(\"true\")\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-4",
 	   resource     => "$cmd = {true};\n" ,
 	   expected_err	=> '',
-	   expected_out	=> "($cmd \{true\})\n" );
+	   expected_out	=> "$cmd(\{true\})\n" );
 }
 
   boolean_tests('apply.alias');

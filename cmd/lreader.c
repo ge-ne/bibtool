@@ -35,15 +35,15 @@
 #define _ARG(A) ()
 #endif
 
-static int scan _ARG((Binding b));
+static int scan _ARG((Binding b));		   /*                        */
 static Term scan_block();			   /*                        */
-static Term scan_string _ARG((SymDef s, char c));
-static Term read_list _ARG((Binding b, Term t));
-static Term read_builtin _ARG((Binding b, Term t));
-static TStack reduce _ARG((TStack ts));
+static Term scan_string _ARG((short int type, char c));/*                    */
+static Term read_list _ARG((Binding b, Term t));   /*                        */
+static Term read_builtin _ARG((Binding b, Term t));/*                        */
+static TStack reduce _ARG((TStack ts));		   /*                        */
 int read_loop _ARG((Binding b, char* file, int (*action)(Binding binding, Term t) ));
-static Term read_cmd _ARG((Binding b));
-static Term read_expr _ARG((Binding b));
+static Term read_cmd _ARG((Binding b));		   /*                        */
+static Term read_expr _ARG((Binding b));	   /*                        */
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -81,34 +81,35 @@ String tag_id(c)			   	   /*                        */
   int c;					   /*                        */
 {						   /*                        */
   switch (c)					   /*                        */
-  { case L_STRING: return (String)"string";	   /*                        */
-    case L_FIELD:  return (String)"field";	   /*                        */
-    case L_NUMBER: return (String)"number";	   /*                        */
-    case L_CONS:   return (String)"cons";	   /*                        */
-    case L_LIST:   return (String)"list";	   /*                        */
-    case L_GROUP:  return (String)"group";	   /*                        */
-    case L_TRUE:   return (String)"true";	   /*                        */
-    case L_FALSE:  return (String)"false";	   /*                        */
-    case L_QUOTE:  return (String)"'";		   /*                        */
-    case L_MINUS:  return (String)"-";		   /*                        */
-    case L_PLUS:   return (String)"+";		   /*                        */
-    case L_TIMES:  return (String)"*";		   /*                        */
-    case L_DIV:    return (String)"/";		   /*                        */
-    case L_MOD:    return (String)"mod";	   /*                        */
-    case L_SET:    return (String)"=";		   /*                        */
-    case L_LIKE:   return (String)"like";	   /*                        */
-    case L_ILIKE:  return (String)"ilike";	   /*                        */
-    case L_EQ:     return (String)"==";		   /*                        */
-    case L_NE:     return (String)"!=";		   /*                        */
-    case L_GT:     return (String)">";		   /*                        */
-    case L_GE:     return (String)">=";		   /*                        */
-    case L_LT:     return (String)"<";		   /*                        */
-    case L_LE:     return (String)"<=";		   /*                        */
-    case L_NOT:    return (String)"not";	   /*                        */
-    case L_AND:    return (String)"and";	   /*                        */
-    case L_OR:     return (String)"or";		   /*                        */
+  { case L_STRING:   return (String)"string";	   /*                        */
+    case L_FIELD:    return (String)"field";	   /*                        */
+    case L_NUMBER:   return (String)"number";	   /*                        */
+    case L_FUNCTION: return (String)"function";	   /*                        */
+    case L_LIST:     return (String)"list";	   /*                        */
+    case L_GROUP:    return (String)"group";	   /*                        */
+    case L_TRUE:     return (String)"true";	   /*                        */
+    case L_FALSE:    return (String)"false";	   /*                        */
+    case L_QUOTE:    return (String)"'";	   /*                        */
+    case L_UMINUS:   return (String)"-";	   /*                        */
+    case L_MINUS:    return (String)"-";	   /*                        */
+    case L_PLUS:     return (String)"+";	   /*                        */
+    case L_TIMES:    return (String)"*";	   /*                        */
+    case L_DIV:      return (String)"/";	   /*                        */
+    case L_MOD:      return (String)"mod";	   /*                        */
+    case L_SET:      return (String)"=";	   /*                        */
+    case L_LIKE:     return (String)"like";	   /*                        */
+    case L_ILIKE:    return (String)"ilike";	   /*                        */
+    case L_EQ:       return (String)"==";	   /*                        */
+    case L_NE:       return (String)"!=";	   /*                        */
+    case L_GT:       return (String)">";	   /*                        */
+    case L_GE:       return (String)">=";	   /*                        */
+    case L_LT:       return (String)"<";	   /*                        */
+    case L_LE:       return (String)"<=";	   /*                        */
+    case L_NOT:      return (String)"not";	   /*                        */
+    case L_AND:      return (String)"and";	   /*                        */
+    case L_OR:       return (String)"or";	   /*                        */
     case 0:					   /*                        */
-    case EOF:      return END_OF_FILE;		   /*                        */
+    case EOF:        return END_OF_FILE;	   /*                        */
   }						   /*                        */
   buffer[0] = c;				   /*                        */
   buffer[1] = 0;				   /*                        */
@@ -150,8 +151,8 @@ static Term scan_block()			   /*                        */
 **	s	
 ** Returns:	
 **___________________________________________________			     */
-static Term scan_string(s, c_end)		   /*                        */
-  SymDef s;					   /*                        */
+static Term scan_string(type, c_end)		   /*                        */
+  short int type;				   /*                        */
   char   c_end;					   /*                        */
 { Term t;					   /*                        */
   StringBuffer *sb = sbopen();		   	   /*                        */
@@ -191,12 +192,13 @@ static Term scan_string(s, c_end)		   /*                        */
     }					   	   /*                        */
   }					   	   /*                        */
 					       	   /*                        */
-  t = new_t_string(s, symbol((String)sbflush(sb)));/*                        */
+  t = new_t_string(type, symbol((String)sbflush(sb)));/*                     */
   sbclose(sb);				   	   /*                        */
   return t;			   		   /*                        */
 }						   /*------------------------*/
 
-#define Return(VAL, C) yylval = (VAL); return C
+#define Return(VAL, C)	yylval = (VAL); return C
+#define ReturnTerm(C)	yylval = NewTerm(C); return C
 
 /*-----------------------------------------------------------------------------
 ** Function:	scan()
@@ -240,27 +242,27 @@ static int scan(b)			   	   /*                        */
 	continue;				   /*                        */
 						   /*                        */
       case '"':					   /*                        */
-	Return(scan_string(sym_string ,'"'),	   /*                        */
+	Return(scan_string(L_STRING ,'"'),	   /*                        */
 	       L_STRING);			   /*                        */
 	  					   /*                        */
       case '`':				   	   /*                        */
-	Return(scan_string(sym_field ,'`'),	   /*                        */
+	Return(scan_string(L_FIELD ,'`'),	   /*                        */
 	       L_FIELD);  			   /*                        */
  	  					   /*                        */
       case '+':					   /*                        */
-	Return(SymTerm(sym_plus), L_PLUS);	   /*                        */
+	ReturnTerm(L_PLUS);  	   		   /*                        */
 	  					   /*                        */
       case '-':					   /*                        */
-	Return(SymTerm(sym_minus), L_MINUS);	   /*                        */
+	ReturnTerm(L_MINUS);			   /*                        */
 	  					   /*                        */
       case '*':					   /*                        */
-	Return(SymTerm(sym_times), L_TIMES);	   /*                        */
+	ReturnTerm(L_TIMES);	   		   /*                        */
 	  					   /*                        */
       case '/':					   /*                        */
-	Return(SymTerm(sym_div), L_DIV);	   /*                        */
+	ReturnTerm(L_DIV);    	   		   /*                        */
 	  					   /*                        */
       case '\'':				   /*                        */
-	Return(SymCharTerm('\''), L_QUOTE);	   /*                        */
+	ReturnTerm(L_QUOTE);	   		   /*                        */
 	  					   /*                        */
       case '0':					   /*                        */
 	{ register long num = 0;		   /*                        */
@@ -281,7 +283,7 @@ static int scan(b)			   	   /*                        */
 	    { num = num * 8 + c - '0'; }	   /*                        */
 	  }					   /*                        */
 	  if (c > 0) UnGetC(c);			   /*                        */
-	  Return(new_term_num(num), L_NUMBER);	   /*                        */
+	  Return(NumberTerm(num), L_NUMBER);	   /*                        */
 	}					   /*                        */
 	  					   /*                        */
       case '1': case '2': case '3': case '4':	   /*                        */
@@ -291,61 +293,43 @@ static int scan(b)			   	   /*                        */
 	  for (c = GetC; c >= '0' && c <= '9'; c = GetC)/*                   */
 	  { num = num * 10 + c - '0'; }	   	   /*                        */
 	  UnGetC(c);				   /*                        */
-	  Return(new_term_num(num), L_NUMBER);	   /*                        */
+	  Return(NumberTerm(num), L_NUMBER);	   /*                        */
 	}					   /*                        */
 	  					   /*                        */
       case '[':					   /*                        */
 	for (c = GetC; c && isspace(c); c = GetC); /*                        */
-	if (c == ']') {				   /*                        */
-	  yylval = NIL;				   /*                        */
-	  return L_LIST;			   /*                        */
-	}					   /*                        */
+	if (c == ']') {	Return(NIL, L_LIST); }	   /*                        */
 	UnGetC(c);				   /*                        */
-	Return(Cons(NIL, NIL), L_LIST);		   /*                        */
+	Return(List(NIL, NIL), L_LIST);		   /*                        */
 	  					   /*                        */
       case '=':					   /*                        */
-	if ((c=GetC) == '=') {			   /*                        */
-	  Return(new_term(sym_eq, NIL, NIL),	   /*                        */
-		 L_EQ);	   		   	   /*                        */
-	}					   /*                        */
+	if ((c=GetC) == '=') { ReturnTerm(L_EQ); } /*                        */
 	UnGetC(c);				   /*                        */
-	Return(SymCharTerm('='), L_SET);	   /*                        */
+	ReturnTerm(L_SET);	   	   	   /*                        */
 	  					   /*                        */
       case '&':					   /*                        */
-	if ((c=GetC) == '&') {			   /*                        */
-	  Return(new_term(sym_and, NIL, NIL),	   /*                        */
-		 L_AND);	   		   /*                        */
-	}					   /*                        */
+	if ((c=GetC) == '&') { ReturnTerm(L_AND); }/*                        */
 	UnGetC(c);				   /*                        */
 	Return(SymCharTerm('&'), '&'); 	   	   /*                        */
 	  					   /*                        */
       case '|':					   /*                        */
-	if ((c=GetC) == '|') {			   /*                        */
-	  Return(new_term(sym_or, NIL, NIL),	   /*                        */
-		 L_OR);	   			   /*                        */
-	}					   /*                        */
+	if ((c=GetC) == '|') { ReturnTerm(L_OR); } /*                        */
 	UnGetC(c);				   /*                        */
 	Return(SymCharTerm('|'), '|'); 	   	   /*                        */
 	  					   /*                        */
       case '!':					   /*                        */
-	if ((c=GetC) == '=') {			   /*                        */
-	  Return(new_term(sym_ne, NIL, NIL), L_NE);/*                        */
-	}					   /*                        */
+	if ((c=GetC) == '=') { ReturnTerm(L_NE); } /*                        */
 	Return(SymTerm(sym_not), L_NOT);	   /*                        */
 	  					   /*                        */
       case '>':					   /*                        */
-	if ((c=GetC) == '=') {			   /*                        */
-	  Return(new_term(sym_ge, NIL, NIL), L_GE);/*                        */
-	}					   /*                        */
+	if ((c=GetC) == '=') { ReturnTerm(L_GE); } /*                        */
 	UnGetC(c);				   /*                        */
-	Return(SymCharTerm('>'), L_GT);		   /*                        */
+	ReturnTerm(L_GT);	   	   	   /*                        */
 	  					   /*                        */
       case '<':					   /*                        */
-	if ((c=GetC) == '=') {			   /*                        */
-	  Return(new_term(sym_le, NIL, NIL), L_LE);/*                        */
-	}					   /*                        */
+	if ((c=GetC) == '=') { ReturnTerm(L_LE); } /*                        */
 	UnGetC(c);				   /*                        */
-	Return(SymCharTerm('<'), L_LT);		   /*                        */
+	ReturnTerm(L_LT);	   	   	   /*                        */
 	  					   /*                        */
       case 'a': case 'b': case 'c': case 'd':	   /*                        */
       case 'e': case 'f': case 'g': case 'h':	   /*                        */
@@ -371,18 +355,27 @@ static int scan(b)			   	   /*                        */
 	       c = GetC) 			   /*                        */
 	  { sbputc((char)c ,sb); }		   /*                        */
 	  UnGetC(c);				   /*                        */
-	  s = symbol((String)sbflush(sb));	   /*                        */
+	  s = (String)sbflush(sb);	   	   /*                        */
 	  sbclose(sb);				   /*                        */
  						   /*                        */
+	  if (strcmp((char*)s, "nil") == 0)	   /*                        */
+	  { Return(NIL, L_LIST); }		   /*                        */
 	  if (strcmp((char*)s, "true") == 0)	   /*                        */
-	  { yylval = SymTerm(sym_true);		   /*                        */
-	    return L_TRUE;			   /*                        */
-	  }					   /*                        */
+	  { Return(SymTerm(sym_true), L_TRUE); }   /*                        */
 	  if (strcmp((char*)s, "false") == 0)	   /*                        */
-	  { yylval = SymTerm(sym_false);	   /*                        */
-	    return L_FALSE;			   /*                        */
-	  }					   /*                        */
+	  { Return(SymTerm(sym_false), L_FALSE); } /*                        */
+	  if (strcmp((char*)s, "not") == 0)	   /*                        */
+	  { ReturnTerm(L_NOT); }		   /*                        */
+	  if (strcmp((char*)s, "and") == 0)	   /*                        */
+	  { ReturnTerm(L_AND); }		   /*                        */
+	  if (strcmp((char*)s, "or") == 0)	   /*                        */
+	  { ReturnTerm(L_OR); }			   /*                        */
+	  if (strcmp((char*)s, "mod") == 0)	   /*                        */
+	  { ReturnTerm(L_MOD); }		   /*                        */
+	  if (strcmp((char*)s, "quote") == 0)	   /*                        */
+	  { ReturnTerm(L_QUOTE); }		   /*                        */
  						   /*                        */
+	  s = symbol(s);	   		   /*                        */
 	  sym = get_bind(b, s);			   /*                        */
 	  if (sym)				   /*                        */
 	  { yylval = SymTerm(sym);	   	   /*                        */
@@ -390,9 +383,7 @@ static int scan(b)			   	   /*                        */
 	  } else {				   /*                        */
 	    c = L_FIELD;			   /*                        */
 	  }					   /*                        */
-	  if (yylval == NIL)			   /*                        */
-	  { yylval = FieldTerm(s);		   /*                        */
-	  }					   /*                        */
+	  if (yylval == NIL) yylval = FieldTerm(s);/*                        */
 #ifdef DEBUG_PARSER
 	  printf("--- scan: word %s 0x%x\n",	   /*                        */
 		 (char*)s, c);	   		   /*                        */
@@ -401,8 +392,7 @@ static int scan(b)			   	   /*                        */
 	}					   /*                        */
  						   /*                        */
       default:					   /*                        */
-	yylval = SymCharTerm(c);		   /*                        */
-	return c; 				   /*                        */
+        Return(SymCharTerm(c), c);		   /*                        */
     }						   /*                        */
     return c < 0 ? EOF : c; 			   /*                        */
   }						   /*                        */
@@ -411,11 +401,12 @@ static int scan(b)			   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_list()
-** Type:	Term
+** Type:	static Term
 ** Purpose:	
 **		
 ** Arguments:
-**	t	
+**	b	the binding
+**	t	the term tamplate
 ** Returns:	
 **___________________________________________________			     */
 static Term read_list(b, t)			   /*                        */
@@ -460,7 +451,7 @@ static Term read_fct(b, t)			   /*                        */
   Term t;					   /*                        */
 { Term a;					   /*                        */
   int lno = linenum;				   /*                        */
-  Term x  = t = Cons(t, NIL);			   /*                        */
+  Term x  = t = new_t_string(L_FUNCTION,TString(t));/*                       */
   int c	  = scan(b);				   /*                        */
  						   /*                        */
   if (c == ')') { return t; }			   /*                        */
@@ -482,11 +473,12 @@ static Term read_fct(b, t)			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_builtin()
-** Type:	Term
+** Type:	static Term
 ** Purpose:	
 **		
 ** Arguments:
-**	Term t	
+**	b	the binding
+**	t	the term
 ** Returns:	
 **___________________________________________________			     */
 static Term read_builtin(b, t)	   		   /*                        */
@@ -494,6 +486,10 @@ static Term read_builtin(b, t)	   		   /*                        */
   Term t;					   /*                        */
 { int c;					   /*                        */
   						   /*                        */
+  TermOp(t) = L_FUNCTION;			   /*                        */
+#ifdef DEBUG_PARSER
+  fprintf(stderr, "--- read_builtin (%s)\n", TString(t));/*                  */
+#endif
   for (c = scan(b); c > 0; c = scan(b))	   	   /*                        */
   {						   /*                        */
 #ifdef DEBUG_PARSER
@@ -505,7 +501,8 @@ static Term read_builtin(b, t)	   		   /*                        */
       fputs("--- skip =\n", stderr);		   /*                        */
 #endif
     } else if (c == '{')		   	   /*                        */
-    { return Cons(t, Cons(scan_block(), NIL));	   /*                        */
+    { Cdr(t) = Cons(scan_block(),NIL);		   /*                        */
+      return t;	   				   /*                        */
     } else if ((c != L_MINUS && L_IS_OPERATOR(c))  /*                        */
 	       || c == ';'			   /*                        */
 	       || c == ')'			   /*                        */
@@ -514,7 +511,8 @@ static Term read_builtin(b, t)	   		   /*                        */
       return t;					   /*                        */
     } else {					   /*                        */
       unscan(c, yylval);			   /*                        */
-      return Cons(t, Cons(read_expr(b),NIL));	   /*                        */
+      Cdr(t) = Cons(read_expr(b),NIL);		   /*                        */
+      return t;	   				   /*                        */
     }						   /*                        */
   }						   /*                        */
   return t;					   /*                        */
@@ -546,14 +544,16 @@ static TStack reduce(stack)			   /*                        */
     if (StackChar(prev) == L_MINUS		   /*                        */
 	&& (StackPrev(prev) == NULL		   /*                        */
 	    || L_IS_OPERATOR(StackChar(StackPrev(prev)))))/*                 */
-    { if ( TSym(StackTerm(current)) == sym_number )/*                        */
+    { if ( TermOp(StackTerm(current)) == L_NUMBER )/*                        */
       { TNumber(StackTerm(current)) =		   /*                        */
 	  -TNumber(StackTerm(current));		   /*                        */
       } else {					   /*                        */
-	StackTerm(current) = Cons(StackTerm(prev), /*                        */
-				  Cons(StackTerm(current),/*                 */
-				       NIL));	   /*                        */
-	StackChar(current) = L_LIST;		   /*                        */
+	Term t	  = StackTerm(prev);		   /*                        */
+	TermOp(t) = L_UMINUS;			   /*                        */
+	Cdr(t)    = Cons(StackTerm(current), NIL); /*                        */
+						   /*                        */
+	StackTerm(current) = t;	   		   /*                        */
+	StackChar(current) = L_UMINUS;		   /*                        */
       }						   /*                        */
       StackPrev(current) = ts_pop(StackPrev(current));/*                     */
     }						   /*                        */
@@ -579,7 +579,7 @@ static TStack reduce(stack)			   /*                        */
 #endif
     if (n <= 0x400)				   /*                        */
       Error("Missing operator after ",		   /*                        */
-	    TermName(StackTerm(stack)), 0);	   /*                        */
+	    tag_id(TermOp(StackTerm(stack))), 0);  /*                        */
     						   /*                        */
     for (current = stack;			   /*                        */
 	 current && StackPrev(current);		   /*                        */
@@ -590,13 +590,13 @@ static TStack reduce(stack)			   /*                        */
       fprintf(stderr,"--- reducing at 0x%x\n", n); /*                        */
       dump_tstack(stderr, stack);		   /*                        */
 #endif
-      t = Cons(StackTerm(prev), NIL);		   /*                        */
+      t = StackTerm(prev);		   	   /*                        */
        						   /*                        */
       if (L_IS_BINARY(n))			   /*                        */
       {						   /*                        */
 	if (L_IS_BINARY(StackChar(StackPrev(prev))))/*                       */
 	{ Error("First operator for ",		   /*                        */
-		TermName(StackTerm(prev)),	   /*                        */
+		tag_id(TermOp(StackTerm(prev))),   /*                        */
 		" missing");			   /*                        */
 	}					   /*                        */
  						   /*                        */
@@ -684,12 +684,11 @@ static Term read_expr(b)			   /*                        */
 		       : read_list(b, yylval)));   /*                        */
 	break;					   /*                        */
  						   /*                        */
-      case '\'':				   /*                        */
-	{ Term t = read_expr(b);		   /*                        */
-	  Shift(L_QUOTE,			   /*                        */
-		Cons(SymTerm(sym_quote),	   /*                        */
-		     Cons(t, NIL)));    	   /*                        */
-	}					   /*                        */
+      case L_QUOTE:				   /*                        */
+	Shift(L_QUOTE,				   /*                        */
+	      new_term(L_QUOTE,			   /*                        */
+		       NIL,			   /*                        */
+		       Cons(read_expr(b), NIL)));  /*                        */
 	break;					   /*                        */
 						   /*                        */
       case L_FIELD:				   /*                        */
@@ -701,17 +700,22 @@ static Term read_expr(b)			   /*                        */
 	    break;				   /*                        */
 	  }					   /*                        */
 	  t = read_fct(b, t);			   /*                        */
-	  Shift(L_LIST, t);		   	   /*                        */
+	  Shift(L_FUNCTION, t);		   	   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case L_STRING:				   /*                        */
       case L_NUMBER:				   /*                        */
-      case L_QUOTE:				   /*                        */
-      case L_TRUE:				   /*                        */
-      case L_FALSE:				   /*                        */
       case L_NOT:				   /*                        */
 	Shift(c, yylval);		   	   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
+      case L_TRUE:				   /*                        */
+	Shift(c, SymTerm(sym_true));	   	   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
+      case L_FALSE:				   /*                        */
+	Shift(c, SymTerm(sym_false));	   	   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case L_MINUS:				   /*                        */
@@ -763,11 +767,7 @@ static Term read_cmd(b)				   /*                        */
   for (c = scan(b); c >= 0; c = scan(b))	   /*                        */
   { 						   /*                        */
     if (c == L_FIELD) {				   /*                        */
-      SymDef sym = TSym(yylval);		   /*                        */
-      String s = (sym == sym_field		   /*                        */
-		  ? TString(yylval)		   /*                        */
-		  : SymName(sym));		   /*                        */
-      if (get_bind(b, s))			   /*                        */
+      if (get_bind(b, TString(yylval)))		   /*                        */
       { return read_builtin(b, yylval); }	   /*                        */
     }						   /*                        */
  						   /*                        */
