@@ -107,8 +107,7 @@ BUnit::run(name         => 'plus-14',
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'plus-21',
 	   args		=> '--eval',
-	   ignore	=> 1,
-	   resource	=> '2+[1];',
+	   resource	=> '2+[777];',
 	   expected_err	=> '',
 	   expected_out	=> "3\n" );
 

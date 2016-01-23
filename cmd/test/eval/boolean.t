@@ -91,14 +91,6 @@ BUnit::run(name         => 'not-21',
 	   expected_out => "false\n" );
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'not-err-2',
-	   args		=> '--eval',
-	   ignore	=> 1,
-	   resource	=> 'not(true, true);',
-	   expected_err	=> "\n*** BibTool ERROR: Type error: boolean expected\n",
-	   expected_out	=> '' );
-
-#------------------------------------------------------------------------------
 BUnit::run(name         => 'not-30',
 	   args	        => '--eval',
 	   resource     => 'not "";',
