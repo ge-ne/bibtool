@@ -32,6 +32,8 @@
  int verbose  = 0;
  int evaluate = 0;
 
+ Term result = NIL;
+
 /*-----------------------------------------------------------------------------
 ** Function:	action()
 ** Type:	int
@@ -45,9 +47,12 @@ int action(b, t)				   /*                        */
   Binding b;					   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
-  if (evaluate)	{ t = eval_term(b, t); }	   /*                        */
-  print_term(stdout, t);			   /*                        */
-  putchar('\n');				   /*                        */
+  if (evaluate)					   /*                        */
+  { result = eval_term(b, t); }	   		   /*                        */
+  else						   /*                        */
+  { print_term(stdout, t);			   /*                        */
+    putchar('\n');				   /*                        */
+  }						   /*                        */
   return 0;					   /*                        */
 }						   /*------------------------*/
 
@@ -68,6 +73,10 @@ void run_test(file)				   /*                        */
     fprintf(stderr, "--- reading %s\n", file);	   /*                        */
    						   /*                        */
   read_loop(b, file, action);			   /*                        */
+  if (evaluate)					   /*                        */
+  { print_term(stdout, result);			   /*                        */
+    putchar('\n');				   /*                        */
+  }						   /*                        */
 }						   /*------------------------*/
 
 #define ArgIs(A,B) strcmp(A, arg) == 0 || strcmp(B, arg) == 0
