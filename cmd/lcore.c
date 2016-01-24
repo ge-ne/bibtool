@@ -334,6 +334,8 @@ Term g_field(binding, term)		   	   /*                        */
   return sym ? SymValue(sym) : NIL;		   /*                        */
 }						   /*------------------------*/
 
+extern char * tag_id();
+
 /*-----------------------------------------------------------------------------
 ** Function:	g_field()
 ** Type:	Term
@@ -347,13 +349,12 @@ Term g_field(binding, term)		   	   /*                        */
 Term g_setq(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{						   /*                        */
-  if (Car(term) == NIL) ErrorNF("Undefined lhs",0);/*                        */
+{ Term car = Cadr(term);			   /*                        */
+  term	   = Cdr(term);				   /*                        */
+  if (car == NIL) ErrorNF("Undefined LHS",0);	   /*                        */
+  if (!TermIsField(car)) ErrorNF("Illegal LHS",0); /*                        */
  						   /*                        */
-  return setq(binding,
-	      TString(Car(term)),
-	      Cadr(term)
-	     );					   /*                        */
+  return setq(binding, TString(car), Cadr(term) ); /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

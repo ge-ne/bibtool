@@ -546,6 +546,7 @@ static TStack reduce(stack)			   /*                        */
 #ifdef DEBUG_PARSER
       fputs("--- minus processed\n", stderr);	   /*                        */
       dump_tstack(stderr, stack);		   /*                        */
+      fputs("---\n", stderr);	   		   /*                        */
 #endif
   while (StackPrev(stack))			   /*                        */
   { n = 0x400;				   	   /*                        */
@@ -774,11 +775,13 @@ static Term read_cmd(b)				   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	filename	
+**	binding	
+**	file	
+**	action	
 ** Returns:	
 **___________________________________________________			     */
-int read_loop(b, file, action)		   	   /*                        */
-  Binding b;				   	   /*                        */
+int read_loop(binding, file, action)		   /*                        */
+  Binding binding;				   /*                        */
   char * file;				   	   /*                        */
   int (*action)_ARG((Binding b, Term t));	   /*                        */
 { Term term;					   /*                        */
@@ -794,10 +797,10 @@ int read_loop(b, file, action)		   	   /*                        */
     ErrorNF("File could not be opened: ", file);   /*                        */
   }						   /*                        */
    						   /*                        */
-  for (term = read_cmd(b);			   /*                        */
+  for (term = read_cmd(binding);		   /*                        */
        term != term_eof;			   /*                        */
-       term = read_cmd(b))			   /*                        */
-  { (*action)(b, term); }			   /*                        */
+       term = read_cmd(binding))		   /*                        */
+  { (*action)(binding, term); }			   /*                        */
  						   /*                        */
   fclose(in_file);				   /*                        */
  						   /*                        */

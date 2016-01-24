@@ -111,13 +111,13 @@ Term setq(b, key, term)		   		   /*                        */
   SymDef junk;					   /*                        */
    						   /*                        */
   for (junk = BJunks(b)[h]; junk; junk = NextJunk(junk))/*                   */
-  { if (strcmp((char*)SymName(junk), (char*)key) == 0)/*                     */
+  { if (SymName(junk) == key)			   /*                        */
     { SymValue(junk) = term;		   	   /*                        */
       return term;				   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
-  junk           = symdef(key, 0, g_field); 	   /*                        */
+  junk           = symdef(key, L_FIELD, g_field);  /*                        */
   SymValue(junk) = term;		   	   /*                        */
   NextJunk(junk) = BJunks(b)[h];		   /*                        */
   BJunks(b)[h]   = junk;			   /*                        */
@@ -441,24 +441,25 @@ void dump_binding(b, file)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	term	
-** Returns:	
+**	binding	the binding
+**	term	the term to evaluate
+** Returns:	the resulting term
 **___________________________________________________			     */
 Term eval_term(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { SymDef s;					   /*                        */
   String key = NULL;				   /*                        */
+ 						   /*                        */
   if (term == NIL) return NIL;			   /*                        */
  						   /*                        */
   switch (TType(term))				   /*                        */
   { case L_STRING:				   /*                        */
+    case L_GROUP:				   /*                        */
     case L_NUMBER:				   /*                        */
     case L_TRUE:				   /*                        */
     case L_FALSE:				   /*                        */
     case L_CONS:				   /*                        */
-    case L_GROUP:				   /*                        */
       return term;				   /*                        */
     case 0:					   /*                        */
     case EOF:					   /*                        */
@@ -477,10 +478,10 @@ Term eval_term(binding, term)			   /*                        */
     case L_PLUS:     key = (String)"+";	     break;/*                        */
     case L_TIMES:    key = (String)"*";	     break;/*                        */
     case L_DIV:      key = (String)"/";	     break;/*                        */
-    case L_MOD:      key = (String)"%";	     break;/*                        */
+    case L_MOD:      key = (String)"mod";    break;/*                        */
     case L_SET:      key = (String)"=";	     break;/*                        */
-    case L_LIKE:     key = (String)"=like";  break;/*                        */
-    case L_ILIKE:    key = (String)"=ilike"; break;/*                        */
+    case L_LIKE:     key = (String)"like";   break;/*                        */
+    case L_ILIKE:    key = (String)"ilike";  break;/*                        */
     case L_EQ:       key = (String)"==";     break;/*                        */
     case L_NE:       key = (String)"!=";     break;/*                        */
     case L_GT:       key = (String)">";	     break;/*                        */
@@ -490,6 +491,7 @@ Term eval_term(binding, term)			   /*                        */
     case L_NOT:      key = (String)"!";	     break;/*                        */
     case L_AND:      key = (String)"&&";     break;/*                        */
     case L_OR:       key = (String)"||";     break;/*                        */
+    default: ErrorNF("Undefined tag ", NULL);	   /*                        */
   }						   /*                        */
  						   /*                        */
    s = get_bind(binding, key);		   	   /*                        */

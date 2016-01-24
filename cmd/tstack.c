@@ -78,7 +78,7 @@ TStack ts_push(ts, c, t)			   /*                        */
 **		
 ** Arguments:
 **	file	
-**	 stack	
+**	stack	
 ** Returns:	nothing
 **___________________________________________________			     */
 void dump_tstack(file, stack)			   /*                        */

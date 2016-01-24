@@ -226,11 +226,11 @@ static void prt_args(file, term)		   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	print_term()
 ** Type:	void
-** Purpose:	
-**		
+** Purpose:	Produce a printed representation of a term and write it to
+**		the output stream.
 ** Arguments:
-**	file	
-**	t	
+**	file	the output stream
+**	t	the term to print
 ** Returns:	nothing
 **___________________________________________________			     */
 void print_term(file, term)			   /*                        */
@@ -303,10 +303,14 @@ void print_term(file, term)			   /*                        */
  						   /*                        */
   if (L_IS_BINARY(TType(term)) )		   /*                        */
   { term = Cdr(term);				   /*                        */
-    fputc('(', file);				   /*                        */
-    print_term(file, Car(term));		   /*                        */
-    fputs(key, file);		   		   /*                        */
-    print_term(file, Cadr(term));		   /*                        */
+    if (term)
+    { fputc('(', file);				   /*                        */
+      print_term(file, Car(term));		   /*                        */
+      fputs(key, file);		   		   /*                        */
+      print_term(file, Cadr(term));		   /*                        */
+    } else {
+      return;
+    }
   } else {					   /*                        */
     fputs(key, file);		   		   /*                        */
     fputc('(', file);				   /*                        */

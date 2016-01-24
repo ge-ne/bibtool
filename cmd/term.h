@@ -52,6 +52,7 @@ typedef struct S_TERM {				   /*                        */
 #define TermIsNumber(T)		(TType(T) == L_NUMBER)
 #define TermIsString(T)		(TType(T) == L_STRING)
 #define TermIsList(T)		(TType(T) == L_CONS)
+#define TermIsField(T)		(TType(T) == L_FIELD)
 #define TermIsFunction(T)	(TType(T) == L_FUNCTION)
 #define TermIsEOF(T)		(TType(T) == L_EOF)
 #define TermIsTrue(T)		(TType(T) == L_TRUE)
