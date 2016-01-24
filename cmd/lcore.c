@@ -333,6 +333,29 @@ Term g_out_file(binding, term)		   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	g_cl_ign_words()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	term	the term
+** Returns:	NIL
+**___________________________________________________			     */
+Term g_cl_ign_words(binding, term)		   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ extern void clear_ignored_words();		   /*                        */
+ 						   /*                        */
+  if (list_length(Cdr(term)) != 0)		   /*                        */
+  { ErrorNF("Wrong number of arguments for clear.ignored.words",0);/*        */
+  }						   /*                        */
+
+  clear_ignored_words();
+  return NIL;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	g_print()
 ** Type:	Term
 ** Purpose:	

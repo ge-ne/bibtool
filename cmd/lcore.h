@@ -46,6 +46,7 @@ extern Term g_setq _ARG((Binding b, Term t));	   /*                        */
 extern Term g_times _ARG((Binding b, Term t));	   /*                        */
 extern Term g_version _ARG((Binding b, Term t));   /*                        */
 extern Term g_out_file _ARG((Binding b, Term t));  /*                        */
+extern Term g_cl_ign_words _ARG((Binding b, Term t));/*                      */
 
 extern SymDef sym_true;			   	   /*                        */
 extern SymDef sym_false;			   /*                        */
