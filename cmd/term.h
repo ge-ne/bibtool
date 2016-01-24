@@ -137,8 +137,6 @@ typedef struct S_SYMDEF {			   /*                        */
 #define SymGet(SYM)	((SYM)->get)
 #define NextJunk(SYM)	((SYM)->next)
 
-#define MakeSymTerm(S)	SymTerm(S) = NewTerm(SymOp(S))
-
 /*---------------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------------

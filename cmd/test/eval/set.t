@@ -44,7 +44,7 @@ $BUnit::name_prefix = 'eval/';
 #------------------------------------------------------------------------------
 sub set_test {
   my ($key,$value) = @_;
-  BUnit::run(name         => $key-0,
+  BUnit::run(name         => "$key-0",
 	     args	  => '--eval',
 	     resource     => "abc=$value;",
 	     expected_err => '',

@@ -197,7 +197,7 @@ static Term bool_rsc(binding, name, term, rp)	   /*                        */
     default:					   /*                        */
       ErrorNF("Too many arguments for ", name);	   /*                        */
   }						   /*                        */
-  return SymTerm(*rp ? sym_true : sym_false);	   /*                        */
+  return (*rp ? term_true : term_false);	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -294,7 +294,7 @@ static Term str_rsc(binding, name, term, rp)	   /*                        */
         FCT;						\
         return term;					\
       default:						\
-        ErrorNF("Too many arguments for ", NAME);	\
+        wrong_no_args(NAME);				\
     }							\
     return term; }
 #include "builtin.h"

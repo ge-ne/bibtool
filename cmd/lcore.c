@@ -17,7 +17,6 @@
 #include <bibtool/symbols.h>
 #include <bibtool/sbuffer.h>
 #include <ctype.h>
-#include "term.h"
 #include "binding.h"
 #include "lcore.h"
 
@@ -39,9 +38,26 @@
 /*---------------------------------------------------------------------------*/
 
 
+Term term_true;
+Term term_false;
+
 SymDef sym_true;
 SymDef sym_false;
-SymDef* sym_char;				   /*                        */
+
+
+/*-----------------------------------------------------------------------------
+** Function:	wrong_no_args()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	name	
+** Returns:	nothing
+**___________________________________________________			     */
+void wrong_no_args(name)			   /*                        */
+  register char* name;				   /*                        */
+{ ErrorNF("Wrong number of arguments for ",name);  /*                        */
+}						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	print_quoted()
@@ -121,7 +137,7 @@ Term g_eq(binding, term)			   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
   if (list_length(term) != 2)			   /*                        */
-  { ErrorNF("Wrong number of arguments for ==",0); }/*                       */
+  { wrong_no_args("=="); }			   /*                        */
   a = eval_term(binding, Car(term));		   /*                        */
   b = eval_term(binding, Cadr(term));		   /*                        */
  						   /*                        */
@@ -141,7 +157,7 @@ Term g_eq(binding, term)			   /*                        */
   { val = (TType(b) == TType(a)); }		   /*                        */
   else val = 0;					   /*                        */
  						   /*                        */
-  return SymTerm(val ? sym_true : sym_false );	   /*                        */
+  return (val ? term_true : term_false );	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -157,8 +173,44 @@ Term g_eq(binding, term)			   /*                        */
 Term g_ne(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ return SymTerm(TermIsTrue(g_eq(binding, term))   /*                        */
-		 ? sym_false: sym_true);	   /*                        */
+{ return (TermIsTrue(g_eq(binding, term))   	   /*                        */
+		 ? term_false: term_true);	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	g_lt()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	term	the term
+** Returns:	
+**___________________________________________________			     */
+Term g_lt(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ Term a, b;					   /*                        */
+  int val;					   /*                        */
+ 						   /*                        */
+  term = Cdr(term);				   /*                        */
+  if (list_length(term) != 2) wrong_no_args("<");  /*                        */
+
+  a = eval_term(binding, Car(term));
+  b = eval_term(binding, Cadr(term));
+
+  if ( TermIsNumber(a) )
+  { if ( !TermIsNumber(b) )
+      b = eval_num(binding, b);
+    val = (TNumber(a) < TNumber(b));
+  } else if ( TermIsString(a) )
+  { if ( !TermIsString(b) )
+      b = eval_str(binding, b);
+    val = (strcmp((char*)TString(a), (char*)TString(b)) < 0);
+  } else
+  { ErrorNF("Type error: comparable expected",0); }/*                        */
+
+  return val ? term_true: term_false;		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -181,16 +233,12 @@ Term eval_bool(binding, term)			   /*                        */
  						   /*                        */
   switch (TType(term))				   /*                        */
   { case L_CONS:				   /*                        */
-      return SymTerm(sym_true);			   /*                        */
+      return term_true;			   	   /*                        */
     case L_NUMBER:				   /*                        */
-      return TNumber(term)			   /*                        */
-	? SymTerm(sym_true)			   /*                        */
-	: SymTerm(sym_false);			   /*                        */
+      return TNumber(term) ? term_true : term_false;/*                       */
     case L_BLOCK:				   /*                        */
     case L_STRING:				   /*                        */
-      return *TString(term)			   /*                        */
-	? SymTerm(sym_true)			   /*                        */
-	: SymTerm(sym_false);			   /*                        */
+      return *TString(term) ? term_true	: term_false;/*                      */
     case L_TRUE:				   /*                        */
     case L_FALSE:				   /*                        */
       break;					   /*                        */
@@ -216,8 +264,7 @@ Term g_not(binding, term)			   /*                        */
   Term term;					   /*                        */
 {						   /*                        */
   term = eval_bool(binding, Cadr(term));	   /*                        */
-  return SymTerm(TermIsTrue(term)		   /*                        */
-		 ? sym_false: sym_true);	   /*                        */
+  return (TermIsTrue(term) ? term_false: term_true);/*                       */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -238,7 +285,7 @@ Term g_and(binding, term)			   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
   if (list_length(term) != 2)			   /*                        */
-  { ErrorNF("Wrong number of arguments for and",0); }/*                      */
+  { wrong_no_args("and"); }			   /*                        */
  						   /*                        */
   t = eval_bool(binding, Car(term));		   /*                        */
   if (TermIsFalse(t)) return t;		   	   /*                        */
@@ -264,7 +311,7 @@ Term g_or(binding, term)			   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
   if (list_length(term) != 2)			   /*                        */
-  { ErrorNF("Wrong number of arguments for or",0); }/*                       */
+  { wrong_no_args("or"); }			   /*                        */
  						   /*                        */
   t = eval_bool(binding, Car(term));		   /*                        */
   if (TermIsTrue(t)) return t;		   	   /*                        */
@@ -294,7 +341,7 @@ Term g_version(binding, term)		   	   /*                        */
     case 2:					   /*                        */
       ErrorNF("Parameter version is immutable",0); /*                        */
     default:					   /*                        */
-      ErrorNF("Wrong number of arguments for version",0);/*                  */
+      wrong_no_args("version");			   /*                        */
   }						   /*                        */
  						   /*                        */
   return StringTerm((String)bibtool_version);	   /*                        */
@@ -325,7 +372,7 @@ Term g_out_file(binding, term)		   	   /*                        */
       save_output_file(TString(term));		   /*                        */
       return term;				   /*                        */
     default:					   /*                        */
-      ErrorNF("Wrong number of arguments for output.file",0);/*              */
+      wrong_no_args("output.file");		   /*                        */
   }						   /*                        */
  						   /*                        */
   s = (String)get_output_file();		   /*                        */
@@ -348,10 +395,9 @@ Term g_cl_ign_words(binding, term)		   /*                        */
 { extern void clear_ignored_words();		   /*                        */
  						   /*                        */
   if (list_length(Cdr(term)) != 0)		   /*                        */
-  { ErrorNF("Wrong number of arguments for clear.ignored.words",0);/*        */
-  }						   /*                        */
-
-  clear_ignored_words();
+      wrong_no_args("clear.ignored.words");	   /*                        */
+ 						   /*                        */
+  clear_ignored_words();			   /*                        */
   return NIL;					   /*                        */
 }						   /*------------------------*/
 
@@ -601,7 +647,7 @@ Term g_plus(binding, term)			   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
   if (list_length(term) != 2)			   /*                        */
-      ErrorNF("Wrong number of arguments for +",0);/*                        */
+    wrong_no_args("+");	   			   /*                        */
  						   /*                        */
   val = TNumber(eval_num(binding, Car(term)));	   /*                        */
   val += TNumber(eval_num(binding, Cadr(term)));   /*                        */
@@ -637,7 +683,7 @@ Term g_minus(binding, term)			   /*                        */
       val -= TNumber(t);			   /*                        */
       return NumberTerm(val);			   /*                        */
     default:					   /*                        */
-      ErrorNF("Wrong number of arguments for -",0);/*                        */
+      wrong_no_args("-");			   /*                        */
       return 0;	   				   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
@@ -660,7 +706,7 @@ Term g_times(binding, term)			   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
   if (list_length(term) != 2)			   /*                        */
-      ErrorNF("Wrong number of arguments for *",0);/*                        */
+    wrong_no_args("*");			   	   /*                        */
  						   /*                        */
   val = TNumber(eval_num(binding, Car(term)));	   /*                        */
   val *= TNumber(eval_num(binding, Cadr(term)));   /*                        */
@@ -685,12 +731,11 @@ Term g_div(binding, term)			   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
   if (list_length(term) != 2)			   /*                        */
-      ErrorNF("Wrong number of arguments for /",0);/*                        */
+    wrong_no_args("/");			   	   /*                        */
  						   /*                        */
   val = TNumber(eval_num(binding, Car(term)));	   /*                        */
   d   = TNumber(eval_num(binding, Cadr(term)));	   /*                        */
-  if (d	== 0)					   /*                        */
-      ErrorNF("Divide by 0",0);			   /*                        */
+  if (d	== 0) ErrorNF("Divide by 0",0);		   /*                        */
   return NumberTerm(val/d);			   /*                        */
 }						   /*------------------------*/
 
@@ -712,12 +757,11 @@ Term g_mod(binding, term)			   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
   if (list_length(term) != 2)			   /*                        */
-      ErrorNF("Wrong number of arguments for mod",0);/*                      */
+    wrong_no_args("mod");			   /*                        */
  						   /*                        */
   val = TNumber(eval_num(binding, Car(term)));	   /*                        */
   d   = TNumber(eval_num(binding, Cadr(term)));	   /*                        */
-  if (d	== 0)					   /*                        */
-      ErrorNF("Modulo by 0",0);			   /*                        */
+  if (d	== 0) ErrorNF("Modulo by 0",0);		   /*                        */
   return NumberTerm(val % d);			   /*                        */
 }						   /*------------------------*/
 
@@ -751,12 +795,13 @@ unsigned int hash(s)				   /*                        */
 **___________________________________________________			     */
 void init_lreader()				   /*                        */
 {						   /*                        */
-  term_eof = NewTerm(-1);	   	   	   /*                        */
  						   /*                        */
-#define Declare(SYM,VAL) SYM = VAL; MakeSymTerm(SYM)
+  sym_true  = symdef((String)"true",  L_TRUE,  g_self);/*                    */
+  sym_false = symdef((String)"false", L_FALSE, g_self);/*                    */
  						   /*                        */
-  Declare(sym_true,   symdef((String)"true",     L_TRUE,	g_self));/*  */
-  Declare(sym_false,  symdef((String)"false",    L_FALSE,	g_self));/*  */
+  term_true  = SymTerm(sym_true)  = NewTerm(L_TRUE);/*                       */
+  term_false = SymTerm(sym_false) = NewTerm(L_FALSE);/*                      */
+  term_eof   = NewTerm(-1);	   	   	   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

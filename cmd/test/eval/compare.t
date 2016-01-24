@@ -100,6 +100,104 @@ BUnit::run(name         => 'eq-201',
 	   expected_err => '',
 	   expected_out => FALSE);
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ne-1',
+	   args	        => '--eval',
+	   resource     => "(nil!=nil)",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ne-2',
+	   args	        => '--eval',
+	   resource     => "false!=false",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ne-3',
+	   args	        => '--eval',
+	   resource     => "true!=true",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ne-100',
+	   args	        => '--eval',
+	   resource     => "0!=0",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ne-101',
+	   args	        => '--eval',
+	   resource     => "1!=1",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ne-102',
+	   args	        => '--eval',
+	   resource     => "1!=0",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ne-200',
+	   args	        => '--eval',
+	   resource     => "\"a\"!=\"a\"",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ne-201',
+	   args	        => '--eval',
+	   resource     => "\"a\"!=\"b\"",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'lt-1',
+	   args	        => '--eval',
+	   resource     => "(0 < 0)",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'lt-2',
+	   args	        => '--eval',
+	   resource     => "(1 < 0)",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'lt-3',
+	   args	        => '--eval',
+	   resource     => "(0 < 1)",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'lt-10',
+	   args	        => '--eval',
+	   resource     => "(\"\" < \"\")",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'lt-11',
+	   args	        => '--eval',
+	   resource     => "(\"\" < \"x\")",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'lt-12',
+	   args	        => '--eval',
+	   resource     => "(\"abc\" < \"def\")",
+	   expected_err => '',
+	   expected_out => TRUE);
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

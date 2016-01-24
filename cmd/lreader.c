@@ -695,11 +695,11 @@ static Term read_expr(b)			   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case L_TRUE:				   /*                        */
-	Shift(c, SymTerm(sym_true));	   	   /*                        */
+	Shift(c, term_true);	   	   	   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case L_FALSE:				   /*                        */
-	Shift(c, SymTerm(sym_false));	   	   /*                        */
+	Shift(c, term_false);	   	   	   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case L_MINUS:				   /*                        */
