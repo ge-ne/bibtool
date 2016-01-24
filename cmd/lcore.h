@@ -25,24 +25,25 @@
 extern void init_symdef();
 extern SymDef symdef();
 extern unsigned int hash();
-extern Term g_version();
-extern Term g_field();
-extern void print_quoted();			   /*                        */
+extern void print_quoted();
 extern Term eval_bool _ARG((Binding b, Term t));   /*                        */
 extern Term eval_num _ARG((Binding b, Term t));    /*                        */
 extern Term eval_str _ARG((Binding b, Term t));    /*                        */
 
 extern Term g_and _ARG((Binding b, Term t));       /*                        */
+extern Term g_div _ARG((Binding b, Term t));	   /*                        */
+extern Term g_eq _ARG((Binding b, Term t));	   /*                        */
+extern Term g_field _ARG((Binding b, Term t));	   /*                        */
+extern Term g_minus _ARG((Binding b, Term t));	   /*                        */
+extern Term g_mod _ARG((Binding b, Term t));	   /*                        */
+extern Term g_ne _ARG((Binding b, Term t));	   /*                        */
 extern Term g_not _ARG((Binding b, Term t));       /*                        */
 extern Term g_or _ARG((Binding b, Term t));        /*                        */
-extern Term g_setq _ARG((Binding b, Term t));	   /*                        */
-extern Term g_eq _ARG((Binding b, Term t));	   /*                        */
-extern Term g_ne _ARG((Binding b, Term t));	   /*                        */
 extern Term g_plus _ARG((Binding b, Term t));	   /*                        */
-extern Term g_minus _ARG((Binding b, Term t));	   /*                        */
-extern Term g_div _ARG((Binding b, Term t));	   /*                        */
+extern Term g_setq _ARG((Binding b, Term t));	   /*                        */
 extern Term g_times _ARG((Binding b, Term t));	   /*                        */
-extern Term g_mod _ARG((Binding b, Term t));	   /*                        */
+extern Term g_version _ARG((Binding b, Term t));   /*                        */
+extern Term g_out_file _ARG((Binding b, Term t));   /*                        */
 
 extern SymDef* sym_char;			   /*                        */
 extern SymDef sym_true;			   	   /*                        */

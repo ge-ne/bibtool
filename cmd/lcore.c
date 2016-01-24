@@ -207,8 +207,8 @@ Term eval_bool(binding, term)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_not(binding, term)			   /*                        */
@@ -226,8 +226,8 @@ Term g_not(binding, term)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_and(binding, term)			   /*                        */
@@ -252,8 +252,8 @@ Term g_and(binding, term)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_or(binding, term)			   /*                        */
@@ -278,8 +278,8 @@ Term g_or(binding, term)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_version(binding, term)		   	   /*                        */
@@ -301,13 +301,45 @@ Term g_version(binding, term)		   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	g_out_file()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	term	the term
+** Returns:	
+**___________________________________________________			     */
+Term g_out_file(binding, term)		   	   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ extern void save_output_file();		   /*                        */
+  extern char *get_output_file();		   /*                        */
+  String s;					   /*                        */
+ 						   /*                        */
+  switch (list_length(Cdr(term)))		   /*                        */
+  { case 0:					   /*                        */
+      break;					   /*                        */
+    case 1:					   /*                        */
+      term = eval_str(binding,Cadr(term));	   /*                        */
+      save_output_file(TString(term));		   /*                        */
+      return term;				   /*                        */
+    default:					   /*                        */
+      ErrorNF("Wrong number of arguments for output.file",0);/*              */
+  }						   /*                        */
+ 						   /*                        */
+  s = (String)get_output_file();		   /*                        */
+  return s ? StringTerm(s) : NIL;	   	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	g_empty()
 ** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_empty(binding, term)		   	   /*                        */
@@ -323,8 +355,8 @@ Term g_empty(binding, term)		   	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_field(binding, term)		   	   /*                        */
@@ -337,13 +369,13 @@ Term g_field(binding, term)		   	   /*                        */
 extern char * tag_id();
 
 /*-----------------------------------------------------------------------------
-** Function:	g_field()
+** Function:	g_setq()
 ** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_setq(binding, term)		   	   /*                        */
@@ -437,46 +469,49 @@ Term eval_str(binding, term)			   /*                        */
  						   /*                        */
   if (term == NIL)	   			   /*                        */
     return StringTerm((String)"");		   /*                        */
-  if (TermIsString(term)) return term;		   /*                        */
-  if (TermIsList(term))				   /*                        */
+  if (TermIsString(term) || TermIsBlock(term))	   /*                        */
+    return term;		   		   /*                        */
+#ifdef TODO
+  if (TermIsList(term))
   { StringBuffer *sb = sbopen();
-						 /*TODO*/
-    term = StringTerm((String)sbflush(sb));	   /*                        */
-    sbclose(sb);				   /*                        */
-    return term;	   			   /*                        */
-  }						   /*                        */
+		
+    term = StringTerm((String)sbflush(sb));
+    sbclose(sb);	
+    return term;	
+  }			
+#endif
   if (TermIsTrue(term))
     return StringTerm((String)"true");		   /*                        */
   if (TermIsFalse(term))	   		   /*                        */
     return StringTerm((String)"false");		   /*                        */
   if (TermIsNumber(term))	   		   /*                        */
-  { long n = TNumber(term);
-    StringBuffer *sb;
-    char *s, *t;
-    if (n == 0) return StringTerm((String)"0");
-    sb = sbopen(); 
-    if (n < 0)
-    { sbputc('-', sb);
-      n = -n;
-    }
-    while (n > 0)
-    { sbputc((n%10) + '0', sb);
-      n = n/10;
-    }
-    s = t = sbflush(sb);
-    while (*t) t++;
-    t--;
-    if (*s == '-') s++;
-    while (s < t)
-    { char c = *s;
-      *(s++) = *t;
-      *(t--) = c;
-    }
-
-    term = StringTerm((String)sbflush(sb));
-    sbclose(sb);
+  { long n = TNumber(term);			   /*                        */
+    StringBuffer *sb;				   /*                        */
+    char *s, *t;				   /*                        */
+    if (n == 0) return StringTerm((String)"0");	   /*                        */
+    sb = sbopen(); 				   /*                        */
+    if (n < 0)					   /*                        */
+    { sbputc('-', sb);				   /*                        */
+      n = -n;					   /*                        */
+    }						   /*                        */
+    while (n > 0)				   /*                        */
+    { sbputc((n%10) + '0', sb);			   /*                        */
+      n = n/10;					   /*                        */
+    }						   /*                        */
+    s = t = sbflush(sb);			   /*                        */
+    while (*t) t++;				   /*                        */
+    t--;					   /*                        */
+    if (*s == '-') s++;				   /*                        */
+    while (s < t)				   /*                        */
+    { char c = *s;				   /*                        */
+      *(s++) = *t;				   /*                        */
+      *(t--) = c;				   /*                        */
+    }						   /*                        */
+ 						   /*                        */
+    term = StringTerm((String)sbflush(sb));	   /*                        */
+    sbclose(sb);				   /*                        */
     return term;	   			   /*                        */
-  }
+  }						   /*                        */
  						   /*                        */
   ErrorNF("Type error: string expected",0);	   /*                        */
   return NIL;				   	   /* This will never happen */
@@ -488,8 +523,8 @@ Term eval_str(binding, term)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_plus(binding, term)			   /*                        */
@@ -513,8 +548,8 @@ Term g_plus(binding, term)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_minus(binding, term)			   /*                        */
@@ -547,8 +582,8 @@ Term g_minus(binding, term)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_times(binding, term)			   /*                        */
@@ -572,8 +607,8 @@ Term g_times(binding, term)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_div(binding, term)			   /*                        */
@@ -599,8 +634,8 @@ Term g_div(binding, term)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_mod(binding, term)			   /*                        */
@@ -627,7 +662,6 @@ Term g_mod(binding, term)			   /*                        */
 **		
 ** Arguments:
 **	s	
-**	 size	
 ** Returns:	
 **___________________________________________________			     */
 unsigned int hash(s)				   /*                        */
@@ -642,12 +676,11 @@ unsigned int hash(s)				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	init_symdef()
+** Function:	init_lreader()
 ** Type:	void
 ** Purpose:	
 **		
-** Arguments:
-**		
+** Arguments:	none
 ** Returns:	nothing
 **___________________________________________________			     */
 void init_lreader()				   /*                        */

@@ -12,10 +12,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <bibtool/error.h>
-#include "term.h"
 #include "binding.h"
 #include "lcore.h"
-#include "lreader.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -164,6 +162,8 @@ void save_macro_file(file)			   /*                        */
   char *file;					   /*                        */
 {}						   /*                        */
 
+static char *output_file = NULL;
+
 /*-----------------------------------------------------------------------------
 ** Function:	save_output_file()
 ** Type:	void
@@ -175,4 +175,18 @@ void save_macro_file(file)			   /*                        */
 **___________________________________________________			     */
 void save_output_file(file)			   /*                        */
   char * file;					   /*                        */
-{}						   /*                        */
+{ output_file = file;				   /*                        */
+}						   /*                        */
+
+/*-----------------------------------------------------------------------------
+** Function:	get_output_file()
+** Type:	char *
+** Purpose:	
+**		
+** Arguments:
+**		
+** Returns:	
+**___________________________________________________			     */
+char * get_output_file()			   /*                        */
+{ return output_file;				   /*                        */
+}						   /*------------------------*/

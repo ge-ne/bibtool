@@ -10,10 +10,9 @@
 ** 
 ******************************************************************************/
 
+#include <bibtool/bibtool.h>
 #include <string.h>
 #include <stdlib.h>
-#include <bibtool/symbols.h>
-#include <bibtool/error.h>
 #include "binding.h"
 
 #include "lcore.h"
@@ -79,9 +78,8 @@ void bind(b, sym)		   		   /*                        */
   SymDef junk;					   /*                        */
    						   /*                        */
   for (junk = BJunks(b)[h]; junk; junk = NextJunk(junk))/*                   */
-  { if (strcmp((char*)SymName(junk), (char*)key) == 0)/*                     */
-    {						   /*                        */
-      SymTerm(junk)  = SymTerm(sym);		   /*                        */
+  { if (SymName(junk) == key)			   /*                        */
+    { SymTerm(junk)  = SymTerm(sym);		   /*                        */
       SymValue(junk) = SymValue(sym);		   /*                        */
       SymGet(junk)   = SymGet(sym);		   /*                        */
       return;					   /*                        */
@@ -358,18 +356,29 @@ static Term str_rsc(binding, name, term, rp)	   /*                        */
     Term term;						\
   { extern int RSC;					\
     return num_rsc(binding, NAME, term, &RSC); }
-#define BindBool(NAME,GETTER,RSC)			\
-  static Term GETTER (binding, term)			\
-    Binding binding;					\
-    Term term;						\
-  { extern int RSC;					\
-    return bool_rsc(binding, NAME, term, &RSC); }
 #define BindStr(NAME,GETTER,RSC)			\
   static Term GETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
-  { extern char* RSC;					\
+  { extern String RSC;					\
     return str_rsc(binding, NAME, term, &RSC); }
+#define BindFct(NAME,GETTER,FCT)			\
+  static Term GETTER (binding, term)			\
+    Binding binding;					\
+    Term term;						\
+  { String val;						\
+    switch (list_length(Cdr(term)))			\
+    { case 0:						\
+        ErrorNF(NAME, " is not accessible");		\
+      case 1:						\
+        term = eval_str(binding, Cadr(term));		\
+        val  = TString(term);				\
+        FCT;						\
+        return term;					\
+      default:						\
+        ErrorNF("Too many arguments for ", NAME);	\
+    }							\
+    return term; }
 #include "builtin.h"
 
 #undef Bind
@@ -377,6 +386,7 @@ static Term str_rsc(binding, name, term, rp)	   /*                        */
 #undef BindBool
 #undef BindNum
 #undef BindStr
+#undef BindFct
 
 /*-----------------------------------------------------------------------------
 ** Function:	root_binding()
@@ -393,6 +403,7 @@ Binding root_binding()				   /*                        */
 #define BindBool(NAME,GET,R) Bind(NAME, L_FIELD, GET)
 #define BindNum(NAME,GET,R)  Bind(NAME, L_FIELD, GET)
 #define BindStr(NAME,GET,R)  Bind(NAME, L_FIELD, GET)
+#define BindFct(NAME,GET,EX) Bind(NAME, L_FIELD, GET)
 #define Bind(NAME,OP,GET)    bind(b, symdef(symbol((String)NAME),OP,GET))
 #define BindSym(NAME,SYM)    bind(b, SYM)
  						   /*                        */
@@ -450,16 +461,19 @@ Term eval_term(binding, term)			   /*                        */
   Term term;					   /*                        */
 { SymDef s;					   /*                        */
   String key = NULL;				   /*                        */
+  extern String tag_id();			   /*                        */
  						   /*                        */
   if (term == NIL) return NIL;			   /*                        */
  						   /*                        */
   switch (TType(term))				   /*                        */
   { case L_STRING:				   /*                        */
-    case L_GROUP:				   /*                        */
+    case L_BLOCK:				   /*                        */
     case L_NUMBER:				   /*                        */
     case L_TRUE:				   /*                        */
     case L_FALSE:				   /*                        */
     case L_CONS:				   /*                        */
+      return term;				   /*                        */
+    case L_GROUP:				   /*                        */
       return term;				   /*                        */
     case 0:					   /*                        */
     case EOF:					   /*                        */
@@ -491,7 +505,9 @@ Term eval_term(binding, term)			   /*                        */
     case L_NOT:      key = (String)"!";	     break;/*                        */
     case L_AND:      key = (String)"&&";     break;/*                        */
     case L_OR:       key = (String)"||";     break;/*                        */
-    default: ErrorNF("Undefined tag ", NULL);	   /*                        */
+    default:					   /*                        */
+      ErrorNF("Undefined tag ",		   	   /*                        */
+	      tag_id(TType(term)));	   	   /*                        */
   }						   /*                        */
  						   /*                        */
    s = get_bind(binding, key);		   	   /*                        */

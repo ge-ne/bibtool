@@ -741,19 +741,18 @@ static Term read_expr(b)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**		
+**	binding	the binding
 ** Returns:	
 **___________________________________________________			     */
-static Term read_cmd(b)				   /*                        */
-  Binding b;					   /*                        */
+static Term read_cmd(binding)			   /*                        */
+  Binding binding;				   /*                        */
 { register int c;			   	   /*                        */
  						   /*                        */
-  for (c = scan(b); c >= 0; c = scan(b))	   /*                        */
+  for (c = scan(binding); c >= 0; c = scan(binding))/*                       */
   { 						   /*                        */
-    if (c == L_FIELD) {				   /*                        */
-      if (get_bind(b, TString(yylval)))		   /*                        */
-      { return read_builtin(b, yylval); }	   /*                        */
-    }						   /*                        */
+    if (c == L_FIELD &&				   /*                        */
+	get_bind(binding, TString(yylval)))	   /*                        */
+    { return read_builtin(binding, yylval); }	   /*                        */
  						   /*                        */
     if (c != ';')				   /*                        */
     { if ( c >= 0 && c <= 0xff && c != '('	   /*                        */
@@ -762,7 +761,7 @@ static Term read_cmd(b)				   /*                        */
 	      tag_id(c),			   /*                        */
 	      "' found");			   /*                        */
       unscan(c, yylval);			   /*                        */
-      return read_expr(b);			   /*                        */
+      return read_expr(binding);		   /*                        */
     }						   /*                        */
   }						   /*                        */
    						   /*                        */

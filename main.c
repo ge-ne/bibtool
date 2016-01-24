@@ -320,6 +320,19 @@ void save_output_file(file)			   /*			     */
   output_file = file;				   /*			     */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	get_output_file()
+** Type:	char*
+** Purpose:	
+**		
+** Arguments:
+**		
+** Returns:	
+**___________________________________________________			     */
+char* get_output_file()			   	   /*			     */
+{ return output_file;				   /*			     */
+}						   /*------------------------*/
+
 
 /*****************************************************************************/
 /***			   Macro File Section				   ***/
@@ -340,6 +353,19 @@ void save_macro_file(file)			   /*			     */
 { if ( macro_file != NULL )			   /*			     */
   { WARNING2("Macro file redefined: ",file); }	   /*			     */
   macro_file = file;				   /*			     */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	get_macro_file()
+** Type:	char*
+** Purpose:	
+**		
+** Arguments:
+**		
+** Returns:	
+**___________________________________________________			     */
+char* get_macro_file()			   	   /*			     */
+{ return macro_file;				   /*			     */
 }						   /*------------------------*/
 
 
