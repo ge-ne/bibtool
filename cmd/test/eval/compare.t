@@ -198,6 +198,49 @@ BUnit::run(name         => 'lt-12',
 	   expected_err => '',
 	   expected_out => TRUE);
 
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'le-1',
+	   args	        => '--eval',
+	   resource     => "(0 <= 0)",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'le-2',
+	   args	        => '--eval',
+	   resource     => "(1 <= 0)",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'le-3',
+	   args	        => '--eval',
+	   resource     => "(0 <= 1)",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'le-10',
+	   args	        => '--eval',
+	   resource     => "(\"\" <= \"\")",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'le-11',
+	   args	        => '--eval',
+	   resource     => "(\"\" <= \"x\")",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'le-12',
+	   args	        => '--eval',
+	   resource     => "(\"abc\" <= \"def\")",
+	   expected_err => '',
+	   expected_out => TRUE);
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

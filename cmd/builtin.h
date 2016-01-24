@@ -13,7 +13,7 @@
 Bind(	 "=",			     g_setq,		L_SET		     )
 Bind(	 "==",			     g_eq,		L_EQ		     )
 Bind(	 "!=",			     g_ne,		L_NE		     )
-Bind(	 "<=",			     NULL,		L_LE		     )
+Bind(	 "<=",			     g_le,		L_LE		     )
 Bind(	 "<",			     g_lt,		L_LT		     )
 Bind(	 ">=",			     NULL,		L_GE		     )
 Bind(	 ">",			     NULL,		L_GT		     )

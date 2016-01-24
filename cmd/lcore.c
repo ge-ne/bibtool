@@ -214,6 +214,42 @@ Term g_lt(binding, term)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	g_le()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	term	the term
+** Returns:	
+**___________________________________________________			     */
+Term g_le(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ Term a, b;					   /*                        */
+  int val;					   /*                        */
+ 						   /*                        */
+  term = Cdr(term);				   /*                        */
+  if (list_length(term) != 2) wrong_no_args("<="); /*                        */
+
+  a = eval_term(binding, Car(term));
+  b = eval_term(binding, Cadr(term));
+
+  if ( TermIsNumber(a) )
+  { if ( !TermIsNumber(b) )
+      b = eval_num(binding, b);
+    val = (TNumber(a) <= TNumber(b));
+  } else if ( TermIsString(a) )
+  { if ( !TermIsString(b) )
+      b = eval_str(binding, b);
+    val = (strcmp((char*)TString(a), (char*)TString(b)) <= 0);
+  } else
+  { ErrorNF("Type error: comparable expected",0); }/*                        */
+
+  return val ? term_true: term_false;		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	eval_bool()
 ** Type:	Term
 ** Purpose:	
