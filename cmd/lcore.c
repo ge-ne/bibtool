@@ -333,6 +333,49 @@ Term g_out_file(binding, term)		   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	g_print()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	term	the term
+** Returns:	
+**___________________________________________________			     */
+Term g_print(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ 					   	   /*                        */
+  for (term = Cdr(term); term ; term = Cdr(term))  /*                        */
+  { Term t = Car(term);				   /*                        */
+    if (t == NIL) continue;			   /*                        */
+    switch(TType(t))			   	   /*                        */
+    { case L_STRING:				   /*                        */
+      case L_BLOCK:				   /*                        */
+	fputs((char*)TString(t), stdout);	   /*                        */
+	break;					   /*                        */
+      case L_NUMBER:				   /*                        */
+	fprintf(stdout, "%ld", TNumber(t));	   /*                        */
+	break;					   /*                        */
+      case L_FIELD:				   /*                        */
+	fputs((char*)TString(t), stdout);	   /*                        */
+	break;					   /*                        */
+      case L_TRUE:				   /*                        */
+	fputs("true", stdout);			   /*                        */
+	break;					   /*                        */
+      case L_FALSE:				   /*                        */
+	fputs("false", stdout);			   /*                        */
+	break;					   /*                        */
+#ifdef DEBUG
+      default:					   /*                        */
+	printf("--- 0x%x",TType(t));	   	   /*                        */
+#endif
+    }						   /*                        */
+  }		   				   /*                        */
+  return NIL;			   		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	g_empty()
 ** Type:	Term
 ** Purpose:	

@@ -40,12 +40,13 @@ extern Term g_ne _ARG((Binding b, Term t));	   /*                        */
 extern Term g_not _ARG((Binding b, Term t));       /*                        */
 extern Term g_or _ARG((Binding b, Term t));        /*                        */
 extern Term g_plus _ARG((Binding b, Term t));	   /*                        */
+extern Term g_print _ARG((Binding b, Term t));	   /*                        */
+extern Term g_self _ARG((Binding b, Term t));	   /*                        */
 extern Term g_setq _ARG((Binding b, Term t));	   /*                        */
 extern Term g_times _ARG((Binding b, Term t));	   /*                        */
 extern Term g_version _ARG((Binding b, Term t));   /*                        */
-extern Term g_out_file _ARG((Binding b, Term t));   /*                        */
+extern Term g_out_file _ARG((Binding b, Term t));  /*                        */
 
-extern SymDef* sym_char;			   /*                        */
 extern SymDef sym_true;			   	   /*                        */
 extern SymDef sym_false;			   /*                        */
 
