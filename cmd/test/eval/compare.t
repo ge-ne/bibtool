@@ -241,6 +241,118 @@ BUnit::run(name         => 'le-12',
 	   expected_err => '',
 	   expected_out => TRUE);
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'gt-1',
+	   args	        => '--eval',
+	   resource     => "(0 > 0)",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'gt-2',
+	   args	        => '--eval',
+	   resource     => "(1 > 0)",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'gt-3',
+	   args	        => '--eval',
+	   resource     => "(0 > 1)",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'gt-10',
+	   args	        => '--eval',
+	   resource     => "(\"\" > \"\")",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'gt-11',
+	   args	        => '--eval',
+	   resource     => "(\"\" > \"x\")",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'gt-12',
+	   args	        => '--eval',
+	   resource     => "(\"abc\" > \"def\")",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'gt-13',
+	   args	        => '--eval',
+	   resource     => "(\"x\" > \"\")",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'gt-14',
+	   args	        => '--eval',
+	   resource     => "(\"def\" > \"abc\")",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ge-1',
+	   args	        => '--eval',
+	   resource     => "(0 >= 0)",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ge-2',
+	   args	        => '--eval',
+	   resource     => "(1 >= 0)",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ge-3',
+	   args	        => '--eval',
+	   resource     => "(0 >= 1)",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ge-10',
+	   args	        => '--eval',
+	   resource     => "(\"\" >= \"\")",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ge-11',
+	   args	        => '--eval',
+	   resource     => "(\"x\" >= \"\")",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ge-12',
+	   args	        => '--eval',
+	   resource     => "(\"def\" >= \"abc\")",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ge-13',
+	   args	        => '--eval',
+	   resource     => "(\"\" >= \"x\")",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'ge-14',
+	   args	        => '--eval',
+	   resource     => "(\"abc\" >= \"def\")",
+	   expected_err => '',
+	   expected_out => FALSE);
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 
