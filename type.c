@@ -125,6 +125,27 @@ int case_cmp(s, t)				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	cmp()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**	s	
+**	t	
+** Returns:	
+**___________________________________________________			     */
+int cmp(s, t)				   	   /*                        */
+  register String s;			   	   /*                        */
+  register String t;			   	   /*                        */
+{ register int d;				   /*                        */
+  while ( *s )					   /*                        */
+  { d = *(s++) - *(t++);                    	   /*                        */
+    if ( d ) return d;			   	   /*                        */
+  }						   /*                        */
+  return *s - *t;			   	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	lower()
 ** Purpose:	Function to translate all letters in a string to lower case.
 ** Arguments:

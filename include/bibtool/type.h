@@ -494,6 +494,7 @@ Uchar trans_id[256];			   	   /*                        */
 #endif
  String lower _ARG((String s));		   	   /* type.c                 */
  int case_cmp _ARG((String s, String t));	   /* type.c                 */
+ int cmp _ARG((String s, String t));	   	   /* type.c                 */
  void add_word_sep _ARG((String s));		   /* type.c                 */
  void init_type _ARG((void));			   /* type.c                 */
 
