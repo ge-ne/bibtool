@@ -22,8 +22,6 @@
 
 /*---------------------------------------------------------------------------*/
 
-extern void init_symdef();			   /*                        */
-extern SymDef symdef();
 extern unsigned int hash _ARG((String s));	   /*                        */
 extern void print_quoted _ARG((FILE*f, String s)); /*                        */
 extern void wrong_no_args _ARG((char* name));	   /*                        */
@@ -35,6 +33,8 @@ extern Term g_and _ARG((Binding b, Term t));       /*                        */
 extern Term g_div _ARG((Binding b, Term t));	   /*                        */
 extern Term g_eq _ARG((Binding b, Term t));	   /*                        */
 extern Term g_field _ARG((Binding b, Term t));	   /*                        */
+extern Term g_ge _ARG((Binding b, Term t));	   /*                        */
+extern Term g_gt _ARG((Binding b, Term t));	   /*                        */
 extern Term g_le _ARG((Binding b, Term t));	   /*                        */
 extern Term g_lt _ARG((Binding b, Term t));	   /*                        */
 extern Term g_minus _ARG((Binding b, Term t));	   /*                        */

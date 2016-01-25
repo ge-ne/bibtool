@@ -156,8 +156,7 @@ SymDef get_bind(b, key)			   	   /*                        */
 #ifdef DEBUG_BIND
       printf("--- cmp %s\n",(char*)SymName(s));	   /*                        */
 #endif
-      if (strcmp((char*)SymName(s),		   /*                        */
-		 (char*)key) == 0) {		   /*                        */
+      if (cmp(SymName(s), key) == 0) {		   /*                        */
 #ifdef DEBUG_BIND
 	printf("--- found 0x%x\n",s ? SymOp(s):0); /*                        */
 #endif
