@@ -106,13 +106,13 @@ BUnit::run(name         => 'fct-5',
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-err-1',
 	   resource	=> "a(",
-	   expected_err => "\n*** BibTool ERROR:  (line 1 in _test.rsc): Unclosed parameter list\n",
+	   expected_err => "\n*** BibTool ERROR:  (line 1 in _test.rsc): Unclosed list\n",
 	   expected_out => '');
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-err-2',
 	   resource	=> "a(\n\n\n",
-	   expected_err => "\n*** BibTool ERROR:  (line 1 in _test.rsc): Unclosed parameter list\n",
+	   expected_err => "\n*** BibTool ERROR:  (line 1 in _test.rsc): Unclosed list\n",
 	   expected_out => '');
 
 #------------------------------------------------------------------------------

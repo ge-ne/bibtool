@@ -32,6 +32,9 @@
  void free_term _ARG((Term term));
  void print_term _ARG((FILE* file, Term term));
 
+ static void prn_args _ARG((FILE * file, Term term, char* sep,int in));/*    */
+ static void prn_term _ARG((FILE * file, Term term, int in));/*              */
+
 /*****************************************************************************/
 /* External Programs                                                         */
 /*===========================================================================*/
@@ -165,7 +168,7 @@ void free_term(t)				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	prt_field()
+** Function:	prn_field()
 ** Type:	static int
 ** Purpose:	
 **		
@@ -174,7 +177,7 @@ void free_term(t)				   /*                        */
 **	t	
 ** Returns:	
 **___________________________________________________			     */
-void prt_field(file, t)		   	   	   /*                        */
+void prn_field(file, t)		   	   	   /*                        */
   FILE * file;					   /*                        */
   Term t;					   /*                        */
 { int q	 = 0;					   /*                        */
@@ -201,7 +204,27 @@ void prt_field(file, t)		   	   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	prt_args()
+** Function:	indent()
+** Type:	static void
+** Purpose:	
+**		
+** Arguments:
+**	file	
+**	s	
+**	in	
+** Returns:	nothing
+**___________________________________________________			     */
+static void indent(file, s, in)			   /*                        */
+  FILE * file;					   /*                        */
+  char * s;					   /*                        */
+  int in;					   /*                        */
+{ int i;					   /*                        */
+  fputs(s, file);				   /*                        */
+  for (i = 0; i < in; i++) fputs("  ", file);	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	prn_args()
 ** Type:	static void
 ** Purpose:	
 **		
@@ -210,21 +233,23 @@ void prt_field(file, t)		   	   	   /*                        */
 **	t	
 ** Returns:	nothing
 **___________________________________________________			     */
-static void prt_args(file, term)		   /*                        */
+static void prn_args(file, term, sep, in)	   /*                        */
   FILE * file;					   /*                        */
   Term term;					   /*                        */
+  char * sep;					   /*                        */
+  int in;					   /*                        */
 {						   /*                        */
   if (term == NIL) return;			   /*                        */
  						   /*                        */
-  print_term(file, Car(term));		   	   /*                        */
+  prn_term(file, Car(term), in);		   /*                        */
   for (term = Cdr(term); term; term = Cdr(term))   /*                        */
-  { fputs(" ", file);			   	   /*                        */
-    print_term(file, Car(term));		   /*                        */
+  { indent(file, sep, in);			   /*                        */
+    prn_term(file, Car(term), in);		   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	print_term()
+** Function:	prn_term()
 ** Type:	void
 ** Purpose:	Produce a printed representation of a term and write it to
 **		the output stream.
@@ -233,9 +258,10 @@ static void prt_args(file, term)		   /*                        */
 **	t	the term to print
 ** Returns:	nothing
 **___________________________________________________			     */
-void print_term(file, term)			   /*                        */
+static void prn_term(file, term, in)		   /*                        */
   FILE * file;					   /*                        */
   Term term;					   /*                        */
+  int in;					   /*                        */
 { char * key;					   /*                        */
   if (term == NIL) {				   /*                        */
     fputs("nil", file);				   /*                        */
@@ -254,7 +280,7 @@ void print_term(file, term)			   /*                        */
       fputc('}', file);	   			   /*                        */
       return;					   /*                        */
     case L_FIELD:				   /*                        */
-      prt_field(file, term);			   /*                        */
+      prn_field(file, term);			   /*                        */
       return;					   /*                        */
     case L_NUMBER:				   /*                        */
       fprintf(file, "%ld", TNumber(term));	   /*                        */
@@ -267,15 +293,21 @@ void print_term(file, term)			   /*                        */
       return;					   /*                        */
     case L_CONS:				   /*                        */
       fputs("[", file);			   	   /*                        */
-      prt_args(file, term);		   	   /*                        */
+      prn_args(file, term, " ", 0);		   /*                        */
       fputs("]", file);			   	   /*                        */
+      return;					   /*                        */
+    case L_GROUP:				   /*                        */
+      indent(file, "{\n", in + 1);		   /*                        */
+      prn_args(file, Cdr(term), ";\n", in + 1);	   /*                        */
+      indent(file, "\n", in);		   	   /*                        */
+      fputs("}", file);			   	   /*                        */
       return;					   /*                        */
     case 0:					   /*                        */
     case EOF:					   /*                        */
       return;	   			   	   /*                        */
     case L_UMINUS:				   /*                        */
       fputs("-", file);			   	   /*                        */
-      print_term(file, Cadr(term));		   /*                        */
+      prn_term(file, Cadr(term), in);		   /*                        */
       return;					   /*                        */
     case L_QUOTE:    key = "'";		     break;/*                        */
     case L_FUNCTION: key = (char*)TString(term);break;/*                     */
@@ -305,18 +337,34 @@ void print_term(file, term)			   /*                        */
   { term = Cdr(term);				   /*                        */
     if (term)
     { fputc('(', file);				   /*                        */
-      print_term(file, Car(term));		   /*                        */
+      prn_term(file, Car(term), in);		   /*                        */
       fputs(key, file);		   		   /*                        */
-      print_term(file, Cadr(term));		   /*                        */
+      prn_term(file, Cadr(term), in);		   /*                        */
     } else {
       return;
     }
   } else {					   /*                        */
     fputs(key, file);		   		   /*                        */
     fputc('(', file);				   /*                        */
-    if (term) prt_args(file, Cdr(term));	   /*                        */
+    if (term) prn_args(file, Cdr(term), " ", in);  /*                        */
   }						   /*                        */
   fputc(')', file);				   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	print_term()
+** Type:	void
+** Purpose:	Produce a printed representation of a term and write it to
+**		the output stream.
+** Arguments:
+**	file	the output stream
+**	t	the term to print
+** Returns:	nothing
+**___________________________________________________			     */
+void print_term(file, term)			   /*                        */
+  FILE * file;					   /*                        */
+  Term term;					   /*                        */
+{ prn_term(file, term, 0);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

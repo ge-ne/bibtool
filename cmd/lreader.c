@@ -52,7 +52,7 @@ static Term read_expr _ARG((Binding b));	   /*                        */
 /*---------------------------------------------------------------------------*/
 
 
-static String END_OF_FILE = (String)"end of file";
+ static String END_OF_FILE = (String)"end of file";
 
  static Term yylval;				   /*                        */
  static char * filename;			   /*                        */
@@ -420,6 +420,33 @@ static Term read_list(b, t)			   /*                        */
   return NIL;					   /* This will never happen */
 }						   /*------------------------*/
 
+static Term read_args(b, t, sep, term)		   /*                        */
+  Binding b;					   /*                        */
+  Term t;					   /*                        */
+  int sep;
+  int term;
+{ int lno = linenum;				   /*                        */
+  Term x  = t;					   /*                        */
+  Term a;
+  int c	  = scan(b);				   /*                        */
+ 						   /*                        */
+  if (c == term) { return t; }			   /*                        */
+  unscan(c, yylval);				   /*                        */
+ 						   /*                        */
+  for (a = read_expr(b);			   /*                        */
+       a != term_eof;				   /*                        */
+       a = read_expr(b))			   /*                        */
+  { Cdr(x) = Cons1(a);			   	   /*                        */
+    x = Cdr(x);				   	   /*                        */
+    c = scan(b);				   /*                        */
+    if (c == term) return t;		   	   /*                        */
+    if (c != sep) Error("Missing comma", 0, 0);	   /*                        */
+  }						   /*                        */
+  linenum = lno;				   /*                        */
+  Error("Unclosed list", 0, 0);	   		   /*                        */
+  return NIL;					   /* This will never happen */
+}						   /*------------------------*/
+
 /*-----------------------------------------------------------------------------
 ** Function:	read_fct()
 ** Type:	static Term
@@ -433,26 +460,11 @@ static Term read_list(b, t)			   /*                        */
 static Term read_fct(b, t)			   /*                        */
   Binding b;					   /*                        */
   Term t;					   /*                        */
-{ Term a;					   /*                        */
-  int lno = linenum;				   /*                        */
-  Term x  = t = new_t_string(L_FUNCTION,TString(t));/*                       */
-  int c	  = scan(b);				   /*                        */
- 						   /*                        */
-  if (c == ')') { return t; }			   /*                        */
-  unscan(c, yylval);				   /*                        */
- 						   /*                        */
-  for (a = read_expr(b);			   /*                        */
-       a != term_eof;				   /*                        */
-       a = read_expr(b))			   /*                        */
-  { Cdr(x) = Cons1(a);			   	   /*                        */
-    x = Cdr(x);				   	   /*                        */
-    c = scan(b);				   /*                        */
-    if (c == ')') return t;		   	   /*                        */
-    if (c != ',') Error("Missing comma", 0, 0);	   /*                        */
-  }						   /*                        */
-  linenum = lno;				   /*                        */
-  Error("Unclosed parameter list", 0, 0);	   /*                        */
-  return NIL;					   /* This will never happen */
+{ 						   /*                        */
+  return read_args(b,				   /*                        */
+		   new_t_string(L_FUNCTION,TString(t)),/*                    */
+		   ',',				   /*                        */
+		   ')');			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -637,14 +649,10 @@ static Term read_expr(b)			   /*                        */
 #endif
     switch (c)					   /*                        */
     { case '{':					   /*                        */
-	{					   /*                        */
-	  int lno = linenum;			   /*                        */
-	  Term t = read_expr(b);		   /*                        */
-	  c	 = scan(b);		   	   /*                        */
-	  if (c != '}')			   	   /*                        */
-	  { linenum = lno;			   /*                        */
-	    Error("Missing } before ",		   /*                        */
-		  tag_id(c), 0); }		   /*                        */
+	{ Term t = read_args(b,
+			     NewTerm(L_GROUP),
+			     ';',
+			     '}');		   /*                        */
 	  Shift(L_GROUP, t);		   	   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
@@ -755,7 +763,8 @@ static Term read_cmd(binding)			   /*                        */
     { return read_builtin(binding, yylval); }	   /*                        */
  						   /*                        */
     if (c != ';')				   /*                        */
-    { if ( c >= 0 && c <= 0xff && c != '('	   /*                        */
+    { if ( c >= 0 && c <= 0xff			   /*                        */
+	   && c != '(' && c != '{'	   	   /*                        */
 	  && yylval == NIL)		   	   /*                        */
 	Error("Unexpected character '",		   /*                        */
 	      tag_id(c),			   /*                        */

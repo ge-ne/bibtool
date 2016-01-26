@@ -391,7 +391,11 @@ Term eval_term(binding, term)			   /*                        */
     case L_CONS:				   /*                        */
       return term;				   /*                        */
     case L_GROUP:				   /*                        */
-      return term;				   /*                        */
+      { Term t = NIL;				   /*                        */
+	for (term = Cdr(term); term; term = Cdr(term))
+	{ t = eval_term(binding, Car(term)); }
+	return t;				   /*                        */
+      }
     case 0:					   /*                        */
     case EOF:					   /*                        */
       return term_eof;	   			   /*                        */
