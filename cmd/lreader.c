@@ -44,6 +44,7 @@ static TStack reduce _ARG((TStack ts));		   /*                        */
 int read_loop _ARG((Binding b, char* file, int (*action)(Binding binding, Term t) ));
 static Term read_cmd _ARG((Binding b));		   /*                        */
 static Term read_expr _ARG((Binding b));	   /*                        */
+static Term read_args _ARG((Binding b, Term t, int sep, int term));/*        */
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -420,14 +421,26 @@ static Term read_list(b, t)			   /*                        */
   return NIL;					   /* This will never happen */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	read_args()
+** Type:	static Term
+** Purpose:	
+**		
+** Arguments:
+**	b	
+**	 t	
+**	 sep	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
 static Term read_args(b, t, sep, term)		   /*                        */
   Binding b;					   /*                        */
   Term t;					   /*                        */
-  int sep;
-  int term;
+  int sep;					   /*                        */
+  int term;					   /*                        */
 { int lno = linenum;				   /*                        */
   Term x  = t;					   /*                        */
-  Term a;
+  Term a;					   /*                        */
   int c	  = scan(b);				   /*                        */
  						   /*                        */
   if (c == term) { return t; }			   /*                        */
@@ -445,26 +458,6 @@ static Term read_args(b, t, sep, term)		   /*                        */
   linenum = lno;				   /*                        */
   Error("Unclosed list", 0, 0);	   		   /*                        */
   return NIL;					   /* This will never happen */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	read_fct()
-** Type:	static Term
-** Purpose:	
-**		
-** Arguments:
-**	b	
-**	t	
-** Returns:	
-**___________________________________________________			     */
-static Term read_fct(b, t)			   /*                        */
-  Binding b;					   /*                        */
-  Term t;					   /*                        */
-{ 						   /*                        */
-  return read_args(b,				   /*                        */
-		   new_t_string(L_FUNCTION,TString(t)),/*                    */
-		   ',',				   /*                        */
-		   ')');			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -649,9 +642,9 @@ static Term read_expr(b)			   /*                        */
 #endif
     switch (c)					   /*                        */
     { case '{':					   /*                        */
-	{ Term t = read_args(b,
-			     NewTerm(L_GROUP),
-			     ';',
+	{ Term t = read_args(b,			   /*                        */
+			     NewTerm(L_GROUP),	   /*                        */
+			     ';',		   /*                        */
 			     '}');		   /*                        */
 	  Shift(L_GROUP, t);		   	   /*                        */
 	}					   /*                        */
@@ -691,7 +684,10 @@ static Term read_expr(b)			   /*                        */
  	    Shift(L_FIELD, t);		   	   /*                        */
 	    break;				   /*                        */
 	  }					   /*                        */
-	  t = read_fct(b, t);			   /*                        */
+	  t = read_args(b,			   /*                        */
+			new_t_string(L_FUNCTION,TString(t)),/*               */
+			',',			   /*                        */
+			')');			   /*                        */
 	  Shift(L_FUNCTION, t);		   	   /*                        */
 	}					   /*                        */
 	break;					   /*                        */

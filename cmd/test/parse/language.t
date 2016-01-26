@@ -104,6 +104,18 @@ BUnit::run(name         => 'fct-5',
 	   expected_out => "a(a(b))\n");
 
 #------------------------------------------------------------------------------
+BUnit::run(name         => 'fct-10',
+	   resource	=> "a(1,2)\n",
+	   expected_err => '',
+	   expected_out => "a(1, 2)\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'fct-20',
+	   resource	=> "a(1,2) + 123\n",
+	   expected_err => '',
+	   expected_out => "(a(1, 2) + 123)\n");
+
+#------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-err-1',
 	   resource	=> "a(",
 	   expected_err => "\n*** BibTool ERROR:  (line 1 in _test.rsc): Unclosed list\n",

@@ -346,7 +346,7 @@ static void prn_term(file, term, in)		   /*                        */
   } else {					   /*                        */
     fputs(key, file);		   		   /*                        */
     fputc('(', file);				   /*                        */
-    if (term) prn_args(file, Cdr(term), " ", in);  /*                        */
+    if (term) prn_args(file, Cdr(term), ", ", in); /*                        */
   }						   /*                        */
   fputc(')', file);				   /*                        */
 }						   /*------------------------*/
