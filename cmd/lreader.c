@@ -76,6 +76,8 @@ static Uchar buffer[2];
   fprintf(stderr, "--- shift %s\n", tag_id(c))
 #endif
 
+#define NewStack(S,T)	ts_push(StackNULL, S, T)
+
 /*-----------------------------------------------------------------------------
 ** Function:	tag_id()
 ** Type:	static String
@@ -750,6 +752,7 @@ static Term read_expr(b, stack)			   /*                        */
 static Term read_cmd(binding)			   /*                        */
   Binding binding;				   /*                        */
 { register int c;			   	   /*                        */
+  TStack stack = StackNULL;			   /*                        */
  						   /*                        */
   for (c = scan(binding); c >= 0; c = scan(binding))/*                       */
   { 						   /*                        */
@@ -758,27 +761,29 @@ static Term read_cmd(binding)			   /*                        */
 	continue;				   /*                        */
       case L_FIELD:				   /*                        */
 	{ Term val = yylval;			   /*                        */
-	  SymDef sym = get_bind(binding, TString(val));/*                    */
+	  SymDef sym = get_bind(binding,	   /*                        */
+				TString(val));	   /*                        */
 	  c = scan(binding);			   /*                        */
 	  if (c == '(')				   /*                        */
 	  { val = read_args(binding,		   /*                        */
-			    new_t_string(L_FUNCTION,TString(val)),/*         */
+			    new_t_string(L_FUNCTION,/*                       */
+					 TString(val)),/*                    */
 			    ',',		   /*                        */
 			    ')');		   /*                        */
-	    return read_expr(binding,		   /*                        */
-			     ts_push(StackNULL, TType(val), val));/*         */
-	  } else 				   /*                        */
+	    Shift(TType(val), val);	   	   /*                        */
+	  }					   /*                        */
+	  else					   /*                        */
 	  { unscan(c, yylval);			   /*                        */
 	    if (sym && (SymFlags(sym)&SYM_BUILTIN))/*                        */
 	    { return read_builtin(binding, val); } /*                        */
-	    return read_expr(binding,		   /*                        */
-			     ts_push(StackNULL, L_FIELD, val));/*            */
+	    Shift(L_FIELD, val);		   /*                        */
 	  }					   /*                        */
 	}					   /*                        */
+	break;					   /*                        */
       case '(':					   /*                        */
       case '{':					   /*                        */
 	unscan(c, yylval);			   /*                        */
-	return read_expr(binding, StackNULL);	   /*                        */
+	break;					   /*                        */
       default:					   /*                        */
 	if ( c >= 0 && c <= 0xff		   /*                        */
 	     && yylval == NIL)		   	   /*                        */
@@ -786,8 +791,8 @@ static Term read_cmd(binding)			   /*                        */
 		tag_id(c),			   /*                        */
 		"' found");			   /*                        */
 	unscan(c, yylval);			   /*                        */
-	return read_expr(binding, StackNULL);	   /*                        */
     }					   	   /*                        */
+    return read_expr(binding, stack);	   	   /*                        */
   }						   /*                        */
    						   /*                        */
   return term_eof;				   /*                        */
