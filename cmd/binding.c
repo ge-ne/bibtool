@@ -117,7 +117,10 @@ Term setq(b, key, term)		   		   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
-  junk           = symdef(key, L_FIELD, g_field);  /*                        */
+  junk           = symdef(key,			   /*                        */
+			  L_FIELD,		   /*                        */
+			  SYM_NONE,		   /*                        */
+			  g_field);  		   /*                        */
   SymValue(junk) = term;		   	   /*                        */
   NextJunk(junk) = BJunks(b)[h];		   /*                        */
   BJunks(b)[h]   = junk;			   /*                        */
@@ -259,7 +262,7 @@ static Term str_rsc(binding, name, term, rp)	   /*                        */
    return StringTerm(*rp ? *rp : (String)"");	   /*                        */
 }						   /*------------------------*/
 
-#define Bind(NAME,GET,OP)
+#define Bind(NAME,GET,FLAGS,OP)
 #define BindSym(NAME,SYM)
 #define BindBool(NAME,GETTER,RSC)			\
   static Term GETTER (binding, term)			\
@@ -317,12 +320,12 @@ static Term str_rsc(binding, name, term, rp)	   /*                        */
 Binding root_binding()				   /*                        */
 { Binding b = binding(511);			   /*                        */
  						   /*                        */
-#define BindBool(NAME,GET,R) Bind(NAME, GET, L_FIELD)
-#define BindNum(NAME,GET,R)  Bind(NAME, GET, L_FIELD)
-#define BindStr(NAME,GET,R)  Bind(NAME, GET, L_FIELD)
-#define BindFct(NAME,GET,EX) Bind(NAME, GET, L_FIELD)
-#define Bind(NAME,GET,OP)    bind(b, symdef(symbol((String)NAME),OP,GET));
-#define BindSym(NAME,SYM)    bind(b, SYM);
+#define BindBool(NAME,GET,R)	   Bind(NAME, GET, SYM_BUILTIN, L_FIELD)
+#define BindNum(NAME,GET,R)	   Bind(NAME, GET, SYM_BUILTIN, L_FIELD)
+#define BindStr(NAME,GET,R)	   Bind(NAME, GET, SYM_BUILTIN, L_FIELD)
+#define BindFct(NAME,GET,EX)	   Bind(NAME, GET, SYM_BUILTIN, L_FIELD)
+#define Bind(NAME,GET,FLAGS,OP)    bind(b, symdef(symbol((String)NAME),OP,FLAGS,GET));
+#define BindSym(NAME,SYM)	   bind(b, SYM);
  						   /*                        */
 #include "builtin.h"
   return b;				   	   /*                        */

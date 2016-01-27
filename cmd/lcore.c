@@ -901,9 +901,8 @@ unsigned int hash(s)				   /*                        */
 **___________________________________________________			     */
 void init_lreader()				   /*                        */
 {						   /*                        */
- 						   /*                        */
-  sym_true  = symdef((String)"true",  L_TRUE,  g_self);/*                    */
-  sym_false = symdef((String)"false", L_FALSE, g_self);/*                    */
+  sym_true  = symdef((String)"true",  L_TRUE,  SYM_LOCKED, g_self);/*        */
+  sym_false = symdef((String)"false", L_FALSE, SYM_LOCKED, g_self);/*        */
  						   /*                        */
   term_true  = SymTerm(sym_true)  = NewTerm(L_TRUE);/*                       */
   term_false = SymTerm(sym_false) = NewTerm(L_FALSE);/*                      */

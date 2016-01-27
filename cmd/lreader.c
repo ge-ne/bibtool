@@ -43,7 +43,7 @@ static Term read_builtin _ARG((Binding b, Term t));/*                        */
 static TStack reduce _ARG((TStack ts));		   /*                        */
 int read_loop _ARG((Binding b, char* file, int (*action)(Binding binding, Term t) ));
 static Term read_cmd _ARG((Binding b));		   /*                        */
-static Term read_expr _ARG((Binding b));	   /*                        */
+static Term read_expr _ARG((Binding b, TStack ts));/*                        */
 static Term read_args _ARG((Binding b, Term t, int sep, int term));/*        */
 
 /*****************************************************************************/
@@ -68,6 +68,13 @@ static Uchar buffer[2];
 
 #define GetC fgetc(in_file)
 #define UnGetC(C) ungetc(C, in_file)
+
+#define Shift(S,T) stack = ts_push(stack, S, T)
+#ifdef DEBUG_PARSER
+#undef Shift
+#define Shift(S,T) stack = ts_push(stack, S, T);	\
+  fprintf(stderr, "--- shift %s\n", tag_id(c))
+#endif
 
 /*-----------------------------------------------------------------------------
 ** Function:	tag_id()
@@ -402,9 +409,9 @@ static Term read_list(b, t)			   /*                        */
   Term *tp;					   /*                        */
   int car = 1;					   /*                        */
  						   /*                        */
-  for (a = read_expr(b);			   /*                        */
+  for (a = read_expr(b, StackNULL);		   /*                        */
        a != term_eof;				   /*                        */
-       a = read_expr(b))			   /*                        */
+       a = read_expr(b, StackNULL))		   /*                        */
   { if (car)					   /*                        */
     { car    = 0;				   /*                        */
       Car(t) = a;				   /*                        */
@@ -446,9 +453,9 @@ static Term read_args(b, t, sep, term)		   /*                        */
   if (c == term) { return t; }			   /*                        */
   unscan(c, yylval);				   /*                        */
  						   /*                        */
-  for (a = read_expr(b);			   /*                        */
+  for (a = read_expr(b, StackNULL);		   /*                        */
        a != term_eof;				   /*                        */
-       a = read_expr(b))			   /*                        */
+       a = read_expr(b, StackNULL))		   /*                        */
   { Cdr(x) = Cons1(a);			   	   /*                        */
     x = Cdr(x);				   	   /*                        */
     c = scan(b);				   /*                        */
@@ -500,7 +507,7 @@ static Term read_builtin(b, t)	   		   /*                        */
       return t;					   /*                        */
     } else {					   /*                        */
       unscan(c, yylval);			   /*                        */
-      Cdr(t) = Cons1(read_expr(b));		   /*                        */
+      Cdr(t) = Cons1(read_expr(b, StackNULL));	   /*                        */
       return t;	   				   /*                        */
     }						   /*                        */
   }						   /*                        */
@@ -613,13 +620,6 @@ static TStack reduce(stack)			   /*                        */
   return stack;					   /*                        */
 }						   /*------------------------*/
 
-#define Shift(S,T) stack = ts_push(stack, S, T)
-#ifdef DEBUG_PARSER
-#undef Shift
-#define Shift(S,T) stack = ts_push(stack, S, T);	\
-  fprintf(stderr, "--- shift %s\n", tag_id(c))
-#endif
-
 /*-----------------------------------------------------------------------------
 ** Function:	read_expr()
 ** Type:	static Term
@@ -629,10 +629,10 @@ static TStack reduce(stack)			   /*                        */
 **		
 ** Returns:	
 **___________________________________________________			     */
-static Term read_expr(b)			   /*                        */
+static Term read_expr(b, stack)			   /*                        */
   Binding b;					   /*                        */
+  TStack stack;					   /*                        */
 { int c;					   /*                        */
-  TStack stack = StackNULL;			   /*                        */
  						   /*                        */
   for (c = scan(b); c && c != EOF; c = scan(b))	   /*                        */
   {						   /*                        */
@@ -653,7 +653,7 @@ static Term read_expr(b)			   /*                        */
       case '(':					   /*                        */
 	{					   /*                        */
 	  int lno = linenum;			   /*                        */
-	  Term t  = read_expr(b);		   /*                        */
+	  Term t  = read_expr(b, StackNULL);	   /*                        */
 	  c	  = scan(b);		   	   /*                        */
 	  if (c != ')')			   	   /*                        */
 	  { linenum = lno;			   /*                        */
@@ -673,7 +673,7 @@ static Term read_expr(b)			   /*                        */
 	Shift(L_QUOTE,				   /*                        */
 	      new_term(L_QUOTE,			   /*                        */
 		       NIL,			   /*                        */
-		       Cons1(read_expr(b))));  	   /*                        */
+		       Cons1(read_expr(b, StackNULL))));/*                   */
 	break;					   /*                        */
 						   /*                        */
       case L_FIELD:				   /*                        */
@@ -737,7 +737,6 @@ static Term read_expr(b)			   /*                        */
   }	   					   /*                        */
   return term_eof;				   /*                        */
 }						   /*------------------------*/
-#undef Shift
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_cmd()
@@ -754,24 +753,46 @@ static Term read_cmd(binding)			   /*                        */
  						   /*                        */
   for (c = scan(binding); c >= 0; c = scan(binding))/*                       */
   { 						   /*                        */
-    if (c == L_FIELD &&				   /*                        */
-	get_bind(binding, TString(yylval)))	   /*                        */
-    { return read_builtin(binding, yylval); }	   /*                        */
- 						   /*                        */
-    if (c != ';')				   /*                        */
-    { if ( c >= 0 && c <= 0xff			   /*                        */
-	   && c != '(' && c != '{'	   	   /*                        */
-	  && yylval == NIL)		   	   /*                        */
-	Error("Unexpected character '",		   /*                        */
-	      tag_id(c),			   /*                        */
-	      "' found");			   /*                        */
-      unscan(c, yylval);			   /*                        */
-      return read_expr(binding);		   /*                        */
-    }						   /*                        */
+    switch (c)					   /*                        */
+    { case ';':					   /*                        */
+	continue;				   /*                        */
+      case L_FIELD:				   /*                        */
+	{ Term val = yylval;			   /*                        */
+	  SymDef sym = get_bind(binding, TString(val));/*                    */
+	  c = scan(binding);			   /*                        */
+	  if (c == '(')				   /*                        */
+	  { val = read_args(binding,		   /*                        */
+			    new_t_string(L_FUNCTION,TString(val)),/*         */
+			    ',',		   /*                        */
+			    ')');		   /*                        */
+	    return read_expr(binding,		   /*                        */
+			     ts_push(StackNULL, TType(val), val));/*         */
+	  } else 				   /*                        */
+	  { unscan(c, yylval);			   /*                        */
+	    if (sym && (SymFlags(sym)&SYM_BUILTIN))/*                        */
+	    { return read_builtin(binding, val); } /*                        */
+	    return read_expr(binding,		   /*                        */
+			     ts_push(StackNULL, L_FIELD, val));/*            */
+	  }					   /*                        */
+	}					   /*                        */
+      case '(':					   /*                        */
+      case '{':					   /*                        */
+	unscan(c, yylval);			   /*                        */
+	return read_expr(binding, StackNULL);	   /*                        */
+      default:					   /*                        */
+	if ( c >= 0 && c <= 0xff		   /*                        */
+	     && yylval == NIL)		   	   /*                        */
+	  Error("Unexpected character '",	   /*                        */
+		tag_id(c),			   /*                        */
+		"' found");			   /*                        */
+	unscan(c, yylval);			   /*                        */
+	return read_expr(binding, StackNULL);	   /*                        */
+    }					   	   /*                        */
   }						   /*                        */
    						   /*                        */
   return term_eof;				   /*                        */
 }						   /*------------------------*/
+#undef Shift
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_loop()

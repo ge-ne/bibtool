@@ -72,7 +72,7 @@ typedef struct S_TERM {				   /*                        */
     long number;				   /*                        */
   } a;						   /*                        */
   struct S_TERM * cdr;				   /*                        */
-  long ref_count;
+  long ref_count;				   /*                        */
 } STerm, *Term;					   /*------------------------*/
 
 #define NIL ((Term)0)
@@ -119,6 +119,7 @@ typedef struct S_TERM {				   /*                        */
 typedef struct S_SYMDEF {			   /*                        */
   String name;				   	   /*                        */
   short int op;				   	   /*                        */
+  short int flags;				   /*                        */
   short int hash;				   /*                        */
   struct S_SYMDEF * next;			   /*                        */
   Term term;	   			   	   /*                        */
@@ -130,12 +131,17 @@ typedef struct S_SYMDEF {			   /*                        */
 
 #define SymName(SYM)	((SYM)->name)
 #define SymOp(SYM)	((SYM)->op)
+#define SymFlags(SYM)	((SYM)->flags)
 #define SymHash(SYM)	((SYM)->hash)
 #define SymTerm(SYM)	((SYM)->term)
 #define SymKey(SYM)	((SYM)->key)
 #define SymValue(SYM)	((SYM)->value)
 #define SymGet(SYM)	((SYM)->get)
 #define NextJunk(SYM)	((SYM)->next)
+
+#define SYM_NONE	0x00
+#define SYM_BUILTIN	0x01
+#define SYM_LOCKED	0x02
 
 /*---------------------------------------------------------------------------*/
 
@@ -170,7 +176,7 @@ extern void print_term _ARG((FILE* file, Term term));
 extern int list_length _ARG((Term t));
 extern int parse_term _ARG((char* file, int(*action)(Term t)));
 
-extern SymDef symdef _ARG((String name, int op, Term(*get)()));
+extern SymDef symdef _ARG((String name, short int op, short int flags, Term(*get)()));
 
 /*---------------------------------------------------------------------------*/
 #endif

@@ -335,14 +335,14 @@ static void prn_term(file, term, in)		   /*                        */
  						   /*                        */
   if (L_IS_BINARY(TType(term)) )		   /*                        */
   { term = Cdr(term);				   /*                        */
-    if (term)
+    if (term)					   /*                        */
     { fputc('(', file);				   /*                        */
       prn_term(file, Car(term), in);		   /*                        */
       fputs(key, file);		   		   /*                        */
       prn_term(file, Cadr(term), in);		   /*                        */
-    } else {
-      return;
-    }
+    } else {					   /*                        */
+      return;					   /*                        */
+    }						   /*                        */
   } else {					   /*                        */
     fputs(key, file);		   		   /*                        */
     fputc('(', file);				   /*                        */
@@ -362,22 +362,22 @@ static void prn_term(file, term, in)		   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void print_term(file, term)			   /*                        */
-  FILE * file;					   /*                        */
-  Term term;					   /*                        */
+  register FILE * file;				   /*                        */
+  register Term term;				   /*                        */
 { prn_term(file, term, 0);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	list_length()
 ** Type:	int
-** Purpose:	
+** Purpose:	Determine the length of a list, i.e. a cons sequence.
 **		
 ** Arguments:
-**	t	
-** Returns:	
+**	t	the term
+** Returns:	the length
 **___________________________________________________			     */
 int list_length(t)				   /*                        */
-  Term t;					   /*                        */
+  register Term t;				   /*                        */
 { int i = 0;					   /*                        */
   while (t && TermIsList(t))			   /*                        */
   { i++;					   /*                        */
@@ -389,23 +389,25 @@ int list_length(t)				   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	symdef()
 ** Type:	SymDef
-** Purpose:	
+** Purpose:	Allocate a new symdef.
 **		
 ** Arguments:
-**	name	
-**	op	
-**	get	
+**	name	the name of the symdef
+**	op	the op code
+**	get	the getter function
 ** Returns:	
 **___________________________________________________			     */
-SymDef symdef(name, op, get)	   	   	   /*                        */
+SymDef symdef(name, op, flags, get)		   /*                        */
   String name;					   /*                        */
-  int op;					   /*                        */
+  short int op;					   /*                        */
+  short int flags;
   Term (*get)_ARG((Binding, Term));		   /*                        */
 {						   /*                        */
   SymDef sym    = (SymDef) malloc(sizeof(SSymDef));/*                        */
   if (sym == SymDefNULL) OUT_OF_MEMORY("symdef");  /*                        */
   SymName(sym)  = name;				   /*                        */
   SymOp(sym)    = op;				   /*                        */
+  SymFlags(sym) = flags;			   /*                        */
   SymHash(sym)  = hash(name);			   /*                        */
   SymTerm(sym)  = NIL;				   /*                        */
   SymValue(sym) = NIL;				   /*                        */
