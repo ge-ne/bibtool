@@ -485,6 +485,34 @@ Term g_out_file(binding, term)		   	   /*                        */
   return s ? StringTerm(s) : NIL;	   	   /*                        */
 }						   /*------------------------*/
 
+Term g_input(binding, term)		   	   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ extern void save_input_file();		   /*                        */
+  extern char *get_input_file();		   /*                        */
+#ifdef NEVER
+  String s;					   /*                        */
+#endif
+ 						   /*                        */
+  switch (list_length(Cdr(term)))		   /*                        */
+  { case 0:					   /*                        */
+      break;					   /*                        */
+    case 1:					   /*                        */
+      term = eval_str(binding,Cadr(term));	   /*                        */
+      save_input_file(TString(term));		   /*                        */
+      return term;				   /*                        */
+    default:					   /*                        */
+      wrong_no_args("input");		   	   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+#ifdef NEVER
+  s = (String)get_input_file();		   	   /*                        */
+  return s ? StringTerm(s) : NIL;	   	   /*                        */
+#else
+  return NIL;	   	   			   /*                        */
+#endif
+}						   /*------------------------*/
+
 /*-----------------------------------------------------------------------------
 ** Function:	g_cl_ign_words()
 ** Type:	Term
