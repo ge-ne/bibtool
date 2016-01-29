@@ -64,16 +64,19 @@ CTANFILES =	README.md		\
 		doc/ref_card.pdf	\
 		doc/c_lib.pdf
 
+LATEX	=	pdflatex
+
 lint:
 	gcc  $(C_FLAGS) $(REGEX_DEF) $(DONT_LINK) -ansi -W -Wall -O2 ${CFILES}
 
-dist:
+dist:   Changes.pdf install.pdf
 	@( cd doc; make)
-	@( cd ..; rm -f $(DIR).tar.gz;				\
+	@( cd ..; rm -f $(DIRNO).tar.gz;			\
 	   tar  -cvzf $(DIRNO).tar.gz $(DISTFILES:%=$(DIR)/%)	\
+		--owner bibtool --group bibtool			\
 		--exclude CVS --exclude config.status )
 	@gpg -a -b ../$(DIRNO).tar.gz
-	@( cd ..; rm -f $(DIR).zip;				\
+	@( cd ..; rm -f $(DIRNO).zip;				\
 	   zip  -r $(DIRNO).zip $(DISTFILES:%=$(DIR)/%)		\
 		-x \*/\*/CVS/\* \*/config.status )
 
@@ -81,6 +84,10 @@ ctan: dist
 	@rm -rf ../bibtool ../bibtool.zip
 	@mkdir ../bibtool
 	@cp $(CTANFILES) ../$(DIRNO).tar.gz ../$(DIRNO).tar.gz.asc ../bibtool
-	@(cd ..; zip bibtool.zip bibtool/*)
+	@( cd ..; zip bibtool.zip bibtool/* )
 	@rm -rf ../bibtool
+
+%.pdf: %.tex
+	@$(LATEX) $*
+
 #
