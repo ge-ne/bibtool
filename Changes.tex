@@ -15,6 +15,7 @@
 \documentclass[11pt,a4paper]{scrartcl}
 
 \usepackage{multicol}
+\usepackage{ragged2e}
 
 \newenvironment{Developers}{}{}
 \newcommand\Developer[3]{}
@@ -25,7 +26,8 @@
 \newcommand\BibTcl{\textsc{BibTcl}}
 \newcommand\BibTeX{\textsc{Bib}\TeX}
 \newenvironment{Release}[2]{%
-  \section*{Release #1 {\normalsize[#2]}}
+  \def\tmp{#2}%
+  \section*{Release #1 \ifx\tmp\empty\else{\normalsize[#2]}\fi}
   \begin{itemize}
 }{\end{itemize}}
 \newenvironment{Fix}[1]{\item }{}
@@ -45,7 +47,7 @@
   \Developer{gene}{Gerd Neugebauer}{gene@gerd-neugebauer.de}
 \end{Developers}
 
-\begin{multicols}2
+\begin{multicols}2\RaggedRight
 
  % =====================================================================
  \begin{Release}{2.63}{January 16, 2016}
@@ -61,7 +63,7 @@
   \end{Fix}
   \begin{Update}{gene}
     Minor improvements for the distribution.
-  \end{Fix}
+  \end{Update}
   \begin{Update}{gene}
     \File{README} renamed to \File{README.md} to comply with the
     conventions of the GitHub repository.
@@ -491,16 +493,15 @@
     The configuration of \BibTcl{} is now done automatically.
   \end{New}
   \begin{New}{gene}
-    New datatype introduced: \verb|Uchar| will hold UniCode characters
-    in a future release. I just have to find regexp routines to work
-    with UTF-8.
+    New datatype introduced: \verb|Uchar| will hold UniCode characters in a
+    future release. I just have to find regexp routines to work with UTF-8.
   \end{New}
   \begin{Update}{gene}
-    Extraction extended to allow negation of the regular
-    expression/string matching result. New resources \rsc{select.non}
-    and \rsc{select.by.non.string} to specify such a request. C
-    function \verb|add_extract()| extended to cover negated values and
-    the former function \verb|add_s_extract()|.
+    Extraction extended to allow negation of the regular expression and string
+    matching result. New resources \rsc{select.non} and
+    \rsc{select.by.non.string} to specify such a request. C function
+    \verb|add_extract()| extended to cover negated values and the former
+    function \verb|add_s_extract()|.
   \end{Update}
  \end{Release}
 
