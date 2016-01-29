@@ -13,7 +13,7 @@
         ######    ##  #####    ##    ####      ####    #######
 
 ----------------------------------------------------------------------
-
+
           BibTool: A Tool for Manipulating BibTeX Data Bases
 
   
@@ -26,7 +26,7 @@ possibilities of BibTool include
 
 * Pretty-printing BibTeX data bases adjustable by lots of parameters.
 
-* Syntactic checks with error recovery superior to BibTeX and helpful 
+* Syntactic checks with error recovery superior to BibTeX and helpful
   error messages.
 
 * Semantic checks can be specified by the user.
@@ -55,9 +55,21 @@ BibTool  contains a  documentation written  in  LaTeX of  more than 75
 pages (and still growing).
 
 BibTool is written  in C and  has  been compiled on  various operating
-systems like flavors of UN*X and MSDOG machines.  It is distributed in
+systems like flavors of Unix and MSDOG machines.  It is distributed in
 source code.   No compiled  versions  are  available from  the  author
 (Useless to ask!).
+
+
+# Binary Distributions
+
+
+There  exist binary  distributions  of BibTool  for several  operating
+systems. For instance  users of Debian based Linux  systems can access
+BibTool via their native package manager.
+
+Before installing from the sources you might want to check whether the
+package manager of your system provides a sufficiently recent version
+of BibTool.
 
 
 # CTAN Download
@@ -65,10 +77,14 @@ source code.   No compiled  versions  are  available from  the  author
 
 BibTool can be obtained from the CTAN archives:
 
-* http://mirrors.ctan.org/biblio/bibtex/utils/bibtool
+* https://www.ctan.org/tex-archive/biblio/bibtex/utils/bibtool
+
+or via the BibTool home page
+
+* http://www.gerd-neugebauer.de/software/TeX/BibTool
 
 Get  the  file BibTool-x.xx.tar.gz  where  x.xx is the version number.
-Unpack it with the command (on UN*X)
+Unpack it with the command (on Unix)
 
     gunzip < BibTool-x.xx.tar.gz | tar -xvf -
 
@@ -92,11 +108,11 @@ Attributation-Share Alike 3.0 License.
 The distribution of BibTool contains the following third-party
 software which is released under their own licenses:
 
-
 * GNU regex library 0.12 is located in the directory regex-0.12. It is
   distributed under the GNU General Public License version 2 or later.
 
-* mkdirchain consists of the file mkdirchain. It is in the public domain.
+* mkdirchain consists of the file mkdirchain. It is in the public
+  domain.
 
 * install-sh consists of the file install-sh. It is distributed under
   the MIT license contained in this file.
