@@ -13,10 +13,11 @@
         ######    ##  #####    ##    ####      ####    #######
 
 ----------------------------------------------------------------------
-
+
+
           BibTool: A Tool for Manipulating BibTeX Data Bases
 
-  
+
 BibTeX provides    an easy to  use means   to integrate  citations and
 bibliographies into LaTeX documents.  But the user  is left alone with
 the management of the BibTeX files. The program BibTool is intended to
@@ -26,7 +27,7 @@ possibilities of BibTool include
 
 * Pretty-printing BibTeX data bases adjustable by lots of parameters.
 
-* Syntactic checks with error recovery superior to BibTeX and helpful 
+* Syntactic checks with error recovery superior to BibTeX and helpful
   error messages.
 
 * Semantic checks can be specified by the user.
@@ -55,7 +56,7 @@ BibTool  contains a  documentation written  in  LaTeX of  more than 75
 pages (and still growing).
 
 BibTool is written  in C and  has  been compiled on  various operating
-systems like flavors of UN*X and MSDOG machines.  It is distributed in
+systems like flavors of UNiX and MSDOG machines.  It is distributed in
 source code.   No compiled  versions  are  available from  the  author
 (Useless to ask!).
 
@@ -68,7 +69,7 @@ BibTool can be obtained from the CTAN archives:
 * http://mirrors.ctan.org/biblio/bibtex/utils/bibtool
 
 Get  the  file BibTool-x.xx.tar.gz  where  x.xx is the version number.
-Unpack it with the command (on UN*X)
+Unpack it with the command (on UNiX)
 
     gunzip < BibTool-x.xx.tar.gz | tar -xvf -
 
