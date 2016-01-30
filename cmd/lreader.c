@@ -53,16 +53,12 @@ static Term read_args _ARG((Binding b, Term t, int sep, int term));/*        */
 /*---------------------------------------------------------------------------*/
 
 
- static String END_OF_FILE = (String)"end of file";
-
  static Term yylval;				   /*                        */
  static char * filename;			   /*                        */
  static FILE * in_file;				   /*                        */
  static int  linenum;				   /*                        */
  static int  c_look_ahead = 0;		   	   /*                        */
  static Term look_ahead = NIL;			   /*                        */
-
-static Uchar buffer[2];
 
 #define unscan(C,T) (c_look_ahead = (C), look_ahead = (T))
 
@@ -77,54 +73,6 @@ static Uchar buffer[2];
 #endif
 
 #define NewStack(S,T)	ts_push(StackNULL, S, T)
-
-/*-----------------------------------------------------------------------------
-** Function:	tag_id()
-** Type:	static String
-** Purpose:	
-**		
-** Arguments:
-**	c	
-** Returns:	
-**___________________________________________________			     */
-String tag_id(c)			   	   /*                        */
-  int c;					   /*                        */
-{						   /*                        */
-  switch (c)					   /*                        */
-  { case L_STRING:   return (String)"string";	   /*                        */
-    case L_FIELD:    return (String)"field";	   /*                        */
-    case L_NUMBER:   return (String)"number";	   /*                        */
-    case L_FUNCTION: return (String)"function";	   /*                        */
-    case L_CONS:     return (String)"cons";	   /*                        */
-    case L_GROUP:    return (String)"group";	   /*                        */
-    case L_TRUE:     return (String)"true";	   /*                        */
-    case L_FALSE:    return (String)"false";	   /*                        */
-    case L_QUOTE:    return (String)"'";	   /*                        */
-    case L_UMINUS:   return (String)"-";	   /*                        */
-    case L_MINUS:    return (String)"-";	   /*                        */
-    case L_PLUS:     return (String)"+";	   /*                        */
-    case L_TIMES:    return (String)"*";	   /*                        */
-    case L_DIV:      return (String)"/";	   /*                        */
-    case L_MOD:      return (String)"mod";	   /*                        */
-    case L_SET:      return (String)"=";	   /*                        */
-    case L_LIKE:     return (String)"like";	   /*                        */
-    case L_ILIKE:    return (String)"ilike";	   /*                        */
-    case L_EQ:       return (String)"==";	   /*                        */
-    case L_NE:       return (String)"!=";	   /*                        */
-    case L_GT:       return (String)">";	   /*                        */
-    case L_GE:       return (String)">=";	   /*                        */
-    case L_LT:       return (String)"<";	   /*                        */
-    case L_LE:       return (String)"<=";	   /*                        */
-    case L_NOT:      return (String)"not";	   /*                        */
-    case L_AND:      return (String)"and";	   /*                        */
-    case L_OR:       return (String)"or";	   /*                        */
-    case 0:					   /*                        */
-    case EOF:        return END_OF_FILE;	   /*                        */
-  }						   /*                        */
-  buffer[0] = c;				   /*                        */
-  buffer[1] = 0;				   /*                        */
-  return buffer;				   /*                        */
-}						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	scan_block()
@@ -385,9 +333,11 @@ static int scan(b)			   	   /*                        */
 	  Return(FieldTerm(s), L_FIELD);	   /*                        */
 	}					   /*                        */
  						   /*                        */
-      default:					   /*                        */
-        return c;		   		   /*                        */
     }						   /*                        */
+#ifdef DEBUG_PARSER
+	    printf("--- scan: default %s 0x%x\n",  /*                        */
+		   tag_id(c), c);		   /*                        */
+#endif
     return c <= 0 ? EOF : c; 			   /*                        */
   }						   /*                        */
   return EOF;				   	   /*                        */
@@ -437,36 +387,40 @@ static Term read_list(b, t)			   /*                        */
 **		
 ** Arguments:
 **	b	
-**	 t	
-**	 sep	
-**	 term	
+**	t	
+**	separator	the separating character
+**	terminal	ther terminating character
 ** Returns:	
 **___________________________________________________			     */
-static Term read_args(b, t, sep, term)		   /*                        */
-  Binding b;					   /*                        */
-  Term t;					   /*                        */
-  int sep;					   /*                        */
-  int term;					   /*                        */
+static Term read_args(binding, term, separator, terminal)/*                  */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+  int separator;				   /*                        */
+  int terminal;					   /*                        */
 { int lno = linenum;				   /*                        */
-  Term x  = t;					   /*                        */
+  int c	  = scan(binding);			   /*                        */
+  Term x  = term;				   /*                        */
   Term a;					   /*                        */
-  int c	  = scan(b);				   /*                        */
  						   /*                        */
-  if (c == term) { return t; }			   /*                        */
-  unscan(c, yylval);				   /*                        */
- 						   /*                        */
-  for (a = read_expr(b, StackNULL);		   /*                        */
-       a != term_eof;				   /*                        */
-       a = read_expr(b, StackNULL))		   /*                        */
-  { Cdr(x) = Cons1(a);			   	   /*                        */
+  for (;;)
+  {
+    while (c == separator) { c = scan(binding); }  /*                        */
+    if (c == terminal) return term;		   /*                        */
+    unscan(c, yylval);				   /*                        */
+    a = read_expr(binding, StackNULL);
+    if (a == term_eof)
+    { linenum = lno;				   /*                        */
+      Error("Missing ", tag_id(terminal), 0);	   /*                        */
+    }
+
+    Cdr(x) = Cons1(a);			   	   /*                        */
     x = Cdr(x);				   	   /*                        */
-    c = scan(b);				   /*                        */
-    if (c == term) return t;		   	   /*                        */
-    if (c != sep) Error("Missing comma", 0, 0);	   /*                        */
+    c = scan(binding);				   /*                        */
+    if (c == terminal) return term;		   /*                        */
+    if (c != separator)				   /*                        */
+      Error("Missing separator instead of ",	   /*                        */
+	    tag_id(c), 0);			   /*                        */
   }						   /*                        */
-  linenum = lno;				   /*                        */
-  Error("Unclosed list", 0, 0);	   		   /*                        */
-  return NIL;					   /* This will never happen */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -546,21 +500,23 @@ static TStack reduce(stack)			   /*                        */
       { TNumber(StackTerm(current)) =		   /*                        */
 	  -TNumber(StackTerm(current));		   /*                        */
       } else {					   /*                        */
-	Term t	  = StackTerm(prev);		   /*                        */
+	Term t	 = StackTerm(prev);		   /*                        */
 	TType(t) = L_UMINUS;			   /*                        */
-	Cdr(t)    = Cons1(StackTerm(current)); 	   /*                        */
+	Cdr(t)   = Cons1(StackTerm(current)); 	   /*                        */
 						   /*                        */
 	StackTerm(current) = t;	   		   /*                        */
 	StackChar(current) = L_UMINUS;		   /*                        */
       }						   /*                        */
       StackPrev(current) = ts_pop(StackPrev(current));/*                     */
+#ifdef DEBUG_PARSER
+      fputs("--- minus processed\n", stderr);	   /*                        */
+#endif
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
 #ifdef DEBUG_PARSER
-      fputs("--- minus processed\n", stderr);	   /*                        */
-      dump_tstack(stderr, stack);		   /*                        */
-      fputs("---\n", stderr);	   		   /*                        */
+  dump_tstack(stderr, stack);		   	   /*                        */
+  fputs("---\n", stderr);	   		   /*                        */
 #endif
   while (StackPrev(stack))			   /*                        */
   { n = 0x400;				   	   /*                        */
@@ -644,12 +600,11 @@ static Term read_expr(b, stack)			   /*                        */
 #endif
     switch (c)					   /*                        */
     { case '{':					   /*                        */
-	{ Term t = read_args(b,			   /*                        */
-			     NewTerm(L_GROUP),	   /*                        */
-			     ';',		   /*                        */
-			     '}');		   /*                        */
-	  Shift(L_GROUP, t);		   	   /*                        */
-	}					   /*                        */
+	Shift(L_GROUP,				   /*                        */
+	      read_args(b,		   	   /*                        */
+			NewTerm(L_GROUP), 	   /*                        */
+			';',		   	   /*                        */
+			'}'));	   	   	   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case '(':					   /*                        */
@@ -694,6 +649,25 @@ static Term read_expr(b, stack)			   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
  						   /*                        */
+      case L_WHILE:				   /*                        */
+	{ Term t = yylval;		   	   /*                        */
+	  if (scan(b) != '(')		   	   /*                        */
+	  { Error("Missing ( for while: ",	   /*                        */
+		  tag_id(c), 0); }		   /*                        */
+	  Car(t) = read_args(b,		   	   /*                        */
+			     NewTerm(L_GROUP), 	   /*                        */
+			     -999,		   /*                        */
+			     ')');		   /*                        */
+	  if (scan(b) != '{')		   	   /*                        */
+	  { Error("Missing { for while: ",	   /*                        */
+		  tag_id(c), 0); }		   /*                        */
+	  Cdr(t) = read_args(b,		   	   /*                        */
+			     NewTerm(L_GROUP), 	   /*                        */
+			     ';',		   /*                        */
+			     '}');		   /*                        */
+	  Shift(L_WHILE, t);		   	   /*                        */
+	}					   /*                        */
+	break;					   /*                        */
       case L_STRING:				   /*                        */
       case L_NUMBER:				   /*                        */
       case L_NOT:				   /*                        */

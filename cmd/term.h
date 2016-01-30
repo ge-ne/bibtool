@@ -87,6 +87,8 @@ typedef struct S_TERM {				   /*                        */
 #define LinkTerm(T)		TRefCount(T)++
 #define UnlinkTerm(T)		TRefCount(T)--
 
+#define Caar(T)			Car(Car(T))
+#define Cdar(T)			Cdr(Car(T))
 #define Cadr(T)			Car(Cdr(T))
 #define Cddr(T)			Cdr(Cdr(T))
 
@@ -172,6 +174,7 @@ extern Term new_term_num _ARG((long value));
 extern Term new_t_string _ARG((short int type, unsigned char* s));
 extern void free_term _ARG((Term term));
 extern void print_term _ARG((FILE* file, Term term));
+extern String tag_id _ARG((int c));
 
 extern int list_length _ARG((Term t));
 extern int parse_term _ARG((char* file, int(*action)(Term t)));

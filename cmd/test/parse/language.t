@@ -118,13 +118,13 @@ BUnit::run(name         => 'fct-20',
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-err-1',
 	   resource	=> "a(",
-	   expected_err => "\n*** BibTool ERROR:  (line 1 in _test.rsc): Unclosed list\n",
+	   expected_err => "\n*** BibTool ERROR:  (line 1 in _test.rsc): Missing )\n",
 	   expected_out => '');
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-err-2',
 	   resource	=> "a(\n\n\n",
-	   expected_err => "\n*** BibTool ERROR:  (line 1 in _test.rsc): Unclosed list\n",
+	   expected_err => "\n*** BibTool ERROR:  (line 1 in _test.rsc): Missing )\n",
 	   expected_out => '');
 
 #------------------------------------------------------------------------------
@@ -180,6 +180,56 @@ BUnit::run(name         => 'error-6',
 
 *** BibTool ERROR:  (line 1 in _test.rsc): Missing operator after field
 __EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'group-0',
+	   resource	=> "{}\n",
+	   expected_err => '',
+	   expected_out => "{\n}\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'group-1',
+	   resource	=> "{;}\n",
+	   expected_err => '',
+	   expected_out => "{\n}\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'group-2',
+	   resource	=> "{;;}\n",
+	   expected_err => '',
+	   expected_out => "{\n}\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'group-10',
+	   resource	=> "{123}\n",
+	   expected_err => '',
+	   expected_out => "{\n  123\n}\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'group-20',
+	   resource	=> "{123;abc}\n",
+	   expected_err => '',
+	   expected_out => "{\n  123;\n  abc\n}\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'while-0',
+	   resource	=> 'while (false) {}',
+	   expected_err => '',
+	   expected_out => "while (false) {\n}\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'while-1',
+	   resource	=> 'while (false) {1234;}',
+	   expected_err => '',
+	   expected_out => "while (false) {\n  1234\n}\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'while-3',
+	   resource	=> 'while (false) {1234;abc}',
+	   expected_err => '',
+	   expected_out => "while (false) {\n  1234;\n  abc\n}\n" );
+
+
 
 1;
 #------------------------------------------------------------------------------

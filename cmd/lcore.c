@@ -365,6 +365,27 @@ Term eval_bool(binding, term)			   /*                        */
 **	term	the term
 ** Returns:	
 **___________________________________________________			     */
+Term g_while(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ Term t = NIL;				   	   /*                        */
+ 						   /*                        */
+  while (eval_bool(binding, Car(term)) == term_true)/*                       */
+  { t = eval_term(binding, Cdr(term)); }	   /*                        */
+ 						   /*                        */
+  return t;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	g_not()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	term	the term
+** Returns:	
+**___________________________________________________			     */
 Term g_not(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
@@ -485,12 +506,23 @@ Term g_out_file(binding, term)		   	   /*                        */
   return s ? StringTerm(s) : NIL;	   	   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	g_input()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	term	
+** Returns:	
+**___________________________________________________			     */
 Term g_input(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ extern void save_input_file();		   /*                        */
-  extern char *get_input_file();		   /*                        */
+{
+  extern void save_input_file();		   /*                        */
 #ifdef NEVER
+  extern char *get_input_file();		   /*                        */
   String s;					   /*                        */
 #endif
  						   /*                        */
@@ -611,8 +643,6 @@ Term g_field(binding, term)		   	   /*                        */
 { SymDef sym = get_bind(binding, TString(term));   /*                        */
   return sym ? SymValue(sym) : NIL;		   /*                        */
 }						   /*------------------------*/
-
-extern char * tag_id();
 
 /*-----------------------------------------------------------------------------
 ** Function:	g_setq()

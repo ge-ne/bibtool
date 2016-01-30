@@ -31,6 +31,7 @@
  Term new_t_string _ARG((short int type, unsigned char* s));
  void free_term _ARG((Term term));
  void print_term _ARG((FILE* file, Term term));
+ String tag_id _ARG((int c));
 
  static void prn_args _ARG((FILE * file, Term term, char* sep,int in));/*    */
  static void prn_term _ARG((FILE * file, Term term, int in));/*              */
@@ -38,6 +39,61 @@
 /*****************************************************************************/
 /* External Programs                                                         */
 /*===========================================================================*/
+
+/*---------------------------------------------------------------------------*/
+
+
+/*-----------------------------------------------------------------------------
+** Function:	tag_id()
+** Type:	static String
+** Purpose:	
+**		
+** Arguments:
+**	c	
+** Returns:	
+**___________________________________________________			     */
+String tag_id(c)			   	   /*                        */
+  int c;					   /*                        */
+{ static Uchar buffer[2];
+						   /*                        */
+  switch (c)					   /*                        */
+  { case L_STRING:   return (String)"string";	   /*                        */
+    case L_FIELD:    return (String)"field";	   /*                        */
+    case L_NUMBER:   return (String)"number";	   /*                        */
+    case L_FUNCTION: return (String)"function";	   /*                        */
+    case L_CONS:     return (String)"cons";	   /*                        */
+    case L_GROUP:    return (String)"group";	   /*                        */
+    case L_TRUE:     return (String)"true";	   /*                        */
+    case L_FALSE:    return (String)"false";	   /*                        */
+    case L_QUOTE:    return (String)"'";	   /*                        */
+    case L_UMINUS:   return (String)"-";	   /*                        */
+    case L_MINUS:    return (String)"-";	   /*                        */
+    case L_PLUS:     return (String)"+";	   /*                        */
+    case L_TIMES:    return (String)"*";	   /*                        */
+    case L_DIV:      return (String)"/";	   /*                        */
+    case L_MOD:      return (String)"mod";	   /*                        */
+    case L_SET:      return (String)"=";	   /*                        */
+    case L_LIKE:     return (String)"like";	   /*                        */
+    case L_ILIKE:    return (String)"ilike";	   /*                        */
+    case L_EQ:       return (String)"==";	   /*                        */
+    case L_NE:       return (String)"!=";	   /*                        */
+    case L_GT:       return (String)">";	   /*                        */
+    case L_GE:       return (String)">=";	   /*                        */
+    case L_LT:       return (String)"<";	   /*                        */
+    case L_LE:       return (String)"<=";	   /*                        */
+    case L_NOT:      return (String)"not";	   /*                        */
+    case L_AND:      return (String)"and";	   /*                        */
+    case L_OR:       return (String)"or";	   /*                        */
+    case L_IF:       return (String)"if";	   /*                        */
+    case L_WHILE:    return (String)"while";	   /*                        */
+    case L_WITH:     return (String)"with";	   /*                        */
+    case 0:					   /*                        */
+    case EOF:        return (String)"end of file"; /*                        */
+  }						   /*                        */
+  buffer[0] = c;				   /*                        */
+  buffer[1] = 0;				   /*                        */
+  return buffer;				   /*                        */
+}						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/
 
@@ -230,7 +286,9 @@ static void indent(file, s, in)			   /*                        */
 **		
 ** Arguments:
 **	file	
-**	t	
+**	term	
+**	sep	
+**	in	
 ** Returns:	nothing
 **___________________________________________________			     */
 static void prn_args(file, term, sep, in)	   /*                        */
@@ -297,14 +355,24 @@ static void prn_term(file, term, in)		   /*                        */
       fputs("]", file);			   	   /*                        */
       return;					   /*                        */
     case L_GROUP:				   /*                        */
-      indent(file, "{\n", in + 1);		   /*                        */
-      prn_args(file, Cdr(term), ";\n", in + 1);	   /*                        */
-      indent(file, "\n", in);		   	   /*                        */
+      if (Cdr(term))				   /*                        */
+      { indent(file, "{\n", in + 1);		   /*                        */
+	prn_args(file, Cdr(term), ";\n", in + 1);  /*                        */
+	indent(file, "\n", in);	   		   /*                        */
+      } else {					   /*                        */
+	fputs("{\n", file);			   /*                        */
+      }						   /*                        */
       fputs("}", file);			   	   /*                        */
       return;					   /*                        */
     case 0:					   /*                        */
     case EOF:					   /*                        */
       return;	   			   	   /*                        */
+    case L_WHILE:				   /*                        */
+      fputs("while (", file);			   /*                        */
+      prn_args(file, Cdar(term), "", in + 1);	   /*                        */
+      fputs(") ", file);			   /*                        */
+      prn_term(file, Cdr(term), in);	   	   /*                        */
+      return;					   /*                        */
     case L_UMINUS:				   /*                        */
       fputs("-", file);			   	   /*                        */
       prn_term(file, Cadr(term), in);		   /*                        */
