@@ -327,7 +327,10 @@ static void prn_term(file, term, in)		   /*                        */
   }						   /*                        */
  						   /*                        */
   switch (TType(term))				   /*                        */
-  { case L_STRING:				   /*                        */
+  { case 0:					   /*                        */
+    case EOF:					   /*                        */
+      return;	   			   	   /*                        */
+    case L_STRING:				   /*                        */
       fputc('"', file);	   			   /*                        */
       print_quoted(file, TString(term));	   /*                        */
       fputc('"', file);	   			   /*                        */
@@ -364,14 +367,21 @@ static void prn_term(file, term, in)		   /*                        */
       }						   /*                        */
       fputs("}", file);			   	   /*                        */
       return;					   /*                        */
-    case 0:					   /*                        */
-    case EOF:					   /*                        */
-      return;	   			   	   /*                        */
     case L_WHILE:				   /*                        */
       fputs("while (", file);			   /*                        */
       prn_args(file, Cdar(term), "", in + 1);	   /*                        */
       fputs(") ", file);			   /*                        */
       prn_term(file, Cdr(term), in);	   	   /*                        */
+      return;					   /*                        */
+    case L_IF:				   	   /*                        */
+      fputs("if (", file);			   /*                        */
+      prn_args(file, Cdar(term), "", in + 1);	   /*                        */
+      fputs(") ", file);			   /*                        */
+      prn_term(file, Cadr(term), in);	   	   /*                        */
+      if (Cddr(term))
+      { fputs(" else ", file);			   /*                        */
+	prn_term(file, Cddr(term), in);	   	   /*                        */
+      }
       return;					   /*                        */
     case L_UMINUS:				   /*                        */
       fputs("-", file);			   	   /*                        */

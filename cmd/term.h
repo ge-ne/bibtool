@@ -17,21 +17,21 @@
 
 /*---------------------------------------------------------------------------*/
 
-#define L_STRING	0x200
+#define L_CONS		0x200
+#define L_FIELD		0x201
+#define L_STRING	0x202
 #define L_BLOCK		0x210
-#define L_NUMBER	0x201
-#define L_FIELD		0x202
-#define L_BUILTIN	0x203
+#define L_NUMBER	0x203
 #define L_FUNCTION	0x204
-#define L_CONS		0x205
 #define L_GROUP		0x206
 #define L_TRUE		0x207
 #define L_FALSE		0x208
 
 #define L_DEFUN		0x220
 #define L_IF		0x221
-#define L_WHILE		0x222
-#define L_WITH		0x223
+#define L_ELSE		0x222
+#define L_WHILE		0x223
+#define L_WITH		0x224
 
 #define L_QUOTE		0x401
 #define L_UMINUS	0x403

@@ -578,6 +578,9 @@ static TStack reduce(stack)			   /*                        */
   return stack;					   /*                        */
 }						   /*------------------------*/
 
+#define Expect(C, MSG)	\
+  if (scan(b) != C) { Error(MSG, " instead of ", tag_id(c)); }
+
 /*-----------------------------------------------------------------------------
 ** Function:	read_expr()
 ** Type:	static Term
@@ -608,8 +611,7 @@ static Term read_expr(b, stack)			   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case '(':					   /*                        */
-	{					   /*                        */
-	  int lno = linenum;			   /*                        */
+	{ int lno = linenum;			   /*                        */
 	  Term t  = read_expr(b, StackNULL);	   /*                        */
 	  c	  = scan(b);		   	   /*                        */
 	  if (c != ')')			   	   /*                        */
@@ -649,18 +651,40 @@ static Term read_expr(b, stack)			   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
  						   /*                        */
-      case L_WHILE:				   /*                        */
+      case L_IF:				   /*                        */
 	{ Term t = yylval;		   	   /*                        */
-	  if (scan(b) != '(')		   	   /*                        */
-	  { Error("Missing ( for while: ",	   /*                        */
-		  tag_id(c), 0); }		   /*                        */
+	  Expect('(', "Missing ( for if");	   /*                        */
 	  Car(t) = read_args(b,		   	   /*                        */
 			     NewTerm(L_GROUP), 	   /*                        */
 			     -999,		   /*                        */
 			     ')');		   /*                        */
-	  if (scan(b) != '{')		   	   /*                        */
-	  { Error("Missing { for while: ",	   /*                        */
-		  tag_id(c), 0); }		   /*                        */
+	  Expect('{', "Missing { for if");	   /*                        */
+	  Cdr(t) = Cons1(read_args(b,		   /*                        */
+				   NewTerm(L_GROUP),/*                       */
+				   ';',		   /*                        */
+				   '}'));	   /*                        */
+	  c = scan(b);				   /*                        */
+	  if (c	!= L_ELSE)			   /*                        */
+	  { unscan(c, yylval);			   /*                        */
+	  } else				   /*                        */
+	  { Expect('{', "Missing { for else");	   /*                        */
+	    Cddr(t) = read_args(b,	   	   /*                        */
+				NewTerm(L_GROUP),  /*                        */
+				';',	   	   /*                        */
+				'}');	   	   /*                        */
+	  }					   /*                        */
+	  Shift(L_IF, t);		   	   /*                        */
+	}					   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
+      case L_WHILE:				   /*                        */
+	{ Term t = yylval;		   	   /*                        */
+	  Expect('(', "Missing ( for while");	   /*                        */
+	  Car(t) = read_args(b,		   	   /*                        */
+			     NewTerm(L_GROUP), 	   /*                        */
+			     -999,		   /*                        */
+			     ')');		   /*                        */
+	  Expect('{', "Missing { for while");	   /*                        */
 	  Cdr(t) = read_args(b,		   	   /*                        */
 			     NewTerm(L_GROUP), 	   /*                        */
 			     ';',		   /*                        */
@@ -668,6 +692,7 @@ static Term read_expr(b, stack)			   /*                        */
 	  Shift(L_WHILE, t);		   	   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
+ 						   /*                        */
       case L_STRING:				   /*                        */
       case L_NUMBER:				   /*                        */
       case L_NOT:				   /*                        */

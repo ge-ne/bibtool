@@ -229,6 +229,42 @@ BUnit::run(name         => 'while-3',
 	   expected_err => '',
 	   expected_out => "while (false) {\n  1234;\n  abc\n}\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'if-0',
+	   resource	=> 'if (false) {}',
+	   expected_err => '',
+	   expected_out => "if (false) {\n}\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'if-1',
+	   resource	=> 'if (false) {1234;}',
+	   expected_err => '',
+	   expected_out => "if (false) {\n  1234\n}\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'if-2',
+	   resource	=> 'if (false) {1234;abc}',
+	   expected_err => '',
+	   expected_out => "if (false) {\n  1234;\n  abc\n}\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'if-else-0',
+	   resource	=> 'if (false) {} else {}',
+	   expected_err => '',
+	   expected_out => "if (false) {\n} else {\n}\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'if-else-1',
+	   resource	=> 'if (false) {1234;} else {abc}',
+	   expected_err => '',
+	   expected_out => "if (false) {\n  1234\n} else {\n  abc\n}\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'if-else-3',
+	   resource	=> 'if (false) {1234;abc} else {a;b}',
+	   expected_err => '',
+	   expected_out => "if (false) {\n  1234;\n  abc\n} else {\n  a;\n  b\n}\n" );
+
 
 
 1;
