@@ -176,33 +176,25 @@ SymDef get_bind(binding, key)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	bool_rsc()
+** Function:	bool_s_rsc()
 ** Type:	static Term
-** Purpose:	
+** Purpose:	Setter for a boolean resource.
 **		
 ** Arguments:
-**	binding	
-**	 name	
-**	 term	
-**	 rp	
-** Returns:	
+**	binding	the binding
+**	name	the name
+**	term	the term
+**	rp	a pointer to the resource
+** Returns:	the new value
 **___________________________________________________			     */
-static Term bool_rsc(binding, name, term, rp)	   /*                        */
+static Term bool_s_rsc(binding, name, term, rp)	   /*                        */
   Binding binding;				   /*                        */
   char * name;				   	   /*                        */
   Term term;					   /*                        */
   int * rp;					   /*                        */
-{ switch (list_length(Cdr(term)))		   /*                        */
-  { case 0:					   /*                        */
-      break;					   /*                        */
-    case 1:					   /*                        */
-      term = eval_bool(binding, Cadr(term));	   /*                        */
-      *rp  = (TermIsTrue(term) ? 1 : 0 );	   /*                        */
-      UnlinkTerm(term);				   /*                        */
-      break;					   /*                        */
-    default:					   /*                        */
-      ErrorNF("Too many arguments for ", name);	   /*                        */
-  }						   /*                        */
+{ term = eval_bool(binding, Cadr(term));	   /*                        */
+  *rp  = (TermIsTrue(term) ? 1 : 0 );	   	   /*                        */
+  UnlinkTerm(term);				   /*                        */
   return (*rp ? term_true : term_false);	   /*                        */
 }						   /*------------------------*/
 
@@ -218,22 +210,15 @@ static Term bool_rsc(binding, name, term, rp)	   /*                        */
 **	 rp	
 ** Returns:	
 **___________________________________________________			     */
-static Term num_rsc(binding, name, term, rp)	   /*                        */
+static Term num_s_rsc(binding, name, term, rp)	   /*                        */
   Binding binding;				   /*                        */
   char * name;				   	   /*                        */
   Term term;					   /*                        */
   int * rp;					   /*                        */
-{ switch (list_length(Cdr(term)))		   /*                        */
-  { case 0:					   /*                        */
-      break;					   /*                        */
-    case 1:					   /*                        */
-      term = eval_num(binding, Cadr(term));	   /*                        */
-      *rp  = TNumber(term);	   		   /*                        */
-      return term;				   /*                        */
-    default:					   /*                        */
-      ErrorNF("Too many arguments for ", name);	   /*                        */
-  }						   /*                        */
-  return NumberTerm(*rp);	   		   /*                        */
+{						   /*                        */
+  term = eval_num(binding, Cadr(term));	   	   /*                        */
+  *rp  = TNumber(term);	   		   	   /*                        */
+  return term;				   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -248,22 +233,15 @@ static Term num_rsc(binding, name, term, rp)	   /*                        */
 **	rp	
 ** Returns:	
 **___________________________________________________			     */
-static Term str_rsc(binding, name, term, rp)	   /*                        */
+static Term str_s_rsc(binding, name, term, rp)	   /*                        */
   Binding binding;				   /*                        */
   char *name;				   	   /*                        */
   Term term;					   /*                        */
   String *rp;					   /*                        */
-{ switch (list_length(Cdr(term)))		   /*                        */
-  { case 0:					   /*                        */
-      break;					   /*                        */
-    case 1:					   /*                        */
-      term = eval_str(binding, Cadr(term));	   /*                        */
-      *rp  = TString(term);	   		   /*                        */
-      return term;				   /*                        */
-    default:					   /*                        */
-      ErrorNF("Too many arguments for ", name);	   /*                        */
-  }						   /*                        */
-   return StringTerm(*rp ? *rp : (String)"");	   /*                        */
+{						   /*                        */
+  term = eval_str(binding, Cadr(term));	   	   /*                        */
+  *rp  = TString(term);	   		   	   /*                        */
+  return term;				   	   /*                        */
 }						   /*------------------------*/
 
 #define Bind(NAME,GET,SET,FLAGS,OP)
@@ -273,35 +251,35 @@ static Term str_rsc(binding, name, term, rp)	   /*                        */
     Binding binding;					\
     Term term;						\
   { extern int RSC;					\
-    return bool_rsc(binding, NAME, term, &RSC); }	\
+    return (RSC ? term_true : term_false); }		\
   static Term SETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
   { extern int RSC;					\
-    return bool_rsc(binding, NAME, term, &RSC); }
+    return bool_s_rsc(binding, NAME, term, &RSC); }
 #define BindNum(NAME,GETTER,SETTER,RSC)			\
   static Term GETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
   { extern int RSC;					\
-    return num_rsc(binding, NAME, term, &RSC); }	\
+    return NumberTerm(RSC); }				\
   static Term SETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
   { extern int RSC;					\
-    return num_rsc(binding, NAME, term, &RSC); }
+    return num_s_rsc(binding, NAME, term, &RSC); }
 #define BindStr(NAME,GETTER,SETTER,RSC)			\
   static Term GETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
   { extern String RSC;					\
-    return str_rsc(binding, NAME, term, &RSC); }	\
+    return StringTerm(RSC ? RSC : (String)""); }	\
   static Term SETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
   { extern String RSC;					\
-    return str_rsc(binding, NAME, term, &RSC); }
-#define BindFct(NAME,GETTER,SETTER,FCT)			\
+    return str_s_rsc(binding, NAME, term, &RSC); }
+#define BindFct(NAME,GETTER,SETTER,SETTER_FCT)		\
   static Term GETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
@@ -312,7 +290,7 @@ static Term str_rsc(binding, name, term, rp)	   /*                        */
   { String val;						\
     term = eval_str(binding, Cadr(term));		\
     val  = TString(term);				\
-    FCT;						\
+    SETTER_FCT;						\
     return term; }
 #include "builtin.h"
 
@@ -353,23 +331,25 @@ Binding root_binding()				   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	b	
-**	 file	
+**	binding	the binding
+**	file	the target output file
 ** Returns:	nothing
 **___________________________________________________			     */
-void dump_binding(b, file)			   /*                        */
-  Binding b;					   /*                        */
+void dump_binding(binding, file)		   /*                        */
+  Binding binding;				   /*                        */
   FILE* file;					   /*                        */
 { int i;					   /*                        */
   SymDef s;					   /*                        */
  						   /*                        */
-  for (; b; b = NextBinding(b))			   /*                        */
+  for (; binding; binding = NextBinding(binding))  /*                        */
   {						   /*                        */
 #ifdef DEBUG
-    fprintf(file, "--- 0x%lx [%d] ---\n", (unsigned long)b, BSize(b));/*     */
+    fprintf(file, "--- 0x%lx [%d] ---\n",	   /*                        */
+	    (unsigned long)binding,		   /*                        */
+	    BSize(binding));			   /*                        */
 #endif
-    for (i = 0; i < BSize(b); i++)		   /*                        */
-    { s = BJunks(b)[i];				   /*                        */
+    for (i = 0; i < BSize(binding); i++)	   /*                        */
+    { s = BJunks(binding)[i];			   /*                        */
       if (s) {					   /*                        */
 	fprintf(file, "    #%d\n", i);		   /*                        */
 	for (; s; s = NextJunk(s))		   /*                        */

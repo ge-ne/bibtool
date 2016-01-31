@@ -237,29 +237,15 @@ static void prn_quoted(file, s)		   	   /*                        */
 {						   /*                        */
   for (; *s; s++)				   /*                        */
   { switch (*s)					   /*                        */
-    { case '\n':				   /*                        */
-	fputs("\\n", file);			   /*                        */
-	break;					   /*                        */
-      case '\r':				   /*                        */
-	fputs("\\r", file);			   /*                        */
-	break;					   /*                        */
-      case '\b':				   /*                        */
-	fputs("\\b", file);			   /*                        */
-	break;					   /*                        */
-      case '\f':				   /*                        */
-	fputs("\\f", file);			   /*                        */
-	break;					   /*                        */
-      case '"':					   /*                        */
-	fputs("\\\"", file);			   /*                        */
-	break;					   /*                        */
-      case '\'':				   /*                        */
-	fputs("\\'", file);			   /*                        */
-	break;					   /*                        */
-      case '\\':				   /*                        */
-	fputs("\\\\", file);			   /*                        */
-	break;					   /*                        */
-      default:					   /*                        */
-	fputc((char)*s, file);			   /*                        */
+    { case '\n': fputs("\\n", file);  break;	   /*                        */
+      case '\r': fputs("\\r", file);  break;	   /*                        */
+      case '\t': fputs("\\t", file);  break;	   /*                        */
+      case '\b': fputs("\\b", file);  break;	   /*                        */
+      case '\f': fputs("\\f", file);  break;	   /*                        */
+      case '"':	 fputs("\\\"", file); break;	   /*                        */
+      case '\'': fputs("\\'", file);  break;	   /*                        */
+      case '\\': fputs("\\\\", file); break;	   /*                        */
+      default:	 fputc((char)*s, file);		   /*                        */
     }						   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
@@ -298,11 +284,11 @@ void prn_field(file, t)		   	   	   /*                        */
   if (q) fputc('`', file);			   /*                        */
   prn_quoted(file, TString(t));		   	   /*                        */
   if (q) fputc('`', file);			   /*                        */
-
-  if (Cdr(t))
-  { fputs(": ", file);
-    prn_term(file, Cdr(t), 0);
-  }
+ 						   /*                        */
+  if (Cdr(t))					   /*                        */
+  { fputs(": ", file);				   /*                        */
+    prn_term(file, Cdr(t), 0);			   /*                        */
+  }						   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -424,10 +410,10 @@ static void prn_term(file, term, in)		   /*                        */
       prn_args(file, Cdar(term), "", in + 1);	   /*                        */
       fputs(") ", file);			   /*                        */
       prn_term(file, Cadr(term), in);	   	   /*                        */
-      if (Cddr(term))
+      if (Cddr(term))				   /*                        */
       { fputs(" else ", file);			   /*                        */
 	prn_term(file, Cddr(term), in);	   	   /*                        */
-      }
+      }						   /*                        */
       return;					   /*                        */
     case L_WITH:			   	   /*                        */
       fputs("with (", file);			   /*                        */
@@ -503,15 +489,15 @@ void print_term(file, term)			   /*                        */
 ** Purpose:	Determine the length of a list, i.e. a cons sequence.
 **		
 ** Arguments:
-**	t	the term
+**	list	the list
 ** Returns:	the length
 **___________________________________________________			     */
-int list_length(t)				   /*                        */
-  register Term t;				   /*                        */
+int list_length(list)				   /*                        */
+  register Term list;				   /*                        */
 { int i = 0;					   /*                        */
-  while (t && TermIsList(t))			   /*                        */
+  while (list && TermIsList(list))		   /*                        */
   { i++;					   /*                        */
-    t = Cdr(t);					   /*                        */
+    list = Cdr(list);				   /*                        */
   }						   /*                        */
   return i;					   /*                        */
 }						   /*------------------------*/
@@ -524,7 +510,9 @@ int list_length(t)				   /*                        */
 ** Arguments:
 **	name	the name of the symdef
 **	op	the op code
+**	flags	the flags
 **	get	the getter function
+**	set	the setter function
 ** Returns:	
 **___________________________________________________			     */
 SymDef symdef(name, op, flags, get, set)	   /*                        */

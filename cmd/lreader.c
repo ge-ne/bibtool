@@ -10,6 +10,8 @@
 ** 
 ******************************************************************************/
 
+#undef DEBUG 
+
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
@@ -17,13 +19,9 @@
 #include <bibtool/symbols.h>
 #include <bibtool/type.h>
 #include <bibtool/error.h>
-#include "tstack.h"
-#include "term.h"
-#include "binding.h"
 #include "lcore.h"
-#include "lreader.h"
-
-#undef DEBUG_PARSER 
+#include "tstack.h"
+#include "binding.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -61,27 +59,19 @@ static Term read_args _ARG((Binding b, Term t, int sep, int term));/*        */
  static Term look_ahead = NIL;			   /*                        */
 
 
-#define unscan(C,T) (c_look_ahead = (C), look_ahead = (T))
-
-#define GetC fgetc(in_file)
-#define UnGetC(C) ungetc(C, in_file)
-
-#define Shift(S,T) stack = ts_push(stack, S, T)
-#ifdef DEBUG_PARSER
-#undef Shift
-#define Shift(S,T) stack = ts_push(stack, S, T);	\
-  fprintf(stderr, "--- shift %s\n", tag_id(c))
-#endif
-
+#define unscan(C,T)	(c_look_ahead = (C), look_ahead = (T))
+#define GetC		fgetc(in_file)
+#define UnGetC(C)	ungetc(C, in_file)
+#define Shift(S,T)	stack = ts_push(stack, S, T);		\
+			DebugPrint2("shift ", tag_id(c))
 #define NewStack(S,T)	ts_push(StackNULL, S, T)
 
 /*-----------------------------------------------------------------------------
 ** Function:	scan_block()
 ** Type:	Term
-** Purpose:	
+** Purpose:	Scan a block in balanced braces.
 **		
-** Arguments:
-**		
+** Arguments:	none
 ** Returns:	
 **___________________________________________________			     */
 static Term scan_block()			   /*                        */
@@ -103,11 +93,12 @@ static Term scan_block()			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	scan_string()
-** Type:	Term
+** Type:	static Term
 ** Purpose:	
 **		
 ** Arguments:
-**	s	
+**	type	
+**	c_end	
 ** Returns:	
 **___________________________________________________			     */
 static Term scan_string(type, c_end)		   /*                        */
@@ -119,7 +110,7 @@ static Term scan_string(type, c_end)		   /*                        */
   int lno = linenum;				   /*                        */
   						   /*                        */
   for (c = GetC; c != c_end; c = GetC)	   	   /*                        */
-  { if ( c == '\\')			   	   /*                        */
+  { if (c == '\\')			   	   /*                        */
     { c = GetC;				   	   /*                        */
       switch (c)			   	   /*                        */
       { case EOF:				   /*                        */
@@ -127,22 +118,14 @@ static Term scan_string(type, c_end)		   /*                        */
 	  linenum = lno;			   /*                        */
 	  Error("Missing closing delimiter ",	   /*                        */
 		(c_end =='"' ? "\"": "`"), 0);	   /*                        */
-	case 'n':			   	   /*                        */
-	  sbputc('\n', sb);		   	   /*                        */
-	  break;			   	   /*                        */
-	case 'r':			   	   /*                        */
-	  sbputc('\r', sb);		   	   /*                        */
-	  break;			   	   /*                        */
-	case 'f':			   	   /*                        */
-	  sbputc('\f', sb);		   	   /*                        */
-	  break;			   	   /*                        */
-	case 'b':			   	   /*                        */
-	  sbputc('\b', sb);		   	   /*                        */
-	  break;			   	   /*                        */
-	default:			   	   /*                        */
-	  sbputc(c, sb);		   	   /*                        */
+	case 'n': sbputc('\n', sb); break;	   /*                        */
+	case 'r': sbputc('\r', sb); break;	   /*                        */
+	case 'f': sbputc('\f', sb); break;	   /*                        */
+	case 't': sbputc('\t', sb); break;	   /*                        */
+	case 'b': sbputc('\b', sb); break;	   /*                        */
+	default:  sbputc(c, sb);		   /*                        */
       }					   	   /*                        */
-    } else if ( c <= 0)			   	   /*                        */
+    } else if (c <= 0)			   	   /*                        */
     { linenum = lno;				   /*                        */
       Error("Missing closing delimiter ",	   /*                        */
 	    (c_end =='"' ? "\"": "`"), 0);	   /*                        */
@@ -184,10 +167,7 @@ static int scan(b)			   	   /*                        */
   yylval = NIL;				   	   /*                        */
  						   /*                        */
   for (c = GetC; c >= 0; c = GetC)	   	   /*                        */
-  {						   /*                        */
-#ifdef DEBUG_PARSER
-    fprintf(stderr, "--- scan %c %d\n",c,c);	   /*                        */
-#endif
+  { DebugPrintF3("scan %c %d\n",c,c);	   	   /*                        */
     switch (c) {				   /*                        */
       case '\n':				   /*                        */
 	linenum++;				   /*                        */
@@ -325,20 +305,16 @@ static int scan(b)			   	   /*                        */
 	      yylval = (c == L_FIELD		   /*                        */
 			? FieldTerm(s)		   /*                        */
 			: NewTerm(c));		   /*                        */
-#ifdef DEBUG_PARSER
-	    printf("--- scan: word %s 0x%x\n",	   /*                        */
+	    DebugPrintF3("scan: word %s 0x%x\n",   /*                        */
 		   (char*)s, c);		   /*                        */
-#endif
 	    return c;	   			   /*                        */
 	  }					   /*                        */
 	  Return(FieldTerm(s), L_FIELD);	   /*                        */
 	}					   /*                        */
  						   /*                        */
     }						   /*                        */
-#ifdef DEBUG_PARSER
-	    printf("--- scan: default %s 0x%x\n",  /*                        */
-		   tag_id(c), c);		   /*                        */
-#endif
+    DebugPrintF3("scan: default %s 0x%x\n",	   /*                        */
+		 tag_id(c), c);		   	   /*                        */
     return c <= 0 ? EOF : c; 			   /*                        */
   }						   /*                        */
   return EOF;				   	   /*                        */
@@ -346,7 +322,7 @@ static int scan(b)			   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_list()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
@@ -421,49 +397,42 @@ static Term read_args(binding, term, separator, terminal)/*                  */
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_builtin()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
 **	b	the binding
-**	t	the term
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
-static Term read_builtin(b, t)	   		   /*                        */
+static Term read_builtin(b, term)		   /*                        */
   Binding b;					   /*                        */
-  Term t;					   /*                        */
-{ int c;					   /*                        */
+  Term term;					   /*                        */
+{ register int c;				   /*                        */
   						   /*                        */
-  TType(t) = L_FUNCTION;			   /*                        */
-#ifdef DEBUG_PARSER
-  fprintf(stderr, "--- read_builtin (%s)\n", TString(t));/*                  */
-#endif
+  TType(term) = L_FUNCTION;			   /*                        */
+  DebugPrintF2("read_builtin (%s)\n",		   /*                        */
+	       (char*)TString(term));		   /*                        */
   for (c = scan(b); c > 0; c = scan(b))	   	   /*                        */
   {						   /*                        */
-#ifdef DEBUG_PARSER
-    fprintf(stderr, "--- read_builtin %s %x\n", tag_id(c), c);/*             */
-#endif
+    DebugPrintF3("read_builtin %s %x\n", tag_id(c), c);/*                    */
     if (c == '=' || c == L_SET)		   	   /*                        */
-    {						   /*                        */
-#ifdef DEBUG_PARSER
-      fputs("--- skip =\n", stderr);		   /*                        */
-#endif
+    { DebugPrint1("--- skip =\n");		   /*                        */
+      continue;					   /*                        */
     } else if (c == '{')		   	   /*                        */
-    { Cdr(t) = Cons1(scan_block());		   /*                        */
-      return t;	   				   /*                        */
+    { Cdr(term) = Cons1(scan_block());		   /*                        */
     } else if ((c != L_MINUS && L_IS_OPERATOR(c))  /*                        */
 	       || c == ';'			   /*                        */
 	       || c == ')'			   /*                        */
 	       || c == ']') {		   	   /*                        */
       unscan(c, yylval);			   /*                        */
-      return t;					   /*                        */
     } else {					   /*                        */
       unscan(c, yylval);			   /*                        */
-      Cdr(t) = Cons1(read_expr(b, StackNULL));	   /*                        */
-      return t;	   				   /*                        */
+      Cdr(term) = Cons1(read_expr(b, StackNULL));  /*                        */
     }						   /*                        */
+    break;				   	   /*                        */
   }						   /*                        */
-  return t;					   /*                        */
+  return term;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -482,9 +451,8 @@ static TStack reduce(stack)			   /*                        */
   Term t;					   /*                        */
   int n, op;					   /*                        */
    						   /*                        */
-#ifdef DEBUG_PARSER
-  fputs("--- reduce\n", stderr);		   /*                        */
-#endif
+  DebugPrint1("reduce\n");		   	   /*                        */
+ 						   /*                        */
   for (current = stack;				   /*                        */
        current && StackPrev(current);		   /*                        */
        current = StackPrev(current))		   /*                        */
@@ -504,13 +472,11 @@ static TStack reduce(stack)			   /*                        */
 	StackChar(current) = L_UMINUS;		   /*                        */
       }						   /*                        */
       StackPrev(current) = ts_pop(StackPrev(current));/*                     */
-#ifdef DEBUG_PARSER
-      fputs("--- minus processed\n", stderr);	   /*                        */
-#endif
+      DebugPrint1("--- minus processed\n");	   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
-#ifdef DEBUG_PARSER
+#ifdef DEBUG
   dump_tstack(stderr, stack);		   	   /*                        */
   fputs("---\n", stderr);	   		   /*                        */
 #endif
@@ -520,14 +486,10 @@ static TStack reduce(stack)			   /*                        */
 	 current;				   /*                        */
 	 current = StackPrev(current))		   /*                        */
     { op = StackChar(current);		   	   /*                        */
-#ifdef DEBUG_PARSER
-      fprintf(stderr,"--- op = 0x%x\n", op);   	   /*                        */
-#endif
+      DebugPrintF2("op = 0x%x\n", op);   	   /*                        */
       if (op > n) n = op;		   	   /*                        */
     }						   /*                        */
-#ifdef DEBUG_PARSER
-    fprintf(stderr,"--- n = 0x%x\n", n);   	   /*                        */
-#endif
+    DebugPrintF2("n = 0x%x\n", n);   	   	   /*                        */
     if (n <= 0x400)				   /*                        */
       Error("Missing operator after ",		   /*                        */
 	    tag_id(TType(StackTerm(stack))), 0);   /*                        */
@@ -537,10 +499,7 @@ static TStack reduce(stack)			   /*                        */
 	 current = StackPrev(current))		   /*                        */
     { prev = StackPrev(current);		   /*                        */
       if (StackChar(prev) != n) continue;	   /*                        */
-#ifdef DEBUG_PARSER
-      fprintf(stderr,"--- reducing at 0x%x\n", n); /*                        */
-      dump_tstack(stderr, stack);		   /*                        */
-#endif
+      DebugPrintF2("reducing at 0x%x\n", n); 	   /*                        */
       t = StackTerm(prev);		   	   /*                        */
        						   /*                        */
       if (L_IS_BINARY(n))			   /*                        */
@@ -561,16 +520,15 @@ static TStack reduce(stack)			   /*                        */
       StackTerm(current) = t;			   /*                        */
       StackChar(current) = L_CONS;		   /*                        */
       StackPrev(current) = ts_pop(StackPrev(current));/*                     */
-#ifdef DEBUG_PARSER
+#ifdef DEBUG
       fputs("--- pop\n", stderr);		   /*                        */
       dump_tstack(stderr, stack);		   /*                        */
 #endif
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
-#ifdef DEBUG_PARSER
-  fputs("... reduced\n", stderr);		   /*                        */
-#endif
+  DebugPrint1("... reduced\n");		   	   /*                        */
+
   return stack;					   /*                        */
 }						   /*------------------------*/
 
@@ -680,12 +638,12 @@ static Term read_expr(binding, stack)		   /*                        */
   TStack stack;					   /*                        */
 { int c;					   /*                        */
  						   /*                        */
-  for (c = scan(binding); c && c != EOF; c = scan(binding))/*                */
+  for (c = scan(binding);			   /*                        */
+       c > 0;				   	   /*                        */
+       c = scan(binding))			   /*                        */
   {						   /*                        */
-#ifdef DEBUG_PARSER
-    fprintf(stderr, "--- read_expr: '%s' 0x%x\n",  /*                        */
-	    tag_id(c), c);		   	   /*                        */
-#endif
+    DebugPrintF3("read_expr: '%s' 0x%x\n",  	   /*                        */
+		 tag_id(c), c);		   	   /*                        */
     switch (c)					   /*                        */
     { case '{':					   /*                        */
 	Shift(L_GROUP,				   /*                        */

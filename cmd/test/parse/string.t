@@ -43,23 +43,15 @@ $BUnit::name_prefix = 'parse/';
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'string-1',
-	   resource	=> <<__EOF__ ,
-"";
-__EOF__
+	   resource	=> '"";',
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-""
-__EOF__
+	   expected_out => "\"\"\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'string-2',
-	   resource	=> <<__EOF__ ,
-"a";
-__EOF__
+	   resource	=> '"a";',
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-"a"
-__EOF__
+	   expected_out => "\"a\"\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'string-11',
@@ -89,6 +81,26 @@ __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
 "a!b"
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-14',
+	   resource	=> <<__EOF__ ,
+"a\tb";
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+"a\\tb"
+__EOF__
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-15',
+	   resource	=> <<__EOF__ ,
+"a\fb";
+__EOF__
+	   expected_err => '',
+	   expected_out => <<__EOF__ );
+"a\\fb"
 __EOF__
 
 #------------------------------------------------------------------------------

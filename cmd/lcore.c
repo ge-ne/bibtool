@@ -504,6 +504,16 @@ Term g_input(binding, term)		   	   /*                        */
   return term;	   	   			   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	s_input()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
 Term s_input(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
@@ -759,7 +769,7 @@ Term eval_str(binding, term)			   /*                        */
     return term;	
   }			
 #endif
-  if (TermIsTrue(term))
+  if (TermIsTrue(term))				   /*                        */
     return StringTerm((String)"true");		   /*                        */
   if (TermIsFalse(term))	   		   /*                        */
     return StringTerm((String)"false");		   /*                        */
