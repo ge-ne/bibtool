@@ -42,32 +42,39 @@ use BUnit;
 $BUnit::name_prefix = 'eval/';
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'block-0',
+BUnit::run(name         => 'group-0',
 	   args	        => '--eval',
 	   resource     => "{};",
 	   expected_err => '',
 	   expected_out => "nil\n");
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'block-1',
+BUnit::run(name         => 'group-1',
 	   args	        => '--eval',
 	   resource     => "{}",
 	   expected_err => '',
 	   expected_out => "nil\n");
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'block-2',
+BUnit::run(name         => 'group-2',
 	   args	        => '--eval',
 	   resource     => "{123}",
 	   expected_err => '',
 	   expected_out => "123\n");
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'block-3',
+BUnit::run(name         => 'group-3',
 	   args	        => '--eval',
-	   resource     => "{123; 321}",
+	   resource     => "{123;}",
 	   expected_err => '',
-	   expected_out => "321\n");
+	   expected_out => "123\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'group-4',
+	   args	        => '--eval',
+	   resource     => "{abc; 123;;}",
+	   expected_err => '',
+	   expected_out => "123\n");
 
 1;
 #------------------------------------------------------------------------------

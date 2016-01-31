@@ -386,7 +386,10 @@ Term eval_term(binding, term)			   /*                        */
   if (term == NIL) return NIL;			   /*                        */
  						   /*                        */
   switch (TType(term))				   /*                        */
-  { case L_STRING:				   /*                        */
+  { case 0:					   /*                        */
+    case EOF:					   /*                        */
+      return term_eof;	   			   /*                        */
+    case L_STRING:				   /*                        */
     case L_BLOCK:				   /*                        */
     case L_NUMBER:				   /*                        */
     case L_TRUE:				   /*                        */
@@ -395,13 +398,10 @@ Term eval_term(binding, term)			   /*                        */
       return term;				   /*                        */
     case L_GROUP:				   /*                        */
       { Term t = NIL;				   /*                        */
-	for (term = Cdr(term); term; term = Cdr(term))
-	{ t = eval_term(binding, Car(term)); }
+	for (term = Cdr(term); term; term = Cdr(term))/*                     */
+	{ t = eval_term(binding, Car(term)); }	   /*                        */
 	return t;				   /*                        */
-      }
-    case 0:					   /*                        */
-    case EOF:					   /*                        */
-      return term_eof;	   			   /*                        */
+      }						   /*                        */
     case L_FUNCTION:				   /*                        */
       key = TString(term);			   /*                        */
       s	  = get_bind(binding, key);	   	   /*                        */

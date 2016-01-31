@@ -579,7 +579,95 @@ static TStack reduce(stack)			   /*                        */
 }						   /*------------------------*/
 
 #define Expect(C, MSG)	\
-  if (scan(b) != C) { Error(MSG, " instead of ", tag_id(c)); }
+  if ((c=scan(binding)) != C) { Error(MSG, " instead of ", tag_id(c)); }
+
+/*-----------------------------------------------------------------------------
+** Function:	read_group()
+** Type:	static Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+** Returns:	
+**___________________________________________________			     */
+static Term read_group(binding, msg)		   /*                        */
+  Binding binding;				   /*                        */
+  char * msg;					   /*                        */
+{ int c = scan(binding);			   /*                        */
+ 						   /*                        */
+  if (c != '{')					   /*                        */
+  { Error(msg, ": Missing { instead of ",	   /*                        */
+	  tag_id(c));				   /*                        */
+  }						   /*                        */
+  return read_args(binding,			   /*                        */
+		   NewTerm(L_GROUP), 	   	   /*                        */
+		   ';',		   		   /*                        */
+		   '}');			   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	read_condition()
+** Type:	static Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	msg	
+** Returns:	
+**___________________________________________________			     */
+static Term read_condition(binding, msg)	   /*                        */
+  Binding binding;				   /*                        */
+  char * msg;					   /*                        */
+{ int c = scan(binding);			   /*                        */
+ 						   /*                        */
+  if (c != '(')					   /*                        */
+  { Error(msg, ": Missing ( instead of ",	   /*                        */
+	  tag_id(c));				   /*                        */
+  }						   /*                        */
+  return read_args(binding,			   /*                        */
+		   NewTerm(L_GROUP), 	   	   /*                        */
+		   -666,			   /*                        */
+		   ')');			   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	read_mapping()
+** Type:	static Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	msg	the name of the primitive
+** Returns:	
+**___________________________________________________			     */
+static Term read_mapping(binding, msg)		   /*                        */
+  Binding binding;				   /*                        */
+  char *msg;					   /*                        */
+{ int c;			   		   /*                        */
+  Term term = NIL;				   /*                        */
+  Term *tp  = &term;				   /*                        */
+ 						   /*                        */
+  for(;;)
+  { Term v;
+    c = scan(binding);
+    if (c == ')') return term;
+    if (c != L_FIELD)
+      Error(msg, ": Missing variable instead of ",/*         */
+	    tag_id(c));
+    v	= yylval;
+    *tp = Cons1(v);
+    tp = &Cdr(*tp);
+
+    Expect(':', "Missing :");
+
+    Cdr(v) = read_expr(binding, StackNULL);
+    c = scan(binding);
+    if (c == ')') return term;
+    if (c != ',')
+      Error(msg, ": Missing , instead of ",/*         */
+	    tag_id(c));
+  }						   /*                        */
+}						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_expr()
@@ -587,15 +675,16 @@ static TStack reduce(stack)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**		
+**	binding	
+**	stack	
 ** Returns:	
 **___________________________________________________			     */
-static Term read_expr(b, stack)			   /*                        */
-  Binding b;					   /*                        */
+static Term read_expr(binding, stack)		   /*                        */
+  Binding binding;				   /*                        */
   TStack stack;					   /*                        */
 { int c;					   /*                        */
  						   /*                        */
-  for (c = scan(b); c && c != EOF; c = scan(b))	   /*                        */
+  for (c = scan(binding); c && c != EOF; c = scan(binding))/*                */
   {						   /*                        */
 #ifdef DEBUG_PARSER
     fprintf(stderr, "--- read_expr: '%s' 0x%x\n",  /*                        */
@@ -604,7 +693,7 @@ static Term read_expr(b, stack)			   /*                        */
     switch (c)					   /*                        */
     { case '{':					   /*                        */
 	Shift(L_GROUP,				   /*                        */
-	      read_args(b,		   	   /*                        */
+	      read_args(binding,		   /*                        */
 			NewTerm(L_GROUP), 	   /*                        */
 			';',		   	   /*                        */
 			'}'));	   	   	   /*                        */
@@ -612,8 +701,8 @@ static Term read_expr(b, stack)			   /*                        */
  						   /*                        */
       case '(':					   /*                        */
 	{ int lno = linenum;			   /*                        */
-	  Term t  = read_expr(b, StackNULL);	   /*                        */
-	  c	  = scan(b);		   	   /*                        */
+	  Term t  = read_expr(binding, StackNULL); /*                        */
+	  c	  = scan(binding);		   /*                        */
 	  if (c != ')')			   	   /*                        */
 	  { linenum = lno;			   /*                        */
 	    Error("Missing ) before ",		   /*                        */
@@ -625,26 +714,27 @@ static Term read_expr(b, stack)			   /*                        */
       case L_CONS:				   /*                        */
 	Shift(L_CONS, (yylval == NIL	   	   /*                        */
 		       ? NIL			   /*                        */
-		       : read_list(b, yylval)));   /*                        */
+		       : read_list(binding, yylval)));/*                     */
 	break;					   /*                        */
  						   /*                        */
       case L_QUOTE:				   /*                        */
 	Shift(L_QUOTE,				   /*                        */
 	      new_term(L_QUOTE,			   /*                        */
 		       NIL,			   /*                        */
-		       Cons1(read_expr(b, StackNULL))));/*                   */
+		       Cons1(read_expr(binding, StackNULL))));/*             */
 	break;					   /*                        */
 						   /*                        */
       case L_FIELD:				   /*                        */
 	{ Term t = yylval;			   /*                        */
-	  c = scan(b);				   /*                        */
+	  c = scan(binding);			   /*                        */
 	  if (c != '(')				   /*                        */
 	  { unscan(c, yylval);			   /*                        */
  	    Shift(L_FIELD, t);		   	   /*                        */
 	    break;				   /*                        */
 	  }					   /*                        */
-	  t = read_args(b,			   /*                        */
-			new_t_string(L_FUNCTION,TString(t)),/*               */
+	  t = read_args(binding,		   /*                        */
+			new_t_string(L_FUNCTION,   /*                        */
+				     TString(t)),  /*                        */
 			',',			   /*                        */
 			')');			   /*                        */
 	  Shift(L_FUNCTION, t);		   	   /*                        */
@@ -653,43 +743,31 @@ static Term read_expr(b, stack)			   /*                        */
  						   /*                        */
       case L_IF:				   /*                        */
 	{ Term t = yylval;		   	   /*                        */
-	  Expect('(', "Missing ( for if");	   /*                        */
-	  Car(t) = read_args(b,		   	   /*                        */
-			     NewTerm(L_GROUP), 	   /*                        */
-			     -999,		   /*                        */
-			     ')');		   /*                        */
-	  Expect('{', "Missing { for if");	   /*                        */
-	  Cdr(t) = Cons1(read_args(b,		   /*                        */
-				   NewTerm(L_GROUP),/*                       */
-				   ';',		   /*                        */
-				   '}'));	   /*                        */
-	  c = scan(b);				   /*                        */
-	  if (c	!= L_ELSE)			   /*                        */
-	  { unscan(c, yylval);			   /*                        */
-	  } else				   /*                        */
-	  { Expect('{', "Missing { for else");	   /*                        */
-	    Cddr(t) = read_args(b,	   	   /*                        */
-				NewTerm(L_GROUP),  /*                        */
-				';',	   	   /*                        */
-				'}');	   	   /*                        */
-	  }					   /*                        */
+	  Car(t) = read_condition(binding, "if");  /*                        */
+	  Cdr(t) = Cons1(read_group(binding, "if"));/*                       */
+	  c = scan(binding);			   /*                        */
+	  if (c	== L_ELSE)			   /*                        */
+	  { Cddr(t) = read_group(binding, "else"); }/*                       */
+	  else				   	   /*                        */
+	  { unscan(c, yylval); }		   /*                        */
 	  Shift(L_IF, t);		   	   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case L_WHILE:				   /*                        */
 	{ Term t = yylval;		   	   /*                        */
-	  Expect('(', "Missing ( for while");	   /*                        */
-	  Car(t) = read_args(b,		   	   /*                        */
-			     NewTerm(L_GROUP), 	   /*                        */
-			     -999,		   /*                        */
-			     ')');		   /*                        */
-	  Expect('{', "Missing { for while");	   /*                        */
-	  Cdr(t) = read_args(b,		   	   /*                        */
-			     NewTerm(L_GROUP), 	   /*                        */
-			     ';',		   /*                        */
-			     '}');		   /*                        */
+	  Car(t) = read_condition(binding, "while");/*                       */
+	  Cdr(t) = read_group(binding, "while");   /*                        */
 	  Shift(L_WHILE, t);		   	   /*                        */
+	}					   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
+      case L_WITH:				   /*                        */
+	{ Term t = yylval;		   	   /*                        */
+	  Expect('(', "Missing ( for with");	   /*                        */
+	  Car(t) = read_mapping(binding, "with");  /*                        */
+	  Cdr(t) = read_group(binding, "with");	   /*                        */
+	  Shift(L_WITH, t);		   	   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
  						   /*                        */

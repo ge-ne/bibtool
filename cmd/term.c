@@ -257,6 +257,11 @@ void prn_field(file, t)		   	   	   /*                        */
   if (q) fputc('`', file);			   /*                        */
   print_quoted(file, TString(t));		   /*                        */
   if (q) fputc('`', file);			   /*                        */
+
+  if (Cdr(t))
+  { fputs(": ", file);
+    prn_term(file, Cdr(t), 0);
+  }
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -382,6 +387,12 @@ static void prn_term(file, term, in)		   /*                        */
       { fputs(" else ", file);			   /*                        */
 	prn_term(file, Cddr(term), in);	   	   /*                        */
       }
+      return;					   /*                        */
+    case L_WITH:			   	   /*                        */
+      fputs("with (", file);			   /*                        */
+      prn_args(file, Car(term), ",", in + 1);	   /*                        */
+      fputs(") ", file);			   /*                        */
+      prn_term(file, Cdr(term), in);	   	   /*                        */
       return;					   /*                        */
     case L_UMINUS:				   /*                        */
       fputs("-", file);			   	   /*                        */

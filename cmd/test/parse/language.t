@@ -265,6 +265,42 @@ BUnit::run(name         => 'if-else-3',
 	   expected_err => '',
 	   expected_out => "if (false) {\n  1234;\n  abc\n} else {\n  a;\n  b\n}\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'with-1',
+	   resource	=> 'with () {}',
+	   expected_err => '',
+	   expected_out => "with () {\n}\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'with-2',
+	   resource	=> 'with (x:123) {}',
+	   expected_err => '',
+	   expected_out => "with (x: 123) {\n}\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'with-3',
+	   resource	=> 'with (x:123,y:456) {}',
+	   expected_err => '',
+	   expected_out => "with (x: 123,  y: 456) {\n}\n" );
+
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'with-11',
+	   resource	=> 'with () {abc}',
+	   expected_err => '',
+	   expected_out => "with () {\n  abc\n}\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'with-12',
+	   resource	=> 'with (x:123) {abc}',
+	   expected_err => '',
+	   expected_out => "with (x: 123) {\n  abc\n}\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'with-13',
+	   resource	=> 'with (x:123,y:456) {abc}',
+	   expected_err => '',
+	   expected_out => "with (x: 123,  y: 456) {\n  abc\n}\n" );
 
 
 1;
