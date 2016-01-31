@@ -49,7 +49,7 @@ L_OFILES = term.o lcore.o binding.o tstack.o lreader.o
 
 all: tester
 
-term.o:    term.c term.h lcore.h
+term.o:    term.c term.h
 lcore.o:   lcore.c lcore.h term.h
 tstack.o:  tstack.c tstack.h lcore.h term.h binding.h
 lreader.o: lreader.c lreader.h lreader.h term.h lcore.h tstack.h binding.h

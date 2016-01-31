@@ -206,6 +206,7 @@ Term g_le(binding, term)			   /*                        */
  						   /*                        */
   return val ? term_true: term_false;		   /*                        */
 }						   /*------------------------*/
+
 /*-----------------------------------------------------------------------------
 ** Function:	g_gt()
 ** Type:	Term
@@ -492,18 +493,14 @@ Term g_input(binding, term)		   	   /*                        */
       wrong_no_args("input");		   	   /*                        */
   }						   /*                        */
  						   /*                        */
-  term = NIL;
-  tp   = &term;
-
-  for (n = get_no_inputs(), i = 0; i < n; i++)
-  { *tp = Cons1(StringTerm((String)get_input_file(i)));
-    tp = &Cdr(*tp);
-  }
+  term = NIL;					   /*                        */
+  tp   = &term;					   /*                        */
+ 						   /*                        */
+  for (n = get_no_inputs(), i = 0; i < n; i++)	   /*                        */
+  { *tp = Cons1(StringTerm((String)get_input_file(i)));/*                    */
+    tp = &Cdr(*tp);				   /*                        */
+  }						   /*                        */
   return term;	   	   			   /*                        */
-#ifdef NEW
-  return NIL;	   	   			   /*                        */
-#else
-#endif
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

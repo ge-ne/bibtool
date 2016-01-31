@@ -647,25 +647,25 @@ static Term read_mapping(binding, msg)		   /*                        */
   Term term = NIL;				   /*                        */
   Term *tp  = &term;				   /*                        */
  						   /*                        */
-  for(;;)
-  { Term v;
-    c = scan(binding);
-    if (c == ')') return term;
-    if (c != L_FIELD)
-      Error(msg, ": Missing variable instead of ",/*         */
-	    tag_id(c));
-    v	= yylval;
-    *tp = Cons1(v);
-    tp = &Cdr(*tp);
-
-    Expect(':', "Missing :");
-
-    Cdr(v) = read_expr(binding, StackNULL);
-    c = scan(binding);
-    if (c == ')') return term;
-    if (c != ',')
-      Error(msg, ": Missing , instead of ",/*         */
-	    tag_id(c));
+  for(;;)					   /*                        */
+  { Term v;					   /*                        */
+    c = scan(binding);				   /*                        */
+    if (c == ')') return term;			   /*                        */
+    if (c != L_FIELD)				   /*                        */
+      Error(msg, ": Missing variable instead of ", /*                        */
+	    tag_id(c));				   /*                        */
+    v	= yylval;				   /*                        */
+    *tp = Cons1(v);				   /*                        */
+    tp = &Cdr(*tp);				   /*                        */
+ 						   /*                        */
+    Expect(':', "Missing :");			   /*                        */
+ 						   /*                        */
+    Cdr(v) = read_expr(binding, StackNULL);	   /*                        */
+    c = scan(binding);				   /*                        */
+    if (c == ')') return term;			   /*                        */
+    if (c != ',')				   /*                        */
+      Error(msg, ": Missing , instead of ",	   /*                        */
+	    tag_id(c));				   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
@@ -770,6 +770,9 @@ static Term read_expr(binding, stack)		   /*                        */
 	  Shift(L_WITH, t);		   	   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
+ 						   /*                        */
+      case L_ELSE:				   /*                        */
+	Error("isolated else encountered",0,0);	   /*                        */
  						   /*                        */
       case L_STRING:				   /*                        */
       case L_NUMBER:				   /*                        */

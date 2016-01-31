@@ -266,6 +266,15 @@ BUnit::run(name         => 'if-else-3',
 	   expected_out => "if (false) {\n  1234;\n  abc\n} else {\n  a;\n  b\n}\n" );
 
 #------------------------------------------------------------------------------
+BUnit::run(name         => 'else-err-1',
+	   resource	=> 'else',
+	   expected_out => '',
+	   expected_err => <<__EOF__ );
+
+*** BibTool ERROR:  (line 1 in _test.rsc): isolated else encountered
+__EOF__
+
+#------------------------------------------------------------------------------
 BUnit::run(name         => 'with-1',
 	   resource	=> 'with () {}',
 	   expected_err => '',

@@ -11,10 +11,10 @@
 ******************************************************************************/
 
 #include <bibtool/bibtool.h>
+#include <bibtool/io.h>
 #include <string.h>
 #include <stdlib.h>
 #include "binding.h"
-
 #include "lcore.h"
 
 /*****************************************************************************/
@@ -26,15 +26,14 @@
 #else
 #define _ARG(A) ()
 #endif
-Binding binding _ARG((unsigned int size));
-Term eval_term _ARG((Binding binding, Term term));
-Term eval_self _ARG((Binding binding, Term term));
+ Binding binding _ARG((unsigned int size));
+ Term eval_term _ARG((Binding binding, Term term));
+ Term eval_self _ARG((Binding binding, Term term));
 
 /*****************************************************************************/
 /* External Programs                                                         */
 /*===========================================================================*/
 
-extern void save_input_file();
 
 /*---------------------------------------------------------------------------*/
 
@@ -42,10 +41,10 @@ extern void save_input_file();
 /*-----------------------------------------------------------------------------
 ** Function:	binding()
 ** Type:	Binding
-** Purpose:	
+** Purpose:	Allocate a new instance of a Binding.
 **		
 ** Arguments:
-**	term	
+**	size	the number of junks contained
 ** Returns:	
 **___________________________________________________			     */
 Binding binding(size)			   	   /*                        */
@@ -135,24 +134,24 @@ Term setq(b, key, term)		   		   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	b	
+**	binding	the binding
 **	key	
 ** Returns:	
 **___________________________________________________			     */
-SymDef get_bind(b, key)			   	   /*                        */
-  Binding b;				   	   /*                        */
+SymDef get_bind(binding, key)			   /*                        */
+  Binding binding;				   /*                        */
   String key;					   /*                        */
 { SymDef s;					   /*                        */
-  unsigned int h = hash(key) % BSize(b);	   /*                        */
+  unsigned int h = hash(key) % BSize(binding);	   /*                        */
   						   /*                        */
 #ifdef DEBUG_BIND
   puts("BINDING");				   /*                        */
-  dump_binding(b, stdout);			   /*                        */
+  dump_binding(binding, stdout);		   /*                        */
   printf("--- lookup %s at %d\n", (char*)key, h);  /*                        */
 #endif
-  while (b)					   /*                        */
+  while (binding)				   /*                        */
   {						   /*                        */
-    for (s = BJunks(b)[h];		   	   /*                        */
+    for (s = BJunks(binding)[h];		   /*                        */
 	 s;					   /*                        */
 	 s = NextJunk(s))			   /*                        */
     {						   /*                        */
@@ -166,7 +165,7 @@ SymDef get_bind(b, key)			   	   /*                        */
 	return s; 	   			   /*                        */
       }						   /*                        */
     }						   /*                        */
-    b = NextBinding(b);		   		   /*                        */
+    binding = NextBinding(binding);		   /*                        */
   }						   /*                        */
   return SymDefNULL; 	   			   /*                        */
 }						   /*------------------------*/
