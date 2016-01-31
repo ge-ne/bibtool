@@ -33,12 +33,15 @@ extern Term g_and _ARG((Binding b, Term t));       /*                        */
 extern Term g_div _ARG((Binding b, Term t));	   /*                        */
 extern Term g_eq _ARG((Binding b, Term t));	   /*                        */
 extern Term g_field _ARG((Binding b, Term t));	   /*                        */
+extern Term s_field _ARG((Binding b, Term t));	   /*                        */
 extern Term g_ge _ARG((Binding b, Term t));	   /*                        */
 extern Term g_gt _ARG((Binding b, Term t));	   /*                        */
 extern Term g_input _ARG((Binding b, Term t));	   /*                        */
+extern Term s_input _ARG((Binding b, Term t));	   /*                        */
 extern Term g_le _ARG((Binding b, Term t));	   /*                        */
 extern Term g_lt _ARG((Binding b, Term t));	   /*                        */
 extern Term g_macro_file _ARG((Binding b, Term t));/*                        */
+extern Term s_macro_file _ARG((Binding b, Term t));/*                        */
 extern Term g_minus _ARG((Binding b, Term t));	   /*                        */
 extern Term g_mod _ARG((Binding b, Term t));	   /*                        */
 extern Term g_ne _ARG((Binding b, Term t));	   /*                        */
@@ -50,7 +53,9 @@ extern Term g_self _ARG((Binding b, Term t));	   /*                        */
 extern Term g_setq _ARG((Binding b, Term t));	   /*                        */
 extern Term g_times _ARG((Binding b, Term t));	   /*                        */
 extern Term g_version _ARG((Binding b, Term t));   /*                        */
+extern Term s_version _ARG((Binding b, Term t));   /*                        */
 extern Term g_out_file _ARG((Binding b, Term t));  /*                        */
+extern Term s_out_file _ARG((Binding b, Term t));  /*                        */
 extern Term g_cl_ign_words _ARG((Binding b, Term t));/*                      */
 
 extern SymDef sym_true;			   	   /*                        */

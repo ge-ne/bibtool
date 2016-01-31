@@ -527,11 +527,12 @@ int list_length(t)				   /*                        */
 **	get	the getter function
 ** Returns:	
 **___________________________________________________			     */
-SymDef symdef(name, op, flags, get)		   /*                        */
+SymDef symdef(name, op, flags, get, set)	   /*                        */
   String name;					   /*                        */
   short int op;					   /*                        */
-  short int flags;
+  short int flags;				   /*                        */
   Term (*get)_ARG((Binding, Term));		   /*                        */
+  Term (*set)_ARG((Binding, Term));		   /*                        */
 {						   /*                        */
   SymDef sym    = (SymDef) malloc(sizeof(SSymDef));/*                        */
   if (sym == SymDefNULL) OUT_OF_MEMORY("symdef");  /*                        */
@@ -542,6 +543,7 @@ SymDef symdef(name, op, flags, get)		   /*                        */
   SymTerm(sym)  = NIL;				   /*                        */
   SymValue(sym) = NIL;				   /*                        */
   SymGet(sym)   = get;			   	   /*                        */
+  SymSet(sym)   = set;			   	   /*                        */
   return sym;					   /*                        */
 }						   /*------------------------*/
 

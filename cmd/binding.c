@@ -14,6 +14,7 @@
 #include <bibtool/io.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "binding.h"
 #include "lcore.h"
 
@@ -67,28 +68,31 @@ Binding binding(size)			   	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	b	the binding
+**	binding	the binding
 **	sym	the symbol definition
 ** Returns:	nothing
 **___________________________________________________			     */
-void bind(b, sym)		   		   /*                        */
-  Binding b;				   	   /*                        */
+void bind(binding, sym)		   		   /*                        */
+  Binding binding;				   /*                        */
   SymDef sym;					   /*                        */
 { String key 	 = SymName(sym);		   /*                        */
-  unsigned int h = hash(key) % BSize(b);	   /*                        */
+  unsigned int h = hash(key) % BSize(binding);	   /*                        */
   SymDef junk;					   /*                        */
    						   /*                        */
-  for (junk = BJunks(b)[h]; junk; junk = NextJunk(junk))/*                   */
+  for (junk = BJunks(binding)[h];		   /*                        */
+       junk;					   /*                        */
+       junk = NextJunk(junk))			   /*                        */
   { if (SymName(junk) == key)			   /*                        */
     { SymTerm(junk)  = SymTerm(sym);		   /*                        */
       SymValue(junk) = SymValue(sym);		   /*                        */
       SymGet(junk)   = SymGet(sym);		   /*                        */
+      SymSet(junk)   = SymSet(sym);		   /*                        */
       return;					   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
-  NextJunk(sym) = BJunks(b)[h];		   	   /*                        */
-  BJunks(b)[h]  = sym;			   	   /*                        */
+  NextJunk(sym) = BJunks(binding)[h];		   /*                        */
+  BJunks(binding)[h]  = sym;			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -119,7 +123,8 @@ Term setq(b, key, term)		   		   /*                        */
   junk           = symdef(key,			   /*                        */
 			  L_FIELD,		   /*                        */
 			  SYM_NONE,		   /*                        */
-			  g_field);  		   /*                        */
+			  g_field,		   /*                        */
+			  g_setq);  		   /*                        */
   SymValue(junk) = term;		   	   /*                        */
   NextJunk(junk) = BJunks(b)[h];		   /*                        */
   BJunks(b)[h]   = junk;			   /*                        */
@@ -261,42 +266,53 @@ static Term str_rsc(binding, name, term, rp)	   /*                        */
    return StringTerm(*rp ? *rp : (String)"");	   /*                        */
 }						   /*------------------------*/
 
-#define Bind(NAME,GET,FLAGS,OP)
+#define Bind(NAME,GET,SET,FLAGS,OP)
 #define BindSym(NAME,SYM)
-#define BindBool(NAME,GETTER,RSC)			\
+#define BindBool(NAME,GETTER,SETTER,RSC)		\
   static Term GETTER (binding, term)			\
+    Binding binding;					\
+    Term term;						\
+  { extern int RSC;					\
+    return bool_rsc(binding, NAME, term, &RSC); }	\
+  static Term SETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
   { extern int RSC;					\
     return bool_rsc(binding, NAME, term, &RSC); }
-#define BindNum(NAME,GETTER,RSC)			\
+#define BindNum(NAME,GETTER,SETTER,RSC)			\
   static Term GETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
   { extern int RSC;					\
+    return num_rsc(binding, NAME, term, &RSC); }	\
+  static Term SETTER (binding, term)			\
+    Binding binding;					\
+    Term term;						\
+  { extern int RSC;					\
     return num_rsc(binding, NAME, term, &RSC); }
-#define BindStr(NAME,GETTER,RSC)			\
+#define BindStr(NAME,GETTER,SETTER,RSC)			\
   static Term GETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
   { extern String RSC;					\
+    return str_rsc(binding, NAME, term, &RSC); }	\
+  static Term SETTER (binding, term)			\
+    Binding binding;					\
+    Term term;						\
+  { extern String RSC;					\
     return str_rsc(binding, NAME, term, &RSC); }
-#define BindFct(NAME,GETTER,FCT)			\
+#define BindFct(NAME,GETTER,SETTER,FCT)			\
   static Term GETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
+  { ErrorNF(NAME, " is not accessible"); return NIL; }	\
+  static Term SETTER (binding, term)			\
+    Binding binding;					\
+    Term term;						\
   { String val;						\
-    switch (list_length(Cdr(term)))			\
-    { case 0:						\
-        ErrorNF(NAME, " is not accessible");		\
-      case 1:						\
-        term = eval_str(binding, Cadr(term));		\
-        val  = TString(term);				\
-        FCT;						\
-        return term;					\
-      default:						\
-        wrong_no_args(NAME);				\
-    }							\
+    term = eval_str(binding, Cadr(term));		\
+    val  = TString(term);				\
+    FCT;						\
     return term; }
 #include "builtin.h"
 
@@ -319,12 +335,13 @@ static Term str_rsc(binding, name, term, rp)	   /*                        */
 Binding root_binding()				   /*                        */
 { Binding b = binding(511);			   /*                        */
  						   /*                        */
-#define BindBool(NAME,GET,R)	   Bind(NAME, GET, SYM_BUILTIN, L_FIELD)
-#define BindNum(NAME,GET,R)	   Bind(NAME, GET, SYM_BUILTIN, L_FIELD)
-#define BindStr(NAME,GET,R)	   Bind(NAME, GET, SYM_BUILTIN, L_FIELD)
-#define BindFct(NAME,GET,EX)	   Bind(NAME, GET, SYM_BUILTIN, L_FIELD)
-#define Bind(NAME,GET,FLAGS,OP)    bind(b, symdef(symbol((String)NAME),OP,FLAGS,GET));
-#define BindSym(NAME,SYM)	   bind(b, SYM);
+#define BindBool(NAME,GET,SET,R)     Bind(NAME, GET, SET, SYM_BUILTIN, L_FIELD)
+#define BindNum(NAME,GET,SET,R)	     Bind(NAME, GET, SET, SYM_BUILTIN, L_FIELD)
+#define BindStr(NAME,GET,SET,R)	     Bind(NAME, GET, SET, SYM_BUILTIN, L_FIELD)
+#define BindFct(NAME,GET,SET,EX)     Bind(NAME, GET, SET, SYM_BUILTIN, L_FIELD)
+#define Bind(NAME,GET,SET,FLAGS,OP)  bind(b, symdef(symbol((String)NAME),     \
+						    OP, FLAGS, GET, SET));
+#define BindSym(NAME,SYM)	      bind(b, SYM);
  						   /*                        */
 #include "builtin.h"
   return b;				   	   /*                        */
@@ -380,7 +397,6 @@ Term eval_term(binding, term)			   /*                        */
   Term term;					   /*                        */
 { SymDef s;					   /*                        */
   String key = NULL;				   /*                        */
-  extern String tag_id();			   /*                        */
  						   /*                        */
   if (term == NIL) return NIL;			   /*                        */
  						   /*                        */
@@ -388,6 +404,7 @@ Term eval_term(binding, term)			   /*                        */
   { case 0:					   /*                        */
     case EOF:					   /*                        */
       return term_eof;	   			   /*                        */
+ 						   /*                        */
     case L_STRING:				   /*                        */
     case L_BLOCK:				   /*                        */
     case L_NUMBER:				   /*                        */
@@ -395,21 +412,36 @@ Term eval_term(binding, term)			   /*                        */
     case L_FALSE:				   /*                        */
     case L_CONS:				   /*                        */
       return term;				   /*                        */
+ 						   /*                        */
     case L_GROUP:				   /*                        */
       { Term t = NIL;				   /*                        */
 	for (term = Cdr(term); term; term = Cdr(term))/*                     */
 	{ t = eval_term(binding, Car(term)); }	   /*                        */
 	return t;				   /*                        */
       }						   /*                        */
+ 						   /*                        */
     case L_FUNCTION:				   /*                        */
       key = TString(term);			   /*                        */
       s	  = get_bind(binding, key);	   	   /*                        */
       if (s == NULL || SymGet(s) == NULL)	   /*                        */
 	ErrorNF("Undefined function ", key);	   /*                        */
-      return (*SymGet(s))(binding, term);	   /*                        */
+ 						   /*                        */
+      if (Cdr(term))				   /*                        */
+      { if (SymSet(s) == NULL)	   		   /*                        */
+	  ErrorNF(key, " is immutable");	   /*                        */
+	return (*SymSet(s))(binding, term);	   /*                        */
+      }						   /*                        */
+      else					   /*                        */
+      { if (SymGet(s) == NULL)	   		   /*                        */
+	  ErrorNF(key, " is not readable");	   /*                        */
+ 						   /*                        */
+	return (*SymGet(s))(binding, term);	   /*                        */
+      }						   /*                        */
+ 						   /*                        */
     case L_FIELD:				   /*                        */
       s = get_bind(binding, TString(term));	   /*                        */
       return s ? SymValue(s) : NIL;		   /*                        */
+ 						   /*                        */
     case L_QUOTE:    key = (String)"'";	     break;/*                        */
     case L_MINUS:    key = (String)"-";	     break;/*                        */
     case L_PLUS:     key = (String)"+";	     break;/*                        */
@@ -436,6 +468,7 @@ Term eval_term(binding, term)			   /*                        */
    s = get_bind(binding, key);		   	   /*                        */
    if (s == SymDefNULL) 			   /*                        */
    { ErrorNF("Undefined function ", key); } 	   /*                        */
+
    return (*SymGet(s))(binding, term);		   /*                        */
 }						   /*------------------------*/
 

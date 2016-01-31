@@ -420,18 +420,24 @@ Term g_version(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { extern char* bibtool_version;			   /*                        */
- 						   /*                        */
-  switch (list_length(Cdr(term)))		   /*                        */
-  { case 0:					   /*                        */
-      break;					   /*                        */
-    case 1:					   /*                        */
-    case 2:					   /*                        */
-      ErrorNF("Parameter version is immutable",0); /*                        */
-    default:					   /*                        */
-      wrong_no_args("version");			   /*                        */
-  }						   /*                        */
- 						   /*                        */
   return StringTerm((String)bibtool_version);	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	s_version()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term s_version(binding, term)		   	   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ ErrorNF("Parameter version is immutable",0); 	   /*                        */
+  return NIL;	   				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -447,23 +453,29 @@ Term g_version(binding, term)		   	   /*                        */
 Term g_out_file(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ extern void save_output_file();		   /*                        */
-  extern char *get_output_file();		   /*                        */
-  String s;					   /*                        */
- 						   /*                        */
-  switch (list_length(Cdr(term)))		   /*                        */
-  { case 0:					   /*                        */
-      break;					   /*                        */
-    case 1:					   /*                        */
-      term = eval_str(binding,Cadr(term));	   /*                        */
-      save_output_file((char*)TString(term));	   /*                        */
-      return term;				   /*                        */
-    default:					   /*                        */
-      wrong_no_args("output.file");		   /*                        */
-  }						   /*                        */
- 						   /*                        */
-  s = (String)get_output_file();		   /*                        */
+{ extern char *get_output_file();		   /*                        */
+  String s = (String)get_output_file();		   /*                        */
   return s ? StringTerm(s) : NIL;	   	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	s_out_file()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term s_out_file(binding, term)		   	   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ extern void save_output_file();		   /*                        */
+ 						   /*                        */
+  term = eval_str(binding,Cadr(term));	   	   /*                        */
+  save_output_file((char*)TString(term));	   /*                        */
+  return term;				   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -482,17 +494,6 @@ Term g_input(binding, term)		   	   /*                        */
 { int n, i;					   /*                        */
   Term *tp;					   /*                        */
  						   /*                        */
-  switch (list_length(Cdr(term)))		   /*                        */
-  { case 0:					   /*                        */
-      break;					   /*                        */
-    case 1:					   /*                        */
-      term = eval_str(binding, Cadr(term));	   /*                        */
-      save_input_file((char*)TString(term));	   /*                        */
-      return term;				   /*                        */
-    default:					   /*                        */
-      wrong_no_args("input");		   	   /*                        */
-  }						   /*                        */
- 						   /*                        */
   term = NIL;					   /*                        */
   tp   = &term;					   /*                        */
  						   /*                        */
@@ -501,6 +502,15 @@ Term g_input(binding, term)		   	   /*                        */
     tp = &Cdr(*tp);				   /*                        */
   }						   /*                        */
   return term;	   	   			   /*                        */
+}						   /*------------------------*/
+
+Term s_input(binding, term)		   	   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{						   /*                        */
+  term = eval_str(binding, Cadr(term));	   	   /*                        */
+  save_input_file((char*)TString(term));	   /*                        */
+  return term;				   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -516,19 +526,26 @@ Term g_input(binding, term)		   	   /*                        */
 Term g_macro_file(binding, term)		   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
+{ return StringTerm((String)get_macro_file());	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	s_macro_file()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term s_macro_file(binding, term)		   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
 { 						   /*                        */
-  switch (list_length(Cdr(term)))		   /*                        */
-  { case 0:					   /*                        */
-      break;					   /*                        */
-    case 1:					   /*                        */
-      term = eval_str(binding, Cadr(term));	   /*                        */
-      save_macro_file((char*)TString(term));	   /*                        */
-      return term;				   /*                        */
-    default:					   /*                        */
-      wrong_no_args("macro.file");		   /*                        */
-  }						   /*                        */
- 						   /*                        */
-  return StringTerm((String)get_macro_file());	   /*                        */
+  term = eval_str(binding, Cadr(term));	   	   /*                        */
+  save_macro_file((char*)TString(term));	   /*                        */
+  return term;				   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -945,8 +962,8 @@ unsigned int hash(s)				   /*                        */
 **___________________________________________________			     */
 void init_lreader()				   /*                        */
 {						   /*                        */
-  sym_true  = symdef((String)"true",  L_TRUE,  SYM_LOCKED, g_self);/*        */
-  sym_false = symdef((String)"false", L_FALSE, SYM_LOCKED, g_self);/*        */
+  sym_true  = symdef((String)"true",  L_TRUE,  SYM_LOCKED, g_self, NULL);/*  */
+  sym_false = symdef((String)"false", L_FALSE, SYM_LOCKED, g_self, NULL);/*  */
  						   /*                        */
   term_true  = SymTerm(sym_true)  = NewTerm(L_TRUE);/*                       */
   term_false = SymTerm(sym_false) = NewTerm(L_FALSE);/*                      */

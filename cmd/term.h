@@ -127,6 +127,7 @@ typedef struct S_SYMDEF {			   /*                        */
   Term term;	   			   	   /*                        */
   Term value;			   		   /*                        */
   Term (*get)();			   	   /*                        */
+  Term (*set)();			   	   /*                        */
 } SSymDef, *SymDef;				   /*------------------------*/
 
 #define SymDefNULL	((SymDef)0)
@@ -139,6 +140,7 @@ typedef struct S_SYMDEF {			   /*                        */
 #define SymKey(SYM)	((SYM)->key)
 #define SymValue(SYM)	((SYM)->value)
 #define SymGet(SYM)	((SYM)->get)
+#define SymSet(SYM)	((SYM)->set)
 #define NextJunk(SYM)	((SYM)->next)
 
 #define SYM_NONE	0x00
@@ -179,7 +181,11 @@ extern String tag_id _ARG((int c));
 extern int list_length _ARG((Term t));
 extern int parse_term _ARG((char* file, int(*action)(Term t)));
 
-extern SymDef symdef _ARG((String name, short int op, short int flags, Term(*get)()));
+extern SymDef symdef _ARG((String name,
+			   short int op,
+			   short int flags,
+			   Term(*get)(),
+			   Term(*set)()));
 
 /*---------------------------------------------------------------------------*/
 #endif
