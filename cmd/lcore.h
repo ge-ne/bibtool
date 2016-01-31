@@ -38,6 +38,7 @@ extern Term g_gt _ARG((Binding b, Term t));	   /*                        */
 extern Term g_input _ARG((Binding b, Term t));	   /*                        */
 extern Term g_le _ARG((Binding b, Term t));	   /*                        */
 extern Term g_lt _ARG((Binding b, Term t));	   /*                        */
+extern Term g_macro_file _ARG((Binding b, Term t));/*                        */
 extern Term g_minus _ARG((Binding b, Term t));	   /*                        */
 extern Term g_mod _ARG((Binding b, Term t));	   /*                        */
 extern Term g_ne _ARG((Binding b, Term t));	   /*                        */

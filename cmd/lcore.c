@@ -486,7 +486,7 @@ Term g_input(binding, term)		   	   /*                        */
   { case 0:					   /*                        */
       break;					   /*                        */
     case 1:					   /*                        */
-      term = eval_str(binding,Cadr(term));	   /*                        */
+      term = eval_str(binding, Cadr(term));	   /*                        */
       save_input_file((char*)TString(term));	   /*                        */
       return term;				   /*                        */
     default:					   /*                        */
@@ -501,6 +501,34 @@ Term g_input(binding, term)		   	   /*                        */
     tp = &Cdr(*tp);				   /*                        */
   }						   /*                        */
   return term;	   	   			   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	g_macro_file()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	term	
+** Returns:	
+**___________________________________________________			     */
+Term g_macro_file(binding, term)		   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ 						   /*                        */
+  switch (list_length(Cdr(term)))		   /*                        */
+  { case 0:					   /*                        */
+      break;					   /*                        */
+    case 1:					   /*                        */
+      term = eval_str(binding, Cadr(term));	   /*                        */
+      save_macro_file((char*)TString(term));	   /*                        */
+      return term;				   /*                        */
+    default:					   /*                        */
+      wrong_no_args("macro.file");		   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  return StringTerm((String)get_macro_file());	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
