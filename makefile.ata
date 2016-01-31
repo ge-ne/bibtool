@@ -277,6 +277,7 @@ CLIBFILES     = database.c	\
 		error.c		\
 		expand.c	\
 		init.c		\
+		io.c		\
 		key.c		\
 		macros.c	\
 		names.c		\
@@ -307,6 +308,7 @@ HFILES	      = config.h		\
 		${HPATH}expand.h	\
 		${HPATH}general.h	\
 		${HPATH}init.h		\
+		${HPATH}io.h		\
 		${HPATH}key.h		\
 		${HPATH}keynode.h	\
 		${HPATH}macros.h	\
@@ -337,6 +339,7 @@ OLIBFILES     = database$(OBJ)	\
 		error$(OBJ)	\
 		expand$(OBJ)	\
 		init$(OBJ)	\
+		io(OBJ)	\
 		key$(OBJ)	\
 		macros$(OBJ)	\
 		names$(OBJ)	\
@@ -455,6 +458,9 @@ main$(OBJ): main.c
 init$(OBJ): init.c
 	$(CC) $(C_FLAGS) $(KPATHSEA_DEF) $(DONT_LINK) init.c
 
+io(OBJ): io.c
+	$(CC) $(C_FLAGS) $(KPATHSEA_DEF) $(DONT_LINK) io.c
+
 parse$(OBJ): parse.c
 	$(CC) $(C_FLAGS) $(KPATHSEA_DEF) $(DONT_LINK) parse.c
 
@@ -528,4 +534,4 @@ status:
 
 # =============================================================================
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-main.o database.o entry.o error.o expand.o init.o key.o macros.o names.o parse.o print.o pxfile.o record.o rewrite.o rsc.o s_parse.o symbols.o stack.o sbuffer.o tex_aux.o tex_read.o type.o version.o wordlist.o: config.h include/bibtool/database.h include/bibtool/bibtool.h include/bibtool/config.h include/bibtool/entry.h include/bibtool/error.h include/bibtool/expand.h include/bibtool/general.h include/bibtool/init.h include/bibtool/key.h include/bibtool/keynode.h include/bibtool/macros.h include/bibtool/names.h include/bibtool/parse.h include/bibtool/print.h include/bibtool/pxfile.h include/bibtool/record.h include/bibtool/regex.h include/bibtool/resource.h include/bibtool/rewrite.h include/bibtool/rsc.h include/bibtool/s_parse.h include/bibtool/sbuffer.h include/bibtool/stack.h include/bibtool/symbols.h include/bibtool/tex_aux.h include/bibtool/tex_read.h include/bibtool/type.h include/bibtool/version.h include/bibtool/wordlist.h main.c database.c entry.c error.c expand.c init.c key.c macros.c names.c parse.c print.c pxfile.c record.c rewrite.c rsc.c s_parse.c symbols.c stack.c sbuffer.c tex_aux.c tex_read.c version.c type.c wordlist.c
+main.o database.o entry.o error.o expand.o init.o io.o key.o macros.o names.o parse.o print.o pxfile.o record.o rewrite.o rsc.o s_parse.o symbols.o stack.o sbuffer.o tex_aux.o tex_read.o type.o version.o wordlist.o: config.h include/bibtool/database.h include/bibtool/bibtool.h include/bibtool/config.h include/bibtool/entry.h include/bibtool/error.h include/bibtool/expand.h include/bibtool/general.h include/bibtool/init.h include/bibtool/io.h include/bibtool/key.h include/bibtool/keynode.h include/bibtool/macros.h include/bibtool/names.h include/bibtool/parse.h include/bibtool/print.h include/bibtool/pxfile.h include/bibtool/record.h include/bibtool/regex.h include/bibtool/resource.h include/bibtool/rewrite.h include/bibtool/rsc.h include/bibtool/s_parse.h include/bibtool/sbuffer.h include/bibtool/stack.h include/bibtool/symbols.h include/bibtool/tex_aux.h include/bibtool/tex_read.h include/bibtool/type.h include/bibtool/version.h include/bibtool/wordlist.h main.c database.c entry.c error.c expand.c init.c io.c key.c macros.c names.c parse.c print.c pxfile.c record.c rewrite.c rsc.c s_parse.c symbols.c stack.c sbuffer.c tex_aux.c tex_read.c version.c type.c wordlist.c

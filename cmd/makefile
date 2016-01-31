@@ -22,6 +22,7 @@ OFILES  = $(BASEDIR)crossref.o	\
 	  $(BASEDIR)error.o	\
 	  $(BASEDIR)expand.o	\
 	  $(BASEDIR)init.o	\
+	  $(BASEDIR)io.o	\
 	  $(BASEDIR)key.o	\
 	  $(BASEDIR)macros.o	\
 	  $(BASEDIR)names.o	\

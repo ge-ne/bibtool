@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <bibtool/error.h>
+#include <bibtool/io.h>
 #include "binding.h"
 #include "lcore.h"
 
@@ -134,59 +135,4 @@ int main(argc, argv)				   /*                        */
   }						   /*                        */
  						   /*                        */
   return 0;					   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	save_input_file()
-** Type:	void
-** Purpose:	
-**		
-** Arguments:
-**	file	
-** Returns:	nothing
-**___________________________________________________			     */
-void save_input_file(file)			   /*                        */
-  char *file;					   /*                        */
-{}						   /*                        */
-
-/*-----------------------------------------------------------------------------
-** Function:	save_macro_file()
-** Type:	void
-** Purpose:	
-**		
-** Arguments:
-**	file	
-** Returns:	nothing
-**___________________________________________________			     */
-void save_macro_file(file)			   /*                        */
-  char *file;					   /*                        */
-{}						   /*                        */
-
-static char *output_file = NULL;
-
-/*-----------------------------------------------------------------------------
-** Function:	save_output_file()
-** Type:	void
-** Purpose:	
-**		
-** Arguments:
-**	file	
-** Returns:	nothing
-**___________________________________________________			     */
-void save_output_file(file)			   /*                        */
-  char * file;					   /*                        */
-{ output_file = file;				   /*                        */
-}						   /*                        */
-
-/*-----------------------------------------------------------------------------
-** Function:	get_output_file()
-** Type:	char *
-** Purpose:	
-**		
-** Arguments:
-**		
-** Returns:	
-**___________________________________________________			     */
-char * get_output_file()			   /*                        */
-{ return output_file;				   /*                        */
 }						   /*------------------------*/

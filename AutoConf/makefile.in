@@ -320,6 +320,7 @@ CLIBFILES     = crossref.c			\
 		error.c				\
 		expand.c			\
 		init.c				\
+		io.c				\
 		key.c				\
 		macros.c			\
 		names.c				\
@@ -350,6 +351,7 @@ HFILES	      = config.h			\
 		${HPATH}expand.h		\
 		${HPATH}general.h		\
 		${HPATH}init.h			\
+		${HPATH}io.h			\
 		${HPATH}key.h			\
 		${HPATH}keynode.h		\
 		${HPATH}macros.h		\
@@ -380,6 +382,7 @@ OLIBFILES     = crossref$(OBJ)			\
 		error$(OBJ)			\
 		expand$(OBJ)			\
 		init$(OBJ)			\
+		io$(OBJ)			\
 		key$(OBJ)			\
 		macros$(OBJ)			\
 		names$(OBJ)			\
