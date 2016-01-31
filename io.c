@@ -59,9 +59,9 @@
 
 #define InputFilePipeIncrement 8
 
- char **input_files;
- int  input_file_size = 0;
- int  input_file_ptr  = 0;
+ static char **input_files;
+ static int  input_file_size = 0;
+ static int  input_file_ptr  = 0;
 
 #define InputPipeIsFull		(input_file_ptr >= input_file_size)
 #define InputPipeIsEmpty	(input_file_ptr == 0)
@@ -109,6 +109,27 @@ void save_input_file(file)			   /*			     */
     { OUT_OF_MEMORY("input file pipe."); }	   /*			     */
   }						   /*			     */
   PushToInputPipe(file);			   /*			     */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	get_no_inputs()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**		
+** Returns:	
+**___________________________________________________			     */
+int get_no_inputs()				   /*                        */
+{						   /*                        */
+  return input_file_ptr;			   /*                        */
+}						   /*------------------------*/
+
+char *get_input_file(i)
+  int i;
+{ return (i >= 0 && i < input_file_ptr
+	  ? input_files[i]
+	  : NULL);
 }						   /*------------------------*/
 
 

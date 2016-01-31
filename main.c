@@ -309,6 +309,54 @@ int keep_xref(db,rec)				   /*                        */
 }						   /*------------------------*/
 #endif
 
+/*-----------------------------------------------------------------------------
+** Function:	write_macros()
+** Type:	static void
+** Purpose:	
+**		
+** Arguments:
+**	m_file	the name of the macro file of NULL for none
+**	the_db	the database
+** Returns:	nothing
+**___________________________________________________			     */
+static void write_macros(m_file, the_db)	   /*                        */
+  char* m_file;		   			   /*                        */
+  DB	the_db;					   /*                        */
+{ FILE * file;					   /*                        */
+ 						   /*                        */
+  if ( m_file == NULL || *m_file == 0 ) return;    /*			     */
+ 						   /*                        */
+  if ( rsc_verbose )			   	   /*			     */
+  { VerbosePrint1("Writing macros"); }	   	   /*			     */
+					       	   /*                        */
+  if ( strcmp(m_file,"-") == 0 ||		   /*                        */
+       (file=fopen(m_file,"w")) == NULL )          /*                        */
+  { file = stdout; }			   	   /*                        */
+  print_db(file,the_db,rsc_all_macs?"s":"S");      /*                        */
+  if ( file != stdout ) { fclose(file); }	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	read_in_files()
+** Type:	static void
+** Purpose:	
+**		
+** Arguments:
+**	the_db	
+** Returns:	nothing
+**___________________________________________________			     */
+static void read_in_files(the_db)		   /*                        */
+  DB the_db;					   /*                        */
+{ int n = get_no_inputs();			   /*                        */
+  int i;					   /*                        */
+  for (i = 0; i < n; i++)		   	   /* For all input files    */
+  { if ( read_db(the_db,			   /*                        */
+		 (String)get_input_file(i),	   /*                        */
+		 rsc_verbose) )	   		   /*                        */
+    { NoFileError(get_input_file(i)); }		   /*			     */
+  }						   /*			     */
+}						   /*------------------------*/
+
 #define Toggle(X) X = !(X)
 
 /*-----------------------------------------------------------------------------
@@ -341,6 +389,7 @@ int main(argc,argv)				   /*			     */
   int	(*fct)();			   	   /* Function pointer	     */
   int	c_len;					   /*                        */
   int   *c = NULL;				   /*                        */
+  char  *o_file;				   /*                        */
  						   /*                        */
   init_error(stderr);				   /*                        */
   init_bibtool(argv[0]);			   /*                        */
@@ -424,19 +473,14 @@ int main(argc,argv)				   /*			     */
 						   /*			     */
   if ( need_rsc ) { (void)search_rsc(); }	   /*			     */
 						   /*			     */
-  if ( InputPipeIsEmpty )			   /* If no input file given */
+  if ( get_no_inputs() == 0 )			   /* If no input file given */
   { save_input_file("-"); }			   /*  then read from stdin  */
 						   /*			     */
   init_read();					   /* Just in case the path  */
  						   /*  has been modified.    */
   the_db = new_db();				   /*                        */
 						   /*			     */
-  for (i = 0; i < input_file_ptr; i++)		   /* For all input files    */
-  { if ( read_db(the_db,			   /*                        */
-		 (String)(input_files[i]),	   /*                        */
-		 rsc_verbose) )	   		   /*                        */
-    { NoFileError(input_files[i]); }		   /*			     */
-  }						   /*			     */
+  read_in_files(the_db);			   /*                        */
  						   /*                        */
   db_forall(the_db,keep_selected);		   /*                        */
 						   /*                        */
@@ -504,8 +548,10 @@ int main(argc,argv)				   /*			     */
   if ( rsc_double_check	)		   	   /* Maybe look for doubles */
   { db_forall(the_db,dbl_check); }		   /*                        */
  						   /*                        */
-  if ( output_file == NULL ||			   /*                        */
-       (file=fopen(output_file,"w")) == NULL )	   /*                        */
+  o_file = get_output_file();			   /*                        */
+ 						   /*                        */
+  if ( o_file == NULL ||			   /*                        */
+       (file=fopen(o_file,"w")) == NULL )	   /*                        */
   { file = stdout; }				   /*                        */
  						   /*                        */
   if ( rsc_select ) { rsc_del_q = FALSE; }	   /*                        */
@@ -527,16 +573,7 @@ int main(argc,argv)				   /*			     */
  						   /*                        */
   if ( file != stdout ) { fclose(file); }	   /*                        */
 						   /*			     */
-  if ( macro_file != NULL  && *macro_file )	   /*			     */
-  { if ( rsc_verbose )				   /*			     */
-    { VerbosePrint1("Writing macros"); }	   /*			     */
- 						   /*                        */
-    if ( strcmp(macro_file,"-") == 0 ||		   /*                        */
-	 (file=fopen(macro_file,"w")) == NULL )    /*                        */
-    { file = stdout; }				   /*                        */
-    print_db(file,the_db,rsc_all_macs?"s":"S");	   /*                        */
-    if ( file != stdout ) { fclose(file); }	   /*                        */
-  }						   /*			     */
+  write_macros(get_macro_file(), the_db);	   /*                        */
 						   /*			     */
   if ( rsc_cnt_all || rsc_cnt_used )		   /*			     */
   { int i;					   /*                        */
