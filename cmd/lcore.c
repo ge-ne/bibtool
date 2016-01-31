@@ -16,6 +16,7 @@
 #include <bibtool/error.h>
 #include <bibtool/symbols.h>
 #include <bibtool/sbuffer.h>
+#include <bibtool/io.h>
 #include <ctype.h>
 #include "binding.h"
 #include "lcore.h"
@@ -59,48 +60,6 @@ void wrong_no_args(name)			   /*                        */
 { ErrorNF("Wrong number of arguments for ",name);  /*                        */
 }						   /*------------------------*/
 
-/*-----------------------------------------------------------------------------
-** Function:	print_quoted()
-** Type:	static void
-** Purpose:	
-**		
-** Arguments:
-**	file	the output stream
-**	s	the string to be printed
-** Returns:	nothing
-**___________________________________________________			     */
-void print_quoted(file, s)		   	   /*                        */
-  FILE * file;					   /*                        */
-  String s;					   /*                        */
-{						   /*                        */
-  for (; *s; s++)				   /*                        */
-  { switch (*s)					   /*                        */
-    { case '\n':				   /*                        */
-	fputs("\\n", file);			   /*                        */
-	break;					   /*                        */
-      case '\r':				   /*                        */
-	fputs("\\r", file);			   /*                        */
-	break;					   /*                        */
-      case '\b':				   /*                        */
-	fputs("\\b", file);			   /*                        */
-	break;					   /*                        */
-      case '\f':				   /*                        */
-	fputs("\\f", file);			   /*                        */
-	break;					   /*                        */
-      case '"':					   /*                        */
-	fputs("\\\"", file);			   /*                        */
-	break;					   /*                        */
-      case '\'':				   /*                        */
-	fputs("\\'", file);			   /*                        */
-	break;					   /*                        */
-      case '\\':				   /*                        */
-	fputs("\\\\", file);			   /*                        */
-	break;					   /*                        */
-      default:					   /*                        */
-	fputc((char)*s, file);			   /*                        */
-    }						   /*                        */
-  }						   /*                        */
-}						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	g_self()
@@ -496,7 +455,7 @@ Term g_out_file(binding, term)		   	   /*                        */
       break;					   /*                        */
     case 1:					   /*                        */
       term = eval_str(binding,Cadr(term));	   /*                        */
-      save_output_file(TString(term));		   /*                        */
+      save_output_file((char*)TString(term));	   /*                        */
       return term;				   /*                        */
     default:					   /*                        */
       wrong_no_args("output.file");		   /*                        */
@@ -512,36 +471,38 @@ Term g_out_file(binding, term)		   	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_input(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{
-  extern void save_input_file();		   /*                        */
-#ifdef NEVER
-  extern char *get_input_file();		   /*                        */
-  String s;					   /*                        */
-#endif
+{ int n, i;					   /*                        */
+  Term *tp;					   /*                        */
  						   /*                        */
   switch (list_length(Cdr(term)))		   /*                        */
   { case 0:					   /*                        */
       break;					   /*                        */
     case 1:					   /*                        */
       term = eval_str(binding,Cadr(term));	   /*                        */
-      save_input_file(TString(term));		   /*                        */
+      save_input_file((char*)TString(term));	   /*                        */
       return term;				   /*                        */
     default:					   /*                        */
       wrong_no_args("input");		   	   /*                        */
   }						   /*                        */
  						   /*                        */
-#ifdef NEVER
-  s = (String)get_input_file();		   	   /*                        */
-  return s ? StringTerm(s) : NIL;	   	   /*                        */
-#else
+  term = NIL;
+  tp   = &term;
+
+  for (n = get_no_inputs(), i = 0; i < n; i++)
+  { *tp = Cons1(StringTerm((String)get_input_file(i)));
+    tp = &Cdr(*tp);
+  }
+  return term;	   	   			   /*                        */
+#ifdef NEW
   return NIL;	   	   			   /*                        */
+#else
 #endif
 }						   /*------------------------*/
 

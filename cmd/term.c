@@ -10,11 +10,9 @@
 ** 
 ******************************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <bibtool/general.h>
 #include <bibtool/error.h>
 #include "term.h"
-#include "lcore.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -224,6 +222,49 @@ void free_term(t)				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	prn_quoted()
+** Type:	static void
+** Purpose:	
+**		
+** Arguments:
+**	file	the output stream
+**	s	the string to be printed
+** Returns:	nothing
+**___________________________________________________			     */
+static void prn_quoted(file, s)		   	   /*                        */
+  FILE * file;					   /*                        */
+  String s;					   /*                        */
+{						   /*                        */
+  for (; *s; s++)				   /*                        */
+  { switch (*s)					   /*                        */
+    { case '\n':				   /*                        */
+	fputs("\\n", file);			   /*                        */
+	break;					   /*                        */
+      case '\r':				   /*                        */
+	fputs("\\r", file);			   /*                        */
+	break;					   /*                        */
+      case '\b':				   /*                        */
+	fputs("\\b", file);			   /*                        */
+	break;					   /*                        */
+      case '\f':				   /*                        */
+	fputs("\\f", file);			   /*                        */
+	break;					   /*                        */
+      case '"':					   /*                        */
+	fputs("\\\"", file);			   /*                        */
+	break;					   /*                        */
+      case '\'':				   /*                        */
+	fputs("\\'", file);			   /*                        */
+	break;					   /*                        */
+      case '\\':				   /*                        */
+	fputs("\\\\", file);			   /*                        */
+	break;					   /*                        */
+      default:					   /*                        */
+	fputc((char)*s, file);			   /*                        */
+    }						   /*                        */
+  }						   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	prn_field()
 ** Type:	static int
 ** Purpose:	
@@ -255,7 +296,7 @@ void prn_field(file, t)		   	   	   /*                        */
     }						   /*                        */
   }						   /*                        */
   if (q) fputc('`', file);			   /*                        */
-  print_quoted(file, TString(t));		   /*                        */
+  prn_quoted(file, TString(t));		   	   /*                        */
   if (q) fputc('`', file);			   /*                        */
 
   if (Cdr(t))
@@ -337,7 +378,7 @@ static void prn_term(file, term, in)		   /*                        */
       return;	   			   	   /*                        */
     case L_STRING:				   /*                        */
       fputc('"', file);	   			   /*                        */
-      print_quoted(file, TString(term));	   /*                        */
+      prn_quoted(file, TString(term));	   	   /*                        */
       fputc('"', file);	   			   /*                        */
       return;					   /*                        */
     case L_BLOCK:				   /*                        */
