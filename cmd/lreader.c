@@ -60,6 +60,7 @@ static Term read_args _ARG((Binding b, Term t, int sep, int term));/*        */
  static int  c_look_ahead = 0;		   	   /*                        */
  static Term look_ahead = NIL;			   /*                        */
 
+
 #define unscan(C,T) (c_look_ahead = (C), look_ahead = (T))
 
 #define GetC fgetc(in_file)
@@ -349,32 +350,27 @@ static int scan(b)			   	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	b	the binding
-**	t	the term tamplate
+**	binding	the binding
+**	term	the term tamplate
 ** Returns:	
 **___________________________________________________			     */
-static Term read_list(b, t)			   /*                        */
-  Binding b;					   /*                        */
-  Term t;					   /*                        */
-{ int c;					   /*                        */
-  Term a;					   /*                        */
-  Term *tp;					   /*                        */
-  int car = 1;					   /*                        */
- 						   /*                        */
-  for (a = read_expr(b, StackNULL);		   /*                        */
+static Term read_list(binding, term)		   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ Term *tp = &term;				   /*                        */
+  register int c;				   /*                        */
+  register Term a;				   /*                        */
+  						   /*                        */
+  for (a = read_expr(binding, StackNULL);	   /*                        */
        a != term_eof;				   /*                        */
-       a = read_expr(b, StackNULL))		   /*                        */
-  { if (car)					   /*                        */
-    { car    = 0;				   /*                        */
-      Car(t) = a;				   /*                        */
-      tp     = &Cdr(t);				   /*                        */
-    } else {					   /*                        */
-      *tp = Cons1(a);			   	   /*                        */
-      tp  = &Cdr(*tp);				   /*                        */
-    }						   /*                        */
-    c = scan(b);				   /*                        */
-    if (c == ']') return t;		   	   /*                        */
-    if (c != ',') Error("Missing comma", 0, 0);	   /*                        */
+       a  = read_expr(binding, StackNULL))	   /*                        */
+  { if (tp == &term) { Car(term) = a;  }	   /*                        */
+    else {	       *tp = Cons1(a); }	   /*                        */
+    tp = &Cdr(*tp);				   /*                        */
+    c  = scan(binding);				   /*                        */
+    if (c == ']') return term;		   	   /*                        */
+    if (c != ',') Error("Missing comma instead of ",/*                       */
+			tag_id(c), 0);	   	   /*                        */
   }						   /*                        */
   Error("Unclosed list", 0, 0);	   	   	   /*                        */
   return NIL;					   /* This will never happen */
@@ -382,12 +378,12 @@ static Term read_list(b, t)			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_args()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
-**	b	
-**	t	
+**	binding	the binding
+**	term	the term
 **	separator	the separating character
 **	terminal	ther terminating character
 ** Returns:	
@@ -402,17 +398,17 @@ static Term read_args(binding, term, separator, terminal)/*                  */
   Term x  = term;				   /*                        */
   Term a;					   /*                        */
  						   /*                        */
-  for (;;)
-  {
+  for (;;)					   /*                        */
+  {						   /*                        */
     while (c == separator) { c = scan(binding); }  /*                        */
     if (c == terminal) return term;		   /*                        */
     unscan(c, yylval);				   /*                        */
-    a = read_expr(binding, StackNULL);
-    if (a == term_eof)
+    a = read_expr(binding, StackNULL);		   /*                        */
+    if (a == term_eof)				   /*                        */
     { linenum = lno;				   /*                        */
       Error("Missing ", tag_id(terminal), 0);	   /*                        */
-    }
-
+    }						   /*                        */
+ 						   /*                        */
     Cdr(x) = Cons1(a);			   	   /*                        */
     x = Cdr(x);				   	   /*                        */
     c = scan(binding);				   /*                        */
