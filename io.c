@@ -138,7 +138,7 @@ char * get_input_file(i)			   /*                        */
   int i;					   /*                        */
 { return (i >= 0 && i < input_file_ptr		   /*                        */
 	  ? input_files[i]			   /*                        */
-	  : NULL);				   /*                        */
+	  : NULL);	 			   /*                        */
 }						   /*------------------------*/
 
 
