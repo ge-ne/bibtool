@@ -59,5 +59,6 @@
  void make_sort_key _ARG((DB db,Record rec));	   /* key.c                  */
  void set_base _ARG((String value));		   /* key.c                  */
  void set_separator _ARG((int n,String s));	   /* key.c                  */
+ String get_separator _ARG((int n));	   	   /* key.c                  */
  void start_key_gen _ARG((void));		   /* key.c                  */
 
