@@ -274,7 +274,7 @@ String s_parse(type, sp, errp)			   /*                        */
  						   /*                        */
   c  = *s;					   /*                        */
   *s = (Uchar)'\0';				   /*                        */
-  cp = new_Ustring(*sp);			   /*                        */
+  cp = newString(*sp);			   	   /*                        */
   *s = c;					   /*                        */
   if (   type == StringParseUnquotedString	   /*                        */
       || type == StringParseUnquotedBraces ) s++;  /*                        */

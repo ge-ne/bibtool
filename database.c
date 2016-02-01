@@ -400,7 +400,7 @@ static void mark_string(rec, s)			   /*                        */
 	  while ( is_allowed(*s) ) s++;		   /*                        */
 	  c = *s;				   /*                        */
 	  *s ='\0';				   /*                        */
-	  t = new_Ustring(mac);			   /*                        */
+	  t = newString(mac);			   /*                        */
 	  *s = c;				   /*                        */
 	  mac = sym_add(t,0);			   /*                        */
 	  free(t);				   /*                        */
@@ -514,7 +514,7 @@ static void preprint_string(file, db, strings, rec)/*                        */
 	      while ( is_allowed(*s) ) s++;	   /*                        */
 	      c = *s;				   /*                        */
 	      *s ='\0';				   /*                        */
-	      t = new_Ustring(mac);		   /*                        */
+	      t = newString(mac);		   /*                        */
 	      *s = c;				   /*                        */
 	      mac = sym_add(t,0);		   /*                        */
 	      free(t);				   /*                        */

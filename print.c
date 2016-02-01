@@ -104,6 +104,24 @@ void set_symbol_type(s)				   /*			     */
   { Err("Unknown symbol type ignored.\n"); }	   /*			     */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	get_symbol_type()
+** Type:	String
+** Purpose:	
+**		
+** Arguments:
+**		
+** Returns:	
+**___________________________________________________			     */
+String get_symbol_type()			   /*                        */
+{ switch (symbol_type)				   /*                        */
+  { case SYMBOL_TYPE_UPPER: return s_upper;	   /*                        */
+    case SYMBOL_TYPE_LOWER: return s_lower;	   /*                        */
+    case SYMBOL_TYPE_CASED: return s_cased;	   /*                        */
+    default: return NULL;			   /*                        */
+  }						   /*                        */
+}						   /*------------------------*/
+
 #ifdef MAYBE_IN_THE_NEXT_RELEASE
 
  static int key_type = SYMBOL_TYPE_LOWER;	   /*                        */

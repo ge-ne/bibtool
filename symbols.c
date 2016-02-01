@@ -251,8 +251,8 @@ void init_symbols()				   /*			     */
 						   /*			     */
   if ( sym_empty != NULL ) return;		   /*                        */
   for ( i = 0; i < HASHMAX; i++ ) sym_tab[i] = NULL;/*			     */
-  sym_empty    = sym_add(new_Ustring(""),-1);      /*                        */
-  sym_crossref = sym_add(new_Ustring("crossref"),-1); /*                     */
+  sym_empty    = sym_add(newString(""),-1);        /*                        */
+  sym_crossref = sym_add(newString("crossref"),-1);/*                        */
 }						   /*------------------------*/
 
  static StringTab last_stp = NULL;	
@@ -337,7 +337,7 @@ String  sym_add(s,count)			   /*			     */
     }						   /*			     */
   }						   /*			     */
   if ( count >= 0 )				   /*                        */
-  { s = new_Ustring(s); }		   	   /*			     */
+  { s = newString(s); }		   	   	   /*			     */
   *stp	   = new_string_tab(s,count<0?0:count,0);  /*			     */
   last_stp = *stp;				   /*			     */
   SymbolUsed(*stp)++;				   /*                        */

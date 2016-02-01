@@ -138,7 +138,7 @@ void def_entry_type(s)				   /*			     */
   { 						   /*                        */
     if ( case_cmp(s,EntryName(i)) )		   /*			     */
     { free(EntryName(i));			   /*                        */
-      EntryName(i) = new_Ustring(s); 		   /*			     */
+      EntryName(i) = newString(s); 		   /*			     */
       return;				   	   /*			     */
     }						   /*			     */
   }						   /*			     */
@@ -153,7 +153,7 @@ void def_entry_type(s)				   /*			     */
     if ( entry_type == (String*)NULL )		   /*			     */
     { OUT_OF_MEMORY("entry type"); }		   /*                        */
   }						   /*			     */
-  entry_type[entry_ptr++] = new_Ustring(s);	   /*		             */
+  entry_type[entry_ptr++] = newString(s);	   /*		             */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

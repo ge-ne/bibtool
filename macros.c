@@ -325,7 +325,7 @@ void def_field_type(s)				   /*                        */
   while (is_allowed(*s)) ++s;			   /*                        */
   c   = *s;					   /*                        */
   *s  = '\0';					   /*                        */
-  val = new_Ustring(name);	   		   /*                        */
+  val = newString(name);	   		   /*                        */
   *s  = c;					   /*                        */
  						   /*                        */
   { String  cp;				   	   /*                        */

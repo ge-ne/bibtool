@@ -240,7 +240,7 @@ static Token new_token(type, string)		   /*			     */
 }						   /*------------------------*/
 
 #define CopyToken(t) new_token(TokenChar(t),	\
-			       TokenSeq(t) ? new_Ustring(TokenSeq(t)) : NULL)
+			       TokenSeq(t) ? newString(TokenSeq(t)) : NULL)
 
 #define NewToken(C) new_token(C, StringNULL)
 
@@ -451,7 +451,7 @@ static Token TeX_get_token(get_fct)		   /*			     */
 	switch (tex_state)			   /*			     */
 	{ case StateN:				   /*			     */
 	    TokenChar(t) = CHAR_ESCAPE;		   /*			     */
-	    TokenSeq(t)	 = new_Ustring("par");	   /*			     */
+	    TokenSeq(t)	 = newString("par");	   /*			     */
 	    return t;				   /*			     */
 	  case StateM:				   /*			     */
 	    TokenChar(t) = CHAR_SPACE;		   /*			     */
@@ -476,7 +476,7 @@ static Token TeX_get_token(get_fct)		   /*			     */
 	}					   /*			     */
 	else if ( TokenChar(tex_line) == CHAR_EOL )/*			     */
 	{ tex_state   = StateM;			   /*			     */
-	  TokenSeq(t) = new_Ustring("");	   /*			     */
+	  TokenSeq(t) = newString("");	   	   /*			     */
 	  return t;				   /*			     */
 	}					   /*			     */
 	t2	      = tex_line;		   /*			     */
@@ -690,15 +690,15 @@ void TeX_def(s)					   /*			     */
 	   (*(ep-1)  == ' ' || *(ep-1) =='\t'))	   /*                        */
     { ep--; }					   /*                        */
     c = *ep; *ep = '\0';			   /*			     */
-    TeX_define(new_Ustring(name + 1),	   	   /*			     */
+    TeX_define(newString(name + 1),	   	   /*			     */
 	       arity,				   /*			     */
-	       new_Ustring(s + 1));		   /*			     */
+	       newString(s + 1));		   /*			     */
     *ep = c;					   /*			     */
   }						   /*                        */
   else						   /*                        */
   { TeX_active((unsigned int)*name,		   /*                        */
 	       arity,				   /*                        */
-	       new_Ustring(s+1));		   /*                        */
+	       newString(s+1));		   	   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 

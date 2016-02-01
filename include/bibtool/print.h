@@ -45,3 +45,4 @@
  void put_record _ARG((int (*fct)_ARG((int)),Record rec,DB db, String start));/* print.c*/
  void set_key_type _ARG((String s));		   /* print.c                */
  void set_symbol_type _ARG((String s));	   	   /* print.c                */
+ String get_symbol_type _ARG(());	   	   /* print.c                */

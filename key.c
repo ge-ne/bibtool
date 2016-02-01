@@ -266,13 +266,12 @@ void set_separator(n,s)				   /*			     */
   String s;				   	   /*			     */
 { String t, tp;			   	   	   /*			     */
   						   /*                        */
-						   /*                        */
   if ( n < 0 || n >= NoSeps )			   /*			     */
   { ERROR("Invalid separator specification.");     /*			     */
     return;					   /*			     */
   }						   /*			     */
  						   /*                        */
-  t = new_Ustring((char*)s);		   	   /*			     */
+  t = newString((char*)s);		   	   /*			     */
   for ( tp = t; *s ; s++ )		   	   /*			     */
   { if ( is_allowed(*s) ) *tp++ = *s; }	   	   /*			     */
   *tp = '\0';					   /*			     */
@@ -353,6 +352,24 @@ void set_base(value)				   /*			     */
   else { ERROR("Unknown base ignored."); }	   /*			     */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	get_base()
+** Type:	String
+** Purpose:	
+**		
+** Arguments:	none
+** Returns:	
+**___________________________________________________			     */
+String get_base()				   /*                        */
+{						   /*                        */
+  switch(key_base)				   /*                        */
+  { case KEY_BASE_UPPER: return (String)"upper";   /*                        */
+    case KEY_BASE_LOWER: return (String)"lower";   /*                        */
+    case KEY_BASE_DIGIT: return (String)"digit";   /*                        */
+    default: return "";				   /*                        */
+  }						   /*                        */
+}						   /*------------------------*/
+
 #define ITOA_LEN 64
 
 /*-----------------------------------------------------------------------------
@@ -422,7 +439,7 @@ static void init_key(state)			   /*                        */
   if ( state & 1 )				   /*                        */
   { 						   /*                        */
     if ( format[0] == NameNULL )		   /*                        */
-    { s = new_Ustring("%*l");		   	   /*                        */
+    { s = newString("%*l");		   	   /*                        */
       format[0] = name_format(s);		   /*                        */
       free(s);				   	   /*                        */
     }						   /*                        */
@@ -432,7 +449,7 @@ static void init_key(state)			   /*                        */
   if ( state & 2 )				   /*                        */
   { 						   /*                        */
     if ( format[1] == NameNULL )		   /*                        */
-    { s = new_Ustring("%*l%*1f");	   	   /*                        */
+    { s = newString("%*l%*1f");	   	   	   /*                        */
       format[1] = name_format(s);		   /*                        */
       free(s);				   	   /*                        */
     }						   /*                        */

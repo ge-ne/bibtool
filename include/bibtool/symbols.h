@@ -104,9 +104,16 @@
 **___________________________________________________			     */
  extern String sym_crossref;
 
-
-#define new_Ustring(S) (String)new_string((char*)(S))
-
+/*-----------------------------------------------------------------------------
+** Macro:	newString()
+** Type:	
+** Purpose:	
+**		
+** Arguments:
+**	S	
+** Returns:	
+**___________________________________________________			     */
+#define newString(S) (String)new_string((char*)(S))
 
 #ifdef __STDC__
 #define _ARG(A) A
