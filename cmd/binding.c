@@ -400,6 +400,14 @@ Term eval_term(binding, term)			   /*                        */
 	return t;				   /*                        */
       }						   /*                        */
  						   /*                        */
+    case L_IF:				   	   /*                        */
+      if (TermIsTrue(eval_bool(binding, Car(term))))/*                       */
+      { return eval_term(binding, Cadr(term)); }   /*                        */
+      						   /*                        */
+      return (Cddr(term)			   /*                        */
+	      ? eval_term(binding, Cddr(term))	   /*                        */
+	      : NIL);				   /*                        */
+ 						   /*                        */
     case L_FUNCTION:				   /*                        */
       key = TString(term);			   /*                        */
       s	  = get_bind(binding, key);	   	   /*                        */

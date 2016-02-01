@@ -76,6 +76,27 @@ BUnit::run(name       => "macro.file-3",
 	   expected_err	=> '',
 	   expected_out	=> "\"a.bib\"\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name       => "output.file-1",
+	   args		=> '--eval',
+	   resource	=> "output.file \"a.bib\";\n",
+	   expected_err	=> '',
+	   expected_out	=> "\"a.bib\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name       => "output.file-2",
+	   args		=> '--eval',
+	   resource	=> "output.file \"a.bib\";output.file;\n",
+	   expected_err	=> '',
+	   expected_out	=> "\"a.bib\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name       => "output.file-3",
+	   args		=> '--eval',
+	   resource	=> "output.file {a.bib};output.file;\n",
+	   expected_err	=> '',
+	   expected_out	=> "\"a.bib\"\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

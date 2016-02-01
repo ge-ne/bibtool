@@ -160,6 +160,42 @@ BUnit::run(name         => 'or-4',
 	   expected_err => '',
 	   expected_out => "false\n" );
 
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'if-1',
+	   args	        => '--eval',
+	   resource     => 'if(true){111}',
+	   expected_err => '',
+	   expected_out => "111\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'if-2',
+	   args	        => '--eval',
+	   resource     => 'if(false){111}',
+	   expected_err => '',
+	   expected_out => "nil\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'if-3',
+	   args	        => '--eval',
+	   resource     => 'if(true){111}else{222}',
+	   expected_err => '',
+	   expected_out => "111\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'if-4',
+	   args	        => '--eval',
+	   resource     => 'if(false){111}else{222}',
+	   expected_err => '',
+	   expected_out => "222\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'if-5',
+	   args	        => '--eval',
+	   resource     => 'if(){111}else{222}',
+	   expected_err => '',
+	   expected_out => "222\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 
