@@ -70,7 +70,7 @@ package BUnit;
 use strict;
 use Exporter;
 use base qw(Exporter);
-our @EXPORT    = qw(all summary run);
+our @EXPORT    = qw(all summary run quiet);
 our @EXPORT_OK = qw();
 
 use Cwd;
@@ -85,7 +85,7 @@ use constant TEST_BIB =>'_test.bib';
 # Variable:	$verbose
 # Description:	
 #
-our $verbose = 1;
+my $verbose = 1;
 
 #------------------------------------------------------------------------------
 # Variable:	$VERSION
@@ -118,6 +118,14 @@ our %summary = ();
 our %names = ();
 
 our ($success, $ignored, $failure);
+
+#------------------------------------------------------------------------------
+# Function:	quiet
+#
+sub quiet
+{
+  $verbose = 0;
+}
 
 #------------------------------------------------------------------------------
 # Function:	out
