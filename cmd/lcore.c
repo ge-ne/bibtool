@@ -595,8 +595,11 @@ Term g_print(binding, term)			   /*                        */
   Term term;					   /*                        */
 { 					   	   /*                        */
   for (term = Cdr(term); term ; term = Cdr(term))  /*                        */
-  { Term t = Car(term);				   /*                        */
-    if (t == NIL) continue;			   /*                        */
+  { Term t = eval_term(binding, Car(term));	   /*                        */
+    if (t == NIL)				   /*                        */
+    { fputs("[]", stdout);	   		   /*                        */
+      continue;			   		   /*                        */
+    }						   /*                        */
     switch(TType(t))			   	   /*                        */
     { case L_STRING:				   /*                        */
       case L_BLOCK:				   /*                        */
