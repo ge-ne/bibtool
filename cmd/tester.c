@@ -13,6 +13,7 @@
 #include <string.h>
 #include <bibtool/error.h>
 #include <bibtool/io.h>
+#include <bibtool/bibtool.h>
 #include "binding.h"
 #include "lcore.h"
 
@@ -95,7 +96,7 @@ int main(argc, argv)				   /*                        */
   int  i;					   /*                        */
   char *arg;					   /*                        */
  						   /*                        */
-  init_type();
+  init_bibtool(argv[0]);
   init_error(stderr);				   /*                        */
   init_lreader();				   /*                        */
  						   /*                        */
