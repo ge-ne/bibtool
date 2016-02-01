@@ -292,6 +292,19 @@ static Term str_s_rsc(binding, name, term, rp)	   /*                        */
     val  = TString(term);				\
     SETTER_FCT;						\
     return term; }
+#define BindFunc(NAME,GETTER,GET_FCT,SETTER,SET_FCT)	\
+  static Term GETTER (binding, term)			\
+    Binding binding;					\
+    Term term;						\
+  { return GET_FCT; }					\
+  static Term SETTER (binding, term)			\
+    Binding binding;					\
+    Term term;						\
+  { String val;						\
+    term = eval_str(binding, Cadr(term));		\
+    val  = TString(term);				\
+    SET_FCT;						\
+    return GET_FCT; }
 #include "builtin.h"
 
 #undef Bind
@@ -300,6 +313,7 @@ static Term str_s_rsc(binding, name, term, rp)	   /*                        */
 #undef BindNum
 #undef BindStr
 #undef BindFct
+#undef BindFunc
 
 /*-----------------------------------------------------------------------------
 ** Function:	root_binding()
@@ -317,6 +331,7 @@ Binding root_binding()				   /*                        */
 #define BindNum(NAME,GET,SET,R)	     Bind(NAME, GET, SET, SYM_BUILTIN, L_FIELD)
 #define BindStr(NAME,GET,SET,R)	     Bind(NAME, GET, SET, SYM_BUILTIN, L_FIELD)
 #define BindFct(NAME,GET,SET,EX)     Bind(NAME, GET, SET, SYM_BUILTIN, L_FIELD)
+#define BindFunc(NAME,GET,G,SET,S)   Bind(NAME, GET, SET, SYM_BUILTIN, L_FIELD)
 #define Bind(NAME,GET,SET,FLAGS,OP)  bind(b, symdef(symbol((String)NAME),     \
 						    OP, FLAGS, GET, SET));
 #define BindSym(NAME,SYM)	      bind(b, SYM);

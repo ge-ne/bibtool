@@ -95,6 +95,7 @@ int main(argc, argv)				   /*                        */
   int  i;					   /*                        */
   char *arg;					   /*                        */
  						   /*                        */
+  init_type();
   init_error(stderr);				   /*                        */
   init_lreader();				   /*                        */
  						   /*                        */
