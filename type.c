@@ -66,11 +66,11 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 void init_type()				   /*                        */
-{ register int i;				   /*                        */
+{ register unsigned short int i;		   /*                        */
  						   /*                        */
   for ( i = 0; i < 256; ++i )			   /*                        */
-  { trans_lower[i] = is_upper(i)?to_lower(i):i;	   /*                        */
-    trans_upper[i] = is_lower(i)?to_upper(i):i;	   /*                        */
+  { trans_lower[i] = is_upper(i) ? to_lower(i) : i;/*                        */
+    trans_upper[i] = is_lower(i) ? to_upper(i) : i;/*                        */
     trans_id[i] = i;				   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
