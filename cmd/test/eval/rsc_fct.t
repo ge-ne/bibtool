@@ -260,6 +260,62 @@ BUnit::run(name         => "clear.ignored.words-err-1",
 	   expected_err	=> "\n*** BibTool ERROR: Wrong number of arguments for clear.ignored.words\n",
 	   expected_out	=> '' );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => "regexp.syntax-1",
+	   args		=> '--eval',
+	   resource	=> "regexp.syntax;\n",
+	   expected_err	=> '',
+	   expected_out	=> "\"emacs\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "regexp.syntax-2",
+	   args		=> '--eval',
+	   resource	=> "regexp.syntax {emacs};\n",
+	   expected_err	=> '',
+	   expected_out	=> "\"emacs\"\n" );
+#------------------------------------------------------------------------------
+BUnit::run(name         => "regexp.syntax-3",
+	   args		=> '--eval',
+	   resource	=> "regexp.syntax {awk};\n",
+	   expected_err	=> '',
+	   expected_out	=> "\"awk\"\n" );
+#------------------------------------------------------------------------------
+BUnit::run(name         => "regexp.syntax-4",
+	   args		=> '--eval',
+	   resource	=> "regexp.syntax {grep};\n",
+	   expected_err	=> '',
+	   expected_out	=> "\"grep\"\n" );
+#------------------------------------------------------------------------------
+BUnit::run(name         => "regexp.syntax-5",
+	   args		=> '--eval',
+	   resource	=> "regexp.syntax {egrep};\n",
+	   expected_err	=> '',
+	   expected_out	=> "\"egrep\"\n" );
+#------------------------------------------------------------------------------
+BUnit::run(name         => "regexp.syntax-6",
+	   args		=> '--eval',
+	   resource	=> "regexp.syntax {posix_awk};\n",
+	   expected_err	=> '',
+	   expected_out	=> "\"posix_awk\"\n" );
+#------------------------------------------------------------------------------
+BUnit::run(name         => "regexp.syntax-7",
+	   args		=> '--eval',
+	   resource	=> "regexp.syntax {posix_egrep};\n",
+	   expected_err	=> '',
+	   expected_out	=> "\"posix_egrep\"\n" );
+#------------------------------------------------------------------------------
+BUnit::run(name         => "regexp.syntax-8",
+	   args		=> '--eval',
+	   resource	=> "regexp.syntax {sed};\n",
+	   expected_err	=> '',
+	   expected_out	=> "\"sed\"\n" );
+#------------------------------------------------------------------------------
+BUnit::run(name         => "regexp.syntax-err-1",
+	   args		=> '--eval',
+	   resource	=> "regexp.syntax {abc};\n",
+	   expected_err	=> "\n*** BibTool WARNING: Unknown regexp syntax: abc\n\n",
+	   expected_out	=> "\"emacs\"\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

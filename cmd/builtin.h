@@ -203,7 +203,7 @@ Bind(	 "quote",		     NULL,
 				     NULL,		SYM_NONE, L_QUOTE    )
 BindBool("quiet",		     g_quiet,
 				     s_quiet,		rsc_quiet	     )
-BindFct( "regexp.syntax",	     g_regex_syntax,
+BindFunc("regexp.syntax",	     g_regex_syntax,	StringTerm((String)get_regex_syntax()),
 				     s_regex_syntax,	set_regex_syntax((char*)val) )
 BindFct( "rename.field",	     g_rename_field,
 				     s_rename_field,	rename_field(val)    )
