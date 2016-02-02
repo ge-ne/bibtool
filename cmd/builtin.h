@@ -209,7 +209,7 @@ BindFct( "rename.field",	     g_rename_field,
 				     s_rename_field,	rename_field(val)    )
 Bind(	 "resource",		     NULL,
 				     NULL,		SYM_BUILTIN, L_FIELD )
-BindFct( "resource.search.path",     g_search_path,
+BindFunc("resource.search.path",     g_search_path,	StringTerm(rsc_v_rsc),
 				     s_search_path,	set_rsc_path(val)    )
 BindFct( "rewrite.rule",	     g_rewrite_rule,
 				     s_rewrite_rule,	add_rewrite_rule(val))

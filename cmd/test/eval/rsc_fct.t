@@ -316,6 +316,19 @@ BUnit::run(name         => "regexp.syntax-err-1",
 	   expected_err	=> "\n*** BibTool WARNING: Unknown regexp syntax: abc\n\n",
 	   expected_out	=> "\"emacs\"\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => "resource.search.path-1",
+	   args		=> '--eval',
+	   resource	=> "resource.search.path;\n",
+	   expected_out	=> "\".:/usr/local/lib/BibTool\"\n",
+	   expected_err	=> "" );
+#------------------------------------------------------------------------------
+BUnit::run(name         => "resource.search.path-2",
+	   args		=> '--eval',
+	   resource	=> "resource.search.path\"abc\";\n",
+	   expected_out	=> "\"abc\"\n",
+	   expected_err	=> "" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 
