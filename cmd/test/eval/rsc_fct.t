@@ -248,11 +248,17 @@ BUnit::run(name         => "ignored.word-1",
 	   expected_out	=> "[\"a\" \"an\" \"das\" \"der\" \"die\" \"ein\" \"eine\" \"einem\" \"einen\" \"einer\" \"eines\" \"el\" \"il\" \"la\" \"le\" \"les\" \"the\" \"un\" \"une\"]\n" );
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => "ignored.word-2",
+BUnit::run(name         => "clear.ignored.words-1",
 	   args		=> '--eval',
-	   resource	=> "ignored.word \"aaa\";\n",
+	   resource	=> "clear.ignored.words;ignored.word;\n",
 	   expected_err	=> '',
-	   expected_out	=> "[\"a\" \"aaa\" \"an\" \"das\" \"der\" \"die\" \"ein\" \"eine\" \"einem\" \"einen\" \"einer\" \"eines\" \"el\" \"il\" \"la\" \"le\" \"les\" \"the\" \"un\" \"une\"]\n" );
+	   expected_out	=> "nil\n" );
+#------------------------------------------------------------------------------
+BUnit::run(name         => "clear.ignored.words-err-1",
+	   args		=> '--eval',
+	   resource	=> "clear.ignored.words 123;\n",
+	   expected_err	=> "\n*** BibTool ERROR: Wrong number of arguments for clear.ignored.words\n",
+	   expected_out	=> '' );
 
 1;
 #------------------------------------------------------------------------------
