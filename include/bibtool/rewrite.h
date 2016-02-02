@@ -37,6 +37,7 @@
  void add_check_rule _ARG((String s));		   /*                        */
  void add_extract _ARG((String s, int regexp, int notp));/*                  */
  void add_field _ARG((String spec));		   /*                        */
+ void foreach_addlist _ARG((int (*fct)(String,String)));/* rewrite.c         */
  void add_rewrite_rule _ARG((String s));	   /*                        */
  void clear_addlist _ARG((void));		   /*                        */
  void remove_field _ARG((String field, Record rec));/*                       */

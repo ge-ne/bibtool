@@ -202,6 +202,28 @@ void foreach_macro(fct)				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	each_macro()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**	m	
+**	fct	
+** Returns:	
+**___________________________________________________			     */
+int each_macro(m, fct)				   /*                        */
+  Macro m;					   /*                        */
+  int (*fct) _ARG((String ,String));		   /*                        */
+{						   /*                        */
+  for (; m != MacroNULL; 			   /*                        */
+       m = NextMacro(m))			   /*                        */
+  { if (! (*fct)(MacroName(m), MacroValue(m))) 	   /*                        */
+      return 1;					   /*                        */
+  }						   /*                        */
+  return 0;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	dump_mac()
 ** Purpose:	Write macros to a file.
 ** Arguments:

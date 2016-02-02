@@ -124,6 +124,20 @@ void clear_addlist()				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	foreach_addlist()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**	fct	
+** Returns:	
+**___________________________________________________			     */
+int foreach_addlist(fct)			   /*                        */
+  int (*fct) _ARG((String key, String val));	   /*                        */
+{ return each_macro(addlist, fct);		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	add_field()
 ** Purpose:	Save a token and value for addition.
 ** Arguments:

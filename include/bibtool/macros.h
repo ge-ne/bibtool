@@ -112,7 +112,10 @@
  int def_macro _ARG((String name,String val,int count));/* macros.c          */
  void def_field_type _ARG((String  s));		   /* macros.c               */
  void dump_mac _ARG((char *fname,int allp));	   /* macros.c               */
- void foreach_macro _ARG((int (*fct) _ARG((String , String))));/* macros.c   */
+ int each_macro _ARG((Macro m,int (*fct)(String,String)));/* macros.c        */
+ void foreach_macro _ARG((int (*fct)(String,String)));/* macros.c            */
  void free_macro _ARG((Macro mac));		   /* macros.c               */
  void init_macros _ARG((void));			   /* macros.c               */
  void save_key _ARG((String s, String key));	   /* macros.c               */
+
+/*---------------------------------------------------------------------------*/
