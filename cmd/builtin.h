@@ -117,7 +117,7 @@ Bind(	 "input",		     g_input,
 				     s_input,		SYM_BUILTIN, L_FIELD )
 Bind(	 "if",			     NULL,
 				     NULL,		SYM_NONE, L_IF	     )
-BindFct( "ignored.word",	     g_ign_word,
+BindFunc("ignored.word",	     g_ign_word,	g_ign_(binding,term),
 				     s_ign_word,	add_ignored_word(val))
 Bind(	 "ilike",		     NULL,
 				     NULL,		SYM_NONE, L_ILIKE    )

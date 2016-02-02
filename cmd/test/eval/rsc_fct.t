@@ -240,6 +240,20 @@ BUnit::run(name         => "symbol.type-32",
 	   expected_err	=> '',
 	   expected_out	=> "\"cased\"\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => "ignored.word-1",
+	   args		=> '--eval',
+	   resource	=> "ignored.word;\n",
+	   expected_err	=> '',
+	   expected_out	=> "[\"a\" \"an\" \"das\" \"der\" \"die\" \"ein\" \"eine\" \"einem\" \"einen\" \"einer\" \"eines\" \"el\" \"il\" \"la\" \"le\" \"les\" \"the\" \"un\" \"une\"]\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "ignored.word-2",
+	   args		=> '--eval',
+	   resource	=> "ignored.word \"aaa\";\n",
+	   expected_err	=> '',
+	   expected_out	=> "[\"a\" \"aaa\" \"an\" \"das\" \"der\" \"die\" \"ein\" \"eine\" \"einem\" \"einen\" \"einer\" \"eines\" \"el\" \"il\" \"la\" \"le\" \"les\" \"the\" \"un\" \"une\"]\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

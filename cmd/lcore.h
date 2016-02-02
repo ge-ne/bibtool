@@ -36,6 +36,7 @@ extern Term g_field _ARG((Binding b, Term t));	   /*                        */
 extern Term s_field _ARG((Binding b, Term t));	   /*                        */
 extern Term g_ge _ARG((Binding b, Term t));	   /*                        */
 extern Term g_gt _ARG((Binding b, Term t));	   /*                        */
+extern Term g_ign_ _ARG((Binding b, Term t));	   /*                        */
 extern Term g_input _ARG((Binding b, Term t));	   /*                        */
 extern Term s_input _ARG((Binding b, Term t));	   /*                        */
 extern Term g_le _ARG((Binding b, Term t));	   /*                        */

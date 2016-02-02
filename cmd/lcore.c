@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <bibtool/error.h>
+#include <bibtool/key.h>
 #include <bibtool/symbols.h>
 #include <bibtool/sbuffer.h>
 #include <bibtool/io.h>
@@ -944,6 +945,26 @@ Term g_mod(binding, term)			   /*                        */
   if (d	== 0) ErrorNF("Modulo by 0",0);		   /*                        */
   return NumberTerm(val % d);			   /*                        */
 }						   /*------------------------*/
+
+static Term *tp;
+
+static int g__ign(s)
+  String s;
+{ *tp = Cons1(StringTerm(s));
+  tp = &Cdr(*tp);
+  return 1;
+}
+
+Term g_ign_(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ Term t = NIL;
+  tp 	 = & t;
+  foreach_ignored_word(g__ign);
+  tp = NULL;
+  return t;
+}
+
 
 /*-----------------------------------------------------------------------------
 ** Function:	hash()
