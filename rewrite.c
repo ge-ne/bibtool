@@ -1104,6 +1104,9 @@ int is_selected(db,rec)	   		   	   /*			     */
   return FALSE;				   	   /* return the result.     */
 }						   /*------------------------*/
 
+#ifdef REGEX
+#endif
+
 /*-----------------------------------------------------------------------------
 ** Function:	set_regex_syntax()
 ** Type:	int
@@ -1139,4 +1142,28 @@ int set_regex_syntax(name)			   /*                        */
   }						   /*                        */
 #endif
   return 0;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	get_regex_syntax()
+** Type:	char*
+** Purpose:	Getter for the regex syntax.
+**		
+** Arguments:	none
+** Returns:	
+**___________________________________________________			     */
+char* get_regex_syntax()			   /*                        */
+{						   /*                        */
+#ifdef REGEX
+  switch(re_syntax_options)			   /*                        */
+  { case RE_SYNTAX_EMACS:       return "emacs";	   /*                        */
+    case RE_SYNTAX_AWK:         return "awk";	   /*                        */
+    case RE_SYNTAX_GREP:        return "grep";	   /*                        */
+    case RE_SYNTAX_EGREP:       return "egrep";	   /*                        */
+    case RE_SYNTAX_POSIX_AWK:   return "posix_awk";/*                        */
+    case RE_SYNTAX_POSIX_EGREP: return "posix_egrep";/*                      */
+    case RE_SYNTAX_SED:         return "sed";	   /*                        */
+  }						   /*                        */
+#endif
+  return "";				   	   /*                        */
 }						   /*------------------------*/
