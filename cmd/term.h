@@ -178,6 +178,8 @@ extern String tag_id _ARG((int c));
 
 extern int list_length _ARG((Term t));
 extern int parse_term _ARG((char* file, int(*action)(Term t)));
+extern void dump_terms(FILE*file);
+extern unsigned int hash(String s);
 
 extern SymDef symdef _ARG((String name,
 			   short int op,

@@ -961,27 +961,6 @@ Term g_ign_(binding, term)			   /*                        */
   return t;
 }
 
-
-/*-----------------------------------------------------------------------------
-** Function:	hash()
-** Type:	int
-** Purpose:	
-**		
-** Arguments:
-**	s	
-** Returns:	
-**___________________________________________________			     */
-unsigned int hash(s)				   /*                        */
-  register String s;				   /*                        */
-{ register unsigned int hash = 0;		   /*                        */
-  unsigned int i 	     = 0;		   /*                        */
- 						   /*                        */
-  while (*s)					   /*                        */
-  { hash += (*s++) >> ((i++)&7); }		   /*                        */
-  						   /*                        */
-  return hash;				   	   /*                        */
-}						   /*------------------------*/
-
 /*-----------------------------------------------------------------------------
 ** Function:	init_lreader()
 ** Type:	void

@@ -38,6 +38,8 @@
 /* External Programs                                                         */
 /*===========================================================================*/
 
+#define DEBUG_MEM
+
 /*---------------------------------------------------------------------------*/
 
 
@@ -52,7 +54,7 @@
 **___________________________________________________			     */
 String tag_id(c)			   	   /*                        */
   int c;					   /*                        */
-{ static Uchar buffer[2];
+{ static Uchar buffer[2];			   /*                        */
 						   /*                        */
   switch (c)					   /*                        */
   { case L_STRING:   return (String)"string";	   /*                        */
@@ -106,6 +108,12 @@ String tag_id(c)			   	   /*                        */
 
  static Term terms = NIL;			   /*                        */
 
+#ifdef DEBUG_MEM
+ static Term *t_map = NULL;
+ static size_t t_map_size = 0;
+ static size_t t_map_ptr = 0;
+#endif
+
 /*-----------------------------------------------------------------------------
 ** Function:	new_term()
 ** Type:	Term
@@ -129,7 +137,38 @@ static Term new__t(type, cdr)			   /*                        */
   TType(t)     = type;			   	   /*                        */
   Cdr(t)       = cdr;			   	   /*                        */
   TRefCount(t) = 1L;				   /*                        */
+#ifdef DEBUG_MEM
+  if (t_map_ptr >= t_map_size)
+  { t_map_size += 8192;
+    t_map	= (t_map
+		   ? calloc(t_map_size, sizeof(Term))
+		   : malloc(t_map_size*sizeof(Term)));
+  }
+  t_map[t_map_ptr++] = t;
+#endif
   return t;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	dump_terms()
+** Type:	void
+** Purpose:	
+**		
+** Arguments:
+**	file	
+** Returns:	nothing
+**___________________________________________________			     */
+void dump_terms(file)				   /*                        */
+  FILE* file;					   /*                        */
+{
+#ifdef DEBUG_MEM
+  size_t i;					   /*                        */
+  for (i = 0; i < t_map_ptr; i++)		   /*                        */
+  { fputs(TType(t_map[i])?"*":".", file);	   /*                        */
+    if (i%64 == 63) fputc('\n', file);		   /*                        */
+  }						   /*                        */
+  fputc('\n', file);				   /*                        */
+#endif
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -502,6 +541,26 @@ int list_length(list)				   /*                        */
     list = Cdr(list);				   /*                        */
   }						   /*                        */
   return i;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	hash()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**	s	
+** Returns:	
+**___________________________________________________			     */
+unsigned int hash(s)				   /*                        */
+  register String s;				   /*                        */
+{ register unsigned int hash = 0;		   /*                        */
+  unsigned int i 	     = 0;		   /*                        */
+ 						   /*                        */
+  while (*s)					   /*                        */
+  { hash += (*s++) >> ((i++)&7); }		   /*                        */
+  						   /*                        */
+  return hash;				   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

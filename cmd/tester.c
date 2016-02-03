@@ -48,10 +48,12 @@ int action(b, t)				   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
   if (evaluate)					   /*                        */
-  { result = eval_term(b, t); }	   		   /*                        */
+  { if (result) free_term(result);		   /*                        */
+    result = eval_term(b, t); }	   		   /*                        */
   else						   /*                        */
   { print_term(stdout, t);			   /*                        */
     putchar('\n');				   /*                        */
+    free_term(t);				   /*                        */
   }						   /*                        */
   return 0;					   /*                        */
 }						   /*------------------------*/
@@ -77,6 +79,7 @@ void run_test(file)				   /*                        */
   { print_term(stdout, result);			   /*                        */
     putchar('\n');				   /*                        */
   }						   /*                        */
+  free_term(result);				   /*                        */
 }						   /*------------------------*/
 
 #define ArgIs(A,B) strcmp(A, arg) == 0 || strcmp(B, arg) == 0
@@ -96,7 +99,7 @@ int main(argc, argv)				   /*                        */
   int  i;					   /*                        */
   char *arg;					   /*                        */
  						   /*                        */
-  init_bibtool(argv[0]);
+  init_bibtool(argv[0]);			   /*                        */
   init_error(stderr);				   /*                        */
   init_lreader();				   /*                        */
  						   /*                        */
@@ -136,5 +139,6 @@ int main(argc, argv)				   /*                        */
     return -1;					   /*                        */
   }						   /*                        */
  						   /*                        */
+  dump_terms(stderr);				   /*                        */
   return 0;					   /*                        */
 }						   /*------------------------*/
