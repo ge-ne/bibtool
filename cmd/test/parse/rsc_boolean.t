@@ -72,7 +72,7 @@ sub boolean_tests
   BUnit::run(name       => "$cmd-4",
 	   resource     => "$cmd = {true};\n" ,
 	   expected_err	=> '',
-	   expected_out	=> "$cmd(\{true\})\n" );
+	   expected_out	=> "$cmd(\"true\")\n" );
 }
 
   boolean_tests('apply.alias');

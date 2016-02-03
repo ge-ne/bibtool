@@ -303,7 +303,6 @@ Term eval_bool(binding, term)			   /*                        */
       return term_true;			   	   /*                        */
     case L_NUMBER:				   /*                        */
       return TNumber(term) ? term_true : term_false;/*                       */
-    case L_BLOCK:				   /*                        */
     case L_STRING:				   /*                        */
       return *TString(term) ? term_true	: term_false;/*                      */
     case L_TRUE:				   /*                        */
@@ -603,7 +602,6 @@ Term g_print(binding, term)			   /*                        */
     }						   /*                        */
     switch(TType(t))			   	   /*                        */
     { case L_STRING:				   /*                        */
-      case L_BLOCK:				   /*                        */
 	fputs((char*)TString(t), stdout);	   /*                        */
 	break;					   /*                        */
       case L_NUMBER:				   /*                        */
@@ -623,6 +621,7 @@ Term g_print(binding, term)			   /*                        */
 	printf("--- 0x%x",TType(t));	   	   /*                        */
 #endif
     }						   /*                        */
+    free_term(t);				   /*                        */
   }		   				   /*                        */
   return NIL;			   		   /*                        */
 }						   /*------------------------*/
@@ -681,7 +680,6 @@ Term g_setq(binding, term)		   	   /*                        */
  						   /*                        */
   return setq(binding, TString(car), Cadr(term) ); /*                        */
 }						   /*------------------------*/
-
 /*-----------------------------------------------------------------------------
 ** Function:	scanf_num()
 ** Type:	long
@@ -760,10 +758,8 @@ Term eval_str(binding, term)			   /*                        */
 { 						   /*                        */
   term = eval_term(binding, term);		   /*                        */
  						   /*                        */
-  if (term == NIL)	   			   /*                        */
-    return StringTerm((String)"");		   /*                        */
-  if (TermIsString(term) || TermIsBlock(term))	   /*                        */
-    return term;		   		   /*                        */
+  if (term == NIL) return StringTerm((String)"");  /*                        */
+  if (TermIsString(term)) return term;		   /*                        */
 #ifdef TODO
   if (TermIsList(term))
   { StringBuffer *sb = sbopen();

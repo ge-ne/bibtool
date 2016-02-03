@@ -86,7 +86,7 @@ static Term scan_block()			   /*                        */
     sbputc(c, sb);			   	   /*                        */
   }					   	   /*                        */
 					       	   /*                        */
-  t = BlockTerm((String)sbflush(sb));      	   /*                        */
+  t = StringTerm((String)sbflush(sb));      	   /*                        */
   sbclose(sb);				   	   /*                        */
   return t;			   	   	   /*                        */
 }						   /*------------------------*/

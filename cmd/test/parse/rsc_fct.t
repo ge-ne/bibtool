@@ -62,12 +62,12 @@ sub fct_tests
   BUnit::run(name       => "$cmd-3",
 	   resource	=> "$cmd = \{123\};\n" ,
 	   expected_err	=> '',
-	   expected_out	=> "$cmd(\{123\})\n" );
+	   expected_out	=> "$cmd(\"123\")\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name       => "$cmd-4",
 	   resource	=> "$cmd \{123\};\n" ,
 	   expected_err	=> '',
-	   expected_out	=> "$cmd(\{123\})\n" );
+	   expected_out	=> "$cmd(\"123\")\n" );
 }
 
 fct_tests('add.field');

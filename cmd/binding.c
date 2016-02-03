@@ -401,7 +401,6 @@ Term eval_term(binding, term)			   /*                        */
       return term_eof;	   			   /*                        */
  						   /*                        */
     case L_STRING:				   /*                        */
-    case L_BLOCK:				   /*                        */
     case L_NUMBER:				   /*                        */
     case L_TRUE:				   /*                        */
     case L_FALSE:				   /*                        */

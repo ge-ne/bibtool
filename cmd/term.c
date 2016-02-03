@@ -96,9 +96,15 @@ String tag_id(c)			   	   /*                        */
 /*---------------------------------------------------------------------------*/
 
 
- Term term_eof;
+/*-----------------------------------------------------------------------------
+** Variable:	term_eof
+** Purpose:	
+**		
+**		
+**___________________________________________________			     */
+ Term term_eof;					   /*                        */
 
- static Term terms = NIL;
+ static Term terms = NIL;			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	new_term()
@@ -106,14 +112,12 @@ String tag_id(c)			   	   /*                        */
 ** Purpose:	Allocate a new term and initialize it.
 **		
 ** Arguments:
-**	sym	the symdef
-**	car	the car
+**	type	the term type
 **	cdr	the cdr
 ** Returns:	
 **___________________________________________________			     */
-Term new_term(type, car, cdr)			   /*                        */
+static Term new__t(type, cdr)			   /*                        */
   short int type;				   /*                        */
-  Term car;					   /*                        */
   Term cdr;					   /*                        */
 { register Term t = terms;			   /*                        */
   						   /*                        */
@@ -123,9 +127,28 @@ Term new_term(type, car, cdr)			   /*                        */
     if (t == NIL) OUT_OF_MEMORY("term");	   /*                        */
   }	   					   /*                        */
   TType(t)     = type;			   	   /*                        */
-  Car(t)       = car;			   	   /*                        */
   Cdr(t)       = cdr;			   	   /*                        */
   TRefCount(t) = 1L;				   /*                        */
+  return t;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	new_term()
+** Type:	Term
+** Purpose:	Allocate a new term and initialize it.
+**		
+** Arguments:
+**	type	the term type
+**	car	the car
+**	cdr	the cdr
+** Returns:	
+**___________________________________________________			     */
+Term new_term(type, car, cdr)			   /*                        */
+  short int type;				   /*                        */
+  Term car;					   /*                        */
+  Term cdr;					   /*                        */
+{ register Term t = new__t(type, cdr);		   /*                        */
+  Car(t) = car;			   	   	   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -140,17 +163,8 @@ Term new_term(type, car, cdr)			   /*                        */
 **___________________________________________________			     */
 Term new_term_num(n)				   /*                        */
   long n;					   /*                        */
-{ register Term t = terms;			   /*                        */
-  						   /*                        */
-  if (t) { terms = Car(t); }			   /*                        */
-  else						   /*                        */
-  { t = (Term)malloc(sizeof(STerm));		   /*                        */
-    if (t == NIL) OUT_OF_MEMORY("term");	   /*                        */
-  }	   					   /*                        */
-  TType(t)     = L_NUMBER;			   /*                        */
-  TNumber(t)   = n;				   /*                        */
-  Cdr(t)       = NIL;			   	   /*                        */
-  TRefCount(t) = 1L;				   /*                        */
+{ register Term t = new__t(L_NUMBER, NIL);	   /*                        */
+  TNumber(t) = n;				   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -167,17 +181,8 @@ Term new_term_num(n)				   /*                        */
 Term new_t_string(type, s)		   	   /*                        */
   short int type;				   /*                        */
   String s;					   /*                        */
-{ register Term t = terms;			   /*                        */
-  						   /*                        */
-  if (t) { terms = Car(t); }			   /*                        */
-  else						   /*                        */
-  { t = (Term)malloc(sizeof(STerm));		   /*                        */
-    if (t == NIL) OUT_OF_MEMORY("term");	   /*                        */
-  }	   					   /*                        */
-  TType(t)     = type;			   	   /*                        */
-  TString(t)   = s;				   /*                        */
-  Cdr(t)       = NIL;			   	   /*                        */
-  TRefCount(t) = 1L;				   /*                        */
+{ register Term t = new__t(type, NIL);		   /*                        */
+  TString(t) = s;				   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -200,18 +205,19 @@ void free_term(t)				   /*                        */
  						   /*                        */
   cdr = Cdr(t);					   /*                        */
  						   /*                        */
-#ifdef TODO
   switch (TType(t))				   /*                        */
-  { case -10:					   /* list type              */
-      free_term(Car(t));			   /*                        */
+  { case L_FIELD:				   /*                        */
+    case L_STRING:				   /*                        */
+    case L_FUNCTION:				   /*                        */
+
+    case L_NUMBER:				   /*                        */
+      Car(t) = NIL;
       break;					   /*                        */
-    case -11:					   /* number type            */
-    case -12:					   /* string type            */
+    default:					   /*                        */
+      if (Car(t)) free_term(Car(t));		   /*                        */
       break;					   /*                        */
-    default:					   /* locked                 */
-      return;					   /*                        */
   }						   /*                        */
-#endif
+ 
   Car(t) = terms;				   /*                        */
   terms = t;					   /*                        */
  						   /*                        */
@@ -219,6 +225,7 @@ void free_term(t)				   /*                        */
   { free_term(cdr);			   	   /*                        */
     Cdr(t) = NIL;				   /*                        */
   }						   /*                        */
+  TType(t) = 0;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -366,11 +373,6 @@ static void prn_term(file, term, in)		   /*                        */
       fputc('"', file);	   			   /*                        */
       prn_quoted(file, TString(term));	   	   /*                        */
       fputc('"', file);	   			   /*                        */
-      return;					   /*                        */
-    case L_BLOCK:				   /*                        */
-      fputc('{', file);	   			   /*                        */
-      fputs((char*)TString(term), file);	   /*                        */
-      fputc('}', file);	   			   /*                        */
       return;					   /*                        */
     case L_FIELD:				   /*                        */
       prn_field(file, term);			   /*                        */
