@@ -84,8 +84,8 @@ typedef struct S_TERM {				   /*                        */
 #define TNumber(T)		((T)->a.number)
 #define TRefCount(T)		((T)->ref_count)
 
-#define LinkTerm(T)		TRefCount(T)++
-#define UnlinkTerm(T)		TRefCount(T)--
+#define LinkTerm(T)		if(T) TRefCount(T)++
+#define UnlinkTerm(T)		if ((T) && TRefCount(T)-- <= 0) free_term(T)
 
 #define Caar(T)			Car(Car(T))
 #define Cdar(T)			Cdr(Car(T))

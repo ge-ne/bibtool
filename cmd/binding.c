@@ -115,19 +115,22 @@ Term setq(b, key, term)		   		   /*                        */
    						   /*                        */
   for (junk = BJunks(b)[h]; junk; junk = NextJunk(junk))/*                   */
   { if (SymName(junk) == key)			   /*                        */
-    { SymValue(junk) = term;		   	   /*                        */
+    { UnlinkTerm(SymValue(junk));		   /*                        */
+      SymValue(junk) = term;		   	   /*                        */
+      LinkTerm(term);				   /*                        */
       return term;				   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
-  junk           = symdef(key,			   /*                        */
-			  L_FIELD,		   /*                        */
-			  SYM_NONE,		   /*                        */
-			  g_field,		   /*                        */
-			  g_setq);  		   /*                        */
+  junk = symdef(key,			   	   /*                        */
+		L_FIELD,		   	   /*                        */
+		SYM_NONE,		   	   /*                        */
+		g_field,		   	   /*                        */
+		g_setq);  		   	   /*                        */
   SymValue(junk) = term;		   	   /*                        */
   NextJunk(junk) = BJunks(b)[h];		   /*                        */
   BJunks(b)[h]   = junk;			   /*                        */
+  LinkTerm(term);				   /*                        */
   return term;					   /*                        */
 }						   /*------------------------*/
 
@@ -408,9 +411,9 @@ Term eval_term(binding, term)			   /*                        */
       return term;				   /*                        */
  						   /*                        */
     case L_GROUP:				   /*                        */
-      { Term t = NIL;				   /*                        */
-	for (term = Cdr(term); term; term = Cdr(term))/*                     */
-	{ t = eval_term(binding, Car(term)); }	   /*                        */
+      { Term tt, t = NIL;			   /*                        */
+	for (tt = Cdr(term); tt; tt = Cdr(tt))     /*                        */
+	{ t = eval_term(binding, Car(tt)); }	   /*                        */
 	return t;				   /*                        */
       }						   /*                        */
  						   /*                        */

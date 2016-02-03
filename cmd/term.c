@@ -39,6 +39,7 @@
 /*===========================================================================*/
 
 #define DEBUG_MEM
+#undef DEBUG_MEM
 
 /*---------------------------------------------------------------------------*/
 
@@ -160,11 +161,14 @@ static Term new__t(type, cdr)			   /*                        */
 **___________________________________________________			     */
 void dump_terms(file)				   /*                        */
   FILE* file;					   /*                        */
-{
+{						   /*                        */
 #ifdef DEBUG_MEM
   size_t i;					   /*                        */
+  register int c;
+ 
   for (i = 0; i < t_map_ptr; i++)		   /*                        */
-  { fputs(TType(t_map[i])?"*":".", file);	   /*                        */
+  { c = TType(t_map[i]);
+    fputc(c ? *tag_id(c) : '_', file);	   	   /*                        */
     if (i%64 == 63) fputc('\n', file);		   /*                        */
   }						   /*                        */
   fputc('\n', file);				   /*                        */
@@ -245,18 +249,21 @@ void free_term(t)				   /*                        */
   cdr = Cdr(t);					   /*                        */
  						   /*                        */
   switch (TType(t))				   /*                        */
-  { case L_FIELD:				   /*                        */
+  { case L_TRUE:				   /*                        */
+    case L_FALSE:				   /*                        */
+      return;					   /*                        */
+    case L_FIELD:				   /*                        */
     case L_STRING:				   /*                        */
     case L_FUNCTION:				   /*                        */
-
+ 						   /*                        */
     case L_NUMBER:				   /*                        */
-      Car(t) = NIL;
+      Car(t) = NIL;				   /*                        */
       break;					   /*                        */
     default:					   /*                        */
       if (Car(t)) free_term(Car(t));		   /*                        */
       break;					   /*                        */
   }						   /*                        */
- 
+ 						   /*                        */
   Car(t) = terms;				   /*                        */
   terms = t;					   /*                        */
  						   /*                        */
@@ -352,9 +359,8 @@ static void indent(file, s, in)			   /*                        */
   FILE * file;					   /*                        */
   char * s;					   /*                        */
   int in;					   /*                        */
-{ int i;					   /*                        */
-  fputs(s, file);				   /*                        */
-  for (i = 0; i < in; i++) fputs("  ", file);	   /*                        */
+{ fputs(s, file);				   /*                        */
+  while (in-- > 0) fputs("  ", file);	   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

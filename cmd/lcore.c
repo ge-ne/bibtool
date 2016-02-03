@@ -657,7 +657,9 @@ Term g_field(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { SymDef sym = get_bind(binding, TString(term));   /*                        */
-  return sym ? SymValue(sym) : NIL;		   /*                        */
+  term 	     = sym ? SymValue(sym) : NIL;	   /*                        */
+  LinkTerm(term);
+  return term;
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -678,7 +680,9 @@ Term g_setq(binding, term)		   	   /*                        */
   if (car == NIL) ErrorNF("Undefined LHS",0);	   /*                        */
   if (!TermIsField(car)) ErrorNF("Illegal LHS",0); /*                        */
  						   /*                        */
-  return setq(binding, TString(car), Cadr(term) ); /*                        */
+  term = Cadr(term);
+  LinkTerm(term);
+  return setq(binding, TString(car), term ); 	   /*                        */
 }						   /*------------------------*/
 /*-----------------------------------------------------------------------------
 ** Function:	scanf_num()
@@ -944,22 +948,41 @@ Term g_mod(binding, term)			   /*                        */
 
 static Term *tp;
 
-static int g__ign(s)
-  String s;
-{ *tp = Cons1(StringTerm(s));
-  tp = &Cdr(*tp);
-  return 1;
-}
+/*-----------------------------------------------------------------------------
+** Function:	g__ign()
+** Type:	static int
+** Purpose:	
+**		
+** Arguments:
+**	s	
+** Returns:	
+**___________________________________________________			     */
+static int g__ign(s)				   /*                        */
+  String s;					   /*                        */
+{ *tp = Cons1(StringTerm(s));			   /*                        */
+  tp = &Cdr(*tp);				   /*                        */
+  return 1;					   /*                        */
+}						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	g_ign_()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	term	the term
+** Returns:	
+**___________________________________________________			     */
 Term g_ign_(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ Term t = NIL;
-  tp 	 = & t;
-  foreach_ignored_word(g__ign);
-  tp = NULL;
-  return t;
-}
+{ Term t = NIL;					   /*                        */
+  tp 	 = &t;					   /*                        */
+  foreach_ignored_word(g__ign);			   /*                        */
+  tp = NULL;					   /*                        */
+  return t;					   /*                        */
+}						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	init_lreader()

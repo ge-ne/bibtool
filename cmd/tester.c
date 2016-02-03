@@ -48,12 +48,12 @@ int action(b, t)				   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
   if (evaluate)					   /*                        */
-  { if (result) free_term(result);		   /*                        */
+  { if (result) { UnlinkTerm(result); }		   /*                        */
     result = eval_term(b, t); }	   		   /*                        */
   else						   /*                        */
   { print_term(stdout, t);			   /*                        */
     putchar('\n');				   /*                        */
-    free_term(t);				   /*                        */
+    UnlinkTerm(t);				   /*                        */
   }						   /*                        */
   return 0;					   /*                        */
 }						   /*------------------------*/
@@ -75,11 +75,12 @@ void run_test(file)				   /*                        */
     fprintf(stderr, "--- reading %s\n", file);	   /*                        */
    						   /*                        */
   read_loop(b, file, action);			   /*                        */
+ 						   /*                        */
   if (evaluate)					   /*                        */
   { print_term(stdout, result);			   /*                        */
     putchar('\n');				   /*                        */
+    UnlinkTerm(result);				   /*                        */
   }						   /*                        */
-  free_term(result);				   /*                        */
 }						   /*------------------------*/
 
 #define ArgIs(A,B) strcmp(A, arg) == 0 || strcmp(B, arg) == 0
