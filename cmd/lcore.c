@@ -429,8 +429,8 @@ Term g_version(binding, term)		   	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term s_version(binding, term)		   	   /*                        */
@@ -464,8 +464,8 @@ Term g_out_file(binding, term)		   	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term s_out_file(binding, term)		   	   /*                        */
@@ -510,8 +510,8 @@ Term g_input(binding, term)		   	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term s_input(binding, term)		   	   /*                        */
@@ -529,8 +529,8 @@ Term s_input(binding, term)		   	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_macro_file(binding, term)		   /*                        */
@@ -545,8 +545,8 @@ Term g_macro_file(binding, term)		   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term s_macro_file(binding, term)		   /*                        */
@@ -658,8 +658,8 @@ Term g_field(binding, term)		   	   /*                        */
   Term term;					   /*                        */
 { SymDef sym = get_bind(binding, TString(term));   /*                        */
   term 	     = sym ? SymValue(sym) : NIL;	   /*                        */
-  LinkTerm(term);
-  return term;
+  LinkTerm(term);				   /*                        */
+  return term;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -679,11 +679,12 @@ Term g_setq(binding, term)		   	   /*                        */
   term	   = Cdr(term);				   /*                        */
   if (car == NIL) ErrorNF("Undefined LHS",0);	   /*                        */
   if (!TermIsField(car)) ErrorNF("Illegal LHS",0); /*                        */
- 						   /*                        */
-  term = Cadr(term);
-  LinkTerm(term);
+  						   /*                        */
+  term = Cadr(term);				   /*                        */
+  LinkTerm(term);				   /*                        */
   return setq(binding, TString(car), term ); 	   /*                        */
 }						   /*------------------------*/
+
 /*-----------------------------------------------------------------------------
 ** Function:	scanf_num()
 ** Type:	long
@@ -721,8 +722,8 @@ long scanf_num(s)				   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term eval_num(binding, term)			   /*                        */
@@ -752,8 +753,8 @@ Term eval_num(binding, term)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term eval_str(binding, term)			   /*                        */
@@ -763,7 +764,10 @@ Term eval_str(binding, term)			   /*                        */
   term = eval_term(binding, term);		   /*                        */
  						   /*                        */
   if (term == NIL) return StringTerm((String)"");  /*                        */
-  if (TermIsString(term)) return term;		   /*                        */
+  if (TermIsString(term)) 			   /*                        */
+  { LinkTerm(term);				   /*                        */
+    return term;		   		   /*                        */
+  }						   /*                        */
 #ifdef TODO
   if (TermIsList(term))
   { StringBuffer *sb = sbopen();

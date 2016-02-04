@@ -143,7 +143,7 @@ Term setq(b, key, term)		   		   /*                        */
 **		
 ** Arguments:
 **	binding	the binding
-**	key	
+**	key	the key
 ** Returns:	
 **___________________________________________________			     */
 SymDef get_bind(binding, key)			   /*                        */
@@ -208,9 +208,9 @@ static Term bool_s_rsc(binding, name, term, rp)	   /*                        */
 **		
 ** Arguments:
 **	binding	
-**	 name	
-**	 term	
-**	 rp	
+**	name	
+**	term	
+**	rp	
 ** Returns:	
 **___________________________________________________			     */
 static Term num_s_rsc(binding, name, term, rp)	   /*                        */
@@ -408,6 +408,7 @@ Term eval_term(binding, term)			   /*                        */
     case L_TRUE:				   /*                        */
     case L_FALSE:				   /*                        */
     case L_CONS:				   /*                        */
+      LinkTerm(term);				   /*                        */
       return term;				   /*                        */
  						   /*                        */
     case L_GROUP:				   /*                        */
