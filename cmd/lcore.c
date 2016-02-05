@@ -989,6 +989,26 @@ Term g_ign_(binding, term)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	g_defun()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	term	the term
+** Returns:	
+**___________________________________________________			     */
+Term g_defun(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ Term t = NIL;					   /*                        */
+
+
+
+  return t;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	init_lreader()
 ** Type:	void
 ** Purpose:	

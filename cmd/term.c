@@ -61,7 +61,7 @@ String tag_id(c)			   	   /*                        */
   { case L_STRING:   return (String)"string";	   /*                        */
     case L_FIELD:    return (String)"field";	   /*                        */
     case L_NUMBER:   return (String)"number";	   /*                        */
-    case L_FUNCTION: return (String)"function";	   /*                        */
+    case L_FUNCALL:  return (String)"funcall";	   /*                        */
     case L_CONS:     return (String)"cons";	   /*                        */
     case L_GROUP:    return (String)"group";	   /*                        */
     case L_TRUE:     return (String)"true";	   /*                        */
@@ -254,7 +254,7 @@ void free_term(t)				   /*                        */
       return;					   /*                        */
     case L_FIELD:				   /*                        */
     case L_STRING:				   /*                        */
-    case L_FUNCTION:				   /*                        */
+    case L_FUNCALL:				   /*                        */
  						   /*                        */
     case L_NUMBER:				   /*                        */
       Car(t) = NIL;				   /*                        */
@@ -436,6 +436,20 @@ static void prn_term(file, term, in)		   /*                        */
       prn_args(file, term, " ", 0);		   /*                        */
       fputs("]", file);			   	   /*                        */
       return;					   /*                        */
+    case L_DEFUN:			   	   /*                        */
+      fputs("defun ", file);			   /*                        */
+      fputs((char*)TString(term), file);	   /*                        */
+      fputs("(", file);			   	   /*                        */
+      prn_args(file, Cadr(term), ",", in + 1);	   /*                        */
+      fputs(") ", file);			   /*                        */
+      prn_term(file, Cddr(term), in);	   	   /*                        */
+      return;					   /*                        */
+    case L_FUNCTION:			   	   /*                        */
+      fputs("function (", file);		   /*                        */
+      prn_args(file, Cadr(term), ",", in + 1);	   /*                        */
+      fputs(") ", file);			   /*                        */
+      prn_term(file, Cddr(term), in);	   	   /*                        */
+      return;					   /*                        */
     case L_GROUP:				   /*                        */
       if (Cdr(term))				   /*                        */
       { indent(file, "{\n", in + 1);		   /*                        */
@@ -473,7 +487,7 @@ static void prn_term(file, term, in)		   /*                        */
       prn_term(file, Cadr(term), in);		   /*                        */
       return;					   /*                        */
     case L_QUOTE:    key = "'";		     break;/*                        */
-    case L_FUNCTION: key = (char*)TString(term);break;/*                     */
+    case L_FUNCALL:  key = (char*)TString(term);break;/*                     */
     case L_MINUS:    key = " - ";	     break;/*                        */
     case L_PLUS:     key = " + ";	     break;/*                        */
     case L_TIMES:    key = " * ";	     break;/*                        */

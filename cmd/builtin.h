@@ -76,6 +76,8 @@ BindNum( "crossref.limit",	     g_xref_limit,
 				     s_xref_limit,	rsc_xref_limit	     )
 BindFunc("default.key",		     g_def_key,		StringTerm(get_separator(0)),
 	 			     s_def_key,		set_separator(0,val) )
+Bind(	 "defun",		     g_defun,
+				     g_defun,		SYM_NONE, L_DEFUN    )
 BindFct( "delete.field",	     g_del_f,
 				     s_del_f,		add_rewrite_rule(val))
 BindStr( "dir.file.separator",	     g_dir_file_sep,

@@ -426,7 +426,7 @@ Term eval_term(binding, term)			   /*                        */
 	      ? eval_term(binding, Cddr(term))	   /*                        */
 	      : NIL);				   /*                        */
  						   /*                        */
-    case L_FUNCTION:				   /*                        */
+    case L_FUNCALL:				   /*                        */
       key = TString(term);			   /*                        */
       s	  = get_bind(binding, key);	   	   /*                        */
       if (s == NULL || SymGet(s) == NULL)	   /*                        */

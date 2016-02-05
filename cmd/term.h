@@ -19,7 +19,7 @@
 
 #define L_FIELD		0x210
 #define L_STRING	0x211
-#define L_FUNCTION	0x212
+#define L_FUNCALL	0x212
 
 #define L_NUMBER	0x220
 
@@ -28,10 +28,11 @@
 #define L_TRUE		0x202
 #define L_FALSE		0x203
 #define L_DEFUN		0x204
-#define L_IF		0x205
-#define L_ELSE		0x206
-#define L_WHILE		0x207
-#define L_WITH		0x208
+#define L_FUNCTION	0x205
+#define L_IF		0x206
+#define L_ELSE		0x207
+#define L_WHILE		0x208
+#define L_WITH		0x209
 
 #define L_QUOTE		0x401
 #define L_UMINUS	0x403
@@ -96,7 +97,6 @@ typedef struct S_TERM {				   /*                        */
 #define TermIsString(T)		(TType(T) == L_STRING)
 #define TermIsList(T)		(TType(T) == L_CONS)
 #define TermIsField(T)		(TType(T) == L_FIELD)
-#define TermIsFunction(T)	(TType(T) == L_FUNCTION)
 #define TermIsEOF(T)		(TType(T) == L_EOF)
 #define TermIsTrue(T)		(TType(T) == L_TRUE)
 #define TermIsFalse(T)		(TType(T) == L_FALSE)

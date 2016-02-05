@@ -410,7 +410,7 @@ static Term read_builtin(b, term)		   /*                        */
   Term term;					   /*                        */
 { register int c;				   /*                        */
   						   /*                        */
-  TType(term) = L_FUNCTION;			   /*                        */
+  TType(term) = L_FUNCALL;			   /*                        */
   DebugPrintF2("read_builtin (%s)\n",		   /*                        */
 	       (char*)TString(term));		   /*                        */
   for (c = scan(b); c > 0; c = scan(b))	   	   /*                        */
@@ -547,12 +547,8 @@ static TStack reduce(stack)			   /*                        */
 static Term read_group(binding, msg)		   /*                        */
   Binding binding;				   /*                        */
   char * msg;					   /*                        */
-{ int c = scan(binding);			   /*                        */
- 						   /*                        */
-  if (c != '{')					   /*                        */
-  { Error(msg, ": Missing { instead of ",	   /*                        */
-	  tag_id(c));				   /*                        */
-  }						   /*                        */
+{ int c;			   		   /*                        */
+  Expect('{', "Missing {");			   /*                        */
   return read_args(binding,			   /*                        */
 		   NewTerm(L_GROUP), 	   	   /*                        */
 		   ';',		   		   /*                        */
@@ -572,12 +568,8 @@ static Term read_group(binding, msg)		   /*                        */
 static Term read_condition(binding, msg)	   /*                        */
   Binding binding;				   /*                        */
   char * msg;					   /*                        */
-{ int c = scan(binding);			   /*                        */
- 						   /*                        */
-  if (c != '(')					   /*                        */
-  { Error(msg, ": Missing ( instead of ",	   /*                        */
-	  tag_id(c));				   /*                        */
-  }						   /*                        */
+{ int c;			   		   /*                        */
+  Expect('(', "Missing (");			   /*                        */
   return read_args(binding,			   /*                        */
 		   NewTerm(L_GROUP), 	   	   /*                        */
 		   -666,			   /*                        */
@@ -687,10 +679,33 @@ static Term read_expr(binding, stack)		   /*                        */
 	    break;				   /*                        */
 	  }					   /*                        */
 	  t = read_args(binding,		   /*                        */
-			new_t_string(L_FUNCTION,   /*                        */
+			new_t_string(L_FUNCALL,    /*                        */
 				     TString(t)),  /*                        */
 			',',			   /*                        */
 			')');			   /*                        */
+	  Shift(L_FUNCALL, t);		   	   /*                        */
+	}					   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
+      case L_DEFUN:				   /*                        */
+	{ Term t = yylval;		   	   /*                        */
+	  Expect(L_FIELD, "Missing function name");/*                        */
+	  TString(t) = TString(yylval);		   /*                        */
+	  free_term(yylval);			   /*                        */
+	  Expect('(', "Missing ( for defun");	   /*                        */
+	  Cdr(t)  = NewTerm(L_FUNCTION);	   /*                        */
+	  Cadr(t) = read_mapping(binding, "defun");/*                        */
+	  Cddr(t) = read_group(binding, "defun");  /*                        */
+	  Shift(L_DEFUN, t);		   	   /*                        */
+	}					   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
+      case L_FUNCTION:				   /*                        */
+	{ Term t = yylval;		   	   /*                        */
+	  Expect('(', "Missing ( for function");   /*                        */
+	  Cdr(t)  = NewTerm(L_FUNCTION);	   /*                        */
+	  Cadr(t) = read_mapping(binding, "function");/*                     */
+	  Cddr(t) = read_group(binding, "function");/*                       */
 	  Shift(L_FUNCTION, t);		   	   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
@@ -800,7 +815,7 @@ static Term read_cmd(binding)			   /*                        */
 	  c = scan(binding);			   /*                        */
 	  if (c == '(')				   /*                        */
 	  { val = read_args(binding,		   /*                        */
-			    new_t_string(L_FUNCTION,/*                       */
+			    new_t_string(L_FUNCALL,/*                        */
 					 TString(val)),/*                    */
 			    ',',		   /*                        */
 			    ')');		   /*                        */
