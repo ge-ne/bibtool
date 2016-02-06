@@ -27,9 +27,6 @@
 #else
 #define _ARG(A) ()
 #endif
- Binding binding _ARG((unsigned int size));
- Term eval_term _ARG((Binding binding, Term term));
- Term eval_self _ARG((Binding binding, Term term));
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -48,8 +45,9 @@
 **	size	the number of junks contained
 ** Returns:	
 **___________________________________________________			     */
-Binding binding(size)			   	   /*                        */
+Binding binding(size, nextBinding)		   /*                        */
   unsigned int size;				   /*                        */
+  Binding nextBinding;				   /*                        */
 {						   /*                        */
   Binding b = (Binding) malloc(sizeof(SBinding));  /*                        */
   if (b == BindingNULL) OUT_OF_MEMORY("binding");  /*                        */
@@ -58,9 +56,14 @@ Binding binding(size)			   	   /*                        */
   if (BJunks(b) == NULL) OUT_OF_MEMORY("binding"); /*                        */
  						   /*                        */
   BSize(b) = size;				   /*                        */
-  NextBinding(b) = BindingNULL;		   	   /*                        */
+  NextBinding(b) = nextBinding;		   	   /*                        */
   return b;				   	   /*                        */
 }						   /*------------------------*/
+
+void free_binding(b)
+  Binding b;
+{
+}
 
 /*-----------------------------------------------------------------------------
 ** Function:	bind()
@@ -328,7 +331,7 @@ static Term str_s_rsc(binding, name, term, rp)	   /*                        */
 ** Returns:	the new binding
 **___________________________________________________			     */
 Binding root_binding()				   /*                        */
-{ Binding b = binding(511);			   /*                        */
+{ Binding b = binding(511, BindingNULL);	   /*                        */
  						   /*                        */
 #define BindBool(NAME,GET,SET,R)     Bind(NAME, GET, SET, SYM_BUILTIN, L_FIELD)
 #define BindNum(NAME,GET,SET,R)	     Bind(NAME, GET, SET, SYM_BUILTIN, L_FIELD)
@@ -380,6 +383,21 @@ void dump_binding(binding, file)		   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
+Term funcall(b, key, f, args)
+  Binding b;
+  String key;
+  Term f;
+  Term args;
+{ Binding nb;
+  b = binding(511, b);
+
+
+  nb = b;
+  b  = NextBinding(b);
+  free_binding(nb);
+  return NIL;
+}						   /*------------------------*/
+
 /*-----------------------------------------------------------------------------
 ** Function:	eval_term()
 ** Type:	Term
@@ -429,7 +447,15 @@ Term eval_term(binding, term)			   /*                        */
     case L_FUNCALL:				   /*                        */
       key = TString(term);			   /*                        */
       s	  = get_bind(binding, key);	   	   /*                        */
-      if (s == NULL || SymGet(s) == NULL)	   /*                        */
+      if (s == NULL)	   /*                        */
+	ErrorNF("Undefined function ", key);	   /*                        */
+
+      if (SymValue(s) && TType(SymValue(s)) == L_FUNCTION)
+      { return funcall(binding, key,
+		       SymValue(s),
+		       Cdr(term)); }
+
+      if (SymGet(s) == NULL)	   		   /*                        */
 	ErrorNF("Undefined function ", key);	   /*                        */
  						   /*                        */
       if (Cdr(term))				   /*                        */
@@ -443,6 +469,12 @@ Term eval_term(binding, term)			   /*                        */
  						   /*                        */
 	return (*SymGet(s))(binding, term);	   /*                        */
       }						   /*                        */
+ 						   /*                        */
+    case L_FUNCTION:				   /*                        */
+      return term;
+ 						   /*                        */
+    case L_DEFUN:				   /*                        */
+      return g_defun(binding, term);
  						   /*                        */
     case L_FIELD:				   /*                        */
       s = get_bind(binding, TString(term));	   /*                        */
@@ -467,14 +499,13 @@ Term eval_term(binding, term)			   /*                        */
     case L_AND:      key = (String)"&&";     break;/*                        */
     case L_OR:       key = (String)"||";     break;/*                        */
     default:					   /*                        */
-      ErrorNF("Undefined tag ",		   	   /*                        */
-	      tag_id(TType(term)));	   	   /*                        */
+      ErrorNF("Undefined tag ", tag_id(TType(term)));/*                      */
   }						   /*                        */
  						   /*                        */
    s = get_bind(binding, key);		   	   /*                        */
    if (s == SymDefNULL) 			   /*                        */
    { ErrorNF("Undefined function ", key); } 	   /*                        */
-
+ 						   /*                        */
    return (*SymGet(s))(binding, term);		   /*                        */
 }						   /*------------------------*/
 

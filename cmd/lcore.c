@@ -1001,11 +1001,7 @@ Term g_ign_(binding, term)			   /*                        */
 Term g_defun(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ Term t = NIL;					   /*                        */
-
-
-
-  return t;					   /*                        */
+{ return setq(binding, TString(term), Cdr(term));  /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

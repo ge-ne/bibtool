@@ -22,7 +22,7 @@
 #define _ARG(A) ()
 #endif
 
-extern Binding binding _ARG((unsigned int size));  /*                        */
+extern Binding binding _ARG((unsigned int size, Binding nextBinding));/*     */
 extern Binding root_binding();			   /*                        */
 extern SymDef get_bind _ARG((Binding binding, String key));/*                */
 extern Term setq _ARG((Binding binding, String key, Term term));/*           */

@@ -492,8 +492,10 @@ static TStack reduce(stack)			   /*                        */
     DebugPrintF2("n = 0x%x\n", n);   	   	   /*                        */
     if (n <= 0x400)				   /*                        */
       Error("Missing operator after ",		   /*                        */
-	    tag_id(TType(StackTerm(stack))), 0);   /*                        */
-    						   /*                        */
+	    TermIsField(StackTerm(stack)) 	   /*                        */
+	    ? TString(StackTerm(stack))		   /*                        */
+	    : tag_id(TType(StackTerm(stack))), 0); /*                        */
+					       	   /*                        */
     for (current = stack;			   /*                        */
 	 current && StackPrev(current);		   /*                        */
 	 current = StackPrev(current))		   /*                        */

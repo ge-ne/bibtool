@@ -46,7 +46,7 @@
 
 /*-----------------------------------------------------------------------------
 ** Function:	tag_id()
-** Type:	static String
+** Type:	String
 ** Purpose:	
 **		
 ** Arguments:
@@ -88,6 +88,8 @@ String tag_id(c)			   	   /*                        */
     case L_IF:       return (String)"if";	   /*                        */
     case L_WHILE:    return (String)"while";	   /*                        */
     case L_WITH:     return (String)"with";	   /*                        */
+    case L_FUNCTION: return (String)"function";	   /*                        */
+    case L_DEFUN:    return (String)"defun";	   /*                        */
     case 0:					   /*                        */
     case EOF:        return (String)"end of file"; /*                        */
   }						   /*                        */

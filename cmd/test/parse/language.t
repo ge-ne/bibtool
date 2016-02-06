@@ -178,7 +178,7 @@ BUnit::run(name         => 'error-6',
 	   expected_out => '',
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator after field
+*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator after c
 __EOF__
 
 #------------------------------------------------------------------------------
