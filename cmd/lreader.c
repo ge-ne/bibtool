@@ -718,9 +718,8 @@ static Term read_expr(binding, stack)		   /*                        */
       case L_FUNCTION:				   /*                        */
 	{ Term t = yylval;		   	   /*                        */
 	  Expect('(', "Missing ( for function");   /*                        */
-	  Cdr(t)  = NewTerm(L_FUNCTION);	   /*                        */
-	  Cadr(t) = read_mapping(binding, "function");/*                     */
-	  Cddr(t) = read_group(binding, "function");/*                       */
+	  Car(t) = read_mapping(binding, "function");/*                      */
+	  Cdr(t) = read_group(binding, "function");/*                        */
 	  Shift(L_FUNCTION, t);		   	   /*                        */
 	}					   /*                        */
 	break;					   /*                        */

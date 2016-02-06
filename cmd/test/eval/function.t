@@ -153,6 +153,98 @@ BUnit::run(name         => 'defun-25',
 	   expected_err => '',
 	   expected_out => "123\n");
 
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'function-1',
+	   args	        => '--eval',
+	   resource     => "a=function (){};",
+	   expected_err => '',
+	   expected_out => "function () {}\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'function-2',
+	   args	        => '--eval',
+	   resource     => "a=function (x){};",
+	   expected_err => '',
+	   expected_out => "function (x) {}\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'function-3',
+	   args	        => '--eval',
+	   resource     => "a=function (x,y){};",
+	   expected_err => '',
+	   expected_out => "function (x, y) {}\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'function-4',
+	   args	        => '--eval',
+	   resource     => "a=function (x:123){};",
+	   expected_err => '',
+	   expected_out => "function (x: 123) {}\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'function-11',
+	   args	        => '--eval',
+	   resource     => "a=function (){};a()",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'function-12',
+	   args	        => '--eval',
+	   resource     => "a=function (x){};a(123)",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'function-13',
+	   args	        => '--eval',
+	   resource     => "a=function (x,y){};a(1,2)",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'function-14',
+	   args	        => '--eval',
+	   resource     => "a=function (x:123){};a(98)",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'function-21',
+	   args	        => '--eval',
+	   resource     => "a=function (){777};a()",
+	   expected_err => '',
+	   expected_out => "777\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'function-22',
+	   args	        => '--eval',
+	   resource     => "a=function (x){x+7};a(123)",
+	   expected_err => '',
+	   expected_out => "130\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'function-23',
+	   args	        => '--eval',
+	   resource     => "a=function (x,y){x+y};a(1,2)",
+	   expected_err => '',
+	   expected_out => "3\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'function-24',
+	   args	        => '--eval',
+	   resource     => "a=function (x:123){x};a(98)",
+	   expected_err => '',
+	   expected_out => "98\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'function-25',
+	   args	        => '--eval',
+	   resource     => "a=function (x:123){x};a()",
+	   expected_err => '',
+	   expected_out => "123\n");
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 
