@@ -4,6 +4,7 @@ FILE entry.obj
 FILE error.obj
 FILE expand.obj
 FILE init.obj
+FILE io.obj
 FILE key.obj
 FILE macros.obj
 FILE names.obj

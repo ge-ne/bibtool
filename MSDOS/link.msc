@@ -4,6 +4,7 @@ entry.o +
 error.o +
 expand.o +
 init.o +
+io.o +
 key.o +
 macros.o +
 names.o +
