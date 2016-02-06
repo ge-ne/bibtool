@@ -213,6 +213,8 @@ Bind(	 "resource",		     NULL,
 				     NULL,		SYM_BUILTIN, L_FIELD )
 BindFunc("resource.search.path",     g_search_path,	StringTerm(rsc_v_rsc),
 				     s_search_path,	set_rsc_path(val)    )
+Bind(	 "return",		     NULL,
+				     NULL,		SYM_NONE, L_RETURN   )
 BindFct( "rewrite.rule",	     g_rewrite_rule,
 				     s_rewrite_rule,	add_rewrite_rule(val))
 BindBool("rewrite.case.sensitive",   g_case_rewrite,

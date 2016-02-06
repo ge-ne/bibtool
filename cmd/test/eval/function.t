@@ -153,7 +153,6 @@ BUnit::run(name         => 'defun-25',
 	   expected_err => '',
 	   expected_out => "123\n");
 
-
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'function-1',
 	   args	        => '--eval',
@@ -242,6 +241,55 @@ BUnit::run(name         => 'function-24',
 BUnit::run(name         => 'function-25',
 	   args	        => '--eval',
 	   resource     => "a=function (x:123){x};a()",
+	   expected_err => '',
+	   expected_out => "123\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'with-1',
+	   args	        => '--eval',
+	   resource     => "with (){};",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'with-2',
+	   args	        => '--eval',
+	   resource     => "with (x){};",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'with-3',
+	   args	        => '--eval',
+	   resource     => "with (x,y){};",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'with-4',
+	   args	        => '--eval',
+	   resource     => "with (x:123){};",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'with-21',
+	   args	        => '--eval',
+	   resource     => "with (){777}",
+	   expected_err => '',
+	   expected_out => "777\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'with-22',
+	   args	        => '--eval',
+	   resource     => "with (x){x+7}",
+	   expected_err => '',
+	   expected_out => "7\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'with-24',
+	   args	        => '--eval',
+	   resource     => "with (x:123){x}",
 	   expected_err => '',
 	   expected_out => "123\n");
 

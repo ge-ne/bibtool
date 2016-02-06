@@ -384,35 +384,47 @@ void dump_binding(binding, file)		   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
-Term funcall(b, key, f, args)
-  Binding b;
-  String key;
-  Term f;
-  Term args;
-{ Binding nb = binding(127, b);
-  SymDef sym;
-  Term t;
-
-  for (t = Car(f); t; t = Cdr(t))
-  { sym = symdef(TString(Car(t)), L_FIELD, 0, NULL, NULL);
-    if (args)
-    { SymValue(sym) = eval_term(b, Car(args));
-      args = Cdr(args);
-    }
-    else
-    { SymValue(sym) = Cdar(t);
-      LinkTerm(SymValue(sym));
-    }
-    bind(nb, sym);
-  }
-
-  if (args)
+/*-----------------------------------------------------------------------------
+** Function:	funcall()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	b	the binding
+**	key	the name of the invoking function
+**	f	the function term
+**	args	the actual argument list
+** Returns:	
+**___________________________________________________			     */
+Term funcall(b, key, f, args)			   /*                        */
+  Binding b;					   /*                        */
+  String key;					   /*                        */
+  Term f;					   /*                        */
+  Term args;					   /*                        */
+{ Binding nb = binding(127, b);			   /*                        */
+  SymDef sym;					   /*                        */
+  Term t;					   /*                        */
+ 						   /*                        */
+  for (t = Car(f); t; t = Cdr(t))		   /*                        */
+  { sym = symdef(TString(Car(t)), L_FIELD, 0, NULL, NULL);/*                 */
+    if (args)					   /*                        */
+    { SymValue(sym) = eval_term(b, Car(args));	   /*                        */
+      args = Cdr(args);				   /*                        */
+    }						   /*                        */
+    else					   /*                        */
+    { SymValue(sym) = Cdar(t);			   /*                        */
+      LinkTerm(SymValue(sym));			   /*                        */
+    }						   /*                        */
+    bind(nb, sym);				   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  if (args)					   /*                        */
     ErrorNF("Too many arguments for ", key);	   /*                        */
-    
-  t = eval_term(nb, Cdr(f));
-
-  free_binding(nb);
-  return t;
+    						   /*                        */
+  t = eval_term(nb, Cdr(f));			   /*                        */
+ 						   /*                        */
+  free_binding(nb);				   /*                        */
+  return t;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -464,14 +476,14 @@ Term eval_term(binding, term)			   /*                        */
     case L_FUNCALL:				   /*                        */
       key = TString(term);			   /*                        */
       s	  = get_bind(binding, key);	   	   /*                        */
-      if (s == NULL)	   /*                        */
+      if (s == NULL)	   			   /*                        */
 	ErrorNF("Undefined function ", key);	   /*                        */
-
-      if (SymValue(s) && TType(SymValue(s)) == L_FUNCTION)
-      { return funcall(binding, key,
-		       SymValue(s),
-		       Cdr(term)); }
-
+ 						   /*                        */
+      if (SymValue(s) && TType(SymValue(s)) == L_FUNCTION)/*                 */
+      { return funcall(binding, key,		   /*                        */
+		       SymValue(s),		   /*                        */
+		       Cdr(term)); }		   /*                        */
+ 						   /*                        */
       if (SymGet(s) == NULL)	   		   /*                        */
 	ErrorNF("Undefined function ", key);	   /*                        */
  						   /*                        */
@@ -487,12 +499,15 @@ Term eval_term(binding, term)			   /*                        */
 	return (*SymGet(s))(binding, term);	   /*                        */
       }						   /*                        */
  						   /*                        */
+    case L_WITH:				   /*                        */
+      return funcall(binding, key, term, NIL);	   /*                        */
+ 						   /*                        */
     case L_FUNCTION:				   /*                        */
-      LinkTerm(term);
-      return term;
+      LinkTerm(term);				   /*                        */
+      return term;				   /*                        */
  						   /*                        */
     case L_DEFUN:				   /*                        */
-      return g_defun(binding, term);
+      return g_defun(binding, term);		   /*                        */
  						   /*                        */
     case L_FIELD:				   /*                        */
       s = get_bind(binding, TString(term));	   /*                        */

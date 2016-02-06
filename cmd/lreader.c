@@ -724,6 +724,10 @@ static Term read_expr(binding, stack)		   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
  						   /*                        */
+      case L_RETURN:				   /*                        */
+	  Shift(L_RETURN, yylval);		   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
       case L_IF:				   /*                        */
 	{ Term t = yylval;		   	   /*                        */
 	  Car(t) = read_condition(binding, "if");  /*                        */

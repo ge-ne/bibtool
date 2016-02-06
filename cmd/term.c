@@ -89,6 +89,7 @@ String tag_id(c)			   	   /*                        */
     case L_WHILE:    return (String)"while";	   /*                        */
     case L_WITH:     return (String)"with";	   /*                        */
     case L_FUNCTION: return (String)"function";	   /*                        */
+    case L_RETURN:   return (String)"return";	   /*                        */
     case L_DEFUN:    return (String)"defun";	   /*                        */
     case 0:					   /*                        */
     case EOF:        return (String)"end of file"; /*                        */
@@ -472,6 +473,10 @@ static void prn_term(file, term, in)		   /*                        */
       return;					   /*                        */
     case L_FUNCTION:			   	   /*                        */
       prn_function(file, "function (", term, in);  /*                        */
+      return;					   /*                        */
+    case L_RETURN:				   /*                        */
+      fputs("return ", file);			   /*                        */
+      prn_term(file, Cadr(term), in);		   /*                        */
       return;					   /*                        */
     case L_GROUP:				   /*                        */
       if (Cdr(term))				   /*                        */
