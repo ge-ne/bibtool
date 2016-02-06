@@ -118,6 +118,8 @@ BUnit::run(name         => 'plus-err-0',
 __EOF__
 	   expected_err => <<__EOF__ );
 
++
+^
 *** BibTool ERROR:  (line 1 in _test.rsc): Unexpected operator +
 __EOF__
 
@@ -128,7 +130,9 @@ BUnit::run(name         => 'plus-err-1',
 __EOF__
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for +
+
+^
+*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator for +
 __EOF__
 
 #------------------------------------------------------------------------------
@@ -168,7 +172,9 @@ BUnit::run(name         => 'minus-err-0',
 __EOF__
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for -
+
+^
+*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator for -
 __EOF__
 
 #------------------------------------------------------------------------------
@@ -178,7 +184,9 @@ BUnit::run(name         => 'minus-err-1',
 __EOF__
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for -
+
+^
+*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator for -
 __EOF__
 
 #------------------------------------------------------------------------------
@@ -218,7 +226,9 @@ BUnit::run(name         => 'times-err-1',
 __EOF__
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for *
+
+^
+*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator for *
 __EOF__
 
 #------------------------------------------------------------------------------
@@ -258,7 +268,9 @@ BUnit::run(name         => 'divide-err-1',
 __EOF__
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for /
+
+^
+*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator for /
 __EOF__
 
 #------------------------------------------------------------------------------
@@ -308,7 +320,9 @@ BUnit::run(name         => 'mod-err-1',
 __EOF__
 	   expected_err => <<__EOF__ );
 
-*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for mod
+
+^
+*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator for mod
 __EOF__
 
 #------------------------------------------------------------------------------

@@ -68,7 +68,7 @@ sub boolean_tests
   #----------------------------------------------------------------------------
   BUnit::run(name         => "$key-err-1",
 	     resource	  => "123 $op\n",
-	     expected_err => "\n*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for $op\n");
+	     expected_err => "\n\n^\n*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator for $op\n");
   #------------------------------------------------------------------------------
   BUnit::run(name         => "$key-1",
 	     resource	  => "123${op}456",
@@ -100,11 +100,11 @@ sub and_or_tests
   #------------------------------------------------------------------------------
   BUnit::run(name         => "$key-err-1",
 	     resource	  => "123 $op\n",
-	     expected_err => "\n*** BibTool ERROR:  (line 2 in _test.rsc): Missing operator for $key\n" );
+	     expected_err => "\n\n^\n*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator for $key\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name         => "$key-err-2",
 	     resource	  => "123 $op;\n",
-	     expected_err => "\n*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator after $key\n" );
+	     expected_err => "\n123 $op;\n^\n*** BibTool ERROR:  (line 1 in _test.rsc): Missing operator after $key\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name         => "$key-1",
 	     resource	  => "123${op}456",

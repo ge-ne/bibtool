@@ -22,6 +22,7 @@
 #include "lcore.h"
 #include "tstack.h"
 #include "binding.h"
+#include "linereader.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -50,18 +51,22 @@ static Term read_args _ARG((Binding b, Term t, int sep, int term));/*        */
 
 /*---------------------------------------------------------------------------*/
 
+#define Error(X,Y,Z)							\
+	error(ERR_ERROR|ERR_FILE|ERR_POINT|ERR_EXIT, (String)X,		\
+	      (String)Y, (String)Z,					\
+	      (String)LineReaderLine(reader),				\
+	      (String)(LineReaderLineno(reader)+LineReaderPtr(reader)),	\
+	      LineReaderLineno(reader), LineReaderFilename(reader))
 
  static Term yylval;				   /*                        */
- static char * filename;			   /*                        */
- static FILE * in_file;				   /*                        */
- static int  linenum;				   /*                        */
+ static LineReader reader;			   /*                        */
  static int  c_look_ahead = 0;		   	   /*                        */
  static Term look_ahead = NIL;			   /*                        */
 
 
 #define unscan(C,T)	(c_look_ahead = (C), look_ahead = (T))
-#define GetC		fgetc(in_file)
-#define UnGetC(C)	ungetc(C, in_file)
+#define GetC		LineReaderGetC(reader)
+#define UnGetC(C)	LineReaderUnGetC(C, reader)
 #define Shift(S,T)	stack = ts_push(stack, S, T);		\
 			DebugPrint2("shift ", tag_id(c))
 #define NewStack(S,T)	ts_push(StackNULL, S, T)
@@ -107,7 +112,7 @@ static Term scan_string(type, c_end)		   /*                        */
 { Term t;					   /*                        */
   StringBuffer *sb = sbopen();		   	   /*                        */
   register int c;				   /*                        */
-  int lno = linenum;				   /*                        */
+  int lno = LineReaderLineno(reader);		   /*                        */
   						   /*                        */
   for (c = GetC; c != c_end; c = GetC)	   	   /*                        */
   { if (c == '\\')			   	   /*                        */
@@ -115,7 +120,7 @@ static Term scan_string(type, c_end)		   /*                        */
       switch (c)			   	   /*                        */
       { case EOF:				   /*                        */
 	case 0:				   	   /*                        */
-	  linenum = lno;			   /*                        */
+	  LineReaderLineno(reader) = lno;	   /*                        */
 	  Error("Missing closing delimiter ",	   /*                        */
 		(c_end =='"' ? "\"": "`"), 0);	   /*                        */
 	case 'n': sbputc('\n', sb); break;	   /*                        */
@@ -126,7 +131,7 @@ static Term scan_string(type, c_end)		   /*                        */
 	default:  sbputc(c, sb);		   /*                        */
       }					   	   /*                        */
     } else if (c <= 0)			   	   /*                        */
-    { linenum = lno;				   /*                        */
+    { LineReaderLineno(reader) = lno;		   /*                        */
       Error("Missing closing delimiter ",	   /*                        */
 	    (c_end =='"' ? "\"": "`"), 0);	   /*                        */
     } else{				   	   /*                        */
@@ -170,7 +175,6 @@ static int scan(b)			   	   /*                        */
   { DebugPrintF3("scan %c %d\n",c,c);	   	   /*                        */
     switch (c) {				   /*                        */
       case '\n':				   /*                        */
-	linenum++;				   /*                        */
       case ' ':					   /*                        */
       case '\f':				   /*                        */
       case '\r':				   /*                        */
@@ -222,7 +226,7 @@ static int scan(b)			   	   /*                        */
 	  { for (; c >= '0' && c <= '7'; c = GetC) /*                        */
 	    { num = num * 8 + c - '0'; }	   /*                        */
 	  }					   /*                        */
-	  if (c > 0) UnGetC(c);			   /*                        */
+	  if (c > 0) { UnGetC(c); }		   /*                        */
 	  Return(NumberTerm(num), L_NUMBER);	   /*                        */
 	}					   /*                        */
 	  					   /*                        */
@@ -369,7 +373,7 @@ static Term read_args(binding, term, separator, terminal)/*                  */
   Term term;					   /*                        */
   int separator;				   /*                        */
   int terminal;					   /*                        */
-{ int lno = linenum;				   /*                        */
+{ int lno = LineReaderLineno(reader);		   /*                        */
   int c	  = scan(binding);			   /*                        */
   Term x  = term;				   /*                        */
   Term a;					   /*                        */
@@ -381,7 +385,7 @@ static Term read_args(binding, term, separator, terminal)/*                  */
     unscan(c, yylval);				   /*                        */
     a = read_expr(binding, StackNULL);		   /*                        */
     if (a == term_eof)				   /*                        */
-    { linenum = lno;				   /*                        */
+    { LineReaderLineno(reader) = lno;		   /*                        */
       Error("Missing ", tag_id(terminal), 0);	   /*                        */
     }						   /*                        */
  						   /*                        */
@@ -657,11 +661,11 @@ static Term read_expr(binding, stack)		   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case '(':					   /*                        */
-	{ int lno = linenum;			   /*                        */
+	{ int lno = LineReaderLineno(reader);	   /*                        */
 	  Term t  = read_expr(binding, StackNULL); /*                        */
 	  c	  = scan(binding);		   /*                        */
 	  if (c != ')')			   	   /*                        */
-	  { linenum = lno;			   /*                        */
+	  { LineReaderLineno(reader) = lno;	   /*                        */
 	    Error("Missing ) before ",		   /*                        */
 		  tag_id(c), 0); }		   /*                        */
 	  Shift(L_CONS, t);		   	   /*                        */
@@ -875,15 +879,16 @@ int read_loop(binding, file, action)		   /*                        */
   char * file;				   	   /*                        */
   int (*action)_ARG((Binding b, Term t));	   /*                        */
 { Term term;					   /*                        */
+  FILE *f;					   /*                        */
  						   /*                        */
   if (file == NULL) {			   	   /*                        */
     Error("No input file given", 0, 0);	   	   /*                        */
   }						   /*                        */
-  linenum    = 1;				   /*                        */
-  filename   = file;				   /*                        */
+ 						   /*                        */
   look_ahead = NIL;				   /*                        */
-  in_file    = fopen(file, "r");		   /*                        */
-  if (in_file == NULL) {			   /*                        */
+  if ((f = fopen(file, "r")) == NULL		   /*                        */
+      || (reader = lr_open(f, file)) == NULL	   /*                        */
+     ) {			   	   	   /*                        */
     ErrorNF("File could not be opened: ", file);   /*                        */
   }						   /*                        */
    						   /*                        */
@@ -892,8 +897,7 @@ int read_loop(binding, file, action)		   /*                        */
        term = read_cmd(binding))		   /*                        */
   { (*action)(binding, term); }			   /*                        */
  						   /*                        */
-  fclose(in_file);				   /*                        */
- 						   /*                        */
+  fclose(f);				   	   /*                        */
   return 0;					   /*                        */
 }						   /*------------------------*/
 

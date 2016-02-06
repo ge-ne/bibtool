@@ -118,13 +118,13 @@ BUnit::run(name         => 'fct-20',
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-err-1',
 	   resource	=> "a(",
-	   expected_err => "\n*** BibTool ERROR:  (line 1 in _test.rsc): Missing )\n",
+	   expected_err => "\n\n^\n*** BibTool ERROR:  (line 1 in _test.rsc): Missing )\n",
 	   expected_out => '');
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-err-2',
 	   resource	=> "a(\n\n\n",
-	   expected_err => "\n*** BibTool ERROR:  (line 1 in _test.rsc): Missing )\n",
+	   expected_err => "\n\n^\n*** BibTool ERROR:  (line 1 in _test.rsc): Missing )\n",
 	   expected_out => '');
 
 #------------------------------------------------------------------------------
@@ -133,6 +133,8 @@ BUnit::run(name         => 'error-1',
 	   expected_out => '',
 	   expected_err => <<__EOF__ );
 
+
+^
 *** BibTool ERROR:  (line 1 in _test.rsc): Missing operator for +
 __EOF__
 
@@ -142,6 +144,8 @@ BUnit::run(name         => 'error-2',
 	   expected_out => '',
 	   expected_err => <<__EOF__ );
 
+
+^
 *** BibTool ERROR:  (line 1 in _test.rsc): Missing operator for -
 __EOF__
 
@@ -151,6 +155,8 @@ BUnit::run(name         => 'error-3',
 	   expected_out	=> '',
 	   expected_err	=> <<__EOF__ );
 
+?
+^
 *** BibTool ERROR:  (line 1 in _test.rsc): Unexpected character '?' found
 __EOF__
 
@@ -160,6 +166,8 @@ BUnit::run(name         => 'error-4',
 	   expected_out => '',
 	   expected_err => <<__EOF__ );
 
+\\
+^
 *** BibTool ERROR:  (line 1 in _test.rsc): Unexpected character '\\' found
 __EOF__
 
@@ -169,6 +177,8 @@ BUnit::run(name         => 'error-5',
 	   expected_out => '',
 	   expected_err => <<__EOF__ );
 
+\\ \\n
+^
 *** BibTool ERROR:  (line 1 in _test.rsc): Unexpected character '\\' found
 __EOF__
 
@@ -178,6 +188,8 @@ BUnit::run(name         => 'error-6',
 	   expected_out => '',
 	   expected_err => <<__EOF__ );
 
+
+^
 *** BibTool ERROR:  (line 1 in _test.rsc): Missing operator after c
 __EOF__
 
@@ -271,6 +283,8 @@ BUnit::run(name         => 'else-err-1',
 	   expected_out => '',
 	   expected_err => <<__EOF__ );
 
+
+^
 *** BibTool ERROR:  (line 1 in _test.rsc): isolated else encountered
 __EOF__
 

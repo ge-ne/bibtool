@@ -50,14 +50,14 @@ BUnit::run(name         => 'arith-err-1',
 __EOF__
 	   expected_err => <<__EOF__ );
 
+
+^
 *** BibTool ERROR:  (line 1 in _test.rsc): Missing ) before end of file
 __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'arith-1',
-	   resource	=> <<__EOF__ ,
-123;
-__EOF__
+	   resource	=> "123;\n" ,
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
 123

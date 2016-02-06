@@ -110,6 +110,8 @@ BUnit::run(name         => 'string-err-1',
 __EOF__
 	   expected_err => <<__EOF__ );
 
+
+^
 *** BibTool ERROR:  (line 1 in _test.rsc): Missing closing delimiter "
 __EOF__
 
@@ -124,6 +126,8 @@ f
 __EOF__
 	   expected_err => <<__EOF__ );
 
+
+^
 *** BibTool ERROR:  (line 1 in _test.rsc): Missing closing delimiter "
 __EOF__
 
