@@ -90,6 +90,7 @@ void bind(binding, sym)		   		   /*                        */
       SymValue(junk) = SymValue(sym);		   /*                        */
       SymGet(junk)   = SymGet(sym);		   /*                        */
       SymSet(junk)   = SymSet(sym);		   /*                        */
+      free_sym(sym);
       return;					   /*                        */
     }						   /*                        */
   }						   /*                        */
@@ -388,14 +389,30 @@ Term funcall(b, key, f, args)
   String key;
   Term f;
   Term args;
-{ Binding nb;
-  b = binding(511, b);
+{ Binding nb = binding(127, b);
+  SymDef sym;
+  Term t;
 
+  for (t = Car(f); t; t = Cdr(t))
+  { sym = symdef(TString(Car(t)), L_FIELD, 0, NULL, NULL);
+    if (args)
+    { SymValue(sym) = eval_term(b, Car(args));
+      args = Cdr(args);
+    }
+    else
+    { SymValue(sym) = Cdar(t);
+      LinkTerm(SymValue(sym));
+    }
+    bind(nb, sym);
+  }
 
-  nb = b;
-  b  = NextBinding(b);
+  if (args)
+    ErrorNF("Too many arguments for ", key);	   /*                        */
+    
+  t = eval_term(nb, Cdr(f));
+
   free_binding(nb);
-  return NIL;
+  return t;
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -471,6 +488,7 @@ Term eval_term(binding, term)			   /*                        */
       }						   /*                        */
  						   /*                        */
     case L_FUNCTION:				   /*                        */
+      LinkTerm(term);
       return term;
  						   /*                        */
     case L_DEFUN:				   /*                        */

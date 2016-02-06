@@ -315,13 +315,13 @@ BUnit::run(name         => 'with-13',
 BUnit::run(name         => 'defun-0',
 	   resource	=> 'defun def() {}',
 	   expected_err => '',
-	   expected_out => "defun def() {\n}\n" );
+	   expected_out => "defun def() {}\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'defun-1',
 	   resource	=> 'defun def(x:123,y:456) {abc}',
 	   expected_err => '',
-	   expected_out => "defun def(x: 123,  y: 456) {\n  abc\n}\n" );
+	   expected_out => "defun def(x: 123, y: 456) {\n  abc\n}\n" );
 
 
 1;

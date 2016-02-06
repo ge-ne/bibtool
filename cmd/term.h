@@ -169,6 +169,8 @@ typedef struct S_BINDING			   /*                        */
 
 extern Term term_eof;
 
+extern void free_sym _ARG((SymDef s));
+
 extern Term new_term _ARG((short int type, Term car, Term cdr ));
 extern Term new_term_num _ARG((long value));
 extern Term new_t_string _ARG((short int type, unsigned char* s));

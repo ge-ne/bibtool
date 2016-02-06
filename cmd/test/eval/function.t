@@ -62,6 +62,97 @@ BUnit::run(name         => 'fct-err-3',
 	   expected_err => "\n*** BibTool ERROR: Undefined function a\n",
 	   expected_out => '');
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'defun-1',
+	   args	        => '--eval',
+	   resource     => "defun a(){};",
+	   expected_err => '',
+	   expected_out => "function () {}\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'defun-2',
+	   args	        => '--eval',
+	   resource     => "defun a(x){};",
+	   expected_err => '',
+	   expected_out => "function (x) {}\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'defun-3',
+	   args	        => '--eval',
+	   resource     => "defun a(x,y){};",
+	   expected_err => '',
+	   expected_out => "function (x, y) {}\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'defun-4',
+	   args	        => '--eval',
+	   resource     => "defun a(x:123){};",
+	   expected_err => '',
+	   expected_out => "function (x: 123) {}\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'defun-11',
+	   args	        => '--eval',
+	   resource     => "defun a(){};a()",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'defun-12',
+	   args	        => '--eval',
+	   resource     => "defun a(x){};a(123)",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'defun-13',
+	   args	        => '--eval',
+	   resource     => "defun a(x,y){};a(1,2)",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'defun-14',
+	   args	        => '--eval',
+	   resource     => "defun a(x:123){};a(98)",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'defun-21',
+	   args	        => '--eval',
+	   resource     => "defun a(){777};a()",
+	   expected_err => '',
+	   expected_out => "777\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'defun-22',
+	   args	        => '--eval',
+	   resource     => "defun a(x){x+7};a(123)",
+	   expected_err => '',
+	   expected_out => "130\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'defun-23',
+	   args	        => '--eval',
+	   resource     => "defun a(x,y){x+y};a(1,2)",
+	   expected_err => '',
+	   expected_out => "3\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'defun-24',
+	   args	        => '--eval',
+	   resource     => "defun a(x:123){x};a(98)",
+	   expected_err => '',
+	   expected_out => "98\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'defun-25',
+	   args	        => '--eval',
+	   resource     => "defun a(x:123){x};a()",
+	   expected_err => '',
+	   expected_out => "123\n");
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

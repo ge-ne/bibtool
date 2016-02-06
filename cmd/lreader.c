@@ -595,7 +595,7 @@ static Term read_mapping(binding, msg)		   /*                        */
   Term term = NIL;				   /*                        */
   Term *tp  = &term;				   /*                        */
  						   /*                        */
-  for(;;)					   /*                        */
+  for (;;)					   /*                        */
   { Term v;					   /*                        */
     c = scan(binding);				   /*                        */
     if (c == ')') return term;			   /*                        */
@@ -606,9 +606,18 @@ static Term read_mapping(binding, msg)		   /*                        */
     *tp = Cons1(v);				   /*                        */
     tp = &Cdr(*tp);				   /*                        */
  						   /*                        */
-    Expect(':', "Missing :");			   /*                        */
- 						   /*                        */
-    Cdr(v) = read_expr(binding, StackNULL);	   /*                        */
+    c = scan(binding);				   /*                        */
+    if (c == ')' || c == ',')			   /*                        */
+    { unscan(c, yylval);			   /*                        */
+      Cdr(v) = NIL;				   /*                        */
+    }						   /*                        */
+    else if (c 	!= ':')				   /*                        */
+    { Error(msg, ": Missing : instead of ",	   /*                        */
+	    tag_id(c));				   /*                        */
+    }						   /*                        */
+    else					   /*                        */
+    { Cdr(v) = read_expr(binding, StackNULL);	   /*                        */
+    }						   /*                        */
     c = scan(binding);				   /*                        */
     if (c == ')') return term;			   /*                        */
     if (c != ',')				   /*                        */

@@ -393,6 +393,33 @@ static void prn_args(file, term, sep, in)	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	prn_function()
+** Type:	static void
+** Purpose:	
+**		
+** Arguments:
+**	file	
+**	 prefix	
+**	 term	
+**	 in	
+** Returns:	nothing
+**___________________________________________________			     */
+static void prn_function(file, prefix, term, in)   /*                        */
+  FILE *file;					   /*                        */
+  char * prefix;				   /*                        */
+  Term term;					   /*                        */
+  int in;					   /*                        */
+{						   /*                        */
+  fputs(prefix, file);		   		   /*                        */
+  prn_args(file, Car(term), ", ", 0);	   	   /*                        */
+  fputs(") ", file);			   	   /*                        */
+  if (Cddr(term))				   /*                        */
+    prn_term(file, Cdr(term), in);	   	   /*                        */
+  else						   /*                        */
+    fputs("{}", file);			   	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	prn_term()
 ** Type:	void
 ** Purpose:	Produce a printed representation of a term and write it to
@@ -441,16 +468,10 @@ static void prn_term(file, term, in)		   /*                        */
     case L_DEFUN:			   	   /*                        */
       fputs("defun ", file);			   /*                        */
       fputs((char*)TString(term), file);	   /*                        */
-      fputs("(", file);			   	   /*                        */
-      prn_args(file, Cadr(term), ",", in + 1);	   /*                        */
-      fputs(") ", file);			   /*                        */
-      prn_term(file, Cddr(term), in);	   	   /*                        */
+      prn_function(file, "(", Cdr(term), in);  	   /*                        */
       return;					   /*                        */
     case L_FUNCTION:			   	   /*                        */
-      fputs("function (", file);		   /*                        */
-      prn_args(file, Cadr(term), ",", in + 1);	   /*                        */
-      fputs(") ", file);			   /*                        */
-      prn_term(file, Cddr(term), in);	   	   /*                        */
+      prn_function(file, "function (", term, in);  /*                        */
       return;					   /*                        */
     case L_GROUP:				   /*                        */
       if (Cdr(term))				   /*                        */
@@ -616,6 +637,22 @@ SymDef symdef(name, op, flags, get, set)	   /*                        */
   SymGet(sym)   = get;			   	   /*                        */
   SymSet(sym)   = set;			   	   /*                        */
   return sym;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	free_sym()
+** Type:	void
+** Purpose:	
+**		
+** Arguments:
+**	s	
+** Returns:	nothing
+**___________________________________________________			     */
+void free_sym(s)				   /*                        */
+  SymDef s;					   /*                        */
+{						   /*                        */
+  if (SymValue(s)) free_term(SymValue(s));	   /*                        */
+  free(s);					   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/
