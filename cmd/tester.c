@@ -72,10 +72,13 @@ void run_test(file)				   /*                        */
 { Binding b = root_binding();	   		   /*                        */
 					       	   /*                        */
   if (verbose)					   /*                        */
-    fprintf(stderr, "--- reading %s\n", file);	   /*                        */
+    fprintf(stderr, "--- reading file %s\n", file);/*                        */
    						   /*                        */
   read_loop(b, file, action);			   /*                        */
  						   /*                        */
+  if (verbose)					   /*                        */
+    fprintf(stderr, "--- reading completed\n");	   /*                        */
+   						   /*                        */
   if (evaluate)					   /*                        */
   { print_term(stdout, result);			   /*                        */
     putchar('\n');				   /*                        */

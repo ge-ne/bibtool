@@ -22,7 +22,8 @@
 #define L_FIELD		0x210
 #define L_STRING	0x211
 #define L_FUNCALL	0x212
-#define L_DEFUN		0x213
+#define L_FUNCALL2	0x213
+#define L_DEFUN		0x214
 
 #define L_NUMBER	0x220
 
@@ -95,7 +96,7 @@ typedef struct S_TERM {				   /*                        */
 #define TRecord(T)		((T)->a.record)
 #define TRefCount(T)		((T)->ref_count)
 
-#define LinkTerm(T)		if(T) TRefCount(T)++
+#define LinkTerm(T)		if (T) TRefCount(T)++
 #define UnlinkTerm(T)		if ((T) && TRefCount(T)-- <= 0) free_term(T)
 
 #define Caar(T)			Car(Car(T))

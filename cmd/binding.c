@@ -489,8 +489,8 @@ Term funcall(b, key, f, args)			   /*                        */
     						   /*                        */
   t = eval_term(nb, Cdr(f));			   /*                        */
  						   /*                        */
+  LinkTerm(t);					   /*                        */
   free_binding(nb);				   /*                        */
-  LinkTerm(t);
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -528,7 +528,9 @@ Term eval_term(binding, term)			   /*                        */
     case L_GROUP:				   /*                        */
       { Term tt, t = NIL;			   /*                        */
 	for (tt = Cdr(term); tt; tt = Cdr(tt))     /*                        */
-	{ t = eval_term(binding, Car(tt)); }	   /*                        */
+	{ t = eval_term(binding, Car(tt));	   /*                        */
+	  if (t && TType(t) == L_RETURN) return t; /*                        */
+	}	   				   /*                        */
 	return t;				   /*                        */
       }						   /*                        */
  						   /*                        */
@@ -547,9 +549,18 @@ Term eval_term(binding, term)			   /*                        */
 	ErrorNF("Undefined function ", key);	   /*                        */
  						   /*                        */
       if (SymValue(s) && TType(SymValue(s)) == L_FUNCTION)/*                 */
-      { return funcall(binding, key,		   /*                        */
-		       SymValue(s),		   /*                        */
-		       Cdr(term)); }		   /*                        */
+      { Term t = funcall(binding, key,		   /*                        */
+			 SymValue(s),		   /*                        */
+			 Cdr(term));		   /*                        */
+	if (t && TType(t) == L_RETURN)		   /*                        */
+	{ Term x = t;				   /*                        */
+	  t	 = Cdr(t);			   /*                        */
+	  LinkTerm(t);				   /*                        */
+	  Cdr(x) = NIL;				   /*                        */
+	  UnlinkTerm(x);			   /*                        */
+	}					   /*                        */
+	return t;				   /*                        */
+      }		   				   /*                        */
  						   /*                        */
       if (SymGet(s) == NULL)	   		   /*                        */
 	ErrorNF("Undefined function ", key);	   /*                        */
@@ -570,6 +581,7 @@ Term eval_term(binding, term)			   /*                        */
       return funcall(binding, key, term, NIL);	   /*                        */
  						   /*                        */
     case L_FUNCTION:				   /*                        */
+    case L_RETURN:				   /*                        */
       LinkTerm(term);				   /*                        */
       return term;				   /*                        */
  						   /*                        */

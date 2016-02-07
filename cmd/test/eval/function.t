@@ -293,6 +293,69 @@ BUnit::run(name         => 'with-24',
 	   expected_err => '',
 	   expected_out => "123\n");
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'return-1',
+	   args	        => '--eval',
+	   resource     => "return;",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'return-2',
+	   args	        => '--eval',
+	   resource     => "return 123",
+	   expected_err => '',
+	   expected_out => "123\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'return-3',
+	   args	        => '--eval',
+	   resource     => "return; 123",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'return-4',
+	   args	        => '--eval',
+	   resource     => "return 111; 222",
+	   expected_err => '',
+	   expected_out => "111\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'return-10',
+	   args	        => '--eval',
+	   resource     => "{111; return; 222};",
+	   expected_err => '',
+	   expected_out => "return nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'return-11',
+	   args	        => '--eval',
+	   resource     => "{111; return 666; 222};",
+	   expected_err => '',
+	   expected_out => "return 666\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'return-20',
+	   args	        => '--eval',
+	   resource     => "defun f() {111; return; 222} f()",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'return-21',
+	   args	        => '--eval',
+	   resource     => "defun f() {111; return 999; 222}; f() ",
+	   expected_err => '',
+	   expected_out => "999\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'return-30',
+	   args	        => '--eval',
+	   resource     => "f = function() {111; return; 222}; f() ",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

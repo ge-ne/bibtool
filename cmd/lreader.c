@@ -724,12 +724,27 @@ static Term read_expr(binding, stack)		   /*                        */
 	  Expect('(', "Missing ( for function");   /*                        */
 	  Car(t) = read_mapping(binding, "function");/*                      */
 	  Cdr(t) = read_group(binding, "function");/*                        */
-	  Shift(L_FUNCTION, t);		   	   /*                        */
+	  c = scan(binding);			   /*                        */
+	  if (c != '(')				   /*                        */
+	  { unscan(c, yylval);			   /*                        */
+	    Shift(L_FUNCTION, t);		   /*                        */
+	    break;
+	  }
+	  t = read_args(binding,		   /*                        */
+			new_term(L_FUNCALL2, t, NIL),/*                      */
+			',',			   /*                        */
+			')');			   /*                        */
+	  Shift(L_FUNCALL2, t);		   	   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case L_RETURN:				   /*                        */
-	  Shift(L_RETURN, yylval);		   /*                        */
+	{ Term t = yylval;		   	   /*                        */
+	  if (stack) Error("return in expression not allowed ",/*            */
+			   0, 0);		   /*                        */
+	  Cdr(t) = read_expr(binding, StackNULL);  /*                        */
+	  return t;		   		   /*                        */
+	}					   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case L_IF:				   /*                        */
@@ -813,12 +828,12 @@ static Term read_expr(binding, stack)		   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_cmd()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
 **	binding	the binding
-** Returns:	
+** Returns:	the term read
 **___________________________________________________			     */
 static Term read_cmd(binding)			   /*                        */
   Binding binding;				   /*                        */
@@ -873,13 +888,13 @@ static Term read_cmd(binding)			   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	read_loop()
 ** Type:	int
-** Purpose:	
-**		
+** Purpose:	Read repeatedly from a file and invoke a function for each
+**		term read.
 ** Arguments:
-**	binding	
-**	file	
-**	action	
-** Returns:	
+**	binding	the binding
+**	file	the file to read from
+**	action	the function to be invoked
+** Returns:	0
 **___________________________________________________			     */
 int read_loop(binding, file, action)		   /*                        */
   Binding binding;				   /*                        */
@@ -902,7 +917,13 @@ int read_loop(binding, file, action)		   /*                        */
   for (term = read_cmd(binding);		   /*                        */
        term != term_eof;			   /*                        */
        term = read_cmd(binding))		   /*                        */
-  { (*action)(binding, term); }			   /*                        */
+  { if (term && TType(term) == L_RETURN)	   /*                        */
+    { (*action)(binding, Cdr(term));		   /*                        */
+      break;					   /*                        */
+    }						   /*                        */
+    else					   /*                        */
+      (*action)(binding, term);			   /*                        */
+  }			   			   /*                        */
  						   /*                        */
   fclose(f);				   	   /*                        */
   return 0;					   /*                        */

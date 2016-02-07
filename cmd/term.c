@@ -493,7 +493,7 @@ static void prn_term(file, term, in)		   /*                        */
       return;					   /*                        */
     case L_RETURN:				   /*                        */
       fputs("return ", file);			   /*                        */
-      prn_term(file, Cadr(term), in);		   /*                        */
+      prn_term(file, Cdr(term), in);		   /*                        */
       return;					   /*                        */
     case L_GROUP:				   /*                        */
       if (Cdr(term))				   /*                        */
