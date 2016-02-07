@@ -53,14 +53,14 @@ BUnit::run(name         => "add.field-2",
 	   args		=> '--eval',
 	   resource	=> "add.field{abc=123}\n",
 	   expected_err	=> '',
-	   expected_out	=> "[[\"abc\" \"123\"]]\n" );
+	   expected_out	=> "[[\"abc\", \"123\"]]\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => "add.field-3",
 	   args		=> '--eval',
 	   resource	=> "add.field{abc=123} add.field{def=987}\n",
 	   expected_err	=> '',
-	   expected_out	=> "[[\"def\" \"987\"] [\"abc\" \"123\"]]\n" );
+	   expected_out	=> "[[\"def\", \"987\"], [\"abc\", \"123\"]]\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name       => "input-1",
@@ -266,7 +266,7 @@ BUnit::run(name         => "ignored.word-1",
 	   args		=> '--eval',
 	   resource	=> "ignored.word;\n",
 	   expected_err	=> '',
-	   expected_out	=> "[\"a\" \"an\" \"das\" \"der\" \"die\" \"ein\" \"eine\" \"einem\" \"einen\" \"einer\" \"eines\" \"el\" \"il\" \"la\" \"le\" \"les\" \"the\" \"un\" \"une\"]\n" );
+	   expected_out	=> "[\"a\", \"an\", \"das\", \"der\", \"die\", \"ein\", \"eine\", \"einem\", \"einen\", \"einer\", \"eines\", \"el\", \"il\", \"la\", \"le\", \"les\", \"the\", \"un\", \"une\"]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => "clear.ignored.words-1",

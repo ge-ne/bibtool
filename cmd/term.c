@@ -480,7 +480,7 @@ static void prn_term(file, term, in)		   /*                        */
       return;					   /*                        */
     case L_CONS:				   /*                        */
       fputs("[", file);			   	   /*                        */
-      prn_args(file, term, " ", 0);		   /*                        */
+      prn_args(file, term, ", ", 0);		   /*                        */
       fputs("]", file);			   	   /*                        */
       return;					   /*                        */
     case L_DEFUN:			   	   /*                        */

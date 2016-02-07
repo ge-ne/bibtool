@@ -43,65 +43,39 @@ $BUnit::name_prefix = 'parse/';
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'list-1',
-	   resource	=> <<__EOF__ ,
-[];
-__EOF__
+	   resource	=> "[];\n",
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-nil
-__EOF__
+	   expected_out => "nil\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'list-2',
-	   resource	=> <<__EOF__ ,
-[ ];
-__EOF__
+	   resource	=> "[ ];\n",
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-nil
-__EOF__
+	   expected_out => "nil\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'list-3',
-	   resource	=> <<__EOF__ ,
-nil;
-__EOF__
+	   resource	=> "nil;\n",
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-nil
-__EOF__
+	   expected_out => "nil\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'list-10',
-	   resource	=> <<__EOF__ ,
-[123];
-__EOF__
+	   resource	=> "[123];\n",
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-[123]
-__EOF__
+	   expected_out => "[123]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'list-20',
-	   resource	=> <<__EOF__ ,
-[123, "abc"];
-__EOF__
+	   resource	=> "[123, \"abc\"];\n",
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-[123 "abc"]
-__EOF__
-
+	   expected_out => "[123, \"abc\"]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'list-21',
-	   resource	=> <<__EOF__ ,
-[123, abc];
-__EOF__
+	   resource	=> "[123, abc];\n",
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-[123 abc]
-__EOF__
-
+	   expected_out => "[123, abc]\n");
 
 1;
 #------------------------------------------------------------------------------
