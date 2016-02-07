@@ -554,8 +554,7 @@ Term eval_term(binding, term)			   /*                        */
 			 Cdr(term));		   /*                        */
 	if (t && TType(t) == L_RETURN)		   /*                        */
 	{ Term x = t;				   /*                        */
-	  t	 = Cdr(t);			   /*                        */
-	  LinkTerm(t);				   /*                        */
+	  t = Cdr(t);		   		   /*                        */
 	  Cdr(x) = NIL;				   /*                        */
 	  UnlinkTerm(x);			   /*                        */
 	}					   /*                        */
@@ -580,8 +579,12 @@ Term eval_term(binding, term)			   /*                        */
     case L_WITH:				   /*                        */
       return funcall(binding, key, term, NIL);	   /*                        */
  						   /*                        */
-    case L_FUNCTION:				   /*                        */
     case L_RETURN:				   /*                        */
+      return new_term(L_RETURN,			   /*                        */
+		      NIL,			   /*                        */
+		      eval_term(binding, Cdr(term)));/*                      */
+ 						   /*                        */
+    case L_FUNCTION:				   /*                        */
       LinkTerm(term);				   /*                        */
       return term;				   /*                        */
  						   /*                        */

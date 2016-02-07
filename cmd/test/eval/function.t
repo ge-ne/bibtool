@@ -336,6 +336,13 @@ BUnit::run(name         => 'return-11',
 	   expected_out => "return 666\n");
 
 #------------------------------------------------------------------------------
+BUnit::run(name         => 'return-12',
+	   args		     => '--eval',
+	   resource     => "a=123; {111; return a; 222};",
+	   expected_err	     => '',
+	   expected_out	     => "return 123\n");
+
+#------------------------------------------------------------------------------
 BUnit::run(name         => 'return-20',
 	   args	        => '--eval',
 	   resource     => "defun f() {111; return; 222} f()",
@@ -350,11 +357,25 @@ BUnit::run(name         => 'return-21',
 	   expected_out => "999\n");
 
 #------------------------------------------------------------------------------
+BUnit::run(name         => 'return-22',
+	   args	        => '--eval',
+	   resource     => "defun f(x) {111; return x; 222}; f(999) ",
+	   expected_err => '',
+	   expected_out => "999\n");
+
+#------------------------------------------------------------------------------
 BUnit::run(name         => 'return-30',
 	   args	        => '--eval',
 	   resource     => "f = function() {111; return; 222}; f() ",
 	   expected_err => '',
 	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'return-31',
+	   args	        => '--eval',
+	   resource     => "f = function(x) {111; return x; 222}; f(123) ",
+	   expected_err => '',
+	   expected_out => "123\n");
 
 1;
 #------------------------------------------------------------------------------
