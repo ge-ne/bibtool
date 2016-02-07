@@ -43,7 +43,7 @@
 **		
 ** Arguments:
 **	size	the number of junks contained
-** Returns:	
+** Returns:	the new binding
 **___________________________________________________			     */
 Binding binding(size, nextBinding)		   /*                        */
   unsigned int size;				   /*                        */
@@ -63,10 +63,10 @@ Binding binding(size, nextBinding)		   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	free_binding()
 ** Type:	void
-** Purpose:	
+** Purpose:	Release the memory occupied by a bindind.
 **		
 ** Arguments:
-**	binding	
+**	binding	the binding
 ** Returns:	nothing
 **___________________________________________________			     */
 void free_binding(binding)			   /*                        */
@@ -107,7 +107,7 @@ void bind(binding, sym)		   		   /*                        */
        junk = NextJunk(junk))			   /*                        */
   { if (SymName(junk) == key)			   /*                        */
     { SymTerm(junk)  = SymTerm(sym);		   /*                        */
-      LinkTerm(SymTerm(junk));
+      LinkTerm(SymTerm(junk));			   /*                        */
       SymValue(junk) = SymValue(sym);		   /*                        */
       SymGet(junk)   = SymGet(sym);		   /*                        */
       SymSet(junk)   = SymSet(sym);		   /*                        */
@@ -145,7 +145,7 @@ void gbind(binding, sym)			   /*                        */
 	 junk = NextJunk(junk))			   /*                        */
     { if (SymName(junk) == key)			   /*                        */
       { SymTerm(junk)  = SymTerm(sym);		   /*                        */
-	LinkTerm(SymTerm(junk));
+	LinkTerm(SymTerm(junk));		   /*                        */
 	SymValue(junk) = SymValue(sym);		   /*                        */
 	SymGet(junk)   = SymGet(sym);		   /*                        */
 	SymSet(junk)   = SymSet(sym);		   /*                        */
@@ -247,7 +247,7 @@ SymDef get_bind(binding, key)			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	bool_s_rsc()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	Setter for a boolean resource.
 **		
 ** Arguments:
@@ -270,46 +270,44 @@ static Term bool_s_rsc(binding, name, term, rp)	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	num_rsc()
-** Type:	static Term
-** Purpose:	
+** Type:	Term
+** Purpose:	Setter for a numeric resource.
 **		
 ** Arguments:
-**	binding	
-**	name	
-**	term	
-**	rp	
-** Returns:	
+**	binding	the binding
+**	name	the name
+**	term	the term
+**	rp	a pointer to the resource
+** Returns:	the new value
 **___________________________________________________			     */
 static Term num_s_rsc(binding, name, term, rp)	   /*                        */
   Binding binding;				   /*                        */
   char * name;				   	   /*                        */
   Term term;					   /*                        */
   int * rp;					   /*                        */
-{						   /*                        */
-  term = eval_num(binding, Cadr(term));	   	   /*                        */
+{ term = eval_num(binding, Cadr(term));	   	   /*                        */
   *rp  = TNumber(term);	   		   	   /*                        */
   return term;				   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	str_rsc()
-** Type:	static Term
-** Purpose:	
+** Type:	Term
+** Purpose:	Setter for a string resource.
 **		
 ** Arguments:
-**	binding	
-**	name	
-**	term	
-**	rp	
-** Returns:	
+**	binding	the binding
+**	name	the name
+**	term	the term
+**	rp	a pointer to the resource
+** Returns:	the new value
 **___________________________________________________			     */
 static Term str_s_rsc(binding, name, term, rp)	   /*                        */
   Binding binding;				   /*                        */
   char *name;				   	   /*                        */
   Term term;					   /*                        */
   String *rp;					   /*                        */
-{						   /*                        */
-  term = eval_str(binding, Cadr(term));	   	   /*                        */
+{ term = eval_str(binding, Cadr(term));	   	   /*                        */
   *rp  = TString(term);	   		   	   /*                        */
   return term;				   	   /*                        */
 }						   /*------------------------*/
@@ -462,7 +460,7 @@ void dump_binding(binding, file)		   /*                        */
 **	args	the actual argument list
 ** Returns:	
 **___________________________________________________			     */
-Term funcall(b, key, f, args)			   /*                        */
+static Term funcall(b, key, f, args)		   /*                        */
   Binding b;					   /*                        */
   String key;					   /*                        */
   Term f;					   /*                        */
@@ -589,8 +587,9 @@ Term eval_term(binding, term)			   /*                        */
       return term;				   /*                        */
  						   /*                        */
     case L_DEFUN:				   /*                        */
-      return g_defun(binding, term);		   /*                        */
- 						   /*                        */
+      return setq(binding,			   /*                        */
+		  TString(term),		   /*                        */
+		  Cdr(term));			   /*                        */
     case L_FIELD:				   /*                        */
       s = get_bind(binding, TString(term));	   /*                        */
       return s ? SymValue(s) : NIL;		   /*                        */

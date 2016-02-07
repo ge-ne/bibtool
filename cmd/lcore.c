@@ -1004,28 +1004,21 @@ static int g__add_f(key, value)			   /*                        */
   return 1;					   /*                        */
 }						   /*------------------------*/
 
-Term get_add_fields()
-{ Term t = NIL;
-  tp 	 = &t;
-  foreach_addlist(g__add_f);
-  tp = NULL;					   /*                        */
-  return t;					   /*                        */
-}						   /*------------------------*/
-
 /*-----------------------------------------------------------------------------
-** Function:	g_defun()
+** Function:	get_add_fields()
 ** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	the binding
-**	term	the term
+**		
 ** Returns:	
 **___________________________________________________			     */
-Term g_defun(binding, term)			   /*                        */
-  Binding binding;				   /*                        */
-  Term term;					   /*                        */
-{ return setq(binding, TString(term), Cdr(term));  /*                        */
+Term get_add_fields()				   /*                        */
+{ Term t = NIL;					   /*                        */
+  tp 	 = &t;					   /*                        */
+  foreach_addlist(g__add_f);			   /*                        */
+  tp = NULL;					   /*                        */
+  return t;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
