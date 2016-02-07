@@ -42,6 +42,27 @@ use BUnit;
 $BUnit::name_prefix = 'eval/';
 
 #------------------------------------------------------------------------------
+BUnit::run(name         => "add.field-1",
+	   args		=> '--eval',
+	   resource	=> "add.field;\n",
+	   expected_err	=> '',
+	   expected_out	=> "nil\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "add.field-2",
+	   args		=> '--eval',
+	   resource	=> "add.field{abc=123}\n",
+	   expected_err	=> '',
+	   expected_out	=> "[[\"abc\" \"123\"]]\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => "add.field-3",
+	   args		=> '--eval',
+	   resource	=> "add.field{abc=123} add.field{def=987}\n",
+	   expected_err	=> '',
+	   expected_out	=> "[[\"def\" \"987\"] [\"abc\" \"123\"]]\n" );
+
+#------------------------------------------------------------------------------
 BUnit::run(name       => "input-1",
 	   args		=> '--eval',
 	   resource	=> "input \"a.bib\";input;\n",

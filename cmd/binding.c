@@ -60,10 +60,30 @@ Binding binding(size, nextBinding)		   /*                        */
   return b;				   	   /*                        */
 }						   /*------------------------*/
 
-void free_binding(b)
-  Binding b;
-{
-}
+/*-----------------------------------------------------------------------------
+** Function:	free_binding()
+** Type:	void
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+** Returns:	nothing
+**___________________________________________________			     */
+void free_binding(binding)			   /*                        */
+  Binding binding;				   /*                        */
+{ int i;					   /*                        */
+  SymDef sym, junk;				   /*                        */
+ 						   /*                        */
+  for (i = BSize(binding) - 1; i >= 0; i--)	   /*                        */
+  { for (junk = BJunks(binding)[i];		   /*                        */
+	 junk;					   /*                        */
+	 junk = sym)			   	   /*                        */
+    { sym = NextJunk(junk);			   /*                        */
+      free_sym(junk);				   /*                        */
+    }						   /*                        */
+  }						   /*                        */
+  free(binding);				   /*                        */
+}						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	bind()
@@ -87,16 +107,59 @@ void bind(binding, sym)		   		   /*                        */
        junk = NextJunk(junk))			   /*                        */
   { if (SymName(junk) == key)			   /*                        */
     { SymTerm(junk)  = SymTerm(sym);		   /*                        */
+      LinkTerm(SymTerm(junk));
       SymValue(junk) = SymValue(sym);		   /*                        */
       SymGet(junk)   = SymGet(sym);		   /*                        */
       SymSet(junk)   = SymSet(sym);		   /*                        */
-      free_sym(sym);
+      free_sym(sym);				   /*                        */
       return;					   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
   NextJunk(sym) = BJunks(binding)[h];		   /*                        */
-  BJunks(binding)[h]  = sym;			   /*                        */
+  BJunks(binding)[h] = sym;			   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	gbind()
+** Type:	void
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	sym	the symbol definition
+** Returns:	nothing
+**___________________________________________________			     */
+void gbind(binding, sym)			   /*                        */
+  Binding binding;				   /*                        */
+  SymDef sym;					   /*                        */
+{ String key = SymName(sym);		   	   /*                        */
+  unsigned int h;	   			   /*                        */
+  SymDef junk;					   /*                        */
+   						   /*                        */
+  for (;;)					   /*                        */
+  { h = hash(key) % BSize(binding);		   /*                        */
+ 						   /*                        */
+    for (junk = BJunks(binding)[h];		   /*                        */
+	 junk;					   /*                        */
+	 junk = NextJunk(junk))			   /*                        */
+    { if (SymName(junk) == key)			   /*                        */
+      { SymTerm(junk)  = SymTerm(sym);		   /*                        */
+	LinkTerm(SymTerm(junk));
+	SymValue(junk) = SymValue(sym);		   /*                        */
+	SymGet(junk)   = SymGet(sym);		   /*                        */
+	SymSet(junk)   = SymSet(sym);		   /*                        */
+	free_sym(sym);				   /*                        */
+	return;					   /*                        */
+      }						   /*                        */
+    }						   /*                        */
+ 						   /*                        */
+    if (NextBinding(binding) == NULL) break;	   /*                        */
+ 						   /*                        */
+    binding = NextBinding(binding);		   /*                        */
+  }						   /*                        */
+  NextJunk(sym) = BJunks(binding)[h];		   /*                        */
+  BJunks(binding)[h] = sym;			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -258,7 +321,10 @@ static Term str_s_rsc(binding, name, term, rp)	   /*                        */
     Binding binding;					\
     Term term;						\
   { extern int RSC;					\
-    return (RSC ? term_true : term_false); }		\
+    term = (RSC ? term_true : term_false);		\
+    LinkTerm(term);					\
+    return term;					\
+  }							\
   static Term SETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
@@ -424,6 +490,7 @@ Term funcall(b, key, f, args)			   /*                        */
   t = eval_term(nb, Cdr(f));			   /*                        */
  						   /*                        */
   free_binding(nb);				   /*                        */
+  LinkTerm(t);
   return t;					   /*                        */
 }						   /*------------------------*/
 

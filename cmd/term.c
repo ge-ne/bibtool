@@ -167,10 +167,10 @@ void dump_terms(file)				   /*                        */
 {						   /*                        */
 #ifdef DEBUG_MEM
   size_t i;					   /*                        */
-  register int c;
- 
+  register int c;				   /*                        */
+ 						   /*                        */
   for (i = 0; i < t_map_ptr; i++)		   /*                        */
-  { c = TType(t_map[i]);
+  { c = TType(t_map[i]);			   /*                        */
     fputc(c ? *tag_id(c) : '_', file);	   	   /*                        */
     if (i%64 == 63) fputc('\n', file);		   /*                        */
   }						   /*                        */
@@ -247,7 +247,16 @@ void free_term(t)				   /*                        */
   register Term t;				   /*                        */
 { Term cdr;					   /*                        */
  						   /*                        */
-  if (t == NIL) return;				   /*                        */
+  if (t == NIL					   /*                        */
+      || TRefCount(t) > 0			   /*                        */
+      || TType(t) <= 0			   	   /*                        */
+      || TType(t) == L_FALSE			   /*                        */
+      || TType(t) == L_TRUE) return;	   	   /*                        */
+ 						   /*                        */
+#ifdef DEBUG_MEM
+  print_term(stderr, t);			   /*                        */
+  fputs(stderr, "");				   /*                        */
+#endif
  						   /*                        */
   cdr = Cdr(t);					   /*                        */
  						   /*                        */
@@ -259,6 +268,8 @@ void free_term(t)				   /*                        */
     case L_STRING:				   /*                        */
     case L_FUNCALL:				   /*                        */
  						   /*                        */
+    case L_DB:				   	   /*                        */
+    case L_RECORD:				   /*                        */
     case L_NUMBER:				   /*                        */
       Car(t) = NIL;				   /*                        */
       break;					   /*                        */
@@ -279,7 +290,7 @@ void free_term(t)				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	prn_quoted()
-** Type:	static void
+** Type:	void
 ** Purpose:	
 **		
 ** Arguments:
@@ -308,12 +319,12 @@ static void prn_quoted(file, s)		   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	prn_field()
-** Type:	static int
+** Type:	int
 ** Purpose:	
 **		
 ** Arguments:
-**	file	
-**	t	
+**	file	the output file
+**	t	the term
 ** Returns:	
 **___________________________________________________			     */
 void prn_field(file, t)		   	   	   /*                        */
@@ -349,7 +360,7 @@ void prn_field(file, t)		   	   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	indent()
-** Type:	static void
+** Type:	void
 ** Purpose:	
 **		
 ** Arguments:
@@ -368,7 +379,7 @@ static void indent(file, s, in)			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	prn_args()
-** Type:	static void
+** Type:	void
 ** Purpose:	
 **		
 ** Arguments:
@@ -395,7 +406,7 @@ static void prn_args(file, term, sep, in)	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	prn_function()
-** Type:	static void
+** Type:	void
 ** Purpose:	
 **		
 ** Arguments:
@@ -460,6 +471,12 @@ static void prn_term(file, term, in)		   /*                        */
       return;					   /*                        */
     case L_FALSE:				   /*                        */
       fputs("false", file);			   /*                        */
+      return;					   /*                        */
+    case L_RECORD:				   /*                        */
+      fputs("<REC>", file);			   /*                        */
+      return;					   /*                        */
+    case L_DB:				   	   /*                        */
+      fputs("<DB>", file);			   /*                        */
       return;					   /*                        */
     case L_CONS:				   /*                        */
       fputs("[", file);			   	   /*                        */

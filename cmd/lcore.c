@@ -15,6 +15,7 @@
 #include <string.h>
 #include <bibtool/error.h>
 #include <bibtool/key.h>
+#include <bibtool/rewrite.h>
 #include <bibtool/symbols.h>
 #include <bibtool/sbuffer.h>
 #include <bibtool/io.h>
@@ -75,7 +76,8 @@ void wrong_no_args(name)			   /*                        */
 Term g_self(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ return term;					   /*                        */
+{ LinkTerm(term);
+  return term;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -116,7 +118,7 @@ Term g_eq(binding, term)			   /*                        */
   { val = (TType(b) == TType(a)); }		   /*                        */
   else val = 0;					   /*                        */
  						   /*                        */
-  return (val ? term_true : term_false );	   /*                        */
+  return (val ? term_true: term_false);		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -132,8 +134,9 @@ Term g_eq(binding, term)			   /*                        */
 Term g_ne(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ return (TermIsTrue(g_eq(binding, term))   	   /*                        */
-		 ? term_false: term_true);	   /*                        */
+{						   /*                        */
+  term = g_eq(binding, term);			   /*                        */
+  return (TermIsTrue(term) ? term_false: term_true);/*                       */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -169,7 +172,7 @@ Term g_lt(binding, term)			   /*                        */
   } else					   /*                        */
   { ErrorNF("Type error: comparable expected",0); }/*                        */
  						   /*                        */
-  return val ? term_true: term_false;		   /*                        */
+  return (val ? term_true: term_false);		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -205,7 +208,7 @@ Term g_le(binding, term)			   /*                        */
   } else					   /*                        */
   { ErrorNF("Type error: comparable expected",0); }/*                        */
  						   /*                        */
-  return val ? term_true: term_false;		   /*                        */
+  return (val ? term_true: term_false);		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -241,7 +244,7 @@ Term g_gt(binding, term)			   /*                        */
   } else					   /*                        */
   { ErrorNF("Type error: comparable expected",0); }/*                        */
  						   /*                        */
-  return val ? term_true: term_false;		   /*                        */
+  return (val ? term_true: term_false);		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -277,14 +280,13 @@ Term g_ge(binding, term)			   /*                        */
   } else					   /*                        */
   { ErrorNF("Type error: comparable expected",0); }/*                        */
  						   /*                        */
-  return val ? term_true: term_false;		   /*                        */
+  return (val ? term_true: term_false);		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	eval_bool()
 ** Type:	Term
-** Purpose:	
-**		
+** Purpose:	Evaluate a term and convert the result into a boolean value.
 ** Arguments:
 **	binding	the binding
 **	term	the term
@@ -296,15 +298,15 @@ Term eval_bool(binding, term)			   /*                        */
 { 						   /*                        */
   term = eval_term(binding, term);		   /*                        */
  						   /*                        */
-  if (term == NIL) return SymTerm(sym_false);	   /*                        */
+  if (term == NIL) { return term_false; }	   /*                        */
  						   /*                        */
-  switch (TType(term))				   /*                        */
+  switch (TType(term))			   	   /*                        */
   { case L_CONS:				   /*                        */
       return term_true;			   	   /*                        */
     case L_NUMBER:				   /*                        */
-      return TNumber(term) ? term_true : term_false;/*                       */
+      return (TNumber(term) ? term_true : term_false);/*                     */
     case L_STRING:				   /*                        */
-      return *TString(term) ? term_true	: term_false;/*                      */
+      return (*TString(term) ? term_true : term_false);/*                    */
     case L_TRUE:				   /*                        */
     case L_FALSE:				   /*                        */
       break;					   /*                        */
@@ -333,6 +335,7 @@ Term g_while(binding, term)			   /*                        */
   while (eval_bool(binding, Car(term)) == term_true)/*                       */
   { t = eval_term(binding, Cdr(term)); }	   /*                        */
  						   /*                        */
+  LinkTerm(t);					   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -351,6 +354,7 @@ Term g_not(binding, term)			   /*                        */
   Term term;					   /*                        */
 {						   /*                        */
   term = eval_bool(binding, Cadr(term));	   /*                        */
+  LinkTerm(term);
   return (TermIsTrue(term) ? term_false: term_true);/*                       */
 }						   /*------------------------*/
 
@@ -375,6 +379,7 @@ Term g_and(binding, term)			   /*                        */
   { wrong_no_args("and"); }			   /*                        */
  						   /*                        */
   t = eval_bool(binding, Car(term));		   /*                        */
+  LinkTerm(t);
   if (TermIsFalse(t)) return t;		   	   /*                        */
  						   /*                        */
   return eval_bool(binding, Cadr(term));	   /*                        */
@@ -401,6 +406,7 @@ Term g_or(binding, term)			   /*                        */
   { wrong_no_args("or"); }			   /*                        */
  						   /*                        */
   t = eval_bool(binding, Car(term));		   /*                        */
+  LinkTerm(t);
   if (TermIsTrue(t)) return t;		   	   /*                        */
  						   /*                        */
   return eval_bool(binding, Cadr(term));	   /*                        */
@@ -984,6 +990,24 @@ Term g_ign_(binding, term)			   /*                        */
 { Term t = NIL;					   /*                        */
   tp 	 = &t;					   /*                        */
   foreach_ignored_word(g__ign);			   /*                        */
+  tp = NULL;					   /*                        */
+  return t;					   /*                        */
+}						   /*------------------------*/
+
+static int g__add_f(key, value)			   /*                        */
+  String key;
+  String value;
+{
+  *tp = Cons1(Cons(StringTerm(key),
+		   Cons1(StringTerm(value))));
+  tp = &Cdr(*tp);				   /*                        */
+  return 1;					   /*                        */
+}						   /*------------------------*/
+
+Term get_add_fields()
+{ Term t = NIL;
+  tp 	 = &t;
+  foreach_addlist(g__add_f);
   tp = NULL;					   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/

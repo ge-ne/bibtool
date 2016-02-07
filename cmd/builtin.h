@@ -44,7 +44,7 @@ Bind(	 "!",			     g_not,
 				     NULL,		SYM_NONE, L_NOT	     )
 Bind(	 "`",			     NULL,
 				     NULL,		SYM_NONE, L_FIELD    )
-BindFct( "add.field",		     g_add_field,
+BindFunc("add.field",		     g_add_field,	get_add_fields(),
 				     s_add_field,	add_field(val)	     )
 BindBool("apply.alias",		     g_apply_alias,
 				     s_apply_alias,	rsc_apply_alias	     )

@@ -682,7 +682,8 @@ static Term read_expr(binding, stack)		   /*                        */
 	Shift(L_QUOTE,				   /*                        */
 	      new_term(L_QUOTE,			   /*                        */
 		       NIL,			   /*                        */
-		       Cons1(read_expr(binding, StackNULL))));/*             */
+		       Cons1(read_expr(binding,	   /*                        */
+				       StackNULL))));/*                      */
 	break;					   /*                        */
 						   /*                        */
       case L_FIELD:				   /*                        */
@@ -711,6 +712,9 @@ static Term read_expr(binding, stack)		   /*                        */
 	  Cdr(t)  = NewTerm(L_FUNCTION);	   /*                        */
 	  Cadr(t) = read_mapping(binding, "defun");/*                        */
 	  Cddr(t) = read_group(binding, "defun");  /*                        */
+ 						   /*                        */
+	  if (stack == NULL) return t;		   /*                        */
+ 						   /*                        */
 	  Shift(L_DEFUN, t);		   	   /*                        */
 	}					   /*                        */
 	break;					   /*                        */

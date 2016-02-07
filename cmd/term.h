@@ -14,6 +14,8 @@
 #define TERM_H
 
 #include <bibtool/type.h>
+#include <bibtool/database.h>
+#include <bibtool/record.h>
 
 /*---------------------------------------------------------------------------*/
 
@@ -23,6 +25,9 @@
 #define L_DEFUN		0x213
 
 #define L_NUMBER	0x220
+
+#define L_DB		0x230
+#define L_RECORD	0x240
 
 #define L_CONS		0x200
 #define L_GROUP		0x201
@@ -72,6 +77,8 @@ typedef struct S_TERM {				   /*                        */
     struct S_TERM * car;			   /*                        */
     unsigned char * string;			   /*                        */
     long number;				   /*                        */
+    DB db;					   /*                        */
+    Record record;				   /*                        */
   } a;						   /*                        */
   struct S_TERM * cdr;				   /*                        */
   long ref_count;				   /*                        */
@@ -84,6 +91,8 @@ typedef struct S_TERM {				   /*                        */
 #define Cdr(T)			((T)->cdr)
 #define TString(T)		((T)->a.string)
 #define TNumber(T)		((T)->a.number)
+#define TDB(T)			((T)->a.db)
+#define TRecord(T)		((T)->a.record)
 #define TRefCount(T)		((T)->ref_count)
 
 #define LinkTerm(T)		if(T) TRefCount(T)++
