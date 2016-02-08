@@ -99,7 +99,7 @@ void bind(binding, sym)		   		   /*                        */
   Binding binding;				   /*                        */
   SymDef sym;					   /*                        */
 { String key 	 = SymName(sym);		   /*                        */
-  unsigned int h = hash(key) % BSize(binding);	   /*                        */
+  unsigned int h = SymHash(sym) % BSize(binding);  /*                        */
   SymDef junk;					   /*                        */
    						   /*                        */
   for (junk = BJunks(binding)[h];		   /*                        */
@@ -138,7 +138,7 @@ void gbind(binding, sym)			   /*                        */
   SymDef junk;					   /*                        */
    						   /*                        */
   for (;;)					   /*                        */
-  { h = hash(key) % BSize(binding);		   /*                        */
+  { h = SymHash(sym) % BSize(binding);		   /*                        */
  						   /*                        */
     for (junk = BJunks(binding)[h];		   /*                        */
 	 junk;					   /*                        */

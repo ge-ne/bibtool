@@ -531,8 +531,8 @@ static void prn_term(file, term, in)		   /*                        */
       fputs("-", file);			   	   /*                        */
       prn_term(file, Cadr(term), in);		   /*                        */
       return;					   /*                        */
-    case L_QUOTE:    key = "'";		     break;/*                        */
     case L_FUNCALL:  key = (char*)TString(term);break;/*                     */
+    case L_QUOTE:    key = "'";		     break;/*                        */
     case L_MINUS:    key = " - ";	     break;/*                        */
     case L_PLUS:     key = " + ";	     break;/*                        */
     case L_TIMES:    key = " * ";	     break;/*                        */
@@ -557,14 +557,11 @@ static void prn_term(file, term, in)		   /*                        */
  						   /*                        */
   if (L_IS_BINARY(TType(term)) )		   /*                        */
   { term = Cdr(term);				   /*                        */
-    if (term)					   /*                        */
-    { fputc('(', file);				   /*                        */
-      prn_term(file, Car(term), in);		   /*                        */
-      fputs(key, file);		   		   /*                        */
-      prn_term(file, Cadr(term), in);		   /*                        */
-    } else {					   /*                        */
-      return;					   /*                        */
-    }						   /*                        */
+    if (term == NIL) return;			   /*                        */
+    fputc('(', file);				   /*                        */
+    prn_term(file, Car(term), in);		   /*                        */
+    fputs(key, file);		   		   /*                        */
+    prn_term(file, Cadr(term), in);		   /*                        */
   } else {					   /*                        */
     fputs(key, file);		   		   /*                        */
     fputc('(', file);				   /*                        */
@@ -611,13 +608,13 @@ int list_length(list)				   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	hash()
 ** Type:	int
-** Purpose:	
+** Purpose:	Compute the has value of a string as sum of shifted characters.
 **		
 ** Arguments:
-**	s	
-** Returns:	
+**	s	the string
+** Returns:	the hash value
 **___________________________________________________			     */
-unsigned int hash(s)				   /*                        */
+unsigned int hash(s)			   	   /*                        */
   register String s;				   /*                        */
 { register unsigned int hash = 0;		   /*                        */
   unsigned int i 	     = 0;		   /*                        */
@@ -632,7 +629,6 @@ unsigned int hash(s)				   /*                        */
 ** Function:	symdef()
 ** Type:	SymDef
 ** Purpose:	Allocate a new symdef.
-**		
 ** Arguments:
 **	name	the name of the symdef
 **	op	the op code
@@ -664,17 +660,16 @@ SymDef symdef(name, op, flags, get, set)	   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	free_sym()
 ** Type:	void
-** Purpose:	
-**		
+** Purpose:	Release the memory occupied by a symbol definition.
 ** Arguments:
-**	s	
+**	sym	the symbol definition
 ** Returns:	nothing
 **___________________________________________________			     */
-void free_sym(s)				   /*                        */
-  SymDef s;					   /*                        */
+void free_sym(sym)				   /*                        */
+  SymDef sym;					   /*                        */
 {						   /*                        */
-  if (SymValue(s)) free_term(SymValue(s));	   /*                        */
-  free(s);					   /*                        */
+  if (SymValue(sym)) free_term(SymValue(sym));	   /*                        */
+  free(sym);					   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/
