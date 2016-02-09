@@ -337,6 +337,11 @@ BUnit::run(name         => 'defun-1',
 	   expected_err => '',
 	   expected_out => "defun def(x: 123, y: 456) {\n  abc\n}\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'each-1',
+	   resource	=> 'each (x:db) {abc}',
+	   expected_err => '',
+	   expected_out => "each (x: db) {\n  abc\n}\n" );
 
 1;
 #------------------------------------------------------------------------------

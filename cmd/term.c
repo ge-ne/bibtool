@@ -58,41 +58,42 @@ String tag_id(c)			   	   /*                        */
 { static Uchar buffer[2];			   /*                        */
 						   /*                        */
   switch (c)					   /*                        */
-  { case L_STRING:   return (String)"string";	   /*                        */
-    case L_FIELD:    return (String)"field";	   /*                        */
-    case L_NUMBER:   return (String)"number";	   /*                        */
-    case L_FUNCALL:  return (String)"funcall";	   /*                        */
-    case L_CONS:     return (String)"cons";	   /*                        */
-    case L_GROUP:    return (String)"group";	   /*                        */
-    case L_TRUE:     return (String)"true";	   /*                        */
-    case L_FALSE:    return (String)"false";	   /*                        */
-    case L_QUOTE:    return (String)"'";	   /*                        */
-    case L_UMINUS:   return (String)"-";	   /*                        */
-    case L_MINUS:    return (String)"-";	   /*                        */
-    case L_PLUS:     return (String)"+";	   /*                        */
-    case L_TIMES:    return (String)"*";	   /*                        */
-    case L_DIV:      return (String)"/";	   /*                        */
-    case L_MOD:      return (String)"mod";	   /*                        */
-    case L_SET:      return (String)"=";	   /*                        */
-    case L_LIKE:     return (String)"like";	   /*                        */
-    case L_ILIKE:    return (String)"ilike";	   /*                        */
-    case L_EQ:       return (String)"==";	   /*                        */
-    case L_NE:       return (String)"!=";	   /*                        */
-    case L_GT:       return (String)">";	   /*                        */
-    case L_GE:       return (String)">=";	   /*                        */
-    case L_LT:       return (String)"<";	   /*                        */
-    case L_LE:       return (String)"<=";	   /*                        */
-    case L_NOT:      return (String)"not";	   /*                        */
+  { case 0:					   /*                        */
+    case EOF:        return (String)"end of file"; /*                        */
     case L_AND:      return (String)"and";	   /*                        */
-    case L_OR:       return (String)"or";	   /*                        */
+    case L_CONS:     return (String)"cons";	   /*                        */
+    case L_DEFUN:    return (String)"defun";	   /*                        */
+    case L_DIV:      return (String)"/";	   /*                        */
+    case L_EACH:     return (String)"each";	   /*                        */
+    case L_EQ:       return (String)"==";	   /*                        */
+    case L_FALSE:    return (String)"false";	   /*                        */
+    case L_FIELD:    return (String)"field";	   /*                        */
+    case L_FUNCALL:  return (String)"funcall";	   /*                        */
+    case L_FUNCTION: return (String)"function";	   /*                        */
+    case L_GE:       return (String)">=";	   /*                        */
+    case L_GROUP:    return (String)"group";	   /*                        */
+    case L_GT:       return (String)">";	   /*                        */
     case L_IF:       return (String)"if";	   /*                        */
+    case L_ILIKE:    return (String)"ilike";	   /*                        */
+    case L_LE:       return (String)"<=";	   /*                        */
+    case L_LIKE:     return (String)"like";	   /*                        */
+    case L_LT:       return (String)"<";	   /*                        */
+    case L_MINUS:    return (String)"-";	   /*                        */
+    case L_MOD:      return (String)"mod";	   /*                        */
+    case L_NE:       return (String)"!=";	   /*                        */
+    case L_NOT:      return (String)"not";	   /*                        */
+    case L_NUMBER:   return (String)"number";	   /*                        */
+    case L_OR:       return (String)"or";	   /*                        */
+    case L_PLUS:     return (String)"+";	   /*                        */
+    case L_QUOTE:    return (String)"'";	   /*                        */
+    case L_RETURN:   return (String)"return";	   /*                        */
+    case L_SET:      return (String)"=";	   /*                        */
+    case L_STRING:   return (String)"string";	   /*                        */
+    case L_TIMES:    return (String)"*";	   /*                        */
+    case L_TRUE:     return (String)"true";	   /*                        */
+    case L_UMINUS:   return (String)"-";	   /*                        */
     case L_WHILE:    return (String)"while";	   /*                        */
     case L_WITH:     return (String)"with";	   /*                        */
-    case L_FUNCTION: return (String)"function";	   /*                        */
-    case L_RETURN:   return (String)"return";	   /*                        */
-    case L_DEFUN:    return (String)"defun";	   /*                        */
-    case 0:					   /*                        */
-    case EOF:        return (String)"end of file"; /*                        */
   }						   /*                        */
   buffer[0] = c;				   /*                        */
   buffer[1] = 0;				   /*                        */
@@ -455,46 +456,42 @@ static void prn_term(file, term, in)		   /*                        */
   { case 0:					   /*                        */
     case EOF:					   /*                        */
       return;	   			   	   /*                        */
-    case L_STRING:				   /*                        */
-      fputc('"', file);	   			   /*                        */
-      prn_quoted(file, TString(term));	   	   /*                        */
-      fputc('"', file);	   			   /*                        */
-      return;					   /*                        */
-    case L_FIELD:				   /*                        */
-      prn_field(file, term);			   /*                        */
-      return;					   /*                        */
-    case L_NUMBER:				   /*                        */
-      fprintf(file, "%ld", TNumber(term));	   /*                        */
-      return;					   /*                        */
-    case L_TRUE:				   /*                        */
-      fputs("true", file);			   /*                        */
-      return;					   /*                        */
-    case L_FALSE:				   /*                        */
-      fputs("false", file);			   /*                        */
-      return;					   /*                        */
-    case L_RECORD:				   /*                        */
-      fputs("<REC>", file);			   /*                        */
-      return;					   /*                        */
-    case L_DB:				   	   /*                        */
-      fputs("<DB>", file);			   /*                        */
-      return;					   /*                        */
+						   /*                        */
     case L_CONS:				   /*                        */
       fputs("[", file);			   	   /*                        */
       prn_args(file, term, ", ", 0);		   /*                        */
       fputs("]", file);			   	   /*                        */
       return;					   /*                        */
+						   /*                        */
+    case L_DB:				   	   /*                        */
+      fputs("<DB>", file);			   /*                        */
+      return;					   /*                        */
+						   /*                        */
     case L_DEFUN:			   	   /*                        */
       fputs("defun ", file);			   /*                        */
       fputs((char*)TString(term), file);	   /*                        */
       prn_function(file, "(", Cdr(term), in);  	   /*                        */
       return;					   /*                        */
+						   /*                        */
+    case L_EACH:			   	   /*                        */
+      fputs("each (", file);			   /*                        */
+      prn_args(file, Car(term), ",", in + 1);	   /*                        */
+      fputs(") ", file);			   /*                        */
+      prn_term(file, Cdr(term), in);	   	   /*                        */
+      return;					   /*                        */
+						   /*                        */
+    case L_FALSE:				   /*                        */
+      fputs("false", file);			   /*                        */
+      return;					   /*                        */
+						   /*                        */
+    case L_FIELD:				   /*                        */
+      prn_field(file, term);			   /*                        */
+      return;					   /*                        */
+						   /*                        */
     case L_FUNCTION:			   	   /*                        */
       prn_function(file, "function (", term, in);  /*                        */
       return;					   /*                        */
-    case L_RETURN:				   /*                        */
-      fputs("return ", file);			   /*                        */
-      prn_term(file, Cdr(term), in);		   /*                        */
-      return;					   /*                        */
+						   /*                        */
     case L_GROUP:				   /*                        */
       if (Cdr(term))				   /*                        */
       { indent(file, "{\n", in + 1);		   /*                        */
@@ -505,12 +502,7 @@ static void prn_term(file, term, in)		   /*                        */
       }						   /*                        */
       fputs("}", file);			   	   /*                        */
       return;					   /*                        */
-    case L_WHILE:				   /*                        */
-      fputs("while (", file);			   /*                        */
-      prn_args(file, Cdar(term), "", in + 1);	   /*                        */
-      fputs(") ", file);			   /*                        */
-      prn_term(file, Cdr(term), in);	   	   /*                        */
-      return;					   /*                        */
+						   /*                        */
     case L_IF:				   	   /*                        */
       fputs("if (", file);			   /*                        */
       prn_args(file, Cdar(term), "", in + 1);	   /*                        */
@@ -521,16 +513,49 @@ static void prn_term(file, term, in)		   /*                        */
 	prn_term(file, Cddr(term), in);	   	   /*                        */
       }						   /*                        */
       return;					   /*                        */
+						   /*                        */
+    case L_NUMBER:				   /*                        */
+      fprintf(file, "%ld", TNumber(term));	   /*                        */
+      return;					   /*                        */
+						   /*                        */
+    case L_RECORD:				   /*                        */
+      fputs("<REC>", file);			   /*                        */
+      return;					   /*                        */
+						   /*                        */
+    case L_RETURN:				   /*                        */
+      fputs("return ", file);			   /*                        */
+      prn_term(file, Cdr(term), in);		   /*                        */
+      return;					   /*                        */
+						   /*                        */
+    case L_STRING:				   /*                        */
+      fputc('"', file);	   			   /*                        */
+      prn_quoted(file, TString(term));	   	   /*                        */
+      fputc('"', file);	   			   /*                        */
+      return;					   /*                        */
+						   /*                        */
+    case L_TRUE:				   /*                        */
+      fputs("true", file);			   /*                        */
+      return;					   /*                        */
+						   /*                        */
+    case L_UMINUS:				   /*                        */
+      fputs("-", file);			   	   /*                        */
+      prn_term(file, Cadr(term), in);		   /*                        */
+      return;					   /*                        */
+						   /*                        */
+    case L_WHILE:				   /*                        */
+      fputs("while (", file);			   /*                        */
+      prn_args(file, Cdar(term), "", in + 1);	   /*                        */
+      fputs(") ", file);			   /*                        */
+      prn_term(file, Cdr(term), in);	   	   /*                        */
+      return;					   /*                        */
+						   /*                        */
     case L_WITH:			   	   /*                        */
       fputs("with (", file);			   /*                        */
       prn_args(file, Car(term), ",", in + 1);	   /*                        */
       fputs(") ", file);			   /*                        */
       prn_term(file, Cdr(term), in);	   	   /*                        */
       return;					   /*                        */
-    case L_UMINUS:				   /*                        */
-      fputs("-", file);			   	   /*                        */
-      prn_term(file, Cadr(term), in);		   /*                        */
-      return;					   /*                        */
+						   /*                        */
     case L_FUNCALL:  key = (char*)TString(term);break;/*                     */
     case L_QUOTE:    key = "'";		     break;/*                        */
     case L_MINUS:    key = " - ";	     break;/*                        */

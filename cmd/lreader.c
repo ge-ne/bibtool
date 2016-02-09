@@ -644,6 +644,7 @@ static Term read_expr(binding, stack)		   /*                        */
   Binding binding;				   /*                        */
   TStack stack;					   /*                        */
 { int c;					   /*                        */
+  Term t;					   /*                        */
  						   /*                        */
   for (c = scan(binding);			   /*                        */
        c > 0;				   	   /*                        */
@@ -662,7 +663,7 @@ static Term read_expr(binding, stack)		   /*                        */
  						   /*                        */
       case '(':					   /*                        */
 	{ int lno = LineReaderLineno(reader);	   /*                        */
-	  Term t  = read_expr(binding, StackNULL); /*                        */
+	  t       = read_expr(binding, StackNULL); /*                        */
 	  c	  = scan(binding);		   /*                        */
 	  if (c != ')')			   	   /*                        */
 	  { LineReaderLineno(reader) = lno;	   /*                        */
@@ -678,6 +679,84 @@ static Term read_expr(binding, stack)		   /*                        */
 		       : read_list(binding, yylval)));/*                     */
 	break;					   /*                        */
  						   /*                        */
+      case L_DEFUN:				   /*                        */
+	t = yylval;		   	   	   /*                        */
+	Expect(L_FIELD, "Missing function name");  /*                        */
+	TString(t) = TString(yylval);		   /*                        */
+	free_term(yylval);			   /*                        */
+	Expect('(', "Missing ( for defun");	   /*                        */
+	Cdr(t)  = NewTerm(L_FUNCTION);	   	   /*                        */
+	Cadr(t) = read_mapping(binding, "defun");  /*                        */
+	Cddr(t) = read_group(binding, "defun");    /*                        */
+						   /*                        */
+	if (stack == NULL) return t;		   /*                        */
+ 						   /*                        */
+	Shift(L_DEFUN, t);		   	   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
+      case L_EACH:				   /*                        */
+	t = yylval;		   	   	   /*                        */
+	Expect('(', "Missing ( for each");	   /*                        */
+	Car(t) = read_mapping(binding, "each");    /*                        */
+	if (Cdar(t))				   /*                        */
+	  Error("too many arguments",0,0);	   /*                        */
+	Cdr(t) = read_group(binding, "each");	   /*                        */
+	Shift(L_EACH, t);		   	   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
+      case L_ELSE:				   /*                        */
+	Error("isolated else encountered",0,0);	   /*                        */
+ 						   /*                        */
+      case L_FALSE:				   /*                        */
+	Shift(c, term_false);	   	   	   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
+      case L_FIELD:				   /*                        */
+	t = yylval;			   	   /*                        */
+	c = scan(binding);			   /*                        */
+	if (c != '(')				   /*                        */
+	{ unscan(c, yylval);			   /*                        */
+	  Shift(L_FIELD, t);		   	   /*                        */
+	  break;				   /*                        */
+	}					   /*                        */
+	t = read_args(binding,		   	   /*                        */
+		      new_t_string(L_FUNCALL,      /*                        */
+				   TString(t)),    /*                        */
+		      ',',			   /*                        */
+		      ')');			   /*                        */
+	Shift(L_FUNCALL, t);		   	   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
+      case L_FUNCTION:				   /*                        */
+	t = yylval;		   	   	   /*                        */
+	Expect('(', "Missing ( for function");     /*                        */
+	Car(t) = read_mapping(binding, "function");/*                        */
+	Cdr(t) = read_group(binding, "function");  /*                        */
+	c = scan(binding);			   /*                        */
+	if (c != '(')				   /*                        */
+	{ unscan(c, yylval);			   /*                        */
+	  Shift(L_FUNCTION, t);		   	   /*                        */
+	  break;				   /*                        */
+	}					   /*                        */
+	t = read_args(binding,		   	   /*                        */
+		      new_term(L_FUNCALL2, t, NIL),/*                        */
+		      ',',			   /*                        */
+		      ')');			   /*                        */
+	Shift(L_FUNCALL2, t);		   	   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
+      case L_IF:				   /*                        */
+	t = yylval;		   	   	   /*                        */
+	Car(t) = read_condition(binding, "if");    /*                        */
+	Cdr(t) = Cons1(read_group(binding, "if")); /*                        */
+	c = scan(binding);			   /*                        */
+	if (c == L_ELSE)			   /*                        */
+	{ Cddr(t) = read_group(binding, "else"); } /*                        */
+	else				   	   /*                        */
+	{ unscan(c, yylval); }		   	   /*                        */
+	Shift(L_IF, t);		   	   	   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
       case L_QUOTE:				   /*                        */
 	Shift(L_QUOTE,				   /*                        */
 	      new_term(L_QUOTE,			   /*                        */
@@ -686,112 +765,36 @@ static Term read_expr(binding, stack)		   /*                        */
 				       StackNULL))));/*                      */
 	break;					   /*                        */
 						   /*                        */
-      case L_FIELD:				   /*                        */
-	{ Term t = yylval;			   /*                        */
-	  c = scan(binding);			   /*                        */
-	  if (c != '(')				   /*                        */
-	  { unscan(c, yylval);			   /*                        */
- 	    Shift(L_FIELD, t);		   	   /*                        */
-	    break;				   /*                        */
-	  }					   /*                        */
-	  t = read_args(binding,		   /*                        */
-			new_t_string(L_FUNCALL,    /*                        */
-				     TString(t)),  /*                        */
-			',',			   /*                        */
-			')');			   /*                        */
-	  Shift(L_FUNCALL, t);		   	   /*                        */
-	}					   /*                        */
-	break;					   /*                        */
- 						   /*                        */
-      case L_DEFUN:				   /*                        */
-	{ Term t = yylval;		   	   /*                        */
-	  Expect(L_FIELD, "Missing function name");/*                        */
-	  TString(t) = TString(yylval);		   /*                        */
-	  free_term(yylval);			   /*                        */
-	  Expect('(', "Missing ( for defun");	   /*                        */
-	  Cdr(t)  = NewTerm(L_FUNCTION);	   /*                        */
-	  Cadr(t) = read_mapping(binding, "defun");/*                        */
-	  Cddr(t) = read_group(binding, "defun");  /*                        */
- 						   /*                        */
-	  if (stack == NULL) return t;		   /*                        */
- 						   /*                        */
-	  Shift(L_DEFUN, t);		   	   /*                        */
-	}					   /*                        */
-	break;					   /*                        */
- 						   /*                        */
-      case L_FUNCTION:				   /*                        */
-	{ Term t = yylval;		   	   /*                        */
-	  Expect('(', "Missing ( for function");   /*                        */
-	  Car(t) = read_mapping(binding, "function");/*                      */
-	  Cdr(t) = read_group(binding, "function");/*                        */
-	  c = scan(binding);			   /*                        */
-	  if (c != '(')				   /*                        */
-	  { unscan(c, yylval);			   /*                        */
-	    Shift(L_FUNCTION, t);		   /*                        */
-	    break;
-	  }
-	  t = read_args(binding,		   /*                        */
-			new_term(L_FUNCALL2, t, NIL),/*                      */
-			',',			   /*                        */
-			')');			   /*                        */
-	  Shift(L_FUNCALL2, t);		   	   /*                        */
-	}					   /*                        */
-	break;					   /*                        */
- 						   /*                        */
       case L_RETURN:				   /*                        */
-	{ Term t = yylval;		   	   /*                        */
-	  if (stack) Error("return in expression not allowed ",/*            */
-			   0, 0);		   /*                        */
-	  Cdr(t) = read_expr(binding, StackNULL);  /*                        */
-	  return t;		   		   /*                        */
-	}					   /*                        */
-	break;					   /*                        */
- 						   /*                        */
-      case L_IF:				   /*                        */
-	{ Term t = yylval;		   	   /*                        */
-	  Car(t) = read_condition(binding, "if");  /*                        */
-	  Cdr(t) = Cons1(read_group(binding, "if"));/*                       */
-	  c = scan(binding);			   /*                        */
-	  if (c	== L_ELSE)			   /*                        */
-	  { Cddr(t) = read_group(binding, "else"); }/*                       */
-	  else				   	   /*                        */
-	  { unscan(c, yylval); }		   /*                        */
-	  Shift(L_IF, t);		   	   /*                        */
-	}					   /*                        */
-	break;					   /*                        */
- 						   /*                        */
-      case L_WHILE:				   /*                        */
-	{ Term t = yylval;		   	   /*                        */
-	  Car(t) = read_condition(binding, "while");/*                       */
-	  Cdr(t) = read_group(binding, "while");   /*                        */
-	  Shift(L_WHILE, t);		   	   /*                        */
-	}					   /*                        */
-	break;					   /*                        */
- 						   /*                        */
-      case L_WITH:				   /*                        */
-	{ Term t = yylval;		   	   /*                        */
-	  Expect('(', "Missing ( for with");	   /*                        */
-	  Car(t) = read_mapping(binding, "with");  /*                        */
-	  Cdr(t) = read_group(binding, "with");	   /*                        */
-	  Shift(L_WITH, t);		   	   /*                        */
-	}					   /*                        */
-	break;					   /*                        */
- 						   /*                        */
-      case L_ELSE:				   /*                        */
-	Error("isolated else encountered",0,0);	   /*                        */
- 						   /*                        */
-      case L_STRING:				   /*                        */
-      case L_NUMBER:				   /*                        */
-      case L_NOT:				   /*                        */
-	Shift(c, yylval);		   	   /*                        */
-	break;					   /*                        */
+	t = yylval;		   	   	   /*                        */
+	if (stack) Error("return in expression not allowed ",/*              */
+			 0, 0);		   	   /*                        */
+	Cdr(t) = read_expr(binding, StackNULL);    /*                        */
+	return t;		   		   /*                        */
  						   /*                        */
       case L_TRUE:				   /*                        */
 	Shift(c, term_true);	   	   	   /*                        */
 	break;					   /*                        */
  						   /*                        */
-      case L_FALSE:				   /*                        */
-	Shift(c, term_false);	   	   	   /*                        */
+      case L_WHILE:				   /*                        */
+	t = yylval;		   	   	   /*                        */
+	Car(t) = read_condition(binding, "while"); /*                        */
+	Cdr(t) = read_group(binding, "while");     /*                        */
+	Shift(L_WHILE, t);		   	   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
+      case L_WITH:				   /*                        */
+	t = yylval;		   	   	   /*                        */
+	Expect('(', "Missing ( for with");	   /*                        */
+	Car(t) = read_mapping(binding, "with");    /*                        */
+	Cdr(t) = read_group(binding, "with");	   /*                        */
+	Shift(L_WITH, t);		   	   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
+      case L_NUMBER:				   /*                        */
+      case L_NOT:				   /*                        */
+      case L_STRING:				   /*                        */
+	Shift(c, yylval);		   	   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case L_MINUS:				   /*                        */

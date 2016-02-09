@@ -84,6 +84,8 @@ BindStr( "dir.file.separator",	     g_dir_file_sep,
 				     s_dir_file_sep,	rsc_dir_file_sep     )
 BindBool("dump.symbols",	     g_dump_symbols,
 				     s_dump_symbols,	rsc_dump_symbols     )
+Bind(	 "each",		     NULL,
+				     NULL,		SYM_NONE, L_EACH     )
 Bind(	 "else",		     NULL,
 				     NULL,		SYM_NONE, L_ELSE     )
 BindStr( "env.separator",	     g_env_sep,
