@@ -695,13 +695,18 @@ static Term read_expr(binding, stack)		   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case L_EACH:				   /*                        */
-	t = yylval;		   	   	   /*                        */
-	Expect('(', "Missing ( for each");	   /*                        */
-	Car(t) = read_mapping(binding, "each");    /*                        */
-	if (Cdar(t))				   /*                        */
-	  Error("too many arguments",0,0);	   /*                        */
-	Cdr(t) = read_group(binding, "each");	   /*                        */
-	Shift(L_EACH, t);		   	   /*                        */
+	{ Term m;
+	  t = yylval;		   	   	   /*                        */
+	  Expect('(', "Missing ( for each");	   /*                        */
+	  m = read_mapping(binding, "each");       /*                        */
+	  if (m	== NIL)				   /*                        */
+	    Error("missing argument for each",0,0);/*                        */
+	  if (Cdr(m))				   /*                        */
+	    Error("too many arguments for each",0,0);/*                      */
+	  Car(t) = Car(m);
+	  Cdr(t) = read_group(binding, "each");	   /*                        */
+	  Shift(L_EACH, t);		   	   /*                        */
+	}
 	break;					   /*                        */
  						   /*                        */
       case L_ELSE:				   /*                        */

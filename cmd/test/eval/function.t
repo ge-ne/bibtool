@@ -377,6 +377,41 @@ BUnit::run(name         => 'return-31',
 	   expected_err => '',
 	   expected_out => "123\n");
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'each-0',
+	   args	        => '--eval',
+	   resource     => "each (x:[]) {} ",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'each-1',
+	   args	        => '--eval',
+	   resource     => "each (x:[]) {111} ",
+	   expected_err => '',
+	   expected_out => "nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'each-2',
+	   args	        => '--eval',
+	   resource     => "each (x:[1]) {111} ",
+	   expected_err => '',
+	   expected_out => "111\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'each-3',
+	   args	        => '--eval',
+	   resource     => "each (x:[2,3]) {x+1} ",
+	   expected_err => '',
+	   expected_out => "4\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'each-4',
+	   args	        => '--eval',
+	   resource     => "each (x:[2,3]) {print (x) }",
+	   expected_err => '',
+	   expected_out => "23nil\n");
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

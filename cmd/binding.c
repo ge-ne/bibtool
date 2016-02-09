@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "binding.h"
+#include "literate.h"
 #include "lcore.h"
 
 /*****************************************************************************/
@@ -217,7 +218,7 @@ SymDef get_bind(binding, key)			   /*                        */
   Binding binding;				   /*                        */
   String key;					   /*                        */
 { SymDef s;					   /*                        */
-  unsigned int h = hash(key) % BSize(binding);	   /*                        */
+  unsigned int h = hash(key);	   		   /*                        */
   						   /*                        */
 #ifdef DEBUG_BIND
   puts("BINDING");				   /*                        */
@@ -226,7 +227,7 @@ SymDef get_bind(binding, key)			   /*                        */
 #endif
   while (binding)				   /*                        */
   {						   /*                        */
-    for (s = BJunks(binding)[h];		   /*                        */
+    for (s = BJunks(binding)[h % BSize(binding)];  /*                        */
 	 s;					   /*                        */
 	 s = NextJunk(s))			   /*                        */
     {						   /*                        */
@@ -449,6 +450,41 @@ void dump_binding(binding, file)		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	each()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	b	
+**	a	
+**	group	
+** Returns:	
+**___________________________________________________			     */
+static Term each(b, a, group)		   	   /*                        */
+  Binding b;					   /*                        */
+  Term a;					   /*                        */
+  Term group;					   /*                        */
+{ Binding new_bind  = binding(13, b);		   /*                        */
+  Term t	    = NIL;			   /*                        */
+  Iterator iterator = get_iterator(Cdr(a));	   /*                        */
+  if (iterator == NULL )			   /*                        */
+    ErrorNF("Illegal argument for each", 0);	   /*                        */
+ 
+  while (DoItHasNext(iterator))
+  { setq(new_bind,
+	 TString(a),
+	 eval_term(b, DoItNext(iterator)));	   /*                        */
+    t = eval_term(new_bind, group);		   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+   DoItFinish(iterator);			   /*                        */
+ 						   /*                        */
+  LinkTerm(t);					   /*                        */
+  free_binding(new_bind);			   /*                        */
+  return t;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	funcall()
 ** Type:	Term
 ** Purpose:	
@@ -515,30 +551,25 @@ Term eval_term(binding, term)			   /*                        */
     case EOF:					   /*                        */
       return term_eof;	   			   /*                        */
  						   /*                        */
-    case L_STRING:				   /*                        */
-    case L_NUMBER:				   /*                        */
-    case L_TRUE:				   /*                        */
-    case L_FALSE:				   /*                        */
     case L_CONS:				   /*                        */
+    case L_FALSE:				   /*                        */
+    case L_NUMBER:				   /*                        */
+    case L_STRING:				   /*                        */
+    case L_TRUE:				   /*                        */
       LinkTerm(term);				   /*                        */
       return term;				   /*                        */
  						   /*                        */
-    case L_GROUP:				   /*                        */
-      { Term tt, t = NIL;			   /*                        */
-	for (tt = Cdr(term); tt; tt = Cdr(tt))     /*                        */
-	{ t = eval_term(binding, Car(tt));	   /*                        */
-	  if (t && TType(t) == L_RETURN) return t; /*                        */
-	}	   				   /*                        */
-	return t;				   /*                        */
-      }						   /*                        */
+    case L_DEFUN:				   /*                        */
+      return setq(binding,			   /*                        */
+		  TString(term),		   /*                        */
+		  Cdr(term));			   /*                        */
  						   /*                        */
-    case L_IF:				   	   /*                        */
-      if (TermIsTrue(eval_bool(binding, Car(term))))/*                       */
-      { return eval_term(binding, Cadr(term)); }   /*                        */
-      						   /*                        */
-      return (Cddr(term)			   /*                        */
-	      ? eval_term(binding, Cddr(term))	   /*                        */
-	      : NIL);				   /*                        */
+    case L_EACH:				   /*                        */
+      return each(binding, Car(term), Cdr(term));  /*                        */
+ 						   /*                        */
+    case L_FIELD:				   /*                        */
+      s = get_bind(binding, TString(term));	   /*                        */
+      return s ? SymValue(s) : NIL;		   /*                        */
  						   /*                        */
     case L_FUNCALL:				   /*                        */
       key = TString(term);			   /*                        */
@@ -574,6 +605,27 @@ Term eval_term(binding, term)			   /*                        */
 	return (*SymGet(s))(binding, term);	   /*                        */
       }						   /*                        */
  						   /*                        */
+    case L_FUNCTION:				   /*                        */
+      LinkTerm(term);				   /*                        */
+      return term;				   /*                        */
+ 						   /*                        */
+    case L_GROUP:				   /*                        */
+      { Term tt, t = NIL;			   /*                        */
+	for (tt = Cdr(term); tt; tt = Cdr(tt))     /*                        */
+	{ t = eval_term(binding, Car(tt));	   /*                        */
+	  if (t && TType(t) == L_RETURN) return t; /*                        */
+	}	   				   /*                        */
+	return t;				   /*                        */
+      }						   /*                        */
+ 						   /*                        */
+    case L_IF:				   	   /*                        */
+      if (TermIsTrue(eval_bool(binding, Car(term))))/*                       */
+      { return eval_term(binding, Cadr(term)); }   /*                        */
+      						   /*                        */
+      return (Cddr(term)			   /*                        */
+	      ? eval_term(binding, Cddr(term))	   /*                        */
+	      : NIL);				   /*                        */
+ 						   /*                        */
     case L_WITH:				   /*                        */
       return funcall(binding, key, term, NIL);	   /*                        */
  						   /*                        */
@@ -582,36 +634,24 @@ Term eval_term(binding, term)			   /*                        */
 		      NIL,			   /*                        */
 		      eval_term(binding, Cdr(term)));/*                      */
  						   /*                        */
-    case L_FUNCTION:				   /*                        */
-      LinkTerm(term);				   /*                        */
-      return term;				   /*                        */
- 						   /*                        */
-    case L_DEFUN:				   /*                        */
-      return setq(binding,			   /*                        */
-		  TString(term),		   /*                        */
-		  Cdr(term));			   /*                        */
-    case L_FIELD:				   /*                        */
-      s = get_bind(binding, TString(term));	   /*                        */
-      return s ? SymValue(s) : NIL;		   /*                        */
- 						   /*                        */
-    case L_QUOTE:    key = (String)"'";	     break;/*                        */
-    case L_MINUS:    key = (String)"-";	     break;/*                        */
-    case L_PLUS:     key = (String)"+";	     break;/*                        */
-    case L_TIMES:    key = (String)"*";	     break;/*                        */
-    case L_DIV:      key = (String)"/";	     break;/*                        */
-    case L_MOD:      key = (String)"mod";    break;/*                        */
-    case L_SET:      key = (String)"=";	     break;/*                        */
-    case L_LIKE:     key = (String)"like";   break;/*                        */
-    case L_ILIKE:    key = (String)"ilike";  break;/*                        */
-    case L_EQ:       key = (String)"==";     break;/*                        */
-    case L_NE:       key = (String)"!=";     break;/*                        */
-    case L_GT:       key = (String)">";	     break;/*                        */
-    case L_GE:       key = (String)">=";     break;/*                        */
-    case L_LT:       key = (String)"<";	     break;/*                        */
-    case L_LE:       key = (String)"<=";     break;/*                        */
-    case L_NOT:      key = (String)"!";	     break;/*                        */
     case L_AND:      key = (String)"&&";     break;/*                        */
+    case L_DIV:      key = (String)"/";	     break;/*                        */
+    case L_EQ:       key = (String)"==";     break;/*                        */
+    case L_GE:       key = (String)">=";     break;/*                        */
+    case L_GT:       key = (String)">";	     break;/*                        */
+    case L_ILIKE:    key = (String)"ilike";  break;/*                        */
+    case L_LE:       key = (String)"<=";     break;/*                        */
+    case L_LIKE:     key = (String)"like";   break;/*                        */
+    case L_LT:       key = (String)"<";	     break;/*                        */
+    case L_MINUS:    key = (String)"-";	     break;/*                        */
+    case L_MOD:      key = (String)"mod";    break;/*                        */
+    case L_NE:       key = (String)"!=";     break;/*                        */
+    case L_NOT:      key = (String)"!";	     break;/*                        */
     case L_OR:       key = (String)"||";     break;/*                        */
+    case L_PLUS:     key = (String)"+";	     break;/*                        */
+    case L_QUOTE:    key = (String)"'";	     break;/*                        */
+    case L_SET:      key = (String)"=";	     break;/*                        */
+    case L_TIMES:    key = (String)"*";	     break;/*                        */
     default:					   /*                        */
       ErrorNF("Undefined tag ", tag_id(TType(term)));/*                      */
   }						   /*                        */

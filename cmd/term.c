@@ -475,7 +475,7 @@ static void prn_term(file, term, in)		   /*                        */
 						   /*                        */
     case L_EACH:			   	   /*                        */
       fputs("each (", file);			   /*                        */
-      prn_args(file, Car(term), ",", in + 1);	   /*                        */
+      prn_field(file, Car(term));	   	   /*                        */
       fputs(") ", file);			   /*                        */
       prn_term(file, Cdr(term), in);	   	   /*                        */
       return;					   /*                        */
