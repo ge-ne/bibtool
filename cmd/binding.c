@@ -466,18 +466,19 @@ static Term each(b, a, group)		   	   /*                        */
   Term group;					   /*                        */
 { Binding new_bind  = binding(13, b);		   /*                        */
   Term t	    = NIL;			   /*                        */
-  Iterator iterator = get_iterator(Cdr(a));	   /*                        */
+  Iterator iterator = get_iterator(eval_term(b,	   /*                        */
+					     Cdr(a)));/*                     */
   if (iterator == NULL )			   /*                        */
     ErrorNF("Illegal argument for each", 0);	   /*                        */
- 
-  while (DoItHasNext(iterator))
-  { setq(new_bind,
-	 TString(a),
+  						   /*                        */
+  while (DoItHasNext(iterator))			   /*                        */
+  { setq(new_bind,				   /*                        */
+	 TString(a),				   /*                        */
 	 eval_term(b, DoItNext(iterator)));	   /*                        */
     t = eval_term(new_bind, group);		   /*                        */
   }						   /*                        */
  						   /*                        */
-   DoItFinish(iterator);			   /*                        */
+  DoItFinish(iterator);			   	   /*                        */
  						   /*                        */
   LinkTerm(t);					   /*                        */
   free_binding(new_bind);			   /*                        */

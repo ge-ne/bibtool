@@ -412,6 +412,34 @@ BUnit::run(name         => 'each-4',
 	   expected_err => '',
 	   expected_out => "23nil\n");
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'each-5',
+	   args		=> '--eval',
+	   resource     => "a=[2,3]; each (x:a) {print (x) }",
+	   expected_err	=> '',
+	   expected_out	=> "23nil\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'each-err-1',
+	   args		=> '--eval',
+	   resource     => "each (x:123) { x }",
+	   expected_err	=> "\n*** BibTool ERROR: Illegal argument for each\n",
+	   expected_out	=> '');
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'each-err-2',
+	   args		=> '--eval',
+	   resource     => "each (x:true) { x }",
+	   expected_err	=> "\n*** BibTool ERROR: Illegal argument for each\n",
+	   expected_out	=> '');
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'each-err-3',
+	   args		=> '--eval',
+	   resource     => "each (x:false) { x }",
+	   expected_err	=> "\n*** BibTool ERROR: Illegal argument for each\n",
+	   expected_out	=> '');
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 
