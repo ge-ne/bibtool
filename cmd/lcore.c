@@ -957,6 +957,9 @@ Term g_mod(binding, term)			   /*                        */
   return NumberTerm(val % d);			   /*                        */
 }						   /*------------------------*/
 
+void loop_deep() {
+}
+
 /*-----------------------------------------------------------------------------
 ** Function:	g_read()
 ** Type:	Term
@@ -974,32 +977,35 @@ Term g_read(binding, term)			   /*                        */
   Term t;					   /*                        */
   extern int rsc_verbose;			   /*                        */
  						   /*                        */
-  for (term = Cdr(term); term; term = Cdr(term))   /*                        */
-  { t = eval_term(binding, term);		   /*                        */
-    if (t == NIL) continue;			   /*                        */
-    if (TermIsString(t))			   /*                        */
-    { if (read_db(db, TString(t), rsc_verbose))	   /*                        */
-      { ErrorNF("Input file not found: ",	   /*                        */
-		TString(t)); } 			   /*                        */
-    }	   					   /*                        */
-    else if (TermIsList(t))			   /*                        */
-    { for ( ; t; t = Cdr(t))			   /*                        */
-      { if (Car(t) == NIL) continue;		   /*                        */
-	if (TermIsString(Car(t)))		   /*                        */
-	{ if (read_db(db,			   /*                        */
-		      TString(Car(t)),		   /*                        */
-		      rsc_verbose))		   /*                        */
-	  { ErrorNF("Input file not found: ",	   /*                        */
+  if (Cdr(term))				   /*                        */
+  {						   /*                        */
+    for (term = Cadr(term); term; term = Cdr(term))/*                        */
+    { t = eval_term(binding, term);		   /*                        */
+      if (t == NIL) continue;			   /*                        */
+      if (TermIsString(t))			   /*                        */
+      { if (read_db(db, TString(t), rsc_verbose))  /*                        */
+	{ ErrorNF("Input file not found: ",	   /*                        */
+		  TString(t)); }		   /*                        */
+      }	   					   /*                        */
+      else if (TermIsList(t))			   /*                        */
+      { for ( ; t; t = Cdr(t))			   /*                        */
+	{ if (Car(t) == NIL) continue;		   /*                        */
+	  if (TermIsString(Car(t)))		   /*                        */
+	  { if (read_db(db,			   /*                        */
+			TString(Car(t)),	   /*                        */
+			rsc_verbose))		   /*                        */
+	    { ErrorNF("Input file not found: ",	   /*                        */
 		    TString(Car(t))); }		   /*                        */
+	  }					   /*                        */
+	  else { ErrorNF("read: illegal parameter ",/*                       */
+			 tag_id(TType(Car(t)))); } /*                        */
 	}					   /*                        */
-	else { ErrorNF("read: illegal parameter ", /*                        */
-		       tag_id(TType(Car(t)))); }   /*                        */
       }						   /*                        */
-    }						   /*                        */
-    else 					   /*                        */
+      else 					   /*                        */
     { ErrorNF("read: illegal parameter ",	   /*                        */
 	      tag_id(TType(t))); }		   /*                        */
-  }						   /*                        */
+    }						   /*                        */
+  } 						   /*                        */
  						   /*                        */
   t	 = new_term(L_DB, NIL, NIL);		   /*                        */
   TDB(t) = db;					   /*                        */
