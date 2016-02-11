@@ -18,6 +18,7 @@
 #include <bibtool/rewrite.h>
 #include <bibtool/symbols.h>
 #include <bibtool/sbuffer.h>
+#include <bibtool/database.h>
 #include <bibtool/io.h>
 #include <ctype.h>
 #include "binding.h"
@@ -954,6 +955,55 @@ Term g_mod(binding, term)			   /*                        */
   d   = TNumber(eval_num(binding, Cadr(term)));	   /*                        */
   if (d	== 0) ErrorNF("Modulo by 0",0);		   /*                        */
   return NumberTerm(val % d);			   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	g_read()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+** Returns:	
+**___________________________________________________			     */
+Term g_read(binding, term)			   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+{ DB db = new_db();				   /*                        */
+  Term t;					   /*                        */
+  extern int rsc_verbose;			   /*                        */
+ 						   /*                        */
+  for (term = Cdr(term); term; term = Cdr(term))   /*                        */
+  { t = eval_term(binding, term);		   /*                        */
+    if (t == NIL) continue;			   /*                        */
+    if (TermIsString(t))			   /*                        */
+    { if (read_db(db, TString(t), rsc_verbose))	   /*                        */
+      { ErrorNF("Input file not found: ",	   /*                        */
+		TString(t)); } 			   /*                        */
+    }	   					   /*                        */
+    else if (TermIsList(t))			   /*                        */
+    { for ( ; t; t = Cdr(t))			   /*                        */
+      { if (Car(t) == NIL) continue;		   /*                        */
+	if (TermIsString(Car(t)))		   /*                        */
+	{ if (read_db(db,			   /*                        */
+		      TString(Car(t)),		   /*                        */
+		      rsc_verbose))		   /*                        */
+	  { ErrorNF("Input file not found: ",	   /*                        */
+		    TString(Car(t))); }		   /*                        */
+	}					   /*                        */
+	else { ErrorNF("read: illegal parameter ", /*                        */
+		       tag_id(TType(Car(t)))); }   /*                        */
+      }						   /*                        */
+    }						   /*                        */
+    else 					   /*                        */
+    { ErrorNF("read: illegal parameter ",	   /*                        */
+	      tag_id(TType(t))); }		   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  t	 = new_term(L_DB, NIL, NIL);		   /*                        */
+  TDB(t) = db;					   /*                        */
+  return t;					   /*                        */
 }						   /*------------------------*/
 
 static Term *tp;

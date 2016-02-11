@@ -50,6 +50,8 @@ extern Term g_not _ARG((Binding b, Term t));       /*                        */
 extern Term g_or _ARG((Binding b, Term t));        /*                        */
 extern Term g_plus _ARG((Binding b, Term t));	   /*                        */
 extern Term g_print _ARG((Binding b, Term t));	   /*                        */
+extern Term g_read _ARG((Binding b, Term t));	   /*                        */
+extern Term s_read _ARG((Binding b, Term t));	   /*                        */
 extern Term g_self _ARG((Binding b, Term t));	   /*                        */
 extern Term g_setq _ARG((Binding b, Term t));	   /*                        */
 extern Term g_times _ARG((Binding b, Term t));	   /*                        */

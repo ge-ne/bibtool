@@ -207,6 +207,8 @@ Bind(	 "quote",		     NULL,
 				     NULL,		SYM_NONE, L_QUOTE    )
 BindBool("quiet",		     g_quiet,
 				     s_quiet,		rsc_quiet	     )
+Bind(	 "read",		     g_read,
+				     g_read,		SYM_NONE, L_FIELD    )
 BindFunc("regexp.syntax",	     g_regex_syntax,	StringTerm((String)get_regex_syntax()),
 				     s_regex_syntax,	set_regex_syntax((char*)val) )
 BindFct( "rename.field",	     g_rename_field,

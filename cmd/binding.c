@@ -553,6 +553,15 @@ Term eval_term(binding, term)			   /*                        */
       return term_eof;	   			   /*                        */
  						   /*                        */
     case L_CONS:				   /*                        */
+      { Term t = NIL, *tp;			   /*                        */
+	tp     = &t;				   /*                        */
+	for ( ; term; term = Cdr(term))		   /*                        */
+	{ *tp = Cons1(eval_term(binding,	   /*                        */
+				Car(term)));	   /*                        */
+	  tp = &Cdr(*tp);			   /*                        */
+	}					   /*                        */
+	return t;				   /*                        */
+      }						   /*                        */
     case L_FALSE:				   /*                        */
     case L_NUMBER:				   /*                        */
     case L_STRING:				   /*                        */
