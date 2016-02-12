@@ -55,6 +55,28 @@ BUnit::run(name         => 'db-2',
 	   expected_err => '',
 	   expected_out => "<DB>\n");
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'db-3',
+	   args	        => '--eval',
+	   resource     => "read(\"bib/xampl_s\");",
+	   expected_err => "",
+	   expected_out => "<DB>\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'db-10',
+	   args	        => '--eval',
+	   resource     => "read([]) + 0",
+	   expected_err => '',
+	   expected_out => "0\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'db-11',
+	   args	        => '--eval',
+	   resource     => "read(\"bib/xampl_s\") + 0;",
+	   expected_err => "",
+	   expected_out => "36\n");
+
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

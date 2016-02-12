@@ -701,7 +701,7 @@ Term g_setq(binding, term)		   	   /*                        */
 **	s	
 ** Returns:	
 **___________________________________________________			     */
-long scanf_num(s)				   /*                        */
+static long scanf_num(s)			   /*                        */
   String s;					   /*                        */
 { long val  = 0;				   /*                        */
   char sign = 0;				   /*                        */
@@ -724,9 +724,34 @@ long scanf_num(s)				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Variable:	temp_num
+** Type:	long
+** Purpose:	temporary variable
+**		
+**___________________________________________________			     */
+static long temp_num;				   /*                        */
+
+/*-----------------------------------------------------------------------------
+** Function:	ev_db_count()
+** Type:	static int
+** Purpose:	
+**		
+** Arguments:
+**	db	
+**	rec	
+** Returns:	
+**___________________________________________________			     */
+static int ev_db_count(db, rec)			   /*                        */
+  DB db;					   /*                        */
+  Record rec;					   /*                        */
+{ temp_num++;					   /*                        */
+  return 0;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	eval_num()
 ** Type:	long
-** Purpose:	
+** Purpose:	Evaluate an expression and convert the result into a number.
 **		
 ** Arguments:
 **	binding	the binding
@@ -736,22 +761,30 @@ long scanf_num(s)				   /*                        */
 Term eval_num(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ 						   /*                        */
+{ long val;					   /*                        */
   term = eval_term(binding, term);		   /*                        */
  						   /*                        */
   if (term == NIL || TermIsFalse(term))	   	   /*                        */
     return NumberTerm(0L);			   /*                        */
-  if (TermIsTrue(term))	   		   	   /*                        */
-    return NumberTerm(1L);			   /*                        */
-  if (TermIsNumber(term))	   		   /*                        */
-    return term;				   /*                        */
-  if (TermIsList(term))				   /*                        */
-    return NumberTerm((long)list_length(term));	   /*                        */
-  if (TermIsString(term))			   /*                        */
-    return NumberTerm(scanf_num(TString(term)));   /*                        */
  						   /*                        */
-  ErrorNF("Type error: number expected",0);	   /*                        */
-  return NIL;				   	   /* This will never happen */
+  switch (TType(term))				   /*                        */
+  { case L_NUMBER: return term;			   /*                        */
+    case L_FALSE:  val = 0L; break;		   /*                        */
+    case L_TRUE:   val = 1L; break;		   /*                        */
+    case L_CONS:   val = list_length(term); break; /*                        */
+    case L_STRING:				   /*                        */
+      val = scanf_num(TString(term)); break;	   /*                        */
+    case L_DB:					   /*                        */
+      temp_num = 0L;				   /*                        */
+      db_forall(TDB(term), ev_db_count);	   /*                        */
+      val = temp_num;				   /*                        */
+      break;					   /*                        */
+    default:					   /*                        */
+      ErrorNF("Type error: number expected instead of ",/*                   */
+	      tag_id(TType(term)));	   	   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  return NumberTerm(val);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
