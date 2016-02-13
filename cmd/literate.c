@@ -27,11 +27,11 @@
 
 /*-----------------------------------------------------------------------------
 ** Function:	lst_has_next()
-** Type:	static int
+** Type:	int
 ** Purpose:	
 **		
 ** Arguments:
-**	iterator	
+**	iterator	the iterator
 ** Returns:	
 **___________________________________________________			     */
 static int lst_has_next(iterator)		   /*                        */
@@ -42,11 +42,11 @@ static int lst_has_next(iterator)		   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	lst_next()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
-**	iterator	
+**	iterator	the iterator
 ** Returns:	
 **___________________________________________________			     */
 static Term lst_next(iterator)			   /*                        */
@@ -58,11 +58,11 @@ static Term lst_next(iterator)			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	lst_finish()
-** Type:	static void
+** Type:	void
 ** Purpose:	
 **		
 ** Arguments:
-**	iterator	
+**	iterator	the iterator
 ** Returns:	nothing
 **___________________________________________________			     */
 static void lst_finish(iterator)		   /*                        */
@@ -72,11 +72,11 @@ static void lst_finish(iterator)		   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	rec_first()
-** Type:	static Record
+** Type:	Record
 ** Purpose:	
 **		
 ** Arguments:
-**	db	
+**	db	the database
 ** Returns:	
 **___________________________________________________			     */
 static Record rec_first(db)			   /*                        */
@@ -92,11 +92,11 @@ static Record rec_first(db)			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	rec_has_next()
-** Type:	static int
+** Type:	int
 ** Purpose:	
 **		
 ** Arguments:
-**	iterator	
+**	iterator	the iterator
 ** Returns:	
 **___________________________________________________			     */
 static int rec_has_next(iterator)		   /*                        */
@@ -107,11 +107,11 @@ static int rec_has_next(iterator)		   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	rec_next()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
-**	iterator	
+**	iterator	the iterator
 ** Returns:	
 **___________________________________________________			     */
 static Term rec_next(iterator)			   /*                        */
@@ -121,18 +121,18 @@ static Term rec_next(iterator)			   /*                        */
   while (rec)
   { rec = NextRecord(rec);
     if (rec == NULL || !RecordIsDELETED(rec)) break;
-  }
-  ItState(iterator) = rec;
-  return t;
+  }						   /*                        */
+  ItState(iterator) = rec;			   /*                        */
+  return t;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	rec_finish()
-** Type:	static void
+** Type:	void
 ** Purpose:	
 **		
 ** Arguments:
-**	iterator	
+**	iterator	the iterator
 ** Returns:	nothing
 **___________________________________________________			     */
 static void rec_finish(iterator)		   /*                        */
@@ -146,7 +146,7 @@ static void rec_finish(iterator)		   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	t	
+**	t	the term to iterate over
 ** Returns:	
 **___________________________________________________			     */
 Iterator get_iterator(t)			   /*                        */
@@ -155,16 +155,16 @@ Iterator get_iterator(t)			   /*                        */
  						   /*                        */
   if (iterator == NULL) return NULL;		   /*                        */
  						   /*                        */
-  if (t	== NIL || TType(t) == L_CONS) {
-    ItState(iterator)   = t;
-    ItHasNext(iterator) = lst_has_next;
-    ItNext(iterator)    = lst_next;
-    ItFinish(iterator)  = lst_finish;
-  } else if (TType(t) == L_DB) {
-    ItState(iterator)   = rec_first(TDB(t));
-    ItHasNext(iterator) = rec_has_next;
-    ItNext(iterator)    = rec_next;
-    ItFinish(iterator)  = rec_finish;
+  if (t	== NIL || TType(t) == L_CONS) {		   /*                        */
+    ItState(iterator)   = t;			   /*                        */
+    ItHasNext(iterator) = lst_has_next;		   /*                        */
+    ItNext(iterator)    = lst_next;		   /*                        */
+    ItFinish(iterator)  = lst_finish;		   /*                        */
+  } else if (TType(t) == L_DB) {		   /*                        */
+    ItState(iterator)   = rec_first(TDB(t));	   /*                        */
+    ItHasNext(iterator) = rec_has_next;		   /*                        */
+    ItNext(iterator)    = rec_next;		   /*                        */
+    ItFinish(iterator)  = rec_finish;		   /*                        */
   } else {					   /*                        */
     free(iterator);				   /*                        */
     return NULL;				   /*                        */

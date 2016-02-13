@@ -120,6 +120,8 @@ typedef struct S_TERM {				   /*                        */
 #define FieldTerm(S)		new_t_string(L_FIELD, symbol(S))
 #define NumberTerm(N)		new_term_num(N)
 #define NewTerm(N)		new_term(N, NIL, NIL)
+#define DBTerm(DB)		new_t_db(DB)
+#define RecordTerm(REC)		new_t_rec(REC)
 
 /*---------------------------------------------------------------------------*/
 
@@ -186,9 +188,12 @@ extern void free_sym _ARG((SymDef s));
 extern Term new_term _ARG((short int type, Term car, Term cdr ));
 extern Term new_term_num _ARG((long value));
 extern Term new_t_string _ARG((short int type, unsigned char* s));
+extern Term new_t_db _ARG((DB db));
+extern Term new_t_rec _ARG((Record rec));
 extern void free_term _ARG((Term term));
 extern void print_term _ARG((FILE* file, Term term));
 extern String token_type _ARG((int c));
+extern String term_type _ARG((Term t));
 
 extern int list_length _ARG((Term t));
 extern int parse_term _ARG((char* file, int(*action)(Term t)));

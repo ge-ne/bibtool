@@ -470,7 +470,7 @@ static Term each(b, a, group)		   	   /*                        */
  						   /*                        */
   if (iterator == NULL )			   /*                        */
     ErrorNF("Illegal argument for each: ",	   /*                        */
-	    token_type(TType(t)));		   /*                        */
+	    term_type(t));		   	   /*                        */
   t = NIL;					   /*                        */
   						   /*                        */
   while (DoItHasNext(iterator))			   /*                        */
@@ -669,8 +669,7 @@ Term eval_term(binding, term)			   /*                        */
     case L_SET:      key = (String)"=";	     break;/*                        */
     case L_TIMES:    key = (String)"*";	     break;/*                        */
     default:					   /*                        */
-      ErrorNF("Undefined tag ",			   /*                        */
-	      token_type(TType(term)));		   /*                        */
+      ErrorNF("Undefined tag ", term_type(term));  /*                        */
   }						   /*                        */
  						   /*                        */
    s = get_bind(binding, key);		   	   /*                        */

@@ -781,7 +781,7 @@ Term eval_num(binding, term)			   /*                        */
       break;					   /*                        */
     default:					   /*                        */
       ErrorNF("Type error: number expected instead of ",/*                   */
-	      token_type(TType(term)));	   	   /*                        */
+	      term_type(term));	   	   	   /*                        */
   }						   /*                        */
  						   /*                        */
   return NumberTerm(val);			   /*                        */
@@ -800,28 +800,29 @@ Term eval_num(binding, term)			   /*                        */
 Term eval_str(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ 						   /*                        */
+{ Term t;					   /*                        */
   term = eval_term(binding, term);		   /*                        */
  						   /*                        */
   if (term == NIL) return StringTerm((String)"");  /*                        */
   if (TermIsString(term)) 			   /*                        */
   { LinkTerm(term);				   /*                        */
-    return term;		   		   /*                        */
   }						   /*                        */
-#ifdef TODO
-  if (TermIsList(term))
-  { StringBuffer *sb = sbopen();
-		
-    term = StringTerm((String)sbflush(sb));
-    sbclose(sb);	
-    return term;	
-  }			
-#endif
-  if (TermIsTrue(term))				   /*                        */
-    return StringTerm((String)"true");		   /*                        */
-  if (TermIsFalse(term))	   		   /*                        */
-    return StringTerm((String)"false");		   /*                        */
-  if (TermIsNumber(term))	   		   /*                        */
+  else if (TermIsList(term))			   /*                        */
+  { StringBuffer *sb = sbopen();		   /*                        */
+ 						   /*                        */
+    for ( ; term; term = Cdr(term))		   /*                        */
+    { t = eval_str(binding, Car(term));		   /*                        */
+      sbputs((char*)TString(t), sb);		   /*                        */
+      UnlinkTerm(t);				   /*                        */
+    }						   /*                        */
+    term = StringTerm((String)sbflush(sb));	   /*                        */
+    sbclose(sb);				   /*                        */
+  }						   /*                        */
+  else if (TermIsTrue(term))			   /*                        */
+    term = StringTerm((String)"true");		   /*                        */
+  else if (TermIsFalse(term))	   		   /*                        */
+    term = StringTerm((String)"false");		   /*                        */
+  else if (TermIsNumber(term))	   		   /*                        */
   { long n = TNumber(term);			   /*                        */
     StringBuffer *sb;				   /*                        */
     char *s, *t;				   /*                        */
@@ -844,14 +845,14 @@ Term eval_str(binding, term)			   /*                        */
       *(s++) = *t;				   /*                        */
       *(t--) = c;				   /*                        */
     }						   /*                        */
- 						   /*                        */
     term = StringTerm((String)sbflush(sb));	   /*                        */
     sbclose(sb);				   /*                        */
-    return term;	   			   /*                        */
   }						   /*                        */
+  else 						   /*                        */
+    ErrorNF("Type error: string expected instead of ",/*                     */
+	    term_type(term));	   		   /*                        */
  						   /*                        */
-  ErrorNF("Type error: string expected",0);	   /*                        */
-  return NIL;				   	   /* This will never happen */
+  return term;	   			   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -990,17 +991,14 @@ Term g_mod(binding, term)			   /*                        */
   return NumberTerm(val % d);			   /*                        */
 }						   /*------------------------*/
 
-void loop_deep() {
-}
-
 /*-----------------------------------------------------------------------------
 ** Function:	g_read()
 ** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
+**	binding	the binding
+**	term	the term
 ** Returns:	
 **___________________________________________________			     */
 Term g_read(binding, term)			   /*                        */
@@ -1031,18 +1029,16 @@ Term g_read(binding, term)			   /*                        */
 		    TString(Car(t))); }		   /*                        */
 	  }					   /*                        */
 	  else { ErrorNF("read: illegal parameter ",/*                       */
-			 token_type(TType(Car(t)))); }/*                     */
+			 term_type(Car(t))); }	   /*                        */
 	}					   /*                        */
       }						   /*                        */
       else 					   /*                        */
-    { ErrorNF("read: illegal parameter ",	   /*                        */
-	      token_type(TType(t))); }		   /*                        */
+      { ErrorNF("read: illegal parameter ",	   /*                        */
+		term_type(t)); }		   /*                        */
     }						   /*                        */
   } 						   /*                        */
  						   /*                        */
-  t	 = new_term(L_DB, NIL, NIL);		   /*                        */
-  TDB(t) = db;					   /*                        */
-  return t;					   /*                        */
+  return DBTerm(db);				   /*                        */
 }						   /*------------------------*/
 
 static Term *tp;

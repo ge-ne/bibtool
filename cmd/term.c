@@ -100,6 +100,22 @@ String token_type(c)			   	   /*                        */
   return buffer;				   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	term_type()
+** Type:	String
+** Purpose:	
+**		
+** Arguments:
+**	term	
+** Returns:	
+**___________________________________________________			     */
+String term_type(term)				   /*                        */
+  Term term;					   /*                        */
+{ return term == NIL				   /*                        */
+    ? (String)"[]"				   /*                        */
+    : token_type(TType(term));			   /*                        */
+}						   /*------------------------*/
+
 /*---------------------------------------------------------------------------*/
 
 
@@ -230,6 +246,38 @@ Term new_t_string(type, s)		   	   /*                        */
   String s;					   /*                        */
 { register Term t = new__t(type, NIL);		   /*                        */
   TString(t) = s;				   /*                        */
+  return t;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	new_t_db()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	db	
+** Returns:	
+**___________________________________________________			     */
+Term new_t_db(db)				   /*                        */
+  DB db;					   /*                        */
+{ register Term t = new__t(L_DB, NIL);	   	   /*                        */
+  TDB(t) = db;				   	   /*                        */
+  return t;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	new_t_rec()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	rec	
+** Returns:	
+**___________________________________________________			     */
+Term new_t_rec(rec)				   /*                        */
+  Record rec;					   /*                        */
+{ register Term t = new__t(L_RECORD, NIL);	   /*                        */
+  TRecord(t) = rec;				   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
