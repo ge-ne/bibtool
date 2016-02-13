@@ -355,7 +355,7 @@ static Term str_s_rsc(binding, name, term, rp)	   /*                        */
   static Term GETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
-  { ErrorNF(NAME, " is not accessible"); return NIL; }	\
+  { ErrorNF2(NAME, " is not accessible"); return NIL; }	\
   static Term SETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
@@ -469,7 +469,7 @@ static Term each(b, a, group)		   	   /*                        */
   Iterator iterator = get_iterator(t);		   /*                        */
  						   /*                        */
   if (iterator == NULL )			   /*                        */
-    ErrorNF("Illegal argument for each: ",	   /*                        */
+    ErrorNF2("Illegal argument for each: ",	   /*                        */
 	    term_type(t));		   	   /*                        */
   t = NIL;					   /*                        */
   						   /*                        */
@@ -522,7 +522,7 @@ static Term funcall(b, key, f, args)		   /*                        */
   }						   /*                        */
  						   /*                        */
   if (args)					   /*                        */
-    ErrorNF("Too many arguments for ", key);	   /*                        */
+    ErrorNF2("Too many arguments for ", key);	   /*                        */
     						   /*                        */
   t = eval_term(nb, Cdr(f));			   /*                        */
  						   /*                        */
@@ -586,7 +586,7 @@ Term eval_term(binding, term)			   /*                        */
       key = TString(term);			   /*                        */
       s	  = get_bind(binding, key);	   	   /*                        */
       if (s == NULL)	   			   /*                        */
-	ErrorNF("Undefined function ", key);	   /*                        */
+	ErrorNF2("Undefined function ", key);	   /*                        */
  						   /*                        */
       if (SymValue(s) &&			   /*                        */
 	  TType(SymValue(s)) == L_FUNCTION)	   /*                        */
@@ -603,16 +603,16 @@ Term eval_term(binding, term)			   /*                        */
       }		   				   /*                        */
  						   /*                        */
       if (SymGet(s) == NULL)	   		   /*                        */
-	ErrorNF("Undefined function ", key);	   /*                        */
+	ErrorNF2("Undefined function ", key);	   /*                        */
  						   /*                        */
       if (Cdr(term))				   /*                        */
       { if (SymSet(s) == NULL)	   		   /*                        */
-	  ErrorNF(key, " is immutable");	   /*                        */
+	  ErrorNF2(key, " is immutable");	   /*                        */
 	return (*SymSet(s))(binding, term);	   /*                        */
       }						   /*                        */
       else					   /*                        */
       { if (SymGet(s) == NULL)	   		   /*                        */
-	  ErrorNF(key, " is not readable");	   /*                        */
+	  ErrorNF2(key, " is not readable");	   /*                        */
  						   /*                        */
 	return (*SymGet(s))(binding, term);	   /*                        */
       }						   /*                        */
@@ -665,12 +665,12 @@ Term eval_term(binding, term)			   /*                        */
     case L_SET:      key = (String)"=";	     break;/*                        */
     case L_TIMES:    key = (String)"*";	     break;/*                        */
     default:					   /*                        */
-      ErrorNF("Undefined tag ", term_type(term));  /*                        */
+      ErrorNF2("Undefined tag ", term_type(term)); /*                        */
   }						   /*                        */
  						   /*                        */
    s = get_bind(binding, key);		   	   /*                        */
    if (s == SymDefNULL) 			   /*                        */
-   { ErrorNF("Undefined function ", key); } 	   /*                        */
+   { ErrorNF2("Undefined function ", key); } 	   /*                        */
  						   /*                        */
    return (*SymGet(s))(binding, term);		   /*                        */
 }						   /*------------------------*/

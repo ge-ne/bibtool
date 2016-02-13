@@ -59,7 +59,7 @@ SymDef sym_false;
 **___________________________________________________			     */
 void wrong_no_args(name)			   /*                        */
   register char* name;				   /*                        */
-{ ErrorNF("Wrong number of arguments for ",name);  /*                        */
+{ ErrorNF2("Wrong number of arguments for ", name);/*                        */
 }						   /*------------------------*/
 
 
@@ -170,7 +170,7 @@ Term g_lt(binding, term)			   /*                        */
       b = eval_str(binding, b);			   /*                        */
     val = (cmp(TString(a), TString(b)) < 0);	   /*                        */
   } else					   /*                        */
-  { ErrorNF("Type error: comparable expected",0); }/*                        */
+  { ErrorNF1("Type error: comparable expected"); } /*                        */
  						   /*                        */
   return (val ? term_true: term_false);		   /*                        */
 }						   /*------------------------*/
@@ -206,7 +206,7 @@ Term g_le(binding, term)			   /*                        */
       b = eval_str(binding, b);			   /*                        */
     val = (cmp(TString(a), TString(b)) <= 0);	   /*                        */
   } else					   /*                        */
-  { ErrorNF("Type error: comparable expected",0); }/*                        */
+  { ErrorNF1("Type error: comparable expected"); } /*                        */
  						   /*                        */
   return (val ? term_true: term_false);		   /*                        */
 }						   /*------------------------*/
@@ -242,7 +242,7 @@ Term g_gt(binding, term)			   /*                        */
       b = eval_str(binding, b);			   /*                        */
     val = (cmp(TString(a), TString(b)) > 0);	   /*                        */
   } else					   /*                        */
-  { ErrorNF("Type error: comparable expected",0); }/*                        */
+  { ErrorNF1("Type error: comparable expected"); } /*                        */
  						   /*                        */
   return (val ? term_true: term_false);		   /*                        */
 }						   /*------------------------*/
@@ -278,7 +278,7 @@ Term g_ge(binding, term)			   /*                        */
       b = eval_str(binding, b);			   /*                        */
     val = (cmp(TString(a), TString(b)) >= 0);	   /*                        */
   } else					   /*                        */
-  { ErrorNF("Type error: comparable expected",0); }/*                        */
+  { ErrorNF1("Type error: comparable expected"); } /*                        */
  						   /*                        */
   return (val ? term_true: term_false);		   /*                        */
 }						   /*------------------------*/
@@ -311,7 +311,7 @@ Term eval_bool(binding, term)			   /*                        */
     case L_FALSE:				   /*                        */
       break;					   /*                        */
     default:					   /*                        */
-      ErrorNF("Type error: boolean expected",0);   /*                        */
+      ErrorNF1("Type error: boolean expected");    /*                        */
   }						   /*                        */
  						   /*                        */
   return term;	   				   /*                        */
@@ -442,7 +442,7 @@ Term g_version(binding, term)		   	   /*                        */
 Term s_version(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ ErrorNF("Parameter version is immutable",0); 	   /*                        */
+{ ErrorNF1("Parameter version is immutable"); 	   /*                        */
   return NIL;	   				   /*                        */
 }						   /*------------------------*/
 
@@ -642,8 +642,8 @@ Term g_setq(binding, term)		   	   /*                        */
   Term term;					   /*                        */
 { Term car = Cadr(term);			   /*                        */
   term	   = Cdr(term);				   /*                        */
-  if (car == NIL) ErrorNF("Undefined LHS",0);	   /*                        */
-  if (!TermIsField(car)) ErrorNF("Illegal LHS",0); /*                        */
+  if (car == NIL) ErrorNF1("Undefined LHS");	   /*                        */
+  if (!TermIsField(car)) ErrorNF1("Illegal LHS");  /*                        */
   						   /*                        */
   term = Cadr(term);				   /*                        */
   LinkTerm(term);				   /*                        */
@@ -738,7 +738,7 @@ Term eval_num(binding, term)			   /*                        */
       val = temp_num;				   /*                        */
       break;					   /*                        */
     default:					   /*                        */
-      ErrorNF("Type error: number expected instead of ",/*                   */
+      ErrorNF2("Type error: number expected instead of ",/*                  */
 	      term_type(term));	   	   	   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -807,7 +807,7 @@ Term eval_str(binding, term)			   /*                        */
     sbclose(sb);				   /*                        */
   }						   /*                        */
   else 						   /*                        */
-    ErrorNF("Type error: string expected instead of ",/*                     */
+    ErrorNF2("Type error: string expected instead of ",/*                    */
 	    term_type(term));	   		   /*                        */
  						   /*                        */
   return term;	   			   	   /*                        */
@@ -919,7 +919,7 @@ Term g_div(binding, term)			   /*                        */
  						   /*                        */
   val = TNumber(eval_num(binding, Car(term)));	   /*                        */
   d   = TNumber(eval_num(binding, Cadr(term)));	   /*                        */
-  if (d	== 0) ErrorNF("Divide by 0",0);		   /*                        */
+  if (d	== 0) ErrorNF1("Divide by 0");		   /*                        */
   return NumberTerm(val/d);			   /*                        */
 }						   /*------------------------*/
 
@@ -945,7 +945,7 @@ Term g_mod(binding, term)			   /*                        */
  						   /*                        */
   val = TNumber(eval_num(binding, Car(term)));	   /*                        */
   d   = TNumber(eval_num(binding, Cadr(term)));	   /*                        */
-  if (d	== 0) ErrorNF("Modulo by 0",0);		   /*                        */
+  if (d	== 0) ErrorNF1("Modulo by 0");		   /*                        */
   return NumberTerm(val % d);			   /*                        */
 }						   /*------------------------*/
 
@@ -973,8 +973,8 @@ Term g_read(binding, term)			   /*                        */
       if (t == NIL) continue;			   /*                        */
       if (TermIsString(t))			   /*                        */
       { if (read_db(db, TString(t), rsc_verbose))  /*                        */
-	{ ErrorNF("Input file not found: ",	   /*                        */
-		  TString(t)); }		   /*                        */
+	{ ErrorNF2("Input file not found: ",	   /*                        */
+		   TString(t)); }		   /*                        */
       }	   					   /*                        */
       else if (TermIsList(t))			   /*                        */
       { for ( ; t; t = Cdr(t))			   /*                        */
@@ -983,16 +983,16 @@ Term g_read(binding, term)			   /*                        */
 	  { if (read_db(db,			   /*                        */
 			TString(Car(t)),	   /*                        */
 			rsc_verbose))		   /*                        */
-	    { ErrorNF("Input file not found: ",	   /*                        */
-		    TString(Car(t))); }		   /*                        */
+	    { ErrorNF2("Input file not found: ",   /*                        */
+		       TString(Car(t))); }	   /*                        */
 	  }					   /*                        */
-	  else { ErrorNF("read: illegal parameter ",/*                       */
-			 term_type(Car(t))); }	   /*                        */
+	  else { ErrorNF2("read: illegal parameter ",/*                      */
+			  term_type(Car(t))); }	   /*                        */
 	}					   /*                        */
       }						   /*                        */
       else 					   /*                        */
-      { ErrorNF("read: illegal parameter ",	   /*                        */
-		term_type(t)); }		   /*                        */
+      { ErrorNF2("read: illegal parameter ",	   /*                        */
+		 term_type(t)); }		   /*                        */
     }						   /*                        */
   } 						   /*                        */
  						   /*                        */
@@ -1037,12 +1037,22 @@ Term g_ign_(binding, term)			   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	g__add_f()
+** Type:	static int
+** Purpose:	
+**		
+** Arguments:
+**	key	
+**	 value	
+** Returns:	
+**___________________________________________________			     */
 static int g__add_f(key, value)			   /*                        */
-  String key;
-  String value;
-{
-  *tp = Cons1(Cons(StringTerm(key),
-		   Cons1(StringTerm(value))));
+  String key;					   /*                        */
+  String value;					   /*                        */
+{						   /*                        */
+  *tp = Cons1(Cons(StringTerm(key),		   /*                        */
+		   Cons1(StringTerm(value))));	   /*                        */
   tp = &Cdr(*tp);				   /*                        */
   return 1;					   /*                        */
 }						   /*------------------------*/

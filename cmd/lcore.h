@@ -71,9 +71,17 @@ extern Term term_false;
 
 /*---------------------------------------------------------------------------*/
 
-#define ErrorNF(X,Y)						\
+#define ErrorNF1(X)						\
+	error(ERR_ERROR|ERR_EXIT,(String)X,			\
+	      (String)0,(String)0,(String)0,(String)0,0,NULL)
+
+#define ErrorNF2(X,Y)						\
 	error(ERR_ERROR|ERR_EXIT,(String)X,			\
 	      (String)Y,(String)0,(String)0,(String)0,0,NULL)
+
+#define ErrorNF3(X,Y,Z)						\
+	error(ERR_ERROR|ERR_EXIT,(String)X,			\
+	      (String)Y,(String)Z,(String)0,(String)0,0,NULL)
 
 /*---------------------------------------------------------------------------*/
 

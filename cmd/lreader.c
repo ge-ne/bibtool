@@ -921,7 +921,7 @@ int read_loop(binding, file, action)		   /*                        */
   if ((f = fopen(file, "r")) == NULL		   /*                        */
       || (reader = lr_open(f, file)) == NULL	   /*                        */
      ) {			   	   	   /*                        */
-    ErrorNF("File could not be opened: ", file);   /*                        */
+    ErrorNF2("File could not be opened: ", file);  /*                        */
   }						   /*                        */
    						   /*                        */
   for (term = read_cmd(binding);		   /*                        */

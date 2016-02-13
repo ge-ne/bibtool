@@ -43,34 +43,34 @@ $BUnit::name_prefix = 'parse/';
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'field-1',
-	   resource	=> <<__EOF__ ,
-abc;
-__EOF__
+	   resource	=> "abc;",
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-abc
-__EOF__
+	   expected_out => "abc\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'field-2',
-	   resource	=> <<__EOF__ ,
-`abc`;
-__EOF__
+	   resource	=> "`abc`;",
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-abc
-__EOF__
-
+	   expected_out => "abc\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'field-3',
-	   resource	=> <<__EOF__ ,
-`ver bose`;
-__EOF__
+	   resource	=> "`ver bose`;",
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-`ver bose`
-__EOF__
+	   expected_out => "`ver bose`\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'field-4',
+	   resource	=> "`123`;",
+	   expected_err => '',
+	   expected_out => "`123`\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'field-5',
+	   resource	=> "`ver\\\"bose`;",
+	   expected_err => '',
+	   expected_out => "`ver\\\"bose`\n" );
+
 
 
 1;

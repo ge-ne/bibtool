@@ -167,7 +167,7 @@ static Term new__t(type, cdr)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	file	
+**	file	the output file
 ** Returns:	nothing
 **___________________________________________________			     */
 void dump_terms(file)				   /*                        */
@@ -190,12 +190,11 @@ void dump_terms(file)				   /*                        */
 ** Function:	new_term()
 ** Type:	Term
 ** Purpose:	Allocate a new term and initialize it.
-**		
 ** Arguments:
 **	type	the term type
-**	car	the car
-**	cdr	the cdr
-** Returns:	
+**	car	the initial car
+**	cdr	the initial cdr
+** Returns:	the new term
 **___________________________________________________			     */
 Term new_term(type, car, cdr)			   /*                        */
   short int type;				   /*                        */
@@ -210,7 +209,6 @@ Term new_term(type, car, cdr)			   /*                        */
 ** Function:	new_term_num()
 ** Type:	Term
 ** Purpose:	Allocate a new term and initialize it as number.
-**		
 ** Arguments:
 **	n	the numeric value
 ** Returns:	
@@ -226,11 +224,10 @@ Term new_term_num(n)				   /*                        */
 ** Function:	new_t_string()
 ** Type:	Term
 ** Purpose:	Allocate a new term and initialize it as string type.
-**		
 ** Arguments:
 **	sym	the symdef
 **	s	the string value, i.e. a symbol
-** Returns:	
+** Returns:	the new term
 **___________________________________________________			     */
 Term new_t_string(type, s)		   	   /*                        */
   short int type;				   /*                        */
@@ -243,11 +240,10 @@ Term new_t_string(type, s)		   	   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	new_t_db()
 ** Type:	Term
-** Purpose:	
-**		
+** Purpose:	Allocate a new databse term.
 ** Arguments:
-**	db	
-** Returns:	
+**	db	the database
+** Returns:	the new database term
 **___________________________________________________			     */
 Term new_t_db(db)				   /*                        */
   DB db;					   /*                        */
@@ -259,11 +255,10 @@ Term new_t_db(db)				   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	new_t_rec()
 ** Type:	Term
-** Purpose:	
-**		
+** Purpose:	Allocate a new reacord term.
 ** Arguments:
-**	rec	
-** Returns:	
+**	rec	the record
+** Returns:	the new record term
 **___________________________________________________			     */
 Term new_t_rec(rec)				   /*                        */
   Record rec;					   /*                        */
@@ -278,7 +273,6 @@ Term new_t_rec(rec)				   /*                        */
 ** Purpose:	Free the memory of a term and arrange for reuse.
 **		The term odes are linked into the |terms| list to be reused.
 **		This happens only for those term nodes which are not locked.
-**		
 ** Arguments:
 **	t	the term be freed
 ** Returns:	nothing
@@ -335,13 +329,15 @@ void free_term(t)				   /*                        */
 **		
 ** Arguments:
 **	file	the output stream
+**	c	the delimiting character
 **	s	the string to be printed
 ** Returns:	nothing
 **___________________________________________________			     */
-static void prn_quoted(file, s)		   	   /*                        */
+static void prn_quoted(file, c, s)		   /*                        */
   FILE * file;					   /*                        */
+  char c;					   /*                        */
   String s;					   /*                        */
-{						   /*                        */
+{ if (c) fputc(c, file);			   /*                        */
   for (; *s; s++)				   /*                        */
   { switch (*s)					   /*                        */
     { case '\n': fputs("\\n", file);  break;	   /*                        */
@@ -350,11 +346,13 @@ static void prn_quoted(file, s)		   	   /*                        */
       case '\b': fputs("\\b", file);  break;	   /*                        */
       case '\f': fputs("\\f", file);  break;	   /*                        */
       case '"':	 fputs("\\\"", file); break;	   /*                        */
+      case '`':  fputs("\\`", file);  break;	   /*                        */
       case '\'': fputs("\\'", file);  break;	   /*                        */
       case '\\': fputs("\\\\", file); break;	   /*                        */
       default:	 fputc((char)*s, file);		   /*                        */
     }						   /*                        */
   }						   /*                        */
+  if (c) fputc(c, file);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -370,11 +368,11 @@ static void prn_quoted(file, s)		   	   /*                        */
 static void prn_field(file, t, quoted)		   /*                        */
   FILE * file;					   /*                        */
   Term t;					   /*                        */
-  int quoted;
-{ int q	   = 0;					   /*                        */
+  int quoted;					   /*                        */
+{ char q   = 0;				   	   /*                        */
   String s = TString(t);			   /*                        */
   if (*s >= '0' && *s <= '9') {			   /*                        */
-    q = 1;					   /*                        */
+    q = '`';					   /*                        */
   } else {					   /*                        */
     for (; *s; s++)				   /*                        */
     { if (!(   (*s >='a' && *s <='z') 		   /*                        */
@@ -384,14 +382,12 @@ static void prn_field(file, t, quoted)		   /*                        */
 	    || *s == '$'			   /*                        */
 	    || *s == '_'			   /*                        */
 	    || *s == '.'))			   /*                        */
-      { q = 1;					   /*                        */
+      { q = '`';				   /*                        */
 	break;					   /*                        */
       }						   /*                        */
     }						   /*                        */
   }						   /*                        */
-  if (q) fputc('`', file);			   /*                        */
-  prn_quoted(file, TString(t));		   	   /*                        */
-  if (q) fputc('`', file);			   /*                        */
+  prn_quoted(file, q, TString(t));	   	   /*                        */
  						   /*                        */
   if (Cdr(t))					   /*                        */
   { fputs(": ", file);				   /*                        */
@@ -405,9 +401,9 @@ static void prn_field(file, t, quoted)		   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	file	
-**	s	
-**	in	
+**	file	the outptu file
+**	s	the inital string to print
+**	in	the indentation level
 ** Returns:	nothing
 **___________________________________________________			     */
 static void indent(file, s, in)			   /*                        */
@@ -517,7 +513,7 @@ void prn_term(file, term, in, quote)		   /*                        */
 						   /*                        */
     case L_EACH:			   	   /*                        */
       fputs("each (", file);			   /*                        */
-      prn_field(file, Car(term));	   	   /*                        */
+      prn_field(file, Car(term), quote);	   /*                        */
       fputs(") ", file);			   /*                        */
       prn_term(file, Cdr(term), in, quote);	   /*                        */
       return;					   /*                        */
@@ -527,7 +523,7 @@ void prn_term(file, term, in, quote)		   /*                        */
       return;					   /*                        */
 						   /*                        */
     case L_FIELD:				   /*                        */
-      prn_field(file, term);			   /*                        */
+      prn_field(file, term, quote);		   /*                        */
       return;					   /*                        */
 						   /*                        */
     case L_FUNCTION:			   	   /*                        */
@@ -571,13 +567,9 @@ void prn_term(file, term, in, quote)		   /*                        */
 						   /*                        */
     case L_STRING:				   /*                        */
       if (quote)				   /*                        */
-      { fputc('"', file);			   /*                        */
-	prn_quoted(file, TString(term));	   /*                        */
-	fputc('"', file);			   /*                        */
-      }						   /*                        */
+      { prn_quoted(file, '"', TString(term)); }	   /*                        */
       else					   /*                        */
-      { fputs((char*)TString(term), file);	   /*                        */
-      }						   /*                        */
+      { fputs((char*)TString(term), file); }	   /*                        */
       return;					   /*                        */
 						   /*                        */
     case L_TRUE:				   /*                        */
@@ -663,14 +655,13 @@ void print_term(file, term)			   /*                        */
 ** Function:	list_length()
 ** Type:	int
 ** Purpose:	Determine the length of a list, i.e. a cons sequence.
-**		
 ** Arguments:
 **	list	the list
 ** Returns:	the length
 **___________________________________________________			     */
 int list_length(list)				   /*                        */
   register Term list;				   /*                        */
-{ int i = 0;					   /*                        */
+{ register int i = 0;				   /*                        */
   while (list && TermIsList(list))		   /*                        */
   { i++;					   /*                        */
     list = Cdr(list);				   /*                        */
@@ -682,7 +673,6 @@ int list_length(list)				   /*                        */
 ** Function:	hash()
 ** Type:	int
 ** Purpose:	Compute the has value of a string as sum of shifted characters.
-**		
 ** Arguments:
 **	s	the string
 ** Returns:	the hash value
@@ -701,14 +691,14 @@ unsigned int hash(s)			   	   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	symdef()
 ** Type:	SymDef
-** Purpose:	Allocate a new symdef.
+** Purpose:	Allocate a new SymDef and fill it with initial values.
 ** Arguments:
 **	name	the name of the symdef
 **	op	the op code
 **	flags	the flags
 **	get	the getter function
 **	set	the setter function
-** Returns:	
+** Returns:	the new SymDef
 **___________________________________________________			     */
 SymDef symdef(name, op, flags, get, set)	   /*                        */
   String name;					   /*                        */

@@ -119,7 +119,7 @@ BUnit::run(name         => 'list-6',
 	   expected_out => "[123]\n");
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'list-6',
+BUnit::run(name         => 'list-7',
 	   args	        => '--eval',
 	   resource     => "x=123;[[x]]",
 	   expected_err => '',
