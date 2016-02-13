@@ -781,7 +781,7 @@ Term eval_num(binding, term)			   /*                        */
       break;					   /*                        */
     default:					   /*                        */
       ErrorNF("Type error: number expected instead of ",/*                   */
-	      tag_id(TType(term)));	   	   /*                        */
+	      token_type(TType(term)));	   	   /*                        */
   }						   /*                        */
  						   /*                        */
   return NumberTerm(val);			   /*                        */
@@ -1031,12 +1031,12 @@ Term g_read(binding, term)			   /*                        */
 		    TString(Car(t))); }		   /*                        */
 	  }					   /*                        */
 	  else { ErrorNF("read: illegal parameter ",/*                       */
-			 tag_id(TType(Car(t)))); } /*                        */
+			 token_type(TType(Car(t)))); }/*                     */
 	}					   /*                        */
       }						   /*                        */
       else 					   /*                        */
     { ErrorNF("read: illegal parameter ",	   /*                        */
-	      tag_id(TType(t))); }		   /*                        */
+	      token_type(TType(t))); }		   /*                        */
     }						   /*                        */
   } 						   /*                        */
  						   /*                        */

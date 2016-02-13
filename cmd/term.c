@@ -24,12 +24,12 @@
 #define _ARG(A) ()
 #endif
 
- Term new_term _ARG((short int type, Term car, Term cdr ));
+ Term new_term _ARG((short int type, Term car, Term cdr));
  Term new_term_num _ARG((long value));
  Term new_t_string _ARG((short int type, unsigned char* s));
  void free_term _ARG((Term term));
  void print_term _ARG((FILE* file, Term term));
- String tag_id _ARG((int c));
+ String token_type _ARG((int c));
 
  static void prn_args _ARG((FILE * file, Term term, char* sep,int in));/*    */
  static void prn_term _ARG((FILE * file, Term term, int in));/*              */
@@ -45,7 +45,7 @@
 
 
 /*-----------------------------------------------------------------------------
-** Function:	tag_id()
+** Function:	token_type()
 ** Type:	String
 ** Purpose:	
 **		
@@ -53,7 +53,7 @@
 **	c	
 ** Returns:	
 **___________________________________________________			     */
-String tag_id(c)			   	   /*                        */
+String token_type(c)			   	   /*                        */
   int c;					   /*                        */
 { static Uchar buffer[2];			   /*                        */
 						   /*                        */
@@ -172,7 +172,7 @@ void dump_terms(file)				   /*                        */
  						   /*                        */
   for (i = 0; i < t_map_ptr; i++)		   /*                        */
   { c = TType(t_map[i]);			   /*                        */
-    fputc(c ? *tag_id(c) : '_', file);	   	   /*                        */
+    fputc(c ? *token_type(c) : '_', file);	   /*                        */
     if (i%64 == 63) fputc('\n', file);		   /*                        */
   }						   /*                        */
   fputc('\n', file);				   /*                        */
@@ -241,7 +241,7 @@ Term new_t_string(type, s)		   	   /*                        */
 **		This happens only for those term nodes which are not locked.
 **		
 ** Arguments:
-**	t	
+**	t	the term be freed
 ** Returns:	nothing
 **___________________________________________________			     */
 void free_term(t)				   /*                        */

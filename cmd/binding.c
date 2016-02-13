@@ -470,7 +470,7 @@ static Term each(b, a, group)		   	   /*                        */
  						   /*                        */
   if (iterator == NULL )			   /*                        */
     ErrorNF("Illegal argument for each: ",	   /*                        */
-	    tag_id(TType(t)));			   /*                        */
+	    token_type(TType(t)));		   /*                        */
   t = NIL;					   /*                        */
   						   /*                        */
   while (DoItHasNext(iterator))			   /*                        */
@@ -592,7 +592,8 @@ Term eval_term(binding, term)			   /*                        */
       if (s == NULL)	   			   /*                        */
 	ErrorNF("Undefined function ", key);	   /*                        */
  						   /*                        */
-      if (SymValue(s) && TType(SymValue(s)) == L_FUNCTION)/*                 */
+      if (SymValue(s) &&			   /*                        */
+	  TType(SymValue(s)) == L_FUNCTION)	   /*                        */
       { Term t = funcall(binding, key,		   /*                        */
 			 SymValue(s),		   /*                        */
 			 Cdr(term));		   /*                        */
@@ -668,7 +669,8 @@ Term eval_term(binding, term)			   /*                        */
     case L_SET:      key = (String)"=";	     break;/*                        */
     case L_TIMES:    key = (String)"*";	     break;/*                        */
     default:					   /*                        */
-      ErrorNF("Undefined tag ", tag_id(TType(term)));/*                      */
+      ErrorNF("Undefined tag ",			   /*                        */
+	      token_type(TType(term)));		   /*                        */
   }						   /*                        */
  						   /*                        */
    s = get_bind(binding, key);		   	   /*                        */

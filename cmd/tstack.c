@@ -76,8 +76,8 @@ TStack ts_push(ts, c, t)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	file	
-**	stack	
+**	file	the output file
+**	stack	the stack
 ** Returns:	nothing
 **___________________________________________________			     */
 void dump_tstack(file, stack)			   /*                        */
@@ -87,7 +87,7 @@ void dump_tstack(file, stack)			   /*                        */
   if (stack)					   /*                        */
   { dump_tstack(file, StackPrev(stack));	   /*                        */
     fprintf(file,"    %-8s\t",			   /*                        */
-	    tag_id(StackChar(stack)));		   /*                        */
+	    token_type(StackChar(stack)));	   /*                        */
     print_term(file, StackTerm(stack));		   /*                        */
     fprintf(file,"\n");				   /*                        */
   } else {					   /*                        */

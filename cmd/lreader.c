@@ -68,7 +68,7 @@ static Term read_args _ARG((Binding b, Term t, int sep, int term));/*        */
 #define GetC		LineReaderGetC(reader)
 #define UnGetC(C)	LineReaderUnGetC(C, reader)
 #define Shift(S,T)	stack = ts_push(stack, S, T);		\
-			DebugPrint2("shift ", tag_id(c))
+			DebugPrint2("shift ", token_type(c))
 #define NewStack(S,T)	ts_push(StackNULL, S, T)
 
 /*-----------------------------------------------------------------------------
@@ -318,7 +318,7 @@ static int scan(b)			   	   /*                        */
  						   /*                        */
     }						   /*                        */
     DebugPrintF3("scan: default %s 0x%x\n",	   /*                        */
-		 tag_id(c), c);		   	   /*                        */
+		 token_type(c), c);		   /*                        */
     return c <= 0 ? EOF : c; 			   /*                        */
   }						   /*                        */
   return EOF;				   	   /*                        */
@@ -350,7 +350,7 @@ static Term read_list(binding, term)		   /*                        */
     c  = scan(binding);				   /*                        */
     if (c == ']') return term;		   	   /*                        */
     if (c != ',') Error("Missing comma instead of ",/*                       */
-			tag_id(c), 0);	   	   /*                        */
+			token_type(c), 0);	   /*                        */
   }						   /*                        */
   Error("Unclosed list", 0, 0);	   	   	   /*                        */
   return NIL;					   /* This will never happen */
@@ -386,7 +386,7 @@ static Term read_args(binding, term, separator, terminal)/*                  */
     a = read_expr(binding, StackNULL);		   /*                        */
     if (a == term_eof)				   /*                        */
     { LineReaderLineno(reader) = lno;		   /*                        */
-      Error("Missing ", tag_id(terminal), 0);	   /*                        */
+      Error("Missing ", token_type(terminal), 0);  /*                        */
     }						   /*                        */
  						   /*                        */
     Cdr(x) = Cons1(a);			   	   /*                        */
@@ -395,7 +395,7 @@ static Term read_args(binding, term, separator, terminal)/*                  */
     if (c == terminal) return term;		   /*                        */
     if (c != separator)				   /*                        */
       Error("Missing separator instead of ",	   /*                        */
-	    tag_id(c), 0);			   /*                        */
+	    token_type(c), 0);			   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
@@ -419,7 +419,8 @@ static Term read_builtin(b, term)		   /*                        */
 	       (char*)TString(term));		   /*                        */
   for (c = scan(b); c > 0; c = scan(b))	   	   /*                        */
   {						   /*                        */
-    DebugPrintF3("read_builtin %s %x\n", tag_id(c), c);/*                    */
+    DebugPrintF3("read_builtin %s %x\n",	   /*                        */
+		 token_type(c), c);		   /*                        */
     if (c == '=' || c == L_SET)		   	   /*                        */
     { DebugPrint1("--- skip =\n");		   /*                        */
       continue;					   /*                        */
@@ -498,7 +499,7 @@ static TStack reduce(stack)			   /*                        */
       Error("Missing operator after ",		   /*                        */
 	    TermIsField(StackTerm(stack)) 	   /*                        */
 	    ? TString(StackTerm(stack))		   /*                        */
-	    : tag_id(TType(StackTerm(stack))), 0); /*                        */
+	    : token_type(TType(StackTerm(stack))), 0);/*                     */
 					       	   /*                        */
     for (current = stack;			   /*                        */
 	 current && StackPrev(current);		   /*                        */
@@ -512,7 +513,7 @@ static TStack reduce(stack)			   /*                        */
       {						   /*                        */
 	if (L_IS_BINARY(StackChar(StackPrev(prev))))/*                       */
 	{ Error("First operator for ",		   /*                        */
-		tag_id(TType(StackTerm(prev))),    /*                        */
+		token_type(TType(StackTerm(prev))),/*                        */
 		" missing");			   /*                        */
 	}					   /*                        */
  						   /*                        */
@@ -534,12 +535,11 @@ static TStack reduce(stack)			   /*                        */
   }						   /*                        */
  						   /*                        */
   DebugPrint1("... reduced\n");		   	   /*                        */
-
   return stack;					   /*                        */
 }						   /*------------------------*/
 
 #define Expect(C, MSG)	\
-  if ((c=scan(binding)) != C) { Error(MSG, " instead of ", tag_id(c)); }
+  if ((c=scan(binding)) != C) { Error(MSG, " instead of ", token_type(c)); }
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_group()
@@ -605,7 +605,7 @@ static Term read_mapping(binding, msg)		   /*                        */
     if (c == ')') return term;			   /*                        */
     if (c != L_FIELD)				   /*                        */
       Error(msg, ": Missing variable instead of ", /*                        */
-	    tag_id(c));				   /*                        */
+	    token_type(c));			   /*                        */
     v	= yylval;				   /*                        */
     *tp = Cons1(v);				   /*                        */
     tp = &Cdr(*tp);				   /*                        */
@@ -617,7 +617,7 @@ static Term read_mapping(binding, msg)		   /*                        */
     }						   /*                        */
     else if (c 	!= ':')				   /*                        */
     { Error(msg, ": Missing : instead of ",	   /*                        */
-	    tag_id(c));				   /*                        */
+	    token_type(c));			   /*                        */
     }						   /*                        */
     else					   /*                        */
     { Cdr(v) = read_expr(binding, StackNULL);	   /*                        */
@@ -626,7 +626,7 @@ static Term read_mapping(binding, msg)		   /*                        */
     if (c == ')') return term;			   /*                        */
     if (c != ',')				   /*                        */
       Error(msg, ": Missing , instead of ",	   /*                        */
-	    tag_id(c));				   /*                        */
+	    token_type(c));			   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
@@ -651,7 +651,7 @@ static Term read_expr(binding, stack)		   /*                        */
        c = scan(binding))			   /*                        */
   {						   /*                        */
     DebugPrintF3("read_expr: '%s' 0x%x\n",  	   /*                        */
-		 tag_id(c), c);		   	   /*                        */
+		 token_type(c), c);		   /*                        */
     switch (c)					   /*                        */
     { case '{':					   /*                        */
 	Shift(L_GROUP,				   /*                        */
@@ -668,7 +668,7 @@ static Term read_expr(binding, stack)		   /*                        */
 	  if (c != ')')			   	   /*                        */
 	  { LineReaderLineno(reader) = lno;	   /*                        */
 	    Error("Missing ) before ",		   /*                        */
-		  tag_id(c), 0); }		   /*                        */
+		  token_type(c), 0); }		   /*                        */
 	  Shift(L_CONS, t);		   	   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
@@ -695,7 +695,7 @@ static Term read_expr(binding, stack)		   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case L_EACH:				   /*                        */
-	{ Term m;
+	{ Term m;				   /*                        */
 	  t = yylval;		   	   	   /*                        */
 	  Expect('(', "Missing ( for each");	   /*                        */
 	  m = read_mapping(binding, "each");       /*                        */
@@ -703,10 +703,10 @@ static Term read_expr(binding, stack)		   /*                        */
 	    Error("missing argument for each",0,0);/*                        */
 	  if (Cdr(m))				   /*                        */
 	    Error("too many arguments for each",0,0);/*                      */
-	  Car(t) = Car(m);
+	  Car(t) = Car(m);			   /*                        */
 	  Cdr(t) = read_group(binding, "each");	   /*                        */
 	  Shift(L_EACH, t);		   	   /*                        */
-	}
+	}					   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case L_ELSE:				   /*                        */
@@ -811,7 +811,7 @@ static Term read_expr(binding, stack)		   /*                        */
 	if (L_IS_OPERATOR(c)) {  		   /*                        */
 	  if (L_IS_BINARY(c) && stack == StackNULL)/*                        */
 	  { Error("Unexpected operator ",	   /*                        */
-		  tag_id(c), 0); }		   /*                        */
+		  token_type(c), 0); }		   /*                        */
 	  Shift(c, yylval);			   /*                        */
 						   /*                        */
 	} else {				   /*                        */
@@ -826,7 +826,8 @@ static Term read_expr(binding, stack)		   /*                        */
   if (stack)			   		   /*                        */
   { c = StackChar(stack);			   /*                        */
     if (L_IS_OPERATOR(c)) {			   /*                        */
-      Error("Missing operator for ", tag_id(c), 0);/*                        */
+      Error("Missing operator for ", 		   /*                        */
+	    token_type(c), 0);			   /*                        */
     }						   /*                        */
     stack = reduce(stack);			   /*                        */
     return StackTerm(stack);			   /*                        */
@@ -882,7 +883,7 @@ static Term read_cmd(binding)			   /*                        */
 	if ( c >= 0 && c <= 0xff		   /*                        */
 	     && yylval == NIL)		   	   /*                        */
 	  Error("Unexpected character '",	   /*                        */
-		tag_id(c),			   /*                        */
+		token_type(c),			   /*                        */
 		"' found");			   /*                        */
 	unscan(c, yylval);			   /*                        */
     }					   	   /*                        */
