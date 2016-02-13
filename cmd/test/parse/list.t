@@ -45,19 +45,19 @@ $BUnit::name_prefix = 'parse/';
 BUnit::run(name         => 'list-1',
 	   resource	=> "[];\n",
 	   expected_err => '',
-	   expected_out => "nil\n" );
+	   expected_out => "[]\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'list-2',
 	   resource	=> "[ ];\n",
 	   expected_err => '',
-	   expected_out => "nil\n" );
+	   expected_out => "[]\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'list-3',
 	   resource	=> "nil;\n",
 	   expected_err => '',
-	   expected_out => "nil\n" );
+	   expected_out => "[]\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'list-10',

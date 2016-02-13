@@ -46,14 +46,14 @@ BUnit::run(name         => 'group-0',
 	   args	        => '--eval',
 	   resource     => "{};",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'group-1',
 	   args	        => '--eval',
 	   resource     => "{}",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'group-2',
@@ -81,7 +81,7 @@ BUnit::run(name         => 'list-1',
 	   args	        => '--eval',
 	   resource     => "[]",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'list-2',

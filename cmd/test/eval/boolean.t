@@ -173,7 +173,7 @@ BUnit::run(name         => 'if-2',
 	   args	        => '--eval',
 	   resource     => 'if(false){111}',
 	   expected_err => '',
-	   expected_out => "nil\n" );
+	   expected_out => "[]\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'if-3',

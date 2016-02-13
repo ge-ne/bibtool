@@ -65,7 +65,7 @@ BUnit::run(name         => 'quote-2',
 BUnit::run(name         => 'quote-3',
 	   resource	=> '\'[];',
 	   expected_err => '',
-	   expected_out => "\'(nil)\n" );
+	   expected_out => "\'([])\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-0',

@@ -46,7 +46,7 @@ BUnit::run(name         => "add.field-1",
 	   args		=> '--eval',
 	   resource	=> "add.field;\n",
 	   expected_err	=> '',
-	   expected_out	=> "nil\n" );
+	   expected_out	=> "[]\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => "add.field-2",
@@ -273,7 +273,7 @@ BUnit::run(name         => "clear.ignored.words-1",
 	   args		=> '--eval',
 	   resource	=> "clear.ignored.words;ignored.word;\n",
 	   expected_err	=> '',
-	   expected_out	=> "nil\n" );
+	   expected_out	=> "[]\n" );
 #------------------------------------------------------------------------------
 BUnit::run(name         => "clear.ignored.words-err-1",
 	   args		=> '--eval',

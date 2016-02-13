@@ -46,64 +46,84 @@ BUnit::run(name         => 'print-1',
 	   args	        => '--eval',
 	   resource     => "print 123\n",
 	   expected_err => '',
-	   expected_out => "123nil\n");
+	   expected_out => "123[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'print-2',
 	   args	        => '-e',
-	   resource     => "print \"123\"\n",
+	   resource     => "print {123}\n",
 	   expected_err => '',
-	   expected_out => "123nil\n");
+	   expected_out => "123[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'print-3',
-	   args	        => '-e',
-	   resource     => "print {123}\n",
-	   expected_err => '',
-	   expected_out => "123nil\n");
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'print-4',
 	   args	        => '--eval',
 	   resource     => "print `author`\n",
 	   expected_err => '',
-	   expected_out => "[]nil\n" );
+	   expected_out => "[][]\n" );
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'print-5',
+BUnit::run(name         => 'print-4',
 	   args	        => '-e',
 	   resource     => "print []\n",
 	   expected_err => '',
-	   expected_out => "[]nil\n");
+	   expected_out => "[][]\n");
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'print-6',
+BUnit::run(name         => 'print-5',
 	   args		=> '-e',
-	   ignore	=> 'not implemented yet',
 	   resource	=> "print [123]\n",
 	   expected_err	=> '',
-	   expected_out	=> "[123]nil\n");
+	   expected_out	=> "[123][]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'print-10',
 	   args	        => '-e',
 	   resource     => "print ()\n",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'print-11',
 	   args	        => '-e',
 	   resource     => "print (12)\n",
 	   expected_err => '',
-	   expected_out => "12nil\n");
+	   expected_out => "12[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'print-12',
 	   args	        => '-e',
 	   resource     => "print (12,34)\n",
 	   expected_err => '',
-	   expected_out => "1234nil\n");
+	   expected_out => "1234[]\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'print-20',
+	   args	        => '-e',
+	   resource     => "print \"\"\n",
+	   expected_err => '',
+	   expected_out => "[]\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'print-21',
+	   args	        => '-e',
+	   resource     => "print \"123\"\n",
+	   expected_err => '',
+	   expected_out => "123[]\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'print-22',
+	   args	        => '-e',
+	   resource     => "print \"123\\n\"\n",
+	   expected_err => '',
+	   expected_out => "123\n[]\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'print-23',
+	   args	        => '-e',
+	   resource     => "print \"12\\t3\"\n",
+	   expected_err => '',
+	   expected_out => "12\t3[]\n");
 
 1;
 #------------------------------------------------------------------------------

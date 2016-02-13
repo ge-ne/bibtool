@@ -62,7 +62,7 @@ set_test('set-2', 42);
 set_test('set-3', -42);
 set_test('set-10', 'false');
 set_test('set-11', 'true');
-set_test('set-20', 'nil');
+set_test('set-20', '[]');
 set_test('set-21', '[12]');
 set_test('set-30', '""');
 set_test('set-31', '"12"');

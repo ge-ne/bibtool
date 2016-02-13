@@ -61,8 +61,8 @@ static Term read_args _ARG((Binding b, Term t, int sep, int term));/*        */
  static Term yylval;				   /*                        */
  static LineReader reader;			   /*                        */
  static int  c_look_ahead = 0;		   	   /*                        */
- static Term look_ahead = NIL;			   /*                        */
-
+ static Term look_ahead	  = NIL;		   /*                        */
+ static Term term_eof 	  = NIL;		   /*                        */
 
 #define unscan(C,T)	(c_look_ahead = (C), look_ahead = (T))
 #define GetC		LineReaderGetC(reader)
@@ -915,6 +915,7 @@ int read_loop(binding, file, action)		   /*                        */
   if (file == NULL) {			   	   /*                        */
     Error("No input file given", 0, 0);	   	   /*                        */
   }						   /*                        */
+  if (term_eof == NIL) term_eof = NewTerm(-1);	   /*                        */
  						   /*                        */
   look_ahead = NIL;				   /*                        */
   if ((f = fopen(file, "r")) == NULL		   /*                        */

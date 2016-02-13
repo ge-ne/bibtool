@@ -550,11 +550,7 @@ Term eval_term(binding, term)			   /*                        */
   if (term == NIL) return NIL;			   /*                        */
  						   /*                        */
   switch (TType(term))				   /*                        */
-  { case 0:					   /*                        */
-    case EOF:					   /*                        */
-      return term_eof;	   			   /*                        */
- 						   /*                        */
-    case L_CONS:				   /*                        */
+  { case L_CONS:				   /*                        */
       { Term t = NIL, *tp;			   /*                        */
 	tp     = &t;				   /*                        */
 	for ( ; term; term = Cdr(term))		   /*                        */

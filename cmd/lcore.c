@@ -48,7 +48,6 @@ Term term_false;
 SymDef sym_true;
 SymDef sym_false;
 
-
 /*-----------------------------------------------------------------------------
 ** Function:	wrong_no_args()
 ** Type:	Term
@@ -407,7 +406,7 @@ Term g_or(binding, term)			   /*                        */
   { wrong_no_args("or"); }			   /*                        */
  						   /*                        */
   t = eval_bool(binding, Car(term));		   /*                        */
-  LinkTerm(t);
+  LinkTerm(t);					   /*                        */
   if (TermIsTrue(t)) return t;		   	   /*                        */
  						   /*                        */
   return eval_bool(binding, Cadr(term));	   /*                        */
@@ -603,51 +602,10 @@ Term g_print(binding, term)			   /*                        */
 { 					   	   /*                        */
   for (term = Cdr(term); term ; term = Cdr(term))  /*                        */
   { Term t = eval_term(binding, Car(term));	   /*                        */
-    if (t == NIL)				   /*                        */
-    { fputs("[]", stdout);	   		   /*                        */
-      continue;			   		   /*                        */
-    }						   /*                        */
-    switch(TType(t))			   	   /*                        */
-    { case L_STRING:				   /*                        */
-	fputs((char*)TString(t), stdout);	   /*                        */
-	break;					   /*                        */
-      case L_NUMBER:				   /*                        */
-	fprintf(stdout, "%ld", TNumber(t));	   /*                        */
-	break;					   /*                        */
-      case L_FIELD:				   /*                        */
-	fputs((char*)TString(t), stdout);	   /*                        */
-	break;					   /*                        */
-      case L_TRUE:				   /*                        */
-	fputs("true", stdout);			   /*                        */
-	break;					   /*                        */
-      case L_FALSE:				   /*                        */
-	fputs("false", stdout);			   /*                        */
-	break;					   /*                        */
-#ifdef DEBUG
-      default:					   /*                        */
-	printf("--- 0x%x",TType(t));	   	   /*                        */
-#endif
-    }						   /*                        */
-    free_term(t);				   /*                        */
+    prn_term(stdout, t, 0, 0);			   /*                        */
+    UnlinkTerm(t);				   /*                        */
   }		   				   /*                        */
   return NIL;			   		   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	g_empty()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	the binding
-**	term	the term
-** Returns:	
-**___________________________________________________			     */
-Term g_empty(binding, term)		   	   /*                        */
-  Binding binding;				   /*                        */
-  Term term;					   /*                        */
-{						   /*                        */
-  return StringTerm((String)"");		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -1121,7 +1079,6 @@ void init_lreader()				   /*                        */
  						   /*                        */
   term_true  = SymTerm(sym_true)  = NewTerm(L_TRUE);/*                       */
   term_false = SymTerm(sym_false) = NewTerm(L_FALSE);/*                      */
-  term_eof   = NewTerm(-1);	   	   	   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

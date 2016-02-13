@@ -95,28 +95,28 @@ BUnit::run(name         => 'defun-11',
 	   args	        => '--eval',
 	   resource     => "defun a(){};a()",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'defun-12',
 	   args	        => '--eval',
 	   resource     => "defun a(x){};a(123)",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'defun-13',
 	   args	        => '--eval',
 	   resource     => "defun a(x,y){};a(1,2)",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'defun-14',
 	   args	        => '--eval',
 	   resource     => "defun a(x:123){};a(98)",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'defun-21',
@@ -186,28 +186,28 @@ BUnit::run(name         => 'function-11',
 	   args	        => '--eval',
 	   resource     => "a=function (){};a()",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'function-12',
 	   args	        => '--eval',
 	   resource     => "a=function (x){};a(123)",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'function-13',
 	   args	        => '--eval',
 	   resource     => "a=function (x,y){};a(1,2)",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'function-14',
 	   args	        => '--eval',
 	   resource     => "a=function (x:123){};a(98)",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'function-21',
@@ -249,28 +249,28 @@ BUnit::run(name         => 'with-1',
 	   args	        => '--eval',
 	   resource     => "with (){};",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'with-2',
 	   args	        => '--eval',
 	   resource     => "with (x){};",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'with-3',
 	   args	        => '--eval',
 	   resource     => "with (x,y){};",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'with-4',
 	   args	        => '--eval',
 	   resource     => "with (x:123){};",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'with-21',
@@ -298,7 +298,7 @@ BUnit::run(name         => 'return-1',
 	   args	        => '--eval',
 	   resource     => "return;",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'return-2',
@@ -312,7 +312,7 @@ BUnit::run(name         => 'return-3',
 	   args	        => '--eval',
 	   resource     => "return; 123",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'return-4',
@@ -326,7 +326,7 @@ BUnit::run(name         => 'return-10',
 	   args	        => '--eval',
 	   resource     => "{111; return; 222};",
 	   expected_err => '',
-	   expected_out => "return nil\n");
+	   expected_out => "return []\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'return-11',
@@ -347,7 +347,7 @@ BUnit::run(name         => 'return-20',
 	   args	        => '--eval',
 	   resource     => "defun f() {111; return; 222} f()",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'return-21',
@@ -368,7 +368,7 @@ BUnit::run(name         => 'return-30',
 	   args	        => '--eval',
 	   resource     => "f = function() {111; return; 222}; f() ",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'return-31',
@@ -382,14 +382,14 @@ BUnit::run(name         => 'each-0',
 	   args	        => '--eval',
 	   resource     => "each (x:[]) {} ",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'each-1',
 	   args	        => '--eval',
 	   resource     => "each (x:[]) {111} ",
 	   expected_err => '',
-	   expected_out => "nil\n");
+	   expected_out => "[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'each-2',
@@ -410,14 +410,14 @@ BUnit::run(name         => 'each-4',
 	   args	        => '--eval',
 	   resource     => "each (x:[2,3]) {print (x) }",
 	   expected_err => '',
-	   expected_out => "23nil\n");
+	   expected_out => "23[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'each-5',
 	   args		=> '--eval',
 	   resource     => "a=[2,3]; each (x:a) {print (x) }",
 	   expected_err	=> '',
-	   expected_out	=> "23nil\n");
+	   expected_out	=> "23[]\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'each-err-1',
