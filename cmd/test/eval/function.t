@@ -423,21 +423,21 @@ BUnit::run(name         => 'each-5',
 BUnit::run(name         => 'each-err-1',
 	   args		=> '--eval',
 	   resource     => "each (x:123) { x }",
-	   expected_err	=> "\n*** BibTool ERROR: Illegal argument for each\n",
+	   expected_err	=> "\n*** BibTool ERROR: Illegal argument for each: number\n",
 	   expected_out	=> '');
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'each-err-2',
 	   args		=> '--eval',
 	   resource     => "each (x:true) { x }",
-	   expected_err	=> "\n*** BibTool ERROR: Illegal argument for each\n",
+	   expected_err	=> "\n*** BibTool ERROR: Illegal argument for each: true\n",
 	   expected_out	=> '');
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'each-err-3',
 	   args		=> '--eval',
 	   resource     => "each (x:false) { x }",
-	   expected_err	=> "\n*** BibTool ERROR: Illegal argument for each\n",
+	   expected_err	=> "\n*** BibTool ERROR: Illegal argument for each: false\n",
 	   expected_out	=> '');
 
 1;
