@@ -465,11 +465,13 @@ static Term each(b, a, group)		   	   /*                        */
   Term a;					   /*                        */
   Term group;					   /*                        */
 { Binding new_bind  = binding(13, b);		   /*                        */
-  Term t	    = NIL;			   /*                        */
-  Iterator iterator = get_iterator(eval_term(b,	   /*                        */
-					     Cdr(a)));/*                     */
+  Term t	    = eval_term(b, Cdr(a));	   /*                        */
+  Iterator iterator = get_iterator(t);		   /*                        */
+ 						   /*                        */
   if (iterator == NULL )			   /*                        */
-    ErrorNF("Illegal argument for each", 0);	   /*                        */
+    ErrorNF("Illegal argument for each: ",	   /*                        */
+	    tag_id(TType(t)));			   /*                        */
+  t = NIL;					   /*                        */
   						   /*                        */
   while (DoItHasNext(iterator))			   /*                        */
   { setq(new_bind,				   /*                        */
@@ -513,7 +515,7 @@ static Term funcall(b, key, f, args)		   /*                        */
       args = Cdr(args);				   /*                        */
     }						   /*                        */
     else					   /*                        */
-    { SymValue(sym) = Cdar(t);			   /*                        */
+    { SymValue(sym) = eval_term(b, Cdar(t));	   /*                        */
       LinkTerm(SymValue(sym));			   /*                        */
     }						   /*                        */
     bind(nb, sym);				   /*                        */
@@ -562,8 +564,11 @@ Term eval_term(binding, term)			   /*                        */
 	}					   /*                        */
 	return t;				   /*                        */
       }						   /*                        */
+ 						   /*                        */
+    case L_DB:				   	   /*                        */
     case L_FALSE:				   /*                        */
     case L_NUMBER:				   /*                        */
+    case L_RECORD:				   /*                        */
     case L_STRING:				   /*                        */
     case L_TRUE:				   /*                        */
       LinkTerm(term);				   /*                        */
