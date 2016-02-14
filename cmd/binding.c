@@ -191,7 +191,7 @@ Term setq(b, key, term)		   		   /*                        */
   }						   /*                        */
  						   /*                        */
   junk = symdef(key,			   	   /*                        */
-		L_FIELD,		   	   /*                        */
+		L_VAR,			   	   /*                        */
 		SYM_NONE,		   	   /*                        */
 		g_field,		   	   /*                        */
 		g_setq);  		   	   /*                        */
@@ -399,11 +399,11 @@ static Term str_s_rsc(binding, name, term, rp)	   /*                        */
 Binding root_binding()				   /*                        */
 { Binding b = binding(511, BindingNULL);	   /*                        */
  						   /*                        */
-#define BindBool(NAME,GET,SET,R)     Bind(NAME, GET, SET, SYM_BUILTIN, L_FIELD)
-#define BindNum(NAME,GET,SET,R)	     Bind(NAME, GET, SET, SYM_BUILTIN, L_FIELD)
-#define BindStr(NAME,GET,SET,R)	     Bind(NAME, GET, SET, SYM_BUILTIN, L_FIELD)
-#define BindFct(NAME,GET,SET,EX)     Bind(NAME, GET, SET, SYM_BUILTIN, L_FIELD)
-#define BindFunc(NAME,GET,G,SET,S)   Bind(NAME, GET, SET, SYM_BUILTIN, L_FIELD)
+#define BindBool(NAME,GET,SET,R)     Bind(NAME, GET, SET, SYM_BUILTIN, L_VAR)
+#define BindNum(NAME,GET,SET,R)	     Bind(NAME, GET, SET, SYM_BUILTIN, L_VAR)
+#define BindStr(NAME,GET,SET,R)	     Bind(NAME, GET, SET, SYM_BUILTIN, L_VAR)
+#define BindFct(NAME,GET,SET,EX)     Bind(NAME, GET, SET, SYM_BUILTIN, L_VAR)
+#define BindFunc(NAME,GET,G,SET,S)   Bind(NAME, GET, SET, SYM_BUILTIN, L_VAR)
 #define Bind(NAME,GET,SET,FLAGS,OP)  bind(b, symdef(symbol((String)NAME),     \
 						    OP, FLAGS, GET, SET));
 #define BindSym(NAME,SYM)	      bind(b, SYM);
@@ -509,7 +509,7 @@ static Term funcall(b, key, f, args)		   /*                        */
   Term t;					   /*                        */
  						   /*                        */
   for (t = Car(f); t; t = Cdr(t))		   /*                        */
-  { sym = symdef(TString(Car(t)), L_FIELD, 0, NULL, NULL);/*                 */
+  { sym = symdef(TString(Car(t)), L_VAR, 0, NULL, NULL);/*                   */
     if (args)					   /*                        */
     { SymValue(sym) = eval_term(b, Car(args));	   /*                        */
       args = Cdr(args);				   /*                        */
@@ -578,7 +578,7 @@ Term eval_term(binding, term)			   /*                        */
     case L_EACH:				   /*                        */
       return each(binding, Car(term), Cdr(term));  /*                        */
  						   /*                        */
-    case L_FIELD:				   /*                        */
+    case L_VAR	:				   /*                        */
       s = get_bind(binding, TString(term));	   /*                        */
       return s ? SymValue(s) : NIL;		   /*                        */
  						   /*                        */

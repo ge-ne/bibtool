@@ -66,6 +66,7 @@ String token_type(c)			   	   /*                        */
     case L_EACH:     return (String)"each";	   /*                        */
     case L_EQ:       return (String)"==";	   /*                        */
     case L_FALSE:    return (String)"false";	   /*                        */
+    case L_VAR:	     return (String)"var";	   /*                        */
     case L_FIELD:    return (String)"field";	   /*                        */
     case L_FUNCALL:  return (String)"funcall";	   /*                        */
     case L_FUNCTION: return (String)"function";	   /*                        */
@@ -298,6 +299,7 @@ void free_term(t)				   /*                        */
   { case L_TRUE:				   /*                        */
     case L_FALSE:				   /*                        */
       return;					   /*                        */
+    case L_VAR:					   /*                        */
     case L_FIELD:				   /*                        */
     case L_STRING:				   /*                        */
     case L_FUNCALL:				   /*                        */
@@ -522,6 +524,7 @@ void prn_term(file, term, in, quote)		   /*                        */
       fputs("false", file);			   /*                        */
       return;					   /*                        */
 						   /*                        */
+    case L_VAR:				   	   /*                        */
     case L_FIELD:				   /*                        */
       prn_field(file, term, quote);		   /*                        */
       return;					   /*                        */

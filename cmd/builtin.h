@@ -43,7 +43,7 @@ Bind(	 "||",			     g_or,
 Bind(	 "!",			     g_not,
 				     NULL,		SYM_NONE, L_NOT	     )
 Bind(	 "`",			     NULL,
-				     NULL,		SYM_NONE, L_FIELD    )
+				     NULL,		SYM_NONE, L_VAR      )
 BindFunc("add.field",		     g_add_field,	get_add_fields(),
 				     s_add_field,	add_field(val)	     )
 BindBool("apply.alias",		     g_apply_alias,
@@ -67,7 +67,7 @@ BindFct( "check.rule",		     g_check_rule,
 BindBool("check.case.sensitive",     g_case_check,
 				     s_case_check,	rsc_case_check	     )
 Bind(    "clear.ignored.words",	     g_cl_ign_words,
-				     g_cl_ign_words,	SYM_BUILTIN, L_FIELD )
+				     g_cl_ign_words,	SYM_BUILTIN, L_VAR   )
 BindBool("count.all",		     g_count_all,
 				     s_count_all,	rsc_cnt_all	     )
 BindBool("count.used",		     g_count_used,
@@ -118,7 +118,7 @@ BindFct( "field.type",		     g_fld_type,
 Bind(	 "function",		     NULL,
 				     NULL,		SYM_NONE, L_FUNCTION )
 Bind(	 "input",		     g_input,
-				     s_input,		SYM_BUILTIN, L_FIELD )
+				     s_input,		SYM_BUILTIN, L_VAR   )
 Bind(	 "if",			     NULL,
 				     NULL,		SYM_NONE, L_IF	     )
 BindFunc("ignored.word",	     g_ign_word,	g_ign_(binding,term),
@@ -140,7 +140,7 @@ BindBool("key.expand.macros",	     g_key_exp_macs,
 Bind(	 "like",		     NULL,
 				     NULL,		SYM_NONE, L_LIKE     )
 Bind(	 "macro.file",		     g_macro_file,
-				     s_macro_file,	SYM_BUILTIN, L_FIELD )
+				     s_macro_file,	SYM_BUILTIN, L_VAR   )
 Bind(	 "mod",			     g_mod,
 				     NULL,		SYM_NONE, L_MOD	     )
 BindFct( "new.entry.type",	     g_entry_type,
@@ -154,7 +154,7 @@ Bind(	 "not",			     g_not,
 Bind(	 "nil",			     g_self,
 				     NULL,		SYM_NONE, L_CONS     )
 Bind(	 "output.file",		     g_out_file,
-				     s_out_file,	SYM_BUILTIN, L_FIELD )
+				     s_out_file,	SYM_BUILTIN, L_VAR   )
 Bind(	 "or",			     g_or,
 				     NULL,		SYM_NONE, L_OR	     )
 BindBool("pass.comments",	     g_pass_comments,
@@ -164,7 +164,7 @@ BindBool("preserve.key.case",	     g_key_case,
 BindBool("preserve.keys",	     g_preserve_keys,
 				     s_preserve_keys,	rsc_key_preserve     )
 Bind(	 "print",		     g_print,
-				     g_print,		SYM_BUILTIN, L_FIELD )
+				     g_print,		SYM_BUILTIN, L_VAR   )
 BindNum( "print.align.string",	     g_col_s,
 				     s_col_s,		rsc_col_s	     )
 BindNum( "print.align.comment",	     g_col_c,
@@ -208,13 +208,13 @@ Bind(	 "quote",		     NULL,
 BindBool("quiet",		     g_quiet,
 				     s_quiet,		rsc_quiet	     )
 Bind(	 "read",		     g_read,
-				     g_read,		SYM_NONE, L_FIELD    )
+				     g_read,		SYM_NONE, L_VAR      )
 BindFunc("regexp.syntax",	     g_regex_syntax,	StringTerm((String)get_regex_syntax()),
 				     s_regex_syntax,	set_regex_syntax((char*)val) )
 BindFct( "rename.field",	     g_rename_field,
 				     s_rename_field,	rename_field(val)    )
 Bind(	 "resource",		     NULL,
-				     NULL,		SYM_BUILTIN, L_FIELD )
+				     NULL,		SYM_BUILTIN, L_VAR   )
 BindFunc("resource.search.path",     g_search_path,	StringTerm(rsc_v_rsc),
 				     s_search_path,	set_rsc_path(val)    )
 Bind(	 "return",		     NULL,
@@ -263,7 +263,7 @@ BindSym( "true",		     sym_true				     )
 BindBool("verbose",		     g_verbose,
 				     s_verbose,		rsc_verbose	     )
 Bind(	 "version",		     g_version,
-				     s_version,		SYM_BUILTIN, L_FIELD )
+				     s_version,		SYM_BUILTIN, L_VAR   )
 Bind(	 "while",		     NULL,
 				     NULL,		SYM_NONE, L_WHILE    )
 Bind(	 "with",		     NULL,

@@ -19,12 +19,13 @@
 
 /*---------------------------------------------------------------------------*/
 
-#define L_FIELD		0x210
-#define L_STRING	0x211
-#define L_FUNCALL	0x212
-#define L_FUNCALL2	0x213
-#define L_DEFUN		0x214
-#define L_EACH		0x215
+#define L_VAR		0x210
+#define L_FIELD		0x211
+#define L_STRING	0x212
+#define L_FUNCALL	0x213
+#define L_FUNCALL2	0x214
+#define L_DEFUN		0x215
+#define L_EACH		0x216
 
 #define L_NUMBER	0x220
 
@@ -109,6 +110,7 @@ typedef struct S_TERM {				   /*                        */
 #define TermIsString(T)		(TType(T) == L_STRING)
 #define TermIsList(T)		(TType(T) == L_CONS)
 #define TermIsField(T)		(TType(T) == L_FIELD)
+#define TermIsVar(T)		(TType(T) == L_VAR)
 #define TermIsEOF(T)		(TType(T) == L_EOF)
 #define TermIsTrue(T)		(TType(T) == L_TRUE)
 #define TermIsFalse(T)		(TType(T) == L_FALSE)
@@ -118,6 +120,7 @@ typedef struct S_TERM {				   /*                        */
 
 #define StringTerm(S)		new_t_string(L_STRING, symbol(S))
 #define FieldTerm(S)		new_t_string(L_FIELD, symbol(S))
+#define VarTerm(S)		new_t_string(L_VAR, symbol(S))
 #define NumberTerm(N)		new_term_num(N)
 #define NewTerm(N)		new_term(N, NIL, NIL)
 #define DBTerm(DB)		new_t_db(DB)

@@ -643,7 +643,7 @@ Term g_setq(binding, term)		   	   /*                        */
 { Term car = Cadr(term);			   /*                        */
   term	   = Cdr(term);				   /*                        */
   if (car == NIL) ErrorNF1("Undefined LHS");	   /*                        */
-  if (!TermIsField(car)) ErrorNF1("Illegal LHS");  /*                        */
+  if (!TermIsVar(car)) ErrorNF1("Illegal LHS");    /*                        */
   						   /*                        */
   term = Cadr(term);				   /*                        */
   LinkTerm(term);				   /*                        */

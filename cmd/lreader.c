@@ -190,8 +190,8 @@ static int scan(b)			   	   /*                        */
 	       L_STRING);			   /*                        */
 	  					   /*                        */
       case '`':				   	   /*                        */
-	Return(scan_string(L_FIELD ,'`'),	   /*                        */
-	       L_FIELD);  			   /*                        */
+	Return(scan_string(L_VAR ,'`'),	   	   /*                        */
+	       L_VAR);  			   /*                        */
  	  					   /*                        */
       case '+':					   /*                        */
 	ReturnTerm(L_PLUS);  	   		   /*                        */
@@ -306,14 +306,14 @@ static int scan(b)			   	   /*                        */
 	  { c 	   = SymOp(sym);		   /*                        */
 	    yylval = SymTerm(sym);	   	   /*                        */
 	    if (yylval == NIL && c != L_CONS)	   /*                        */
-	      yylval = (c == L_FIELD		   /*                        */
-			? FieldTerm(s)		   /*                        */
+	      yylval = (c == L_VAR		   /*                        */
+			? VarTerm(s)		   /*                        */
 			: NewTerm(c));		   /*                        */
 	    DebugPrintF3("scan: word %s 0x%x\n",   /*                        */
 		   (char*)s, c);		   /*                        */
 	    return c;	   			   /*                        */
 	  }					   /*                        */
-	  Return(FieldTerm(s), L_FIELD);	   /*                        */
+	  Return(VarTerm(s), L_VAR);	   	   /*                        */
 	}					   /*                        */
  						   /*                        */
     }						   /*                        */
@@ -497,7 +497,7 @@ static TStack reduce(stack)			   /*                        */
     DebugPrintF2("n = 0x%x\n", n);   	   	   /*                        */
     if (n <= 0x400)				   /*                        */
       Error("Missing operator after ",		   /*                        */
-	    TermIsField(StackTerm(stack)) 	   /*                        */
+	    TermIsVar(StackTerm(stack)) 	   /*                        */
 	    ? TString(StackTerm(stack))		   /*                        */
 	    : token_type(TType(StackTerm(stack))), 0);/*                     */
 					       	   /*                        */
@@ -603,7 +603,7 @@ static Term read_mapping(binding, msg)		   /*                        */
   { Term v;					   /*                        */
     c = scan(binding);				   /*                        */
     if (c == ')') return term;			   /*                        */
-    if (c != L_FIELD)				   /*                        */
+    if (c != L_VAR)				   /*                        */
       Error(msg, ": Missing variable instead of ", /*                        */
 	    token_type(c));			   /*                        */
     v	= yylval;				   /*                        */
@@ -681,7 +681,7 @@ static Term read_expr(binding, stack)		   /*                        */
  						   /*                        */
       case L_DEFUN:				   /*                        */
 	t = yylval;		   	   	   /*                        */
-	Expect(L_FIELD, "Missing function name");  /*                        */
+	Expect(L_VAR, "Missing function name");    /*                        */
 	TString(t) = TString(yylval);		   /*                        */
 	free_term(yylval);			   /*                        */
 	Expect('(', "Missing ( for defun");	   /*                        */
@@ -716,12 +716,12 @@ static Term read_expr(binding, stack)		   /*                        */
 	Shift(c, term_false);	   	   	   /*                        */
 	break;					   /*                        */
  						   /*                        */
-      case L_FIELD:				   /*                        */
+      case L_VAR:				   /*                        */
 	t = yylval;			   	   /*                        */
 	c = scan(binding);			   /*                        */
 	if (c != '(')				   /*                        */
 	{ unscan(c, yylval);			   /*                        */
-	  Shift(L_FIELD, t);		   	   /*                        */
+	  Shift(L_VAR, t);		   	   /*                        */
 	  break;				   /*                        */
 	}					   /*                        */
 	t = read_args(binding,		   	   /*                        */
@@ -854,7 +854,7 @@ static Term read_cmd(binding)			   /*                        */
     switch (c)					   /*                        */
     { case ';':					   /*                        */
 	continue;				   /*                        */
-      case L_FIELD:				   /*                        */
+      case L_VAR:				   /*                        */
 	{ Term val = yylval;			   /*                        */
 	  SymDef sym = get_bind(binding,	   /*                        */
 				TString(val));	   /*                        */
@@ -871,7 +871,7 @@ static Term read_cmd(binding)			   /*                        */
 	  { unscan(c, yylval);			   /*                        */
 	    if (sym && (SymFlags(sym)&SYM_BUILTIN))/*                        */
 	    { return read_builtin(binding, val); } /*                        */
-	    Shift(L_FIELD, val);		   /*                        */
+	    Shift(L_VAR, val);		   	   /*                        */
 	  }					   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
