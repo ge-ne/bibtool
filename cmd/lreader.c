@@ -98,7 +98,7 @@ static Term scan_block()			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	scan_string()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
@@ -193,6 +193,9 @@ static int scan(b)			   	   /*                        */
 	Return(scan_string(L_VAR ,'`'),	   	   /*                        */
 	       L_VAR);  			   /*                        */
  	  					   /*                        */
+      case ':':					   /*                        */
+	ReturnTerm(L_METHOD);  	   		   /*                        */
+	  					   /*                        */
       case '+':					   /*                        */
 	ReturnTerm(L_PLUS);  	   		   /*                        */
 	  					   /*                        */
@@ -615,7 +618,7 @@ static Term read_mapping(binding, msg)		   /*                        */
     { unscan(c, yylval);			   /*                        */
       Cdr(v) = NIL;				   /*                        */
     }						   /*                        */
-    else if (c 	!= ':')				   /*                        */
+    else if (c != L_METHOD)			   /*                        */
     { Error(msg, ": Missing : instead of ",	   /*                        */
 	    token_type(c));			   /*                        */
     }						   /*                        */
@@ -629,6 +632,35 @@ static Term read_mapping(binding, msg)		   /*                        */
 	    token_type(c));			   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
+
+#ifdef NEVER
+
+static Term read_meth(binding, msg)		   /*                        */
+  Binding binding;				   /*                        */
+  char *msg;					   /*                        */
+{ int c;			   		   /*                        */
+  Term term = NIL;				   /*                        */
+  Term *tp  = &term;				   /*                        */
+ 						   /*                        */
+  for (;;)					   /*                        */
+  { c = scan(binding);				   /*                        */
+    if (c != L_VAR)				   /*                        */
+      Error(msg, ": Missing variable instead of ", /*                        */
+	    token_type(c));			   /*                        */
+    *tp = yylval;				   /*                        */
+    tp = &Cdr(*tp);				   /*                        */
+ 						   /*                        */
+    c = scan(binding);				   /*                        */
+    if (c != '(') break;			   /*                        */
+    read_args(binding, *tp, ',', ')');	   	   /*                        */
+ 						   /*                        */
+    c = scan(binding);				   /*                        */
+    if (c != ':') break;			   /*                        */
+  }						   /*                        */
+  unscan(c, yylval);			   	   /*                        */
+  return term;			   	   	   /*                        */
+}						   /*------------------------*/
+#endif
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_expr()
@@ -856,10 +888,9 @@ static Term read_cmd(binding)			   /*                        */
 	continue;				   /*                        */
       case L_VAR:				   /*                        */
 	{ Term val = yylval;			   /*                        */
-	  SymDef sym = get_bind(binding,	   /*                        */
-				TString(val));	   /*                        */
+	  SymDef sym;	   			   /*                        */
 	  c = scan(binding);			   /*                        */
-	  if (c == '(')				   /*                        */
+	  if (c == '(')			   	   /*                        */
 	  { val = read_args(binding,		   /*                        */
 			    new_t_string(L_FUNCALL,/*                        */
 					 TString(val)),/*                    */
@@ -869,6 +900,8 @@ static Term read_cmd(binding)			   /*                        */
 	  }					   /*                        */
 	  else					   /*                        */
 	  { unscan(c, yylval);			   /*                        */
+	    sym = get_bind(binding,
+			   TString(val));
 	    if (sym && (SymFlags(sym)&SYM_BUILTIN))/*                        */
 	    { return read_builtin(binding, val); } /*                        */
 	    Shift(L_VAR, val);		   	   /*                        */

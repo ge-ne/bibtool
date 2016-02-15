@@ -555,6 +555,14 @@ void prn_term(file, term, in, quote)		   /*                        */
       }						   /*                        */
       return;					   /*                        */
 						   /*                        */
+    case L_METHOD:			   	   /*                        */
+      fputc('(', file);			   	   /*                        */
+      prn_term(file, Cadr(term), in, quote);	   /*                        */
+      fputc(':', file);			   	   /*                        */
+      prn_term(file, Car(Cddr(term)), in, quote);  /*                        */
+      fputc(')', file);			   	   /*                        */
+      return;					   /*                        */
+						   /*                        */
     case L_NUMBER:				   /*                        */
       fprintf(file, "%ld", TNumber(term));	   /*                        */
       return;					   /*                        */
