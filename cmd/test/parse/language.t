@@ -343,6 +343,48 @@ BUnit::run(name         => 'each-1',
 	   expected_err => '',
 	   expected_out => "each (x: db) {\n  abc\n}\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'method-1',
+	   resource	=> 'x:y()',
+	   expected_err => '',
+	   expected_out => "x:y()\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'method-2',
+	   resource	=> 'x:y(1)',
+	   expected_err => '',
+	   expected_out => "x:y(1)\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'method-3',
+	   resource	=> 'x:y(1,2)',
+	   expected_err => '',
+	   expected_out => "x:y(1, 2)\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'method-4',
+	   resource	=> 'x:y(1,2):z()',
+	   expected_err => '',
+	   expected_out => "x:y(1, 2):z()\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'method-11',
+	   resource	=> 'a=x:y()',
+	   expected_err => '',
+	   expected_out => "(a = x:y())\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'method-12',
+	   resource	=> 'a=x:y(1)',
+	   expected_err => '',
+	   expected_out => "(a = x:y(1))\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'method-13',
+	   resource	=> 'a=x:y(1,2)',
+	   expected_err => '',
+	   expected_out => "(a = x:y(1, 2))\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

@@ -78,6 +78,7 @@ String token_type(c)			   	   /*                        */
     case L_LE:       return (String)"<=";	   /*                        */
     case L_LIKE:     return (String)"like";	   /*                        */
     case L_LT:       return (String)"<";	   /*                        */
+    case L_METHOD:   return (String)":";	   /*                        */
     case L_MINUS:    return (String)"-";	   /*                        */
     case L_MOD:      return (String)"mod";	   /*                        */
     case L_NE:       return (String)"!=";	   /*                        */
@@ -556,11 +557,9 @@ void prn_term(file, term, in, quote)		   /*                        */
       return;					   /*                        */
 						   /*                        */
     case L_METHOD:			   	   /*                        */
-      fputc('(', file);			   	   /*                        */
-      prn_term(file, Cadr(term), in, quote);	   /*                        */
+      prn_term(file, Car(term), in, quote);	   /*                        */
       fputc(':', file);			   	   /*                        */
-      prn_term(file, Car(Cddr(term)), in, quote);  /*                        */
-      fputc(')', file);			   	   /*                        */
+      prn_term(file, Cdr(term), in, quote);  	   /*                        */
       return;					   /*                        */
 						   /*                        */
     case L_NUMBER:				   /*                        */

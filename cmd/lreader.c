@@ -546,7 +546,7 @@ static TStack reduce(stack)			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_group()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
@@ -566,7 +566,7 @@ static Term read_group(binding, msg)		   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_condition()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
@@ -587,7 +587,7 @@ static Term read_condition(binding, msg)	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_mapping()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
@@ -618,13 +618,12 @@ static Term read_mapping(binding, msg)		   /*                        */
     { unscan(c, yylval);			   /*                        */
       Cdr(v) = NIL;				   /*                        */
     }						   /*                        */
-    else if (c != L_METHOD)			   /*                        */
-    { Error(msg, ": Missing : instead of ",	   /*                        */
-	    token_type(c));			   /*                        */
-    }						   /*                        */
+    else if (c == L_METHOD)			   /*                        */
+    { Cdr(v) = read_expr(binding, StackNULL); }	   /*                        */
     else					   /*                        */
-    { Cdr(v) = read_expr(binding, StackNULL);	   /*                        */
-    }						   /*                        */
+      Error(msg, ": Missing : instead of ",	   /*                        */
+	    token_type(c));			   /*                        */
+ 						   /*                        */
     c = scan(binding);				   /*                        */
     if (c == ')') return term;			   /*                        */
     if (c != ',')				   /*                        */
@@ -633,43 +632,55 @@ static Term read_mapping(binding, msg)		   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
-#ifdef NEVER
-
-static Term read_meth(binding, msg)		   /*                        */
+static Term read_funcall(binding)		   /*                        */
   Binding binding;				   /*                        */
-  char *msg;					   /*                        */
-{ int c;			   		   /*                        */
-  Term term = NIL;				   /*                        */
-  Term *tp  = &term;				   /*                        */
- 						   /*                        */
-  for (;;)					   /*                        */
-  { c = scan(binding);				   /*                        */
-    if (c != L_VAR)				   /*                        */
-      Error(msg, ": Missing variable instead of ", /*                        */
-	    token_type(c));			   /*                        */
-    *tp = yylval;				   /*                        */
-    tp = &Cdr(*tp);				   /*                        */
- 						   /*                        */
-    c = scan(binding);				   /*                        */
-    if (c != '(') break;			   /*                        */
-    read_args(binding, *tp, ',', ')');	   	   /*                        */
- 						   /*                        */
-    c = scan(binding);				   /*                        */
-    if (c != ':') break;			   /*                        */
-  }						   /*                        */
-  unscan(c, yylval);			   	   /*                        */
-  return term;			   	   	   /*                        */
+{ Term term;
+  int c = scan(binding);			   /*                        */
+  if (c != L_VAR)				   /*                        */
+    Error("Missing method instead of ",   	   /*                        */
+	  token_type(c), 0);			   /*                        */
+  term	      = yylval;				   /*                        */
+  TType(term) = L_FUNCALL;
+  c = scan(binding);				   /*                        */
+  if (c == '(')
+    return read_args(binding, term, ',', ')');	   /*                        */
+  unscan(c, yylval);				   /*                        */
+  return term;					   /*                        */
 }						   /*------------------------*/
-#endif
 
 /*-----------------------------------------------------------------------------
-** Function:	read_expr()
+** Function:	read_meth()
 ** Type:	static Term
 ** Purpose:	
 **		
 ** Arguments:
 **	binding	
-**	stack	
+**	 t	
+** Returns:	
+**___________________________________________________			     */
+static Term read_meth(binding, t)		   /*                        */
+  Binding binding;				   /*                        */
+  Term t;					   /*                        */
+{ int c;			   		   /*                        */
+ 						   /*                        */
+  for (;;)					   /*                        */
+  { Cdr(t) = read_funcall(binding);		   /*                        */
+    c = scan(binding);				   /*                        */
+    if (c != L_METHOD) break;			   /*                        */
+    t = new_term(L_METHOD, t, NIL);
+  }						   /*                        */
+  unscan(c, yylval);			   	   /*                        */
+  return t;			   	   	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	read_expr()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	stack	the stack to be used
 ** Returns:	
 **___________________________________________________			     */
 static Term read_expr(binding, stack)		   /*                        */
@@ -748,22 +759,6 @@ static Term read_expr(binding, stack)		   /*                        */
 	Shift(c, term_false);	   	   	   /*                        */
 	break;					   /*                        */
  						   /*                        */
-      case L_VAR:				   /*                        */
-	t = yylval;			   	   /*                        */
-	c = scan(binding);			   /*                        */
-	if (c != '(')				   /*                        */
-	{ unscan(c, yylval);			   /*                        */
-	  Shift(L_VAR, t);		   	   /*                        */
-	  break;				   /*                        */
-	}					   /*                        */
-	t = read_args(binding,		   	   /*                        */
-		      new_t_string(L_FUNCALL,      /*                        */
-				   TString(t)),    /*                        */
-		      ',',			   /*                        */
-		      ')');			   /*                        */
-	Shift(L_FUNCALL, t);		   	   /*                        */
-	break;					   /*                        */
- 						   /*                        */
       case L_FUNCTION:				   /*                        */
 	t = yylval;		   	   	   /*                        */
 	Expect('(', "Missing ( for function");     /*                        */
@@ -794,6 +789,15 @@ static Term read_expr(binding, stack)		   /*                        */
 	Shift(L_IF, t);		   	   	   /*                        */
 	break;					   /*                        */
  						   /*                        */
+      case L_METHOD:				   /*                        */
+	t = yylval;		   	   	   /*                        */
+	if (stack == StackNULL)
+	{ Error("missing instance for method",0,0); }
+	Car(t) = StackTerm(stack);
+	stack  = ts_pop(stack);
+	Shift(L_METHOD, read_meth(binding, t));	   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
       case L_QUOTE:				   /*                        */
 	Shift(L_QUOTE,				   /*                        */
 	      new_term(L_QUOTE,			   /*                        */
@@ -811,6 +815,22 @@ static Term read_expr(binding, stack)		   /*                        */
  						   /*                        */
       case L_TRUE:				   /*                        */
 	Shift(c, term_true);	   	   	   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
+      case L_VAR:				   /*                        */
+	t = yylval;			   	   /*                        */
+	c = scan(binding);			   /*                        */
+	if (c != '(')				   /*                        */
+	{ unscan(c, yylval);			   /*                        */
+	  Shift(L_VAR, t);		   	   /*                        */
+	  break;				   /*                        */
+	}					   /*                        */
+	t = read_args(binding,		   	   /*                        */
+		      new_t_string(L_FUNCALL,      /*                        */
+				   TString(t)),    /*                        */
+		      ',',			   /*                        */
+		      ')');			   /*                        */
+	Shift(L_FUNCALL, t);		   	   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case L_WHILE:				   /*                        */

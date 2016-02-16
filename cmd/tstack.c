@@ -35,7 +35,7 @@ void dump_tstack _ARG((FILE* file, TStack stack));
 ** Purpose:	
 **		
 ** Arguments:
-**	ts	
+**	ts	the stack
 ** Returns:	
 **___________________________________________________			     */
 TStack ts_pop(ts)				   /*                        */
@@ -51,7 +51,7 @@ TStack ts_pop(ts)				   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	ts	
+**	ts	the stack
 **	c	
 **	t	
 ** Returns:	

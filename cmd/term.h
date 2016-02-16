@@ -26,6 +26,7 @@
 #define L_FUNCALL2	0x214
 #define L_DEFUN		0x215
 #define L_EACH		0x216
+#define L_METHOD	0x217
 
 #define L_NUMBER	0x220
 
@@ -45,7 +46,6 @@
 #define L_QUOTE		0x401
 #define L_UMINUS	0x403
 #define L_RETURN	0x405
-#define L_METHOD	0x410
 #define L_MINUS		0x412
 #define L_PLUS		0x414
 #define L_TIMES		0x416
