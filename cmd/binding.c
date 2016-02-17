@@ -41,7 +41,6 @@
 ** Function:	binding()
 ** Type:	Binding
 ** Purpose:	Allocate a new instance of a Binding.
-**		
 ** Arguments:
 **	size	the number of junks contained
 ** Returns:	the new binding
@@ -64,7 +63,7 @@ Binding binding(size, nextBinding)		   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	free_binding()
 ** Type:	void
-** Purpose:	Release the memory occupied by a bindind.
+** Purpose:	Release the memory occupied by a binding.
 **		
 ** Arguments:
 **	binding	the binding
@@ -534,8 +533,7 @@ static Term funcall(b, key, f, args)		   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	eval_term()
 ** Type:	Term
-** Purpose:	
-**		
+** Purpose:	Evaluate a term and return the result.
 ** Arguments:
 **	binding	the binding
 **	term	the term to evaluate
