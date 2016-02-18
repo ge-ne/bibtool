@@ -636,6 +636,11 @@ Term eval_term(binding, term)			   /*                        */
 	      ? eval_term(binding, Cddr(term))	   /*                        */
 	      : NIL);				   /*                        */
  						   /*                        */
+    case L_METHOD:				   /*                        */
+      if (Car(term) == NIL)
+	ErrorNF1("Missing instance for method call ");
+      ErrorNF1("Undefined method ");
+
     case L_WITH:				   /*                        */
       return funcall(binding, key, term, NIL);	   /*                        */
  						   /*                        */
