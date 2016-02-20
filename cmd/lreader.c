@@ -632,17 +632,26 @@ static Term read_mapping(binding, msg)		   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	read_funcall()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+** Returns:	
+**___________________________________________________			     */
 static Term read_funcall(binding)		   /*                        */
   Binding binding;				   /*                        */
-{ Term term;
+{ Term term;					   /*                        */
   int c = scan(binding);			   /*                        */
   if (c != L_VAR)				   /*                        */
     Error("Missing method instead of ",   	   /*                        */
 	  token_type(c), 0);			   /*                        */
   term	      = yylval;				   /*                        */
-  TType(term) = L_FUNCALL;
+  TType(term) = L_FUNCALL;			   /*                        */
   c = scan(binding);				   /*                        */
-  if (c == '(')
+  if (c == '(')					   /*                        */
     return read_args(binding, term, ',', ')');	   /*                        */
   unscan(c, yylval);				   /*                        */
   return term;					   /*                        */
@@ -650,12 +659,12 @@ static Term read_funcall(binding)		   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	read_meth()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 t	
+**	binding	the binding
+**	t	the instance term
 ** Returns:	
 **___________________________________________________			     */
 static Term read_meth(binding, t)		   /*                        */
@@ -667,7 +676,7 @@ static Term read_meth(binding, t)		   /*                        */
   { Cdr(t) = read_funcall(binding);		   /*                        */
     c = scan(binding);				   /*                        */
     if (c != L_METHOD) break;			   /*                        */
-    t = new_term(L_METHOD, t, NIL);
+    t = new_term(L_METHOD, t, NIL);		   /*                        */
   }						   /*                        */
   unscan(c, yylval);			   	   /*                        */
   return t;			   	   	   /*                        */
@@ -791,8 +800,8 @@ static Term read_expr(binding, stack)		   /*                        */
  						   /*                        */
       case L_METHOD:				   /*                        */
 	t = yylval;		   	   	   /*                        */
-	if (stack == StackNULL)
-	{ Error("missing instance for method",0,0); }
+	if (stack == StackNULL)			   /*                        */
+	{ Error("missing instance for method call",0,0); }
 	Car(t) = StackTerm(stack);
 	stack  = ts_pop(stack);
 	Shift(L_METHOD, read_meth(binding, t));	   /*                        */
@@ -920,8 +929,8 @@ static Term read_cmd(binding)			   /*                        */
 	  }					   /*                        */
 	  else					   /*                        */
 	  { unscan(c, yylval);			   /*                        */
-	    sym = get_bind(binding,
-			   TString(val));
+	    sym = get_bind(binding,		   /*                        */
+			   TString(val));	   /*                        */
 	    if (sym && (SymFlags(sym)&SYM_BUILTIN))/*                        */
 	    { return read_builtin(binding, val); } /*                        */
 	    Shift(L_VAR, val);		   	   /*                        */

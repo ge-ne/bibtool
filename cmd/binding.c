@@ -637,17 +637,18 @@ Term eval_term(binding, term)			   /*                        */
 	      : NIL);				   /*                        */
  						   /*                        */
     case L_METHOD:				   /*                        */
-      if (Car(term) == NIL)
-	ErrorNF1("Missing instance for method call ");
-      ErrorNF1("Undefined method ");
-
-    case L_WITH:				   /*                        */
-      return funcall(binding, key, term, NIL);	   /*                        */
- 						   /*                        */
+      { Term t = eval_term(binding, Car(term));
+	if (t == NIL)
+	  ErrorNF1("Missing instance for method call ");
+	ErrorNF1("Undefined method ");
+      }
     case L_RETURN:				   /*                        */
       return new_term(L_RETURN,			   /*                        */
 		      NIL,			   /*                        */
 		      eval_term(binding, Cdr(term)));/*                      */
+ 						   /*                        */
+    case L_WITH:				   /*                        */
+      return funcall(binding, key, term, NIL);	   /*                        */
  						   /*                        */
     case L_AND:      key = (String)"&&";     break;/*                        */
     case L_DIV:      key = (String)"/";	     break;/*                        */
