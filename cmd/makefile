@@ -43,7 +43,14 @@ OFILES  = $(BASEDIR)crossref.o	\
 	  $(BASEDIR)wordlist.o	\
 	  $(BASEDIR)regex.o
 
-L_OFILES = term.o lcore.o binding.o tstack.o lreader.o linereader.o literate.o
+L_OFILES = term.o		\
+	   binding.o		\
+	   lcore.o		\
+	   tstack.o		\
+	   lreader.o		\
+	   linereader.o		\
+	   cstring.o		\
+	   literate.o
 
 #------------------------------------------------------------------------------
 
@@ -57,6 +64,7 @@ lreader.o:  lreader.c lreader.h lreader.h term.h linereader.h lcore.h tstack.h b
 binding.o:  binding.c binding.h literate.h term.h lcore.h lreader.h builtin.h
 literate.o: literate.c literate.h term.h
 tester.o:   tester.c term.h lcore.h lreader.h binding.h tstack.h
+cstring.o:  cstring.c term.h binding.h
 
 tester: tester.o $(L_OFILES) $(OFILES)
 	@$(CC) -g -O2 -o $@ $^ -lkpathsea

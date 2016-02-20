@@ -44,24 +44,44 @@ $BUnit::name_prefix = 'eval/';
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'string-0',
 	   args	        => '--eval',
-	   resource     => <<__EOF__ ,
-"";
-__EOF__
+	   resource     => '""',
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-""
-__EOF__
+	   expected_out => "\"\"\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'string-1',
 	   args	        => '--eval',
-	   resource	=> <<__EOF__ ,
-"123";
-__EOF__
+	   resource     => '"123"',
 	   expected_err => '',
-	   expected_out => <<__EOF__ );
-"123"
-__EOF__
+	   expected_out => "\"123\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-length-0',
+	   args	        => '--eval',
+	   resource     => '"":length()',
+	   expected_err => '',
+	   expected_out => "0\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-length-1',
+	   args	        => '--eval',
+	   resource     => '"123":length()',
+	   expected_err => '',
+	   expected_out => "3\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-length-2',
+	   args	        => '--eval',
+	   resource     => 'x="123"; x:length()',
+	   expected_err => '',
+	   expected_out => "3\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-toString-1',
+	   args	        => '--eval',
+	   resource     => '"123":toString()',
+	   expected_err => '',
+	   expected_out => "\"123\"\n" );
 
 1;
 #------------------------------------------------------------------------------

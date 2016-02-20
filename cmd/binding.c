@@ -33,6 +33,7 @@
 /* External Programs                                                         */
 /*===========================================================================*/
 
+extern Term meth_string _ARG((Binding binding, Term string, Term args));
 
 /*---------------------------------------------------------------------------*/
 
@@ -638,12 +639,20 @@ Term eval_term(binding, term)			   /*                        */
  						   /*                        */
     case L_METHOD:				   /*                        */
       { Term t = eval_term(binding, Car(term));
-	if (t == NIL)
-	  ErrorNF1("Missing instance for method call ");
-	if (TType(t) == L_DB)
-	{
-	}
-	ErrorNF1("Undefined method ");
+
+	switch (t == NIL ? L_CONS : TType(t))	   /*                        */
+	{ case L_STRING:			   /*                        */
+	    return meth_string(binding,		   /*                        */
+			       t,		   /*                        */
+			       Cdr(term));	   /*                        */
+	  case L_NUMBER:			   /*                        */
+	  case L_CONS:				   /*                        */
+	  case L_DB:				   /*                        */
+	  case L_RECORD:			   /*                        */
+	    ErrorNF1("Undefined method ");	   /*                        */
+	  default:				   /*                        */
+	    ErrorNF1("Missing instance for method call ");/*                 */
+	}					   /*                        */
       }
     case L_RETURN:				   /*                        */
       return new_term(L_RETURN,			   /*                        */

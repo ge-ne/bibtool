@@ -633,53 +633,48 @@ static Term read_mapping(binding, msg)		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	read_funcall()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	the binding
-** Returns:	
-**___________________________________________________			     */
-static Term read_funcall(binding)		   /*                        */
-  Binding binding;				   /*                        */
-{ Term term;					   /*                        */
-  int c = scan(binding);			   /*                        */
-  if (c != L_VAR)				   /*                        */
-    Error("Missing method instead of ",   	   /*                        */
-	  token_type(c), 0);			   /*                        */
-  term	      = yylval;				   /*                        */
-  TType(term) = L_FUNCALL;			   /*                        */
-  c = scan(binding);				   /*                        */
-  if (c == '(')					   /*                        */
-    return read_args(binding, term, ',', ')');	   /*                        */
-  unscan(c, yylval);				   /*                        */
-  return term;					   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
 ** Function:	read_meth()
 ** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
 **	binding	the binding
-**	t	the instance term
+**	term	the instance term
 ** Returns:	
 **___________________________________________________			     */
-static Term read_meth(binding, t)		   /*                        */
+static Term read_meth(binding, term)		   /*                        */
   Binding binding;				   /*                        */
-  Term t;					   /*                        */
+  Term term;					   /*                        */
 { int c;			   		   /*                        */
+  Term t;					   /*                        */
  						   /*                        */
   for (;;)					   /*                        */
-  { Cdr(t) = read_funcall(binding);		   /*                        */
+  { c = scan(binding);			   	   /*                        */
+    switch (c)					   /*                        */
+    { case L_VAR:				   /*                        */
+      case L_STRING:				   /*                        */
+      case L_NUMBER:				   /*                        */
+      case L_CONS:				   /*                        */
+	break;					   /*                        */
+      default:					   /*                        */
+	Error("Missing method instead of ",   	   /*                        */
+	      token_type(c), 0);		   /*                        */
+    }						   /*                        */
+    t        = yylval;				   /*                        */
+    TType(t) = L_FUNCALL;			   /*                        */
+    c = scan(binding);				   /*                        */
+    if (c == '(')				   /*                        */
+      t = read_args(binding, t, ',', ')');	   /*                        */
+    else					   /*                        */
+      unscan(c, yylval);			   /*                        */
+ 						   /*                        */
+    Cdr(term) = t;		   		   /*                        */
     c = scan(binding);				   /*                        */
     if (c != L_METHOD) break;			   /*                        */
-    t = new_term(L_METHOD, t, NIL);		   /*                        */
+    term = new_term(L_METHOD, term, NIL);	   /*                        */
   }						   /*                        */
   unscan(c, yylval);			   	   /*                        */
-  return t;			   	   	   /*                        */
+  return term;			   	   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
