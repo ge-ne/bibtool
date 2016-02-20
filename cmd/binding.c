@@ -263,7 +263,7 @@ static Term bool_s_rsc(binding, name, term, rp)	   /*                        */
   Term term;					   /*                        */
   int * rp;					   /*                        */
 { term = eval_bool(binding, Cadr(term));	   /*                        */
-  *rp  = (TermIsTrue(term) ? 1 : 0 );	   	   /*                        */
+  *rp  = (IsTrue(term) ? 1 : 0 );	   	   /*                        */
   UnlinkTerm(term);				   /*                        */
   return (*rp ? term_true : term_false);	   /*                        */
 }						   /*------------------------*/
@@ -629,7 +629,7 @@ Term eval_term(binding, term)			   /*                        */
       }						   /*                        */
  						   /*                        */
     case L_IF:				   	   /*                        */
-      if (TermIsTrue(eval_bool(binding, Car(term))))/*                       */
+      if (IsTrue(eval_bool(binding, Car(term))))   /*                        */
       { return eval_term(binding, Cadr(term)); }   /*                        */
       						   /*                        */
       return (Cddr(term)			   /*                        */
@@ -640,6 +640,9 @@ Term eval_term(binding, term)			   /*                        */
       { Term t = eval_term(binding, Car(term));
 	if (t == NIL)
 	  ErrorNF1("Missing instance for method call ");
+	if (TType(t) == L_DB)
+	{
+	}
 	ErrorNF1("Undefined method ");
       }
     case L_RETURN:				   /*                        */

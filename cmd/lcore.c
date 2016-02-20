@@ -104,17 +104,19 @@ Term g_eq(binding, term)			   /*                        */
   b = eval_term(binding, Cadr(term));		   /*                        */
  						   /*                        */
   if (a	== NIL) { val = (b == NIL ? 1 : 0); }	   /*                        */
-  else if (TermIsNumber(a))			   /*                        */
-  { val = (b && TermIsNumber(b) && TNumber(a) == TNumber(b) ? 1 : 0);/*      */
+  else if (IsNumber(a))			   	   /*                        */
+  { val = (b 					   /*                        */
+	   && IsNumber(b)			   /*                        */
+	   && TNumber(a) == TNumber(b) ? 1 : 0);   /*                        */
   }						   /*                        */
-  else if (TermIsString(a))			   /*                        */
+  else if (IsString(a))			   	   /*                        */
   { val = (b					   /*                        */
-	   && TermIsString(b)			   /*                        */
+	   && IsString(b)			   /*                        */
 	   && cmp(TString(a), TString(b)) == 0 ? 1 : 0);/*                   */
   }						   /*                        */
-  else if (TermIsTrue(a))			   /*                        */
+  else if (IsTrue(a))			   	   /*                        */
   { val = (TType(b) == TType(a)); }		   /*                        */
-  else if (TermIsFalse(a))		   	   /*                        */
+  else if (IsFalse(a))		   	   	   /*                        */
   { val = (TType(b) == TType(a)); }		   /*                        */
   else val = 0;					   /*                        */
  						   /*                        */
@@ -136,7 +138,7 @@ Term g_ne(binding, term)			   /*                        */
   Term term;					   /*                        */
 {						   /*                        */
   term = g_eq(binding, term);			   /*                        */
-  return (TermIsTrue(term) ? term_false: term_true);/*                       */
+  return (IsTrue(term) ? term_false: term_true);   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -161,12 +163,12 @@ Term g_lt(binding, term)			   /*                        */
   a = eval_term(binding, Car(term));		   /*                        */
   b = eval_term(binding, Cadr(term));		   /*                        */
  						   /*                        */
-  if ( TermIsNumber(a) )			   /*                        */
-  { if ( !TermIsNumber(b) )			   /*                        */
+  if ( IsNumber(a) )			   	   /*                        */
+  { if ( !IsNumber(b) )			   	   /*                        */
       b = eval_num(binding, b);			   /*                        */
     val = (TNumber(a) < TNumber(b));		   /*                        */
-  } else if ( TermIsString(a) )			   /*                        */
-  { if ( !TermIsString(b) )			   /*                        */
+  } else if ( IsString(a) )			   /*                        */
+  { if ( !IsString(b) )			   	   /*                        */
       b = eval_str(binding, b);			   /*                        */
     val = (cmp(TString(a), TString(b)) < 0);	   /*                        */
   } else					   /*                        */
@@ -197,12 +199,12 @@ Term g_le(binding, term)			   /*                        */
   a = eval_term(binding, Car(term));		   /*                        */
   b = eval_term(binding, Cadr(term));		   /*                        */
  						   /*                        */
-  if ( TermIsNumber(a) )			   /*                        */
-  { if ( !TermIsNumber(b) )			   /*                        */
+  if ( IsNumber(a) )			   	   /*                        */
+  { if ( !IsNumber(b) )			   	   /*                        */
       b = eval_num(binding, b);			   /*                        */
     val = (TNumber(a) <= TNumber(b));		   /*                        */
-  } else if ( TermIsString(a) )			   /*                        */
-  { if ( !TermIsString(b) )			   /*                        */
+  } else if ( IsString(a) )			   /*                        */
+  { if ( !IsString(b) )			   	   /*                        */
       b = eval_str(binding, b);			   /*                        */
     val = (cmp(TString(a), TString(b)) <= 0);	   /*                        */
   } else					   /*                        */
@@ -233,12 +235,12 @@ Term g_gt(binding, term)			   /*                        */
   a = eval_term(binding, Car(term));		   /*                        */
   b = eval_term(binding, Cadr(term));		   /*                        */
  						   /*                        */
-  if ( TermIsNumber(a) )			   /*                        */
-  { if ( !TermIsNumber(b) )			   /*                        */
+  if ( IsNumber(a) )			   	   /*                        */
+  { if ( !IsNumber(b) )			   	   /*                        */
       b = eval_num(binding, b);			   /*                        */
     val = (TNumber(a) > TNumber(b));		   /*                        */
-  } else if ( TermIsString(a) )			   /*                        */
-  { if ( !TermIsString(b) )			   /*                        */
+  } else if ( IsString(a) )			   /*                        */
+  { if ( !IsString(b) )			   	   /*                        */
       b = eval_str(binding, b);			   /*                        */
     val = (cmp(TString(a), TString(b)) > 0);	   /*                        */
   } else					   /*                        */
@@ -269,12 +271,12 @@ Term g_ge(binding, term)			   /*                        */
   a = eval_term(binding, Car(term));		   /*                        */
   b = eval_term(binding, Cadr(term));		   /*                        */
  						   /*                        */
-  if ( TermIsNumber(a) )			   /*                        */
-  { if ( !TermIsNumber(b) )			   /*                        */
+  if ( IsNumber(a) )			   	   /*                        */
+  { if ( !IsNumber(b) )			   	   /*                        */
       b = eval_num(binding, b);			   /*                        */
     val = (TNumber(a) >= TNumber(b));		   /*                        */
-  } else if ( TermIsString(a) )			   /*                        */
-  { if ( !TermIsString(b) )			   /*                        */
+  } else if ( IsString(a) )			   /*                        */
+  { if ( !IsString(b) )			   	   /*                        */
       b = eval_str(binding, b);			   /*                        */
     val = (cmp(TString(a), TString(b)) >= 0);	   /*                        */
   } else					   /*                        */
@@ -354,8 +356,8 @@ Term g_not(binding, term)			   /*                        */
   Term term;					   /*                        */
 {						   /*                        */
   term = eval_bool(binding, Cadr(term));	   /*                        */
-  LinkTerm(term);
-  return (TermIsTrue(term) ? term_false: term_true);/*                       */
+  LinkTerm(term);				   /*                        */
+  return IsTrue(term) ? term_false: term_true;     /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -379,10 +381,10 @@ Term g_and(binding, term)			   /*                        */
   { wrong_no_args("and"); }			   /*                        */
  						   /*                        */
   t = eval_bool(binding, Car(term));		   /*                        */
-  LinkTerm(t);
-  if (TermIsFalse(t)) return t;		   	   /*                        */
- 						   /*                        */
-  return eval_bool(binding, Cadr(term));	   /*                        */
+  LinkTerm(t);					   /*                        */
+  return (IsFalse(t)				   /*                        */
+	  ? t					   /*                        */
+	  : eval_bool(binding, Cadr(term)));	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -407,9 +409,9 @@ Term g_or(binding, term)			   /*                        */
  						   /*                        */
   t = eval_bool(binding, Car(term));		   /*                        */
   LinkTerm(t);					   /*                        */
-  if (TermIsTrue(t)) return t;		   	   /*                        */
- 						   /*                        */
-  return eval_bool(binding, Cadr(term));	   /*                        */
+  return (IsTrue(t)				   /*                        */
+	  ? t					   /*                        */
+	  : eval_bool(binding, Cadr(term)));	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -643,7 +645,7 @@ Term g_setq(binding, term)		   	   /*                        */
 { Term car = Cadr(term);			   /*                        */
   term	   = Cdr(term);				   /*                        */
   if (car == NIL) ErrorNF1("Undefined LHS");	   /*                        */
-  if (!TermIsVar(car)) ErrorNF1("Illegal LHS");    /*                        */
+  if (!IsVar(car)) ErrorNF1("Illegal LHS");    	   /*                        */
   						   /*                        */
   term = Cadr(term);				   /*                        */
   LinkTerm(term);				   /*                        */
@@ -722,7 +724,7 @@ Term eval_num(binding, term)			   /*                        */
 { long val;					   /*                        */
   term = eval_term(binding, term);		   /*                        */
  						   /*                        */
-  if (term == NIL || TermIsFalse(term))	   	   /*                        */
+  if (term == NIL || IsFalse(term))	   	   /*                        */
     return NumberTerm(0L);			   /*                        */
  						   /*                        */
   switch (TType(term))				   /*                        */
@@ -762,10 +764,10 @@ Term eval_str(binding, term)			   /*                        */
   term = eval_term(binding, term);		   /*                        */
  						   /*                        */
   if (term == NIL) return StringTerm((String)"");  /*                        */
-  if (TermIsString(term)) 			   /*                        */
+  if (IsString(term)) 			   	   /*                        */
   { LinkTerm(term);				   /*                        */
   }						   /*                        */
-  else if (TermIsList(term))			   /*                        */
+  else if (IsList(term))			   /*                        */
   { StringBuffer *sb = sbopen();		   /*                        */
  						   /*                        */
     for ( ; term; term = Cdr(term))		   /*                        */
@@ -776,11 +778,11 @@ Term eval_str(binding, term)			   /*                        */
     term = StringTerm((String)sbflush(sb));	   /*                        */
     sbclose(sb);				   /*                        */
   }						   /*                        */
-  else if (TermIsTrue(term))			   /*                        */
+  else if (IsTrue(term))			   /*                        */
     term = StringTerm((String)"true");		   /*                        */
-  else if (TermIsFalse(term))	   		   /*                        */
+  else if (IsFalse(term))	   		   /*                        */
     term = StringTerm((String)"false");		   /*                        */
-  else if (TermIsNumber(term))	   		   /*                        */
+  else if (IsNumber(term))	   		   /*                        */
   { long n = TNumber(term);			   /*                        */
     StringBuffer *sb;				   /*                        */
     char *s, *t;				   /*                        */
@@ -971,15 +973,15 @@ Term g_read(binding, term)			   /*                        */
     for (term = Cadr(term); term; term = Cdr(term))/*                        */
     { t = eval_term(binding, term);		   /*                        */
       if (t == NIL) continue;			   /*                        */
-      if (TermIsString(t))			   /*                        */
+      if (IsString(t))			   	   /*                        */
       { if (read_db(db, TString(t), rsc_verbose))  /*                        */
 	{ ErrorNF2("Input file not found: ",	   /*                        */
 		   TString(t)); }		   /*                        */
       }	   					   /*                        */
-      else if (TermIsList(t))			   /*                        */
+      else if (IsList(t))			   /*                        */
       { for ( ; t; t = Cdr(t))			   /*                        */
 	{ if (Car(t) == NIL) continue;		   /*                        */
-	  if (TermIsString(Car(t)))		   /*                        */
+	  if (IsString(Car(t)))		   	   /*                        */
 	  { if (read_db(db,			   /*                        */
 			TString(Car(t)),	   /*                        */
 			rsc_verbose))		   /*                        */

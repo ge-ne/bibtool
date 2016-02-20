@@ -500,7 +500,7 @@ static TStack reduce(stack)			   /*                        */
     DebugPrintF2("n = 0x%x\n", n);   	   	   /*                        */
     if (n <= 0x400)				   /*                        */
       Error("Missing operator after ",		   /*                        */
-	    TermIsVar(StackTerm(stack)) 	   /*                        */
+	    IsVar(StackTerm(stack)) 	   	   /*                        */
 	    ? TString(StackTerm(stack))		   /*                        */
 	    : token_type(TType(StackTerm(stack))), 0);/*                     */
 					       	   /*                        */

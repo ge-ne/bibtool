@@ -672,7 +672,7 @@ void print_term(file, term)			   /*                        */
 int list_length(list)				   /*                        */
   register Term list;				   /*                        */
 { register int i = 0;				   /*                        */
-  while (list && TermIsList(list))		   /*                        */
+  while (list && IsList(list))		   	   /*                        */
   { i++;					   /*                        */
     list = Cdr(list);				   /*                        */
   }						   /*                        */
