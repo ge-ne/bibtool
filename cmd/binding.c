@@ -33,6 +33,7 @@
 /* External Programs                                                         */
 /*===========================================================================*/
 
+extern Term meth_number _ARG((Binding binding, Term string, Term args));
 extern Term meth_string _ARG((Binding binding, Term string, Term args));
 
 /*---------------------------------------------------------------------------*/
@@ -646,6 +647,9 @@ Term eval_term(binding, term)			   /*                        */
 			       t,		   /*                        */
 			       Cdr(term));	   /*                        */
 	  case L_NUMBER:			   /*                        */
+	    return meth_number(binding,		   /*                        */
+			       t,		   /*                        */
+			       Cdr(term));	   /*                        */
 	  case L_CONS:				   /*                        */
 	  case L_DB:				   /*                        */
 	  case L_RECORD:			   /*                        */

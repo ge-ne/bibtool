@@ -209,6 +209,20 @@ BUnit::run(name         => 'mod-2',
 	   expected_err => "\n*** BibTool ERROR: Modulo by 0\n",
 	   expected_out => "" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'number-as-string-1',
+	   args	        => '--eval',
+	   resource	=> '123:as.string()',
+	   expected_err => '',
+	   expected_out => "\"123\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'number-as-number-1',
+	   args	        => '--eval',
+	   resource	=> '123:as.number()',
+	   expected_err => '',
+	   expected_out => "123\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

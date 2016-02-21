@@ -50,6 +50,7 @@ L_OFILES = term.o		\
 	   lreader.o		\
 	   linereader.o		\
 	   cstring.o		\
+	   cnumber.o		\
 	   literate.o
 
 #------------------------------------------------------------------------------
@@ -64,6 +65,7 @@ lreader.o:  lreader.c lreader.h lreader.h term.h linereader.h lcore.h tstack.h b
 binding.o:  binding.c binding.h literate.h term.h lcore.h lreader.h builtin.h
 literate.o: literate.c literate.h term.h
 tester.o:   tester.c term.h lcore.h lreader.h binding.h tstack.h
+cnumber.o:  cnumber.c term.h binding.h
 cstring.o:  cstring.c term.h binding.h
 
 tester: tester.o $(L_OFILES) $(OFILES)

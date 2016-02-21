@@ -38,6 +38,8 @@
 /* External Programs                                                         */
 /*===========================================================================*/
 
+extern void init_cnumber();
+extern void init_cstring();
 
 /*---------------------------------------------------------------------------*/
 
@@ -1092,6 +1094,7 @@ void init_lcore()				   /*                        */
   term_true  = SymTerm(sym_true)  = NewTerm(L_TRUE);/*                       */
   term_false = SymTerm(sym_false) = NewTerm(L_FALSE);/*                      */
 
+  init_cnumber();
   init_cstring();
 }						   /*------------------------*/
 
