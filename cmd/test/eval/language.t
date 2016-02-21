@@ -76,55 +76,6 @@ BUnit::run(name         => 'group-4',
 	   expected_err => '',
 	   expected_out => "123\n");
 
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'list-1',
-	   args	        => '--eval',
-	   resource     => "[]",
-	   expected_err => '',
-	   expected_out => "[]\n");
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'list-2',
-	   args	        => '--eval',
-	   resource     => "[123]",
-	   expected_err => '',
-	   expected_out => "[123]\n");
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'list-3',
-	   args	        => '--eval',
-	   resource     => "[true]",
-	   expected_err => '',
-	   expected_out => "[true]\n");
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'list-4',
-	   args	        => '--eval',
-	   resource     => "[false]",
-	   expected_err => '',
-	   expected_out => "[false]\n");
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'list-5',
-	   args	        => '--eval',
-	   resource     => "[\"123\"]",
-	   expected_err => '',
-	   expected_out => "[\"123\"]\n");
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'list-6',
-	   args	        => '--eval',
-	   resource     => "x=123;[x]",
-	   expected_err => '',
-	   expected_out => "[123]\n");
-
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'list-7',
-	   args	        => '--eval',
-	   resource     => "x=123;[[x]]",
-	   expected_err => '',
-	   expected_out => "[[123]]\n");
-
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

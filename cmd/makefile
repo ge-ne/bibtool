@@ -51,22 +51,26 @@ L_OFILES = term.o		\
 	   linereader.o		\
 	   cstring.o		\
 	   cnumber.o		\
+	   ccons.o		\
+	   cdb.o		\
 	   literate.o
 
 #------------------------------------------------------------------------------
 
 all: tester
 
-term.o:     term.c term.h
-lcore.o:    lcore.c lcore.h term.h
-tstack.o:   tstack.c tstack.h lcore.h term.h binding.h
-linereader.o:    linereader.c linereader.h
-lreader.o:  lreader.c lreader.h lreader.h term.h linereader.h lcore.h tstack.h binding.h
-binding.o:  binding.c binding.h literate.h term.h lcore.h lreader.h builtin.h
-literate.o: literate.c literate.h term.h
-tester.o:   tester.c term.h lcore.h lreader.h binding.h tstack.h
-cnumber.o:  cnumber.c term.h binding.h
-cstring.o:  cstring.c term.h binding.h
+term.o:		term.c term.h
+lcore.o:	lcore.c lcore.h term.h
+tstack.o:	tstack.c tstack.h lcore.h term.h binding.h
+linereader.o:	linereader.c linereader.h
+lreader.o:	lreader.c lreader.h lreader.h term.h linereader.h lcore.h tstack.h binding.h
+binding.o:	binding.c binding.h literate.h term.h lcore.h lreader.h builtin.h
+literate.o:	literate.c literate.h term.h
+tester.o:	tester.c term.h lcore.h lreader.h binding.h tstack.h
+ccons.o:	ccons.c term.h binding.h
+cnumber.o:	cnumber.c term.h binding.h
+cstring.o:	cstring.c term.h binding.h
+cdb.o:		cdb.c term.h binding.h
 
 tester: tester.o $(L_OFILES) $(OFILES)
 	@$(CC) -g -O2 -o $@ $^ -lkpathsea

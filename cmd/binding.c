@@ -33,8 +33,10 @@
 /* External Programs                                                         */
 /*===========================================================================*/
 
-extern Term meth_number _ARG((Binding binding, Term string, Term args));
-extern Term meth_string _ARG((Binding binding, Term string, Term args));
+extern Term meth_db _ARG((Binding binding, Term db, Term args));
+extern Term meth_list _ARG((Binding binding, Term cons, Term args));
+extern Term meth_number _ARG((Binding binding, Term n, Term args));
+extern Term meth_string _ARG((Binding binding, Term s, Term args));
 
 /*---------------------------------------------------------------------------*/
 
@@ -651,7 +653,13 @@ Term eval_term(binding, term)			   /*                        */
 			       t,		   /*                        */
 			       Cdr(term));	   /*                        */
 	  case L_CONS:				   /*                        */
+	    return meth_list(binding,		   /*                        */
+			     t,		   	   /*                        */
+			     Cdr(term));	   /*                        */
 	  case L_DB:				   /*                        */
+	    return meth_db(binding,		   /*                        */
+			   t,		   	   /*                        */
+			   Cdr(term));	   	   /*                        */
 	  case L_RECORD:			   /*                        */
 	    ErrorNF1("Undefined method ");	   /*                        */
 	  default:				   /*                        */

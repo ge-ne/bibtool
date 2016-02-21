@@ -38,6 +38,8 @@
 /* External Programs                                                         */
 /*===========================================================================*/
 
+extern void init_db();
+extern void init_clist();
 extern void init_cnumber();
 extern void init_cstring();
 
@@ -645,7 +647,7 @@ Term g_setq(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { Term car = Cadr(term);			   /*                        */
-  term	   = Cdr(term);				   /*                        */
+  term	   = eval_term(binding, Cdr(term));	   /*                        */
   if (car == NIL) ErrorNF1("Undefined LHS");	   /*                        */
   if (!IsVar(car)) ErrorNF1("Illegal LHS");    	   /*                        */
   						   /*                        */
@@ -953,56 +955,6 @@ Term g_mod(binding, term)			   /*                        */
   return NumberTerm(val % d);			   /*                        */
 }						   /*------------------------*/
 
-/*-----------------------------------------------------------------------------
-** Function:	g_read()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	the binding
-**	term	the term
-** Returns:	
-**___________________________________________________			     */
-Term g_read(binding, term)			   /*                        */
-  Binding binding;				   /*                        */
-  Term term;					   /*                        */
-{ DB db = new_db();				   /*                        */
-  Term t;					   /*                        */
-  extern int rsc_verbose;			   /*                        */
- 						   /*                        */
-  if (Cdr(term))				   /*                        */
-  {						   /*                        */
-    for (term = Cadr(term); term; term = Cdr(term))/*                        */
-    { t = eval_term(binding, term);		   /*                        */
-      if (t == NIL) continue;			   /*                        */
-      if (IsString(t))			   	   /*                        */
-      { if (read_db(db, TString(t), rsc_verbose))  /*                        */
-	{ ErrorNF2("Input file not found: ",	   /*                        */
-		   TString(t)); }		   /*                        */
-      }	   					   /*                        */
-      else if (IsList(t))			   /*                        */
-      { for ( ; t; t = Cdr(t))			   /*                        */
-	{ if (Car(t) == NIL) continue;		   /*                        */
-	  if (IsString(Car(t)))		   	   /*                        */
-	  { if (read_db(db,			   /*                        */
-			TString(Car(t)),	   /*                        */
-			rsc_verbose))		   /*                        */
-	    { ErrorNF2("Input file not found: ",   /*                        */
-		       TString(Car(t))); }	   /*                        */
-	  }					   /*                        */
-	  else { ErrorNF2("read: illegal parameter ",/*                      */
-			  term_type(Car(t))); }	   /*                        */
-	}					   /*                        */
-      }						   /*                        */
-      else 					   /*                        */
-      { ErrorNF2("read: illegal parameter ",	   /*                        */
-		 term_type(t)); }		   /*                        */
-    }						   /*                        */
-  } 						   /*                        */
- 						   /*                        */
-  return DBTerm(db);				   /*                        */
-}						   /*------------------------*/
-
 static Term *tp;
 
 /*-----------------------------------------------------------------------------
@@ -1094,6 +1046,8 @@ void init_lcore()				   /*                        */
   term_true  = SymTerm(sym_true)  = NewTerm(L_TRUE);/*                       */
   term_false = SymTerm(sym_false) = NewTerm(L_FALSE);/*                      */
 
+  init_cdb();
+  init_clist();
   init_cnumber();
   init_cstring();
 }						   /*------------------------*/
