@@ -47,9 +47,9 @@ Binding cn_binding = NULL;		   	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	number	
-**	args	
+**	binding	the binding
+**	number	the number term
+**	args	the arguments
 ** Returns:	
 **___________________________________________________			     */
 static Term m_as_string(binding, number, args)	   /*                        */
@@ -67,9 +67,9 @@ static Term m_as_string(binding, number, args)	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	number	
-**	args	
+**	binding	the binding
+**	number	the number term
+**	args	the arguments
 ** Returns:	
 **___________________________________________________			     */
 static Term m_as_number(binding, number, args)	   /*                        */
@@ -88,8 +88,7 @@ static Term m_as_number(binding, number, args)	   /*                        */
 ** Type:	void
 ** Purpose:	
 **		
-** Arguments:
-**		
+** Arguments:	none
 ** Returns:	nothing
 **___________________________________________________			     */
 void class_number()				   /*                        */

@@ -38,6 +38,7 @@
 /* External Programs                                                         */
 /*===========================================================================*/
 
+extern void class_boolean();
 extern void class_db();
 extern void class_list();
 extern void class_number();
@@ -46,11 +47,11 @@ extern void class_string();
 /*---------------------------------------------------------------------------*/
 
 
-Term term_true;
-Term term_false;
+Term term_true;					   /*                        */
+Term term_false;				   /*                        */
 
-SymDef sym_true;
-SymDef sym_false;
+SymDef sym_true;				   /*                        */
+SymDef sym_false;				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	wrong_no_args()
@@ -65,7 +66,6 @@ void wrong_no_args(name)			   /*                        */
   register char* name;				   /*                        */
 { ErrorNF2("Wrong number of arguments for ", name);/*                        */
 }						   /*------------------------*/
-
 
 /*-----------------------------------------------------------------------------
 ** Function:	g_self()
@@ -1047,7 +1047,6 @@ void no_args(args, msg)			   	   /*                        */
     ErrorNF2("Too many arguments for ", msg); 	   /*                        */
 }						   /*------------------------*/
 
-
 /*-----------------------------------------------------------------------------
 ** Function:	init_lcore()
 ** Type:	void
@@ -1064,6 +1063,7 @@ void init_lcore()				   /*                        */
   term_true  = SymTerm(sym_true)  = NewTerm(L_TRUE);/*                       */
   term_false = SymTerm(sym_false) = NewTerm(L_FALSE);/*                      */
  						   /*                        */
+  class_boolean();				   /*                        */
   class_db();					   /*                        */
   class_list();					   /*                        */
   class_number();				   /*                        */

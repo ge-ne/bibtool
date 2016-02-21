@@ -38,10 +38,11 @@ extern Term meth_list _ARG((Binding binding, Term cons, Term args));
 extern Term meth_number _ARG((Binding binding, Term n, Term args));
 extern Term meth_string _ARG((Binding binding, Term s, Term args));
 
-extern Binding cs_binding;
-extern Binding cn_binding;
-extern Binding cd_binding;
+extern Binding cb_binding;
 extern Binding cc_binding;
+extern Binding cd_binding;
+extern Binding cn_binding;
+extern Binding cs_binding;
 
 /*---------------------------------------------------------------------------*/
 
@@ -651,19 +652,16 @@ Term eval_term(binding, term)			   /*                        */
  						   /*                        */
 	switch (t == NIL ? L_CONS : TType(t))	   /*                        */
 	{ case L_TRUE:			   	   /*                        */
-	  case L_FALSE:  class_b = cd_binding; break;/*                      */
+	  case L_FALSE:  class_b = cb_binding; break;/*                      */
 	  case L_STRING: class_b = cs_binding; break;/*                      */
 	  case L_NUMBER: class_b = cn_binding; break;/*                      */
 	  case L_CONS:   class_b = cc_binding; break;/*                      */
 	  case L_DB:     class_b = cd_binding; break;/*                      */
 	  case L_RECORD:			   /*                        */
-	  case L_GROUP:			   	   /*                        */
 	  case L_FUNCTION:			   /*                        */
-	    ErrorNF2("Undefined method ",	   /*                        */
-		     TString(Cdr(term)));	   /*                        */
 	  default:				   /*                        */
-	    ErrorNF2("Missing instance for method ",/*                       */
-		     TString(Cdr(term)));	   /*                        */
+	    ErrorNF3("Missing instance for method ",/*                       */
+		     TString(Cdr(term)),"()");	   /*                        */
 	}					   /*                        */
  						   /*                        */
 	SymDef symdef = get_bind(class_b,	   /*                        */
