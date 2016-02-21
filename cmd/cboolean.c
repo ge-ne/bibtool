@@ -1,4 +1,4 @@
-/*** cnumber.c*****************************************************************
+/*** cboolean.c*****************************************************************
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
@@ -36,9 +36,9 @@
 /*---------------------------------------------------------------------------*/
 
 
-Binding cn_binding = NULL;		   	   /*                        */
+Binding cb_binding = NULL;		   	   /*                        */
 
-#define Bind(NAME,GET)  bind(cn_binding, symdef(symbol((String)NAME),     \
+#define Bind(NAME,GET)  bind(cb_binding, symdef(symbol((String)NAME),     \
 						0, 0, GET, NULL));
 
 /*-----------------------------------------------------------------------------
@@ -48,43 +48,42 @@ Binding cn_binding = NULL;		   	   /*                        */
 **		
 ** Arguments:
 **	binding	
-**	number	
+**	boolean	
 **	args	
 ** Returns:	
 **___________________________________________________			     */
-static Term m_as_string(binding, number, args)	   /*                        */
+static Term m_as_string(binding, boolean, args)	   /*                        */
   Binding binding;				   /*                        */
-  Term number;					   /*                        */
+  Term boolean;					   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
   no_args(args, "as.string");  		   	   /*                        */
-  return eval_str(binding, number);		   /*                        */
+  return eval_str(binding, boolean);		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_as_number()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
 **	binding	
-**	number	
+**	boolean	
 **	args	
 ** Returns:	
 **___________________________________________________			     */
-static Term m_as_number(binding, number, args)	   /*                        */
+static Term m_as_number(binding, boolean, args)	   /*                        */
   Binding binding;				   /*                        */
-  Term number;					   /*                        */
+  Term boolean;					   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
   no_args(args, "as.number");  		   	   /*                        */
  						   /*                        */
-  LinkTerm(number);				   /*                        */
-  return number;	   	   		   /*                        */
+  return eval_num(binding, boolean);		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	class_number()
+** Function:	class_boolean()
 ** Type:	void
 ** Purpose:	
 **		
@@ -92,9 +91,9 @@ static Term m_as_number(binding, number, args)	   /*                        */
 **		
 ** Returns:	nothing
 **___________________________________________________			     */
-void class_number()				   /*                        */
+void class_boolean()				   /*                        */
 {						   /*                        */
-  cn_binding = binding(127, NULL);		   /*                        */
+  cb_binding = binding(127, NULL);		   /*                        */
  						   /*                        */
   Bind("as.string", m_as_string);		   /*                        */
   Bind("as.number", m_as_number);		   /*                        */

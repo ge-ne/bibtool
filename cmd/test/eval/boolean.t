@@ -196,6 +196,62 @@ BUnit::run(name         => 'if-5',
 	   expected_err => '',
 	   expected_out => "222\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-as-string-1',
+	   args	        => '--eval',
+	   resource     => 'true:as.string()',
+	   expected_err => '',
+	   expected_out => "\"true\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-as-string-2',
+	   args	        => '--eval',
+	   resource     => 'x=true; x:as.string()',
+	   expected_err => '',
+	   expected_out => "\"true\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-as-string-3',
+	   args	        => '--eval',
+	   resource     => 'false:as.string()',
+	   expected_err => '',
+	   expected_out => "\"false\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-as-string-4',
+	   args	        => '--eval',
+	   resource     => 'x=false; x:as.string()',
+	   expected_err => '',
+	   expected_out => "\"false\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-as-number-1',
+	   args	        => '--eval',
+	   resource     => 'true:as.number()',
+	   expected_err => '',
+	   expected_out => "1\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-as-number-2',
+	   args	        => '--eval',
+	   resource     => 'x=true; x:as.number()',
+	   expected_err => '',
+	   expected_out => "1\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-as-number-3',
+	   args	        => '--eval',
+	   resource     => 'false:as.number()',
+	   expected_err => '',
+	   expected_out => "0\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-as-number-4',
+	   args	        => '--eval',
+	   resource     => 'x=false; x:as.number()',
+	   expected_err => '',
+	   expected_out => "0\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

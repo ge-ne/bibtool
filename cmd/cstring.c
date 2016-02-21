@@ -205,30 +205,4 @@ void class_string()				   /*                        */
   Bind("trim", m_trim);		   		   /*                        */
 }						   /*------------------------*/
 
-/*-----------------------------------------------------------------------------
-** Function:	meth_string()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	the binding
-**	string	the string term
-**	meth	the method invocation term
-** Returns:	
-**___________________________________________________			     */
-Term meth_string(binding, string, meth)		   /*                        */
-  Binding binding;				   /*                        */
-  Term string;					   /*                        */
-  Term meth;					   /*                        */
-{ SymDef symdef = get_bind(cs_binding,		   /*                        */
-			   TString(meth));	   /*                        */
- 						   /*                        */
-  if (symdef == SymDefNULL			   /*                        */
-      || SymGet(symdef) == NULL)		   /*                        */
-    ErrorNF2("Unknown method for string: ",	   /*                        */
-	     TString(meth));	   		   /*                        */
- 						   /*                        */
-  return (*SymGet(symdef))(binding, string, Cdr(meth));/*                    */
-}						   /*------------------------*/
-
 /*---------------------------------------------------------------------------*/

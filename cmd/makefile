@@ -53,6 +53,7 @@ L_OFILES = term.o		\
 	   cnumber.o		\
 	   ccons.o		\
 	   cdb.o		\
+	   cboolean.o		\
 	   literate.o
 
 #------------------------------------------------------------------------------
@@ -70,6 +71,7 @@ tester.o:	tester.c term.h lcore.h lreader.h binding.h tstack.h
 ccons.o:	ccons.c term.h binding.h
 cnumber.o:	cnumber.c term.h binding.h
 cstring.o:	cstring.c term.h binding.h
+cboolean.o:	cboolean.c term.h binding.h
 cdb.o:		cdb.c term.h binding.h
 
 tester: tester.o $(L_OFILES) $(OFILES)

@@ -650,14 +650,20 @@ Term eval_term(binding, term)			   /*                        */
 	Binding class_b;			   /*                        */
  						   /*                        */
 	switch (t == NIL ? L_CONS : TType(t))	   /*                        */
-	{ case L_STRING: class_b = cs_binding; break;/*                      */
+	{ case L_TRUE:			   	   /*                        */
+	  case L_FALSE:  class_b = cd_binding; break;/*                      */
+	  case L_STRING: class_b = cs_binding; break;/*                      */
 	  case L_NUMBER: class_b = cn_binding; break;/*                      */
 	  case L_CONS:   class_b = cc_binding; break;/*                      */
 	  case L_DB:     class_b = cd_binding; break;/*                      */
 	  case L_RECORD:			   /*                        */
-	    ErrorNF1("Undefined method ");	   /*                        */
+	  case L_GROUP:			   	   /*                        */
+	  case L_FUNCTION:			   /*                        */
+	    ErrorNF2("Undefined method ",	   /*                        */
+		     TString(Cdr(term)));	   /*                        */
 	  default:				   /*                        */
-	    ErrorNF1("Missing instance for method call ");/*                 */
+	    ErrorNF2("Missing instance for method ",/*                       */
+		     TString(Cdr(term)));	   /*                        */
 	}					   /*                        */
  						   /*                        */
 	SymDef symdef = get_bind(class_b,	   /*                        */

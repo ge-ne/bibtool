@@ -220,30 +220,4 @@ void class_db()				   	   /*                        */
 #endif
 }						   /*------------------------*/
 
-/*-----------------------------------------------------------------------------
-** Function:	meth_db()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	the binding
-**	db	the database term
-**	meth	the method invocation term
-** Returns:	
-**___________________________________________________			     */
-Term meth_db(binding, db, meth)		   	   /*                        */
-  Binding binding;				   /*                        */
-  Term db;					   /*                        */
-  Term meth;					   /*                        */
-{ SymDef symdef = get_bind(cd_binding,		   /*                        */
-			   TString(meth));	   /*                        */
- 						   /*                        */
-  if (symdef == SymDefNULL			   /*                        */
-      || SymGet(symdef) == NULL)		   /*                        */
-    ErrorNF2("Unknown method for db: ",	   	   /*                        */
-	     TString(meth));	   		   /*                        */
- 						   /*                        */
-  return (*SymGet(symdef))(binding, db, Cdr(meth));/*                        */
-}						   /*------------------------*/
-
 /*---------------------------------------------------------------------------*/
