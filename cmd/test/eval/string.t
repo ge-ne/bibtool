@@ -77,9 +77,86 @@ BUnit::run(name         => 'string-length-2',
 	   expected_out => "3\n" );
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'string-toString-1',
+BUnit::run(name         => 'string-substring-1',
 	   args	        => '--eval',
-	   resource     => '"123":toString()',
+	   resource     => '"123":substring(-1)',
+	   expected_err => '',
+	   expected_out => "\"123\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-substring-2',
+	   args	        => '--eval',
+	   resource     => '"123":substring(0)',
+	   expected_err => '',
+	   expected_out => "\"123\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-substring-3',
+	   args	        => '--eval',
+	   resource     => '"123":substring(1)',
+	   expected_err => '',
+	   expected_out => "\"23\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-substring-4',
+	   args	        => '--eval',
+	   resource     => '"123":substring(4)',
+	   expected_err => '',
+	   expected_out => "\"\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-substring-10',
+	   args	        => '--eval',
+	   resource     => '"123":substring(1,0)',
+	   expected_err => '',
+	   expected_out => "\"\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-substring-11',
+	   args	        => '--eval',
+	   resource     => '"123":substring(1,2)',
+	   expected_err => '',
+	   expected_out => "\"23\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-substring-12',
+	   args	        => '--eval',
+	   resource     => '"123":substring(1,22)',
+	   expected_err => '',
+	   expected_out => "\"23\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-trim-1',
+	   args	        => '--eval',
+	   resource     => '"123":trim()',
+	   expected_err => '',
+	   expected_out => "\"123\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-trim-2',
+	   args	        => '--eval',
+	   resource     => '" 123 ":trim()',
+	   expected_err => '',
+	   expected_out => "\"123\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-trim-3',
+	   args	        => '--eval',
+	   resource     => '"1 2 3":trim()',
+	   expected_err => '',
+	   expected_out => "\"1 2 3\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-trim-4',
+	   args	        => '--eval',
+	   resource     => '" 1 2 3 ":trim()',
+	   expected_err => '',
+	   expected_out => "\"1 2 3\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-as-1',
+	   args	        => '--eval',
+	   resource     => '"123":as.string()',
 	   expected_err => '',
 	   expected_out => "\"123\"\n" );
 

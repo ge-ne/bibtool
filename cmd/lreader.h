@@ -22,6 +22,4 @@
 #define _ARG(A) ()
 #endif
 
-extern void init_lreader();
-
 #endif

@@ -105,7 +105,7 @@ int main(argc, argv)				   /*                        */
  						   /*                        */
   init_bibtool(argv[0]);			   /*                        */
   init_error(stderr);				   /*                        */
-  init_lreader();				   /*                        */
+  init_lcore();				   	   /*                        */
  						   /*                        */
   for (i = 1; i < argc; i++)			   /*                        */
   { arg = argv[i];				   /*                        */

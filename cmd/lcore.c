@@ -1077,20 +1077,22 @@ Term get_add_fields()				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	init_lreader()
+** Function:	init_lcore()
 ** Type:	void
 ** Purpose:	
 **		
 ** Arguments:	none
 ** Returns:	nothing
 **___________________________________________________			     */
-void init_lreader()				   /*                        */
+void init_lcore()				   /*                        */
 {						   /*                        */
   sym_true  = symdef((String)"true",  L_TRUE,  SYM_LOCKED, g_self, NULL);/*  */
   sym_false = symdef((String)"false", L_FALSE, SYM_LOCKED, g_self, NULL);/*  */
  						   /*                        */
   term_true  = SymTerm(sym_true)  = NewTerm(L_TRUE);/*                       */
   term_false = SymTerm(sym_false) = NewTerm(L_FALSE);/*                      */
+
+  init_cstring();
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

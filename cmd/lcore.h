@@ -63,6 +63,8 @@ extern Term g_cl_ign_words _ARG((Binding b, Term t));/*                      */
 
 extern Term get_add_fields();
 
+extern void init_lcore();
+
 extern SymDef sym_true;			   	   /*                        */
 extern SymDef sym_false;			   /*                        */
 
