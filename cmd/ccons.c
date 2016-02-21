@@ -36,7 +36,7 @@
 /*---------------------------------------------------------------------------*/
 
 
-static Binding cc_binding = NULL;		   /*                        */
+Binding cc_binding = NULL;		   	   /*                        */
 
 #define Bind(NAME,GET)  bind(cc_binding, symdef(symbol((String)NAME),     \
 						0, 0, GET, NULL));
@@ -47,9 +47,9 @@ static Binding cc_binding = NULL;		   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	list	
-**	args	
+**	binding	the binding
+**	list	the list term
+**	args	the arguments
 ** Returns:	
 **___________________________________________________			     */
 static Term m_as_string(binding, list, args)	   /*                        */
@@ -58,8 +58,7 @@ static Term m_as_string(binding, list, args)	   /*                        */
   Term args;					   /*                        */
 { StringBuffer *buffer;				   /*                        */
   Term t;					   /*                        */
-  if (args)				   	   /*                        */
-    ErrorNF1("Too many arguments for as.string");  /*                        */
+  no_args(args, "as.string");  		   	   /*                        */
   if (list == NIL)				   /*                        */
     return StringTerm((String)"[]");		   /*                        */
  						   /*                        */
@@ -86,9 +85,9 @@ static Term m_as_string(binding, list, args)	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	list	
-**	args	
+**	binding	the binding
+**	list	the list term
+**	args	the arguments
 ** Returns:	
 **___________________________________________________			     */
 static Term m_join(binding, list, args)	   	   /*                        */
@@ -125,13 +124,13 @@ static Term m_join(binding, list, args)	   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_length()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	list	
-**	args	
+**	binding	the binding
+**	list	the list term
+**	args	the arguments
 ** Returns:	
 **___________________________________________________			     */
 static Term m_length(binding, list, args)	   /*                        */
@@ -139,14 +138,13 @@ static Term m_length(binding, list, args)	   /*                        */
   Term list;					   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
-  if (args)				   	   /*                        */
-    ErrorNF1("Too many arguments for length");     /*                        */
+  no_args(args, "length");     		   	   /*                        */
  						   /*                        */
   return NumberTerm(list_length(list));		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	init_clist()
+** Function:	class_list()
 ** Type:	void
 ** Purpose:	
 **		
@@ -154,7 +152,7 @@ static Term m_length(binding, list, args)	   /*                        */
 **		
 ** Returns:	nothing
 **___________________________________________________			     */
-void init_clist()				   /*                        */
+void class_list()				   /*                        */
 {						   /*                        */
   cc_binding = binding(127, NULL);		   /*                        */
  						   /*                        */
@@ -162,32 +160,6 @@ void init_clist()				   /*                        */
   Bind("as.string", m_as_string);		   /*                        */
   Bind("length", m_length);		   	   /*                        */
   Bind("join", m_join);		   	   	   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	meth_list()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	
-**	list	
-**	meth	
-** Returns:	
-**___________________________________________________			     */
-Term meth_list(binding, list, meth)		   /*                        */
-  Binding binding;				   /*                        */
-  Term list;					   /*                        */
-  Term meth;					   /*                        */
-{ SymDef symdef = get_bind(cc_binding,		   /*                        */
-			   TString(meth));	   /*                        */
- 						   /*                        */
-  if (symdef == SymDefNULL			   /*                        */
-      || SymGet(symdef) == NULL)		   /*                        */
-    ErrorNF2("Unknown method for list: ",	   /*                        */
-	     TString(meth));	   		   /*                        */
- 						   /*                        */
-  return (*SymGet(symdef))(binding, list, Cdr(meth));/*                      */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

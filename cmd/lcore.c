@@ -38,10 +38,10 @@
 /* External Programs                                                         */
 /*===========================================================================*/
 
-extern void init_db();
-extern void init_clist();
-extern void init_cnumber();
-extern void init_cstring();
+extern void class_db();
+extern void class_list();
+extern void class_number();
+extern void class_string();
 
 /*---------------------------------------------------------------------------*/
 
@@ -1031,6 +1031,24 @@ Term get_add_fields()				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	no_args()
+** Type:	void
+** Purpose:	
+**		
+** Arguments:
+**	args	
+**	msg	
+** Returns:	nothing
+**___________________________________________________			     */
+void no_args(args, msg)			   	   /*                        */
+  Term  args;					   /*                        */
+  char *msg;					   /*                        */
+{ if (args)					   /*                        */
+    ErrorNF2("Too many arguments for ", msg); 	   /*                        */
+}						   /*------------------------*/
+
+
+/*-----------------------------------------------------------------------------
 ** Function:	init_lcore()
 ** Type:	void
 ** Purpose:	
@@ -1045,11 +1063,11 @@ void init_lcore()				   /*                        */
  						   /*                        */
   term_true  = SymTerm(sym_true)  = NewTerm(L_TRUE);/*                       */
   term_false = SymTerm(sym_false) = NewTerm(L_FALSE);/*                      */
-
-  init_cdb();
-  init_clist();
-  init_cnumber();
-  init_cstring();
+ 						   /*                        */
+  class_db();					   /*                        */
+  class_list();					   /*                        */
+  class_number();				   /*                        */
+  class_string();				   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

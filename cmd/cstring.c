@@ -36,7 +36,7 @@
 /*---------------------------------------------------------------------------*/
 
 
-static Binding cs_binding = NULL;
+Binding cs_binding = NULL;		   	   /*                        */
 
 #define Bind(NAME,GET)  bind(cs_binding, symdef(symbol((String)NAME),     \
 						0, 0, GET, NULL));
@@ -47,20 +47,18 @@ static Binding cs_binding = NULL;
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	s	
-**	args	
+**	binding	the binding
+**	string	the string term
+**	args	the arguments
 ** Returns:	
 **___________________________________________________			     */
 static Term m_length(binding, string, args)	   /*                        */
   Binding binding;				   /*                        */
   Term string;					   /*                        */
   Term args;					   /*                        */
-{ String s = TString(string);			   /*                        */
- 						   /*                        */
-  if (args)				   	   /*                        */
-    ErrorNF1("Too many arguments for length");	   /*                        */
-  return NumberTerm(strlen((char*)s));	   	   /*                        */
+{						   /*                        */
+  no_args(args, "length");	   	   	   /*                        */
+  return NumberTerm(strlen((char*)TString(string)));/*                       */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -69,9 +67,9 @@ static Term m_length(binding, string, args)	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	s	
-**	args	
+**	binding	the binding
+**	string	the string term
+**	args	the arguments
 ** Returns:	
 **___________________________________________________			     */
 static Term m_as_string(binding, string, args)	   /*                        */
@@ -79,21 +77,20 @@ static Term m_as_string(binding, string, args)	   /*                        */
   Term string;					   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
-  if (args)				   	   /*                        */
-    ErrorNF1("Too many arguments for as.string");  /*                        */
+  no_args(args, "as.string");  		   	   /*                        */
   LinkTerm(string);				   /*                        */
   return string;	   	   		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_as_number()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	string	
-**	args	
+**	binding	the binding
+**	string	the string term
+**	args	the arguments
 ** Returns:	
 **___________________________________________________			     */
 static Term m_as_number(binding, string, args)	   /*                        */
@@ -101,21 +98,20 @@ static Term m_as_number(binding, string, args)	   /*                        */
   Term string;					   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
-  if (args)				   	   /*                        */
-    ErrorNF1("Too many arguments for as.number");  /*                        */
+  no_args(args, "as.number");  		   	   /*                        */
  						   /*                        */
   return eval_num(binding, string);		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_trim()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	s	
-**	args	
+**	binding	the binding
+**	string	the string term
+**	args	the arguments
 ** Returns:	
 **___________________________________________________			     */
 static Term m_trim(binding, string, args)	   /*                        */
@@ -126,36 +122,36 @@ static Term m_trim(binding, string, args)	   /*                        */
   StringBuffer *sb;			   	   /*                        */
   char *cp, *str;				   /*                        */
   Term t;					   /*                        */
-  if (args)				   	   /*                        */
-    ErrorNF1("Too many arguments for toString");   /*                        */
-  sb = sbopen();
-  sbputs((char*)s, sb);
-  str = sbflush(sb);
-  while (is_space(*str)) str++;
-  cp = str;
-  while (*cp) cp++;
-  for (cp--; cp	>= str && is_space(*cp) ;cp--)
-    *cp = '\0';
-
-  t = StringTerm((String)str);
+  no_args(args, "trim");	   	   	   /*                        */
+ 						   /*                        */
+  sb = sbopen();				   /*                        */
+  sbputs((char*)s, sb);				   /*                        */
+  str = sbflush(sb);				   /*                        */
+  while (is_space(*str)) str++;			   /*                        */
+  cp = str;					   /*                        */
+  while (*cp) cp++;				   /*                        */
+  for (cp--; cp	>= str && is_space(*cp) ;cp--)	   /*                        */
+    *cp = '\0';					   /*                        */
+ 						   /*                        */
+  t = StringTerm((String)str);			   /*                        */
   sbclose(sb);					   /*                        */
   return t;	   	   		   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_substring()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 s	
-**	 args	
+**	binding	the binding
+**	string	the string term
+**	args	the arguments
 ** Returns:	
 **___________________________________________________			     */
 static Term m_substring(binding, string, args)	   /*                        */
   Binding binding;				   /*                        */
-  Term string;
+  Term string;					   /*                        */
   Term args;					   /*                        */
 { String s = TString(string);			   /*                        */
   int start, len;				   /*                        */
@@ -191,15 +187,14 @@ static Term m_substring(binding, string, args)	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	init_cstring()
+** Function:	class_string()
 ** Type:	void
 ** Purpose:	
 **		
-** Arguments:
-**		
+** Arguments:	none
 ** Returns:	nothing
 **___________________________________________________			     */
-void init_cstring()				   /*                        */
+void class_string()				   /*                        */
 {						   /*                        */
   cs_binding = binding(127, NULL);		   /*                        */
  						   /*                        */
@@ -216,9 +211,9 @@ void init_cstring()				   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	string	
-**	meth	
+**	binding	the binding
+**	string	the string term
+**	meth	the method invocation term
 ** Returns:	
 **___________________________________________________			     */
 Term meth_string(binding, string, meth)		   /*                        */

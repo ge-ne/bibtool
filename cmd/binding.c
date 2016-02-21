@@ -38,6 +38,11 @@ extern Term meth_list _ARG((Binding binding, Term cons, Term args));
 extern Term meth_number _ARG((Binding binding, Term n, Term args));
 extern Term meth_string _ARG((Binding binding, Term s, Term args));
 
+extern Binding cs_binding;
+extern Binding cn_binding;
+extern Binding cd_binding;
+extern Binding cc_binding;
+
 /*---------------------------------------------------------------------------*/
 
 
@@ -641,31 +646,28 @@ Term eval_term(binding, term)			   /*                        */
 	      : NIL);				   /*                        */
  						   /*                        */
     case L_METHOD:				   /*                        */
-      { Term t = eval_term(binding, Car(term));
-
+      { Term t = eval_term(binding, Car(term));	   /*                        */
+	Binding class_b;			   /*                        */
+ 						   /*                        */
 	switch (t == NIL ? L_CONS : TType(t))	   /*                        */
-	{ case L_STRING:			   /*                        */
-	    return meth_string(binding,		   /*                        */
-			       t,		   /*                        */
-			       Cdr(term));	   /*                        */
-	  case L_NUMBER:			   /*                        */
-	    return meth_number(binding,		   /*                        */
-			       t,		   /*                        */
-			       Cdr(term));	   /*                        */
-	  case L_CONS:				   /*                        */
-	    return meth_list(binding,		   /*                        */
-			     t,		   	   /*                        */
-			     Cdr(term));	   /*                        */
-	  case L_DB:				   /*                        */
-	    return meth_db(binding,		   /*                        */
-			   t,		   	   /*                        */
-			   Cdr(term));	   	   /*                        */
+	{ case L_STRING: class_b = cs_binding; break;/*                      */
+	  case L_NUMBER: class_b = cn_binding; break;/*                      */
+	  case L_CONS:   class_b = cc_binding; break;/*                      */
+	  case L_DB:     class_b = cd_binding; break;/*                      */
 	  case L_RECORD:			   /*                        */
 	    ErrorNF1("Undefined method ");	   /*                        */
 	  default:				   /*                        */
 	    ErrorNF1("Missing instance for method call ");/*                 */
 	}					   /*                        */
-      }
+ 						   /*                        */
+	SymDef symdef = get_bind(class_b,	   /*                        */
+			   TString(Cdr(term)));	   /*                        */
+	if (symdef == SymDefNULL		   /*                        */
+	    || SymGet(symdef) == NULL)		   /*                        */
+	  ErrorNF2("Unknown method for list: ",	   /*                        */
+		   TString(Cdr(term)));		   /*                        */
+	return (*SymGet(symdef))(binding, t, Cddr(term));/*                  */
+      }						   /*                        */
     case L_RETURN:				   /*                        */
       return new_term(L_RETURN,			   /*                        */
 		      NIL,			   /*                        */

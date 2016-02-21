@@ -36,7 +36,7 @@
 /*---------------------------------------------------------------------------*/
 
 
-static Binding cn_binding = NULL;		   /*                        */
+Binding cn_binding = NULL;		   	   /*                        */
 
 #define Bind(NAME,GET)  bind(cn_binding, symdef(symbol((String)NAME),     \
 						0, 0, GET, NULL));
@@ -57,8 +57,7 @@ static Term m_as_string(binding, number, args)	   /*                        */
   Term number;					   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
-  if (args)				   	   /*                        */
-    ErrorNF1("Too many arguments for as.number");  /*                        */
+  no_args(args, "as.string");  		   	   /*                        */
   return eval_str(binding, number);		   /*                        */
 }						   /*------------------------*/
 
@@ -78,15 +77,14 @@ static Term m_as_number(binding, number, args)	   /*                        */
   Term number;					   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
-  if (args)				   	   /*                        */
-    ErrorNF1("Too many arguments for as.number");  /*                        */
+  no_args(args, "as.number");  		   	   /*                        */
  						   /*                        */
   LinkTerm(number);				   /*                        */
   return number;	   	   		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	init_cnumber()
+** Function:	class_number()
 ** Type:	void
 ** Purpose:	
 **		
@@ -94,7 +92,7 @@ static Term m_as_number(binding, number, args)	   /*                        */
 **		
 ** Returns:	nothing
 **___________________________________________________			     */
-void init_cnumber()				   /*                        */
+void class_number()				   /*                        */
 {						   /*                        */
   cn_binding = binding(127, NULL);		   /*                        */
  						   /*                        */

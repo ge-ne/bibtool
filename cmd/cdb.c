@@ -36,7 +36,7 @@
 /*---------------------------------------------------------------------------*/
 
 
-static Binding cd_binding = NULL;		   /*                        */
+Binding cd_binding = NULL;		   	   /*                        */
 
 #define Bind(NAME,GET)  bind(cd_binding, symdef(symbol((String)NAME),     \
 						0, 0, GET, NULL));
@@ -47,9 +47,9 @@ static Binding cd_binding = NULL;		   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	db	
-**	args	
+**	binding	the binding
+**	db	the database term
+**	args	the arguments
 ** Returns:	
 **___________________________________________________			     */
 static Term m_as_string(binding, db, args)	   /*                        */
@@ -57,8 +57,7 @@ static Term m_as_string(binding, db, args)	   /*                        */
   Term db;					   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
-  if (args)				   	   /*                        */
-    ErrorNF1("Too many arguments for as.number");  /*                        */
+  no_args(args, "as.string");  		   	   /*                        */
   return eval_str(binding, db);		   	   /*                        */
 }						   /*------------------------*/
 
@@ -68,9 +67,9 @@ static Term m_as_string(binding, db, args)	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	db	
-**	args	
+**	binding	the binding
+**	db	the database term
+**	args	the arguments
 ** Returns:	
 **___________________________________________________			     */
 static Term m_as_number(binding, db, args)	   /*                        */
@@ -78,8 +77,7 @@ static Term m_as_number(binding, db, args)	   /*                        */
   Term db;					   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
-  if (args)				   	   /*                        */
-    ErrorNF1("Too many arguments for as.number");  /*                        */
+  no_args(args, "as.number");  		   	   /*                        */
  						   /*                        */
   return eval_num(binding, db);			   /*                        */
 }						   /*------------------------*/
@@ -100,8 +98,8 @@ static Term m_read(binding, db, args)		   /*                        */
   Term db;					   /*                        */
   Term args;					   /*                        */
 { Term t;					   /*                        */
-  extern int rsc_verbose;
-
+  extern int rsc_verbose;			   /*                        */
+ 						   /*                        */
   if (args)				   	   /*                        */
   {						   /*                        */
     for ( ; args; args = Cdr(args))		   /*                        */
@@ -151,20 +149,20 @@ Term g_read(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { Term db = DBTerm(new_db());			   /*                        */
-  m_read(binding, db, Cdr(term));
-  UnlinkTerm(db);
+  m_read(binding, db, Cdr(term));		   /*                        */
+  UnlinkTerm(db);				   /*                        */
   return db;				   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_rewind()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 db	
-**	 args	
+**	binding	the binding
+**	db	the database term
+**	args	the arguments
 ** Returns:	
 **___________________________________________________			     */
 static Term m_rewind(binding, db, args)	   	   /*                        */
@@ -172,8 +170,7 @@ static Term m_rewind(binding, db, args)	   	   /*                        */
   Term db;					   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
-  if (args)				   	   /*                        */
-    ErrorNF1("Too many arguments for rewind");	   /*                        */
+  no_args(args, "rewind");	   	   	   /*                        */
   db_rewind(TDB(db));				   /*                        */
   LinkTerm(db);					   /*                        */
   return db;			   		   /*                        */
@@ -185,9 +182,9 @@ static Term m_rewind(binding, db, args)	   	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 db	
-**	 args	
+**	binding	the binding
+**	db	the database term
+**	args	the arguments
 ** Returns:	
 **___________________________________________________			     */
 static Term m_sort_macros(binding, db, args)	   /*                        */
@@ -195,23 +192,21 @@ static Term m_sort_macros(binding, db, args)	   /*                        */
   Term db;					   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
-  if (args)				   	   /*                        */
-    ErrorNF1("Too many arguments for sort");  	   /*                        */
+  no_args(args, "sort.macros");  	   	   /*                        */
   db_mac_sort(TDB(db));				   /*                        */
   LinkTerm(db);					   /*                        */
   return db;			   		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	init_cdb()
+** Function:	class_db()
 ** Type:	void
 ** Purpose:	
 **		
-** Arguments:
-**		
+** Arguments:	none
 ** Returns:	nothing
 **___________________________________________________			     */
-void init_cdb()				   	   /*                        */
+void class_db()				   	   /*                        */
 {						   /*                        */
   cd_binding = binding(127, NULL);		   /*                        */
  						   /*                        */
@@ -231,9 +226,9 @@ void init_cdb()				   	   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	db	
-**	meth	
+**	binding	the binding
+**	db	the database term
+**	meth	the method invocation term
 ** Returns:	
 **___________________________________________________			     */
 Term meth_db(binding, db, meth)		   	   /*                        */
