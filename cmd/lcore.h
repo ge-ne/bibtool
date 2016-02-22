@@ -63,6 +63,16 @@ extern Term g_cl_ign_words _ARG((Binding b, Term t));/*                      */
 
 extern Term get_add_fields();			   /*                        */
 
+extern Term m_as_boolean _ARG((Binding binding,
+			       Term string,
+			       Term args));
+extern Term m_as_string _ARG((Binding binding,
+			      Term string,
+			      Term args));
+extern Term m_as_number _ARG((Binding binding,
+			      Term string,
+			      Term args));
+
 extern void no_args _ARG((Term  args, char *msg)); /*                        */
 
 extern void init_lcore();			   /*                        */

@@ -52,7 +52,7 @@ Binding cc_binding = NULL;		   	   /*                        */
 **	args	the arguments
 ** Returns:	
 **___________________________________________________			     */
-static Term m_as_string(binding, list, args)	   /*                        */
+static Term ml_as_string(binding, list, args)	   /*                        */
   Binding binding;				   /*                        */
   Term list;					   /*                        */
   Term args;					   /*                        */
@@ -156,8 +156,9 @@ void class_list()				   /*                        */
 {						   /*                        */
   cc_binding = binding(127, NULL);		   /*                        */
  						   /*                        */
+  Bind("as.boolean", m_as_boolean);		   /*                        */
   Bind("as.number", m_length);		   	   /*                        */
-  Bind("as.string", m_as_string);		   /*                        */
+  Bind("as.string", ml_as_string);		   /*                        */
   Bind("length", m_length);		   	   /*                        */
   Bind("join", m_join);		   	   	   /*                        */
 }						   /*------------------------*/

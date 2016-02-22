@@ -42,47 +42,6 @@ Binding cb_binding = NULL;		   	   /*                        */
 						0, 0, GET, NULL));
 
 /*-----------------------------------------------------------------------------
-** Function:	m_as_string()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	
-**	boolean	
-**	args	
-** Returns:	
-**___________________________________________________			     */
-static Term m_as_string(binding, boolean, args)	   /*                        */
-  Binding binding;				   /*                        */
-  Term boolean;					   /*                        */
-  Term args;					   /*                        */
-{						   /*                        */
-  no_args(args, "as.string");  		   	   /*                        */
-  return eval_str(binding, boolean);		   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	m_as_number()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	
-**	boolean	
-**	args	
-** Returns:	
-**___________________________________________________			     */
-static Term m_as_number(binding, boolean, args)	   /*                        */
-  Binding binding;				   /*                        */
-  Term boolean;					   /*                        */
-  Term args;					   /*                        */
-{						   /*                        */
-  no_args(args, "as.number");  		   	   /*                        */
- 						   /*                        */
-  return eval_num(binding, boolean);		   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
 ** Function:	class_boolean()
 ** Type:	void
 ** Purpose:	
@@ -95,6 +54,7 @@ void class_boolean()				   /*                        */
 {						   /*                        */
   cb_binding = binding(127, NULL);		   /*                        */
  						   /*                        */
+  Bind("as.boolean", m_as_boolean);		   /*                        */
   Bind("as.string", m_as_string);		   /*                        */
   Bind("as.number", m_as_number);		   /*                        */
 }						   /*------------------------*/

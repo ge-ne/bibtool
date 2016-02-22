@@ -42,47 +42,6 @@ Binding cd_binding = NULL;		   	   /*                        */
 						0, 0, GET, NULL));
 
 /*-----------------------------------------------------------------------------
-** Function:	m_as_string()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	the binding
-**	db	the database term
-**	args	the arguments
-** Returns:	
-**___________________________________________________			     */
-static Term m_as_string(binding, db, args)	   /*                        */
-  Binding binding;				   /*                        */
-  Term db;					   /*                        */
-  Term args;					   /*                        */
-{						   /*                        */
-  no_args(args, "as.string");  		   	   /*                        */
-  return eval_str(binding, db);		   	   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	m_as_number()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	the binding
-**	db	the database term
-**	args	the arguments
-** Returns:	
-**___________________________________________________			     */
-static Term m_as_number(binding, db, args)	   /*                        */
-  Binding binding;				   /*                        */
-  Term db;					   /*                        */
-  Term args;					   /*                        */
-{						   /*                        */
-  no_args(args, "as.number");  		   	   /*                        */
- 						   /*                        */
-  return eval_num(binding, db);			   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
 ** Function:	m_read()
 ** Type:	Term
 ** Purpose:	

@@ -154,13 +154,55 @@ BUnit::run(name         => 'string-trim-4',
 	   expected_out => "\"1 2 3\"\n" );
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'string-as-1',
+BUnit::run(name         => 'string-as-string-1',
 	   args	        => '--eval',
 	   resource     => '"123":as.string()',
 	   expected_err => '',
 	   expected_out => "\"123\"\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-as-boolean-1',
+	   args	        => '--eval',
+	   resource     => '"123":as.boolean()',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-as-boolean-2',
+	   args	        => '--eval',
+	   resource     => '"":as.boolean()',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-concat-1',
+	   args	        => '--eval',
+	   resource     => '"x":concat()',
+	   expected_err => '',
+	   expected_out => "\"x\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-concat-2',
+	   args	        => '--eval',
+	   resource     => '"x":concat(12)',
+	   expected_err => '',
+	   expected_out => "\"x12\"\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-concat-3',
+	   args	        => '--eval',
+	   resource     => '"x":concat(1,2)',
+	   expected_err => '',
+	   expected_out => "\"x12\"\n" );
+
 1;
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-concat-4',
+	   args	        => '--eval',
+	   resource     => 'x="a";y="b";x:concat(x,y,y)',
+	   expected_err => '',
+	   expected_out => "\"aabb\"\n" );
+
 #------------------------------------------------------------------------------
 # Local Variables: 
 # mode: perl

@@ -62,48 +62,6 @@ static Term m_length(binding, string, args)	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	m_as_string()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	the binding
-**	string	the string term
-**	args	the arguments
-** Returns:	
-**___________________________________________________			     */
-static Term m_as_string(binding, string, args)	   /*                        */
-  Binding binding;				   /*                        */
-  Term string;					   /*                        */
-  Term args;					   /*                        */
-{						   /*                        */
-  no_args(args, "as.string");  		   	   /*                        */
-  LinkTerm(string);				   /*                        */
-  return string;	   	   		   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	m_as_number()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	binding	the binding
-**	string	the string term
-**	args	the arguments
-** Returns:	
-**___________________________________________________			     */
-static Term m_as_number(binding, string, args)	   /*                        */
-  Binding binding;				   /*                        */
-  Term string;					   /*                        */
-  Term args;					   /*                        */
-{						   /*                        */
-  no_args(args, "as.number");  		   	   /*                        */
- 						   /*                        */
-  return eval_num(binding, string);		   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
 ** Function:	m_trim()
 ** Type:	Term
 ** Purpose:	
@@ -134,6 +92,37 @@ static Term m_trim(binding, string, args)	   /*                        */
     *cp = '\0';					   /*                        */
  						   /*                        */
   t = StringTerm((String)str);			   /*                        */
+  sbclose(sb);					   /*                        */
+  return t;	   	   		   	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	m_concat()
+** Type:	static Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	string	the string term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_concat(binding, string, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term string;					   /*                        */
+  Term args;					   /*                        */
+{ Term t;					   /*                        */
+  StringBuffer *sb = sbopen();			   /*                        */
+  						   /*                        */
+  sbputs((char*)TString(string), sb);		   /*                        */
+ 						   /*                        */
+  for ( ; args; args = Cdr(args))		   /*                        */
+  { t = eval_str(binding, Car(args));		   /*                        */
+    sbputs((char*)TString(t), sb);		   /*                        */
+    UnlinkTerm(t);				   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  t = StringTerm((String)sbflush(sb));		   /*                        */
   sbclose(sb);					   /*                        */
   return t;	   	   		   	   /*                        */
 }						   /*------------------------*/
@@ -198,8 +187,10 @@ void class_string()				   /*                        */
 {						   /*                        */
   cs_binding = binding(127, NULL);		   /*                        */
  						   /*                        */
+  Bind("as.boolean", m_as_boolean);		   /*                        */
   Bind("as.string", m_as_string);		   /*                        */
   Bind("as.number", m_as_number);		   /*                        */
+  Bind("concat", m_concat);			   /*                        */
   Bind("length", m_length);			   /*                        */
   Bind("substring", m_substring);		   /*                        */
   Bind("trim", m_trim);		   		   /*                        */

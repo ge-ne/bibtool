@@ -223,6 +223,27 @@ BUnit::run(name         => 'number-as-number-1',
 	   expected_err => '',
 	   expected_out => "123\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'number-as-boolean-1',
+	   args	        => '--eval',
+	   resource     => '1:as.boolean()',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'number-as-boolean-2',
+	   args	        => '--eval',
+	   resource     => '(-1):as.boolean()',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-as-boolean-0',
+	   args	        => '--eval',
+	   resource     => '0:as.boolean()',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

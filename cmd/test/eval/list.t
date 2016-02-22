@@ -174,6 +174,20 @@ BUnit::run(name         => 'list-join-10',
 	   expected_err => '',
 	   expected_out => "\"11 22\"\n");
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-as-boolean-1',
+	   args	        => '--eval',
+	   resource     => '[121]:as.boolean()',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-as-boolean-2',
+	   args	        => '--eval',
+	   resource     => '[]:as.boolean()',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

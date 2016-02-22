@@ -80,7 +80,7 @@ void wrong_no_args(name)			   /*                        */
 Term g_self(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ LinkTerm(term);
+{ LinkTerm(term);				   /*                        */
   return term;					   /*                        */
 }						   /*------------------------*/
 
@@ -320,7 +320,28 @@ Term eval_bool(binding, term)			   /*                        */
       ErrorNF1("Type error: boolean expected");    /*                        */
   }						   /*                        */
  						   /*                        */
+  LinkTerm(term);				   /*                        */
   return term;	   				   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	m_as_boolean()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	string	the string term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+Term m_as_boolean(binding, string, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term string;					   /*                        */
+  Term args;					   /*                        */
+{						   /*                        */
+  no_args(args, "as.boolean");			   /*                        */
+  return eval_bool(binding, string);		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -752,6 +773,26 @@ Term eval_num(binding, term)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	m_as_number()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	term	
+**	args	
+** Returns:	
+**___________________________________________________			     */
+Term m_as_number(binding, term, args)	   	   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+  Term args;					   /*                        */
+{						   /*                        */
+  no_args(args, "as.number");  		   	   /*                        */
+  return eval_num(binding, term);		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	eval_str()
 ** Type:	Term
 ** Purpose:	
@@ -768,55 +809,88 @@ Term eval_str(binding, term)			   /*                        */
   term = eval_term(binding, term);		   /*                        */
  						   /*                        */
   if (term == NIL) return StringTerm((String)"");  /*                        */
-  if (IsString(term)) 			   	   /*                        */
-  { LinkTerm(term);				   /*                        */
-  }						   /*                        */
-  else if (IsList(term))			   /*                        */
-  { StringBuffer *sb = sbopen();		   /*                        */
  						   /*                        */
-    for ( ; term; term = Cdr(term))		   /*                        */
-    { t = eval_str(binding, Car(term));		   /*                        */
-      sbputs((char*)TString(t), sb);		   /*                        */
-      UnlinkTerm(t);				   /*                        */
-    }						   /*                        */
-    term = StringTerm((String)sbflush(sb));	   /*                        */
-    sbclose(sb);				   /*                        */
+  switch (TType(term))				   /*                        */
+  {						   /*                        */
+    case L_STRING:				   /*                        */
+      LinkTerm(term);				   /*                        */
+      break;					   /*                        */
+    case L_TRUE:				   /*                        */
+      term = StringTerm((String)"true");	   /*                        */
+      break;					   /*                        */
+    case L_FALSE:				   /*                        */
+      term = StringTerm((String)"false");	   /*                        */
+      break;					   /*                        */
+    case L_CONS:				   /*                        */
+      { StringBuffer *sb = sbopen();		   /*                        */
+ 						   /*                        */
+	for ( ; term; term = Cdr(term))		   /*                        */
+	{ t = eval_str(binding, Car(term));	   /*                        */
+	  sbputs((char*)TString(t), sb);	   /*                        */
+	  UnlinkTerm(t);			   /*                        */
+	}					   /*                        */
+	term = StringTerm((String)sbflush(sb));	   /*                        */
+	sbclose(sb);				   /*                        */
+      }						   /*                        */
+    case L_NUMBER:				   /*                        */
+      { long n = TNumber(term);			   /*                        */
+	StringBuffer *sb;			   /*                        */
+	char *s, *t;				   /*                        */
+	if (n == 0) return StringTerm((String)"0");/*                        */
+	sb = sbopen(); 				   /*                        */
+	if (n < 0)				   /*                        */
+	{ sbputc('-', sb);			   /*                        */
+	  n = -n;				   /*                        */
+	}					   /*                        */
+	while (n > 0)				   /*                        */
+	{ sbputc((n%10) + '0', sb);		   /*                        */
+	  n = n/10;				   /*                        */
+	}					   /*                        */
+	s = t = sbflush(sb);			   /*                        */
+	while (*t) t++;				   /*                        */
+	t--;					   /*                        */
+	if (*s == '-') s++;			   /*                        */
+	while (s < t)				   /*                        */
+	{ char c = *s;				   /*                        */
+	  *(s++) = *t;				   /*                        */
+	  *(t--) = c;				   /*                        */
+	}					   /*                        */
+	term = StringTerm((String)sbflush(sb));	   /*                        */
+	sbclose(sb);				   /*                        */
+      }						   /*                        */
+      break;					   /*                        */
+    case L_DB:				   	   /*                        */
+      term = StringTerm((String)"<DB>");
+      break;
+    case L_RECORD:				   /*                        */
+      term = StringTerm((String)"<RECORD>");
+      break;
+    default:					   /*                        */
+      ErrorNF2("Type error: string expected instead of ",/*                  */
+	       term_type(term));		   /*                        */
   }						   /*                        */
-  else if (IsTrue(term))			   /*                        */
-    term = StringTerm((String)"true");		   /*                        */
-  else if (IsFalse(term))	   		   /*                        */
-    term = StringTerm((String)"false");		   /*                        */
-  else if (IsNumber(term))	   		   /*                        */
-  { long n = TNumber(term);			   /*                        */
-    StringBuffer *sb;				   /*                        */
-    char *s, *t;				   /*                        */
-    if (n == 0) return StringTerm((String)"0");	   /*                        */
-    sb = sbopen(); 				   /*                        */
-    if (n < 0)					   /*                        */
-    { sbputc('-', sb);				   /*                        */
-      n = -n;					   /*                        */
-    }						   /*                        */
-    while (n > 0)				   /*                        */
-    { sbputc((n%10) + '0', sb);			   /*                        */
-      n = n/10;					   /*                        */
-    }						   /*                        */
-    s = t = sbflush(sb);			   /*                        */
-    while (*t) t++;				   /*                        */
-    t--;					   /*                        */
-    if (*s == '-') s++;				   /*                        */
-    while (s < t)				   /*                        */
-    { char c = *s;				   /*                        */
-      *(s++) = *t;				   /*                        */
-      *(t--) = c;				   /*                        */
-    }						   /*                        */
-    term = StringTerm((String)sbflush(sb));	   /*                        */
-    sbclose(sb);				   /*                        */
-  }						   /*                        */
-  else 						   /*                        */
-    ErrorNF2("Type error: string expected instead of ",/*                    */
-	    term_type(term));	   		   /*                        */
  						   /*                        */
   return term;	   			   	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	m_as_string()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	number	the number term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+Term m_as_string(binding, number, args)	   	   /*                        */
+  Binding binding;				   /*                        */
+  Term number;					   /*                        */
+  Term args;					   /*                        */
+{						   /*                        */
+  no_args(args, "as.string");  		   	   /*                        */
+  return eval_str(binding, number);		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
