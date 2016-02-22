@@ -15,6 +15,7 @@
 #include <bibtool/error.h>
 #include <bibtool/type.h>
 #include <bibtool/sbuffer.h>
+#include <bibtool/entry.h>
 #include "binding.h"
 #include "lcore.h"
 
@@ -40,6 +41,46 @@ Binding cr_binding = NULL;		   	   /*                        */
 
 #define Bind(NAME,GET)  bind(cr_binding, symdef(symbol((String)NAME),     \
 						0, 0, GET, NULL));
+
+/*-----------------------------------------------------------------------------
+** Function:	m_type()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	rec	the record term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_type(binding, record, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term record;					   /*                        */
+  Term args;					   /*                        */
+{ no_args(args, "type");	   	   	   /*                        */
+ 						   /*                        */
+  return StringTerm(EntryName(RecordType(TRecord(record))));/*               */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	m_key()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	rec	the record term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_key(binding, record, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term record;					   /*                        */
+  Term args;					   /*                        */
+{ no_args(args, "key");	   	   	   	   /*                        */
+ 						   /*                        */
+  return StringTerm(*RecordHeap(TRecord(record))); /*                        */
+}						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_length()
@@ -76,6 +117,8 @@ void class_record()				   /*                        */
   Bind("as.string", m_as_string);		   /*                        */
   Bind("as.number", m_as_number);		   /*                        */
   Bind("length", m_length);		   	   /*                        */
+  Bind("type", m_type);		   	   	   /*                        */
+  Bind("key", m_key);		   	   	   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

@@ -13,6 +13,7 @@
 #include "lreader.h"
 #include <stdio.h>
 #include <bibtool/type.h>
+#include <bibtool/record.h>
 
 #ifdef __STDC__
 #define _ARG(A) A
@@ -29,6 +30,8 @@ extern void wrong_no_args _ARG((char* name));	   /*                        */
 extern void no_args _ARG((Term  args, char *msg)); /*                        */
 extern long num_arg _ARG((Binding binding, Term *argp, char *msg));/*        */
 extern String str_arg _ARG((Binding binding, Term *argp, char *msg));/*      */
+
+extern Record rec_arg _ARG((Binding binding, Term *argp, char *msg));/*      */
 
 extern Term eval_bool _ARG((Binding b, Term t));   /*                        */
 extern Term eval_num _ARG((Binding b, Term t));    /*                        */

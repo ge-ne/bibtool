@@ -53,6 +53,7 @@ L_OFILES = term.o		\
 	   cnumber.o		\
 	   ccons.o		\
 	   cdb.o		\
+	   crecord.o		\
 	   cboolean.o		\
 	   literate.o
 
@@ -73,6 +74,7 @@ cnumber.o:	cnumber.c term.h binding.h
 cstring.o:	cstring.c term.h binding.h
 cboolean.o:	cboolean.c term.h binding.h
 cdb.o:		cdb.c term.h binding.h
+crecord.o:	crecord.c term.h binding.h
 
 tester: tester.o $(L_OFILES) $(OFILES)
 	@$(CC) -g -O2 -o $@ $^ -lkpathsea

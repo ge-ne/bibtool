@@ -40,6 +40,7 @@
 
 extern void class_boolean();
 extern void class_db();
+extern void class_record();
 extern void class_list();
 extern void class_number();
 extern void class_string();
@@ -1166,13 +1167,41 @@ String str_arg(binding, argp, msg)		   /*                        */
 { Term t;					   /*                        */
   String val;					   /*                        */
   if (*argp == NIL)				   /*                        */
-    ErrorNF2("Missing string argument for ", msg);/*                        */
+    ErrorNF2("Missing string argument for ", msg); /*                        */
   						   /*                        */
   t   = eval_str(binding, Car(*argp));		   /*                        */
-  val = TNumber(t);				   /*                        */
+  val = TString(t);				   /*                        */
   UnlinkTerm(t);				   /*                        */
   *argp = Cdr(*argp);				   /*                        */
   return val;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	rec_arg()
+** Type:	Record
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 argp	
+**	 msg	
+** Returns:	
+**___________________________________________________			     */
+Record rec_arg(binding, argp, msg)		   /*                        */
+  Binding binding;				   /*                        */
+  register Term *argp;				   /*                        */
+  register char *msg;				   /*                        */
+{ Term t;					   /*                        */
+  Record rec;					   /*                        */
+ 						   /*                        */
+  t = eval_term(binding, *argp);		   /*                        */
+  if (t == NIL || !IsRecord(t))			   /*                        */
+    ErrorNF2("Missing record argument for ", msg); /*                        */
+ 						   /*                        */
+  rec = TRecord(t);				   /*                        */
+  UnlinkTerm(t);				   /*                        */
+  *argp = Cdr(*argp);				   /*                        */
+  return rec;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -1193,6 +1222,7 @@ void init_lcore()				   /*                        */
  						   /*                        */
   class_boolean();				   /*                        */
   class_db();					   /*                        */
+  class_record();
   class_list();					   /*                        */
   class_number();				   /*                        */
   class_string();				   /*                        */

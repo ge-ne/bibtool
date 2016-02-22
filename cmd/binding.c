@@ -42,6 +42,7 @@ extern Binding cb_binding;
 extern Binding cc_binding;
 extern Binding cd_binding;
 extern Binding cn_binding;
+extern Binding cr_binding;
 extern Binding cs_binding;
 
 /*---------------------------------------------------------------------------*/
@@ -464,9 +465,9 @@ void dump_binding(binding, file)		   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	b	
-**	a	
-**	group	
+**	b	the binding
+**	a	the assigns
+**	group	the code group
 ** Returns:	
 **___________________________________________________			     */
 static Term each(b, a, group)		   	   /*                        */
@@ -649,15 +650,37 @@ Term eval_term(binding, term)			   /*                        */
     case L_METHOD:				   /*                        */
       { Term t = eval_term(binding, Car(term));	   /*                        */
 	Binding class_b;			   /*                        */
+	char * clazz;				   /*                        */
  						   /*                        */
 	switch (t == NIL ? L_CONS : TType(t))	   /*                        */
-	{ case L_TRUE:			   	   /*                        */
-	  case L_FALSE:  class_b = cb_binding; break;/*                      */
-	  case L_STRING: class_b = cs_binding; break;/*                      */
-	  case L_NUMBER: class_b = cn_binding; break;/*                      */
-	  case L_CONS:   class_b = cc_binding; break;/*                      */
-	  case L_DB:     class_b = cd_binding; break;/*                      */
+	{ case L_TRUE:				   /*                        */
+	    class_b = cb_binding;		   /*                        */
+	    clazz   = "True";			   /*                        */
+	    break;				   /*                        */
+	  case L_FALSE:				   /*                        */
+	    class_b = cb_binding;		   /*                        */
+	    clazz   = "False";			   /*                        */
+	    break;				   /*                        */
+	  case L_STRING:			   /*                        */
+	    class_b = cs_binding;		   /*                        */
+	    clazz   = "String";			   /*                        */
+	    break;				   /*                        */
+	  case L_NUMBER:			   /*                        */
+	    class_b = cn_binding;		   /*                        */
+	    clazz   = "Number";			   /*                        */
+	    break;				   /*                        */
+	  case L_CONS:				   /*                        */
+	    class_b = cc_binding;		   /*                        */
+	    clazz   = "List";			   /*                        */
+	    break;				   /*                        */
+	  case L_DB:				   /*                        */
+	    class_b = cd_binding;		   /*                        */
+	    clazz   = "DB";			   /*                        */
+	    break;				   /*                        */
 	  case L_RECORD:			   /*                        */
+	    class_b = cr_binding;		   /*                        */
+	    clazz   = "Record";			   /*                        */
+	    break;				   /*                        */
 	  case L_FUNCTION:			   /*                        */
 	  default:				   /*                        */
 	    ErrorNF3("Missing instance for method ",/*                       */
@@ -668,7 +691,8 @@ Term eval_term(binding, term)			   /*                        */
 			   TString(Cdr(term)));	   /*                        */
 	if (symdef == SymDefNULL		   /*                        */
 	    || SymGet(symdef) == NULL)		   /*                        */
-	  ErrorNF2("Unknown method for list: ",	   /*                        */
+	  ErrorNF3(clazz,			   /*                        */
+		   ": Unknown method ",	   	   /*                        */
 		   TString(Cdr(term)));		   /*                        */
 	return (*SymGet(symdef))(binding, t, Cddr(term));/*                  */
       }						   /*                        */

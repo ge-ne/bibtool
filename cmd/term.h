@@ -112,6 +112,7 @@ typedef struct S_TERM {				   /*                        */
 #define IsList(T)		(TType(T) == L_CONS)
 #define IsField(T)		(TType(T) == L_FIELD)
 #define IsVar(T)		(TType(T) == L_VAR)
+#define IsRecord(T)		(TType(T) == L_RECORD)
 #define IsTrue(T)		(TType(T) == L_TRUE)
 #define IsFalse(T)		(TType(T) == L_FALSE)
 
