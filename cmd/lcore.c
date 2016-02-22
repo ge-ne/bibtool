@@ -54,20 +54,6 @@ SymDef sym_true;				   /*                        */
 SymDef sym_false;				   /*                        */
 
 /*-----------------------------------------------------------------------------
-** Function:	wrong_no_args()
-** Type:	Term
-** Purpose:	
-**		
-** Arguments:
-**	name	
-** Returns:	nothing
-**___________________________________________________			     */
-void wrong_no_args(name)			   /*                        */
-  register char* name;				   /*                        */
-{ ErrorNF2("Wrong number of arguments for ", name);/*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
 ** Function:	g_self()
 ** Type:	Term
 ** Purpose:	
@@ -1105,6 +1091,20 @@ Term get_add_fields()				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	wrong_no_args()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	name	
+** Returns:	nothing
+**___________________________________________________			     */
+void wrong_no_args(name)			   /*                        */
+  register char* name;				   /*                        */
+{ ErrorNF2("Wrong number of arguments for ", name);/*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	no_args()
 ** Type:	void
 ** Purpose:	
@@ -1115,10 +1115,37 @@ Term get_add_fields()				   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void no_args(args, msg)			   	   /*                        */
-  Term  args;					   /*                        */
-  char *msg;					   /*                        */
+  register Term  args;				   /*                        */
+  register char *msg;				   /*                        */
 { if (args)					   /*                        */
     ErrorNF2("Too many arguments for ", msg); 	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	num_arg()
+** Type:	long
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	argp	
+**	msg	
+** Returns:	
+**___________________________________________________			     */
+long num_arg(binding, argp, msg)		   /*                        */
+  Binding binding;				   /*                        */
+  register Term *argp;				   /*                        */
+  register char *msg;				   /*                        */
+{ Term t;					   /*                        */
+  long val;					   /*                        */
+  if (*argp == NIL)				   /*                        */
+    ErrorNF2("Missing numeric argument for ", msg);/*                        */
+  						   /*                        */
+  t   = eval_num(binding, Car(*argp));
+  val = TNumber(t);
+  UnlinkTerm(t);
+  *argp = Cdr(*argp);
+  return val;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

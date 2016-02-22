@@ -142,26 +142,22 @@ static Term m_substring(binding, string, args)	   /*                        */
   Binding binding;				   /*                        */
   Term string;					   /*                        */
   Term args;					   /*                        */
-{ String s = TString(string);			   /*                        */
-  int start, len;				   /*                        */
+{ int start, len;				   /*                        */
   StringBuffer *sb;			   	   /*                        */
   char *cp;				   	   /*                        */
   Term t;					   /*                        */
  						   /*                        */
-  if (args == NULL )				   /*                        */
-    ErrorNF1("Missing argument for substring");	   /*                        */
- 						   /*                        */
-  t	= eval_num(binding, Car(args));		   /*                        */
-  start = TNumber(t);				   /*                        */
-  UnlinkTerm(t);				   /*                        */
- 						   /*                        */
+  start = num_arg(binding, &args, "substring");	   /*                        */
+    						   /*                        */
   sb = sbopen();				   /*                        */
-  for (cp = (char*)s; *cp && start-- > 0 ; cp++);  /*                        */
+  for (cp = (char*)TString(string);		   /*                        */
+       *cp && start-- > 0;			   /*                        */
+       cp++);  					   /*                        */
  						   /*                        */
-  if (Cdr(args))				   /*                        */
-  { t   = eval_num(binding, Cadr(args));	   /*                        */
-    len = TNumber(t);				   /*                        */
-    UnlinkTerm(t);				   /*                        */
+  if (args)				   	   /*                        */
+  { len = num_arg(binding, &args, "substring");	   /*                        */
+    no_args(args, "substring");			   /*                        */
+ 						   /*                        */
     for (; *cp && len-- > 0 ; cp++)		   /*                        */
     { sbputchar(*cp, sb); }			   /*                        */
   }						   /*                        */
