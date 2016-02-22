@@ -25,9 +25,10 @@
 extern unsigned int hash _ARG((String s));	   /*                        */
 extern void print_quoted _ARG((FILE*f, String s)); /*                        */
 
+extern void wrong_no_args _ARG((char* name));	   /*                        */
 extern void no_args _ARG((Term  args, char *msg)); /*                        */
 extern long num_arg _ARG((Binding binding, Term *argp, char *msg));/*        */
-extern void wrong_no_args _ARG((char* name));	   /*                        */
+extern String str_arg _ARG((Binding binding, Term *argp, char *msg));/*      */
 
 extern Term eval_bool _ARG((Binding b, Term t));   /*                        */
 extern Term eval_num _ARG((Binding b, Term t));    /*                        */

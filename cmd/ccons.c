@@ -98,19 +98,18 @@ static Term m_join(binding, list, args)	   	   /*                        */
   char * sep = "";				   /*                        */
   Term t;					   /*                        */
   if (args)				   	   /*                        */
-  { if (Cdr(args))				   /*                        */
-      ErrorNF1("Too many arguments for join");	   /*                        */
-    t	= eval_str(binding, Car(args));		   /*                        */
-    sep = (char*)TString(t);			   /*                        */
-    UnlinkTerm(t);				   /*                        */
-  }						   /*                        */
+  { sep = (char*)str_arg(binding, &args, "join"); }/*                        */
+ 						   /*                        */
+  no_args(args, "join");			   /*                        */
+ 						   /*                        */
   if (list == NIL)				   /*                        */
     return StringTerm((String)"");		   /*                        */
  						   /*                        */
   buffer = sbopen();				   /*                        */
-  t = eval_str(binding, Car(list));		   /*                        */
+  t 	 = eval_str(binding, Car(list));	   /*                        */
   sbputs((char*)TString(t), buffer);		   /*                        */
   UnlinkTerm(t);				   /*                        */
+ 						   /*                        */
   for (list = Cdr(list); list; list = Cdr(list))   /*                        */
   { sbputs(sep, buffer);			   /*                        */
     t = eval_str(binding, Car(list));		   /*                        */

@@ -1141,10 +1141,37 @@ long num_arg(binding, argp, msg)		   /*                        */
   if (*argp == NIL)				   /*                        */
     ErrorNF2("Missing numeric argument for ", msg);/*                        */
   						   /*                        */
-  t   = eval_num(binding, Car(*argp));
-  val = TNumber(t);
-  UnlinkTerm(t);
-  *argp = Cdr(*argp);
+  t   = eval_num(binding, Car(*argp));		   /*                        */
+  val = TNumber(t);				   /*                        */
+  UnlinkTerm(t);				   /*                        */
+  *argp = Cdr(*argp);				   /*                        */
+  return val;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	str_arg()
+** Type:	long
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	argp	
+**	msg	
+** Returns:	
+**___________________________________________________			     */
+String str_arg(binding, argp, msg)		   /*                        */
+  Binding binding;				   /*                        */
+  register Term *argp;				   /*                        */
+  register char *msg;				   /*                        */
+{ Term t;					   /*                        */
+  String val;					   /*                        */
+  if (*argp == NIL)				   /*                        */
+    ErrorNF2("Missing string argument for ", msg);/*                        */
+  						   /*                        */
+  t   = eval_str(binding, Car(*argp));		   /*                        */
+  val = TNumber(t);				   /*                        */
+  UnlinkTerm(t);				   /*                        */
+  *argp = Cdr(*argp);				   /*                        */
   return val;					   /*                        */
 }						   /*------------------------*/
 
