@@ -377,7 +377,9 @@ typedef struct rECORD				/*                           */
  Record new_record _ARG((int token,int size));	   /* record.c               */
  Record record_gc _ARG((Record rec));		   /* record.c               */
  Record unlink_record _ARG((Record rec));	   /* record.c               */
+ String record_get _ARG((Record rec, String key)); /* record.c               */
  WordList new_wordlist _ARG((String  s));	   /* record.c               */
+ int count_record _ARG((Record rec));		   /* record.c               */
  void add_sort_order _ARG((String val));	   /* record.c               */
  void free_1_record _ARG((Record rec));		   /* record.c               */
  void free_record _ARG((Record rec));		   /* record.c               */

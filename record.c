@@ -38,17 +38,19 @@
 #else
 #define _ARG(A) ()
 #endif
- Record copy_record _ARG((Record rec));
- Record new_record _ARG((int token,int size));
- Record record_gc _ARG((Record rec));
- Record unlink_record _ARG((Record rec));
- WordList new_wordlist _ARG((String  s));
- void add_sort_order _ARG((String val));
- void free_1_record _ARG((Record rec));
- void free_record _ARG((Record rec));
- void provide_to_record _ARG((Record rec,String s,String t));
- void push_to_record _ARG((Record rec,String s,String t));
- void sort_record _ARG((Record rec));
+ Record copy_record _ARG((Record rec)); 	   /* record.c               */
+ Record new_record _ARG((int token,int size)); 	   /* record.c               */
+ Record record_gc _ARG((Record rec)); 		   /* record.c               */
+ Record unlink_record _ARG((Record rec)); 	   /* record.c               */
+ String record_get _ARG((Record rec, String key)); /* record.c               */
+ WordList new_wordlist _ARG((String  s));	   /* record.c               */
+ int count_record _ARG((Record rec));		   /* record.c               */
+ void add_sort_order _ARG((String val)); 	   /* record.c               */
+ void free_1_record _ARG((Record rec)); 	   /* record.c               */
+ void free_record _ARG((Record rec)); 		   /* record.c               */
+ void provide_to_record _ARG((Record rec,String s,String t));/* record.c     */
+ void push_to_record _ARG((Record rec,String s,String t));/* record.c        */
+ void sort_record _ARG((Record rec)); 		   /* record.c               */
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -248,6 +250,64 @@ Record record_gc(rec)				   /*                        */
   }						   /*                        */
  						   /*                        */
   return ret;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	record_get()
+** Type:	String
+** Purpose:	
+**		
+** Arguments:
+**	rec	
+**	 key	
+** Returns:	
+**___________________________________________________			     */
+String record_get(rec, key)			   /*                        */
+  Record rec;					   /*                        */
+  String key;					   /*                        */
+{						   /*                        */
+  int i;					   /*                        */
+  register String *hp;				   /*                        */
+  register String s, t;				   /*                        */
+ 						   /*                        */
+  for (i = RecordFree(rec), hp = RecordHeap(rec);  /* visit all fields       */
+       i > 0;					   /*			     */
+       i -= 2)			   	   	   /*			     */
+  { s = *hp++;                                     /*                        */
+    t = *hp++;                                     /*                        */
+    if (s == key && t != StringNULL)		   /*                        */
+    { return t; }              			   /*                        */
+  }						   /*			     */
+ 						   /*                        */
+  return NULL;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	count_record()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**	rec	
+** Returns:	
+**___________________________________________________			     */
+int count_record(rec)				   /*                        */
+  Record rec;					   /*                        */
+{ int len = 0;					   /*                        */
+  int i;					   /*                        */
+  register String *hp;				   /*                        */
+  register String s, t;				   /*                        */
+ 						   /*                        */
+  for (i = RecordFree(rec), hp = RecordHeap(rec);  /* visit all fields       */
+       i > 0;					   /*			     */
+       i -= 2)			   	   	   /*			     */
+  { s	= *hp++;                                   /*                        */
+    t	= *hp++;                                   /*                        */
+    if (t != StringNULL)			   /*                        */
+    { len++; }              			   /*                        */
+  }						   /*			     */
+  						   /*                        */
+  return len;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -512,3 +572,4 @@ void sort_record(rec)				   /*			     */
   free((char*)r);				   /*                        */
 }						   /*------------------------*/
 
+/*---------------------------------------------------------------------------*/

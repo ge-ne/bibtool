@@ -1151,7 +1151,7 @@ long num_arg(binding, argp, msg)		   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	str_arg()
-** Type:	long
+** Type:	String
 ** Purpose:	
 **		
 ** Arguments:
@@ -1171,6 +1171,33 @@ String str_arg(binding, argp, msg)		   /*                        */
   						   /*                        */
   t   = eval_str(binding, Car(*argp));		   /*                        */
   val = TString(t);				   /*                        */
+  UnlinkTerm(t);				   /*                        */
+  *argp = Cdr(*argp);				   /*                        */
+  return val;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	bool_arg()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	argp	
+**	msg	
+** Returns:	
+**___________________________________________________			     */
+int bool_arg(binding, argp, msg)		   /*                        */
+  Binding binding;				   /*                        */
+  register Term *argp;				   /*                        */
+  register char *msg;				   /*                        */
+{ Term t;					   /*                        */
+  int val;					   /*                        */
+  if (*argp == NIL)				   /*                        */
+    ErrorNF2("Missing boolean argument for ", msg);/*                        */
+  						   /*                        */
+  t = eval_bool(binding, Car(*argp));		   /*                        */
+  val = (t == term_true);			   /*                        */
   UnlinkTerm(t);				   /*                        */
   *argp = Cdr(*argp);				   /*                        */
   return val;					   /*                        */

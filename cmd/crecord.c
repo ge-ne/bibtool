@@ -63,6 +63,28 @@ static Term m_type(binding, record, args)	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	m_get()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	rec	the record term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_get(binding, record, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term record;					   /*                        */
+  Term args;					   /*                        */
+{ String key = str_arg(binding, &args, "get");	   /*                        */
+  String val = record_get(TRecord(record), key);   /*                        */
+  no_args(args, "get");	   	   	   	   /*                        */
+ 						   /*                        */
+  return val ? StringTerm(val) : NIL;		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	m_key()
 ** Type:	Term
 ** Purpose:	
@@ -78,6 +100,26 @@ static Term m_key(binding, record, args)	   /*                        */
   Term record;					   /*                        */
   Term args;					   /*                        */
 { no_args(args, "key");	   	   	   	   /*                        */
+ 						   /*                        */
+  return StringTerm(*RecordHeap(TRecord(record))); /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	m_sortkey()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	rec	the record term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_sortkey(binding, record, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term record;					   /*                        */
+  Term args;					   /*                        */
+{ no_args(args, "sort.key");			   /*                        */
  						   /*                        */
   return StringTerm(*RecordHeap(TRecord(record))); /*                        */
 }						   /*------------------------*/
@@ -99,7 +141,7 @@ static Term m_length(binding, rec, args)	   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
   no_args(args, "length");	   	   	   /*                        */
-  return NumberTerm(0);
+  return NumberTerm(count_record(TRecord(rec)));   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -114,11 +156,13 @@ void class_record()				   /*                        */
 {						   /*                        */
   cr_binding = binding(127, NULL);		   /*                        */
  						   /*                        */
-  Bind("as.string", m_as_string);		   /*                        */
   Bind("as.number", m_as_number);		   /*                        */
-  Bind("length", m_length);		   	   /*                        */
-  Bind("type", m_type);		   	   	   /*                        */
+  Bind("as.string", m_as_string);		   /*                        */
+  Bind("get", m_get);		   	   	   /*                        */
   Bind("key", m_key);		   	   	   /*                        */
+  Bind("length", m_length);		   	   /*                        */
+  Bind("sort.key", m_sortkey);			   /*                        */
+  Bind("type", m_type);		   	   	   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/
