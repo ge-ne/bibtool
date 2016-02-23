@@ -273,40 +273,37 @@ place like |/usr/lib|.
 
 \chapter{Coding Standards}
 
-Several tools are used for the development of \BibTool. Mostly they
-are home grown---maybe they will be replaced by some wider used tools
-some day. Among those tools are indentation routines for Emacs to
-format the comments contained in the source. There is also a Lisp
-function to generate the function prototypes contained in the header
-files and sometimes in the C files as well. And finally there is a
-Program to extract the documentation from the source files and
-generate a printable manual.
+Several tools are used for the development of \BibTool. Mostly they are home
+grown---maybe they will be replaced by some wider used tools some day. Among
+those tools are indentation routines for Emacs to format the comments
+contained in the source. There is also a Lisp function to generate the
+function prototypes contained in the header files and sometimes in the C files
+as well. And finally there is a Program to extract the documentation from the
+source files and generate a printable manual.
 
 All those support programs rely on standards for coding. Some of those
-standards have been develped independantly but should be used for
-consistency. In the following sections these coding standards are
-described. 
+standards have been develped independantly but should be used for consistency.
+In the following sections these coding standards are described.
 
 \section{K\&R-C vs. ANSI-C}
 
-\BibTool{} tries hard to be portable to wide variety of C systems.
-Thus it can not be assumed that an ANSI C compiler is at hand. As a
-consequence the function heads are written in the old style which is
-also tolerated by ANSI compliant compilers. This means that the
-argument types are given after the argument list.
+\BibTool{} tries hard to be portable to wide variety of C systems. Thus it can
+not be assumed that an ANSI C compiler is at hand. As a consequence the
+function heads are written in the old style which is also tolerated by ANSI
+compliant compilers. This means that the argument types are given after the
+argument list.
 
-Here it is essential that the arguments type declarations are given in
-the same order as the arguments of the function. Each type variable
-must have a new type declaration in a line by it's own. This feature
-is used by the program which extracts the function prototypes.
+Here it is essential that the arguments type declarations are given in the
+same order as the arguments of the function. Each type variable must have a
+new type declaration in a line by it's own. This feature is used by the
+program which extracts the function prototypes.
 
-Those function heads are use to generate function prototypes which can
-be understood by ANSI-C compilers as well as by of K\&R
-compilers. This is achieved by the od trick to introduce a macro which
-expands to nothing on the old compilers and to its aregument on ANSI
-compilers. This macro is defined appropriately according to the
-existence of the macro \verb|__STDC__| which should indicate an ANSI
-compliant compiler.
+Those function heads are use to generate function prototypes which can be
+understood by ANSI-C compilers as well as by of K\&R compilers. This is
+achieved by the old trick to introduce a macro which expands to nothing on the
+old compilers and to its aregument on ANSI compilers. This macro is defined
+appropriately according to the existence of the macro \verb|__STDC__| which
+should indicate an ANSI compliant compiler.
 
 
 %\section{Indentation}
