@@ -158,6 +158,52 @@ static Term m_sort_macros(binding, db, args)	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	m_get()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	db	the database term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_get(binding, db, args)	   	   /*                        */
+  Binding binding;				   /*                        */
+  Term db;					   /*                        */
+  Term args;					   /*                        */
+{ Record rec;
+  String key = str_arg(binding, &args, "get");	   /*                        */
+  no_args(args, "get");  	   	   	   /*                        */
+
+  rec = db_find(TDB(db), key);
+  return rec ? RecordTerm(rec) : NIL;		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	m_macro()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	db	the database term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_macro(binding, db, args)	   	   /*                        */
+  Binding binding;				   /*                        */
+  Term db;					   /*                        */
+  Term args;					   /*                        */
+{ String s;					   /*                        */
+  String key = str_arg(binding, &args, "macro");   /*                        */
+  no_args(args, "macro");  	   	   	   /*                        */
+ 						   /*                        */
+  s = db_string(TDB(db), key, TRUE);		   /*                        */
+  return s ? StringTerm(s) : NIL;		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	class_db()
 ** Type:	void
 ** Purpose:	
@@ -171,6 +217,8 @@ void class_db()				   	   /*                        */
  						   /*                        */
   Bind("as.string", m_as_string);		   /*                        */
   Bind("as.number", m_as_number);		   /*                        */
+  Bind("get", m_get);		   	   	   /*                        */
+  Bind("macro", m_macro);			   /*                        */
   Bind("read", m_read);		   	   	   /*                        */
   Bind("rewind", m_rewind);		   	   /*                        */
   Bind("sort.macros", m_sort_macros);		   /*                        */
