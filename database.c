@@ -787,7 +787,7 @@ void db_forall(db,fct)				   /*                        */
 ** Arguments:
 **	db	Database to search in.
 **	key	the key to search for
-** Returns:	nothing
+** Returns:	the record found or |NULL| if none is found
 **___________________________________________________			     */
 Record db_find(db,key)				   /*                        */
   DB              db;				   /*                        */
@@ -835,7 +835,7 @@ Record db_find(db,key)				   /*                        */
 ** Arguments:
 **	db	Database to search in.
 **	key	the key to search for
-** Returns:	nothing
+** Returns:	the record found or |NULL| if none is found
 **___________________________________________________			     */
 Record db_search(db, key)			   /*                        */
   DB              db;				   /*                        */
