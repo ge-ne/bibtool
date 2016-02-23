@@ -85,6 +85,28 @@ static Term m_get(binding, record, args)	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	m_sort()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	rec	the record term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_sort(binding, record, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term record;					   /*                        */
+  Term args;					   /*                        */
+{ no_args(args, "sort");			   /*                        */
+ 						   /*                        */
+  sort_record(TRecord(record));			   /*                        */
+  LinkTerm(record);				   /*                        */
+  return record;		   		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	m_key()
 ** Type:	Term
 ** Purpose:	
@@ -161,6 +183,7 @@ void class_record()				   /*                        */
   Bind("get", m_get);		   	   	   /*                        */
   Bind("key", m_key);		   	   	   /*                        */
   Bind("length", m_length);		   	   /*                        */
+  Bind("sort", m_sort);			   	   /*                        */
   Bind("sort.key", m_sortkey);			   /*                        */
   Bind("type", m_type);		   	   	   /*                        */
 }						   /*------------------------*/
