@@ -204,6 +204,30 @@ static Term m_macro(binding, db, args)	   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	m_expand()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	db	the database term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_expand(binding, db, args)	   	   /*                        */
+  Binding binding;				   /*                        */
+  Term db;					   /*                        */
+  Term args;					   /*                        */
+{ String s = str_arg(binding, &args, "expand");    /*                        */
+  no_args(args, "expand");  	   	   	   /*                        */
+ 						   /*                        */
+  return StringTerm(expand_rhs(s,		   /*                        */
+			       (String)"",	   /*                        */
+			       (String)"",	   /*                        */
+			       TDB(db)));	   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	class_db()
 ** Type:	void
 ** Purpose:	
@@ -217,6 +241,7 @@ void class_db()				   	   /*                        */
  						   /*                        */
   Bind("as.string", m_as_string);		   /*                        */
   Bind("as.number", m_as_number);		   /*                        */
+  Bind("expand", m_expand);			   /*                        */
   Bind("get", m_get);		   	   	   /*                        */
   Bind("macro", m_macro);			   /*                        */
   Bind("read", m_read);		   	   	   /*                        */
