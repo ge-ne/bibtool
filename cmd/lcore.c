@@ -91,8 +91,8 @@ Term g_eq(binding, term)			   /*                        */
  						   /*                        */
   if (list_length(term) != 2)			   /*                        */
   { wrong_no_args("=="); }			   /*                        */
-  a = eval_term(binding, Car(term));		   /*                        */
-  b = eval_term(binding, Cadr(term));		   /*                        */
+  a = evaluate(binding, Car(term));		   /*                        */
+  b = evaluate(binding, Cadr(term));		   /*                        */
  						   /*                        */
   if (a	== NIL) { val = (b == NIL ? 1 : 0); }	   /*                        */
   else if (IsNumber(a))			   	   /*                        */
@@ -151,8 +151,8 @@ Term g_lt(binding, term)			   /*                        */
   term = Cdr(term);				   /*                        */
   if (list_length(term) != 2) wrong_no_args("<");  /*                        */
  						   /*                        */
-  a = eval_term(binding, Car(term));		   /*                        */
-  b = eval_term(binding, Cadr(term));		   /*                        */
+  a = evaluate(binding, Car(term));		   /*                        */
+  b = evaluate(binding, Cadr(term));		   /*                        */
  						   /*                        */
   if ( IsNumber(a) )			   	   /*                        */
   { if ( !IsNumber(b) )			   	   /*                        */
@@ -187,8 +187,8 @@ Term g_le(binding, term)			   /*                        */
   term = Cdr(term);				   /*                        */
   if (list_length(term) != 2) wrong_no_args("<="); /*                        */
  						   /*                        */
-  a = eval_term(binding, Car(term));		   /*                        */
-  b = eval_term(binding, Cadr(term));		   /*                        */
+  a = evaluate(binding, Car(term));		   /*                        */
+  b = evaluate(binding, Cadr(term));		   /*                        */
  						   /*                        */
   if ( IsNumber(a) )			   	   /*                        */
   { if ( !IsNumber(b) )			   	   /*                        */
@@ -223,8 +223,8 @@ Term g_gt(binding, term)			   /*                        */
   term = Cdr(term);				   /*                        */
   if (list_length(term) != 2) wrong_no_args("<");  /*                        */
  						   /*                        */
-  a = eval_term(binding, Car(term));		   /*                        */
-  b = eval_term(binding, Cadr(term));		   /*                        */
+  a = evaluate(binding, Car(term));		   /*                        */
+  b = evaluate(binding, Cadr(term));		   /*                        */
  						   /*                        */
   if ( IsNumber(a) )			   	   /*                        */
   { if ( !IsNumber(b) )			   	   /*                        */
@@ -259,8 +259,8 @@ Term g_ge(binding, term)			   /*                        */
   term = Cdr(term);				   /*                        */
   if (list_length(term) != 2) wrong_no_args(">="); /*                        */
  						   /*                        */
-  a = eval_term(binding, Car(term));		   /*                        */
-  b = eval_term(binding, Cadr(term));		   /*                        */
+  a = evaluate(binding, Car(term));		   /*                        */
+  b = evaluate(binding, Cadr(term));		   /*                        */
  						   /*                        */
   if ( IsNumber(a) )			   	   /*                        */
   { if ( !IsNumber(b) )			   	   /*                        */
@@ -289,7 +289,7 @@ Term eval_bool(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { 						   /*                        */
-  term = eval_term(binding, term);		   /*                        */
+  term = evaluate(binding, term);		   /*                        */
  						   /*                        */
   if (term == NIL) { return term_false; }	   /*                        */
  						   /*                        */
@@ -347,7 +347,7 @@ Term g_while(binding, term)			   /*                        */
 { Term t = NIL;				   	   /*                        */
  						   /*                        */
   while (eval_bool(binding, Car(term)) == term_true)/*                       */
-  { t = eval_term(binding, Cdr(term)); }	   /*                        */
+  { t = evaluate(binding, Cdr(term)); }	   	   /*                        */
  						   /*                        */
   LinkTerm(t);					   /*                        */
   return t;					   /*                        */
@@ -615,7 +615,7 @@ Term g_print(binding, term)			   /*                        */
   Term term;					   /*                        */
 { 					   	   /*                        */
   for (term = Cdr(term); term ; term = Cdr(term))  /*                        */
-  { Term t = eval_term(binding, Car(term));	   /*                        */
+  { Term t = evaluate(binding, Car(term));	   /*                        */
     prn_term(stdout, t, 0, 0);			   /*                        */
     UnlinkTerm(t);				   /*                        */
   }		   				   /*                        */
@@ -655,7 +655,7 @@ Term g_setq(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { Term car = Cadr(term);			   /*                        */
-  term	   = eval_term(binding, Cdr(term));	   /*                        */
+  term	   = evaluate(binding, Cdr(term));	   /*                        */
   if (car == NIL) ErrorNF1("Undefined LHS");	   /*                        */
   if (!IsVar(car)) ErrorNF1("Illegal LHS");    	   /*                        */
   						   /*                        */
@@ -734,7 +734,7 @@ Term eval_num(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { long val;					   /*                        */
-  term = eval_term(binding, term);		   /*                        */
+  term = evaluate(binding, term);		   /*                        */
  						   /*                        */
   if (term == NIL || IsFalse(term))	   	   /*                        */
     return NumberTerm(0L);			   /*                        */
@@ -793,7 +793,7 @@ Term eval_str(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { Term t;					   /*                        */
-  term = eval_term(binding, term);		   /*                        */
+  term = evaluate(binding, term);		   /*                        */
  						   /*                        */
   if (term == NIL) return StringTerm((String)"");  /*                        */
  						   /*                        */
@@ -1221,7 +1221,7 @@ Record rec_arg(binding, argp, msg)		   /*                        */
 { Term t;					   /*                        */
   Record rec;					   /*                        */
  						   /*                        */
-  t = eval_term(binding, *argp);		   /*                        */
+  t = evaluate(binding, *argp);		   	   /*                        */
   if (t == NIL || !IsRecord(t))			   /*                        */
     ErrorNF2("Missing record argument for ", msg); /*                        */
  						   /*                        */

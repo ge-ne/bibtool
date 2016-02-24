@@ -26,7 +26,7 @@ extern Binding binding _ARG((unsigned int size, Binding nextBinding));/*     */
 extern Binding root_binding();			   /*                        */
 extern SymDef get_bind _ARG((Binding binding, String key));/*                */
 extern Term setq _ARG((Binding binding, String key, Term term));/*           */
-extern Term eval_term _ARG((Binding binding, Term term));/*                  */
+extern Term evaluate _ARG((Binding binding, Term term));/*                   */
 extern Term eval_self _ARG((Binding binding, Term term));/*                  */
 extern Term eval_builtin _ARG((Binding binding, Term term));/*               */
 extern void dump_binding _ARG((Binding binding, FILE* file));/*              */

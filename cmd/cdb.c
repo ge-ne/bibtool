@@ -14,6 +14,7 @@
 #include <bibtool/symbols.h>
 #include <bibtool/error.h>
 #include <bibtool/type.h>
+#include <bibtool/expand.h>
 #include <bibtool/sbuffer.h>
 #include "binding.h"
 #include "lcore.h"
@@ -62,7 +63,7 @@ static Term m_read(binding, db, args)		   /*                        */
   if (args)				   	   /*                        */
   {						   /*                        */
     for ( ; args; args = Cdr(args))		   /*                        */
-    { t = eval_term(binding, args);		   /*                        */
+    { t = evaluate(binding, args);		   /*                        */
       if (t == NIL) continue;			   /*                        */
       if (IsString(t))			   	   /*                        */
       { if (read_db(TDB(db),			   /*                        */

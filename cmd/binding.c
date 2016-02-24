@@ -475,7 +475,7 @@ static Term each(b, a, group)		   	   /*                        */
   Term a;					   /*                        */
   Term group;					   /*                        */
 { Binding new_bind  = binding(13, b);		   /*                        */
-  Term t	    = eval_term(b, Cdr(a));	   /*                        */
+  Term t	    = evaluate(b, Cdr(a));	   /*                        */
   Iterator iterator = get_iterator(t);		   /*                        */
  						   /*                        */
   if (iterator == NULL )			   /*                        */
@@ -486,8 +486,8 @@ static Term each(b, a, group)		   	   /*                        */
   while (DoItHasNext(iterator))			   /*                        */
   { setq(new_bind,				   /*                        */
 	 TString(a),				   /*                        */
-	 eval_term(b, DoItNext(iterator)));	   /*                        */
-    t = eval_term(new_bind, group);		   /*                        */
+	 evaluate(b, DoItNext(iterator)));	   /*                        */
+    t = evaluate(new_bind, group);		   /*                        */
   }						   /*                        */
  						   /*                        */
   DoItFinish(iterator);			   	   /*                        */
@@ -521,11 +521,11 @@ static Term funcall(b, key, f, args)		   /*                        */
   for (t = Car(f); t; t = Cdr(t))		   /*                        */
   { sym = symdef(TString(Car(t)), L_VAR, 0, NULL, NULL);/*                   */
     if (args)					   /*                        */
-    { SymValue(sym) = eval_term(b, Car(args));	   /*                        */
+    { SymValue(sym) = evaluate(b, Car(args));	   /*                        */
       args = Cdr(args);				   /*                        */
     }						   /*                        */
     else					   /*                        */
-    { SymValue(sym) = eval_term(b, Cdar(t));	   /*                        */
+    { SymValue(sym) = evaluate(b, Cdar(t));	   /*                        */
       LinkTerm(SymValue(sym));			   /*                        */
     }						   /*                        */
     bind(nb, sym);				   /*                        */
@@ -534,7 +534,7 @@ static Term funcall(b, key, f, args)		   /*                        */
   if (args)					   /*                        */
     ErrorNF2("Too many arguments for ", key);	   /*                        */
     						   /*                        */
-  t = eval_term(nb, Cdr(f));			   /*                        */
+  t = evaluate(nb, Cdr(f));			   /*                        */
  						   /*                        */
   LinkTerm(t);					   /*                        */
   free_binding(nb);				   /*                        */
@@ -542,7 +542,7 @@ static Term funcall(b, key, f, args)		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	eval_term()
+** Function:	evaluate()
 ** Type:	Term
 ** Purpose:	Evaluate a term and return the result.
 ** Arguments:
@@ -550,7 +550,7 @@ static Term funcall(b, key, f, args)		   /*                        */
 **	term	the term to evaluate
 ** Returns:	the resulting term
 **___________________________________________________			     */
-Term eval_term(binding, term)			   /*                        */
+Term evaluate(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { SymDef s;					   /*                        */
@@ -563,7 +563,7 @@ Term eval_term(binding, term)			   /*                        */
       { Term t = NIL, *tp;			   /*                        */
 	tp     = &t;				   /*                        */
 	for ( ; term; term = Cdr(term))		   /*                        */
-	{ *tp = Cons1(eval_term(binding,	   /*                        */
+	{ *tp = Cons1(evaluate(binding,	   	   /*                        */
 				Car(term)));	   /*                        */
 	  tp = &Cdr(*tp);			   /*                        */
 	}					   /*                        */
@@ -633,7 +633,7 @@ Term eval_term(binding, term)			   /*                        */
     case L_GROUP:				   /*                        */
       { Term tt, t = NIL;			   /*                        */
 	for (tt = Cdr(term); tt; tt = Cdr(tt))     /*                        */
-	{ t = eval_term(binding, Car(tt));	   /*                        */
+	{ t = evaluate(binding, Car(tt));	   /*                        */
 	  if (t && TType(t) == L_RETURN) return t; /*                        */
 	}	   				   /*                        */
 	return t;				   /*                        */
@@ -641,14 +641,14 @@ Term eval_term(binding, term)			   /*                        */
  						   /*                        */
     case L_IF:				   	   /*                        */
       if (IsTrue(eval_bool(binding, Car(term))))   /*                        */
-      { return eval_term(binding, Cadr(term)); }   /*                        */
+      { return evaluate(binding, Cadr(term)); }    /*                        */
       						   /*                        */
       return (Cddr(term)			   /*                        */
-	      ? eval_term(binding, Cddr(term))	   /*                        */
+	      ? evaluate(binding, Cddr(term))	   /*                        */
 	      : NIL);				   /*                        */
  						   /*                        */
     case L_METHOD:				   /*                        */
-      { Term t = eval_term(binding, Car(term));	   /*                        */
+      { Term t = evaluate(binding, Car(term));	   /*                        */
 	Binding class_b;			   /*                        */
 	char * clazz;				   /*                        */
  						   /*                        */
@@ -699,7 +699,7 @@ Term eval_term(binding, term)			   /*                        */
     case L_RETURN:				   /*                        */
       return new_term(L_RETURN,			   /*                        */
 		      NIL,			   /*                        */
-		      eval_term(binding, Cdr(term)));/*                      */
+		      evaluate(binding, Cdr(term)));/*                       */
  						   /*                        */
     case L_WITH:				   /*                        */
       return funcall(binding, key, term, NIL);	   /*                        */

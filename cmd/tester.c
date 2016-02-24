@@ -30,7 +30,7 @@
 /*---------------------------------------------------------------------------*/
 
  int verbose  = 0;
- int evaluate = 0;
+ int evalp    = 0;
 
  Term result = NIL;
 
@@ -47,9 +47,9 @@ int action(b, t)				   /*                        */
   Binding b;					   /*                        */
   Term t;					   /*                        */
 {						   /*                        */
-  if (evaluate)					   /*                        */
+  if (evalp)					   /*                        */
   { if (result) { UnlinkTerm(result); }		   /*                        */
-    result = eval_term(b, t); }	   		   /*                        */
+    result = evaluate(b, t); }	   		   /*                        */
   else						   /*                        */
   { print_term(stdout, t);			   /*                        */
     putchar('\n');				   /*                        */
@@ -79,7 +79,7 @@ void run_test(file)				   /*                        */
   if (verbose)					   /*                        */
     fprintf(stderr, "--- reading completed\n");	   /*                        */
    						   /*                        */
-  if (evaluate)					   /*                        */
+  if (evalp)					   /*                        */
   { print_term(stdout, result);			   /*                        */
     putchar('\n');				   /*                        */
     UnlinkTerm(result);				   /*                        */
@@ -123,12 +123,12 @@ int main(argc, argv)				   /*                        */
 	ok = 1;					   /*                        */
       } else if (ArgIs("-h", "--help"))   	   /*                        */
       { fprintf(stderr,			   	   /*                        */
-		"Usage: %s [-v] [-e||--eval] [-i|-r|--infile|--resource] <file>\n",/*     */
+		"Usage: %s [-v] [-e||--eval] [-i|-r|--infile|--resource] <file>\n",
 		argv[0]);			   /*                        */
       } else if (ArgIs("-e", "--eval"))	   	   /*                        */
-      { evaluate = 1;	   			   /*                        */
+      { evalp = TRUE;	   			   /*                        */
       } else if (ArgIs("-v", "--verbose"))	   /*                        */
-      { verbose = 1;	   			   /*                        */
+      { verbose = TRUE;	   			   /*                        */
       } else {					   /*                        */
 	fprintf(stderr,				   /*                        */
 		"Unknown option: %s\n",arg);   	   /*                        */
