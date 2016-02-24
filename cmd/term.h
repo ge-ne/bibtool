@@ -193,7 +193,7 @@ extern Term new_t_string _ARG((short int type, unsigned char* s));
 extern Term new_t_db _ARG((DB db));
 extern Term new_t_rec _ARG((Record rec));
 extern void free_term _ARG((Term term));
-extern void print_term _ARG((FILE* file, Term term));
+extern void print _ARG((FILE* file, Term term));
 extern void prn_term _ARG((FILE* file, Term term, int in, int q));
 extern String token_type _ARG((int c));
 extern String term_type _ARG((Term t));

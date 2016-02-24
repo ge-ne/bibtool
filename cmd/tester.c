@@ -51,7 +51,7 @@ int action(b, t)				   /*                        */
   { if (result) { UnlinkTerm(result); }		   /*                        */
     result = evaluate(b, t); }	   		   /*                        */
   else						   /*                        */
-  { print_term(stdout, t);			   /*                        */
+  { print(stdout, t);			   	   /*                        */
     putchar('\n');				   /*                        */
     UnlinkTerm(t);				   /*                        */
   }						   /*                        */
@@ -80,7 +80,7 @@ void run_test(file)				   /*                        */
     fprintf(stderr, "--- reading completed\n");	   /*                        */
    						   /*                        */
   if (evalp)					   /*                        */
-  { print_term(stdout, result);			   /*                        */
+  { print(stdout, result);			   /*                        */
     putchar('\n');				   /*                        */
     UnlinkTerm(result);				   /*                        */
   }						   /*                        */

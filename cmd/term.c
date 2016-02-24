@@ -28,7 +28,7 @@ Term new_term _ARG((short int type, Term car, Term cdr));
 Term new_term_num _ARG((long value));
 Term new_t_string _ARG((short int type, unsigned char* s));
 void free_term _ARG((Term term));
-void print_term _ARG((FILE* file, Term term));
+void print _ARG((FILE* file, Term term));
 String token_type _ARG((int c));
 
 static void prn_args _ARG((FILE * file, Term term, char* sep, int in, int q));
@@ -290,7 +290,7 @@ void free_term(t)				   /*                        */
       || TType(t) == L_TRUE) return;	   	   /*                        */
  						   /*                        */
 #ifdef DEBUG_MEM
-  print_term(stderr, t);			   /*                        */
+  print(stderr, t);			   	   /*                        */
   fputs(stderr, "");				   /*                        */
 #endif
  						   /*                        */
@@ -646,7 +646,7 @@ void prn_term(file, term, in, quote)		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	print_term()
+** Function:	print()
 ** Type:	void
 ** Purpose:	Produce a printed representation of a term and write it to
 **		the output stream.
@@ -655,7 +655,7 @@ void prn_term(file, term, in, quote)		   /*                        */
 **	t	the term to print
 ** Returns:	nothing
 **___________________________________________________			     */
-void print_term(file, term)			   /*                        */
+void print(file, term)			   	   /*                        */
   register FILE * file;				   /*                        */
   register Term term;				   /*                        */
 { prn_term(file, term, 0, TRUE);		   /*                        */

@@ -88,7 +88,7 @@ void dump_tstack(file, stack)			   /*                        */
   { dump_tstack(file, StackPrev(stack));	   /*                        */
     fprintf(file,"    %-8s\t",			   /*                        */
 	    token_type(StackChar(stack)));	   /*                        */
-    print_term(file, StackTerm(stack));		   /*                        */
+    print(file, StackTerm(stack));		   /*                        */
     fprintf(file,"\n");				   /*                        */
   } else {					   /*                        */
     fprintf(file,"+++\n");			   /*                        */
