@@ -55,7 +55,7 @@ static Term read_args _ARG((Binding b, Term t, int sep, int term));/*        */
 	error(ERR_ERROR|ERR_FILE|ERR_POINT|ERR_EXIT, (String)X,		\
 	      (String)Y, (String)Z,					\
 	      (String)LineReaderLine(reader),				\
-	      (String)(LineReaderLineno(reader)+LineReaderPtr(reader)),	\
+	      (String)(LineReaderLine(reader)+LineReaderPtr(reader)-1),	\
 	      LineReaderLineno(reader), LineReaderFilename(reader))
 
  static Term yylval;				   /*                        */
