@@ -31,6 +31,12 @@ extern Term eval_self _ARG((Binding binding, Term term));/*                  */
 extern Term eval_builtin _ARG((Binding binding, Term term));/*               */
 extern void dump_binding _ARG((Binding binding, FILE* file));/*              */
 
+extern SymDef get_class(Binding binding,	   /*                        */
+			Term term,		   /*                        */
+			Term *tp,		   /*                        */
+			char** clazzp);		   /*                        */
+
+
 extern void bind _ARG((Binding binding, SymDef sym));/*                      */
 
 #endif

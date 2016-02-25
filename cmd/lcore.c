@@ -603,12 +603,11 @@ Term g_cl_ign_words(binding, term)		   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	g_print()
 ** Type:	Term
-** Purpose:	
-**		
+** Purpose:	Print the term argument to stdout.
 ** Arguments:
 **	binding	the binding
 **	term	the term
-** Returns:	
+** Returns:	nil
 **___________________________________________________			     */
 Term g_print(binding, term)			   /*                        */
   Binding binding;				   /*                        */
@@ -656,8 +655,28 @@ Term g_setq(binding, term)		   	   /*                        */
   Term term;					   /*                        */
 { Term car = Cadr(term);			   /*                        */
   term	   = evaluate(binding, Cdr(term));	   /*                        */
-  if (car == NIL) ErrorNF1("Undefined LHS");	   /*                        */
-  if (!IsVar(car)) ErrorNF1("Illegal LHS");    	   /*                        */
+  if (car == NIL)				   /*                        */
+    ErrorNF1("Undefined left hand side of equals");/*                        */
+ 						   /*                        */
+  if (TType(car) == L_METHOD)			   /*                        */
+  { Term t;					   /*                        */
+    char* clazz;				   /*                        */
+    SymDef symdef = get_class(binding, 		   /*                        */
+			      car, 		   /*                        */
+			      &t, 		   /*                        */
+			      &clazz);		   /*                        */
+    if (symdef == SymDefNULL		   	   /*                        */
+	|| SymSet(symdef) == NULL)		   /*                        */
+      ErrorNF3(clazz,			   	   /*                        */
+	       ": Unknown setter for ",	   	   /*                        */
+	       TString(Cdr(car)));		   /*                        */
+    return (*SymSet(symdef))(binding,		   /*                        */
+			     t,			   /*                        */
+			     Cddr(term));	   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  if (!IsVar(car))				   /*                        */
+    ErrorNF1("Illegal left hand side of equals");  /*                        */
   						   /*                        */
   term = Cadr(term);				   /*                        */
   LinkTerm(term);				   /*                        */

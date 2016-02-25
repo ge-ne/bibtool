@@ -542,6 +542,66 @@ static Term funcall(b, key, f, args)		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	get_class()
+** Type:	SymDef
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 term	
+**	 tp	
+**	 clazzp	
+** Returns:	
+**___________________________________________________			     */
+SymDef get_class(binding, term, tp, clazzp)	   /*                        */
+  Binding binding;				   /*                        */
+  Term term;					   /*                        */
+  Term *tp;					   /*                        */
+  char** clazzp;				   /*                        */
+{ *tp = evaluate(binding, Car(term));	   	   /*                        */
+  Binding class_b;			   	   /*                        */
+					       	   /*                        */
+  switch (*tp == NIL ? L_CONS : TType(*tp))	   /*                        */
+  { case L_TRUE:				   /*                        */
+      class_b = cb_binding;		   	   /*                        */
+      *clazzp = "True";			   	   /*                        */
+      break;				   	   /*                        */
+    case L_FALSE:				   /*                        */
+      class_b = cb_binding;		   	   /*                        */
+      *clazzp = "False";			   /*                        */
+      break;				   	   /*                        */
+    case L_STRING:			   	   /*                        */
+      class_b = cs_binding;		   	   /*                        */
+      *clazzp = "String";			   /*                        */
+      break;				   	   /*                        */
+    case L_NUMBER:			   	   /*                        */
+      class_b = cn_binding;		   	   /*                        */
+      *clazzp = "Number";			   /*                        */
+      break;				   	   /*                        */
+    case L_CONS:				   /*                        */
+      class_b = cc_binding;		   	   /*                        */
+      *clazzp = "List";			   	   /*                        */
+      break;				   	   /*                        */
+    case L_DB:				   	   /*                        */
+      class_b = cd_binding;		   	   /*                        */
+      *clazzp = "DB";			   	   /*                        */
+      break;				   	   /*                        */
+    case L_RECORD:			   	   /*                        */
+      class_b = cr_binding;		   	   /*                        */
+      *clazzp = "Record";			   /*                        */
+      break;				   	   /*                        */
+    case L_FUNCTION:			   	   /*                        */
+    default:				   	   /*                        */
+      ErrorNF3("Missing instance for method ",	   /*                        */
+	       TString(Cdr(term)),"()");	   /*                        */
+  }					   	   /*                        */
+					       	   /*                        */
+  return get_bind(class_b,	   		   /*                        */
+		  TString(Cdr(term)));	   	   /*                        */
+}						   /*------------------------*/
+
+
+/*-----------------------------------------------------------------------------
 ** Function:	evaluate()
 ** Type:	Term
 ** Purpose:	Evaluate a term and return the result.
@@ -648,53 +708,20 @@ Term evaluate(binding, term)			   /*                        */
 	      : NIL);				   /*                        */
  						   /*                        */
     case L_METHOD:				   /*                        */
-      { Term t = evaluate(binding, Car(term));	   /*                        */
-	Binding class_b;			   /*                        */
-	char * clazz;				   /*                        */
- 						   /*                        */
-	switch (t == NIL ? L_CONS : TType(t))	   /*                        */
-	{ case L_TRUE:				   /*                        */
-	    class_b = cb_binding;		   /*                        */
-	    clazz   = "True";			   /*                        */
-	    break;				   /*                        */
-	  case L_FALSE:				   /*                        */
-	    class_b = cb_binding;		   /*                        */
-	    clazz   = "False";			   /*                        */
-	    break;				   /*                        */
-	  case L_STRING:			   /*                        */
-	    class_b = cs_binding;		   /*                        */
-	    clazz   = "String";			   /*                        */
-	    break;				   /*                        */
-	  case L_NUMBER:			   /*                        */
-	    class_b = cn_binding;		   /*                        */
-	    clazz   = "Number";			   /*                        */
-	    break;				   /*                        */
-	  case L_CONS:				   /*                        */
-	    class_b = cc_binding;		   /*                        */
-	    clazz   = "List";			   /*                        */
-	    break;				   /*                        */
-	  case L_DB:				   /*                        */
-	    class_b = cd_binding;		   /*                        */
-	    clazz   = "DB";			   /*                        */
-	    break;				   /*                        */
-	  case L_RECORD:			   /*                        */
-	    class_b = cr_binding;		   /*                        */
-	    clazz   = "Record";			   /*                        */
-	    break;				   /*                        */
-	  case L_FUNCTION:			   /*                        */
-	  default:				   /*                        */
-	    ErrorNF3("Missing instance for method ",/*                       */
-		     TString(Cdr(term)),"()");	   /*                        */
-	}					   /*                        */
- 						   /*                        */
-	SymDef symdef = get_bind(class_b,	   /*                        */
-			   TString(Cdr(term)));	   /*                        */
+      { Term t;					   /*                        */
+	char* clazz;				   /*                        */
+	SymDef symdef = get_class(binding,	   /*                        */
+				  term,		   /*                        */
+				  &t,		   /*                        */
+				  &clazz);	   /*                        */
 	if (symdef == SymDefNULL		   /*                        */
 	    || SymGet(symdef) == NULL)		   /*                        */
 	  ErrorNF3(clazz,			   /*                        */
 		   ": Unknown method ",	   	   /*                        */
 		   TString(Cdr(term)));		   /*                        */
-	return (*SymGet(symdef))(binding, t, Cddr(term));/*                  */
+	return (*SymGet(symdef))(binding,	   /*                        */
+				 t,		   /*                        */
+				 Cddr(term));	   /*                        */
       }						   /*                        */
     case L_RETURN:				   /*                        */
       return new_term(L_RETURN,			   /*                        */
