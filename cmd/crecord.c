@@ -85,6 +85,28 @@ static Term m_get(binding, record, args)	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	m_has()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	rec	the record term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_has(binding, record, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term record;					   /*                        */
+  Term args;					   /*                        */
+{ String key = str_arg(binding, &args, "has");	   /*                        */
+  String val = record_get(TRecord(record), key);   /*                        */
+  no_args(args, "has");	   	   	   	   /*                        */
+ 						   /*                        */
+  return val ? term_true : term_false;		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	m_sort()
 ** Type:	Term
 ** Purpose:	
@@ -169,7 +191,7 @@ static Term m_length(binding, rec, args)	   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	class_record()
 ** Type:	void
-** Purpose:	
+** Purpose:	Initialize the class methods for <RECORD>
 **		
 ** Arguments:	none
 ** Returns:	nothing
@@ -181,6 +203,7 @@ void class_record()				   /*                        */
   Bind("as.number", m_as_number);		   /*                        */
   Bind("as.string", m_as_string);		   /*                        */
   Bind("get", m_get);		   	   	   /*                        */
+  Bind("has", m_has);		   	   	   /*                        */
   Bind("key", m_key);		   	   	   /*                        */
   Bind("length", m_length);		   	   /*                        */
   Bind("sort", m_sort);			   	   /*                        */
