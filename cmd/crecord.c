@@ -39,8 +39,10 @@
 
 Binding cr_binding = NULL;		   	   /*                        */
 
-#define Bind(NAME,GET)  bind(cr_binding, symdef(symbol((String)NAME),     \
-						0, 0, GET, NULL));
+#define Bind(NAME,GET)		Bind2(NAME,GET, NULL)
+#define Bind2(NAME,GET, SET)	bind(cr_binding,			\
+				     symdef(symbol((String)NAME),	\
+					    0, 0, GET, SET));
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_type()
@@ -149,6 +151,35 @@ static Term m_key(binding, record, args)	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	a_key()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	record	the record
+**	val	the value
+** Returns:	
+**___________________________________________________			     */
+static Term a_key(binding, record, val)	   	   /*                        */
+  Binding binding;				   /*                        */
+  Term record;					   /*                        */
+  Term val;				   	   /*                        */
+{ StringBuffer* sb = sbopen();			   /*                        */
+  char *cp;					   /*                        */
+  String s;					   /*                        */
+  val = eval_str(binding, val);			   /*                        */
+ 						   /*                        */
+  for (cp = (char*)TString(val); *cp; cp++)	   /*                        */
+  { if (is_allowed(*cp)) sbputc(*cp, sb);  }	   /*                        */
+  s = symbol((String)sbflush(sb));		   /*                        */
+  sbclose(sb);					   /*                        */
+ 						   /*                        */
+  *RecordHeap(TRecord(record)) = s;		   /*                        */
+  return StringTerm(s); 			   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	m_sortkey()
 ** Type:	Term
 ** Purpose:	
@@ -204,7 +235,7 @@ void class_record()				   /*                        */
   Bind("as.string", m_as_string);		   /*                        */
   Bind("get", m_get);		   	   	   /*                        */
   Bind("has", m_has);		   	   	   /*                        */
-  Bind("key", m_key);		   	   	   /*                        */
+  Bind2("key", m_key, a_key);			   /*                        */
   Bind("length", m_length);		   	   /*                        */
   Bind("sort", m_sort);			   	   /*                        */
   Bind("sort.key", m_sortkey);			   /*                        */

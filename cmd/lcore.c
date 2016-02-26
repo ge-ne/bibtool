@@ -665,14 +665,17 @@ Term g_setq(binding, term)		   	   /*                        */
 			      car, 		   /*                        */
 			      &t, 		   /*                        */
 			      &clazz);		   /*                        */
-    if (symdef == SymDefNULL		   	   /*                        */
-	|| SymSet(symdef) == NULL)		   /*                        */
+    if (symdef == SymDefNULL)		   	   /*                        */
       ErrorNF3(clazz,			   	   /*                        */
-	       ": Unknown setter for ",	   	   /*                        */
+	       ": Unknown attribute ",	   	   /*                        */
+	       TString(Cdr(car)));		   /*                        */
+    if (SymSet(symdef) == NULL)		   	   /*                        */
+      ErrorNF3(clazz,			   	   /*                        */
+	       ": Illegal assignment to ",	   /*                        */
 	       TString(Cdr(car)));		   /*                        */
     return (*SymSet(symdef))(binding,		   /*                        */
 			     t,			   /*                        */
-			     Cddr(term));	   /*                        */
+			     Cadr(term));	   /*                        */
   }						   /*                        */
  						   /*                        */
   if (!IsVar(car))				   /*                        */
