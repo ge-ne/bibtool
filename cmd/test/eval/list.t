@@ -188,6 +188,62 @@ BUnit::run(name         => 'list-as-boolean-2',
 	   expected_err => '',
 	   expected_out => "false\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-car-1',
+	   args	        => '--eval',
+	   resource     => '[]:car()',
+	   expected_err => '',
+	   expected_out => "[]\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-car-2',
+	   args	        => '--eval',
+	   resource     => 'x=[]; x:car()',
+	   expected_err => '',
+	   expected_out => "[]\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-car-3',
+	   args	        => '--eval',
+	   resource     => '[111]:car()',
+	   expected_err => '',
+	   expected_out => "111\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-car-4',
+	   args	        => '--eval',
+	   resource     => '[111, 222]:car()',
+	   expected_err => '',
+	   expected_out => "111\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-cdr-1',
+	   args	        => '--eval',
+	   resource     => '[]:cdr()',
+	   expected_err => '',
+	   expected_out => "[]\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-cdr-2',
+	   args	        => '--eval',
+	   resource     => 'x=[]; x:cdr()',
+	   expected_err => '',
+	   expected_out => "[]\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-cdr-3',
+	   args	        => '--eval',
+	   resource     => '[111]:cdr()',
+	   expected_err => '',
+	   expected_out => "[]\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-cdr-4',
+	   args	        => '--eval',
+	   resource     => '[111, 222]:cdr()',
+	   expected_err => '',
+	   expected_out => "[222]\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

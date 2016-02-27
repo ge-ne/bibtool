@@ -80,6 +80,48 @@ static Term ml_as_string(binding, list, args)	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	ml_car()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	list	the list term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_car(binding, list, args)	   	   /*                        */
+  Binding binding;				   /*                        */
+  Term list;					   /*                        */
+  Term args;					   /*                        */
+{ Term t = list ? Car(list) : NIL;		   /*                        */
+  no_args(args, "car");  		   	   /*                        */
+  if (list) LinkTerm(t);			   /*                        */
+  return t;		   			   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	ml_cdr()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	list	the list term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_cdr(binding, list, args)	   	   /*                        */
+  Binding binding;				   /*                        */
+  Term list;					   /*                        */
+  Term args;					   /*                        */
+{ Term t = list ? Cdr(list) : NIL;		   /*                        */
+  no_args(args, "cdr");  		   	   /*                        */
+  if (list) LinkTerm(t);			   /*                        */
+  return t;		   			   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	m_join()
 ** Type:	Term
 ** Purpose:	
@@ -158,6 +200,8 @@ void class_list()				   /*                        */
   Bind("as.boolean", m_as_boolean);		   /*                        */
   Bind("as.number", m_length);		   	   /*                        */
   Bind("as.string", ml_as_string);		   /*                        */
+  Bind("car", m_car);		   	   	   /*                        */
+  Bind("cdr", m_cdr);		   	   	   /*                        */
   Bind("length", m_length);		   	   /*                        */
   Bind("join", m_join);		   	   	   /*                        */
 }						   /*------------------------*/
