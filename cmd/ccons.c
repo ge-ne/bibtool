@@ -122,6 +122,25 @@ static Term m_cdr(binding, list, args)	   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	m_empty()
+** Type:	static Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	list	the list term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_empty(binding, list, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term list;					   /*                        */
+  Term args;					   /*                        */
+{ no_args(args, "empty");  		   	   /*                        */
+  return list ? term_false : term_true;		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	m_join()
 ** Type:	Term
 ** Purpose:	
@@ -202,6 +221,7 @@ void class_list()				   /*                        */
   Bind("as.string", ml_as_string);		   /*                        */
   Bind("car", m_car);		   	   	   /*                        */
   Bind("cdr", m_cdr);		   	   	   /*                        */
+  Bind("empty", m_empty);			   /*                        */
   Bind("length", m_length);		   	   /*                        */
   Bind("join", m_join);		   	   	   /*                        */
 }						   /*------------------------*/

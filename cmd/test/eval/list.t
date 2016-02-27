@@ -244,6 +244,27 @@ BUnit::run(name         => 'list-cdr-4',
 	   expected_err => '',
 	   expected_out => "[222]\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-empty-1',
+	   args	        => '--eval',
+	   resource     => '[]:empty()',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-empty-2',
+	   args	        => '--eval',
+	   resource     => '[111]:empty()',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-empty-3',
+	   args	        => '--eval',
+	   resource     => '[111, 222]:empty()',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 
