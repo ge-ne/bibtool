@@ -39,6 +39,7 @@ extern Term meth_number _ARG((Binding binding, Term n, Term args));
 extern Term meth_string _ARG((Binding binding, Term s, Term args));
 
 extern Term c_boolean;
+extern Term c_class;
 extern Term c_database;
 extern Term c_list;
 extern Term c_number;
@@ -558,36 +559,41 @@ SymDef get_class(binding, term, tp, clazzp)	   /*                        */
   Term term;					   /*                        */
   Term *tp;					   /*                        */
   char** clazzp;				   /*                        */
-{ *tp = evaluate(binding, Car(term));	   	   /*                        */
-  Binding class_b;			   	   /*                        */
+{ Term clazz;					   /*                        */
+ 						   /*                        */
+  *tp = evaluate(binding, Car(term));	   	   /*                        */
 					       	   /*                        */
   switch (*tp == NIL ? L_CONS : TType(*tp))	   /*                        */
   { case L_TRUE:				   /*                        */
-      class_b = TBinding(c_boolean);		   /*                        */
+      clazz = c_boolean;		   	   /*                        */
       *clazzp = "True";			   	   /*                        */
       break;				   	   /*                        */
     case L_FALSE:				   /*                        */
-      class_b = TBinding(c_boolean);		   /*                        */
+      clazz = c_boolean;		   	   /*                        */
       *clazzp = "False";			   /*                        */
       break;				   	   /*                        */
     case L_STRING:			   	   /*                        */
-      class_b = TBinding(c_string);		   /*                        */
+      clazz = c_string;		   		   /*                        */
       *clazzp = "String";			   /*                        */
       break;				   	   /*                        */
     case L_NUMBER:			   	   /*                        */
-      class_b = TBinding(c_number);		   /*                        */
+      clazz = c_number;		   		   /*                        */
       *clazzp = "Number";			   /*                        */
       break;				   	   /*                        */
     case L_CONS:				   /*                        */
-      class_b = TBinding(c_list);		   /*                        */
+      clazz = c_list;		   		   /*                        */
       *clazzp = "List";			   	   /*                        */
       break;				   	   /*                        */
+    case L_CLASS:				   /*                        */
+      clazz = c_class;		   		   /*                        */
+      *clazzp = "Class";			   /*                        */
+      break;				   	   /*                        */
     case L_DB:				   	   /*                        */
-      class_b = TBinding(c_database);		   /*                        */
+      clazz = c_database;		   	   /*                        */
       *clazzp = "DB";			   	   /*                        */
       break;				   	   /*                        */
     case L_RECORD:			   	   /*                        */
-      class_b = TBinding(c_record);		   /*                        */
+      clazz = c_record;		   		   /*                        */
       *clazzp = "Record";			   /*                        */
       break;				   	   /*                        */
     case L_FUNCTION:			   	   /*                        */
@@ -596,7 +602,7 @@ SymDef get_class(binding, term, tp, clazzp)	   /*                        */
 	       TString(Cdr(term)),"()");	   /*                        */
   }					   	   /*                        */
 					       	   /*                        */
-  return get_bind(class_b,	   		   /*                        */
+  return get_bind(TBinding(clazz),		   /*                        */
 		  TString(Cdr(term)));	   	   /*                        */
 }						   /*------------------------*/
 

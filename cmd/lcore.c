@@ -39,6 +39,7 @@
 /*===========================================================================*/
 
 extern Term class_boolean();
+extern Term class_class();
 extern Term class_db();
 extern Term class_record();
 extern Term class_list();
@@ -1275,6 +1276,7 @@ void init_lcore()				   /*                        */
   term_false = SymTerm(sym_false) = NewTerm(L_FALSE);/*                      */
  						   /*                        */
   class_boolean();				   /*                        */
+  class_class();				   /*                        */
   class_db();					   /*                        */
   class_record();				   /*                        */
   class_list();					   /*                        */

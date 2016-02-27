@@ -530,12 +530,12 @@ void prn_term(file, term, in, quote)		   /*                        */
       return;	   			   	   /*                        */
 						   /*                        */
     case L_CLASS:				   /*                        */
-      fputs("<CLASS", file);			   /*                        */
+      fputc('<', file);			   	   /*                        */
       if (Cdr(term)) 				   /*                        */
-      { fputc(' ', file);			   /*                        */
-	prn_term(file, Cdr(term), in, quote);	   /*                        */
-      }						   /*                        */
-      fputs(">", file);			   	   /*                        */
+      { prn_term(file, Cdr(term), in, FALSE); }	   /*                        */
+      else					   /*                        */
+      { fputs("CLASS", file); }			   /*                        */
+      fputc('>', file);			   	   /*                        */
       return;					   /*                        */
 						   /*                        */
     case L_CONS:				   /*                        */

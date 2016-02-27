@@ -43,38 +43,40 @@ OFILES  = $(BASEDIR)crossref.o	\
 	  $(BASEDIR)wordlist.o	\
 	  $(BASEDIR)regex.o
 
-L_OFILES = term.o		\
-	   binding.o		\
-	   lcore.o		\
-	   tstack.o		\
-	   lreader.o		\
-	   linereader.o		\
-	   cstring.o		\
-	   cnumber.o		\
+L_OFILES = binding.o		\
+	   cboolean.o		\
+	   cclass.o		\
 	   ccons.o		\
 	   cdb.o		\
+	   cnumber.o		\
 	   crecord.o		\
-	   cboolean.o		\
-	   literate.o
+	   cstring.o		\
+	   lcore.o		\
+	   linereader.o		\
+	   literate.o		\
+	   lreader.o		\
+	   term.o		\
+	   tstack.o
 
 #------------------------------------------------------------------------------
 
 all: tester
 
-term.o:		term.c term.h
-lcore.o:	lcore.c lcore.h term.h
-tstack.o:	tstack.c tstack.h lcore.h term.h binding.h
-linereader.o:	linereader.c linereader.h
-lreader.o:	lreader.c lreader.h lreader.h term.h linereader.h lcore.h tstack.h binding.h
 binding.o:	binding.c binding.h literate.h term.h lcore.h lreader.h builtin.h
-literate.o:	literate.c literate.h term.h
-tester.o:	tester.c term.h lcore.h lreader.h binding.h tstack.h
-ccons.o:	ccons.c term.h binding.h
-cnumber.o:	cnumber.c term.h binding.h
-cstring.o:	cstring.c term.h binding.h
 cboolean.o:	cboolean.c term.h binding.h
+cclass.o:	cclass.c term.h binding.h
+ccons.o:	ccons.c term.h binding.h
 cdb.o:		cdb.c term.h binding.h
+cnumber.o:	cnumber.c term.h binding.h
 crecord.o:	crecord.c term.h binding.h
+cstring.o:	cstring.c term.h binding.h
+lcore.o:	lcore.c lcore.h term.h
+linereader.o:	linereader.c linereader.h
+literate.o:	literate.c literate.h term.h
+lreader.o:	lreader.c lreader.h lreader.h term.h linereader.h lcore.h tstack.h binding.h
+term.o:		term.c term.h
+tester.o:	tester.c term.h lcore.h lreader.h binding.h tstack.h
+tstack.o:	tstack.c tstack.h lcore.h term.h binding.h
 
 tester: tester.o $(L_OFILES) $(OFILES)
 	@$(CC) -g -O2 -o $@ $^ -lkpathsea
