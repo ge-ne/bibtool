@@ -10,6 +10,7 @@
 ** 
 ******************************************************************************/
 
+#define DEBUG 
 #undef DEBUG 
 
 #include <stdio.h>
@@ -181,7 +182,7 @@ static int scan(b)			   	   /*                        */
 	continue;				   /*                        */
  						   /*                        */
       case '%':					   /*                        */
-	for (c = GetC; c && c != '\n'; c = GetC) ; /*                        */
+	for (c = GetC; c > 0  && c != '\n'; c = GetC) ;/*                    */
 	continue;				   /*                        */
 						   /*                        */
       case '"':					   /*                        */
@@ -717,6 +718,13 @@ static Term read_expr(binding, stack)		   /*                        */
 		  token_type(c), 0); }		   /*                        */
 	  Shift(L_CONS, t);		   	   /*                        */
 	}					   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
+      case L_CLASS:				   /*                        */
+	t = yylval;		   	   	   /*                        */
+	Cdr(t) = read_group(binding, "class");     /*                        */
+	if (stack == NULL) return t;		   /*                        */
+	Shift(L_CLASS, t);		   	   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case L_CONS:				   /*                        */
