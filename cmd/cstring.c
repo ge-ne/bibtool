@@ -36,10 +36,27 @@
 /*---------------------------------------------------------------------------*/
 
 
-Binding cs_binding = NULL;		   	   /*                        */
+Term c_string;					   /*                        */
 
-#define Bind(NAME,GET)  bind(cs_binding, symdef(symbol((String)NAME),     \
-						0, 0, GET, NULL));
+/*-----------------------------------------------------------------------------
+** Function:	m_class()
+** Type:	Term
+** Purpose:	Getter for the class.
+** Arguments:
+**	binding	the binding
+**	string	the string term
+**	args	the arguments
+** Returns:	the class
+**___________________________________________________			     */
+static Term m_class(binding, string, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term string;					   /*                        */
+  Term args;					   /*                        */
+{						   /*                        */
+  no_args(args, "class");	   	   	   /*                        */
+  LinkTerm(c_string);				   /*                        */
+  return c_string;				   /*                        */
+}						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_length()
@@ -91,7 +108,7 @@ static Term m_trim(binding, string, args)	   /*                        */
   for (cp--; cp	>= str && is_space(*cp) ;cp--)	   /*                        */
     *cp = '\0';					   /*                        */
  						   /*                        */
-  t = StringTerm((String)str);			   /*                        */
+  t = StringTerm(str);			   	   /*                        */
   sbclose(sb);					   /*                        */
   return t;	   	   		   	   /*                        */
 }						   /*------------------------*/
@@ -171,25 +188,32 @@ static Term m_substring(binding, string, args)	   /*                        */
   return t;	   	   		   	   /*                        */
 }						   /*------------------------*/
 
+#define Bind(NAME,GET)  bind(b, symdef(symbol((String)NAME),     \
+				       0, 0, GET, NULL));
+
 /*-----------------------------------------------------------------------------
 ** Function:	class_string()
-** Type:	void
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:	none
 ** Returns:	nothing
 **___________________________________________________			     */
-void class_string()				   /*                        */
-{						   /*                        */
-  cs_binding = binding(127, NULL);		   /*                        */
+Term class_string()				   /*                        */
+{ Binding b;					   /*                        */
+  c_string = new_class(StringTerm("String"));	   /*                        */
+  b = TBinding(c_string);			   /*                        */
  						   /*                        */
   Bind("as.boolean", m_as_boolean);		   /*                        */
   Bind("as.string", m_as_string);		   /*                        */
   Bind("as.number", m_as_number);		   /*                        */
+  Bind("class", m_class);			   /*                        */
   Bind("concat", m_concat);			   /*                        */
   Bind("length", m_length);			   /*                        */
   Bind("substring", m_substring);		   /*                        */
   Bind("trim", m_trim);		   		   /*                        */
+ 						   /*                        */
+  return c_string;				   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

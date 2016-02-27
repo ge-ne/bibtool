@@ -75,9 +75,8 @@ static Term read_args _ARG((Binding b, Term t, int sep, int term));/*        */
 ** Function:	scan_block()
 ** Type:	Term
 ** Purpose:	Scan a block in balanced braces.
-**		
 ** Arguments:	none
-** Returns:	
+** Returns:	the string as term
 **___________________________________________________			     */
 static Term scan_block()			   /*                        */
 { StringBuffer *sb = sbopen();		   	   /*                        */
@@ -91,7 +90,7 @@ static Term scan_block()			   /*                        */
     sbputc(c, sb);			   	   /*                        */
   }					   	   /*                        */
 					       	   /*                        */
-  t = StringTerm((String)sbflush(sb));      	   /*                        */
+  t = StringTerm(sbflush(sb));      	   	   /*                        */
   sbclose(sb);				   	   /*                        */
   return t;			   	   	   /*                        */
 }						   /*------------------------*/

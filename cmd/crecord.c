@@ -37,12 +37,7 @@
 /*---------------------------------------------------------------------------*/
 
 
-Binding cr_binding = NULL;		   	   /*                        */
-
-#define Bind(NAME,GET)		Bind2(NAME,GET, NULL)
-#define Bind2(NAME,GET, SET)	bind(cr_binding,			\
-				     symdef(symbol((String)NAME),	\
-					    0, 0, GET, SET));
+Term c_record;					   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_type()
@@ -245,17 +240,23 @@ static Term m_length(binding, rec, args)	   /*                        */
   return NumberTerm(count_record(TRecord(rec)));   /*                        */
 }						   /*------------------------*/
 
+#define Bind(NAME,GET)		Bind2(NAME,GET, NULL)
+#define Bind2(NAME,GET, SET)	bind(b,					\
+				     symdef(symbol((String)NAME),	\
+					    0, 0, GET, SET));
+
 /*-----------------------------------------------------------------------------
 ** Function:	class_record()
-** Type:	void
+** Type:	Term
 ** Purpose:	Initialize the class methods for <RECORD>
 **		
 ** Arguments:	none
 ** Returns:	nothing
 **___________________________________________________			     */
-void class_record()				   /*                        */
-{						   /*                        */
-  cr_binding = binding(127, NULL);		   /*                        */
+Term class_record()				   /*                        */
+{ Binding b;					   /*                        */
+  c_record = new_class(StringTerm("Entry"));	   /*                        */
+  b = TBinding(c_record);		   	   /*                        */
  						   /*                        */
   Bind("as.number", m_as_number);		   /*                        */
   Bind("as.string", m_as_string);		   /*                        */
@@ -266,6 +267,8 @@ void class_record()				   /*                        */
   Bind("sort", m_sort);			   	   /*                        */
   Bind("sort.key", m_sortkey);			   /*                        */
   Bind("type", m_type);		   	   	   /*                        */
+						   /*                        */
+  return c_record;				   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

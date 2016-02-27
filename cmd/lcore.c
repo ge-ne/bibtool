@@ -38,12 +38,12 @@
 /* External Programs                                                         */
 /*===========================================================================*/
 
-extern void class_boolean();
-extern void class_db();
-extern void class_record();
-extern void class_list();
-extern void class_number();
-extern void class_string();
+extern Term class_boolean();
+extern Term class_db();
+extern Term class_record();
+extern Term class_list();
+extern Term class_number();
+extern Term class_string();
 
 /*---------------------------------------------------------------------------*/
 
@@ -440,7 +440,7 @@ Term g_version(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { extern char* bibtool_version;			   /*                        */
-  return StringTerm((String)bibtool_version);	   /*                        */
+  return StringTerm(bibtool_version);	   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -518,7 +518,7 @@ Term g_input(binding, term)		   	   /*                        */
   tp   = &term;					   /*                        */
  						   /*                        */
   for (n = get_no_inputs(), i = 0; i < n; i++)	   /*                        */
-  { *tp = Cons1(StringTerm((String)get_input_file(i)));/*                    */
+  { *tp = Cons1(StringTerm(get_input_file(i)));	   /*                        */
     tp = &Cdr(*tp);				   /*                        */
   }						   /*                        */
   return term;	   	   			   /*                        */
@@ -673,8 +673,8 @@ Term g_setq(binding, term)		   	   /*                        */
       ErrorNF3(clazz,			   	   /*                        */
 	       ": Illegal assignment to ",	   /*                        */
 	       TString(Cdr(car)));		   /*                        */
-    Cdr(t) = Cdr(car);
-    LinkTerm(Cdr(t));
+    Cdr(t) = Cdr(car);				   /*                        */
+    LinkTerm(Cdr(t));				   /*                        */
     return (*SymSet(symdef))(binding,		   /*                        */
 			     t,			   /*                        */
 			     Cadr(term));	   /*                        */
@@ -819,7 +819,7 @@ Term eval_str(binding, term)			   /*                        */
 { Term t;					   /*                        */
   term = evaluate(binding, term);		   /*                        */
  						   /*                        */
-  if (term == NIL) return StringTerm((String)"");  /*                        */
+  if (term == NIL) return StringTerm("");  	   /*                        */
  						   /*                        */
   switch (TType(term))				   /*                        */
   {						   /*                        */
@@ -827,10 +827,10 @@ Term eval_str(binding, term)			   /*                        */
       LinkTerm(term);				   /*                        */
       break;					   /*                        */
     case L_TRUE:				   /*                        */
-      term = StringTerm((String)"true");	   /*                        */
+      term = StringTerm("true");	   	   /*                        */
       break;					   /*                        */
     case L_FALSE:				   /*                        */
-      term = StringTerm((String)"false");	   /*                        */
+      term = StringTerm("false");	   	   /*                        */
       break;					   /*                        */
     case L_CONS:				   /*                        */
       { StringBuffer *sb = sbopen();		   /*                        */
@@ -840,14 +840,14 @@ Term eval_str(binding, term)			   /*                        */
 	  sbputs((char*)TString(t), sb);	   /*                        */
 	  UnlinkTerm(t);			   /*                        */
 	}					   /*                        */
-	term = StringTerm((String)sbflush(sb));	   /*                        */
+	term = StringTerm(sbflush(sb));	   	   /*                        */
 	sbclose(sb);				   /*                        */
       }						   /*                        */
     case L_NUMBER:				   /*                        */
       { long n = TNumber(term);			   /*                        */
 	StringBuffer *sb;			   /*                        */
 	char *s, *t;				   /*                        */
-	if (n == 0) return StringTerm((String)"0");/*                        */
+	if (n == 0) return StringTerm("0");	   /*                        */
 	sb = sbopen(); 				   /*                        */
 	if (n < 0)				   /*                        */
 	{ sbputc('-', sb);			   /*                        */
@@ -866,16 +866,19 @@ Term eval_str(binding, term)			   /*                        */
 	  *(s++) = *t;				   /*                        */
 	  *(t--) = c;				   /*                        */
 	}					   /*                        */
-	term = StringTerm((String)sbflush(sb));	   /*                        */
+	term = StringTerm(sbflush(sb));	   	   /*                        */
 	sbclose(sb);				   /*                        */
       }						   /*                        */
       break;					   /*                        */
+    case L_CLASS:				   /*                        */
+      term = StringTerm("<CLASS>");	   	   /*                        */
+      break;					   /*                        */
     case L_DB:				   	   /*                        */
-      term = StringTerm((String)"<DB>");
-      break;
+      term = StringTerm("<DB>");	   	   /*                        */
+      break;					   /*                        */
     case L_RECORD:				   /*                        */
-      term = StringTerm((String)"<RECORD>");
-      break;
+      term = StringTerm("<ENTRY>");	   	   /*                        */
+      break;					   /*                        */
     default:					   /*                        */
       ErrorNF2("Type error: string expected instead of ",/*                  */
 	       term_type(term));		   /*                        */
@@ -1084,8 +1087,8 @@ Term g_ign_(binding, term)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	key	
-**	 value	
+**	key	the key
+**	value	the value
 ** Returns:	
 **___________________________________________________			     */
 static int g__add_f(key, value)			   /*                        */
@@ -1273,7 +1276,7 @@ void init_lcore()				   /*                        */
  						   /*                        */
   class_boolean();				   /*                        */
   class_db();					   /*                        */
-  class_record();
+  class_record();				   /*                        */
   class_list();					   /*                        */
   class_number();				   /*                        */
   class_string();				   /*                        */

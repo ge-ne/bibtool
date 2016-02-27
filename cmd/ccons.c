@@ -36,10 +36,7 @@
 /*---------------------------------------------------------------------------*/
 
 
-Binding cc_binding = NULL;		   	   /*                        */
-
-#define Bind(NAME,GET)  bind(cc_binding, symdef(symbol((String)NAME),     \
-						0, 0, GET, NULL));
+Term c_list;					   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_as_string()
@@ -60,7 +57,7 @@ static Term ml_as_string(binding, list, args)	   /*                        */
   Term t;					   /*                        */
   no_args(args, "as.string");  		   	   /*                        */
   if (list == NIL)				   /*                        */
-    return StringTerm((String)"[]");		   /*                        */
+    return StringTerm("[]");		   	   /*                        */
  						   /*                        */
   buffer = sbopen();				   /*                        */
   sbputc('[', buffer);				   /*                        */
@@ -74,7 +71,7 @@ static Term ml_as_string(binding, list, args)	   /*                        */
     UnlinkTerm(t);				   /*                        */
   }						   /*                        */
   sbputc(']', buffer);				   /*                        */
-  t = StringTerm((String)sbflush(buffer));	   /*                        */
+  t = StringTerm(sbflush(buffer));	   	   /*                        */
   sbclose(buffer);				   /*                        */
   return t;		   			   /*                        */
 }						   /*------------------------*/
@@ -164,7 +161,7 @@ static Term m_join(binding, list, args)	   	   /*                        */
   no_args(args, "join");			   /*                        */
  						   /*                        */
   if (list == NIL)				   /*                        */
-    return StringTerm((String)"");		   /*                        */
+    return StringTerm("");		   	   /*                        */
  						   /*                        */
   buffer = sbopen();				   /*                        */
   t 	 = eval_str(binding, Car(list));	   /*                        */
@@ -177,7 +174,7 @@ static Term m_join(binding, list, args)	   	   /*                        */
     sbputs((char*)TString(t), buffer);		   /*                        */
     UnlinkTerm(t);				   /*                        */
   }						   /*                        */
-  t = StringTerm((String)sbflush(buffer));	   /*                        */
+  t = StringTerm(sbflush(buffer));	   	   /*                        */
   sbclose(buffer);				   /*                        */
   return t;		   			   /*                        */
 }						   /*------------------------*/
@@ -203,18 +200,22 @@ static Term m_length(binding, list, args)	   /*                        */
   return NumberTerm(list_length(list));		   /*                        */
 }						   /*------------------------*/
 
+
+#define Bind(NAME,GET)  bind(b, symdef(symbol((String)NAME),     \
+				       0, 0, GET, NULL));
+
 /*-----------------------------------------------------------------------------
 ** Function:	class_list()
-** Type:	void
+** Type:	Term
 ** Purpose:	
 **		
-** Arguments:
-**		
-** Returns:	nothing
+** Arguments:	none
+** Returns:	the class
 **___________________________________________________			     */
-void class_list()				   /*                        */
-{						   /*                        */
-  cc_binding = binding(127, NULL);		   /*                        */
+Term class_list()				   /*                        */
+{ Binding b;					   /*                        */
+  c_list = new_class(StringTerm("List"));	   /*                        */
+  b = TBinding(c_list);		   	   	   /*                        */
  						   /*                        */
   Bind("as.boolean", m_as_boolean);		   /*                        */
   Bind("as.number", m_length);		   	   /*                        */
@@ -224,6 +225,8 @@ void class_list()				   /*                        */
   Bind("empty", m_empty);			   /*                        */
   Bind("length", m_length);		   	   /*                        */
   Bind("join", m_join);		   	   	   /*                        */
+ 						   /*                        */
+  return c_list;				   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

@@ -13,6 +13,7 @@
 #include <bibtool/general.h>
 #include <bibtool/error.h>
 #include "term.h"
+#include "binding.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -134,7 +135,7 @@ String term_type(term)				   /*                        */
 #endif
 
 /*-----------------------------------------------------------------------------
-** Function:	new_term()
+** Function:	new__t()
 ** Type:	Term
 ** Purpose:	Allocate a new term and initialize it.
 **		
@@ -209,6 +210,24 @@ Term new_term(type, car, cdr)			   /*                        */
   Term cdr;					   /*                        */
 { register Term t = new__t(type, cdr);		   /*                        */
   Car(t) = car;			   	   	   /*                        */
+  return t;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	new_class()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	name	
+** Returns:	
+**___________________________________________________			     */
+Term new_class(name)			   	   /*                        */
+  Term name;					   /*                        */
+{ register Term t = new__t(L_CLASS, NIL);	   /*                        */
+  TBinding(t) = binding(127, NULL);		   /*                        */
+  if (name) LinkTerm(name);			   /*                        */
+  Cdr(t) = name;				   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -304,6 +323,7 @@ void free_term(t)				   /*                        */
   switch (TType(t))				   /*                        */
   { case L_TRUE:				   /*                        */
     case L_FALSE:				   /*                        */
+    case L_CLASS:				   /*                        */
       return;					   /*                        */
     case L_VAR:					   /*                        */
     case L_FIELD:				   /*                        */
@@ -463,10 +483,11 @@ static void prn_args(file, term, pre, sep, post, in, quote)/*                */
 ** Purpose:	
 **		
 ** Arguments:
-**	file	
-**	 prefix	
-**	 term	
-**	 in	
+**	file	the output file
+**	prefix	
+**	term	
+**	in	the indentation level
+**	quote	
 ** Returns:	nothing
 **___________________________________________________			     */
 static void prn_function(file, prefix, term, in, quote)/*                    */
@@ -507,6 +528,15 @@ void prn_term(file, term, in, quote)		   /*                        */
   { case 0:					   /*                        */
     case EOF:					   /*                        */
       return;	   			   	   /*                        */
+						   /*                        */
+    case L_CLASS:				   /*                        */
+      fputs("<CLASS", file);			   /*                        */
+      if (Cdr(term)) 				   /*                        */
+      { fputc(' ', file);			   /*                        */
+	prn_term(file, Cdr(term), in, quote);	   /*                        */
+      }						   /*                        */
+      fputs(">", file);			   	   /*                        */
+      return;					   /*                        */
 						   /*                        */
     case L_CONS:				   /*                        */
       prn_args(file, term, "[", ", ", "]", 0, quote);/*                      */

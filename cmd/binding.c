@@ -38,12 +38,12 @@ extern Term meth_list _ARG((Binding binding, Term cons, Term args));
 extern Term meth_number _ARG((Binding binding, Term n, Term args));
 extern Term meth_string _ARG((Binding binding, Term s, Term args));
 
-extern Binding cb_binding;
-extern Binding cc_binding;
-extern Binding cd_binding;
-extern Binding cn_binding;
-extern Binding cr_binding;
-extern Binding cs_binding;
+extern Term c_boolean;
+extern Term c_database;
+extern Term c_list;
+extern Term c_number;
+extern Term c_record;
+extern Term c_string;
 
 /*---------------------------------------------------------------------------*/
 
@@ -547,10 +547,10 @@ static Term funcall(b, key, f, args)		   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 term	
-**	 tp	
-**	 clazzp	
+**	binding	the binding
+**	term	the term
+**	tp	Outout parameter for the evaluated term
+**	clazzp	Output parameter for the name of the class
 ** Returns:	
 **___________________________________________________			     */
 SymDef get_class(binding, term, tp, clazzp)	   /*                        */
@@ -563,31 +563,31 @@ SymDef get_class(binding, term, tp, clazzp)	   /*                        */
 					       	   /*                        */
   switch (*tp == NIL ? L_CONS : TType(*tp))	   /*                        */
   { case L_TRUE:				   /*                        */
-      class_b = cb_binding;		   	   /*                        */
+      class_b = TBinding(c_boolean);		   /*                        */
       *clazzp = "True";			   	   /*                        */
       break;				   	   /*                        */
     case L_FALSE:				   /*                        */
-      class_b = cb_binding;		   	   /*                        */
+      class_b = TBinding(c_boolean);		   /*                        */
       *clazzp = "False";			   /*                        */
       break;				   	   /*                        */
     case L_STRING:			   	   /*                        */
-      class_b = cs_binding;		   	   /*                        */
+      class_b = TBinding(c_string);		   /*                        */
       *clazzp = "String";			   /*                        */
       break;				   	   /*                        */
     case L_NUMBER:			   	   /*                        */
-      class_b = cn_binding;		   	   /*                        */
+      class_b = TBinding(c_number);		   /*                        */
       *clazzp = "Number";			   /*                        */
       break;				   	   /*                        */
     case L_CONS:				   /*                        */
-      class_b = cc_binding;		   	   /*                        */
+      class_b = TBinding(c_list);		   /*                        */
       *clazzp = "List";			   	   /*                        */
       break;				   	   /*                        */
     case L_DB:				   	   /*                        */
-      class_b = cd_binding;		   	   /*                        */
+      class_b = TBinding(c_database);		   /*                        */
       *clazzp = "DB";			   	   /*                        */
       break;				   	   /*                        */
     case L_RECORD:			   	   /*                        */
-      class_b = cr_binding;		   	   /*                        */
+      class_b = TBinding(c_record);		   /*                        */
       *clazzp = "Record";			   /*                        */
       break;				   	   /*                        */
     case L_FUNCTION:			   	   /*                        */

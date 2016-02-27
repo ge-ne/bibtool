@@ -36,26 +36,50 @@
 /*---------------------------------------------------------------------------*/
 
 
-Binding cn_binding = NULL;		   	   /*                        */
+Term c_number;		   	   		   /*                        */
 
-#define Bind(NAME,GET)  bind(cn_binding, symdef(symbol((String)NAME),     \
-						0, 0, GET, NULL));
+/*-----------------------------------------------------------------------------
+** Function:	m_class()
+** Type:	Term
+** Purpose:	Getter for the class.
+** Arguments:
+**	binding	the binding
+**	string	the string term
+**	args	the arguments
+** Returns:	the class
+**___________________________________________________			     */
+static Term m_class(binding, string, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term string;					   /*                        */
+  Term args;					   /*                        */
+{						   /*                        */
+  no_args(args, "class");	   	   	   /*                        */
+  LinkTerm(c_number);				   /*                        */
+  return c_number;				   /*                        */
+}						   /*------------------------*/
+
+#define Bind(NAME,GET)  bind(b, symdef(symbol((String)NAME),     \
+				       0, 0, GET, NULL));
 
 /*-----------------------------------------------------------------------------
 ** Function:	class_number()
-** Type:	void
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:	none
-** Returns:	nothing
+** Returns:	the class
 **___________________________________________________			     */
-void class_number()				   /*                        */
-{						   /*                        */
-  cn_binding = binding(127, NULL);		   /*                        */
+Term class_number()				   /*                        */
+{ Binding b;					   /*                        */
+  c_number = new_class(StringTerm("Number"));	   /*                        */
+  b = TBinding(c_number);		   	   /*                        */
  						   /*                        */
   Bind("as.boolean", m_as_boolean);		   /*                        */
   Bind("as.string", m_as_string);		   /*                        */
   Bind("as.number", m_as_number);		   /*                        */
+  Bind("class", m_class);		   	   /*                        */
+ 						   /*                        */
+  return c_number;				   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

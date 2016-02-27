@@ -33,11 +33,13 @@
 #define L_DB		0x230
 #define L_RECORD	0x240
 
-#define L_CONS		0x200
-#define L_GROUP		0x201
-#define L_TRUE		0x202
-#define L_FALSE		0x203
-#define L_FUNCTION	0x204
+#define L_CLASS		0x200
+#define L_CONS		0x201
+#define L_GROUP		0x202
+#define L_TRUE		0x203
+#define L_FALSE		0x204
+
+#define L_FUNCTION	0x205
 #define L_IF		0x206
 #define L_ELSE		0x207
 #define L_WHILE		0x208
@@ -81,6 +83,7 @@ typedef struct S_TERM {				   /*                        */
     struct S_TERM * car;			   /*                        */
     unsigned char * string;			   /*                        */
     long number;				   /*                        */
+    struct S_BINDING *binding;			   /*                        */
     DB db;					   /*                        */
     Record record;				   /*                        */
   } a;						   /*                        */
@@ -95,6 +98,7 @@ typedef struct S_TERM {				   /*                        */
 #define Cdr(T)			((T)->cdr)
 #define TString(T)		((T)->a.string)
 #define TNumber(T)		((T)->a.number)
+#define TBinding(T)		((T)->a.binding)
 #define TDB(T)			((T)->a.db)
 #define TRecord(T)		((T)->a.record)
 #define TRefCount(T)		((T)->ref_count)
@@ -119,9 +123,9 @@ typedef struct S_TERM {				   /*                        */
 #define Cons(CAR, CDR)		new_term(L_CONS, CAR, CDR)
 #define Cons1(CAR)		Cons(CAR, NIL)
 
-#define StringTerm(S)		new_t_string(L_STRING, symbol(S))
-#define FieldTerm(S)		new_t_string(L_FIELD, symbol(S))
-#define VarTerm(S)		new_t_string(L_VAR, symbol(S))
+#define StringTerm(S)		new_t_string(L_STRING, symbol((String)S))
+#define FieldTerm(S)		new_t_string(L_FIELD, symbol((String)S))
+#define VarTerm(S)		new_t_string(L_VAR, symbol((String)S))
 #define NumberTerm(N)		new_term_num(N)
 #define NewTerm(N)		new_term(N, NIL, NIL)
 #define DBTerm(DB)		new_t_db(DB)
@@ -187,6 +191,7 @@ typedef struct S_BINDING			   /*                        */
 
 extern void free_sym _ARG((SymDef s));
 
+extern Term new_class(Term name);		   /*                        */
 extern Term new_term _ARG((short int type, Term car, Term cdr ));
 extern Term new_term_num _ARG((long value));
 extern Term new_t_string _ARG((short int type, unsigned char* s));

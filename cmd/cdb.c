@@ -37,10 +37,27 @@
 /*---------------------------------------------------------------------------*/
 
 
-Binding cd_binding = NULL;		   	   /*                        */
+Term c_database;				   /*                        */
 
-#define Bind(NAME,GET)  bind(cd_binding, symdef(symbol((String)NAME),     \
-						0, 0, GET, NULL));
+/*-----------------------------------------------------------------------------
+** Function:	m_class()
+** Type:	Term
+** Purpose:	Getter for the class.
+** Arguments:
+**	binding	the binding
+**	string	the string term
+**	args	the arguments
+** Returns:	the class
+**___________________________________________________			     */
+static Term m_class(binding, string, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term string;					   /*                        */
+  Term args;					   /*                        */
+{						   /*                        */
+  no_args(args, "class");	   	   	   /*                        */
+  LinkTerm(c_database);				   /*                        */
+  return c_database;				   /*                        */
+}						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_read()
@@ -228,22 +245,28 @@ static Term m_expand(binding, db, args)	   	   /*                        */
 			       TDB(db)));	   /*                        */
 }						   /*------------------------*/
 
+
+#define Bind(NAME,GET)  bind(b, symdef(symbol((String)NAME),     \
+				       0, 0, GET, NULL));
+
 /*-----------------------------------------------------------------------------
 ** Function:	class_db()
-** Type:	void
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:	none
 ** Returns:	nothing
 **___________________________________________________			     */
-void class_db()				   	   /*                        */
-{						   /*                        */
-  cd_binding = binding(127, NULL);		   /*                        */
+Term class_db()				   	   /*                        */
+{ Binding b;					   /*                        */
+  c_database = new_class(StringTerm("Database"));  /*                        */
+  b = TBinding(c_database);		   	   /*                        */
  						   /*                        */
   Bind("as.string", m_as_string);		   /*                        */
   Bind("as.number", m_as_number);		   /*                        */
+  Bind("class", m_class);			   /*                        */
   Bind("expand", m_expand);			   /*                        */
-  Bind("get", m_get);		   	   	   /*                        */
+  Bind("entry", m_get);		   	   	   /*                        */
   Bind("macro", m_macro);			   /*                        */
   Bind("read", m_read);		   	   	   /*                        */
   Bind("rewind", m_rewind);		   	   /*                        */
@@ -251,6 +274,8 @@ void class_db()				   	   /*                        */
 #ifdef TODO
   Bind("sort", m_sort);		   	   	   /*                        */
 #endif
+ 						   /*                        */
+  return c_database;				   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

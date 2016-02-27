@@ -36,27 +36,50 @@
 /*---------------------------------------------------------------------------*/
 
 
-Binding cb_binding = NULL;		   	   /*                        */
+Term c_boolean;				   	   /*                        */
 
-#define Bind(NAME,GET)  bind(cb_binding, symdef(symbol((String)NAME),     \
-						0, 0, GET, NULL));
+/*-----------------------------------------------------------------------------
+** Function:	m_class()
+** Type:	Term
+** Purpose:	Getter for the class.
+** Arguments:
+**	binding	the binding
+**	string	the string term
+**	args	the arguments
+** Returns:	the class
+**___________________________________________________			     */
+static Term m_class(binding, string, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term string;					   /*                        */
+  Term args;					   /*                        */
+{						   /*                        */
+  no_args(args, "class");	   	   	   /*                        */
+  LinkTerm(c_boolean);				   /*                        */
+  return c_boolean;				   /*                        */
+}						   /*------------------------*/
+
+#define Bind(NAME,GET)  bind(b, symdef(symbol((String)NAME),     \
+				       0, 0, GET, NULL));
 
 /*-----------------------------------------------------------------------------
 ** Function:	class_boolean()
-** Type:	void
+** Type:	Term
 ** Purpose:	
 **		
-** Arguments:
-**		
-** Returns:	nothing
+** Arguments:	none
+** Returns:	The class
 **___________________________________________________			     */
-void class_boolean()				   /*                        */
-{						   /*                        */
-  cb_binding = binding(127, NULL);		   /*                        */
+Term class_boolean()				   /*                        */
+{ Binding b;					   /*                        */
+  c_boolean = new_class(StringTerm("Boolean"));	   /*                        */
+  b = TBinding(c_boolean);		   	   /*                        */
  						   /*                        */
   Bind("as.boolean", m_as_boolean);		   /*                        */
   Bind("as.string", m_as_string);		   /*                        */
   Bind("as.number", m_as_number);		   /*                        */
+  Bind("class", m_class);		   	   /*                        */
+ 						   /*                        */
+  return c_boolean;				   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/
