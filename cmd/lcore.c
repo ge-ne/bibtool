@@ -654,9 +654,9 @@ Term g_setq(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { Term car = Cadr(term);			   /*                        */
-  term	   = evaluate(binding, Cdr(term));	   /*                        */
   if (car == NIL)				   /*                        */
     ErrorNF1("Undefined left hand side of equals");/*                        */
+  term = evaluate(binding, Cdr(term));	   	   /*                        */
  						   /*                        */
   if (TType(car) == L_METHOD)			   /*                        */
   { Term t;					   /*                        */
@@ -673,6 +673,8 @@ Term g_setq(binding, term)		   	   /*                        */
       ErrorNF3(clazz,			   	   /*                        */
 	       ": Illegal assignment to ",	   /*                        */
 	       TString(Cdr(car)));		   /*                        */
+    Cdr(t) = Cdr(car);
+    LinkTerm(Cdr(t));
     return (*SymSet(symdef))(binding,		   /*                        */
 			     t,			   /*                        */
 			     Cadr(term));	   /*                        */

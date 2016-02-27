@@ -87,6 +87,32 @@ static Term m_get(binding, record, args)	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	a_set()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	rec	the record term
+**	val	the value term
+** Returns:	
+**___________________________________________________			     */
+static Term a_set(binding, record, val)	   	   /*                        */
+  Binding binding;				   /*                        */
+  Term record;					   /*                        */
+  Term val;				   	   /*                        */
+{ Term args = Cddr(record);			   /*                        */
+  String key = str_arg(binding, &args, "field");   /*                        */
+  no_args(args, "field");			   /*                        */
+ 						   /*                        */
+  val = eval_str(binding, val);			   /*                        */
+  push_to_record(TRecord(record),		   /*                        */
+		 key,				   /*                        */
+		 TString(val));			   /*                        */
+  return val; 			   		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	m_has()
 ** Type:	Term
 ** Purpose:	
@@ -168,7 +194,7 @@ static Term a_key(binding, record, val)	   	   /*                        */
 { StringBuffer* sb = sbopen();			   /*                        */
   char *cp;					   /*                        */
   String s;					   /*                        */
-  val = eval_str(binding, val);			   /*                        */
+  val = eval_str(binding, Car(val));		   /*                        */
  						   /*                        */
   for (cp = (char*)TString(val); *cp; cp++)	   /*                        */
   { if (is_allowed(*cp)) sbputc(*cp, sb);  }	   /*                        */
@@ -233,7 +259,7 @@ void class_record()				   /*                        */
  						   /*                        */
   Bind("as.number", m_as_number);		   /*                        */
   Bind("as.string", m_as_string);		   /*                        */
-  Bind("get", m_get);		   	   	   /*                        */
+  Bind2("field", m_get, a_set);			   /*                        */
   Bind("has", m_has);		   	   	   /*                        */
   Bind2("key", m_key, a_key);			   /*                        */
   Bind("length", m_length);		   	   /*                        */
