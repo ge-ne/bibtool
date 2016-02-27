@@ -40,6 +40,26 @@
 Term c_record;					   /*                        */
 
 /*-----------------------------------------------------------------------------
+** Function:	m_class()
+** Type:	Term
+** Purpose:	Getter for the class.
+** Arguments:
+**	binding	the binding
+**	rec	the record term
+**	args	the arguments
+** Returns:	the class
+**___________________________________________________			     */
+static Term m_class(binding, rec, args)	   	   /*                        */
+  Binding binding;				   /*                        */
+  Term rec;					   /*                        */
+  Term args;					   /*                        */
+{						   /*                        */
+  no_args(args, "class");	   	   	   /*                        */
+  LinkTerm(c_record);				   /*                        */
+  return c_record;				   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	m_type()
 ** Type:	Term
 ** Purpose:	
@@ -260,6 +280,7 @@ Term class_record()				   /*                        */
  						   /*                        */
   Bind("as.number", m_as_number);		   /*                        */
   Bind("as.string", m_as_string);		   /*                        */
+  Bind("class", m_class);		   	   /*                        */
   Bind2("field", m_get, a_set);			   /*                        */
   Bind("has", m_has);		   	   	   /*                        */
   Bind2("key", m_key, a_key);			   /*                        */

@@ -39,6 +39,26 @@
 Term c_list;					   /*                        */
 
 /*-----------------------------------------------------------------------------
+** Function:	m_class()
+** Type:	Term
+** Purpose:	Getter for the class.
+** Arguments:
+**	binding	the binding
+**	list	the list term
+**	args	the arguments
+** Returns:	the class
+**___________________________________________________			     */
+static Term m_class(binding, list, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term list;					   /*                        */
+  Term args;					   /*                        */
+{						   /*                        */
+  no_args(args, "class");	   	   	   /*                        */
+  LinkTerm(c_list);				   /*                        */
+  return c_list;				   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	m_as_string()
 ** Type:	Term
 ** Purpose:	
@@ -222,6 +242,7 @@ Term class_list()				   /*                        */
   Bind("as.string", ml_as_string);		   /*                        */
   Bind("car", m_car);		   	   	   /*                        */
   Bind("cdr", m_cdr);		   	   	   /*                        */
+  Bind("class", m_class);			   /*                        */
   Bind("empty", m_empty);			   /*                        */
   Bind("length", m_length);		   	   /*                        */
   Bind("join", m_join);		   	   	   /*                        */

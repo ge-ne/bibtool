@@ -44,13 +44,13 @@ Term c_number;		   	   		   /*                        */
 ** Purpose:	Getter for the class.
 ** Arguments:
 **	binding	the binding
-**	string	the string term
+**	number	the number term
 **	args	the arguments
 ** Returns:	the class
 **___________________________________________________			     */
-static Term m_class(binding, string, args)	   /*                        */
+static Term m_class(binding, number, args)	   /*                        */
   Binding binding;				   /*                        */
-  Term string;					   /*                        */
+  Term number;					   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
   no_args(args, "class");	   	   	   /*                        */

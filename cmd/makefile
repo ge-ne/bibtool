@@ -46,8 +46,8 @@ OFILES  = $(BASEDIR)crossref.o	\
 L_OFILES = binding.o		\
 	   cboolean.o		\
 	   cclass.o		\
-	   ccons.o		\
 	   cdb.o		\
+	   clist.o		\
 	   cnumber.o		\
 	   crecord.o		\
 	   cstring.o		\
@@ -65,7 +65,7 @@ all: tester
 binding.o:	binding.c binding.h literate.h term.h lcore.h lreader.h builtin.h
 cboolean.o:	cboolean.c term.h binding.h
 cclass.o:	cclass.c term.h binding.h
-ccons.o:	ccons.c term.h binding.h
+clist.o:	clist.c term.h binding.h
 cdb.o:		cdb.c term.h binding.h
 cnumber.o:	cnumber.c term.h binding.h
 crecord.o:	crecord.c term.h binding.h
