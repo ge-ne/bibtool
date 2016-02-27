@@ -66,6 +66,8 @@ BindFct( "check.rule",		     g_check_rule,
 				     s_check_rule,	add_check_rule(val)  )
 BindBool("check.case.sensitive",     g_case_check,
 				     s_case_check,	rsc_case_check	     )
+Bind(	 "Class",		     NULL,
+				     NULL,		SYM_NONE, L_CLASS    )
 Bind(    "clear.ignored.words",	     g_cl_ign_words,
 				     g_cl_ign_words,	SYM_BUILTIN, L_VAR   )
 BindBool("count.all",		     g_count_all,

@@ -73,17 +73,17 @@ sub boolean_tests
   BUnit::run(name         => "$key-1",
 	     resource	  => "123${op}456",
 	     expected_err => '',
-	     expected_out => "(123 $op 456)\n" );
+	     expected_out => "123 $op 456\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name         => "$key-2",
 	     resource	  => "123 $op -456",
 	     expected_err => '',
-	     expected_out => "(123 $op -456)\n" );
+	     expected_out => "123 $op -456\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name         => "$key-3",
 	     resource	  => "-123 $op -456",
 	     expected_err => '',
-	     expected_out => "(-123 $op -456)\n" );
+	     expected_out => "-123 $op -456\n" );
 }
 
 boolean_tests('eq','==');
@@ -109,32 +109,32 @@ sub and_or_tests
   BUnit::run(name         => "$key-1",
 	     resource	  => "123${op}456",
 	     expected_err => '',
-	     expected_out => "(123 $key 456)\n" );
+	     expected_out => "123 $key 456\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name         => "$key-2",
 	     resource	  => "123 $op -456",
 	     expected_err => '',
-	     expected_out => "(123 $key -456)\n" );
+	     expected_out => "123 $key -456\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name         => "$key-3",
 	     resource	  => "-123 $op -456",
 	     expected_err => '',
-	     expected_out => "(-123 $key -456)\n" );
+	     expected_out => "-123 $key -456\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name         => "$key-11",
 	     resource	  => "-123 $key 456",
 	     expected_err => '',
-	     expected_out => "(-123 $key 456)\n" );
+	     expected_out => "-123 $key 456\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name         => "$key-12",
 	     resource	  => "123 $key -456",
 	     expected_err => '',
-	     expected_out => "(123 $key -456)\n" );
+	     expected_out => "123 $key -456\n" );
   #------------------------------------------------------------------------------
   BUnit::run(name         => "$key-13",
 	     resource	  => "-123 $key -456",
 	     expected_err => '',
-	     expected_out => "(-123 $key -456)\n" );
+	     expected_out => "-123 $key -456\n" );
 }
 
 and_or_tests('and','&&');
@@ -168,7 +168,7 @@ not a and b;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(not(a) and b)
+not(a) and b
 __EOF__
 
 #------------------------------------------------------------------------------
@@ -178,7 +178,7 @@ not a or b;
 __EOF__
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(not(a) or b)
+not(a) or b
 __EOF__
 
 1;

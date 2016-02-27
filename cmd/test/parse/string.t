@@ -136,7 +136,7 @@ BUnit::run(name         => 'like-1',
 	   resource	=> 'a like "abc";',
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(a like "abc")
+a like "abc"
 __EOF__
 
 #------------------------------------------------------------------------------
@@ -144,7 +144,7 @@ BUnit::run(name         => 'ilike-1',
 	   resource	=> 'a ilike "abc";',
 	   expected_err => '',
 	   expected_out => <<__EOF__ );
-(a ilike "abc")
+a ilike "abc"
 __EOF__
 
 

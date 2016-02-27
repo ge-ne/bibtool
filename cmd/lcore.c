@@ -616,7 +616,7 @@ Term g_print(binding, term)			   /*                        */
 { 					   	   /*                        */
   for (term = Cdr(term); term ; term = Cdr(term))  /*                        */
   { Term t = evaluate(binding, Car(term));	   /*                        */
-    prn_term(stdout, t, 0, 0);			   /*                        */
+    prn_term(stdout, t, 0, 0, 1);		   /*                        */
     UnlinkTerm(t);				   /*                        */
   }		   				   /*                        */
   return NIL;			   		   /*                        */

@@ -113,7 +113,7 @@ BUnit::run(name         => 'fct-10',
 BUnit::run(name         => 'fct-20',
 	   resource	=> "a(1,2) + 123\n",
 	   expected_err => '',
-	   expected_out => "(a(1, 2) + 123)\n");
+	   expected_out => "a(1, 2) + 123\n");
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'fct-err-1',
@@ -371,19 +371,19 @@ BUnit::run(name         => 'method-4',
 BUnit::run(name         => 'method-11',
 	   resource	=> 'a=x:y()',
 	   expected_err => '',
-	   expected_out => "(a = x:y())\n" );
+	   expected_out => "a = x:y()\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'method-12',
 	   resource	=> 'a=x:y(1)',
 	   expected_err => '',
-	   expected_out => "(a = x:y(1))\n" );
+	   expected_out => "a = x:y(1)\n" );
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'method-13',
 	   resource	=> 'a=x:y(1,2)',
 	   expected_err => '',
-	   expected_out => "(a = x:y(1, 2))\n" );
+	   expected_out => "a = x:y(1, 2)\n" );
 
 1;
 #------------------------------------------------------------------------------

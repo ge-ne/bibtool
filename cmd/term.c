@@ -419,7 +419,7 @@ static void prn_field(file, t, quoted)		   /*                        */
  						   /*                        */
   if (Cdr(t))					   /*                        */
   { fputs(": ", file);				   /*                        */
-    prn_term(file, Cdr(t), 0, quoted);		   /*                        */
+    prn_term(file, Cdr(t), 0, quoted, FALSE);	   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
@@ -468,10 +468,10 @@ static void prn_args(file, term, pre, sep, post, in, quote)/*                */
 {						   /*                        */
   fputs(pre, file);		   		   /*                        */
   if (term)					   /*                        */
-  { prn_term(file, Car(term), in, quote);	   /*                        */
+  { prn_term(file, Car(term), in, quote, FALSE);   /*                        */
     for (term = Cdr(term); term; term = Cdr(term)) /*                        */
     { indent(file, sep, in);			   /*                        */
-      prn_term(file, Car(term), in, quote);	   /*                        */
+      prn_term(file, Car(term), in, quote, FALSE); /*                        */
     }						   /*                        */
   }						   /*                        */
   fputs(post, file);		   		   /*                        */
@@ -499,7 +499,7 @@ static void prn_function(file, prefix, term, in, quote)/*                    */
 {						   /*                        */
   prn_args(file, Car(term), prefix, ", ", ") ", 0, quote);/*                 */
   if (Cddr(term))				   /*                        */
-    prn_term(file, Cdr(term), in, quote);	   /*                        */
+    prn_term(file, Cdr(term), in, quote, FALSE);   /*                        */
   else						   /*                        */
     fputs("{}", file);			   	   /*                        */
 }						   /*------------------------*/
@@ -512,13 +512,17 @@ static void prn_function(file, prefix, term, in, quote)/*                    */
 ** Arguments:
 **	file	the output stream
 **	t	the term to print
+**	in	the indentation level
+**	quote	the indicator for quoting
+**	outer	the indicator for ...
 ** Returns:	nothing
 **___________________________________________________			     */
-void prn_term(file, term, in, quote)		   /*                        */
+void prn_term(file, term, in, quote, outer)	   /*                        */
   FILE * file;					   /*                        */
   Term term;					   /*                        */
   int in;					   /*                        */
   int quote;					   /*                        */
+  int outer;					   /*                        */
 { char * key;					   /*                        */
   if (term == NIL) {				   /*                        */
     fputs("[]", file);				   /*                        */
@@ -530,12 +534,11 @@ void prn_term(file, term, in, quote)		   /*                        */
       return;	   			   	   /*                        */
 						   /*                        */
     case L_CLASS:				   /*                        */
-      fputc('<', file);			   	   /*                        */
+      fputs("Class ", file);			   /*                        */
       if (Cdr(term)) 				   /*                        */
-      { prn_term(file, Cdr(term), in, FALSE); }	   /*                        */
+      { prn_term(file, Cdr(term), in, FALSE, FALSE); }/*                     */
       else					   /*                        */
       { fputs("CLASS", file); }			   /*                        */
-      fputc('>', file);			   	   /*                        */
       return;					   /*                        */
 						   /*                        */
     case L_CONS:				   /*                        */
@@ -556,7 +559,7 @@ void prn_term(file, term, in, quote)		   /*                        */
       fputs("each (", file);			   /*                        */
       prn_field(file, Car(term), quote);	   /*                        */
       fputs(") ", file);			   /*                        */
-      prn_term(file, Cdr(term), in, quote);	   /*                        */
+      prn_term(file, Cdr(term), in, quote, FALSE); /*                        */
       return;					   /*                        */
 						   /*                        */
     case L_FALSE:				   /*                        */
@@ -585,17 +588,17 @@ void prn_term(file, term, in, quote)		   /*                        */
 						   /*                        */
     case L_IF:				   	   /*                        */
       prn_args(file, Cdar(term), "if (", "", ") ", in + 1, quote);/*         */
-      prn_term(file, Cadr(term), in, quote);	   /*                        */
+      prn_term(file, Cadr(term), in, quote, FALSE);/*                        */
       if (Cddr(term))				   /*                        */
       { fputs(" else ", file);			   /*                        */
-	prn_term(file, Cddr(term), in, quote);	   /*                        */
+	prn_term(file, Cddr(term), in, quote, FALSE);/*                      */
       }						   /*                        */
       return;					   /*                        */
 						   /*                        */
     case L_METHOD:			   	   /*                        */
-      prn_term(file, Car(term), in, quote);	   /*                        */
+      prn_term(file, Car(term), in, quote, FALSE); /*                        */
       fputc(':', file);			   	   /*                        */
-      prn_term(file, Cdr(term), in, quote);  	   /*                        */
+      prn_term(file, Cdr(term), in, quote, FALSE); /*                        */
       return;					   /*                        */
 						   /*                        */
     case L_NUMBER:				   /*                        */
@@ -608,7 +611,7 @@ void prn_term(file, term, in, quote)		   /*                        */
 						   /*                        */
     case L_RETURN:				   /*                        */
       fputs("return ", file);			   /*                        */
-      prn_term(file, Cdr(term), in, quote);	   /*                        */
+      prn_term(file, Cdr(term), in, quote, FALSE); /*                        */
       return;					   /*                        */
 						   /*                        */
     case L_STRING:				   /*                        */
@@ -624,17 +627,21 @@ void prn_term(file, term, in, quote)		   /*                        */
 						   /*                        */
     case L_UMINUS:				   /*                        */
       fputs("-", file);			   	   /*                        */
-      prn_term(file, Cadr(term), in, quote);	   /*                        */
+      prn_term(file, Cadr(term), in, quote, FALSE);/*                        */
       return;					   /*                        */
 						   /*                        */
     case L_WHILE:				   /*                        */
-      prn_args(file, Cdar(term), "while (", "", ") ", in + 1, quote);/*      */
-      prn_term(file, Cdr(term), in, quote);	   /*                        */
+      prn_args(file,				   /*                        */
+	       Cdar(term),			   /*                        */
+	       "while (", "", ") ", in + 1, quote);/*                        */
+      prn_term(file, Cdr(term), in, quote, FALSE); /*                        */
       return;					   /*                        */
 						   /*                        */
     case L_WITH:			   	   /*                        */
-      prn_args(file, Car(term), "with (", ",", ") ", in + 1, quote);/*       */
-      prn_term(file, Cdr(term), in, quote);	   /*                        */
+      prn_args(file,				   /*                        */
+	       Car(term),			   /*                        */
+	       "with (", ",", ") ", in + 1, quote);/*                        */
+      prn_term(file, Cdr(term), in, quote, FALSE); /*                        */
       return;					   /*                        */
 						   /*                        */
     case L_FUNCALL:  key = (char*)TString(term);break;/*                     */
@@ -664,18 +671,20 @@ void prn_term(file, term, in, quote)		   /*                        */
   if (L_IS_BINARY(TType(term)) )		   /*                        */
   { term = Cdr(term);				   /*                        */
     if (term == NIL) return;			   /*                        */
-    fputc('(', file);				   /*                        */
-    prn_term(file, Car(term), in, quote);	   /*                        */
+    if (!outer) fputc('(', file);		   /*                        */
+    prn_term(file, Car(term), in, quote, FALSE);   /*                        */
     fputs(key, file);		   		   /*                        */
-    prn_term(file, Cadr(term), in, quote);	   /*                        */
+    prn_term(file, Cadr(term), in, quote, FALSE);  /*                        */
+    if (!outer) fputc(')', file);		   /*                        */
   } else {					   /*                        */
     fputs(key, file);		   		   /*                        */
     fputc('(', file);				   /*                        */
     if (term)					   /*                        */
       prn_args(file, Cdr(term), "", ", ", "", in, quote);/*                  */
+    fputc(')', file);				   /*                        */
   }						   /*                        */
-  fputc(')', file);				   /*                        */
-}						   /*------------------------*/
+ }						   /*                        */
+						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	print()
@@ -690,7 +699,7 @@ void prn_term(file, term, in, quote)		   /*                        */
 void print(file, term)			   	   /*                        */
   register FILE * file;				   /*                        */
   register Term term;				   /*                        */
-{ prn_term(file, term, 0, TRUE);		   /*                        */
+{ prn_term(file, term, 0, TRUE, TRUE);		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

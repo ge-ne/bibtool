@@ -515,7 +515,7 @@ static Term funcall(b, key, f, args)		   /*                        */
   String key;					   /*                        */
   Term f;					   /*                        */
   Term args;					   /*                        */
-{ Binding nb = binding(127, b);			   /*                        */
+{ Binding nb = binding(31, b);			   /*                        */
   SymDef sym;					   /*                        */
   Term t;					   /*                        */
  						   /*                        */
