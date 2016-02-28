@@ -1,4 +1,4 @@
-/*** cfunction.c***************************************************************
+/*** function.c ***************************************************************
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
@@ -15,8 +15,8 @@
 #include <bibtool/error.h>
 #include <bibtool/type.h>
 #include <bibtool/sbuffer.h>
-#include "binding.h"
-#include "lcore.h"
+#include "../binding.h"
+#include "../lcore.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */

@@ -44,14 +44,14 @@ OFILES  = $(BASEDIR)crossref.o	\
 	  $(BASEDIR)regex.o
 
 L_OFILES = binding.o		\
-	   cboolean.o		\
-	   cclass.o		\
-	   cdb.o		\
-	   cfunction.o		\
-	   clist.o		\
-	   cnumber.o		\
-	   crecord.o		\
-	   cstring.o		\
+	   class/boolean.o	\
+	   class/class.o	\
+	   class/db.o		\
+	   class/function.o	\
+	   class/list.o		\
+	   class/number.o	\
+	   class/record.o	\
+	   class/string.o	\
 	   lcore.o		\
 	   linereader.o		\
 	   literate.o		\
@@ -64,21 +64,21 @@ L_OFILES = binding.o		\
 all: tester
 
 binding.o:	binding.c binding.h literate.h term.h lcore.h lreader.h builtin.h
-cboolean.o:	cboolean.c term.h binding.h
-cclass.o:	cclass.c term.h binding.h
-cfunction.o:	cfunction.c term.h binding.h
-clist.o:	clist.c term.h binding.h
-cdb.o:		cdb.c term.h binding.h
-cnumber.o:	cnumber.c term.h binding.h
-crecord.o:	crecord.c term.h binding.h
-cstring.o:	cstring.c term.h binding.h
-lcore.o:	lcore.c lcore.h term.h
-linereader.o:	linereader.c linereader.h
-literate.o:	literate.c literate.h term.h
-lreader.o:	lreader.c lreader.h lreader.h term.h linereader.h lcore.h tstack.h binding.h
-term.o:		term.c term.h
-tester.o:	tester.c term.h lcore.h lreader.h binding.h tstack.h
-tstack.o:	tstack.c tstack.h lcore.h term.h binding.h
+class/boolean.o:  class/boolean.c term.h binding.h
+class/class.o:	  class/class.c term.h binding.h
+class/function.o: class/function.c term.h binding.h
+class/list.o:	  class/list.c term.h binding.h
+class/db.o:	  class/db.c term.h binding.h
+class/number.o:	  class/number.c term.h binding.h
+class/record.o:	  class/record.c term.h binding.h
+class/string.o:	  class/string.c term.h binding.h
+lcore.o:	  lcore.c lcore.h term.h
+linereader.o:	  linereader.c linereader.h
+literate.o:	  literate.c literate.h term.h
+lreader.o:	  lreader.c lreader.h lreader.h term.h linereader.h lcore.h tstack.h binding.h
+term.o:		  term.c term.h
+tester.o:	  tester.c term.h lcore.h lreader.h binding.h tstack.h
+tstack.o:	  tstack.c tstack.h lcore.h term.h binding.h
 
 tester: tester.o $(L_OFILES) $(OFILES)
 	@$(CC) -g -O2 -o $@ $^ -lkpathsea
