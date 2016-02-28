@@ -129,6 +129,43 @@
 
 \chapter{The \BibTool3 Configuration Language}
 
+With version 3 of \BibTool\ the configuration languages has been extended. It
+contains a rich set of possibilities which open new manipulations of \BibTeX\
+files.
+
+The extension has been inspired by functional programming as in Lisp and
+object oriented programming as in C++.
+
+\section{Basic Constructions}
+
+% TODO
+
+\subsection{Comments}
+
+Comments are started by a percent sign and extend to the end of the line.
+
+\begin{lstlisting}[language=BibTool]
+% this is a comment
+\end{lstlisting}
+
+\subsection{Statements}
+
+% TODO
+
+\subsection{Blocks}
+
+% TODO
+
+\subsection{Variables}
+
+% TODO
+
+\subsection{Variable Scopes}
+
+% TODO
+
+
+
 \section{Strings}
 
 Strings are enclosed in double quotes. They may contain arbitrary characters.
@@ -164,18 +201,9 @@ The string method \texttt{as.boolean()} converts the string into a boolean
 value. It is true if the string is not empty and false otherwise. This method
 takes no arguments.
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 "123":as.boolean()
-\end{lstlisting}
-
-\subsection{String method \texttt{as.boolean()}}
-
-The string method \texttt{as.boolean()} converts the string into a boolean
-value. The value true is returned if the string is not empty, otherwise false.
-This method takes no arguments.
-
-\begin{lstlisting}[language=BibTool]
-"123":as.boolean()
+$\hookrightarrow$ true
 \end{lstlisting}
 
 \subsection{String method \texttt{as.string()}}
@@ -184,8 +212,9 @@ The string method \texttt{as.string()} converts the string into a string
 value. This is the string itself. This method is provided for consistency.
 This method takes no arguments.
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 "123":as.string()
+$\hookrightarrow$ "123"
 \end{lstlisting}
 
 \subsection{String method \texttt{as.number()}}
@@ -195,8 +224,9 @@ value. The string is scanned and the first sequence consisting of digits
 optionally preceeded by a minus sign are returned as number. If no number is
 found then 0 is returned. This method takes no arguments.
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 "abc 123 def ":as.number()
+$\hookrightarrow$ 123
 \end{lstlisting}
 
 \subsection{String method \texttt{class()}}
@@ -205,8 +235,9 @@ The string method \texttt{class()} returns the class object for strings. This
 method takes no arguments. More on classes can be found in
 section~\ref{sec:classes}.
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 "123, 456":class()
+$\hookrightarrow$ <Class String>
 \end{lstlisting}
 
 \subsection{String method \texttt{concat()}}
@@ -215,8 +246,9 @@ The string method \texttt{concat()} concatenates its arguments to the end of
 the current string and returns the new string as result.
 This method takes arbitrarily many arguments.
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 "123":concat("a b c")
+$\hookrightarrow$ "123a b c"
 \end{lstlisting}
 
 \subsection{String method \texttt{length()}}
@@ -224,8 +256,9 @@ This method takes arbitrarily many arguments.
 The string method \texttt{length()} returns the number of characters contained
 in the string. This method takes no arguments.
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 "123 456":length()
+$\hookrightarrow$ 7
 \end{lstlisting}
 
 %TODO
@@ -233,6 +266,10 @@ in the string. This method takes no arguments.
 \subsection{Iterating over Strings}
 
 %TODO
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+each (c:"123 456") {...}
+\end{lstlisting}
 
 \section{Numbers}
 
@@ -257,8 +294,39 @@ The number method \texttt{class()} returns the class object for numbers. This
 method takes no arguments. More on classes can be found in
 section~\ref{sec:classes}.
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 456:class()
+$\hookrightarrow$ <Class Number>
+\end{lstlisting}
+
+%TODO
+
+\section{Booleans}
+
+Booleans are represented with the built in constants \verb|true| and
+\verb|false|.
+
+\begin{lstlisting}[language=BibTool]
+true
+\end{lstlisting}
+
+
+\begin{lstlisting}[language=BibTool]
+false
+\end{lstlisting}
+
+%TODO
+
+
+\subsection{Boolean method \texttt{class()}}
+
+The boolean method \texttt{class()} returns the class object for booleans.
+This method takes no arguments. More on classes can be found in
+section~\ref{sec:classes}.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+true:class()
+$\hookrightarrow$ <Class Boolean>
 \end{lstlisting}
 
 %TODO
@@ -268,17 +336,17 @@ section~\ref{sec:classes}.
 Lists are denoted by values enclosed in brackets and separated by commas.
 Thus the empty list is denoted by empty brackets:
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 []
 \end{lstlisting}
 
 A single element list can be seen in the following example:
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 [123]
 \end{lstlisting}
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 [123, 456]
 \end{lstlisting}
 
@@ -288,8 +356,9 @@ The list method \texttt{as.boolean()} converts the list into a boolean value.
 It is true if the list is not empty and false otherwise. This method takes no
 arguments.
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 [123, 456]:as boolean()
+$\hookrightarrow$ true
 \end{lstlisting}
 
 \subsection{List method \texttt{as.number()}}
@@ -297,8 +366,9 @@ arguments.
 The list method \texttt{as.number()} converts the list into a numeric value.
 The value is the length of the list. This method takes no arguments.
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 [123, 456]:as.number()
+$\hookrightarrow$ 2
 \end{lstlisting}
 
 \subsection{List method \texttt{as.string()}}
@@ -307,8 +377,9 @@ The list method \texttt{as.number()} converts the list into a string value.
 The value is the printable representation of the list. This method takes no
 arguments.
 
-\begin{lstlisting}[language=BibTool]
-[123, 456]:as.string()
+\begin{lstlisting}[language=BibTool,mathescape=true]
+[123,456]:as.string()
+$\hookrightarrow$ "[123, 456]"
 \end{lstlisting}
 
 \subsection{List method \texttt{car()}}
@@ -316,8 +387,9 @@ arguments.
 The list method \texttt{car()} returns the first element of the list. If the
 list is empty then the empty list is returned. This method takes no arguments.
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 [123, 456]:car()
+$\hookrightarrow$ 123
 \end{lstlisting}
 
 \subsection{List method \texttt{cdr()}}
@@ -326,8 +398,9 @@ The list method \texttt{cdr()} returns the list excluding the first element.
 If the list is empty then the empty list is returned. This method takes no
 arguments.
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 [123, 456]:cdr()
+$\hookrightarrow$ [456]
 \end{lstlisting}
 
 \subsection{List method \texttt{class()}}
@@ -336,8 +409,9 @@ The list method \texttt{class()} returns the class object for lists. This
 method takes no arguments. More on classes can be found in
 section~\ref{sec:classes}.
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 [123, 456]:class()
+$\hookrightarrow$ <Class List>
 \end{lstlisting}
 
 \subsection{List method \texttt{empty()}}
@@ -345,8 +419,9 @@ section~\ref{sec:classes}.
 The list method \texttt{empty()} returns the boolean value true if the list is
 empty and false otherwise. This method takes no arguments.
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 [123, 456]:empty()
+$\hookrightarrow$ false
 \end{lstlisting}
 
 \subsection{List method \texttt{join()}}
@@ -354,8 +429,9 @@ empty and false otherwise. This method takes no arguments.
 The list method \texttt{join()}
 % TODO
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 [123, 456]:join([9,8,7])
+$\hookrightarrow$ [123, 456, 9, 8, 7]
 \end{lstlisting}
 
 \subsection{List method \texttt{length()}}
@@ -363,17 +439,56 @@ The list method \texttt{join()}
 The list method \texttt{length()} returns the number of elements contained in
 the list. This method takes no arguments.
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 [123, 456]:length()
+$\hookrightarrow$ 2
 \end{lstlisting}
 
 \subsection{Iterating over Lists}
 
 %TODO
 
-\section{Functions}
+\section{Functions and Methods}
 
 %TODO
+
+
+\subsection{String method \texttt{apply()}}
+
+The function method \texttt{apply()} runs the code associated to the funtion
+after the parameters are bound to the actual values or the fallbacks defined
+with the function.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+function (x:123){ x }:apply()
+$\hookrightarrow$ 123
+\end{lstlisting}
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+function (x:123){ x }:apply(987)
+$\hookrightarrow$ 987
+\end{lstlisting}
+
+
+\subsection{Function method \texttt{class()}}
+
+The function method \texttt{class()} returns the class object for functions.
+This method takes no arguments.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+function(){}:class()
+$\hookrightarrow$ <Class Function>
+\end{lstlisting}
+
+\subsection{String method \texttt{code()}}
+
+The function method \texttt{code()} returns the code as list. This method
+takes no arguments.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+function (x:123){ x }:code()
+$\hookrightarrow$ [x]
+\end{lstlisting}
 
 
 \section{Classes}\label{sec:classes}
@@ -386,8 +501,9 @@ the list. This method takes no arguments.
 The class method \texttt{class()} returns the class object for classes. This
 method takes no arguments.
 
-\begin{lstlisting}[language=BibTool]
+\begin{lstlisting}[language=BibTool,mathescape=true]
 "123, 456":class():class()
+$\hookrightarrow$ <Class Class>
 \end{lstlisting}
 
 
