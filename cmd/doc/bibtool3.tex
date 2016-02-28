@@ -1,4 +1,4 @@
-%%*** bibtool.tex *************************************************************
+%%*** bibtool3.tex ************************************************************
 %%
 %% This file is part of BibTool.
 %% It is distributed under the Creative Commons Attribution-Share
@@ -131,14 +131,142 @@
 
 \section{Strings}
 
+Strings are enclosed in double quotes. They may contain arbitrary characters.
+
+\begin{lstlisting}[language=BibTool]
+""
+\end{lstlisting}
+
+\begin{lstlisting}[language=BibTool]
+"a b c"
+\end{lstlisting}
+
+The backslash (\verb|\|)acts as escape character.
+\begin{description}
+\item [\BS\BS] \ \\The doubled backslash is stored as single backslash
+  internally.
+\item [\BS "] \ \\The delimiting character \verb|"| can be included in a
+  string by preceeding it with a backslash.
+\item [\BS n] \ \\The newline character can be included in a string as the
+  sequence \verb|\n|
+\item [\BS r] \ \\The carrige return character can be included in a string as
+  the sequence \verb|\r|
+\item [\BS b] \ \\The backspace character can be included in a string as the
+  sequence \verb|\b|
+\item [\BS f] \ \\The formfeed character can be included in a string as the
+  sequence \verb|\n|
+\end{description}
+
+
+\subsection{String method \texttt{as.boolean()}}
+
+The string method \texttt{as.boolean()} converts the string into a boolean
+value. It is true if the string is not empty and false otherwise. This method
+takes no arguments.
+
+\begin{lstlisting}[language=BibTool]
+"123":as.boolean()
+\end{lstlisting}
+
+\subsection{String method \texttt{as.boolean()}}
+
+The string method \texttt{as.boolean()} converts the string into a boolean
+value. The value true is returned if the string is not empty, otherwise false.
+This method takes no arguments.
+
+\begin{lstlisting}[language=BibTool]
+"123":as.boolean()
+\end{lstlisting}
+
+\subsection{String method \texttt{as.string()}}
+
+The string method \texttt{as.string()} converts the string into a string
+value. This is the string itself. This method is provided for consistency.
+This method takes no arguments.
+
+\begin{lstlisting}[language=BibTool]
+"123":as.string()
+\end{lstlisting}
+
+\subsection{String method \texttt{as.number()}}
+
+The string method \texttt{as.number()} converts the string into a number
+value. The string is scanned and the first sequence consisting of digits
+optionally preceeded by a minus sign are returned as number. If no number is
+found then 0 is returned. This method takes no arguments.
+
+\begin{lstlisting}[language=BibTool]
+"abc 123 def ":as.number()
+\end{lstlisting}
+
+\subsection{String method \texttt{class()}}
+
+The string method \texttt{class()} returns the class object for strings. This
+method takes no arguments. More on classes can be found in
+section~\ref{sec:classes}.
+
+\begin{lstlisting}[language=BibTool]
+"123, 456":class()
+\end{lstlisting}
+
+\subsection{String method \texttt{concat()}}
+
+The string method \texttt{concat()} concatenates its arguments to the end of
+the current string and returns the new string as result.
+This method takes arbitrarily many arguments.
+
+\begin{lstlisting}[language=BibTool]
+"123":concat("a b c")
+\end{lstlisting}
+
+\subsection{String method \texttt{length()}}
+
+The string method \texttt{length()} returns the number of characters contained
+in the string. This method takes no arguments.
+
+\begin{lstlisting}[language=BibTool]
+"123 456":length()
+\end{lstlisting}
+
+%TODO
+
+\subsection{Iterating over Strings}
+
+%TODO
+
 \section{Numbers}
 
+Numbers are decimal numbers made up of digits and an optional minus prefix.
 
+
+\begin{lstlisting}[language=BibTool]
+123
+\end{lstlisting}
+
+
+\begin{lstlisting}[language=BibTool]
+-987
+\end{lstlisting}
+
+%TODO
+
+
+\subsection{Number method \texttt{class()}}
+
+The number method \texttt{class()} returns the class object for numbers. This
+method takes no arguments. More on classes can be found in
+section~\ref{sec:classes}.
+
+\begin{lstlisting}[language=BibTool]
+456:class()
+\end{lstlisting}
+
+%TODO
 
 \section{Lists}
 
 Lists are denoted by values enclosed in brackets and separated by commas.
-Thus the empty list is denoted by emoty brackets:
+Thus the empty list is denoted by empty brackets:
 
 \begin{lstlisting}[language=BibTool]
 []
@@ -150,10 +278,129 @@ A single element list can be seen in the following example:
 [123]
 \end{lstlisting}
 
-
 \begin{lstlisting}[language=BibTool]
 [123, 456]
 \end{lstlisting}
+
+\subsection{List method \texttt{as.boolean()}}
+
+The list method \texttt{as.boolean()} converts the list into a boolean value.
+It is true if the list is not empty and false otherwise. This method takes no
+arguments.
+
+\begin{lstlisting}[language=BibTool]
+[123, 456]:as boolean()
+\end{lstlisting}
+
+\subsection{List method \texttt{as.number()}}
+
+The list method \texttt{as.number()} converts the list into a numeric value.
+The value is the length of the list. This method takes no arguments.
+
+\begin{lstlisting}[language=BibTool]
+[123, 456]:as.number()
+\end{lstlisting}
+
+\subsection{List method \texttt{as.string()}}
+
+The list method \texttt{as.number()} converts the list into a string value.
+The value is the printable representation of the list. This method takes no
+arguments.
+
+\begin{lstlisting}[language=BibTool]
+[123, 456]:as.string()
+\end{lstlisting}
+
+\subsection{List method \texttt{car()}}
+
+The list method \texttt{car()} returns the first element of the list. If the
+list is empty then the empty list is returned. This method takes no arguments.
+
+\begin{lstlisting}[language=BibTool]
+[123, 456]:car()
+\end{lstlisting}
+
+\subsection{List method \texttt{cdr()}}
+
+The list method \texttt{cdr()} returns the list excluding the first element.
+If the list is empty then the empty list is returned. This method takes no
+arguments.
+
+\begin{lstlisting}[language=BibTool]
+[123, 456]:cdr()
+\end{lstlisting}
+
+\subsection{List method \texttt{class()}}
+
+The list method \texttt{class()} returns the class object for lists. This
+method takes no arguments. More on classes can be found in
+section~\ref{sec:classes}.
+
+\begin{lstlisting}[language=BibTool]
+[123, 456]:class()
+\end{lstlisting}
+
+\subsection{List method \texttt{empty()}}
+
+The list method \texttt{empty()} returns the boolean value true if the list is
+empty and false otherwise. This method takes no arguments.
+
+\begin{lstlisting}[language=BibTool]
+[123, 456]:empty()
+\end{lstlisting}
+
+\subsection{List method \texttt{join()}}
+
+The list method \texttt{join()}
+% TODO
+
+\begin{lstlisting}[language=BibTool]
+[123, 456]:join([9,8,7])
+\end{lstlisting}
+
+\subsection{List method \texttt{length()}}
+
+The list method \texttt{length()} returns the number of elements contained in
+the list. This method takes no arguments.
+
+\begin{lstlisting}[language=BibTool]
+[123, 456]:length()
+\end{lstlisting}
+
+\subsection{Iterating over Lists}
+
+%TODO
+
+\section{Functions}
+
+%TODO
+
+
+\section{Classes}\label{sec:classes}
+
+%TODO
+
+
+\subsection{Class method \texttt{class()}}
+
+The class method \texttt{class()} returns the class object for classes. This
+method takes no arguments.
+
+\begin{lstlisting}[language=BibTool]
+"123, 456":class():class()
+\end{lstlisting}
+
+
+\section{Databases}
+
+%TODO
+
+
+\section{Entries}
+
+%TODO
+
+
 
 \end{document} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
