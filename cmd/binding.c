@@ -511,7 +511,7 @@ static Term each(b, a, group)		   	   /*                        */
 **	args	the actual argument list
 ** Returns:	
 **___________________________________________________			     */
-static Term funcall(b, key, f, args)		   /*                        */
+Term funcall(b, key, f, args)		   	   /*                        */
   Binding b;					   /*                        */
   String key;					   /*                        */
   Term f;					   /*                        */

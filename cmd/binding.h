@@ -22,20 +22,30 @@
 #define _ARG(A) ()
 #endif
 
-extern Binding binding _ARG((unsigned int size, Binding nextBinding));/*     */
+extern Binding binding _ARG((unsigned int size,	   /*                        */
+			     Binding nextBinding));/*                        */
 extern Binding root_binding();			   /*                        */
-extern SymDef get_bind _ARG((Binding binding, String key));/*                */
-extern Term setq _ARG((Binding binding, String key, Term term));/*           */
-extern Term evaluate _ARG((Binding binding, Term term));/*                   */
-extern Term eval_self _ARG((Binding binding, Term term));/*                  */
-extern Term eval_builtin _ARG((Binding binding, Term term));/*               */
-extern void dump_binding _ARG((Binding binding, FILE* file));/*              */
-
+extern SymDef get_bind _ARG((Binding binding,	   /*                        */
+			     String key));	   /*                        */
+extern Term setq _ARG((Binding binding,		   /*                        */
+		       String key,		   /*                        */
+		       Term term));		   /*                        */
+extern Term evaluate _ARG((Binding binding,	   /*                        */
+			   Term term));		   /*                        */
+extern Term eval_self _ARG((Binding binding,	   /*                        */
+			    Term term));	   /*                        */
+extern Term eval_builtin _ARG((Binding binding,	   /*                        */
+			       Term term));	   /*                        */
+extern void dump_binding _ARG((Binding binding,	   /*                        */
+			       FILE* file));	   /*                        */
+extern Term funcall _ARG((Binding b,		   /*                        */
+			  String key,		   /*                        */
+			  Term f,		   /*                        */
+			  Term args));		   /*                        */
 extern SymDef get_class(Binding binding,	   /*                        */
 			Term term,		   /*                        */
 			Term *tp,		   /*                        */
 			char** clazzp);		   /*                        */
-
 
 extern void bind _ARG((Binding binding, SymDef sym));/*                      */
 

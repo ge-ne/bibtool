@@ -59,6 +59,27 @@ static Term m_class(binding, fct, args)	   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	m_apply()
+** Type:	Term
+** Purpose:	Run the function.
+** Arguments:
+**	binding	the binding
+**	fct	the function term
+**	args	the arguments
+** Returns:	the class
+**___________________________________________________			     */
+static Term m_apply(binding, fct, args)	   	   /*                        */
+  Binding binding;				   /*                        */
+  Term fct;					   /*                        */
+  Term args;					   /*                        */
+{						   /*                        */
+  return funcall(binding, (String)"", fct, args);  /*                        */
+}						   /*------------------------*/
+
+#define Bind(NAME,GET)  bind(b, symdef(symbol((String)NAME),     \
+				       0, 0, GET, NULL));
+
+/*-----------------------------------------------------------------------------
 ** Function:	m_code()
 ** Type:	Term
 ** Purpose:	Getter for the code.
@@ -95,6 +116,7 @@ Term class_function()				   /*                        */
   c_function = new_class(StringTerm("Function"));  /*                        */
   b = TBinding(c_function);		   	   /*                        */
  						   /*                        */
+  Bind("apply", m_apply);		   	   /*                        */
   Bind("class", m_class);		   	   /*                        */
   Bind("code", m_code);		   	   	   /*                        */
  						   /*                        */

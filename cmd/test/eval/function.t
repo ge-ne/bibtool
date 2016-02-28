@@ -440,6 +440,20 @@ BUnit::run(name         => 'each-err-3',
 	   expected_err	=> "\n*** BibTool ERROR: Illegal argument for each: false\n",
 	   expected_out	=> '');
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'function-apply-1',
+	   args		=> '--eval',
+	   resource     => "function (x:false) { x }:apply()",
+	   expected_err	=> '',
+	   expected_out	=> "false\n");
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'function-apply-2',
+	   args		=> '--eval',
+	   resource     => "function (x:false) { x }:apply(123)",
+	   expected_err	=> '',
+	   expected_out	=> "123\n");
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 
