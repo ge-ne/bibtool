@@ -38,15 +38,6 @@
 /* External Programs                                                         */
 /*===========================================================================*/
 
-extern Term class_boolean();
-extern Term class_class();
-extern Term class_db();
-extern Term class_function();
-extern Term class_record();
-extern Term class_list();
-extern Term class_number();
-extern Term class_string();
-
 /*---------------------------------------------------------------------------*/
 
 

@@ -36,7 +36,7 @@
 /*---------------------------------------------------------------------------*/
 
 
-Term c_string;					   /*                        */
+static Term c_string;				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_class()
@@ -201,17 +201,20 @@ static Term m_substring(binding, string, args)	   /*                        */
 **___________________________________________________			     */
 Term class_string()				   /*                        */
 { Binding b;					   /*                        */
-  c_string = new_class(StringTerm("String"));	   /*                        */
-  b = TBinding(c_string);			   /*                        */
  						   /*                        */
-  Bind("as.boolean", m_as_boolean);		   /*                        */
-  Bind("as.string", m_as_string);		   /*                        */
-  Bind("as.number", m_as_number);		   /*                        */
-  Bind("class", m_class);			   /*                        */
-  Bind("concat", m_concat);			   /*                        */
-  Bind("length", m_length);			   /*                        */
-  Bind("substring", m_substring);		   /*                        */
-  Bind("trim", m_trim);		   		   /*                        */
+  if (c_string == NIL)			   	   /*                        */
+  { c_string = new_class(StringTerm("String"));	   /*                        */
+    b = TBinding(c_string);			   /*                        */
+ 						   /*                        */
+    Bind("as.boolean", m_as_boolean);		   /*                        */
+    Bind("as.string", m_as_string);		   /*                        */
+    Bind("as.number", m_as_number);		   /*                        */
+    Bind("class", m_class);			   /*                        */
+    Bind("concat", m_concat);			   /*                        */
+    Bind("length", m_length);			   /*                        */
+    Bind("substring", m_substring);		   /*                        */
+    Bind("trim", m_trim);			   /*                        */
+  }						   /*                        */
  						   /*                        */
   return c_string;				   /*                        */
 }						   /*------------------------*/

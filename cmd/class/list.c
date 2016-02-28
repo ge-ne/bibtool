@@ -36,7 +36,7 @@
 /*---------------------------------------------------------------------------*/
 
 
-Term c_list;					   /*                        */
+static Term c_list;				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_class()
@@ -234,18 +234,21 @@ static Term m_length(binding, list, args)	   /*                        */
 **___________________________________________________			     */
 Term class_list()				   /*                        */
 { Binding b;					   /*                        */
-  c_list = new_class(StringTerm("List"));	   /*                        */
-  b = TBinding(c_list);		   	   	   /*                        */
  						   /*                        */
-  Bind("as.boolean", m_as_boolean);		   /*                        */
-  Bind("as.number", m_length);		   	   /*                        */
-  Bind("as.string", ml_as_string);		   /*                        */
-  Bind("car", m_car);		   	   	   /*                        */
-  Bind("cdr", m_cdr);		   	   	   /*                        */
-  Bind("class", m_class);			   /*                        */
-  Bind("empty", m_empty);			   /*                        */
-  Bind("length", m_length);		   	   /*                        */
-  Bind("join", m_join);		   	   	   /*                        */
+  if (c_list == NIL)			   	   /*                        */
+  { c_list = new_class(StringTerm("List"));	   /*                        */
+    b = TBinding(c_list);			   /*                        */
+ 						   /*                        */
+    Bind("as.boolean", m_as_boolean);		   /*                        */
+    Bind("as.number", m_length);		   /*                        */
+    Bind("as.string", ml_as_string);		   /*                        */
+    Bind("car", m_car);		   	   	   /*                        */
+    Bind("cdr", m_cdr);		   	   	   /*                        */
+    Bind("class", m_class);			   /*                        */
+    Bind("empty", m_empty);			   /*                        */
+    Bind("length", m_length);		   	   /*                        */
+    Bind("join", m_join);			   /*                        */
+  }						   /*                        */
  						   /*                        */
   return c_list;				   /*                        */
 }						   /*------------------------*/

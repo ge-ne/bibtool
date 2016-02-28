@@ -37,7 +37,7 @@
 /*---------------------------------------------------------------------------*/
 
 
-Term c_database;				   /*                        */
+static Term c_database;				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_class()
@@ -258,21 +258,24 @@ static Term m_expand(binding, db, args)	   	   /*                        */
 **___________________________________________________			     */
 Term class_db()				   	   /*                        */
 { Binding b;					   /*                        */
-  c_database = new_class(StringTerm("Database"));  /*                        */
-  b = TBinding(c_database);		   	   /*                        */
  						   /*                        */
-  Bind("as.string", m_as_string);		   /*                        */
-  Bind("as.number", m_as_number);		   /*                        */
-  Bind("class", m_class);			   /*                        */
-  Bind("expand", m_expand);			   /*                        */
-  Bind("entry", m_get);		   	   	   /*                        */
-  Bind("macro", m_macro);			   /*                        */
-  Bind("read", m_read);		   	   	   /*                        */
-  Bind("rewind", m_rewind);		   	   /*                        */
-  Bind("sort.macros", m_sort_macros);		   /*                        */
+  if (c_database == NIL)			   /*                        */
+  { c_database = new_class(StringTerm("Database"));/*                        */
+    b = TBinding(c_database);		   	   /*                        */
+ 						   /*                        */
+    Bind("as.string", m_as_string);		   /*                        */
+    Bind("as.number", m_as_number);		   /*                        */
+    Bind("class", m_class);			   /*                        */
+    Bind("expand", m_expand);			   /*                        */
+    Bind("entry", m_get);			   /*                        */
+    Bind("macro", m_macro);			   /*                        */
+    Bind("read", m_read);			   /*                        */
+    Bind("rewind", m_rewind);		   	   /*                        */
+    Bind("sort.macros", m_sort_macros);		   /*                        */
 #ifdef TODO
-  Bind("sort", m_sort);		   	   	   /*                        */
+    Bind("sort", m_sort);			   /*                        */
 #endif
+  }						   /*                        */
  						   /*                        */
   return c_database;				   /*                        */
 }						   /*------------------------*/

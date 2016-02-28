@@ -38,14 +38,14 @@ extern Term meth_list _ARG((Binding binding, Term cons, Term args));
 extern Term meth_number _ARG((Binding binding, Term n, Term args));
 extern Term meth_string _ARG((Binding binding, Term s, Term args));
 
-extern Term c_boolean;
-extern Term c_class;
-extern Term c_database;
-extern Term c_function;
-extern Term c_list;
-extern Term c_number;
-extern Term c_record;
-extern Term c_string;
+extern Term class_boolean();
+extern Term class_class();
+extern Term class_db();
+extern Term class_function();
+extern Term class_record();
+extern Term class_list();
+extern Term class_number();
+extern Term class_string();
 
 /*---------------------------------------------------------------------------*/
 
@@ -470,7 +470,7 @@ void dump_binding(binding, file)		   /*                        */
 **	b	the binding
 **	a	the assigns
 **	group	the code group
-** Returns:	
+** Returns:	the resulting term of the last evaluation
 **___________________________________________________			     */
 static Term each(b, a, group)		   	   /*                        */
   Binding b;					   /*                        */
@@ -489,6 +489,7 @@ static Term each(b, a, group)		   	   /*                        */
   { setq(new_bind,				   /*                        */
 	 TString(a),				   /*                        */
 	 evaluate(b, DoItNext(iterator)));	   /*                        */
+    UnlinkTerm(t);			   	   /*                        */
     t = evaluate(new_bind, group);		   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -566,14 +567,14 @@ SymDef get_class(binding, term, tp, clazzp)	   /*                        */
 					       	   /*                        */
   switch (*tp == NIL ? L_CONS : TType(*tp))	   /*                        */
   { case L_FALSE:				   /*                        */
-    case L_TRUE:     clazz = c_boolean;	 break;	   /*                        */
-    case L_CLASS:    clazz = c_class;	 break;	   /*                        */
-    case L_CONS:     clazz = c_list;	 break;	   /*                        */
-    case L_DB:	     clazz = c_database; break;	   /*                        */
-    case L_NUMBER:   clazz = c_number;	 break;	   /*                        */
-    case L_RECORD:   clazz = c_record;	 break;	   /*                        */
-    case L_STRING:   clazz = c_string;	 break;	   /*                        */
-    case L_FUNCTION: clazz = c_function; break;	   /*                        */
+    case L_TRUE:     clazz = class_boolean();	break;/*                     */
+    case L_CLASS:    clazz = class_class();	break;/*                     */
+    case L_CONS:     clazz = class_list();	break;/*                     */
+    case L_DB:	     clazz = class_db();	break;/*                     */
+    case L_NUMBER:   clazz = class_number();	break;/*                     */
+    case L_RECORD:   clazz = class_record();	break;/*                     */
+    case L_STRING:   clazz = class_string();	break;/*                     */
+    case L_FUNCTION: clazz = class_function();	break;/*                     */
     default:				   	   /*                        */
       ErrorNF3("Missing instance for method ",	   /*                        */
 	       TString(Cdr(term)),"()");	   /*                        */
@@ -583,7 +584,6 @@ SymDef get_class(binding, term, tp, clazzp)	   /*                        */
   return get_bind(TBinding(clazz),		   /*                        */
 		  TString(Cdr(term)));	   	   /*                        */
 }						   /*------------------------*/
-
 
 /*-----------------------------------------------------------------------------
 ** Function:	evaluate()

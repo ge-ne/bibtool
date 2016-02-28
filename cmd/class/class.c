@@ -36,7 +36,7 @@
 /*---------------------------------------------------------------------------*/
 
 
-Term c_class;				   	   /*                        */
+static Term c_class;				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_class()
@@ -71,10 +71,13 @@ static Term m_class(binding, clazz, args)	   /*                        */
 **___________________________________________________			     */
 Term class_class()				   /*                        */
 { Binding b;					   /*                        */
-  c_class = new_class(StringTerm("Class"));	   /*                        */
-  b = TBinding(c_class);		   	   /*                        */
  						   /*                        */
-  Bind("class", m_class);		   	   /*                        */
+  if (c_class == NIL)				   /*                        */
+  { c_class = new_class(StringTerm("Class"));	   /*                        */
+    b = TBinding(c_class);		   	   /*                        */
+ 						   /*                        */
+    Bind("class", m_class);		   	   /*                        */
+  }						   /*                        */
  						   /*                        */
   return c_class;				   /*                        */
 }						   /*------------------------*/

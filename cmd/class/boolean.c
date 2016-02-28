@@ -36,7 +36,7 @@
 /*---------------------------------------------------------------------------*/
 
 
-Term c_boolean;				   	   /*                        */
+static Term c_boolean;				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_class()
@@ -71,13 +71,16 @@ static Term m_class(binding, string, args)	   /*                        */
 **___________________________________________________			     */
 Term class_boolean()				   /*                        */
 { Binding b;					   /*                        */
-  c_boolean = new_class(StringTerm("Boolean"));	   /*                        */
-  b = TBinding(c_boolean);		   	   /*                        */
  						   /*                        */
-  Bind("as.boolean", m_as_boolean);		   /*                        */
-  Bind("as.number", m_as_number);		   /*                        */
-  Bind("as.string", m_as_string);		   /*                        */
-  Bind("class", m_class);		   	   /*                        */
+  if (c_boolean == NIL)				   /*                        */
+  { c_boolean = new_class(StringTerm("Boolean"));  /*                        */
+    b = TBinding(c_boolean);		   	   /*                        */
+ 						   /*                        */
+    Bind("as.boolean", m_as_boolean);		   /*                        */
+    Bind("as.number", m_as_number);		   /*                        */
+    Bind("as.string", m_as_string);		   /*                        */
+    Bind("class", m_class);		   	   /*                        */
+  }						   /*                        */
  						   /*                        */
   return c_boolean;				   /*                        */
 }						   /*------------------------*/

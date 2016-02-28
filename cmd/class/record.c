@@ -37,7 +37,7 @@
 /*---------------------------------------------------------------------------*/
 
 
-Term c_record;					   /*                        */
+static Term c_record;				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_class()
@@ -275,19 +275,22 @@ static Term m_length(binding, rec, args)	   /*                        */
 **___________________________________________________			     */
 Term class_record()				   /*                        */
 { Binding b;					   /*                        */
-  c_record = new_class(StringTerm("Entry"));	   /*                        */
-  b = TBinding(c_record);		   	   /*                        */
  						   /*                        */
-  Bind("as.number", m_as_number);		   /*                        */
-  Bind("as.string", m_as_string);		   /*                        */
-  Bind("class", m_class);		   	   /*                        */
-  Bind2("field", m_get, a_set);			   /*                        */
-  Bind("has", m_has);		   	   	   /*                        */
-  Bind2("key", m_key, a_key);			   /*                        */
-  Bind("length", m_length);		   	   /*                        */
-  Bind("sort", m_sort);			   	   /*                        */
-  Bind("sort.key", m_sortkey);			   /*                        */
-  Bind("type", m_type);		   	   	   /*                        */
+  if (c_record == NIL)			   	   /*                        */
+  { c_record = new_class(StringTerm("Entry"));	   /*                        */
+    b = TBinding(c_record);		   	   /*                        */
+ 						   /*                        */
+    Bind("as.number", m_as_number);		   /*                        */
+    Bind("as.string", m_as_string);		   /*                        */
+    Bind("class", m_class);		   	   /*                        */
+    Bind2("field", m_get, a_set);		   /*                        */
+    Bind("has", m_has);		   	   	   /*                        */
+    Bind2("key", m_key, a_key);			   /*                        */
+    Bind("length", m_length);		   	   /*                        */
+    Bind("sort", m_sort);			   /*                        */
+    Bind("sort.key", m_sortkey);		   /*                        */
+    Bind("type", m_type);			   /*                        */
+  }						   /*                        */
 						   /*                        */
   return c_record;				   /*                        */
 }						   /*------------------------*/

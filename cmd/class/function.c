@@ -36,7 +36,7 @@
 /*---------------------------------------------------------------------------*/
 
 
-Term c_function;				   /*                        */
+static Term c_function;				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_class()
@@ -113,12 +113,15 @@ static Term m_code(binding, fct, args)	   	   /*                        */
 **___________________________________________________			     */
 Term class_function()				   /*                        */
 { Binding b;					   /*                        */
-  c_function = new_class(StringTerm("Function"));  /*                        */
-  b = TBinding(c_function);		   	   /*                        */
  						   /*                        */
-  Bind("apply", m_apply);		   	   /*                        */
-  Bind("class", m_class);		   	   /*                        */
-  Bind("code", m_code);		   	   	   /*                        */
+  if (c_function == NIL)			   /*                        */
+  { c_function = new_class(StringTerm("Function"));/*                        */
+    b = TBinding(c_function);		   	   /*                        */
+ 						   /*                        */
+    Bind("apply", m_apply);		   	   /*                        */
+    Bind("class", m_class);		   	   /*                        */
+    Bind("code", m_code);			   /*                        */
+  }						   /*                        */
  						   /*                        */
   return c_function;				   /*                        */
 }						   /*------------------------*/
