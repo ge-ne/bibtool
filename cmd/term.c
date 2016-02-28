@@ -468,10 +468,10 @@ static void prn_args(file, term, pre, sep, post, in, quote)/*                */
 {						   /*                        */
   fputs(pre, file);		   		   /*                        */
   if (term)					   /*                        */
-  { prn_term(file, Car(term), in, quote, FALSE);   /*                        */
+  { prn_term(file, Car(term), in, quote, TRUE);    /*                        */
     for (term = Cdr(term); term; term = Cdr(term)) /*                        */
     { indent(file, sep, in);			   /*                        */
-      prn_term(file, Car(term), in, quote, FALSE); /*                        */
+      prn_term(file, Car(term), in, quote, TRUE);  /*                        */
     }						   /*                        */
   }						   /*                        */
   fputs(post, file);		   		   /*                        */
@@ -499,7 +499,7 @@ static void prn_function(file, prefix, term, in, quote)/*                    */
 {						   /*                        */
   prn_args(file, Car(term), prefix, ", ", ") ", 0, quote);/*                 */
   if (Cddr(term))				   /*                        */
-    prn_term(file, Cdr(term), in, quote, FALSE);   /*                        */
+    prn_term(file, Cdr(term), in, quote, TRUE);    /*                        */
   else						   /*                        */
     fputs("{}", file);			   	   /*                        */
 }						   /*------------------------*/

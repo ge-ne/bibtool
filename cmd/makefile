@@ -47,6 +47,7 @@ L_OFILES = binding.o		\
 	   cboolean.o		\
 	   cclass.o		\
 	   cdb.o		\
+	   cfunction.o		\
 	   clist.o		\
 	   cnumber.o		\
 	   crecord.o		\
@@ -65,6 +66,7 @@ all: tester
 binding.o:	binding.c binding.h literate.h term.h lcore.h lreader.h builtin.h
 cboolean.o:	cboolean.c term.h binding.h
 cclass.o:	cclass.c term.h binding.h
+cfunction.o:	cfunction.c term.h binding.h
 clist.o:	clist.c term.h binding.h
 cdb.o:		cdb.c term.h binding.h
 cnumber.o:	cnumber.c term.h binding.h

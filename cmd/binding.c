@@ -41,6 +41,7 @@ extern Term meth_string _ARG((Binding binding, Term s, Term args));
 extern Term c_boolean;
 extern Term c_class;
 extern Term c_database;
+extern Term c_function;
 extern Term c_list;
 extern Term c_number;
 extern Term c_record;
@@ -565,14 +566,14 @@ SymDef get_class(binding, term, tp, clazzp)	   /*                        */
 					       	   /*                        */
   switch (*tp == NIL ? L_CONS : TType(*tp))	   /*                        */
   { case L_FALSE:				   /*                        */
-    case L_TRUE:    clazz = c_boolean;	break;	   /*                        */
-    case L_CLASS:   clazz = c_class;	break;	   /*                        */
-    case L_CONS:    clazz = c_list;	break;	   /*                        */
-    case L_DB:	    clazz = c_database;	break;	   /*                        */
-    case L_NUMBER:  clazz = c_number;	break;	   /*                        */
-    case L_RECORD:  clazz = c_record;	break;	   /*                        */
-    case L_STRING:  clazz = c_string;	break;	   /*                        */
-    case L_FUNCTION:			   	   /*                        */
+    case L_TRUE:     clazz = c_boolean;	 break;	   /*                        */
+    case L_CLASS:    clazz = c_class;	 break;	   /*                        */
+    case L_CONS:     clazz = c_list;	 break;	   /*                        */
+    case L_DB:	     clazz = c_database; break;	   /*                        */
+    case L_NUMBER:   clazz = c_number;	 break;	   /*                        */
+    case L_RECORD:   clazz = c_record;	 break;	   /*                        */
+    case L_STRING:   clazz = c_string;	 break;	   /*                        */
+    case L_FUNCTION: clazz = c_function; break;	   /*                        */
     default:				   	   /*                        */
       ErrorNF3("Missing instance for method ",	   /*                        */
 	       TString(Cdr(term)),"()");	   /*                        */
@@ -613,6 +614,7 @@ Term evaluate(binding, term)			   /*                        */
 	return t;				   /*                        */
       }						   /*                        */
  						   /*                        */
+    case L_CLASS:				   /*                        */
     case L_DB:				   	   /*                        */
     case L_FALSE:				   /*                        */
     case L_NUMBER:				   /*                        */

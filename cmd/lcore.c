@@ -41,6 +41,7 @@
 extern Term class_boolean();
 extern Term class_class();
 extern Term class_db();
+extern Term class_function();
 extern Term class_record();
 extern Term class_list();
 extern Term class_number();
@@ -692,11 +693,11 @@ Term g_setq(binding, term)		   	   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	scanf_num()
 ** Type:	long
-** Purpose:	
-**		
+** Purpose:	Search in a string for a sequence of digit optionally
+**		preceeded by a minus sign and return it as number.
 ** Arguments:
-**	s	
-** Returns:	
+**	s	the string to be scanned
+** Returns:	the number found or 0
 **___________________________________________________			     */
 static long scanf_num(s)			   /*                        */
   String s;					   /*                        */
@@ -765,7 +766,9 @@ Term eval_num(binding, term)			   /*                        */
     return NumberTerm(0L);			   /*                        */
  						   /*                        */
   switch (TType(term))				   /*                        */
-  { case L_NUMBER: return term;			   /*                        */
+  { case L_NUMBER:				   /*                        */
+      LinkTerm(term);				   /*                        */
+      return term;			   	   /*                        */
     case L_FALSE:  val = 0L; break;		   /*                        */
     case L_TRUE:   val = 1L; break;		   /*                        */
     case L_CONS:   val = list_length(term); break; /*                        */
@@ -1278,6 +1281,7 @@ void init_lcore()				   /*                        */
   class_boolean();				   /*                        */
   class_class();				   /*                        */
   class_db();					   /*                        */
+  class_function();				   /*                        */
   class_record();				   /*                        */
   class_list();					   /*                        */
   class_number();				   /*                        */
