@@ -708,7 +708,12 @@ Term evaluate(binding, term)			   /*                        */
 				 t,		   /*                        */
 				 Cddr(term));	   /*                        */
       }						   /*                        */
-    case L_RETURN:				   /*                        */
+ 						   /*                        */
+     case L_QUOTE:				   /*                        */
+       LinkTerm(Cadr(term));			   /*                        */
+       return Cadr(term);			   /*                        */
+ 						   /*                        */
+     case L_RETURN:				   /*                        */
       return new_term(L_RETURN,			   /*                        */
 		      NIL,			   /*                        */
 		      evaluate(binding, Cdr(term)));/*                       */
@@ -731,7 +736,6 @@ Term evaluate(binding, term)			   /*                        */
     case L_NOT:      key = (String)"!";	     break;/*                        */
     case L_OR:       key = (String)"||";     break;/*                        */
     case L_PLUS:     key = (String)"+";	     break;/*                        */
-    case L_QUOTE:    key = (String)"'";	     break;/*                        */
     case L_SET:      key = (String)"=";	     break;/*                        */
     case L_TIMES:    key = (String)"*";	     break;/*                        */
     default:					   /*                        */

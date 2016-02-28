@@ -75,8 +75,8 @@ Term class_boolean()				   /*                        */
   b = TBinding(c_boolean);		   	   /*                        */
  						   /*                        */
   Bind("as.boolean", m_as_boolean);		   /*                        */
-  Bind("as.string", m_as_string);		   /*                        */
   Bind("as.number", m_as_number);		   /*                        */
+  Bind("as.string", m_as_string);		   /*                        */
   Bind("class", m_class);		   	   /*                        */
  						   /*                        */
   return c_boolean;				   /*                        */

@@ -155,7 +155,7 @@ static Term m_rewind(binding, db, args)	   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	m_sort_macros()
-** Type:	static Term
+** Type:	Term
 ** Purpose:	
 **		
 ** Arguments:
@@ -190,11 +190,11 @@ static Term m_get(binding, db, args)	   	   /*                        */
   Binding binding;				   /*                        */
   Term db;					   /*                        */
   Term args;					   /*                        */
-{ Record rec;
+{ Record rec;					   /*                        */
   String key = str_arg(binding, &args, "get");	   /*                        */
   no_args(args, "get");  	   	   	   /*                        */
-
-  rec = db_find(TDB(db), key);
+ 						   /*                        */
+  rec = db_find(TDB(db), key);			   /*                        */
   return rec ? RecordTerm(rec) : NIL;		   /*                        */
 }						   /*------------------------*/
 
@@ -213,11 +213,10 @@ static Term m_macro(binding, db, args)	   	   /*                        */
   Binding binding;				   /*                        */
   Term db;					   /*                        */
   Term args;					   /*                        */
-{ String s;					   /*                        */
-  String key = str_arg(binding, &args, "macro");   /*                        */
+{ String s = str_arg(binding, &args, "macro");     /*                        */
   no_args(args, "macro");  	   	   	   /*                        */
  						   /*                        */
-  s = db_string(TDB(db), key, TRUE);		   /*                        */
+  s = db_string(TDB(db), s, TRUE);		   /*                        */
   return s ? StringTerm(s) : NIL;		   /*                        */
 }						   /*------------------------*/
 
