@@ -44,9 +44,6 @@
 Term term_true;					   /*                        */
 Term term_false;				   /*                        */
 
-SymDef sym_true;				   /*                        */
-SymDef sym_false;				   /*                        */
-
 /*-----------------------------------------------------------------------------
 ** Function:	g_self()
 ** Type:	Term
@@ -1251,32 +1248,6 @@ Record rec_arg(binding, argp, msg)		   /*                        */
   UnlinkTerm(t);				   /*                        */
   *argp = Cdr(*argp);				   /*                        */
   return rec;					   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	init_lcore()
-** Type:	void
-** Purpose:	
-**		
-** Arguments:	none
-** Returns:	nothing
-**___________________________________________________			     */
-void init_lcore()				   /*                        */
-{						   /*                        */
-  sym_true  = symdef((String)"true",  L_TRUE,  SYM_LOCKED, g_self, NULL);/*  */
-  sym_false = symdef((String)"false", L_FALSE, SYM_LOCKED, g_self, NULL);/*  */
- 						   /*                        */
-  term_true  = SymTerm(sym_true)  = NewTerm(L_TRUE);/*                       */
-  term_false = SymTerm(sym_false) = NewTerm(L_FALSE);/*                      */
- 						   /*                        */
-  class_boolean();				   /*                        */
-  class_class();				   /*                        */
-  class_db();					   /*                        */
-  class_function();				   /*                        */
-  class_record();				   /*                        */
-  class_list();					   /*                        */
-  class_number();				   /*                        */
-  class_string();				   /*                        */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/

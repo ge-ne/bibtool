@@ -82,11 +82,6 @@ extern Term m_as_number _ARG((Binding binding,
 			      Term string,
 			      Term args));
 
-extern void init_lcore();			   /*                        */
-
-extern SymDef sym_true;			   	   /*                        */
-extern SymDef sym_false;			   /*                        */
-
 extern Term term_true;				   /*                        */
 extern Term term_false;				   /*                        */
 

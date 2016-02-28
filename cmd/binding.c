@@ -410,7 +410,15 @@ static Term str_s_rsc(binding, name, term, rp)	   /*                        */
 **___________________________________________________			     */
 Binding root_binding()				   /*                        */
 { Binding b = binding(511, BindingNULL);	   /*                        */
+  SymDef sym_true  = symdef((String)"true",  L_TRUE,  SYM_LOCKED, g_self, NULL);/*  */
+  SymDef sym_false = symdef((String)"false", L_FALSE, SYM_LOCKED, g_self, NULL);/*  */
  						   /*                        */
+
+  if (term_true	== NIL) term_true = NewTerm(L_TRUE);
+  if (term_false == NIL) term_false = NewTerm(L_FALSE);
+  SymTerm(sym_true)  = term_true;		   /*                        */
+  SymTerm(sym_false) = term_false;		   /*                        */
+
 #define BindBool(NAME,GET,SET,R)     Bind(NAME, GET, SET, SYM_BUILTIN, L_VAR)
 #define BindNum(NAME,GET,SET,R)	     Bind(NAME, GET, SET, SYM_BUILTIN, L_VAR)
 #define BindStr(NAME,GET,SET,R)	     Bind(NAME, GET, SET, SYM_BUILTIN, L_VAR)
@@ -421,6 +429,16 @@ Binding root_binding()				   /*                        */
 #define BindSym(NAME,SYM)	      bind(b, SYM);
  						   /*                        */
 #include "builtin.h"
+ 						   /*                        */
+  class_boolean();				   /*                        */
+  class_class();				   /*                        */
+  class_db();					   /*                        */
+  class_function();				   /*                        */
+  class_record();				   /*                        */
+  class_list();					   /*                        */
+  class_number();				   /*                        */
+  class_string();				   /*                        */
+ 						   /*                        */
   return b;				   	   /*                        */
 }						   /*------------------------*/
 
