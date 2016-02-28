@@ -221,6 +221,42 @@ static Term m_macro(binding, db, args)	   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	m_write()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	db	the database term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_write(binding, db, args)	   	   /*                        */
+  Binding binding;				   /*                        */
+  Term db;					   /*                        */
+  Term args;					   /*                        */
+{ extern char *rsc_print_et;			   /*                        */
+  FILE *file;					   /*                        */
+  char *f = (args != NIL			   /*                        */
+	     ? (char*)str_arg(binding, &args, "write")/*                     */
+	     : "");			   	   /*                        */
+  char *spec = (args != NIL			   /*                        */
+		? (char*)str_arg(binding, &args, "write")/*                  */
+		: rsc_print_et);		   /*                        */
+  no_args(args, "write");  	   	   	   /*                        */
+ 						   /*                        */
+  file = *f ? fopen(f, "w") : stdout;	   	   /*                        */
+  if (file == NULL)				   /*                        */
+    ErrorNF2("write: file could not be opened: ",  /*                        */
+	     f);				   /*                        */
+  print_db(file, TDB(db), spec);		   /*                        */
+ 						   /*                        */
+  if (*f) fclose(file);				   /*                        */
+ 						   /*                        */
+  return NIL;	   				   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	m_expand()
 ** Type:	Term
 ** Purpose:	
@@ -275,6 +311,7 @@ Term class_db()				   	   /*                        */
 #ifdef TODO
     Bind("sort", m_sort);			   /*                        */
 #endif
+    Bind("write", m_write);		   	   /*                        */
   }						   /*                        */
  						   /*                        */
   return c_database;				   /*                        */
