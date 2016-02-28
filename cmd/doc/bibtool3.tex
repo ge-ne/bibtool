@@ -148,6 +148,38 @@ Comments are started by a percent sign and extend to the end of the line.
 % this is a comment
 \end{lstlisting}
 
+\subsection{Words}\ref{sec:words}
+
+Words are sequences of characters which are used as variable names, function
+names, method names, and class names. Words start with a lower case or upper
+case letter, \verb|$|, \verb|@|, \verb|.|, or \verb|_|. They are optionally
+followed by a letter, a digit, \verb|$|, \verb|@|, \verb|.|, or \verb|_|.
+
+The follwoing words are reserved:
+
+\verb|and|
+\verb|defun|
+\verb|each|
+\verb|else|
+\verb|false|
+\verb|function|
+\verb|if|
+\verb|ilike|
+\verb|like|
+\verb|mod|
+\verb|nil|
+\verb|not|
+\verb|or|
+\verb|quote|
+\verb|return|
+\verb|true|
+\verb|while|
+\verb|with|
+
+\subsection{Variables}
+
+% TODO
+
 \subsection{Statements}
 
 % TODO
@@ -156,14 +188,21 @@ Comments are started by a percent sign and extend to the end of the line.
 
 % TODO
 
-\subsection{Variables}
+\subsection{Assignments}
 
-% TODO
+\begin{lstlisting}[language=BibTool]
+x = 123
+\end{lstlisting}
 
 \subsection{Variable Scopes}
 
 % TODO
 
+\begin{lstlisting}[language=BibTool]
+with (x:123) {}
+\end{lstlisting}
+
+\subsection{Quote}
 
 
 \section{Strings}
@@ -184,6 +223,8 @@ The backslash (\verb|\|)acts as escape character.
   internally.
 \item [\BS "] \ \\The delimiting character \verb|"| can be included in a
   string by preceeding it with a backslash.
+\item [\BS t] \ \\The tab character can be included in a string as the
+  sequence \verb|\t|
 \item [\BS n] \ \\The newline character can be included in a string as the
   sequence \verb|\n|
 \item [\BS r] \ \\The carrige return character can be included in a string as
@@ -193,6 +234,10 @@ The backslash (\verb|\|)acts as escape character.
 \item [\BS f] \ \\The formfeed character can be included in a string as the
   sequence \verb|\n|
 \end{description}
+
+\subsection{String Comparisons}
+
+%TODO
 
 
 \subsection{String method \texttt{as.boolean()}}
@@ -273,20 +318,78 @@ each (c:"123 456") {...}
 
 \section{Numbers}
 
-Numbers are decimal numbers made up of digits and an optional minus prefix.
-
+Numbers can be decimal numbers made up of digits and an optional minus prefix.
 
 \begin{lstlisting}[language=BibTool]
 123
 \end{lstlisting}
 
-
 \begin{lstlisting}[language=BibTool]
 -987
 \end{lstlisting}
 
+Numbers can be hexadecimal numbers, Those start with \verb|0x| and continue
+with digits and the letters A to F ot a to f. An optional minus may prefix the
+number.
+
+\begin{lstlisting}[language=BibTool]
+0x1234
+\end{lstlisting}
+
+Numbers can be octal numbers, Those start with \verb|0| and continue with
+digits 0 to 7. An optional minus may prefix the number.
+
+\begin{lstlisting}[language=BibTool]
+0123
+\end{lstlisting}
+
+\subsection{Numeric Expressions}
+
+Numeric expressions can be made up of the infix operators for plus (\verb|+|),
+minus (\verb|-|), times (\verb|*|), divide (\verb|/|), and mod (\verb|mod|).
+In addition the unary minus as prefix operator can be used, as well as
+parentheses to determine the priority of the evaluation.
+
+The evaluation is performed left to right, unless forced differntly by the
+prioities of the operators. Any operator involved is converted to a number for
+the evaluation. This is done with the built-in version of the appropriate
+method \verb|as.number()|.
+
 %TODO
 
+\begin{lstlisting}[language=BibTool,mathescape=true]
+1 + 2
+$\hookrightarrow$ 3
+\end{lstlisting}
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+1 - 2
+$\hookrightarrow$ -1
+\end{lstlisting}
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+-(1 + 2)
+$\hookrightarrow$ -3
+\end{lstlisting}
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+2 * 3
+$\hookrightarrow$ 6
+\end{lstlisting}
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+4 / 2
+$\hookrightarrow$ 2
+\end{lstlisting}
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+12 mod 5
+$\hookrightarrow$ 2
+\end{lstlisting}
+
+\subsection{Numeric Comparisons}
+
+%TODO
 
 \subsection{Number method \texttt{class()}}
 
@@ -310,13 +413,110 @@ Booleans are represented with the built in constants \verb|true| and
 true
 \end{lstlisting}
 
-
 \begin{lstlisting}[language=BibTool]
 false
 \end{lstlisting}
 
 %TODO
 
+\subsection{Boolean Operators}
+
+\subsubsection{The Conjunction}
+
+The conjunction of boolean terms is denoted with the infix operator \verb|and|
+or \verb|&&|. The two notations are identical and interchangable.
+
+The evaluation is performed left to right. Shortcut-evaluation ist used. This
+means the evaluation stops as soon as the result can be inferred.
+
+\begin{lstlisting}[language=BibTool]
+a and b
+\end{lstlisting}
+
+\begin{lstlisting}[language=BibTool]
+a && b
+\end{lstlisting}
+
+
+\subsubsection{The Disjunction}
+
+The disjunction of boolean terms is denoted with the infix operator \verb|or|
+or \verb'||'. The two notations are identical and interchangable.
+
+The evaluation is performed left to right. Shortcut-evaluation ist used. This
+means the evaluation stops as soon as the result can be inferred.
+
+\begin{lstlisting}[language=BibTool]
+a or b
+\end{lstlisting}
+
+\begin{lstlisting}[language=BibTool]
+a || b
+\end{lstlisting}
+
+\subsubsection{The Negation}
+
+The negation of a boolean term is denoted with the prefix operator \verb|not|
+or \verb|!|. The two notations are identical and interchangable.
+
+The evaluation is performed left to right. Shortcut-evaluation ist used. This
+means the evaluation stops as soon as the result can be inferred.
+
+\begin{lstlisting}[language=BibTool]
+not a
+\end{lstlisting}
+
+\begin{lstlisting}[language=BibTool]
+! a
+\end{lstlisting}
+
+\subsubsection{Boolean Comparisons}
+
+
+
+%TODO
+
+\subsection{Boolean method \texttt{as.boolean()}}
+n method \texttt{as.boolean()} converts the boolean into a boolean
+value. This is the boolean itself. This method is provided for consistency.
+This method takes no arguments.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+true:as.boolean()
+$\hookrightarrow$ true
+\end{lstlisting}
+
+\subsection{Boolean method \texttt{as.number()}}
+
+The boolean method \texttt{as.number()} converts the boolean into a numeric
+value. The value 1 for \verb|true| and 0 for \verb|false|. This method takes
+no arguments.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+true:as.number()
+$\hookrightarrow$ 1
+\end{lstlisting}
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+false:as.number()
+$\hookrightarrow$ 0
+\end{lstlisting}
+
+\subsection{Boolean method \texttt{as.string()}}
+
+The boolean method \texttt{as.number()} converts the boolean into a string
+value. The value is the printable representation of the boolean. This method
+takes no arguments.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+true:as.string()
+$\hookrightarrow$ "true"
+\end{lstlisting}
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+false:as.string()
+$\hookrightarrow$ "false"
+\end{lstlisting}
 
 \subsection{Boolean method \texttt{class()}}
 
@@ -349,6 +549,12 @@ A single element list can be seen in the following example:
 \begin{lstlisting}[language=BibTool,mathescape=true]
 [123, 456]
 \end{lstlisting}
+
+
+\subsection{List Comparisons}
+
+%TODO
+
 
 \subsection{List method \texttt{as.boolean()}}
 
@@ -453,7 +659,7 @@ $\hookrightarrow$ 2
 %TODO
 
 
-\subsection{String method \texttt{apply()}}
+\subsection{Function method \texttt{apply()}}
 
 The function method \texttt{apply()} runs the code associated to the funtion
 after the parameters are bound to the actual values or the fallbacks defined
@@ -480,7 +686,7 @@ function(){}:class()
 $\hookrightarrow$ <Class Function>
 \end{lstlisting}
 
-\subsection{String method \texttt{code()}}
+\subsection{Function method \texttt{code()}}
 
 The function method \texttt{code()} returns the code as list. This method
 takes no arguments.
@@ -495,7 +701,6 @@ $\hookrightarrow$ [x]
 
 %TODO
 
-
 \subsection{Class method \texttt{class()}}
 
 The class method \texttt{class()} returns the class object for classes. This
@@ -509,13 +714,129 @@ $\hookrightarrow$ <Class Class>
 
 \section{Databases}
 
+\begin{lstlisting}[language=BibTool,mathescape=true]
+with (db:read("abc.bib")) {
+  % do something with the db
+}
+\end{lstlisting}
+
+\subsection{The function \texttt{read()}}
+
+The function \texttt{read()} creates a new database and optionally reads in
+some files. The arguments can be of several kinds.
+
+If no arguments are given then no files are read.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+db = read()
+\end{lstlisting}
+
+If an argument is a string then theis string is taken as file name to read
+from. The resource \rsc{bibtex.search.path} is used to determine the
+directories to consider. The file extension \verb|.bib| is appended if the raw
+file does not exist.
+
+If the file can not be opened then an error is raised.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+db = read("abc.bib")
+\end{lstlisting}
+
+Several arguments can be given.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+db = read("abc.bib", "def.bib")
+\end{lstlisting}
+
+If an argument is a list of strings then those files are read in turn.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+files = ["abc.bib", "def.bib"]
+db = read(files)
+\end{lstlisting}
+
+\subsection{Database method \texttt{class()}}
+
+The database method \texttt{class()} returns the class object for databases.
+This method takes no arguments. More on classes can be found in
+section~\ref{sec:classes}.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+db:class()
+$\hookrightarrow$ <Class Database>
+\end{lstlisting}
+
+\subsection{Database method \texttt{write()}}
+
+The database method \texttt{write()} writes a database to a given file.
+This method takes two optional arguments.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+db:write()
+\end{lstlisting}
+
+The first argument denotes the name of the output file. If the output file is
+not given or is empty then the output is directed to the standar output
+stream. If the output file can not be opened then an error is raised.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+db:write("abc.bib")
+\end{lstlisting}
+
+The second optional argument is a string which specifies sections of the
+database to be written and their sequence. The following characters can be
+contained in the specification:
+
+\begin{description}
+\item [p] The preamble.
+\item [\$] All strings (macros) contained in the database.
+\item [S] The strings (macros) which are used in the database.
+\item [s] The strings (macros) contained in the database where the resource
+  print.all.strings determines whether all strings should be printed or the
+  used strings only.
+\item [n] The normal records.
+\item [c] The comments.
+\item [i] The includes.
+\item [a] The aliases.
+\item [m] The modifies.
+\end{description}
+Upper-case letters which are not mentioned are silently folded to their
+lower-case counterparts.
+
+The default if not given then the default is taken from the variable
+\rsc{print.entry.types}.
+
+
+\subsection{Iterating over Databases}
+
 %TODO
 
+\begin{lstlisting}[language=BibTool,mathescape=true]
+each (e:db) {...}
+\end{lstlisting}
 
 \section{Entries}
 
 %TODO
 
+\subsection{Entry method \texttt{class()}}
+
+The entry method \texttt{class()} returns the class object for entries. This
+method takes no arguments. More on classes can be found in
+section~\ref{sec:classes}.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+entry:class()
+$\hookrightarrow$ <Class Entry>
+\end{lstlisting}
+
+\subsection{Iterating over Entries}
+
+%TODO
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+each (x:entry) {...}
+\end{lstlisting}
 
 
 \end{document} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
