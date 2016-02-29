@@ -720,7 +720,7 @@ with (db:read("abc.bib")) {
 }
 \end{lstlisting}
 
-\subsection{The function \texttt{read()}}
+\subsection{The function \texttt{read()}}\label{db:read}
 
 The function \texttt{read()} creates a new database and optionally reads in
 some files. The arguments can be of several kinds.
@@ -766,6 +766,19 @@ db:class()
 $\hookrightarrow$ <Class Database>
 \end{lstlisting}
 
+\subsection{Database method \texttt{read()}}
+
+The database method \texttt{read()} reads additional \BibTeX\ files into the
+database. The arguments are the same as for the function \rsc{read} (see
+section~\ref{db:read}).
+
+The return value of this method is the database. Thus method invocations can
+be cascaded.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+db:read("abc.bib")
+\end{lstlisting}
+
 \subsection{Database method \texttt{write()}}
 
 The database method \texttt{write()} writes a database to a given file.
@@ -806,6 +819,8 @@ lower-case counterparts.
 The default if not given then the default is taken from the variable
 \rsc{print.entry.types}.
 
+The return value of this method is the database. Thus method invocations can
+be cascaded.
 
 \subsection{Iterating over Databases}
 
