@@ -127,7 +127,7 @@ Term g_read(binding, term)			   /*                        */
   Term term;					   /*                        */
 { Term db = DBTerm(new_db());			   /*                        */
   m_read(binding, db, Cdr(term));		   /*                        */
-  UnlinkTerm(db);				   /*                        */
+  LinkTerm(db);				   	   /*                        */
   return db;				   	   /*                        */
 }						   /*------------------------*/
 
@@ -220,6 +220,85 @@ static Term m_macro(binding, db, args)	   	   /*                        */
   return s ? StringTerm(s) : NIL;		   /*                        */
 }						   /*------------------------*/
 
+static void sort_args(s, casep, descp)
+  String s;
+  int *casep;
+  int *descp;
+{
+  if (cmp(s, (String)"case") == 0)
+  { *casep = TRUE;	}
+  else if (cmp(s, (String)"ascending") == 0
+	   || cmp(s, (String)"asc") == 0)
+  { *descp = FALSE; }
+  else if (cmp(s, (String)"descending") == 0
+	   || cmp(s, (String)"desc") == 0)
+  { *descp = TRUE; }
+  else
+  { WARNING2("sort: Illegal argument ignored: ",   /*                        */
+	     s);	   		   	   /*                        */
+  }						   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	m_sort()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	db	the database term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_sort(binding, db, args)	   	   /*                        */
+  Binding binding;				   /*                        */
+  Term db;					   /*                        */
+  Term args;					   /*                        */
+{ extern int rsc_sort_cased;			   /*                        */
+  extern int rsc_sort_reverse;			   /*                        */
+  Term t;					   /*                        */
+  Term fct  = NIL;				   /*                        */
+  int cased = rsc_sort_cased;			   /*                        */
+  int desc  = rsc_sort_reverse;			   /*                        */
+  for ( ; args; args = Cdr(args))		   /*                        */
+  { t = evaluate(binding, Car(args));		   /*                        */
+    switch (t ? TType(t) : L_CONS)		   /*                        */
+    { case L_VAR:				   /*                        */
+      case L_STRING:				   /*                        */
+	sort_args(TString(t), &cased, &desc);	   /*                        */
+	break;					   /*                        */
+      case L_CONS:				   /*                        */
+	for ( ; t; t = Cdr(t))			   /*                        */
+	{ switch (Car(t) ? TType(Car(t)) : L_CONS) /*                        */
+	  { case L_VAR:			   	   /*                        */
+	    case L_STRING:			   /*                        */
+	      sort_args(TString(Car(t)), &cased, &desc);/*                   */
+	      break;				   /*                        */
+	    default:				   /*                        */
+	      WARNING2("sort: Illegal argument ignored: ",/*                 */
+		       token_type(Car(t) ? TType(Car(t)) : 0));/*             */
+	  }
+	}
+	break;
+      case L_FUNCTION:
+	fct = t;
+	break;
+      default:
+	WARNING2("sort: Illegal argument ignored: ",/*                       */
+		 token_type(t ? TType(t) : 0));	   /*                        */
+    }						   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  if (fct)
+  {
+  }
+  else
+  {
+  }
+
+  return db;		   			   /*                        */
+}						   /*------------------------*/
+
 /*-----------------------------------------------------------------------------
 ** Function:	m_write()
 ** Type:	Term
@@ -253,7 +332,8 @@ static Term m_write(binding, db, args)	   	   /*                        */
  						   /*                        */
   if (*f) fclose(file);				   /*                        */
  						   /*                        */
-  return NIL;	   				   /*                        */
+  LinkTerm(db);					   /*                        */
+  return db;	   				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -309,8 +389,8 @@ Term class_db()				   	   /*                        */
     Bind("rewind", m_rewind);		   	   /*                        */
     Bind("sort.macros", m_sort_macros);		   /*                        */
 #ifdef TODO
-    Bind("sort", m_sort);			   /*                        */
 #endif
+    Bind("sort", m_sort);			   /*                        */
     Bind("write", m_write);		   	   /*                        */
   }						   /*                        */
  						   /*                        */
