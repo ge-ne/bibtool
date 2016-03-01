@@ -410,12 +410,11 @@ static Term str_s_rsc(binding, name, term, rp)	   /*                        */
 **___________________________________________________			     */
 Binding root_binding()				   /*                        */
 { Binding b = binding(511, BindingNULL);	   /*                        */
-  SymDef sym_true  = symdef((String)"true",  L_TRUE,  SYM_LOCKED, g_self, NULL);/*  */
-  SymDef sym_false = symdef((String)"false", L_FALSE, SYM_LOCKED, g_self, NULL);/*  */
+  SymDef sym_true  = symdef((String)"true",  L_TRUE,  SYM_LOCKED, g_self, NULL);
+  SymDef sym_false = symdef((String)"false", L_FALSE, SYM_LOCKED, g_self, NULL);
  						   /*                        */
-
-  if (term_true	== NIL) term_true = NewTerm(L_TRUE);
-  if (term_false == NIL) term_false = NewTerm(L_FALSE);
+  if (term_true	== NIL) term_true = NewTerm(L_TRUE);/*                       */
+  if (term_false == NIL) term_false = NewTerm(L_FALSE);/*                    */
   SymTerm(sym_true)  = term_true;		   /*                        */
   SymTerm(sym_false) = term_false;		   /*                        */
 
