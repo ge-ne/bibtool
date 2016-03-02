@@ -56,6 +56,7 @@ L_OFILES = binding.o		\
 	   linereader.o		\
 	   literate.o		\
 	   lreader.o		\
+	   rec_sort.o		\
 	   term.o		\
 	   tstack.o
 
@@ -68,7 +69,7 @@ class/boolean.o:  class/boolean.c term.h binding.h
 class/class.o:	  class/class.c term.h binding.h
 class/function.o: class/function.c term.h binding.h
 class/list.o:	  class/list.c term.h binding.h
-class/db.o:	  class/db.c term.h binding.h
+class/db.o:	  class/db.c term.h binding.h lcore.h rec_sort.h
 class/number.o:	  class/number.c term.h binding.h
 class/record.o:	  class/record.c term.h binding.h
 class/string.o:	  class/string.c term.h binding.h
@@ -85,7 +86,7 @@ tester: tester.o $(L_OFILES) $(OFILES)
 	@$(CC) -g -O2 -o $@ $^ -lkpathsea
 
 _: tester
-	@tester _.ttt
+	@tester -e _.ttt
 
 test:    run_tests
 

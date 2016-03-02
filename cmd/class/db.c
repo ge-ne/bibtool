@@ -18,6 +18,7 @@
 #include <bibtool/sbuffer.h>
 #include "../binding.h"
 #include "../lcore.h"
+#include "../rec_sort.h"
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -260,6 +261,7 @@ static Term m_sort(binding, db, args)	   	   /*                        */
   Term fct  = NIL;				   /*                        */
   int cased = rsc_sort_cased;			   /*                        */
   int desc  = rsc_sort_reverse;			   /*                        */
+ 						   /*                        */
   for ( ; args; args = Cdr(args))		   /*                        */
   { t = evaluate(binding, Car(args));		   /*                        */
     switch (t ? TType(t) : L_CONS)		   /*                        */
@@ -289,12 +291,8 @@ static Term m_sort(binding, db, args)	   	   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
-  if (fct)
-  {
-  }
-  else
-  {
-  }
+  db_sort(TDB(db),
+	  get_sorter(cased, desc, binding, fct));
 
   return db;		   			   /*                        */
 }						   /*------------------------*/
