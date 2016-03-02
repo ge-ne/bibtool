@@ -28,13 +28,14 @@
 
 /*-----------------------------------------------------------------------------
 ** Function:	rec_gt()
-** Purpose:	
+** Type:	int
+** Purpose:	Compare two records according to their sort key.
 **		
 **
 ** Arguments:
-**	r1
-**	r2
-** Returns:	
+**	r1	the first record to compare
+**	r2	the second record to compare
+** Returns:	TRUE iff r1 < r2
 **___________________________________________________			     */
 static int rec_gt(r1, r2)			   /*                        */
   Record r1;					   /*                        */
@@ -45,13 +46,14 @@ static int rec_gt(r1, r2)			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	rec_lt()
+** Type:	int
 ** Purpose:	
 **		
 **
 ** Arguments:
-**	r1
-**	r2
-** Returns:	
+**	r1	the first record to compare
+**	r2	the second record to compare
+** Returns:	TRUE iff r1 < r2
 **___________________________________________________			     */
 static int rec_lt(r1, r2)			   /*                        */
   Record r1;					   /*                        */
@@ -62,13 +64,13 @@ static int rec_lt(r1, r2)			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	rec_gt_cased()
-** Type:	static int
+** Type:	int
 ** Purpose:	
 **		
 ** Arguments:
-**	r1	
-**	r2	
-** Returns:	
+**	r1	the first record to compare
+**	r2	the second record to compare
+** Returns:	TRUE iff r1 < r2
 **___________________________________________________			     */
 static int rec_gt_cased(r1, r2)			   /*                        */
   Record r1;					   /*                        */
@@ -79,13 +81,13 @@ static int rec_gt_cased(r1, r2)			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	rec_lt_cased()
-** Type:	static int
+** Type:	int
 ** Purpose:	
 **		
 ** Arguments:
-**	r1	
-**	r2	
-** Returns:	
+**	r1	the first record to compare
+**	r2	the second record to compare
+** Returns:	TRUE iff r1 < r2
 **___________________________________________________			     */
 static int rec_lt_cased(r1, r2)			   /*                        */
   Record r1;					   /*                        */
@@ -100,13 +102,13 @@ static Term srt_args;				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	rec_gt_fct()
-** Type:	static int
+** Type:	int
 ** Purpose:	
 **		
 ** Arguments:
-**	r1	
-**	r2	
-** Returns:	
+**	r1	the first record to compare
+**	r2	the second record to compare
+** Returns:	TRUE iff r1 < r2
 **___________________________________________________			     */
 static int rec_gt_fct(r1, r2)			   /*                        */
   Record r1;					   /*                        */
@@ -115,8 +117,8 @@ static int rec_gt_fct(r1, r2)			   /*                        */
   Term t2;					   /*                        */
   long ret;					   /*                        */
  						   /*                        */
-  TRecord(Car(srt_args)) = r1;
-  TRecord(Cadr(srt_args)) = r2;
+  TRecord(Car(srt_args)) = r1;			   /*                        */
+  TRecord(Cadr(srt_args)) = r2;			   /*                        */
  						   /*                        */
   t  = funcall(srt_bind, (String)"", srt_fct, srt_args);/*                   */
   t2 = eval_num(srt_bind, t);			   /*                        */
@@ -128,32 +130,32 @@ static int rec_gt_fct(r1, r2)			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	rec_lt_fct()
-** Type:	static int
+** Type:	int
 ** Purpose:	
 **		
 ** Arguments:
-**	r1	
-**	r2	
-** Returns:	
+**	r1	the first record to compare
+**	r2	the second record to compare
+** Returns:	TRUE iff r1 < r2
 **___________________________________________________			     */
 static int rec_lt_fct(r1, r2)			   /*                        */
   Record r1;					   /*                        */
   Record r2;					   /*                        */
 {						   /*                        */
-  return -rec_gt_fct(r1,r2);			   /*                        */
+  return rec_gt_fct(r2, r1);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	get_sorter()
 ** Type:	FunPtr
-** Purpose:	
+** Purpose:	Determine a proper sort funtion for records.
 **		
 ** Arguments:
 **	cased	
 **	desc	
-**	b	
-**	f	
-** Returns:	
+**	b	the binding
+**	f	the function term
+** Returns:	the sorting function	
 **___________________________________________________			     */
 FunPtr get_sorter(cased, desc, b, f)		   /*                        */
   int cased;					   /*                        */
@@ -164,10 +166,10 @@ FunPtr get_sorter(cased, desc, b, f)		   /*                        */
   if (f)					   /*                        */
   { srt_bind = b;				   /*                        */
     srt_fct = f;				   /*                        */
-    if (srt_args == NIL)
-    { srt_args = Cons(RecordTerm(NULL),
-		      RecordTerm(NULL));
-    }
+    if (srt_args == NIL)			   /*                        */
+    { srt_args = Cons(RecordTerm(NULL),		   /*                        */
+		      RecordTerm(NULL));	   /*                        */
+    }						   /*                        */
     return desc ? rec_lt_fct : rec_gt_fct;	   /*                        */
   }						   /*                        */
   if (cased)					   /*                        */
