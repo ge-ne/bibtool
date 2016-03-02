@@ -76,7 +76,7 @@ lcore.o:	  lcore.c lcore.h term.h
 linereader.o:	  linereader.c linereader.h
 literate.o:	  literate.c literate.h term.h
 lreader.o:	  lreader.c lreader.h lreader.h term.h linereader.h lcore.h tstack.h binding.h
-rec_sort.o:	  rec_sort.c term.h binding.h
+rec_sort.o:	  rec_sort.c rec_sort.h term.h binding.h # lcore.h
 term.o:		  term.c term.h
 tester.o:	  tester.c term.h lcore.h lreader.h binding.h tstack.h
 tstack.o:	  tstack.c tstack.h lcore.h term.h binding.h
