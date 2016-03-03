@@ -82,23 +82,20 @@ Term g_eq(binding, term)			   /*                        */
   if (list_length(term) != 2)			   /*                        */
   { wrong_no_args("=="); }			   /*                        */
   a = evaluate(binding, Car(term));		   /*                        */
-  b = evaluate(binding, Cadr(term));		   /*                        */
+  b = Cadr(term);		   		   /*                        */
  						   /*                        */
   if (a	== NIL) { val = (b == NIL ? 1 : 0); }	   /*                        */
   else if (IsNumber(a))			   	   /*                        */
-  { val = (b 					   /*                        */
-	   && IsNumber(b)			   /*                        */
-	   && TNumber(a) == TNumber(b) ? 1 : 0);   /*                        */
+  { b = eval_num(binding, b);			   /*                        */
+    val = (TNumber(a) == TNumber(b));   	   /*                        */
   }						   /*                        */
   else if (IsString(a))			   	   /*                        */
-  { val = (b					   /*                        */
-	   && IsString(b)			   /*                        */
-	   && cmp(TString(a), TString(b)) == 0 ? 1 : 0);/*                   */
+  { b = eval_str(binding, b);			   /*                        */
+    val = (cmp(TString(a), TString(b)) == 0 );	   /*                        */
   }						   /*                        */
-  else if (IsTrue(a))			   	   /*                        */
-  { val = (TType(b) == TType(a)); }		   /*                        */
-  else if (IsFalse(a))		   	   	   /*                        */
-  { val = (TType(b) == TType(a)); }		   /*                        */
+  else if (IsTrue(a) || IsFalse(a))		   /*                        */
+  { b = eval_bool(binding, b);			   /*                        */
+    val = (TType(b) == TType(a)); }		   /*                        */
   else val = 0;					   /*                        */
  						   /*                        */
   return (val ? term_true: term_false);		   /*                        */
