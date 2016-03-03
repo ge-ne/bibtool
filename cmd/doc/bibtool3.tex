@@ -779,6 +779,59 @@ be cascaded.
 db:read("abc.bib")
 \end{lstlisting}
 
+\subsection{Database method \texttt{sort()}}
+
+The database method \texttt{sort()} sorts the normal records of the
+database. The default is to sort case-insensitive according to the sort key in
+ascending order.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+db:sort()
+\end{lstlisting}
+
+The sort order can be influenced optional arguments:
+
+\begin{itemize}
+\item If the argument is the string \verb|"asc"|, the string
+  \verb|"ascending"|, the word \verb|'asc|, or the word \verb|'ascending| then
+  the records are sorted in ascending order.
+\begin{lstlisting}[language=BibTool,mathescape=true]
+db:sort('asc)
+\end{lstlisting}
+
+\item If the argument is the string \verb|"desc"|, the string
+  \verb|"descending"|, the word \verb|'desc|, or the word \verb|'descending|
+  then the records are sorted in descending order.
+\begin{lstlisting}[language=BibTool,mathescape=true]
+db:sort('desc)
+\end{lstlisting}
+
+\item If the argument is the string \verb|"case"|, or the word \verb|'case|
+  then the records are sorted in case-sensitive. The default is to be not case
+  sensitive. This flag can not be combined with a sorting function.
+\begin{lstlisting}[language=BibTool,mathescape=true]
+db:sort('case)
+\end{lstlisting}
+
+\item If the argument is a list then the arguments described above can be
+  contained and have the same effect as single arguments.
+\begin{lstlisting}[language=BibTool,mathescape=true]
+db:sort( ['asc, 'case] )
+\end{lstlisting}
+
+\item If the argument is a function then this function determined to order of
+  the records. The function takes two arguments which are records. It returns
+  a boolean or number which is 0 if the second record should go before the
+  first record. The additional argument \verb|'desc| inverts this order. 
+\begin{lstlisting}[language=BibTool,mathescape=true]
+db:sort(function(r1,r2){return true})
+\end{lstlisting}
+\end{itemize}
+
+The return value of this method is the database. Thus method invocations can
+be cascaded.
+
+
 \subsection{Database method \texttt{write()}}
 
 The database method \texttt{write()} writes a database to a given file.

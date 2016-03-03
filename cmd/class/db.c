@@ -221,20 +221,31 @@ static Term m_macro(binding, db, args)	   	   /*                        */
   return s ? StringTerm(s) : NIL;		   /*                        */
 }						   /*------------------------*/
 
-static void sort_args(s, casep, descp)
-  String s;
-  int *casep;
-  int *descp;
-{
-  if (cmp(s, (String)"case") == 0)
-  { *casep = TRUE;	}
-  else if (cmp(s, (String)"ascending") == 0
-	   || cmp(s, (String)"asc") == 0)
-  { *descp = FALSE; }
-  else if (cmp(s, (String)"descending") == 0
-	   || cmp(s, (String)"desc") == 0)
-  { *descp = TRUE; }
-  else
+/*-----------------------------------------------------------------------------
+** Function:	sort_args()
+** Type:	static void
+** Purpose:	
+**		
+** Arguments:
+**	s	
+**	casep	
+**	descp	
+** Returns:	nothing
+**___________________________________________________			     */
+static void sort_args(s, casep, descp)		   /*                        */
+  String s;					   /*                        */
+  int *casep;					   /*                        */
+  int *descp;					   /*                        */
+{						   /*                        */
+  if (cmp(s, (String)"case") == 0)		   /*                        */
+  { *casep = TRUE;	}			   /*                        */
+  else if (cmp(s, (String)"ascending") == 0	   /*                        */
+	   || cmp(s, (String)"asc") == 0)	   /*                        */
+  { *descp = FALSE; }				   /*                        */
+  else if (cmp(s, (String)"descending") == 0	   /*                        */
+	   || cmp(s, (String)"desc") == 0)	   /*                        */
+  { *descp = TRUE; }				   /*                        */
+  else						   /*                        */
   { WARNING2("sort: Illegal argument ignored: ",   /*                        */
 	     s);	   		   	   /*                        */
   }						   /*                        */
@@ -278,22 +289,22 @@ static Term m_sort(binding, db, args)	   	   /*                        */
 	      break;				   /*                        */
 	    default:				   /*                        */
 	      WARNING2("sort: Illegal argument ignored: ",/*                 */
-		       token_type(Car(t) ? TType(Car(t)) : 0));/*             */
-	  }
-	}
-	break;
-      case L_FUNCTION:
-	fct = t;
-	break;
-      default:
+		       token_type(Car(t) ? TType(Car(t)) : 0));/*            */
+	  }					   /*                        */
+	}					   /*                        */
+	break;					   /*                        */
+      case L_FUNCTION:				   /*                        */
+	fct = t;				   /*                        */
+	break;					   /*                        */
+      default:					   /*                        */
 	WARNING2("sort: Illegal argument ignored: ",/*                       */
 		 token_type(t ? TType(t) : 0));	   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
-  db_sort(TDB(db),
-	  get_sorter(cased, desc, binding, fct));
-
+  db_sort(TDB(db),				   /*                        */
+	  get_sorter(cased, desc, binding, fct));  /*                        */
+ 						   /*                        */
   return db;		   			   /*                        */
 }						   /*------------------------*/
 
