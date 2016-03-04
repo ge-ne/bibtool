@@ -28,12 +28,6 @@
 /* Internal Programs                                                         */
 /*===========================================================================*/
 
-#ifdef __STDC__
-#define _ARG(A) A
-#else
-#define _ARG(A) ()
-#endif
-
 /*****************************************************************************/
 /* External Programs                                                         */
 /*===========================================================================*/
@@ -61,6 +55,36 @@ Term g_self(binding, term)			   /*                        */
   return term;					   /*                        */
 }						   /*------------------------*/
 
+
+int equals(a, b)				   /*                        */
+  Term a;					   /*                        */
+  Term b;					   /*                        */
+{						   /*                        */
+  if (a	== NIL) return (b == NIL);		   /*                        */
+  if (a == b) return 1;				   /*                        */
+ 						   /*                        */
+  switch (TType(a))				   /*                        */
+  { case L_NUMBER:				   /*                        */
+      return (b && IsNumber(b) &&		   /*                        */
+	      TNumber(a) == TNumber(b));   	   /*                        */
+    case L_STRING:				   /*                        */
+      return (b && IsString(b) &&		   /*                        */
+	      cmp(TString(a), TString(b)) == 0 );  /*                        */
+    case L_CONS:				   /*                        */
+      if (b == NIL || !IsList(b)) return 0;	   /*                        */
+      for (;a ; a = Cdr(a))			   /*                        */
+      { if (b == NIL || !equals(Car(a), Car(b)) )  /*                        */
+	  return 0;				   /*                        */
+	b = Cdr(b);				   /*                        */
+      }						   /*                        */
+      return (b == NIL);			   /*                        */
+    case L_TRUE:				   /*                        */
+    case L_FALSE:				   /*                        */
+       return (TType(b) == TType(a));		   /*                        */
+  }		   				   /*                        */
+  return (a == b);				   /*                        */
+}						   /*------------------------*/
+
 /*-----------------------------------------------------------------------------
 ** Function:	g_eq()
 ** Type:	Term
@@ -74,31 +98,15 @@ Term g_self(binding, term)			   /*                        */
 Term g_eq(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ int val;					   /*                        */
-  Term a, b;					   /*                        */
- 						   /*                        */
+{						   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
-  if (list_length(term) != 2)			   /*                        */
-  { wrong_no_args("=="); }			   /*                        */
-  a = evaluate(binding, Car(term));		   /*                        */
-  b = Cadr(term);		   		   /*                        */
+  if (list_length(term) != 2) wrong_no_args("=="); /*                        */
  						   /*                        */
-  if (a	== NIL) { val = (b == NIL ? 1 : 0); }	   /*                        */
-  else if (IsNumber(a))			   	   /*                        */
-  { b = eval_num(binding, b);			   /*                        */
-    val = (TNumber(a) == TNumber(b));   	   /*                        */
-  }						   /*                        */
-  else if (IsString(a))			   	   /*                        */
-  { b = eval_str(binding, b);			   /*                        */
-    val = (cmp(TString(a), TString(b)) == 0 );	   /*                        */
-  }						   /*                        */
-  else if (IsTrue(a) || IsFalse(a))		   /*                        */
-  { b = eval_bool(binding, b);			   /*                        */
-    val = (TType(b) == TType(a)); }		   /*                        */
-  else val = 0;					   /*                        */
- 						   /*                        */
-  return (val ? term_true: term_false);		   /*                        */
+  return (equals(evaluate(binding, Car(term)),	   /*                        */
+		 evaluate(binding, Cadr(term)))	   /*                        */
+	  ? term_true				   /*                        */
+	  : term_false);		   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

@@ -45,19 +45,6 @@ use constant {TRUE  => "true\n",
 $BUnit::name_prefix = 'eval/';
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'eq-list-1',
-	   args	        => '--eval',
-	   resource     => "(nil==nil)",
-	   expected_err => '',
-	   expected_out => TRUE);
-#------------------------------------------------------------------------------
-BUnit::run(name         => 'eq-list-2',
-	   args	        => '--eval',
-	   resource     => "(nil==[1])",
-	   expected_err => '',
-	   expected_out => FALSE);
-
-#------------------------------------------------------------------------------
 BUnit::run(name         => 'eq-bool-1',
 	   args	        => '--eval',
 	   resource     => "false==false",
@@ -76,7 +63,7 @@ BUnit::run(name         => 'eq-bool-10',
 	   args	        => '--eval',
 	   resource     => "false==0",
 	   expected_err => '',
-	   expected_out => TRUE);
+	   expected_out => FALSE);
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'eq-bool-11',
 	   args	        => '--eval',
@@ -89,7 +76,7 @@ BUnit::run(name         => 'eq-bool-20',
 	   args	        => '--eval',
 	   resource     => "false==\"\"",
 	   expected_err => '',
-	   expected_out => TRUE);
+	   expected_out => FALSE);
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'eq-bool-21',
@@ -124,14 +111,14 @@ BUnit::run(name         => 'eq-num-11',
 	   args	        => '--eval',
 	   resource     => "0==\"0\"",
 	   expected_err => '',
-	   expected_out => TRUE);
+	   expected_out => FALSE);
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'eq-num-12',
 	   args	        => '--eval',
 	   resource     => "1==\"1\"",
 	   expected_err => '',
-	   expected_out => TRUE);
+	   expected_out => FALSE);
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'eq-num-13',
@@ -145,14 +132,14 @@ BUnit::run(name         => 'eq-num-21',
 	   args	        => '--eval',
 	   resource     => "0==false",
 	   expected_err => '',
-	   expected_out => TRUE);
+	   expected_out => FALSE);
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'eq-num-22',
 	   args	        => '--eval',
 	   resource     => "1==true",
 	   expected_err => '',
-	   expected_out => TRUE);
+	   expected_out => FALSE);
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'eq-num-23',
@@ -173,6 +160,54 @@ BUnit::run(name         => 'eq-str-1',
 BUnit::run(name         => 'eq-str-2',
 	   args	        => '--eval',
 	   resource     => "\"a\"==\"b\"",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'eq-list-1',
+	   args	        => '--eval',
+	   resource     => "(nil==nil)",
+	   expected_err => '',
+	   expected_out => TRUE);
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'eq-list-2',
+	   args	        => '--eval',
+	   resource     => "(nil==[1])",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'eq-list-3',
+	   args	        => '--eval',
+	   resource     => "[]==[1]",
+	   expected_err => '',
+	   expected_out => FALSE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'eq-list-4',
+	   args	        => '--eval',
+	   resource     => "[]==[]",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'eq-list-10',
+	   args	        => '--eval',
+	   resource     => "[1]==[1]",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'eq-list-11',
+	   args	        => '--eval',
+	   resource     => "[1,2]==[1,2]",
+	   expected_err => '',
+	   expected_out => TRUE);
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'eq-list-21',
+	   args	        => '--eval',
+	   resource     => "[1,2]==[1,3]",
 	   expected_err => '',
 	   expected_out => FALSE);
 
