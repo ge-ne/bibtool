@@ -28,6 +28,7 @@ extern void print_quoted _ARG((FILE*f, String s)); /*                        */
 
 extern void wrong_no_args _ARG((char* name));	   /*                        */
 extern void no_args _ARG((Term  args, char *msg)); /*                        */
+extern Term term_arg _ARG((Binding binding, Term *argp, char *msg));/*       */
 extern int bool_arg _ARG((Binding binding, Term *argp, char *msg));/*        */
 extern long num_arg _ARG((Binding binding, Term *argp, char *msg));/*        */
 extern String str_arg _ARG((Binding binding, Term *argp, char *msg));/*      */

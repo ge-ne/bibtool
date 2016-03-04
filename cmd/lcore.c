@@ -1147,14 +1147,38 @@ void no_args(args, msg)			   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	term_arg()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	argp	the pointer to the argument array
+**	msg	the varible part of the error messge
+** Returns:	
+**___________________________________________________			     */
+Term term_arg(binding, argp, msg)		   /*                        */
+  Binding binding;				   /*                        */
+  register Term *argp;				   /*                        */
+  register char *msg;				   /*                        */
+{ Term t;					   /*                        */
+  if (*argp == NIL)				   /*                        */
+    ErrorNF2("Missing numeric argument for ", msg);/*                        */
+  						   /*                        */
+  t  = evaluate(binding, Car(*argp));		   /*                        */
+  *argp = Cdr(*argp);				   /*                        */
+  return t;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	num_arg()
 ** Type:	long
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	argp	
-**	msg	
+**	binding	the binding
+**	argp	the pointer to the argument array
+**	msg	the varible part of the error messge
 ** Returns:	
 **___________________________________________________			     */
 long num_arg(binding, argp, msg)		   /*                        */
@@ -1179,9 +1203,9 @@ long num_arg(binding, argp, msg)		   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	argp	
-**	msg	
+**	binding	the binding
+**	argp	the pointer to the argument array
+**	msg	the varible part of the error messge
 ** Returns:	
 **___________________________________________________			     */
 String str_arg(binding, argp, msg)		   /*                        */
@@ -1206,9 +1230,9 @@ String str_arg(binding, argp, msg)		   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	argp	
-**	msg	
+**	binding	the binding
+**	argp	the pointer to the argument array
+**	msg	the varible part of the error messge
 ** Returns:	
 **___________________________________________________			     */
 int bool_arg(binding, argp, msg)		   /*                        */
@@ -1233,9 +1257,9 @@ int bool_arg(binding, argp, msg)		   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	 argp	
-**	 msg	
+**	binding	the binding
+**	argp	the pointer to the argument array
+**	msg	the varible part of the error messge
 ** Returns:	
 **___________________________________________________			     */
 Record rec_arg(binding, argp, msg)		   /*                        */

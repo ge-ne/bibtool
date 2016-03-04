@@ -145,6 +145,31 @@ static Term m_concat(binding, string, args)	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	m_equals()
+** Type:	static Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	
+**	 string	
+**	 args	
+** Returns:	
+**___________________________________________________			     */
+static Term m_equals(binding, string, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term string;					   /*                        */
+  Term args;					   /*                        */
+{ int val;					   /*                        */
+  Term t = term_arg(binding, &args, "equals");	   /*                        */
+  no_args(args, "equals");			   /*                        */
+ 						   /*                        */
+  val = (IsString(t)				   /*                        */
+	 && cmp(TString(string), TString(t)) == 0);/*                        */
+  UnlinkTerm(t);				   /*                        */
+  return (val ? term_true: term_false);		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	m_substring()
 ** Type:	Term
 ** Purpose:	
@@ -211,6 +236,7 @@ Term class_string()				   /*                        */
     Bind("as.number", m_as_number);		   /*                        */
     Bind("class", m_class);			   /*                        */
     Bind("concat", m_concat);			   /*                        */
+    Bind("equals", m_equals);			   /*                        */
     Bind("length", m_length);			   /*                        */
     Bind("substring", m_substring);		   /*                        */
     Bind("trim", m_trim);			   /*                        */

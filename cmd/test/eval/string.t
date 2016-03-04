@@ -204,6 +204,27 @@ BUnit::run(name         => 'string-concat-4',
 	   expected_out => "\"aabb\"\n" );
 
 #------------------------------------------------------------------------------
+BUnit::run(name         => 'string-equals-0',
+	   args	        => '--eval',
+	   resource     => '"":equals("")',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-equals-1',
+	   args	        => '--eval',
+	   resource     => '"123":equals(123)',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'string-equals-2',
+	   args	        => '--eval',
+	   resource     => '"123":equals("123")',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
 # Local Variables: 
 # mode: perl
 # End: 
