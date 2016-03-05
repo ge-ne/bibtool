@@ -107,15 +107,18 @@ int equals(a, b)				   /*                        */
 Term g_eq(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{						   /*                        */
+{ Term a, b;					   /*                        */
   term = Cdr(term);				   /*                        */
- 						   /*                        */
   if (list_length(term) != 2) wrong_no_args("=="); /*                        */
  						   /*                        */
-  return (equals(evaluate(binding, Car(term)),	   /*                        */
-		 evaluate(binding, Cadr(term)))	   /*                        */
-	  ? term_true				   /*                        */
-	  : term_false);		   	   /*                        */
+  a    = evaluate(binding, Car(term));		   /*                        */
+  b    = evaluate(binding, Cadr(term));		   /*                        */
+  term = (equals(a, b) ? term_true : term_false);  /*                        */
+ 						   /*                        */
+  UnlinkTerm(a);				   /*                        */
+  UnlinkTerm(b);				   /*                        */
+ 						   /*                        */
+  return term;		   	   		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
