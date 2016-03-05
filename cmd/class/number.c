@@ -58,6 +58,32 @@ static Term m_class(binding, number, args)	   /*                        */
   return c_number;				   /*                        */
 }						   /*------------------------*/
 
+
+/*-----------------------------------------------------------------------------
+** Function:	m_equals()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	num	the number term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_equals(binding, num, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term num;					   /*                        */
+  Term args;					   /*                        */
+{ int val;					   /*                        */
+  Term t = term_arg(binding, &args, "equals");	   /*                        */
+  no_args(args, "equals");			   /*                        */
+ 						   /*                        */
+  val = (t && (TType(t) == L_NUMBER		   /*                        */
+	       && TNumber(t) == TNumber(num)));	   /*                        */
+  UnlinkTerm(t);				   /*                        */
+  return (val ? term_true: term_false);		   /*                        */
+}						   /*------------------------*/
+
 #define Bind(NAME,GET)  bind(b, symdef(symbol((String)NAME),     \
 				       0, 0, GET, NULL));
 
@@ -79,6 +105,7 @@ Term class_number()				   /*                        */
     Bind("as.boolean", m_as_boolean);		   /*                        */
     Bind("as.string", m_as_string);		   /*                        */
     Bind("as.number", m_as_number);		   /*                        */
+    Bind("equals", m_equals);		   	   /*                        */
     Bind("class", m_class);		   	   /*                        */
   }						   /*                        */
  						   /*                        */

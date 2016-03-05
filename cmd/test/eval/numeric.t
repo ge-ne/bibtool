@@ -244,6 +244,35 @@ BUnit::run(name         => 'boolean-as-boolean-0',
 	   expected_err => '',
 	   expected_out => "false\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-equals-0',
+	   args	        => '--eval',
+	   resource     => '0:equals(0)',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'number-equals-1',
+	   args	        => '--eval',
+	   resource     => '0:equals(1)',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'number-equals-2',
+	   args	        => '--eval',
+	   resource     => '0:equals([])',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'number-equals-3',
+	   args	        => '--eval',
+	   resource     => '0:equals("0")',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 
