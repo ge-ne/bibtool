@@ -375,7 +375,6 @@ Term g_not(binding, term)			   /*                        */
   Term term;					   /*                        */
 {						   /*                        */
   term = eval_bool(binding, Cadr(term));	   /*                        */
-  LinkTerm(term);				   /*                        */
   return IsTrue(term) ? term_false: term_true;     /*                        */
 }						   /*------------------------*/
 
@@ -400,7 +399,6 @@ Term g_and(binding, term)			   /*                        */
   { wrong_no_args("and"); }			   /*                        */
  						   /*                        */
   t = eval_bool(binding, Car(term));		   /*                        */
-  LinkTerm(t);					   /*                        */
   return (IsFalse(t)				   /*                        */
 	  ? t					   /*                        */
 	  : eval_bool(binding, Cadr(term)));	   /*                        */
@@ -427,7 +425,6 @@ Term g_or(binding, term)			   /*                        */
   { wrong_no_args("or"); }			   /*                        */
  						   /*                        */
   t = eval_bool(binding, Car(term));		   /*                        */
-  LinkTerm(t);					   /*                        */
   return (IsTrue(t)				   /*                        */
 	  ? t					   /*                        */
 	  : eval_bool(binding, Cadr(term)));	   /*                        */
