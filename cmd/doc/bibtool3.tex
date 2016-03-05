@@ -219,20 +219,20 @@ Strings are enclosed in double quotes. They may contain arbitrary characters.
 
 The backslash (\verb|\|)acts as escape character.
 \begin{description}
-\item [\BS\BS] \ \\The doubled backslash is stored as single backslash
+\item [\tt\BS\BS] \ \\The doubled backslash is stored as single backslash
   internally.
-\item [\BS "] \ \\The delimiting character \verb|"| can be included in a
+\item [\tt\BS "] \ \\The delimiting character \verb|"| can be included in a
   string by preceeding it with a backslash.
-\item [\BS t] \ \\The tab character can be included in a string as the
+\item [\tt\BS t] \ \\The tab character can be included in a string as the
   sequence \verb|\t|
-\item [\BS n] \ \\The newline character can be included in a string as the
+\item [\tt\BS n] \ \\The newline character can be included in a string as the
   sequence \verb|\n|
-\item [\BS r] \ \\The carrige return character can be included in a string as
+\item [\tt\BS r] \ \\The carrige return character can be included in a string as
   the sequence \verb|\r|
-\item [\BS b] \ \\The backspace character can be included in a string as the
+\item [\tt\BS b] \ \\The backspace character can be included in a string as the
   sequence \verb|\b|
-\item [\BS f] \ \\The formfeed character can be included in a string as the
-  sequence \verb|\n|
+\item [\tt\BS f] \ \\The formfeed character can be included in a string as the
+  sequence \verb|\f|
 \end{description}
 
 \subsection{String Comparisons}
@@ -294,6 +294,17 @@ This method takes arbitrarily many arguments.
 \begin{lstlisting}[language=BibTool,mathescape=true]
 "123":concat("a b c")
 $\hookrightarrow$ "123a b c"
+\end{lstlisting}
+
+\subsection{String method \texttt{equals()}}
+
+The string method \texttt{equals()} compares the current string against the
+single argument. If the argument is also a string and contains the same
+characters then \verb|true| is returned. Otherwise the result is \verb|false|.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+"123":equals("1 2 3")
+$\hookrightarrow$ false
 \end{lstlisting}
 
 \subsection{String method \texttt{length()}}
@@ -401,6 +412,19 @@ section~\ref{sec:classes}.
 456:class()
 $\hookrightarrow$ <Class Number>
 \end{lstlisting}
+
+\subsection{Number method \texttt{equals()}}
+
+The number method \texttt{equals()} compares the current number against the
+single argument. If the argument is also a number and contains the same
+numeric value then \verb|true| is returned. Otherwise the result is
+\verb|false|.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+123:equals(124)
+$\hookrightarrow$ false
+\end{lstlisting}
+
 
 %TODO
 
@@ -529,6 +553,18 @@ true:class()
 $\hookrightarrow$ <Class Boolean>
 \end{lstlisting}
 
+\subsection{Boolean method \texttt{equals()}}
+
+The boolean method \texttt{equals()} compares the current boolean against the
+single argument. If the argument is also a boolean and has the same value then
+\verb|true| is returned. Otherwise the result is \verb|false|.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+true:equals(false)
+$\hookrightarrow$ false
+\end{lstlisting}
+
+
 %TODO
 
 \section{Lists}
@@ -630,6 +666,22 @@ empty and false otherwise. This method takes no arguments.
 $\hookrightarrow$ false
 \end{lstlisting}
 
+\subsection{List method \texttt{equals()}}
+
+The list method \texttt{equals()} compares the current list against the single
+argument. If the argument is also a list and contains the same elements in the
+same order then \verb|true| is returned. Otherwise the result is \verb|false|.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+[1, 2, 3]:equals([1, 2, 3])
+$\hookrightarrow$ true
+\end{lstlisting}
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+[1, 2,  3]:equals([1, 3, 2])
+$\hookrightarrow$ false
+\end{lstlisting}
+
 \subsection{List method \texttt{join()}}
 
 The list method \texttt{join()}
@@ -653,6 +705,11 @@ $\hookrightarrow$ 2
 \subsection{Iterating over Lists}
 
 %TODO
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+each (x:[1,2,3]) {...}
+\end{lstlisting}
+
 
 \section{Functions and Methods}
 
@@ -824,7 +881,7 @@ db:sort( ['asc, 'case] )
   a boolean or number which is 0 if the second record should go before the
   first record. The additional argument \verb|'desc| inverts this order. 
 \begin{lstlisting}[language=BibTool,mathescape=true]
-db:sort(function(r1,r2){return true})
+db:sort(function(r1, r2){ return true })
 \end{lstlisting}
 \end{itemize}
 
