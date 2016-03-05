@@ -49,7 +49,9 @@ int action(b, t)				   /*                        */
 {						   /*                        */
   if (evalp)					   /*                        */
   { if (result) { UnlinkTerm(result); }		   /*                        */
-    result = evaluate(b, t); }	   		   /*                        */
+    result = evaluate(b, t);			   /*                        */
+    UnlinkTerm(t);				   /*                        */
+  }	   		   			   /*                        */
   else						   /*                        */
   { print(stdout, t);			   	   /*                        */
     putchar('\n');				   /*                        */

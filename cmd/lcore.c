@@ -159,16 +159,15 @@ Term g_lt(binding, term)			   /*                        */
   if (list_length(term) != 2) wrong_no_args("<");  /*                        */
  						   /*                        */
   a = evaluate(binding, Car(term));		   /*                        */
-  b = evaluate(binding, Cadr(term));		   /*                        */
  						   /*                        */
   if ( IsNumber(a) )			   	   /*                        */
-  { if ( !IsNumber(b) )			   	   /*                        */
-      b = eval_num(binding, b);			   /*                        */
-    val = (TNumber(a) < TNumber(b));		   /*                        */
-  } else if ( IsString(a) )			   /*                        */
-  { if ( !IsString(b) )			   	   /*                        */
-      b = eval_str(binding, b);			   /*                        */
+  { val = (TNumber(a) < 			   /*                        */
+	   eval_num(binding, Cadr(term)));	   /*                        */
+  }						   /*                        */
+  else if ( IsString(a) )			   /*                        */
+  { b = eval_str(binding, Cadr(term));		   /*                        */
     val = (cmp(TString(a), TString(b)) < 0);	   /*                        */
+    UnlinkTerm(b);				   /*                        */
   } else					   /*                        */
   { ErrorNF1("Type error: comparable expected"); } /*                        */
  						   /*                        */
@@ -195,16 +194,15 @@ Term g_le(binding, term)			   /*                        */
   if (list_length(term) != 2) wrong_no_args("<="); /*                        */
  						   /*                        */
   a = evaluate(binding, Car(term));		   /*                        */
-  b = evaluate(binding, Cadr(term));		   /*                        */
  						   /*                        */
   if ( IsNumber(a) )			   	   /*                        */
-  { if ( !IsNumber(b) )			   	   /*                        */
-      b = eval_num(binding, b);			   /*                        */
-    val = (TNumber(a) <= TNumber(b));		   /*                        */
-  } else if ( IsString(a) )			   /*                        */
-  { if ( !IsString(b) )			   	   /*                        */
-      b = eval_str(binding, b);			   /*                        */
+  { val = (TNumber(a) <= 			   /*                        */
+	   eval_num(binding, Cadr(term)));	   /*                        */
+  }						   /*                        */
+  else if ( IsString(a) )			   /*                        */
+  { b = eval_str(binding, Cadr(term));		   /*                        */
     val = (cmp(TString(a), TString(b)) <= 0);	   /*                        */
+    UnlinkTerm(b);				   /*                        */
   } else					   /*                        */
   { ErrorNF1("Type error: comparable expected"); } /*                        */
  						   /*                        */
@@ -231,16 +229,15 @@ Term g_gt(binding, term)			   /*                        */
   if (list_length(term) != 2) wrong_no_args("<");  /*                        */
  						   /*                        */
   a = evaluate(binding, Car(term));		   /*                        */
-  b = evaluate(binding, Cadr(term));		   /*                        */
  						   /*                        */
   if ( IsNumber(a) )			   	   /*                        */
-  { if ( !IsNumber(b) )			   	   /*                        */
-      b = eval_num(binding, b);			   /*                        */
-    val = (TNumber(a) > TNumber(b));		   /*                        */
-  } else if ( IsString(a) )			   /*                        */
-  { if ( !IsString(b) )			   	   /*                        */
-      b = eval_str(binding, b);			   /*                        */
+  { val = (TNumber(a) > 			   /*                        */
+	   eval_num(binding, Cadr(term)));	   /*                        */
+  }						   /*                        */
+  else if ( IsString(a) )			   /*                        */
+  { b = eval_str(binding, Cadr(term));		   /*                        */
     val = (cmp(TString(a), TString(b)) > 0);	   /*                        */
+    UnlinkTerm(b);				   /*                        */
   } else					   /*                        */
   { ErrorNF1("Type error: comparable expected"); } /*                        */
  						   /*                        */
@@ -267,19 +264,19 @@ Term g_ge(binding, term)			   /*                        */
   if (list_length(term) != 2) wrong_no_args(">="); /*                        */
  						   /*                        */
   a = evaluate(binding, Car(term));		   /*                        */
-  b = evaluate(binding, Cadr(term));		   /*                        */
  						   /*                        */
   if ( IsNumber(a) )			   	   /*                        */
-  { if ( !IsNumber(b) )			   	   /*                        */
-      b = eval_num(binding, b);			   /*                        */
-    val = (TNumber(a) >= TNumber(b));		   /*                        */
-  } else if ( IsString(a) )			   /*                        */
-  { if ( !IsString(b) )			   	   /*                        */
-      b = eval_str(binding, b);			   /*                        */
+  { val = (TNumber(a) >= 			   /*                        */
+	   eval_num(binding, Cadr(term)));	   /*                        */
+  }						   /*                        */
+  else if ( IsString(a) )			   /*                        */
+  { b = eval_str(binding, Cadr(term));		   /*                        */
     val = (cmp(TString(a), TString(b)) >= 0);	   /*                        */
+    UnlinkTerm(b);				   /*                        */
   } else					   /*                        */
   { ErrorNF1("Type error: comparable expected"); } /*                        */
  						   /*                        */
+  UnlinkTerm(a);				   /*                        */
   return (val ? term_true: term_false);		   /*                        */
 }						   /*------------------------*/
 
@@ -756,21 +753,20 @@ static int ev_db_count(db, rec)			   /*                        */
 ** Arguments:
 **	binding	the binding
 **	term	the term
-** Returns:	
+** Returns:	the number found
 **___________________________________________________			     */
-Term eval_num(binding, term)			   /*                        */
+long eval_num(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { long val;					   /*                        */
   term = evaluate(binding, term);		   /*                        */
  						   /*                        */
   if (term == NIL || IsFalse(term))	   	   /*                        */
-    return NumberTerm(0L);			   /*                        */
+    return 0L;			   		   /*                        */
  						   /*                        */
   switch (TType(term))				   /*                        */
   { case L_NUMBER:				   /*                        */
-      LinkTerm(term);				   /*                        */
-      return term;			   	   /*                        */
+      return TNumber(term);			   /*                        */
     case L_FALSE:  val = 0L; break;		   /*                        */
     case L_TRUE:   val = 1L; break;		   /*                        */
     case L_CONS:   val = list_length(term); break; /*                        */
@@ -786,7 +782,7 @@ Term eval_num(binding, term)			   /*                        */
 	      term_type(term));	   	   	   /*                        */
   }						   /*                        */
  						   /*                        */
-  return NumberTerm(val);			   /*                        */
+  return val;			   		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -795,9 +791,9 @@ Term eval_num(binding, term)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	binding	
-**	term	
-**	args	
+**	binding	the binding
+**	term	the term
+**	args	the arguments
 ** Returns:	
 **___________________________________________________			     */
 Term m_as_number(binding, term, args)	   	   /*                        */
@@ -806,18 +802,23 @@ Term m_as_number(binding, term, args)	   	   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
   no_args(args, "as.number");  		   	   /*                        */
-  return eval_num(binding, term);		   /*                        */
+ 						   /*                        */
+  if (term && IsNumber(term))			   /*                        */
+  { LinkTerm(term);				   /*                        */
+    return term;				   /*                        */
+  }						   /*                        */
+  return NumberTerm(eval_num(binding, term));	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	eval_str()
 ** Type:	Term
-** Purpose:	
+** Purpose:	Evaluate the term and convert the result to a string.
 **		
 ** Arguments:
 **	binding	the binding
 **	term	the term
-** Returns:	
+** Returns:	the string determined
 **___________________________________________________			     */
 Term eval_str(binding, term)			   /*                        */
   Binding binding;				   /*                        */
@@ -896,13 +897,12 @@ Term eval_str(binding, term)			   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	m_as_string()
 ** Type:	Term
-** Purpose:	
-**		
+** Purpose:	 Method to convert a term to a string.
 ** Arguments:
 **	binding	the binding
 **	number	the number term
 **	args	the arguments
-** Returns:	
+** Returns:	the string
 **___________________________________________________			     */
 Term m_as_string(binding, number, args)	   	   /*                        */
   Binding binding;				   /*                        */
@@ -930,11 +930,10 @@ Term g_plus(binding, term)			   /*                        */
  						   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
-  if (list_length(term) != 2)			   /*                        */
-    wrong_no_args("+");	   			   /*                        */
+  if (list_length(term) != 2) wrong_no_args("+");  /*                        */
  						   /*                        */
-  val = TNumber(eval_num(binding, Car(term)));	   /*                        */
-  val += TNumber(eval_num(binding, Cadr(term)));   /*                        */
+  val  = eval_num(binding, Car(term));		   /*                        */
+  val += eval_num(binding, Cadr(term));		   /*                        */
   return NumberTerm(val);			   /*                        */
 }						   /*------------------------*/
 
@@ -951,25 +950,23 @@ Term g_plus(binding, term)			   /*                        */
 Term g_minus(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ Term t;					   /*                        */
-  long val;					   /*                        */
+{ long val = 0L;				   /*                        */
  						   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
   switch (list_length(term))			   /*                        */
   { case 1:					   /*                        */
-      t = eval_num(binding, Car(term));		   /*                        */
-      return NumberTerm(-TNumber(t));		   /*                        */
+      val = -eval_num(binding, Car(term));	   /*                        */
+      break;					   /*                        */
     case 2:					   /*                        */
-      t	  = eval_num(binding, Car(term));	   /*                        */
-      val = TNumber(t);				   /*                        */
-      t	  = eval_num(binding, Cadr(term));	   /*                        */
-      val -= TNumber(t);			   /*                        */
-      return NumberTerm(val);			   /*                        */
+      val  = eval_num(binding, Car(term));	   /*                        */
+      val -= eval_num(binding, Cadr(term));	   /*                        */
+      break;					   /*                        */
     default:					   /*                        */
       wrong_no_args("-");			   /*                        */
-      return 0;	   				   /*                        */
+      return NIL;				   /*                        */
   }						   /*                        */
+  return NumberTerm(val);		   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -989,11 +986,10 @@ Term g_times(binding, term)			   /*                        */
  						   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
-  if (list_length(term) != 2)			   /*                        */
-    wrong_no_args("*");			   	   /*                        */
+  if (list_length(term) != 2) wrong_no_args("*");  /*                        */
  						   /*                        */
-  val = TNumber(eval_num(binding, Car(term)));	   /*                        */
-  val *= TNumber(eval_num(binding, Cadr(term)));   /*                        */
+  val = eval_num(binding, Car(term));	   	   /*                        */
+  val *= eval_num(binding, Cadr(term));	   	   /*                        */
   return NumberTerm(val);			   /*                        */
 }						   /*------------------------*/
 
@@ -1014,11 +1010,10 @@ Term g_div(binding, term)			   /*                        */
  						   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
-  if (list_length(term) != 2)			   /*                        */
-    wrong_no_args("/");			   	   /*                        */
+  if (list_length(term) != 2) wrong_no_args("/");  /*                        */
  						   /*                        */
-  val = TNumber(eval_num(binding, Car(term)));	   /*                        */
-  d   = TNumber(eval_num(binding, Cadr(term)));	   /*                        */
+  val = eval_num(binding, Car(term));	   	   /*                        */
+  d   = eval_num(binding, Cadr(term));	   	   /*                        */
   if (d	== 0) ErrorNF1("Divide by 0");		   /*                        */
   return NumberTerm(val/d);			   /*                        */
 }						   /*------------------------*/
@@ -1040,11 +1035,10 @@ Term g_mod(binding, term)			   /*                        */
  						   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
-  if (list_length(term) != 2)			   /*                        */
-    wrong_no_args("mod");			   /*                        */
+  if (list_length(term) != 2) wrong_no_args("mod");/*                        */
  						   /*                        */
-  val = TNumber(eval_num(binding, Car(term)));	   /*                        */
-  d   = TNumber(eval_num(binding, Cadr(term)));	   /*                        */
+  val = eval_num(binding, Car(term));	   	   /*                        */
+  d   = eval_num(binding, Cadr(term));	   	   /*                        */
   if (d	== 0) ErrorNF1("Modulo by 0");		   /*                        */
   return NumberTerm(val % d);			   /*                        */
 }						   /*------------------------*/
@@ -1194,14 +1188,11 @@ long num_arg(binding, argp, msg)		   /*                        */
   Binding binding;				   /*                        */
   register Term *argp;				   /*                        */
   register char *msg;				   /*                        */
-{ Term t;					   /*                        */
-  long val;					   /*                        */
+{ long val;					   /*                        */
   if (*argp == NIL)				   /*                        */
     ErrorNF2("Missing numeric argument for ", msg);/*                        */
   						   /*                        */
-  t   = eval_num(binding, Car(*argp));		   /*                        */
-  val = TNumber(t);				   /*                        */
-  UnlinkTerm(t);				   /*                        */
+  val = eval_num(binding, Car(*argp));		   /*                        */
   *argp = Cdr(*argp);				   /*                        */
   return val;					   /*                        */
 }						   /*------------------------*/

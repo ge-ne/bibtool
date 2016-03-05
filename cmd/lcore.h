@@ -36,7 +36,7 @@ extern String str_arg _ARG((Binding binding, Term *argp, char *msg));/*      */
 extern Record rec_arg _ARG((Binding binding, Term *argp, char *msg));/*      */
 
 extern Term eval_bool _ARG((Binding b, Term t));   /*                        */
-extern Term eval_num _ARG((Binding b, Term t));    /*                        */
+extern long eval_num _ARG((Binding b, Term t));    /*                        */
 extern Term eval_str _ARG((Binding b, Term t));    /*                        */
 
 extern int equals(Term a, Term b);		   /*                        */

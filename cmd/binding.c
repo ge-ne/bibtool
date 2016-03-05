@@ -193,11 +193,12 @@ Term setq(b, key, term)		   		   /*                        */
 { unsigned int h = hash(key) % BSize(b);	   /*                        */
   SymDef junk;					   /*                        */
    						   /*                        */
+  LinkTerm(term);				   /*                        */
+ 						   /*                        */
   for (junk = BJunks(b)[h]; junk; junk = NextJunk(junk))/*                   */
   { if (SymName(junk) == key)			   /*                        */
     { UnlinkTerm(SymValue(junk));		   /*                        */
       SymValue(junk) = term;		   	   /*                        */
-      LinkTerm(term);				   /*                        */
       return term;				   /*                        */
     }						   /*                        */
   }						   /*                        */
@@ -210,7 +211,6 @@ Term setq(b, key, term)		   		   /*                        */
   SymValue(junk) = term;		   	   /*                        */
   NextJunk(junk) = BJunks(b)[h];		   /*                        */
   BJunks(b)[h]   = junk;			   /*                        */
-  LinkTerm(term);				   /*                        */
   return term;					   /*                        */
 }						   /*------------------------*/
 
@@ -298,9 +298,8 @@ static Term num_s_rsc(binding, name, term, rp)	   /*                        */
   char * name;				   	   /*                        */
   Term term;					   /*                        */
   int * rp;					   /*                        */
-{ term = eval_num(binding, Cadr(term));	   	   /*                        */
-  *rp  = TNumber(term);	   		   	   /*                        */
-  return term;				   	   /*                        */
+{ *rp  = eval_num(binding, Cadr(term));		   /*                        */
+  return NumberTerm(*rp);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -606,6 +605,7 @@ SymDef get_class(binding, term, tp, clazzp)	   /*                        */
 ** Function:	evaluate()
 ** Type:	Term
 ** Purpose:	Evaluate a term and return the result.
+**		The reference count of the returned term is incremented.
 ** Arguments:
 **	binding	the binding
 **	term	the term to evaluate
@@ -642,6 +642,7 @@ Term evaluate(binding, term)			   /*                        */
       return term;				   /*                        */
  						   /*                        */
     case L_DEFUN:				   /*                        */
+      LinkTerm(Cdr(term));			   /*                        */
       return setq(binding,			   /*                        */
 		  TString(term),		   /*                        */
 		  Cdr(term));			   /*                        */

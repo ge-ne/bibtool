@@ -72,6 +72,8 @@ static Term read_args _ARG((Binding b, Term t, int sep, int term));/*        */
 			DebugPrint2("shift ", token_type(c))
 #define NewStack(S,T)	ts_push(StackNULL, S, T)
 
+static StringBuffer *sb = NULL;		   	   /*                        */
+	  
 /*-----------------------------------------------------------------------------
 ** Function:	scan_block()
 ** Type:	Term
@@ -80,8 +82,8 @@ static Term read_args _ARG((Binding b, Term t, int sep, int term));/*        */
 ** Returns:	the string as term
 **___________________________________________________			     */
 static Term scan_block()			   /*                        */
-{ StringBuffer *sb = sbopen();		   	   /*                        */
-  int n = 1;				   	   /*                        */
+{ if (sb == NULL) sb = sbopen();		   /*                        */
+  int n	 = 1;				   	   /*                        */
   int c;					   /*                        */
   Term t;					   /*                        */
  						   /*                        */
@@ -92,7 +94,7 @@ static Term scan_block()			   /*                        */
   }					   	   /*                        */
 					       	   /*                        */
   t = StringTerm(sbflush(sb));      	   	   /*                        */
-  sbclose(sb);				   	   /*                        */
+  sbrewind(sb);				   	   /*                        */
   return t;			   	   	   /*                        */
 }						   /*------------------------*/
 
@@ -110,9 +112,9 @@ static Term scan_string(type, c_end)		   /*                        */
   short int type;				   /*                        */
   char   c_end;					   /*                        */
 { Term t;					   /*                        */
-  StringBuffer *sb = sbopen();		   	   /*                        */
   register int c;				   /*                        */
   int lno = LineReaderLineno(reader);		   /*                        */
+  if (sb == NULL) sb = sbopen();		   /*                        */
   						   /*                        */
   for (c = GetC; c != c_end; c = GetC)	   	   /*                        */
   { if (c == '\\')			   	   /*                        */
@@ -140,7 +142,7 @@ static Term scan_string(type, c_end)		   /*                        */
   }					   	   /*                        */
 					       	   /*                        */
   t = new_t_string(type, symbol((String)sbflush(sb)));/*                     */
-  sbclose(sb);				   	   /*                        */
+  sbrewind(sb);				   	   /*                        */
   return t;			   		   /*                        */
 }						   /*------------------------*/
 
@@ -294,9 +296,9 @@ static int scan(b, mode)			   /*                        */
       case 'U': case 'V': case 'W': case 'X':	   /*                        */
       case 'Y': case 'Z':			   /*                        */
       case '$': case '@': case '_': case '.':	   /*                        */
-	{ StringBuffer *sb = sbopen();		   /*                        */
-	  String s;				   /*                        */
+	{ String s;				   /*                        */
 	  SymDef sym;				   /*                        */
+	  if (sb == NULL) sb = sbopen();	   /*                        */
 	  sbputc((char)c ,sb);			   /*                        */
 	  for (c = GetC;			   /*                        */
 	       isalpha(c) || isdigit(c) || c == '_' || c == '.';/*           */
@@ -304,7 +306,7 @@ static int scan(b, mode)			   /*                        */
 	  { sbputc((char)c ,sb); }		   /*                        */
 	  UnGetC(c);				   /*                        */
 	  s = symbol((String)sbflush(sb));	   /*                        */
-	  sbclose(sb);				   /*                        */
+	  sbrewind(sb);				   /*                        */
  						   /*                        */
 	  if (mode) { Return(VarTerm(s), L_VAR); } /*                        */
  						   /*                        */

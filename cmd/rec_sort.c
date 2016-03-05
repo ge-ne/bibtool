@@ -114,17 +114,14 @@ static int rec_gt_fct(r1, r2)			   /*                        */
   Record r1;					   /*                        */
   Record r2;					   /*                        */
 { Term t;					   /*                        */
-  Term t2;					   /*                        */
   long ret;					   /*                        */
  						   /*                        */
-  TRecord(Car(srt_args)) = r1;			   /*                        */
+  TRecord(Car(srt_args))  = r1;			   /*                        */
   TRecord(Cadr(srt_args)) = r2;			   /*                        */
  						   /*                        */
-  t  = funcall(srt_bind, (String)"", srt_fct, srt_args);/*                   */
-  t2 = eval_num(srt_bind, t);			   /*                        */
+  t   = funcall(srt_bind, (String)"", srt_fct, srt_args);/*                  */
+  ret = eval_num(srt_bind, t);			   /*                        */
   UnlinkTerm(t);				   /*                        */
-  ret = TNumber(t2);				   /*                        */
-  UnlinkTerm(t2);				   /*                        */
   return ret;			   		   /*                        */
 }						   /*------------------------*/
 

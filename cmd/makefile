@@ -14,7 +14,7 @@
 
 BASEDIR = ../
 
-CFLAGS  = -Wall -I $(BASEDIR)include -DREGEX
+CFLAGS  = -g -Wall -I $(BASEDIR)include -DREGEX
 
 OFILES  = $(BASEDIR)crossref.o	\
 	  $(BASEDIR)database.o	\

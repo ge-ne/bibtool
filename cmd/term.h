@@ -19,6 +19,9 @@
 
 /*---------------------------------------------------------------------------*/
 
+#define L_TRUE		0x100
+#define L_FALSE		0x101
+
 #define L_VAR		0x210
 #define L_FIELD		0x211
 #define L_STRING	0x212
@@ -33,11 +36,9 @@
 #define L_DB		0x230
 #define L_RECORD	0x240
 
-#define L_CLASS		0x200
-#define L_CONS		0x201
+#define L_CONS		0x200
+#define L_CLASS		0x201
 #define L_GROUP		0x202
-#define L_TRUE		0x203
-#define L_FALSE		0x204
 
 #define L_FUNCTION	0x205
 #define L_IF		0x206
@@ -104,7 +105,7 @@ typedef struct S_TERM {				   /*                        */
 #define TRefCount(T)		((T)->ref_count)
 
 #define LinkTerm(T)		if (T) TRefCount(T)++
-#define UnlinkTerm(T)		if ((T) && TRefCount(T)-- <= 0) free_term(T)
+#define UnlinkTerm(T)		if ((T) && --TRefCount(T) <= 0) free_term(T)
 
 #define Caar(T)			Car(Car(T))
 #define Cdar(T)			Cdr(Car(T))

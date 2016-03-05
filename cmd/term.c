@@ -67,6 +67,7 @@ String token_type(c)			   	   /*                        */
     case EOF:        return (String)"end of file"; /*                        */
     case L_AND:      return (String)"and";	   /*                        */
     case L_CONS:     return (String)"cons";	   /*                        */
+    case L_CLASS:    return (String)"Class";	   /*                        */
     case L_DEFUN:    return (String)"defun";	   /*                        */
     case L_DIV:      return (String)"/";	   /*                        */
     case L_EACH:     return (String)"each";	   /*                        */
@@ -75,7 +76,7 @@ String token_type(c)			   	   /*                        */
     case L_VAR:	     return (String)"var";	   /*                        */
     case L_FIELD:    return (String)"field";	   /*                        */
     case L_FUNCALL:  return (String)"funcall";	   /*                        */
-    case L_FUNCTION: return (String)"function";	   /*                        */
+    case L_FUNCTION: return (String)"Function";	   /*                        */
     case L_GE:       return (String)">=";	   /*                        */
     case L_GROUP:    return (String)"group";	   /*                        */
     case L_GT:       return (String)">";	   /*                        */
@@ -153,29 +154,29 @@ static Term new__t(type, cdr)			   /*                        */
   else						   /*                        */
   { t = (Term)malloc(sizeof(STerm));		   /*                        */
     if (t == NIL) OUT_OF_MEMORY("term");	   /*                        */
+ 						   /*                        */
+#ifdef DEBUG_MEM
+    if (t_map_ptr >= t_map_size)		   /*                        */
+    { t_map_size += 8192;			   /*                        */
+      t_map = (t_map			   	   /*                        */
+	       ? calloc(t_map_size, sizeof(Term))  /*                        */
+	       : malloc(t_map_size*sizeof(Term))); /*                        */
+    }						   /*                        */
+    t_map[t_map_ptr++] = t;			   /*                        */
+#endif
   }	   					   /*                        */
   TType(t)     = type;			   	   /*                        */
   Cdr(t)       = cdr;			   	   /*                        */
   TRefCount(t) = 1L;				   /*                        */
-#ifdef DEBUG_MEM
-  if (t_map_ptr >= t_map_size)			   /*                        */
-  { t_map_size += 8192;				   /*                        */
-    t_map	= (t_map			   /*                        */
-		   ? calloc(t_map_size, sizeof(Term))/*                      */
-		   : malloc(t_map_size*sizeof(Term)));/*                     */
-  }						   /*                        */
-  t_map[t_map_ptr++] = t;			   /*                        */
-#endif
   return t;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	dump_terms()
 ** Type:	void
-** Purpose:	
-**		
+** Purpose:	Visualize the memory allocated and freed for terms.
 ** Arguments:
-**	file	the output file
+**	file	the output stream
 ** Returns:	nothing
 **___________________________________________________			     */
 void dump_terms(file)				   /*                        */
@@ -185,12 +186,13 @@ void dump_terms(file)				   /*                        */
   size_t i;					   /*                        */
   register int c;				   /*                        */
  						   /*                        */
+  fputs("\n\t", file);				   /*                        */
   for (i = 0; i < t_map_ptr; i++)		   /*                        */
   { c = TType(t_map[i]);			   /*                        */
     fputc(c ? *token_type(c) : '_', file);	   /*                        */
     if (i%64 == 63) fputc('\n', file);		   /*                        */
   }						   /*                        */
-  fputc('\n', file);				   /*                        */
+  fputs("\n\t", file);				   /*                        */
 #endif
 }						   /*------------------------*/
 
@@ -297,7 +299,7 @@ Term new_t_rec(rec)				   /*                        */
 ** Function:	free_term()
 ** Type:	void
 ** Purpose:	Free the memory of a term and arrange for reuse.
-**		The term odes are linked into the |terms| list to be reused.
+**		The term nodes are linked into the |terms| list to be reused.
 **		This happens only for those term nodes which are not locked.
 ** Arguments:
 **	t	the term be freed
@@ -305,50 +307,50 @@ Term new_t_rec(rec)				   /*                        */
 **___________________________________________________			     */
 void free_term(t)				   /*                        */
   register Term t;				   /*                        */
-{ Term cdr;					   /*                        */
+{ register Term cdr;				   /*                        */
  						   /*                        */
-  if (t == NIL					   /*                        */
-      || TRefCount(t) > 0			   /*                        */
-      || TType(t) <= 0			   	   /*                        */
-      || TType(t) == L_FALSE			   /*                        */
-      || TType(t) == L_TRUE) return;	   	   /*                        */
+  for( ; t				   	   /*                        */
+      && TRefCount(t) <= 0			   /*                        */
+      && TType(t) > 0 ; t = cdr)		   /*                        */
+  {						   /*                        */
  						   /*                        */
 #ifdef DEBUG_MEM
-  print(stderr, t);			   	   /*                        */
-  fputs(stderr, "");				   /*                        */
+    fprintf( stderr, "free: %p %x ", t, TType(t)); /*                        */
+    print(stderr, t);			   	   /*                        */
+    fputc('\n', stderr);			   /*                        */
 #endif
  						   /*                        */
-  cdr = Cdr(t);					   /*                        */
+    switch (TType(t))				   /*                        */
+    { case L_TRUE:				   /*                        */
+      case L_FALSE:				   /*                        */
+	return;					   /*                        */
+      case L_VAR:				   /*                        */
+      case L_FIELD:				   /*                        */
+      case L_STRING:				   /*                        */
+      case L_FUNCALL:				   /*                        */
  						   /*                        */
-  switch (TType(t))				   /*                        */
-  { case L_TRUE:				   /*                        */
-    case L_FALSE:				   /*                        */
-    case L_CLASS:				   /*                        */
-      return;					   /*                        */
-    case L_VAR:					   /*                        */
-    case L_FIELD:				   /*                        */
-    case L_STRING:				   /*                        */
-    case L_FUNCALL:				   /*                        */
+      case L_DB:				   /*                        */
+      case L_RECORD:				   /*                        */
+      case L_NUMBER:				   /*                        */
+	Car(t) = NIL;				   /*                        */
+	break;					   /*                        */
+      default:					   /*                        */
+	if (Car(t)) { UnlinkTerm(Car(t)); }	   /*                        */
+	break;					   /*                        */
+    }						   /*                        */
  						   /*                        */
-    case L_DB:				   	   /*                        */
-    case L_RECORD:				   /*                        */
-    case L_NUMBER:				   /*                        */
-      Car(t) = NIL;				   /*                        */
-      break;					   /*                        */
-    default:					   /*                        */
-      if (Car(t)) free_term(Car(t));		   /*                        */
-      break;					   /*                        */
+    cdr = Cdr(t);				   /*                        */
+    if (cdr)					   /*                        */
+    { TRefCount(cdr)--;				   /*                        */
+      Cdr(t) = NIL;				   /*                        */
+    }		   				   /*                        */
+						   /*                        */
+    Car(t)   = terms;				   /*                        */
+    terms    = t;				   /*                        */
+    TType(t) = 0;				   /*                        */
   }						   /*                        */
- 						   /*                        */
-  Car(t) = terms;				   /*                        */
-  terms = t;					   /*                        */
- 						   /*                        */
-  if (cdr)					   /*                        */
-  { free_term(cdr);			   	   /*                        */
-    Cdr(t) = NIL;				   /*                        */
-  }						   /*                        */
-  TType(t) = 0;					   /*                        */
-}						   /*------------------------*/
+}						   /*                        */
+						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	prn_quoted()
