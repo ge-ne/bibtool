@@ -55,7 +55,16 @@ Term g_self(binding, term)			   /*                        */
   return term;					   /*                        */
 }						   /*------------------------*/
 
-
+/*-----------------------------------------------------------------------------
+** Function:	equals()
+** Type:	int
+** Purpose:	
+**		
+** Arguments:
+**	a	the first term
+**	b	the second term
+** Returns:	
+**___________________________________________________			     */
 int equals(a, b)				   /*                        */
   Term a;					   /*                        */
   Term b;					   /*                        */
