@@ -399,6 +399,76 @@ BUnit::run(name         => 'boolean-and-23',
 	   expected_err => '',
 	   expected_out => "false\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-or-1',
+	   args	        => '--eval',
+	   resource     => 'true:or()',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-or-2',
+	   args	        => '--eval',
+	   resource     => 'false:or()',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-or-10',
+	   args	        => '--eval',
+	   resource     => 'true:or(true)',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-or-11',
+	   args	        => '--eval',
+	   resource     => 'true:or(false)',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-or-12',
+	   args	        => '--eval',
+	   resource     => 'true:or(true, false)',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-or-13',
+	   args	        => '--eval',
+	   resource     => 'true:or(false, true)',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-or-20',
+	   args	        => '--eval',
+	   resource     => 'false:or(true)',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-or-21',
+	   args	        => '--eval',
+	   resource     => 'false:or(false)',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-or-22',
+	   args	        => '--eval',
+	   resource     => 'false:or(true, false)',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-or-23',
+	   args	        => '--eval',
+	   resource     => 'false:or(false, true)',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

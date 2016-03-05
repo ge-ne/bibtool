@@ -125,6 +125,12 @@
 
 \newcommand\ASCII{\textsc{ascii}}
 
+%------------------------------------------------------------------------------
+\newcommand\keyword[1]{\texttt{#1}}
+\newcommand\function[1]{\texttt{#1}}
+\newcommand\method[1]{\texttt{#1}}
+%------------------------------------------------------------------------------
+
 \begin{document} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \chapter{The \BibTool3 Configuration Language}
@@ -157,24 +163,24 @@ followed by a letter, a digit, \verb|$|, \verb|@|, \verb|.|, or \verb|_|.
 
 The follwoing words are reserved:
 
-\verb|and|
-\verb|defun|
-\verb|each|
-\verb|else|
-\verb|false|
-\verb|function|
-\verb|if|
-\verb|ilike|
-\verb|like|
-\verb|mod|
-\verb|nil|
-\verb|not|
-\verb|or|
-\verb|quote|
-\verb|return|
-\verb|true|
-\verb|while|
-\verb|with|
+\keyword{and}
+\keyword{defun}
+\keyword{each}
+\keyword{else}
+\keyword{false}
+\keyword{function}
+\keyword{if}
+\keyword{ilike}
+\keyword{like}
+\keyword{mod}
+\keyword{nil}
+\keyword{not}
+\keyword{or}
+\keyword{quote}
+\keyword{return}
+\keyword{true}
+\keyword{while}
+\keyword{with}
 
 \subsection{Variables}
 
@@ -190,6 +196,12 @@ The follwoing words are reserved:
 
 \subsection{Assignments}
 
+An assignment is written in infix notation with the operator \keyword{=}
+between the arguments. The first argument is a variable term. The secoond
+argument is an arbitrary term.
+
+% TODO
+
 \begin{lstlisting}[language=BibTool]
 x = 123
 \end{lstlisting}
@@ -203,6 +215,21 @@ with (x:123) {}
 \end{lstlisting}
 
 \subsection{Quote}
+
+In general the terms are evaluated during the exection. Especially when a
+function of method is invoked then the arguments are evaluated. Sometimes it
+is necessary to prevent this evaluation and pass in a term unevaluated.
+
+The \keyword{quote} prefix operator is meant for this purpose. This operator
+can be abbreviated with the single quote character (\keyword{'})
+
+\begin{lstlisting}[language=BibTool]
+'[x, y, z]
+\end{lstlisting}
+
+
+\subsection{\keyword{while} Loops}
+
 
 
 \section{Strings}
@@ -239,10 +266,9 @@ The backslash (\verb|\|)acts as escape character.
 
 %TODO
 
+\subsection{String method \method{as.boolean()}}
 
-\subsection{String method \texttt{as.boolean()}}
-
-The string method \texttt{as.boolean()} converts the string into a boolean
+The string method \method{as.boolean()} converts the string into a boolean
 value. It is true if the string is not empty and false otherwise. This method
 takes no arguments.
 
@@ -251,9 +277,9 @@ takes no arguments.
 $\hookrightarrow$ true
 \end{lstlisting}
 
-\subsection{String method \texttt{as.string()}}
+\subsection{String method \method{as.string()}}
 
-The string method \texttt{as.string()} converts the string into a string
+The string method \method{as.string()} converts the string into a string
 value. This is the string itself. This method is provided for consistency.
 This method takes no arguments.
 
@@ -262,9 +288,9 @@ This method takes no arguments.
 $\hookrightarrow$ "123"
 \end{lstlisting}
 
-\subsection{String method \texttt{as.number()}}
+\subsection{String method \method{as.number()}}
 
-The string method \texttt{as.number()} converts the string into a number
+The string method \method{as.number()} converts the string into a number
 value. The string is scanned and the first sequence consisting of digits
 optionally preceeded by a minus sign are returned as number. If no number is
 found then 0 is returned. This method takes no arguments.
@@ -274,9 +300,9 @@ found then 0 is returned. This method takes no arguments.
 $\hookrightarrow$ 123
 \end{lstlisting}
 
-\subsection{String method \texttt{class()}}
+\subsection{String method \method{class()}}
 
-The string method \texttt{class()} returns the class object for strings. This
+The string method \method{class()} returns the class object for strings. This
 method takes no arguments. More on classes can be found in
 section~\ref{sec:classes}.
 
@@ -285,9 +311,9 @@ section~\ref{sec:classes}.
 $\hookrightarrow$ <Class String>
 \end{lstlisting}
 
-\subsection{String method \texttt{concat()}}
+\subsection{String method \method{concat()}}
 
-The string method \texttt{concat()} concatenates its arguments to the end of
+The string method \method{concat()} concatenates its arguments to the end of
 the current string and returns the new string as result.
 This method takes arbitrarily many arguments.
 
@@ -296,9 +322,9 @@ This method takes arbitrarily many arguments.
 $\hookrightarrow$ "123a b c"
 \end{lstlisting}
 
-\subsection{String method \texttt{equals()}}
+\subsection{String method \method{equals()}}
 
-The string method \texttt{equals()} compares the current string against the
+The string method \method{equals()} compares the current string against the
 single argument. If the argument is also a string and contains the same
 characters then \verb|true| is returned. Otherwise the result is \verb|false|.
 
@@ -307,9 +333,9 @@ characters then \verb|true| is returned. Otherwise the result is \verb|false|.
 $\hookrightarrow$ false
 \end{lstlisting}
 
-\subsection{String method \texttt{length()}}
+\subsection{String method \method{length()}}
 
-The string method \texttt{length()} returns the number of characters contained
+The string method \method{length()} returns the number of characters contained
 in the string. This method takes no arguments.
 
 \begin{lstlisting}[language=BibTool,mathescape=true]
@@ -402,9 +428,42 @@ $\hookrightarrow$ 2
 
 %TODO
 
-\subsection{Number method \texttt{class()}}
+\subsection{Number method \method{as.boolean()}}
 
-The number method \texttt{class()} returns the class object for numbers. This
+The number method \method{as.boolean()} converts the number into a boolean
+value. It is \keyword{true} if the numberstring is not 0 and \keyword{false}
+otherwise. This method takes no arguments.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+123:as.boolean()
+$\hookrightarrow$ true
+\end{lstlisting}
+
+\subsection{Number method \method{as.string()}}
+
+The number method \method{as.number()} converts the number into a string
+value. The method returns a decimal representation of the number. This method
+takes no arguments.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+123:as.string()
+$\hookrightarrow$ "123"
+\end{lstlisting}
+
+\subsection{Number method \method{as.number()}}
+
+The number method \method{as.string()} converts the number into a number
+value. This is the number itself. This method is provided for consistency.
+This method takes no arguments.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+123:as.number()
+$\hookrightarrow$ 123
+\end{lstlisting}
+
+\subsection{Number method \method{class()}}
+
+The number method \method{class()} returns the class object for numbers. This
 method takes no arguments. More on classes can be found in
 section~\ref{sec:classes}.
 
@@ -413,9 +472,9 @@ section~\ref{sec:classes}.
 $\hookrightarrow$ <Class Number>
 \end{lstlisting}
 
-\subsection{Number method \texttt{equals()}}
+\subsection{Number method \method{equals()}}
 
-The number method \texttt{equals()} compares the current number against the
+The number method \method{equals()} compares the current number against the
 single argument. If the argument is also a number and contains the same
 numeric value then \verb|true| is returned. Otherwise the result is
 \verb|false|.
@@ -500,8 +559,23 @@ not a
 
 %TODO
 
-\subsection{Boolean method \texttt{as.boolean()}}
-n method \texttt{as.boolean()} converts the boolean into a boolean
+\subsection{Boolean method \method{and()}}
+
+The boolean method \method{and()} computes the conjunction of the boolean and
+its arguments. This method takes an arbitrary number of arguments. The return
+value is \keyword{false} the boolean or one of the arguments evaluate to
+\keyword{false}. The arguments are evaluated left to right. If \keyword{false}
+is found then the remaining arguments are not evaluated. If an argument can
+not be converted to a boolean then an error is raised. If all argumnets
+evaluate to \keyword{true} then \keyword{true} is returned.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+true:and(false)
+$\hookrightarrow$ false
+\end{lstlisting}
+
+\subsection{Boolean method \method{as.boolean()}}
+n method \method{as.boolean()} converts the boolean into a boolean
 value. This is the boolean itself. This method is provided for consistency.
 This method takes no arguments.
 
@@ -510,9 +584,9 @@ true:as.boolean()
 $\hookrightarrow$ true
 \end{lstlisting}
 
-\subsection{Boolean method \texttt{as.number()}}
+\subsection{Boolean method \method{as.number()}}
 
-The boolean method \texttt{as.number()} converts the boolean into a numeric
+The boolean method \method{as.number()} converts the boolean into a numeric
 value. The value 1 for \verb|true| and 0 for \verb|false|. This method takes
 no arguments.
 
@@ -526,9 +600,9 @@ false:as.number()
 $\hookrightarrow$ 0
 \end{lstlisting}
 
-\subsection{Boolean method \texttt{as.string()}}
+\subsection{Boolean method \method{as.string()}}
 
-The boolean method \texttt{as.number()} converts the boolean into a string
+The boolean method \method{as.number()} converts the boolean into a string
 value. The value is the printable representation of the boolean. This method
 takes no arguments.
 
@@ -542,9 +616,9 @@ false:as.string()
 $\hookrightarrow$ "false"
 \end{lstlisting}
 
-\subsection{Boolean method \texttt{class()}}
+\subsection{Boolean method \method{class()}}
 
-The boolean method \texttt{class()} returns the class object for booleans.
+The boolean method \method{class()} returns the class object for booleans.
 This method takes no arguments. More on classes can be found in
 section~\ref{sec:classes}.
 
@@ -553,9 +627,9 @@ true:class()
 $\hookrightarrow$ <Class Boolean>
 \end{lstlisting}
 
-\subsection{Boolean method \texttt{equals()}}
+\subsection{Boolean method \method{equals()}}
 
-The boolean method \texttt{equals()} compares the current boolean against the
+The boolean method \method{equals()} compares the current boolean against the
 single argument. If the argument is also a boolean and has the same value then
 \verb|true| is returned. Otherwise the result is \verb|false|.
 
@@ -564,6 +638,35 @@ true:equals(false)
 $\hookrightarrow$ false
 \end{lstlisting}
 
+\subsection{Boolean method \method{negate()}}
+
+The boolean method \method{negate()} returns the nagative value of the
+boolean. This method does not take any arguments.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+true:negate()
+$\hookrightarrow$ false
+\end{lstlisting}
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+false:negate()
+$\hookrightarrow$ true
+\end{lstlisting}
+
+\subsection{Boolean method \method{or()}}
+
+The boolean method \method{or()} computes the disjunction of the boolean and
+its arguments. This method takes an arbitrary number of arguments. The return
+value is \keyword{true} the boolean or one of the arguments evaluate to
+\keyword{true}. The arguments are evaluated left to right. If \keyword{true}
+is found then the remaining arguments are not evaluated. If an argument can
+not be converted to a boolean then an error is raised. If all argumnets
+evaluate to \keyword{false} then \keyword{false} is returned.
+
+\begin{lstlisting}[language=BibTool,mathescape=true]
+true:and(false)
+$\hookrightarrow$ true
+\end{lstlisting}
 
 %TODO
 
@@ -592,9 +695,9 @@ A single element list can be seen in the following example:
 %TODO
 
 
-\subsection{List method \texttt{as.boolean()}}
+\subsection{List method \method{as.boolean()}}
 
-The list method \texttt{as.boolean()} converts the list into a boolean value.
+The list method \method{as.boolean()} converts the list into a boolean value.
 It is true if the list is not empty and false otherwise. This method takes no
 arguments.
 
@@ -603,9 +706,9 @@ arguments.
 $\hookrightarrow$ true
 \end{lstlisting}
 
-\subsection{List method \texttt{as.number()}}
+\subsection{List method \method{as.number()}}
 
-The list method \texttt{as.number()} converts the list into a numeric value.
+The list method \method{as.number()} converts the list into a numeric value.
 The value is the length of the list. This method takes no arguments.
 
 \begin{lstlisting}[language=BibTool,mathescape=true]
@@ -613,9 +716,9 @@ The value is the length of the list. This method takes no arguments.
 $\hookrightarrow$ 2
 \end{lstlisting}
 
-\subsection{List method \texttt{as.string()}}
+\subsection{List method \method{as.string()}}
 
-The list method \texttt{as.number()} converts the list into a string value.
+The list method \method{as.number()} converts the list into a string value.
 The value is the printable representation of the list. This method takes no
 arguments.
 
@@ -624,9 +727,9 @@ arguments.
 $\hookrightarrow$ "[123, 456]"
 \end{lstlisting}
 
-\subsection{List method \texttt{car()}}
+\subsection{List method \method{car()}}
 
-The list method \texttt{car()} returns the first element of the list. If the
+The list method \method{car()} returns the first element of the list. If the
 list is empty then the empty list is returned. This method takes no arguments.
 
 \begin{lstlisting}[language=BibTool,mathescape=true]
@@ -634,9 +737,9 @@ list is empty then the empty list is returned. This method takes no arguments.
 $\hookrightarrow$ 123
 \end{lstlisting}
 
-\subsection{List method \texttt{cdr()}}
+\subsection{List method \method{cdr()}}
 
-The list method \texttt{cdr()} returns the list excluding the first element.
+The list method \method{cdr()} returns the list excluding the first element.
 If the list is empty then the empty list is returned. This method takes no
 arguments.
 
@@ -645,9 +748,9 @@ arguments.
 $\hookrightarrow$ [456]
 \end{lstlisting}
 
-\subsection{List method \texttt{class()}}
+\subsection{List method \method{class()}}
 
-The list method \texttt{class()} returns the class object for lists. This
+The list method \method{class()} returns the class object for lists. This
 method takes no arguments. More on classes can be found in
 section~\ref{sec:classes}.
 
@@ -656,9 +759,9 @@ section~\ref{sec:classes}.
 $\hookrightarrow$ <Class List>
 \end{lstlisting}
 
-\subsection{List method \texttt{empty()}}
+\subsection{List method \method{empty()}}
 
-The list method \texttt{empty()} returns the boolean value true if the list is
+The list method \method{empty()} returns the boolean value true if the list is
 empty and false otherwise. This method takes no arguments.
 
 \begin{lstlisting}[language=BibTool,mathescape=true]
@@ -666,9 +769,9 @@ empty and false otherwise. This method takes no arguments.
 $\hookrightarrow$ false
 \end{lstlisting}
 
-\subsection{List method \texttt{equals()}}
+\subsection{List method \method{equals()}}
 
-The list method \texttt{equals()} compares the current list against the single
+The list method \method{equals()} compares the current list against the single
 argument. If the argument is also a list and contains the same elements in the
 same order then \verb|true| is returned. Otherwise the result is \verb|false|.
 
@@ -682,9 +785,9 @@ $\hookrightarrow$ true
 $\hookrightarrow$ false
 \end{lstlisting}
 
-\subsection{List method \texttt{join()}}
+\subsection{List method \method{join()}}
 
-The list method \texttt{join()}
+The list method \method{join()}
 % TODO
 
 \begin{lstlisting}[language=BibTool,mathescape=true]
@@ -692,9 +795,9 @@ The list method \texttt{join()}
 $\hookrightarrow$ [123, 456, 9, 8, 7]
 \end{lstlisting}
 
-\subsection{List method \texttt{length()}}
+\subsection{List method \method{length()}}
 
-The list method \texttt{length()} returns the number of elements contained in
+The list method \method{length()} returns the number of elements contained in
 the list. This method takes no arguments.
 
 \begin{lstlisting}[language=BibTool,mathescape=true]
@@ -716,9 +819,9 @@ each (x:[1,2,3]) {...}
 %TODO
 
 
-\subsection{Function method \texttt{apply()}}
+\subsection{Function method \method{apply()}}
 
-The function method \texttt{apply()} runs the code associated to the funtion
+The function method \method{apply()} runs the code associated to the funtion
 after the parameters are bound to the actual values or the fallbacks defined
 with the function.
 
@@ -733,9 +836,9 @@ $\hookrightarrow$ 987
 \end{lstlisting}
 
 
-\subsection{Function method \texttt{class()}}
+\subsection{Function method \method{class()}}
 
-The function method \texttt{class()} returns the class object for functions.
+The function method \method{class()} returns the class object for functions.
 This method takes no arguments.
 
 \begin{lstlisting}[language=BibTool,mathescape=true]
@@ -743,9 +846,9 @@ function(){}:class()
 $\hookrightarrow$ <Class Function>
 \end{lstlisting}
 
-\subsection{Function method \texttt{code()}}
+\subsection{Function method \method{code()}}
 
-The function method \texttt{code()} returns the code as list. This method
+The function method \method{code()} returns the code as list. This method
 takes no arguments.
 
 \begin{lstlisting}[language=BibTool,mathescape=true]
@@ -758,9 +861,9 @@ $\hookrightarrow$ [x]
 
 %TODO
 
-\subsection{Class method \texttt{class()}}
+\subsection{Class method \method{class()}}
 
-The class method \texttt{class()} returns the class object for classes. This
+The class method \method{class()} returns the class object for classes. This
 method takes no arguments.
 
 \begin{lstlisting}[language=BibTool,mathescape=true]
@@ -779,7 +882,7 @@ with (db:read("abc.bib")) {
 
 \subsection{The function \texttt{read()}}\label{db:read}
 
-The function \texttt{read()} creates a new database and optionally reads in
+The function \function{read()} creates a new database and optionally reads in
 some files. The arguments can be of several kinds.
 
 If no arguments are given then no files are read.
@@ -812,9 +915,9 @@ files = ["abc.bib", "def.bib"]
 db = read(files)
 \end{lstlisting}
 
-\subsection{Database method \texttt{class()}}
+\subsection{Database method \method{class()}}
 
-The database method \texttt{class()} returns the class object for databases.
+The database method \method{class()} returns the class object for databases.
 This method takes no arguments. More on classes can be found in
 section~\ref{sec:classes}.
 
@@ -823,10 +926,10 @@ db:class()
 $\hookrightarrow$ <Class Database>
 \end{lstlisting}
 
-\subsection{Database method \texttt{read()}}
+\subsection{Database method \method{read()}}
 
-The database method \texttt{read()} reads additional \BibTeX\ files into the
-database. The arguments are the same as for the function \rsc{read} (see
+The database method \method{read()} reads additional \BibTeX\ files into the
+database. The arguments are the same as for the function \function{read} (see
 section~\ref{db:read}).
 
 The return value of this method is the database. Thus method invocations can
@@ -836,9 +939,9 @@ be cascaded.
 db:read("abc.bib")
 \end{lstlisting}
 
-\subsection{Database method \texttt{sort()}}
+\subsection{Database method \method{sort()}}
 
-The database method \texttt{sort()} sorts the normal records of the
+The database method \method{sort()} sorts the normal records of the
 database. The default is to sort case-insensitive according to the sort key in
 ascending order.
 
@@ -889,9 +992,9 @@ The return value of this method is the database. Thus method invocations can
 be cascaded.
 
 
-\subsection{Database method \texttt{write()}}
+\subsection{Database method \method{write()}}
 
-The database method \texttt{write()} writes a database to a given file.
+The database method \method{write()} writes a database to a given file.
 This method takes two optional arguments.
 
 \begin{lstlisting}[language=BibTool,mathescape=true]
@@ -944,9 +1047,9 @@ each (e:db) {...}
 
 %TODO
 
-\subsection{Entry method \texttt{class()}}
+\subsection{Entry method \method{class()}}
 
-The entry method \texttt{class()} returns the class object for entries. This
+The entry method \method{class()} returns the class object for entries. This
 method takes no arguments. More on classes can be found in
 section~\ref{sec:classes}.
 

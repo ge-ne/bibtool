@@ -54,12 +54,12 @@ static Term m_and(binding, bool, args)	   	   /*                        */
   Term bool;					   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
-  if (bool == term_false) return bool;
-  while (args)
-  { if (eval_bool(binding, Car(args)) == term_false)
-      return term_false;
-    args = Cdr(args);
-  }
+  if (bool == term_false) return bool;		   /*                        */
+  while (args)					   /*                        */
+  { if (eval_bool(binding, Car(args)) == term_false)/*                       */
+      return term_false;			   /*                        */
+    args = Cdr(args);				   /*                        */
+  }						   /*                        */
   return term_true;		   		   /*                        */
 }						   /*------------------------*/
 
@@ -127,6 +127,31 @@ static Term m_negate(binding, bool, args)	   /*                        */
   return (IsFalse(bool) ? term_true: term_false);  /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	m_or()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	bool	the boolean term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_or(binding, bool, args)	   	   /*                        */
+  Binding binding;				   /*                        */
+  Term bool;					   /*                        */
+  Term args;					   /*                        */
+{						   /*                        */
+  if (bool == term_true) return bool;		   /*                        */
+  while (args)					   /*                        */
+  { if (eval_bool(binding, Car(args)) == term_true)/*                        */
+      return term_true;			   	   /*                        */
+    args = Cdr(args);				   /*                        */
+  }						   /*                        */
+  return term_false;		   		   /*                        */
+}						   /*------------------------*/
+
 #define Bind(NAME,GET)  bind(b, symdef(symbol((String)NAME),     \
 				       0, 0, GET, NULL));
 
@@ -152,6 +177,7 @@ Term class_boolean()				   /*                        */
     Bind("class", m_class);		   	   /*                        */
     Bind("equals", m_equals);		   	   /*                        */
     Bind("negate", m_negate);		   	   /*                        */
+    Bind("or", m_or);		   	   	   /*                        */
   }						   /*                        */
  						   /*                        */
   return c_boolean;				   /*                        */
