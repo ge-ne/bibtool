@@ -163,7 +163,7 @@ static Term m_equals(binding, string, args)	   /*                        */
   Term t = term_arg(binding, &args, "equals");	   /*                        */
   no_args(args, "equals");			   /*                        */
  						   /*                        */
-  val = (IsString(t)				   /*                        */
+  val = (t &&  IsString(t)			   /*                        */
 	 && cmp(TString(string), TString(t)) == 0);/*                        */
   UnlinkTerm(t);				   /*                        */
   return (val ? term_true: term_false);		   /*                        */
