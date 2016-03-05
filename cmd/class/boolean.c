@@ -82,6 +82,26 @@ static Term m_equals(binding, bool, args)	   /*                        */
   return (val ? term_true: term_false);		   /*                        */
 }						   /*------------------------*/
 
+/*-----------------------------------------------------------------------------
+** Function:	m_negate()
+** Type:	static Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	bool	the boolean term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_negate(binding, bool, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term bool;					   /*                        */
+  Term args;					   /*                        */
+{ no_args(args, "equals");			   /*                        */
+ 						   /*                        */
+  return (IsFalse(bool) ? term_true: term_false);  /*                        */
+}						   /*------------------------*/
+
 #define Bind(NAME,GET)  bind(b, symdef(symbol((String)NAME),     \
 				       0, 0, GET, NULL));
 
@@ -103,8 +123,9 @@ Term class_boolean()				   /*                        */
     Bind("as.boolean", m_as_boolean);		   /*                        */
     Bind("as.number", m_as_number);		   /*                        */
     Bind("as.string", m_as_string);		   /*                        */
-    Bind("equals", m_equals);		   	   /*                        */
     Bind("class", m_class);		   	   /*                        */
+    Bind("equals", m_equals);		   	   /*                        */
+    Bind("negate", m_negate);		   	   /*                        */
   }						   /*                        */
  						   /*                        */
   return c_boolean;				   /*                        */

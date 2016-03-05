@@ -315,6 +315,20 @@ BUnit::run(name         => 'boolean-equals-12',
 	   expected_err => '',
 	   expected_out => "false\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-negate-1',
+	   args	        => '--eval',
+	   resource     => 'true:negate()',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-negate-2',
+	   args	        => '--eval',
+	   resource     => 'false:negate()',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 
