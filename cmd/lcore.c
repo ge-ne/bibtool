@@ -135,8 +135,8 @@ Term g_ne(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 {						   /*                        */
-  term = g_eq(binding, term);			   /*                        */
-  return (IsTrue(term) ? term_false: term_true);   /*                        */
+  return (IsTrue(g_eq(binding, term))		   /*                        */
+	  ? term_false: term_true);   		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
