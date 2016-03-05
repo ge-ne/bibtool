@@ -44,18 +44,42 @@ static Term c_boolean;				   /*                        */
 ** Purpose:	Getter for the class.
 ** Arguments:
 **	binding	the binding
-**	string	the string term
+**	bool	the boolean term
 **	args	the arguments
 ** Returns:	the class
 **___________________________________________________			     */
-static Term m_class(binding, string, args)	   /*                        */
+static Term m_class(binding, bool, args)	   /*                        */
   Binding binding;				   /*                        */
-  Term string;					   /*                        */
+  Term bool;					   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
   no_args(args, "class");	   	   	   /*                        */
   LinkTerm(c_boolean);				   /*                        */
   return c_boolean;				   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	m_equals()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	bool	the boolean term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_equals(binding, bool, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term bool;					   /*                        */
+  Term args;					   /*                        */
+{ int val;					   /*                        */
+  Term t = term_arg(binding, &args, "equals");	   /*                        */
+  no_args(args, "equals");			   /*                        */
+ 						   /*                        */
+  val = (t && (TType(t)  == TType(bool)));	   /*                        */
+  UnlinkTerm(t);				   /*                        */
+  return (val ? term_true: term_false);		   /*                        */
 }						   /*------------------------*/
 
 #define Bind(NAME,GET)  bind(b, symdef(symbol((String)NAME),     \
@@ -79,6 +103,7 @@ Term class_boolean()				   /*                        */
     Bind("as.boolean", m_as_boolean);		   /*                        */
     Bind("as.number", m_as_number);		   /*                        */
     Bind("as.string", m_as_string);		   /*                        */
+    Bind("equals", m_equals);		   	   /*                        */
     Bind("class", m_class);		   	   /*                        */
   }						   /*                        */
  						   /*                        */

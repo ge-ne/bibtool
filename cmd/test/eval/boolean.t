@@ -266,6 +266,55 @@ BUnit::run(name         => 'boolean-as-boolean-2',
 	   expected_err => '',
 	   expected_out => "false\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-equals-1',
+	   args	        => '--eval',
+	   resource     => 'false:equals(false)',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-equals-2',
+	   args	        => '--eval',
+	   resource     => 'false:equals(true)',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-equals-3',
+	   args	        => '--eval',
+	   resource     => 'true:equals(false)',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-equals-4',
+	   args	        => '--eval',
+	   resource     => 'true:equals(true)',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-equals-10',
+	   args	        => '--eval',
+	   resource     => 'true:equals(1)',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-equals-11',
+	   args	        => '--eval',
+	   resource     => 'true:equals("1")',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-equals-12',
+	   args	        => '--eval',
+	   resource     => 'true:equals(nil)',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 
