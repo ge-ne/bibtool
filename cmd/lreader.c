@@ -725,10 +725,24 @@ static Term read_expr(binding, stack)		   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case L_CLASS:				   /*                        */
-	t = yylval;		   	   	   /*                        */
-	Cdr(t) = read_group(binding, "class");     /*                        */
-	if (stack == NULL) return t;		   /*                        */
-	Shift(L_CLASS, t);		   	   /*                        */
+	{ Term x;				   /*                        */
+	  t = yylval;		   	   	   /*                        */
+	  Expect(L_VAR, "Missing class name");	   /*                        */
+	  Car(t) = x = yylval;			   /*                        */
+	  for ( c = scan(binding, 0);		   /*                        */
+		c == L_METHOD;			   /*                        */
+		c = scan(binding, 0))		   /*                        */
+	  { Cdr(x) = yylval;			   /*                        */
+	    x = yylval;				   /*                        */
+	    Expect(L_VAR, "Missing class name");   /*                        */
+	    Car(x) = yylval;			   /*                        */
+	  }					   /*                        */
+	 		   			   /*                        */
+	  unscan(c, yylval);			   /*                        */
+	  Cdr(t) = read_group(binding, "class");   /*                        */
+	  if (stack == NULL) return t;		   /*                        */
+	  Shift(L_CLASS, t);		   	   /*                        */
+	}					   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case L_CONS:				   /*                        */

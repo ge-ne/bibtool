@@ -385,6 +385,25 @@ BUnit::run(name         => 'method-13',
 	   expected_err => '',
 	   expected_out => "a = x:y(1, 2)\n" );
 
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'class-1',
+	   resource	=> 'class abc {}',
+	   expected_err => '',
+	   expected_out => "class abc\n{\n}\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'class-2',
+	   resource	=> 'class abc:def {}',
+	   expected_err => '',
+	   expected_out => "class abc : def\n{\n}\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'class-3',
+	   resource	=> 'class abc:def:ghi {}',
+	   expected_err => '',
+	   expected_out => "class abc : def : ghi\n{\n}\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 

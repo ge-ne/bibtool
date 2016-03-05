@@ -524,6 +524,7 @@ void prn_term(file, term, in, quote, outer)	   /*                        */
   int quote;					   /*                        */
   int outer;					   /*                        */
 { char * key;					   /*                        */
+  Term t;					   /*                        */
   if (term == NIL) {				   /*                        */
     fputs("[]", file);				   /*                        */
     return;					   /*                        */
@@ -534,9 +535,18 @@ void prn_term(file, term, in, quote, outer)	   /*                        */
       return;	   			   	   /*                        */
 						   /*                        */
     case L_CLASS:				   /*                        */
-      fputs("Class ", file);			   /*                        */
+      fputs("class ", file);			   /*                        */
+      if (Car(term)) 				   /*                        */
+      { fputs((char*)TString(Car(term)), file);	   /*                        */
+	for (t = Cdar(term); t; t = Cdr(t))	   /*                        */
+	{ fputs(" : ", file);			   /*                        */
+	  fputs((char*)TString(Car(t)), file);	   /*                        */
+	}					   /*                        */
+	fputc('\n', file);			   /*                        */
+      }		   				   /*                        */
       if (Cdr(term)) 				   /*                        */
-      { prn_term(file, Cdr(term), in, FALSE, FALSE); }/*                     */
+      { prn_term(file, Cdr(term),		   /*                        */
+		 in, FALSE, FALSE); }		   /*                        */
       else					   /*                        */
       { fputs("CLASS", file); }			   /*                        */
       return;					   /*                        */
