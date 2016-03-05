@@ -39,6 +39,31 @@
 static Term c_boolean;				   /*                        */
 
 /*-----------------------------------------------------------------------------
+** Function:	m_and()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	bool	the boolean term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_and(binding, bool, args)	   	   /*                        */
+  Binding binding;				   /*                        */
+  Term bool;					   /*                        */
+  Term args;					   /*                        */
+{						   /*                        */
+  if (bool == term_false) return bool;
+  while (args)
+  { if (eval_bool(binding, Car(args)) == term_false)
+      return term_false;
+    args = Cdr(args);
+  }
+  return term_true;		   		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	m_class()
 ** Type:	Term
 ** Purpose:	Getter for the class.
@@ -120,6 +145,7 @@ Term class_boolean()				   /*                        */
   { c_boolean = new_class(StringTerm("Boolean"));  /*                        */
     b = TBinding(c_boolean);		   	   /*                        */
  						   /*                        */
+    Bind("and", m_and);		   	   	   /*                        */
     Bind("as.boolean", m_as_boolean);		   /*                        */
     Bind("as.number", m_as_number);		   /*                        */
     Bind("as.string", m_as_string);		   /*                        */

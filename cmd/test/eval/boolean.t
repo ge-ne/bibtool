@@ -329,6 +329,76 @@ BUnit::run(name         => 'boolean-negate-2',
 	   expected_err => '',
 	   expected_out => "true\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-and-1',
+	   args	        => '--eval',
+	   resource     => 'true:and()',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-and-2',
+	   args	        => '--eval',
+	   resource     => 'false:and()',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-and-10',
+	   args	        => '--eval',
+	   resource     => 'true:and(true)',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-and-11',
+	   args	        => '--eval',
+	   resource     => 'true:and(false)',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-and-12',
+	   args	        => '--eval',
+	   resource     => 'true:and(true, false)',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-and-13',
+	   args	        => '--eval',
+	   resource     => 'true:and(true, true)',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-and-20',
+	   args	        => '--eval',
+	   resource     => 'false:and(true)',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-and-21',
+	   args	        => '--eval',
+	   resource     => 'false:and(false)',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-and-22',
+	   args	        => '--eval',
+	   resource     => 'false:and(true, false)',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'boolean-and-23',
+	   args	        => '--eval',
+	   resource     => 'false:and(true, true)',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 
