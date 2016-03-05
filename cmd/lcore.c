@@ -282,37 +282,37 @@ Term g_ge(binding, term)			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	eval_bool()
-** Type:	Term
+** Type:	int
 ** Purpose:	Evaluate a term and convert the result into a boolean value.
 ** Arguments:
 **	binding	the binding
 **	term	the term
 ** Returns:	
 **___________________________________________________			     */
-Term eval_bool(binding, term)			   /*                        */
+int eval_bool(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { 						   /*                        */
   term = evaluate(binding, term);		   /*                        */
  						   /*                        */
-  if (term == NIL) { return term_false; }	   /*                        */
+  if (term == NIL) { return 0; }	   	   /*                        */
  						   /*                        */
   switch (TType(term))			   	   /*                        */
   { case L_CONS:				   /*                        */
-      return term_true;			   	   /*                        */
+      return 1;			   	   	   /*                        */
     case L_NUMBER:				   /*                        */
-      return (TNumber(term) ? term_true : term_false);/*                     */
+      return (TNumber(term) != 0);		   /*                        */
     case L_STRING:				   /*                        */
-      return (*TString(term) ? term_true : term_false);/*                    */
+      return (*TString(term) ? 1 : 0);		   /*                        */
     case L_TRUE:				   /*                        */
+      return 1;					   /*                        */
     case L_FALSE:				   /*                        */
       break;					   /*                        */
     default:					   /*                        */
       ErrorNF1("Type error: boolean expected");    /*                        */
   }						   /*                        */
  						   /*                        */
-  LinkTerm(term);				   /*                        */
-  return term;	   				   /*                        */
+  return 0;	   				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -332,11 +332,13 @@ Term m_as_boolean(binding, string, args)	   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
   no_args(args, "as.boolean");			   /*                        */
-  return eval_bool(binding, string);		   /*                        */
+  return (eval_bool(binding, string)		   /*                        */
+	  ? term_true				   /*                        */
+	  : term_false);		   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	g_not()
+** Function:	g_while()
 ** Type:	Term
 ** Purpose:	
 **		
@@ -350,7 +352,7 @@ Term g_while(binding, term)			   /*                        */
   Term term;					   /*                        */
 { Term t = NIL;				   	   /*                        */
  						   /*                        */
-  while (eval_bool(binding, Car(term)) == term_true)/*                       */
+  while (eval_bool(binding, Car(term)))		   /*                        */
   { t = evaluate(binding, Cdr(term)); }	   	   /*                        */
  						   /*                        */
   LinkTerm(t);					   /*                        */
@@ -371,8 +373,9 @@ Term g_not(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 {						   /*                        */
-  term = eval_bool(binding, Cadr(term));	   /*                        */
-  return IsTrue(term) ? term_false: term_true;     /*                        */
+  return (eval_bool(binding, Cadr(term))	   /*                        */
+	  ? term_false				   /*                        */
+	  : term_true);     			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -388,17 +391,16 @@ Term g_not(binding, term)			   /*                        */
 Term g_and(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ Term t;					   /*                        */
- 						   /*                        */
+{						   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
   if (list_length(term) != 2)			   /*                        */
   { wrong_no_args("and"); }			   /*                        */
  						   /*                        */
-  t = eval_bool(binding, Car(term));		   /*                        */
-  return (IsFalse(t)				   /*                        */
-	  ? t					   /*                        */
-	  : eval_bool(binding, Cadr(term)));	   /*                        */
+  return (eval_bool(binding, Car(term))		   /*                        */
+	  && eval_bool(binding, Cadr(term))	   /*                        */
+	  ? term_true				   /*                        */
+	  : term_false);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -414,17 +416,16 @@ Term g_and(binding, term)			   /*                        */
 Term g_or(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ Term t;					   /*                        */
- 						   /*                        */
+{						   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
   if (list_length(term) != 2)			   /*                        */
   { wrong_no_args("or"); }			   /*                        */
  						   /*                        */
-  t = eval_bool(binding, Car(term));		   /*                        */
-  return (IsTrue(t)				   /*                        */
-	  ? t					   /*                        */
-	  : eval_bool(binding, Cadr(term)));	   /*                        */
+  return (eval_bool(binding, Car(term))		   /*                        */
+	  || eval_bool(binding, Cadr(term))	   /*                        */
+	  ? term_true				   /*                        */
+	  : term_false);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -1239,14 +1240,11 @@ int bool_arg(binding, argp, msg)		   /*                        */
   Binding binding;				   /*                        */
   register Term *argp;				   /*                        */
   register char *msg;				   /*                        */
-{ Term t;					   /*                        */
-  int val;					   /*                        */
+{ int val;					   /*                        */
   if (*argp == NIL)				   /*                        */
     ErrorNF2("Missing boolean argument for ", msg);/*                        */
   						   /*                        */
-  t = eval_bool(binding, Car(*argp));		   /*                        */
-  val = (t == term_true);			   /*                        */
-  UnlinkTerm(t);				   /*                        */
+  val = eval_bool(binding, Car(*argp));		   /*                        */
   *argp = Cdr(*argp);				   /*                        */
   return val;					   /*                        */
 }						   /*------------------------*/

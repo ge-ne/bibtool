@@ -275,9 +275,7 @@ static Term bool_s_rsc(binding, name, term, rp)	   /*                        */
   char * name;				   	   /*                        */
   Term term;					   /*                        */
   int * rp;					   /*                        */
-{ term = eval_bool(binding, Cadr(term));	   /*                        */
-  *rp  = (IsTrue(term) ? 1 : 0 );	   	   /*                        */
-  UnlinkTerm(term);				   /*                        */
+{ *rp = eval_bool(binding, Cadr(term));	   	   /*                        */
   return (*rp ? term_true : term_false);	   /*                        */
 }						   /*------------------------*/
 
@@ -703,7 +701,7 @@ Term evaluate(binding, term)			   /*                        */
       }						   /*                        */
  						   /*                        */
     case L_IF:				   	   /*                        */
-      if (IsTrue(eval_bool(binding, Car(term))))   /*                        */
+      if (eval_bool(binding, Car(term)))   	   /*                        */
       { return evaluate(binding, Cadr(term)); }    /*                        */
       						   /*                        */
       return (Cddr(term)			   /*                        */

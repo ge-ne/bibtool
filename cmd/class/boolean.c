@@ -56,7 +56,7 @@ static Term m_and(binding, bool, args)	   	   /*                        */
 {						   /*                        */
   if (bool == term_false) return bool;		   /*                        */
   while (args)					   /*                        */
-  { if (eval_bool(binding, Car(args)) == term_false)/*                       */
+  { if (!eval_bool(binding, Car(args)))		   /*                        */
       return term_false;			   /*                        */
     args = Cdr(args);				   /*                        */
   }						   /*                        */
@@ -145,7 +145,7 @@ static Term m_or(binding, bool, args)	   	   /*                        */
 {						   /*                        */
   if (bool == term_true) return bool;		   /*                        */
   while (args)					   /*                        */
-  { if (eval_bool(binding, Car(args)) == term_true)/*                        */
+  { if (eval_bool(binding, Car(args)))		   /*                        */
       return term_true;			   	   /*                        */
     args = Cdr(args);				   /*                        */
   }						   /*                        */
