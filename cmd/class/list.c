@@ -158,6 +158,33 @@ static Term m_empty(binding, list, args)	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	m_equals()
+** Type:	Term
+** Purpose:	
+**		
+** Arguments:
+**	binding	the binding
+**	list	the list term
+**	args	the arguments
+** Returns:	
+**___________________________________________________			     */
+static Term m_equals(binding, list, args)	   /*                        */
+  Binding binding;				   /*                        */
+  Term list;					   /*                        */
+  Term args;					   /*                        */
+{ int val;					   /*                        */
+  Term t = term_arg(binding, &args, "equals");	   /*                        */
+  no_args(args, "equals");			   /*                        */
+ 						   /*                        */
+  if (t	== NIL)					   /*                        */
+   return (list ? term_false : term_true ); 	   /*                        */
+ 						   /*                        */
+  val = equals(list, t);	   		   /*                        */
+  UnlinkTerm(t);				   /*                        */
+  return (val ? term_true: term_false);		   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	m_join()
 ** Type:	Term
 ** Purpose:	
@@ -246,6 +273,7 @@ Term class_list()				   /*                        */
     Bind("cdr", m_cdr);		   	   	   /*                        */
     Bind("class", m_class);			   /*                        */
     Bind("empty", m_empty);			   /*                        */
+    Bind("equals", m_equals);			   /*                        */
     Bind("length", m_length);		   	   /*                        */
     Bind("join", m_join);			   /*                        */
   }						   /*                        */

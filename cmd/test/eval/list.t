@@ -265,6 +265,55 @@ BUnit::run(name         => 'list-empty-3',
 	   expected_err => '',
 	   expected_out => "false\n" );
 
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-equals-1',
+	   args	        => '--eval',
+	   resource     => '[]:equals([])',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-equals-2',
+	   args	        => '--eval',
+	   resource     => '[1]:equals([1])',
+	   expected_err => '',
+	   expected_out => "true\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-equals-3',
+	   args	        => '--eval',
+	   resource     => '[]:equals([1])',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-equals-10',
+	   args	        => '--eval',
+	   resource     => '[]:equals(1)',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-equals-11',
+	   args	        => '--eval',
+	   resource     => '[]:equals("1")',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-equals-20',
+	   args	        => '--eval',
+	   resource     => '[1]:equals(1)',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
+#------------------------------------------------------------------------------
+BUnit::run(name         => 'list-equals-21',
+	   args	        => '--eval',
+	   resource     => '[1]:equals("1")',
+	   expected_err => '',
+	   expected_out => "false\n" );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 
