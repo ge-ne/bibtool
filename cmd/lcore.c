@@ -78,7 +78,7 @@ int equals(a, b)				   /*                        */
 	      TNumber(a) == TNumber(b));   	   /*                        */
     case L_STRING:				   /*                        */
       return (b && IsString(b) &&		   /*                        */
-	      cmp(TString(a), TString(b)) == 0 );  /*                        */
+	      TString(a) == TString(b) );  	   /*                        */
     case L_CONS:				   /*                        */
       if (b == NIL || !IsList(b)) return 0;	   /*                        */
       for (;a ; a = Cdr(a))			   /*                        */
