@@ -109,22 +109,23 @@ static Term m_get(binding, record, args)	   /*                        */
 ** Arguments:
 **	binding	the binding
 **	rec	the record term
-**	val	the value term
+**	value	the value term
 ** Returns:	
 **___________________________________________________			     */
-static Term a_set(binding, record, val)	   	   /*                        */
+static Term a_set(binding, record, value)	   /*                        */
   Binding binding;				   /*                        */
   Term record;					   /*                        */
-  Term val;				   	   /*                        */
+  Term value;				   	   /*                        */
 { Term args = Cddr(record);			   /*                        */
   String key = str_arg(binding, &args, "field");   /*                        */
+  String val;					   /*                        */
   no_args(args, "field");			   /*                        */
  						   /*                        */
-  val = eval_str(binding, val);			   /*                        */
+  val = eval_str(binding, value);		   /*                        */
   push_to_record(TRecord(record),		   /*                        */
 		 key,				   /*                        */
-		 TString(val));			   /*                        */
-  return val; 			   		   /*                        */
+		 val);			   	   /*                        */
+  return StringTerm(val);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -207,11 +208,10 @@ static Term a_key(binding, record, val)	   	   /*                        */
   Term record;					   /*                        */
   Term val;				   	   /*                        */
 { StringBuffer* sb = sbopen();			   /*                        */
-  char *cp;					   /*                        */
-  String s;					   /*                        */
-  val = eval_str(binding, Car(val));		   /*                        */
+  char *cp = (char*)eval_str(binding, Car(val));   /*                        */
+  String s;		   			   /*                        */
  						   /*                        */
-  for (cp = (char*)TString(val); *cp; cp++)	   /*                        */
+  for (; *cp; cp++)	   			   /*                        */
   { if (is_allowed(*cp)) sbputc(*cp, sb);  }	   /*                        */
   s = symbol((String)sbflush(sb));		   /*                        */
   sbclose(sb);					   /*                        */

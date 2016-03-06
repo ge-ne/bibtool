@@ -124,9 +124,9 @@ typedef struct S_TERM {				   /*                        */
 #define Cons(CAR, CDR)		new_term(L_CONS, CAR, CDR)
 #define Cons1(CAR)		Cons(CAR, NIL)
 
-#define StringTerm(S)		new_t_string(L_STRING, symbol((String)S))
-#define FieldTerm(S)		new_t_string(L_FIELD, symbol((String)S))
-#define VarTerm(S)		new_t_string(L_VAR, symbol((String)S))
+#define StringTerm(S)		new_t_string(L_STRING, symbol((String)(S)))
+#define FieldTerm(S)		new_t_string(L_FIELD, symbol((String)(S)))
+#define VarTerm(S)		new_t_string(L_VAR, symbol((String)(S)))
 #define NumberTerm(N)		new_term_num(N)
 #define NewTerm(N)		new_term(N, NIL, NIL)
 #define DBTerm(DB)		new_t_db(DB)

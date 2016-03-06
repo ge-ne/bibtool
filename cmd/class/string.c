@@ -134,9 +134,7 @@ static Term m_concat(binding, string, args)	   /*                        */
   sbputs((char*)TString(string), sb);		   /*                        */
  						   /*                        */
   for ( ; args; args = Cdr(args))		   /*                        */
-  { t = eval_str(binding, Car(args));		   /*                        */
-    sbputs((char*)TString(t), sb);		   /*                        */
-    UnlinkTerm(t);				   /*                        */
+  { sbputs((char*)eval_str(binding, Car(args)), sb);/*                       */
   }						   /*                        */
  						   /*                        */
   t = StringTerm((String)sbflush(sb));		   /*                        */

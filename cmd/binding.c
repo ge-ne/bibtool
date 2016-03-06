@@ -317,9 +317,8 @@ static Term str_s_rsc(binding, name, term, rp)	   /*                        */
   char *name;				   	   /*                        */
   Term term;					   /*                        */
   String *rp;					   /*                        */
-{ term = eval_str(binding, Cadr(term));	   	   /*                        */
-  *rp  = TString(term);	   		   	   /*                        */
-  return term;				   	   /*                        */
+{ *rp  = eval_str(binding, Cadr(term));		   /*                        */
+  return StringTerm(*rp);			   /*                        */
 }						   /*------------------------*/
 
 #define Bind(NAME,GET,SET,FLAGS,OP)
@@ -368,11 +367,9 @@ static Term str_s_rsc(binding, name, term, rp)	   /*                        */
   static Term SETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
-  { String val;						\
-    term = eval_str(binding, Cadr(term));		\
-    val  = TString(term);				\
+  { String val = eval_str(binding, Cadr(term));		\
     SETTER_FCT;						\
-    return term; }
+    return StringTerm(val); }
 #define BindFunc(NAME,GETTER,GET_FCT,SETTER,SET_FCT)	\
   static Term GETTER (binding, term)			\
     Binding binding;					\
@@ -381,9 +378,7 @@ static Term str_s_rsc(binding, name, term, rp)	   /*                        */
   static Term SETTER (binding, term)			\
     Binding binding;					\
     Term term;						\
-  { String val;						\
-    term = eval_str(binding, Cadr(term));		\
-    val  = TString(term);				\
+  { String val = eval_str(binding, Cadr(term));		\
     SET_FCT;						\
     return GET_FCT; }
 #include "builtin.h"

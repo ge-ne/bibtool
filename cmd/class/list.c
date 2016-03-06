@@ -81,14 +81,12 @@ static Term ml_as_string(binding, list, args)	   /*                        */
  						   /*                        */
   buffer = sbopen();				   /*                        */
   sbputc('[', buffer);				   /*                        */
-  t = eval_str(binding, Car(list));		   /*                        */
-  sbputs((char*)TString(t), buffer);		   /*                        */
-  UnlinkTerm(t);				   /*                        */
+  sbputs((char*)eval_str(binding, Car(list)),	   /*                        */
+	 buffer);		   		   /*                        */
   for (list = Cdr(list); list; list = Cdr(list))   /*                        */
   { sbputs(", ", buffer);			   /*                        */
-    t = eval_str(binding, Car(list));		   /*                        */
-    sbputs((char*)TString(t), buffer);		   /*                        */
-    UnlinkTerm(t);				   /*                        */
+    sbputs((char*)eval_str(binding, Car(list)),	   /*                        */
+	   buffer);				   /*                        */
   }						   /*                        */
   sbputc(']', buffer);				   /*                        */
   t = StringTerm(sbflush(buffer));	   	   /*                        */
@@ -211,15 +209,13 @@ static Term m_join(binding, list, args)	   	   /*                        */
     return StringTerm("");		   	   /*                        */
  						   /*                        */
   buffer = sbopen();				   /*                        */
-  t 	 = eval_str(binding, Car(list));	   /*                        */
-  sbputs((char*)TString(t), buffer);		   /*                        */
-  UnlinkTerm(t);				   /*                        */
+  sbputs((char*)eval_str(binding, Car(list)),	   /*                        */
+	 buffer);		   		   /*                        */
  						   /*                        */
   for (list = Cdr(list); list; list = Cdr(list))   /*                        */
   { sbputs(sep, buffer);			   /*                        */
-    t = eval_str(binding, Car(list));		   /*                        */
-    sbputs((char*)TString(t), buffer);		   /*                        */
-    UnlinkTerm(t);				   /*                        */
+    sbputs((char*)eval_str(binding, Car(list)),	   /*                        */
+	   buffer);		   		   /*                        */
   }						   /*                        */
   t = StringTerm(sbflush(buffer));	   	   /*                        */
   sbclose(buffer);				   /*                        */

@@ -152,7 +152,7 @@ Term g_ne(binding, term)			   /*                        */
 Term g_lt(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ Term a, b;					   /*                        */
+{ Term a;					   /*                        */
   int val;					   /*                        */
  						   /*                        */
   term = Cdr(term);				   /*                        */
@@ -165,9 +165,8 @@ Term g_lt(binding, term)			   /*                        */
 	   eval_num(binding, Cadr(term)));	   /*                        */
   }						   /*                        */
   else if ( IsString(a) )			   /*                        */
-  { b = eval_str(binding, Cadr(term));		   /*                        */
-    val = (cmp(TString(a), TString(b)) < 0);	   /*                        */
-    UnlinkTerm(b);				   /*                        */
+  { val = (cmp(TString(a),			   /*                        */
+	       eval_str(binding, Cadr(term))) < 0);/*                        */
   } else					   /*                        */
   { ErrorNF1("Type error: comparable expected"); } /*                        */
  						   /*                        */
@@ -187,7 +186,7 @@ Term g_lt(binding, term)			   /*                        */
 Term g_le(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ Term a, b;					   /*                        */
+{ Term a;					   /*                        */
   int val;					   /*                        */
  						   /*                        */
   term = Cdr(term);				   /*                        */
@@ -200,9 +199,8 @@ Term g_le(binding, term)			   /*                        */
 	   eval_num(binding, Cadr(term)));	   /*                        */
   }						   /*                        */
   else if ( IsString(a) )			   /*                        */
-  { b = eval_str(binding, Cadr(term));		   /*                        */
-    val = (cmp(TString(a), TString(b)) <= 0);	   /*                        */
-    UnlinkTerm(b);				   /*                        */
+  { val = (cmp(TString(a),			   /*                        */
+	       eval_str(binding, Cadr(term))) <= 0);/*                       */
   } else					   /*                        */
   { ErrorNF1("Type error: comparable expected"); } /*                        */
  						   /*                        */
@@ -222,7 +220,7 @@ Term g_le(binding, term)			   /*                        */
 Term g_gt(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ Term a, b;					   /*                        */
+{ Term a;					   /*                        */
   int val;					   /*                        */
  						   /*                        */
   term = Cdr(term);				   /*                        */
@@ -235,9 +233,8 @@ Term g_gt(binding, term)			   /*                        */
 	   eval_num(binding, Cadr(term)));	   /*                        */
   }						   /*                        */
   else if ( IsString(a) )			   /*                        */
-  { b = eval_str(binding, Cadr(term));		   /*                        */
-    val = (cmp(TString(a), TString(b)) > 0);	   /*                        */
-    UnlinkTerm(b);				   /*                        */
+  { val = (cmp(TString(a),			   /*                        */
+	       eval_str(binding, Cadr(term))) > 0);/*                        */
   } else					   /*                        */
   { ErrorNF1("Type error: comparable expected"); } /*                        */
  						   /*                        */
@@ -257,7 +254,7 @@ Term g_gt(binding, term)			   /*                        */
 Term g_ge(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ Term a, b;					   /*                        */
+{ Term a;					   /*                        */
   int val;					   /*                        */
  						   /*                        */
   term = Cdr(term);				   /*                        */
@@ -270,9 +267,8 @@ Term g_ge(binding, term)			   /*                        */
 	   eval_num(binding, Cadr(term)));	   /*                        */
   }						   /*                        */
   else if ( IsString(a) )			   /*                        */
-  { b = eval_str(binding, Cadr(term));		   /*                        */
-    val = (cmp(TString(a), TString(b)) >= 0);	   /*                        */
-    UnlinkTerm(b);				   /*                        */
+  { val = (cmp(TString(a),			   /*                        */
+	       eval_str(binding, Cadr(term))) >= 0);/*                       */
   } else					   /*                        */
   { ErrorNF1("Type error: comparable expected"); } /*                        */
  						   /*                        */
@@ -494,10 +490,9 @@ Term s_out_file(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { extern void save_output_file();		   /*                        */
- 						   /*                        */
-  term = eval_str(binding,Cadr(term));	   	   /*                        */
-  save_output_file((char*)TString(term));	   /*                        */
-  return term;				   	   /*                        */
+  String s = eval_str(binding,Cadr(term));	   /*                        */
+  save_output_file((char*)s);	   		   /*                        */
+  return StringTerm(s);				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -539,10 +534,9 @@ Term g_input(binding, term)		   	   /*                        */
 Term s_input(binding, term)		   	   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{						   /*                        */
-  term = eval_str(binding, Cadr(term));	   	   /*                        */
-  save_input_file((char*)TString(term));	   /*                        */
-  return term;				   	   /*                        */
+{ String s = eval_str(binding, Cadr(term));	   /*                        */
+  save_input_file((char*)s);	   		   /*                        */
+  return StringTerm(s);				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -575,9 +569,9 @@ Term s_macro_file(binding, term)		   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
 { 						   /*                        */
-  term = eval_str(binding, Cadr(term));	   	   /*                        */
-  save_macro_file((char*)TString(term));	   /*                        */
-  return term;				   	   /*                        */
+  String s = eval_str(binding, Cadr(term));	   /*                        */
+  save_macro_file((char*)s);	   		   /*                        */
+  return StringTerm(s);				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -813,7 +807,7 @@ Term m_as_number(binding, term, args)	   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	eval_str()
-** Type:	Term
+** Type:	String
 ** Purpose:	Evaluate the term and convert the result to a string.
 **		
 ** Arguments:
@@ -821,41 +815,41 @@ Term m_as_number(binding, term, args)	   	   /*                        */
 **	term	the term
 ** Returns:	the string determined
 **___________________________________________________			     */
-Term eval_str(binding, term)			   /*                        */
+String eval_str(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ Term t;					   /*                        */
+{ String s;					   /*                        */
   term = evaluate(binding, term);		   /*                        */
  						   /*                        */
-  if (term == NIL) return StringTerm("");  	   /*                        */
+  if (term == NIL) return symbol((String)"");	   /*                        */
  						   /*                        */
   switch (TType(term))				   /*                        */
-  {						   /*                        */
-    case L_STRING:				   /*                        */
-      LinkTerm(term);				   /*                        */
+  { case L_STRING:				   /*                        */
+      s = TString(term);			   /*                        */
       break;					   /*                        */
     case L_TRUE:				   /*                        */
-      term = StringTerm("true");	   	   /*                        */
+      s =  symbol((String)"true");		   /*                        */
+      UnlinkTerm(term);				   /*                        */
       break;					   /*                        */
     case L_FALSE:				   /*                        */
-      term = StringTerm("false");	   	   /*                        */
+      s = symbol((String)"false");		   /*                        */
       break;					   /*                        */
     case L_CONS:				   /*                        */
       { StringBuffer *sb = sbopen();		   /*                        */
  						   /*                        */
 	for ( ; term; term = Cdr(term))		   /*                        */
-	{ t = eval_str(binding, Car(term));	   /*                        */
-	  sbputs((char*)TString(t), sb);	   /*                        */
-	  UnlinkTerm(t);			   /*                        */
+	{ sbputs((char*)eval_str(binding,	   /*                        */
+				 Car(term)), sb);  /*                        */
 	}					   /*                        */
-	term = StringTerm(sbflush(sb));	   	   /*                        */
+	s = symbol((String)sbflush(sb));	   /*                        */
 	sbclose(sb);				   /*                        */
       }						   /*                        */
+      break;					   /*                        */
     case L_NUMBER:				   /*                        */
       { long n = TNumber(term);			   /*                        */
 	StringBuffer *sb;			   /*                        */
-	char *s, *t;				   /*                        */
-	if (n == 0) return StringTerm("0");	   /*                        */
+	char *t, *r;				   /*                        */
+	if (n == 0) return symbol((String)"0");	   /*                        */
 	sb = sbopen(); 				   /*                        */
 	if (n < 0)				   /*                        */
 	{ sbputc('-', sb);			   /*                        */
@@ -865,34 +859,34 @@ Term eval_str(binding, term)			   /*                        */
 	{ sbputc((n%10) + '0', sb);		   /*                        */
 	  n = n/10;				   /*                        */
 	}					   /*                        */
-	s = t = sbflush(sb);			   /*                        */
+	r = t = sbflush(sb);			   /*                        */
 	while (*t) t++;				   /*                        */
 	t--;					   /*                        */
-	if (*s == '-') s++;			   /*                        */
-	while (s < t)				   /*                        */
-	{ char c = *s;				   /*                        */
-	  *(s++) = *t;				   /*                        */
+	if (*r == '-') r++;			   /*                        */
+	while (r < t)				   /*                        */
+	{ char c = *r;				   /*                        */
+	  *(r++) = *t;				   /*                        */
 	  *(t--) = c;				   /*                        */
 	}					   /*                        */
-	term = StringTerm(sbflush(sb));	   	   /*                        */
+	s = symbol((String)sbflush(sb));	   /*                        */
 	sbclose(sb);				   /*                        */
       }						   /*                        */
       break;					   /*                        */
     case L_CLASS:				   /*                        */
-      term = StringTerm("<CLASS>");	   	   /*                        */
+      s = symbol((String)"<CLASS>");		   /*                        */
       break;					   /*                        */
     case L_DB:				   	   /*                        */
-      term = StringTerm("<DB>");	   	   /*                        */
+      s = symbol((String)"<DB>");		   /*                        */
       break;					   /*                        */
     case L_RECORD:				   /*                        */
-      term = StringTerm("<ENTRY>");	   	   /*                        */
+      s = symbol((String)"<ENTRY>");		   /*                        */
       break;					   /*                        */
     default:					   /*                        */
       ErrorNF2("Type error: string expected instead of ",/*                  */
 	       term_type(term));		   /*                        */
   }						   /*                        */
  						   /*                        */
-  return term;	   			   	   /*                        */
+  return s;	   			   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -911,7 +905,7 @@ Term m_as_string(binding, number, args)	   	   /*                        */
   Term args;					   /*                        */
 {						   /*                        */
   no_args(args, "as.string");  		   	   /*                        */
-  return eval_str(binding, number);		   /*                        */
+  return StringTerm(eval_str(binding, number));	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -1213,14 +1207,11 @@ String str_arg(binding, argp, msg)		   /*                        */
   Binding binding;				   /*                        */
   register Term *argp;				   /*                        */
   register char *msg;				   /*                        */
-{ Term t;					   /*                        */
-  String val;					   /*                        */
+{ String val;					   /*                        */
   if (*argp == NIL)				   /*                        */
     ErrorNF2("Missing string argument for ", msg); /*                        */
   						   /*                        */
-  t   = eval_str(binding, Car(*argp));		   /*                        */
-  val = TString(t);				   /*                        */
-  UnlinkTerm(t);				   /*                        */
+  val = eval_str(binding, Car(*argp));		   /*                        */
   *argp = Cdr(*argp);				   /*                        */
   return val;					   /*                        */
 }						   /*------------------------*/
