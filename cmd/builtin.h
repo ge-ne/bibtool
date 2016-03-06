@@ -80,6 +80,8 @@ BindFunc("default.key",		     g_def_key,		StringTerm(get_separator(0)),
 	 			     s_def_key,		set_separator(0,val) )
 Bind(	 "defun",		     NULL,
 				     NULL,		SYM_NONE, L_DEFUN    )
+Bind(	 "defvar",		     NULL,
+				     NULL,		SYM_NONE, L_DEFVAR   )
 BindFct( "delete.field",	     g_del_f,
 				     s_del_f,		add_rewrite_rule(val))
 BindStr( "dir.file.separator",	     g_dir_file_sep,

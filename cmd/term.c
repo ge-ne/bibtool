@@ -218,17 +218,17 @@ Term new_term(type, car, cdr)			   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	new_class()
 ** Type:	Term
-** Purpose:	
+** Purpose:	Make a new class term.
 **		
 ** Arguments:
-**	name	
-** Returns:	
+**	name	the name term of NIL
+** Returns:	the new class
 **___________________________________________________			     */
 Term new_class(name)			   	   /*                        */
   Term name;					   /*                        */
 { register Term t = new__t(L_CLASS, NIL);	   /*                        */
   TBinding(t) = binding(127, NULL);		   /*                        */
-  if (name) LinkTerm(name);			   /*                        */
+  LinkTerm(name);			   	   /*                        */
   Cdr(t) = name;				   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
@@ -332,7 +332,6 @@ void free_term(t)				   /*                        */
       case L_DB:				   /*                        */
       case L_RECORD:				   /*                        */
       case L_NUMBER:				   /*                        */
-	Car(t) = NIL;				   /*                        */
 	break;					   /*                        */
       default:					   /*                        */
 	if (Car(t)) { UnlinkTerm(Car(t)); }	   /*                        */
@@ -450,25 +449,25 @@ static void indent(file, s, in)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	file	
-**	term	
-**	pre	
-**	sep	
-**	post	
-**	in	
+**	file	the output stream
+**	term	the term
+**	prefix	the prefix
+**	sep	the separator
+**	postfix	the postfix
+**	in	the indentation
 **	quote	
 ** Returns:	nothing
 **___________________________________________________			     */
-static void prn_args(file, term, pre, sep, post, in, quote)/*                */
-  FILE * file;					   /*                        */
+static void prn_args(file, term, prefix, sep, postfix, in, quote)/*          */
+  FILE *file;					   /*                        */
   Term term;					   /*                        */
-  char * pre;					   /*                        */
-  char * sep;					   /*                        */
-  char * post;					   /*                        */
+  char *prefix;					   /*                        */
+  char *sep;					   /*                        */
+  char *postfix;				   /*                        */
   int in;					   /*                        */
   int quote;					   /*                        */
 {						   /*                        */
-  fputs(pre, file);		   		   /*                        */
+  fputs(prefix, file);		   		   /*                        */
   if (term)					   /*                        */
   { prn_term(file, Car(term), in, quote, TRUE);    /*                        */
     for (term = Cdr(term); term; term = Cdr(term)) /*                        */
@@ -476,7 +475,7 @@ static void prn_args(file, term, pre, sep, post, in, quote)/*                */
       prn_term(file, Car(term), in, quote, TRUE);  /*                        */
     }						   /*                        */
   }						   /*                        */
-  fputs(post, file);		   		   /*                        */
+  fputs(postfix, file);		   		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -565,6 +564,11 @@ void prn_term(file, term, in, quote, outer)	   /*                        */
       fputs("defun ", file);			   /*                        */
       fputs((char*)TString(term), file);	   /*                        */
       prn_function(file, "(", Cdr(term), in);  	   /*                        */
+      return;					   /*                        */
+						   /*                        */
+    case L_DEFVAR:			   	   /*                        */
+      fputs("defvar ", file);			   /*                        */
+      prn_args(file, term, "(", ", ", ") ", 0, quote);/*                     */
       return;					   /*                        */
 						   /*                        */
     case L_EACH:			   	   /*                        */

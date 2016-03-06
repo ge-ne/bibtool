@@ -44,7 +44,7 @@ static TStack reduce _ARG((TStack ts));		   /*                        */
 int read_loop _ARG((Binding b, char* file, int (*action)(Binding binding, Term t) ));
 static Term read_cmd _ARG((Binding b));		   /*                        */
 static Term read_expr _ARG((Binding b, TStack ts));/*                        */
-static Term read_args _ARG((Binding b, Term t, int sep, int term));/*        */
+static Term read_args _ARG((Binding b, Term t, int sep, int t1, int t2));/*  */
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -374,14 +374,16 @@ static Term read_list(binding, term)		   /*                        */
 **	binding	the binding
 **	term	the term
 **	separator	the separating character
-**	terminal	ther terminating character
+**	terminal1	the first terminating character
+**	terminal2	the second terminating character
 ** Returns:	
 **___________________________________________________			     */
-static Term read_args(binding, term, separator, terminal)/*                  */
+static Term read_args(binding, term, separator, t1, t2)/*                    */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
   int separator;				   /*                        */
-  int terminal;					   /*                        */
+  int t1;					   /*                        */
+  int t2;					   /*                        */
 { int lno = LineReaderLineno(reader);		   /*                        */
   int c	  = scan(binding, 0);			   /*                        */
   Term x  = term;				   /*                        */
@@ -390,18 +392,18 @@ static Term read_args(binding, term, separator, terminal)/*                  */
   for (;;)					   /*                        */
   {						   /*                        */
     while (c == separator) { c = scan(binding, 0); }/*                       */
-    if (c == terminal) return term;		   /*                        */
+    if (c == t1 || c == t2) return term;	   /*                        */
     unscan(c, yylval);				   /*                        */
     a = read_expr(binding, StackNULL);		   /*                        */
     if (a == term_eof)				   /*                        */
     { LineReaderLineno(reader) = lno;		   /*                        */
-      Error("Missing ", token_type(terminal), 0);  /*                        */
+      Error("Missing ", token_type(t1), 0);  	   /*                        */
     }						   /*                        */
  						   /*                        */
     Cdr(x) = Cons1(a);			   	   /*                        */
     x = Cdr(x);				   	   /*                        */
     c = scan(binding, 0);			   /*                        */
-    if (c == terminal) return term;		   /*                        */
+    if (c == t1 || c == t2) return term;	   /*                        */
     if (c != separator)				   /*                        */
       Error("Missing separator instead of ",	   /*                        */
 	    token_type(c), 0);			   /*                        */
@@ -547,7 +549,11 @@ static TStack reduce(stack)			   /*                        */
   return stack;					   /*                        */
 }						   /*------------------------*/
 
-#define Expect(C, MSG)	\
+#define Optional(C, CC)				\
+	C = scan(binding, 0);			\
+	if (C != CC) { unscan(C, yylval); }
+
+#define Expect(C, MSG)				\
   if ((c=scan(binding, 0)) != C) { Error(MSG, " instead of ", token_type(c)); }
 
 /*-----------------------------------------------------------------------------
@@ -567,7 +573,7 @@ static Term read_group(binding, msg)		   /*                        */
   return read_args(binding,			   /*                        */
 		   NewTerm(L_GROUP), 	   	   /*                        */
 		   ';',		   		   /*                        */
-		   '}');			   /*                        */
+		   '}', 0);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -588,7 +594,7 @@ static Term read_condition(binding, msg)	   /*                        */
   return read_args(binding,			   /*                        */
 		   NewTerm(L_GROUP), 	   	   /*                        */
 		   -666,			   /*                        */
-		   ')');			   /*                        */
+		   ')', 0);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -599,9 +605,10 @@ static Term read_condition(binding, msg)	   /*                        */
 ** Arguments:
 **	binding	the binding
 **	msg	the name of the primitive
+**	t1	the additional terminal character
 ** Returns:	
 **___________________________________________________			     */
-static Term read_mapping(binding, msg)		   /*                        */
+static Term read_mapping(binding, msg, t1)	   /*                        */
   Binding binding;				   /*                        */
   char *msg;					   /*                        */
 { int c;			   		   /*                        */
@@ -611,7 +618,7 @@ static Term read_mapping(binding, msg)		   /*                        */
   for (;;)					   /*                        */
   { Term v;					   /*                        */
     c = scan(binding, 0);			   /*                        */
-    if (c == ')') return term;			   /*                        */
+    if (c == ')' || c == t1) return term;	   /*                        */
     if (c != L_VAR)				   /*                        */
       Error(msg, ": Missing variable instead of ", /*                        */
 	    token_type(c));			   /*                        */
@@ -631,7 +638,7 @@ static Term read_mapping(binding, msg)		   /*                        */
 	    token_type(c));			   /*                        */
  						   /*                        */
     c = scan(binding, 0);			   /*                        */
-    if (c == ')') return term;			   /*                        */
+    if (c == ')' || c == t1) return term;	   /*                        */
     if (c != ',')				   /*                        */
       Error(msg, ": Missing , instead of ",	   /*                        */
 	    token_type(c));			   /*                        */
@@ -670,7 +677,7 @@ static Term read_meth(binding, term)		   /*                        */
     TType(t) = L_FUNCALL;			   /*                        */
     c = scan(binding, 0);			   /*                        */
     if (c == '(')				   /*                        */
-      t = read_args(binding, t, ',', ')');	   /*                        */
+      t = read_args(binding, t, ',', ')', 0);	   /*                        */
     else					   /*                        */
       unscan(c, yylval);			   /*                        */
  						   /*                        */
@@ -711,7 +718,7 @@ static Term read_expr(binding, stack)		   /*                        */
 	      read_args(binding,		   /*                        */
 			NewTerm(L_GROUP), 	   /*                        */
 			';',		   	   /*                        */
-			'}'));	   	   	   /*                        */
+			'}', 0));		   /*                        */
 	break;					   /*                        */
  						   /*                        */
       case '(':					   /*                        */
@@ -760,7 +767,7 @@ static Term read_expr(binding, stack)		   /*                        */
 	free_term(yylval);			   /*                        */
 	Expect('(', "Missing ( for defun");	   /*                        */
 	Cdr(t)  = NewTerm(L_FUNCTION);	   	   /*                        */
-	Cadr(t) = read_mapping(binding, "defun");  /*                        */
+	Cadr(t) = read_mapping(binding, "defun", 0);/*                       */
 	Cddr(t) = read_group(binding, "defun");    /*                        */
 						   /*                        */
 	if (stack == NULL) return t;		   /*                        */
@@ -768,11 +775,21 @@ static Term read_expr(binding, stack)		   /*                        */
 	Shift(L_DEFUN, t);		   	   /*                        */
 	break;					   /*                        */
  						   /*                        */
+      case L_DEFVAR:				   /*                        */
+	t = yylval;		   	   	   /*                        */
+	Optional(c, '(')			   /*                        */
+	Cdr(t) = read_mapping(binding, "defvar", ';');/*                     */
+ 						   /*                        */
+	if (stack == NULL) return t;		   /*                        */
+ 						   /*                        */
+	Shift(L_DEFVAR, t);		   	   /*                        */
+	break;					   /*                        */
+ 						   /*                        */
       case L_EACH:				   /*                        */
 	{ Term m;				   /*                        */
 	  t = yylval;		   	   	   /*                        */
 	  Expect('(', "Missing ( for each");	   /*                        */
-	  m = read_mapping(binding, "each");       /*                        */
+	  m = read_mapping(binding, "each", 0);	   /*                        */
 	  if (m	== NIL)				   /*                        */
 	    Error("missing argument for each",0,0);/*                        */
 	  if (Cdr(m))				   /*                        */
@@ -793,7 +810,7 @@ static Term read_expr(binding, stack)		   /*                        */
       case L_FUNCTION:				   /*                        */
 	t = yylval;		   	   	   /*                        */
 	Expect('(', "Missing ( for function");     /*                        */
-	Car(t) = read_mapping(binding, "function");/*                        */
+	Car(t) = read_mapping(binding, "function", 0);/*                     */
 	Cdr(t) = read_group(binding, "function");  /*                        */
 	c = scan(binding, 0);			   /*                        */
 	if (c != '(')				   /*                        */
@@ -804,7 +821,7 @@ static Term read_expr(binding, stack)		   /*                        */
 	t = read_args(binding,		   	   /*                        */
 		      new_term(L_FUNCALL2, t, NIL),/*                        */
 		      ',',			   /*                        */
-		      ')');			   /*                        */
+		      ')', 0);			   /*                        */
 	Shift(L_FUNCALL2, t);		   	   /*                        */
 	break;					   /*                        */
  						   /*                        */
@@ -860,7 +877,7 @@ static Term read_expr(binding, stack)		   /*                        */
 		      new_t_string(L_FUNCALL,      /*                        */
 				   TString(t)),    /*                        */
 		      ',',			   /*                        */
-		      ')');			   /*                        */
+		      ')', 0);			   /*                        */
 	Shift(L_FUNCALL, t);		   	   /*                        */
 	break;					   /*                        */
  						   /*                        */
@@ -873,8 +890,8 @@ static Term read_expr(binding, stack)		   /*                        */
  						   /*                        */
       case L_WITH:				   /*                        */
 	t = yylval;		   	   	   /*                        */
-	Expect('(', "Missing ( for with");	   /*                        */
-	Car(t) = read_mapping(binding, "with");    /*                        */
+	Optional(c, '(')			   /*                        */
+	Car(t) = read_mapping(binding, "with", '{');/*                       */
 	Cdr(t) = read_group(binding, "with");	   /*                        */
 	Shift(L_WITH, t);		   	   /*                        */
 	break;					   /*                        */
@@ -948,7 +965,7 @@ static Term read_cmd(binding)			   /*                        */
 			    new_t_string(L_FUNCALL,/*                        */
 					 TString(val)),/*                    */
 			    ',',		   /*                        */
-			    ')');		   /*                        */
+			    ')', 0);		   /*                        */
 	    Shift(TType(val), val);	   	   /*                        */
 	  }					   /*                        */
 	  else					   /*                        */

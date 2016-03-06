@@ -28,8 +28,9 @@
 #define L_FUNCALL	0x213
 #define L_FUNCALL2	0x214
 #define L_DEFUN		0x215
-#define L_EACH		0x216
-#define L_METHOD	0x217
+#define L_DEFVAR	0x216
+#define L_EACH		0x217
+#define L_METHOD	0x218
 
 #define L_NUMBER	0x220
 

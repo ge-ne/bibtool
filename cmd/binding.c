@@ -526,7 +526,7 @@ Term funcall(b, key, f, args)		   	   /*                        */
   String key;					   /*                        */
   Term f;					   /*                        */
   Term args;					   /*                        */
-{ Binding nb = binding(31, b);			   /*                        */
+{ Binding next_b = binding(31, b);		   /*                        */
   SymDef sym;					   /*                        */
   Term t;					   /*                        */
  						   /*                        */
@@ -537,19 +537,18 @@ Term funcall(b, key, f, args)		   	   /*                        */
       args = Cdr(args);				   /*                        */
     }						   /*                        */
     else					   /*                        */
-    { SymValue(sym) = evaluate(b, Cdar(t));	   /*                        */
-      LinkTerm(SymValue(sym));			   /*                        */
-    }						   /*                        */
-    bind(nb, sym);				   /*                        */
+    { SymValue(sym) = evaluate(b, Cdar(t)); }	   /*                        */
+    LinkTerm(SymValue(sym));			   /*                        */
+    bind(next_b, sym);				   /*                        */
   }						   /*                        */
  						   /*                        */
   if (args)					   /*                        */
     ErrorNF2("Too many arguments for ", key);	   /*                        */
     						   /*                        */
-  t = evaluate(nb, Cdr(f));			   /*                        */
+  t = evaluate(next_b, Cdr(f));			   /*                        */
  						   /*                        */
   LinkTerm(t);					   /*                        */
-  free_binding(nb);				   /*                        */
+  free_binding(next_b);				   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
 
@@ -640,6 +639,12 @@ Term evaluate(binding, term)			   /*                        */
 		  TString(term),		   /*                        */
 		  Cdr(term));			   /*                        */
  						   /*                        */
+    case L_DEFVAR:				   /*                        */
+      for (term = Cdr(term); term; term = Cdr(term))/*                       */
+      { setq(binding, TString(Car(term)), Cdar(term));/*                     */
+      }						   /*                        */
+      return NIL;				   /*                        */
+						   /*                        */
     case L_EACH:				   /*                        */
       return each(binding, Car(term), Cdr(term));  /*                        */
  						   /*                        */

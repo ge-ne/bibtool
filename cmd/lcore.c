@@ -927,8 +927,8 @@ Term g_plus(binding, term)			   /*                        */
  						   /*                        */
   if (list_length(term) != 2) wrong_no_args("+");  /*                        */
  						   /*                        */
-  val  = eval_num(binding, Car(term));		   /*                        */
-  val += eval_num(binding, Cadr(term));		   /*                        */
+  val  = eval_num(binding, Car(term))		   /*                        */
+    + eval_num(binding, Cadr(term));		   /*                        */
   return NumberTerm(val);			   /*                        */
 }						   /*------------------------*/
 
@@ -945,7 +945,7 @@ Term g_plus(binding, term)			   /*                        */
 Term g_minus(binding, term)			   /*                        */
   Binding binding;				   /*                        */
   Term term;					   /*                        */
-{ long val = 0L;				   /*                        */
+{ long val;				   	   /*                        */
  						   /*                        */
   term = Cdr(term);				   /*                        */
  						   /*                        */
@@ -954,12 +954,11 @@ Term g_minus(binding, term)			   /*                        */
       val = -eval_num(binding, Car(term));	   /*                        */
       break;					   /*                        */
     case 2:					   /*                        */
-      val  = eval_num(binding, Car(term));	   /*                        */
-      val -= eval_num(binding, Cadr(term));	   /*                        */
+      val  = eval_num(binding, Car(term))	   /*                        */
+	- eval_num(binding, Cadr(term));	   /*                        */
       break;					   /*                        */
     default:					   /*                        */
       wrong_no_args("-");			   /*                        */
-      return NIL;				   /*                        */
   }						   /*                        */
   return NumberTerm(val);		   	   /*                        */
 }						   /*------------------------*/
@@ -983,8 +982,8 @@ Term g_times(binding, term)			   /*                        */
  						   /*                        */
   if (list_length(term) != 2) wrong_no_args("*");  /*                        */
  						   /*                        */
-  val = eval_num(binding, Car(term));	   	   /*                        */
-  val *= eval_num(binding, Cadr(term));	   	   /*                        */
+  val = eval_num(binding, Car(term))	   	   /*                        */
+    * eval_num(binding, Cadr(term));	   	   /*                        */
   return NumberTerm(val);			   /*                        */
 }						   /*------------------------*/
 
@@ -1007,9 +1006,9 @@ Term g_div(binding, term)			   /*                        */
  						   /*                        */
   if (list_length(term) != 2) wrong_no_args("/");  /*                        */
  						   /*                        */
-  val = eval_num(binding, Car(term));	   	   /*                        */
   d   = eval_num(binding, Cadr(term));	   	   /*                        */
   if (d	== 0) ErrorNF1("Divide by 0");		   /*                        */
+  val = eval_num(binding, Car(term));	   	   /*                        */
   return NumberTerm(val/d);			   /*                        */
 }						   /*------------------------*/
 
@@ -1032,9 +1031,9 @@ Term g_mod(binding, term)			   /*                        */
  						   /*                        */
   if (list_length(term) != 2) wrong_no_args("mod");/*                        */
  						   /*                        */
-  val = eval_num(binding, Car(term));	   	   /*                        */
   d   = eval_num(binding, Cadr(term));	   	   /*                        */
   if (d	== 0) ErrorNF1("Modulo by 0");		   /*                        */
+  val = eval_num(binding, Car(term));	   	   /*                        */
   return NumberTerm(val % d);			   /*                        */
 }						   /*------------------------*/
 
@@ -1042,7 +1041,7 @@ static Term *tp;
 
 /*-----------------------------------------------------------------------------
 ** Function:	g__ign()
-** Type:	static int
+** Type:	int
 ** Purpose:	
 **		
 ** Arguments:
@@ -1078,7 +1077,7 @@ Term g_ign_(binding, term)			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	g__add_f()
-** Type:	static int
+** Type:	int
 ** Purpose:	
 **		
 ** Arguments:
@@ -1101,8 +1100,7 @@ static int g__add_f(key, value)			   /*                        */
 ** Type:	Term
 ** Purpose:	
 **		
-** Arguments:
-**		
+** Arguments:	none
 ** Returns:	
 **___________________________________________________			     */
 Term get_add_fields()				   /*                        */
@@ -1115,11 +1113,10 @@ Term get_add_fields()				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	wrong_no_args()
-** Type:	Term
-** Purpose:	
-**		
+** Type:	void
+** Purpose:	Complain about a wrong number of arguments.
 ** Arguments:
-**	name	
+**	name	the name of the command
 ** Returns:	nothing
 **___________________________________________________			     */
 void wrong_no_args(name)			   /*                        */
@@ -1130,11 +1127,11 @@ void wrong_no_args(name)			   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	no_args()
 ** Type:	void
-** Purpose:	
-**		
+** Purpose:	Check if aome arguments are left and complain about too many
+**		arguments if some are found.
 ** Arguments:
-**	args	
-**	msg	
+**	args	the arguments
+**	msg	the name of the command
 ** Returns:	nothing
 **___________________________________________________			     */
 void no_args(args, msg)			   	   /*                        */
@@ -1152,7 +1149,7 @@ void no_args(args, msg)			   	   /*                        */
 ** Arguments:
 **	binding	the binding
 **	argp	the pointer to the argument array
-**	msg	the varible part of the error messge
+**	msg	the varible part of the error message
 ** Returns:	
 **___________________________________________________			     */
 Term term_arg(binding, argp, msg)		   /*                        */
@@ -1163,7 +1160,7 @@ Term term_arg(binding, argp, msg)		   /*                        */
   if (*argp == NIL)				   /*                        */
     ErrorNF2("Missing numeric argument for ", msg);/*                        */
   						   /*                        */
-  t  = evaluate(binding, Car(*argp));		   /*                        */
+  t     = evaluate(binding, Car(*argp));	   /*                        */
   *argp = Cdr(*argp);				   /*                        */
   return t;					   /*                        */
 }						   /*------------------------*/
@@ -1176,7 +1173,7 @@ Term term_arg(binding, argp, msg)		   /*                        */
 ** Arguments:
 **	binding	the binding
 **	argp	the pointer to the argument array
-**	msg	the varible part of the error messge
+**	msg	the varible part of the error message
 ** Returns:	
 **___________________________________________________			     */
 long num_arg(binding, argp, msg)		   /*                        */
@@ -1187,7 +1184,7 @@ long num_arg(binding, argp, msg)		   /*                        */
   if (*argp == NIL)				   /*                        */
     ErrorNF2("Missing numeric argument for ", msg);/*                        */
   						   /*                        */
-  val = eval_num(binding, Car(*argp));		   /*                        */
+  val   = eval_num(binding, Car(*argp));	   /*                        */
   *argp = Cdr(*argp);				   /*                        */
   return val;					   /*                        */
 }						   /*------------------------*/
@@ -1200,7 +1197,7 @@ long num_arg(binding, argp, msg)		   /*                        */
 ** Arguments:
 **	binding	the binding
 **	argp	the pointer to the argument array
-**	msg	the varible part of the error messge
+**	msg	the varible part of the error message
 ** Returns:	
 **___________________________________________________			     */
 String str_arg(binding, argp, msg)		   /*                        */
@@ -1211,7 +1208,7 @@ String str_arg(binding, argp, msg)		   /*                        */
   if (*argp == NIL)				   /*                        */
     ErrorNF2("Missing string argument for ", msg); /*                        */
   						   /*                        */
-  val = eval_str(binding, Car(*argp));		   /*                        */
+  val   = eval_str(binding, Car(*argp));	   /*                        */
   *argp = Cdr(*argp);				   /*                        */
   return val;					   /*                        */
 }						   /*------------------------*/
@@ -1248,7 +1245,7 @@ int bool_arg(binding, argp, msg)		   /*                        */
 ** Arguments:
 **	binding	the binding
 **	argp	the pointer to the argument array
-**	msg	the varible part of the error messge
+**	msg	the varible part of the error message
 ** Returns:	
 **___________________________________________________			     */
 Record rec_arg(binding, argp, msg)		   /*                        */

@@ -182,15 +182,15 @@ The follwoing words are reserved:
 \keyword{while}
 \keyword{with}
 
-\subsection{Variables}
-
-% TODO
-
 \subsection{Statements}
 
 % TODO
 
 \subsection{Blocks}
+
+% TODO
+
+\subsection{Variables}
 
 % TODO
 
@@ -207,6 +207,14 @@ x = 123
 \end{lstlisting}
 
 \subsection{Variable Scopes}
+
+Variables are bound to their values within a scope. The scope can be
+
+\begin{itemize}
+\item An explicit scope declared with \keyword{with}.
+\item An implicit scope of the body of a function or method
+\end{itemize}
+
 
 % TODO
 
@@ -326,7 +334,8 @@ $\hookrightarrow$ "123a b c"
 
 The string method \method{equals()} compares the current string against the
 single argument. If the argument is also a string and contains the same
-characters then \verb|true| is returned. Otherwise the result is \verb|false|.
+characters then \keyword{true} is returned. Otherwise the result is
+\keyword{false}.
 
 \begin{lstlisting}[language=BibTool,mathescape=true]
 "123":equals("1 2 3")
@@ -390,7 +399,7 @@ parentheses to determine the priority of the evaluation.
 The evaluation is performed left to right, unless forced differntly by the
 prioities of the operators. Any operator involved is converted to a number for
 the evaluation. This is done with the built-in version of the appropriate
-method \verb|as.number()|.
+method \keyword{as.number()}.
 
 %TODO
 
@@ -476,8 +485,8 @@ $\hookrightarrow$ <Class Number>
 
 The number method \method{equals()} compares the current number against the
 single argument. If the argument is also a number and contains the same
-numeric value then \verb|true| is returned. Otherwise the result is
-\verb|false|.
+numeric value then \keyword{true} is returned. Otherwise the result is
+\keyword{false}.
 
 \begin{lstlisting}[language=BibTool,mathescape=true]
 123:equals(124)
@@ -489,8 +498,8 @@ $\hookrightarrow$ false
 
 \section{Booleans}
 
-Booleans are represented with the built in constants \verb|true| and
-\verb|false|.
+Booleans are represented with the built in constants \keyword{true} and
+\keyword{false}.
 
 \begin{lstlisting}[language=BibTool]
 true
@@ -506,8 +515,9 @@ false
 
 \subsubsection{The Conjunction}
 
-The conjunction of boolean terms is denoted with the infix operator \verb|and|
-or \verb|&&|. The two notations are identical and interchangable.
+The conjunction of boolean terms is denoted with the infix operator
+\keyword{and} or \keyword{\&\&}. The two notations are identical and
+interchangable.
 
 The evaluation is performed left to right. Shortcut-evaluation ist used. This
 means the evaluation stops as soon as the result can be inferred.
@@ -523,8 +533,8 @@ a && b
 
 \subsubsection{The Disjunction}
 
-The disjunction of boolean terms is denoted with the infix operator \verb|or|
-or \verb'||'. The two notations are identical and interchangable.
+The disjunction of boolean terms is denoted with the infix operator \keyword{or}
+or \keyword{||}. The two notations are identical and interchangable.
 
 The evaluation is performed left to right. Shortcut-evaluation ist used. This
 means the evaluation stops as soon as the result can be inferred.
@@ -539,8 +549,8 @@ a || b
 
 \subsubsection{The Negation}
 
-The negation of a boolean term is denoted with the prefix operator \verb|not|
-or \verb|!|. The two notations are identical and interchangable.
+The negation of a boolean term is denoted with the prefix operator \keyword{not}
+or \keyword{!}. The two notations are identical and interchangable.
 
 The evaluation is performed left to right. Shortcut-evaluation ist used. This
 means the evaluation stops as soon as the result can be inferred.
@@ -587,8 +597,8 @@ $\hookrightarrow$ true
 \subsection{Boolean method \method{as.number()}}
 
 The boolean method \method{as.number()} converts the boolean into a numeric
-value. The value 1 for \verb|true| and 0 for \verb|false|. This method takes
-no arguments.
+value. The value 1 for \keyword{true} and 0 for \keyword{false}. This method
+takes no arguments.
 
 \begin{lstlisting}[language=BibTool,mathescape=true]
 true:as.number()
@@ -631,7 +641,7 @@ $\hookrightarrow$ <Class Boolean>
 
 The boolean method \method{equals()} compares the current boolean against the
 single argument. If the argument is also a boolean and has the same value then
-\verb|true| is returned. Otherwise the result is \verb|false|.
+\keyword{true} is returned. Otherwise the result is \keyword{false}.
 
 \begin{lstlisting}[language=BibTool,mathescape=true]
 true:equals(false)
@@ -773,7 +783,8 @@ $\hookrightarrow$ false
 
 The list method \method{equals()} compares the current list against the single
 argument. If the argument is also a list and contains the same elements in the
-same order then \verb|true| is returned. Otherwise the result is \verb|false|.
+same order then \keyword{true} is returned. Otherwise the result is
+\keyword{false}.
 
 \begin{lstlisting}[language=BibTool,mathescape=true]
 [1, 2, 3]:equals([1, 2, 3])
@@ -880,10 +891,10 @@ with (db:read("abc.bib")) {
 }
 \end{lstlisting}
 
-\subsection{The function \texttt{read()}}\label{db:read}
+\subsection{The function \function{read()}}\label{db:read}
 
 The function \function{read()} creates a new database and optionally reads in
-some files. The arguments can be of several kinds.
+some files. The database is returned. The arguments can be of several kinds.
 
 If no arguments are given then no files are read.
 
