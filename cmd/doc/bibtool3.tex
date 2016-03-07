@@ -194,7 +194,7 @@ The follwoing words are reserved:
 
 % TODO
 
-\subsection{Assignments}
+\subsection{Assignments and Variable Scopes}
 
 An assignment is written in infix notation with the operator \keyword{=}
 between the arguments. The first argument is a variable term. The secoond
@@ -206,8 +206,6 @@ argument is an arbitrary term.
 x = 123
 \end{lstlisting}
 
-\subsection{Variable Scopes}
-
 Variables are bound to their values within a scope. The scope can be
 
 \begin{itemize}
@@ -215,6 +213,9 @@ Variables are bound to their values within a scope. The scope can be
 \item An implicit scope of the body of a function or method
 \end{itemize}
 
+If a variable is defined in some scope then it is set to the new value in this
+scope. If a varaible is mot defined yet then it is defined implicitely in the
+innermost scope.
 
 % TODO
 
