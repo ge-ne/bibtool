@@ -101,12 +101,12 @@ static Term scan_block()			   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	scan_string()
 ** Type:	Term
-** Purpose:	
-**		
+** Purpose:	Scan a string until the end character is found.
+**		If the end character is not found then en error is raised.
 ** Arguments:
-**	type	
-**	c_end	
-** Returns:	
+**	type	the type of the result term
+**	c_end	the end character
+** Returns:	a new Term of the given type
 **___________________________________________________			     */
 static Term scan_string(type, c_end)		   /*                        */
   short int type;				   /*                        */
@@ -150,6 +150,39 @@ static Term scan_string(type, c_end)		   /*                        */
 #define ReturnTerm(C)	yylval = NewTerm(C); return C
 
 /*-----------------------------------------------------------------------------
+** Function:	scanchar()
+** Type:	int
+** Purpose:	Read the next non-space character. Comments are skipped aswell.
+**		
+** Arguments:	none
+** Returns:	
+**___________________________________________________			     */
+static int getnospace()				   /*                        */
+{ register int c;			   	   /*                        */
+ 						   /*                        */
+  for (c = GetC; ; c = GetC)			   /*                        */
+    switch (c)					   /*                        */
+    { case '\n':				   /*                        */
+      case ' ':					   /*                        */
+      case '\f':				   /*                        */
+      case '\r':				   /*                        */
+      case '\b':				   /*                        */
+	break;				   	   /*                        */
+      case '/':					   /*                        */
+	c = GetC;				   /*                        */
+	if (c != '/')				   /*                        */
+	{ UnGetC(c);				   /*                        */
+	  return '/';				   /*                        */
+	}					   /*                        */
+	for (c = GetC;			   	   /*                        */
+	     c > 0 && c != '\n';		   /*                        */
+	     c = GetC) ;			   /*                        */
+	break;					   /*                        */
+      default: return c;			   /*                        */
+    }						   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	scan()
 ** Type:	SymDef
 ** Purpose:	Scan the input stream in_file for the next token.
@@ -174,20 +207,10 @@ static int scan(b, mode)			   /*                        */
     						   /*                        */
   yylval = NIL;				   	   /*                        */
  						   /*                        */
-  for (c = GetC; c >= 0; c = GetC)	   	   /*                        */
+  for (c = getnospace(); c > 0; c = getnospace())  /*                        */
   { DebugPrintF3("scan %c %d\n",c,c);	   	   /*                        */
     switch (c) {				   /*                        */
-      case '\n':				   /*                        */
-      case ' ':					   /*                        */
-      case '\f':				   /*                        */
-      case '\r':				   /*                        */
-      case '\b':				   /*                        */
-	continue;				   /*                        */
  						   /*                        */
-      case '%':					   /*                        */
-	for (c = GetC; c > 0  && c != '\n'; c = GetC) ;/*                    */
-	continue;				   /*                        */
-						   /*                        */
       case '"':					   /*                        */
 	Return(scan_string(L_STRING ,'"'),	   /*                        */
 	       L_STRING);			   /*                        */
@@ -209,7 +232,7 @@ static int scan(b, mode)			   /*                        */
 	ReturnTerm(L_TIMES);	   		   /*                        */
 	  					   /*                        */
       case '/':					   /*                        */
-	ReturnTerm(L_DIV);    	   		   /*                        */
+	ReturnTerm(L_DIV);			   /*                        */
 	  					   /*                        */
       case '\'':				   /*                        */
 	ReturnTerm(L_QUOTE);	   		   /*                        */
@@ -247,7 +270,7 @@ static int scan(b, mode)			   /*                        */
 	}					   /*                        */
 	  					   /*                        */
       case '[':					   /*                        */
-	for (c = GetC; c && isspace(c); c = GetC); /*                        */
+	c = getnospace(); 			   /*                        */
 	if (c == ']') {	Return(NIL, L_CONS); }	   /*                        */
 	UnGetC(c);				   /*                        */
 	Return(Cons1(NIL), L_CONS);		   /*                        */

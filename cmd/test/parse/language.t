@@ -44,7 +44,7 @@ $BUnit::name_prefix = 'parse/';
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'comment-1',
 	   resource	=> <<__EOF__ ,
-% a b c d
+// a b c d
 __EOF__
 	   expected_err => '',
 	   expected_out => '');
