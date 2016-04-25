@@ -460,7 +460,7 @@ main$(OBJ): main.c
 init$(OBJ): init.c
 	$(CC) $(C_FLAGS) $(KPATHSEA_DEF) $(DONT_LINK) init.c
 
-io(OBJ): io.c
+io$(OBJ): io.c
 	$(CC) $(C_FLAGS) $(KPATHSEA_DEF) $(DONT_LINK) io.c
 
 parse$(OBJ): parse.c
