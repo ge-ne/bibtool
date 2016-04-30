@@ -50,6 +50,7 @@ DISTFILES += 	AutoConf/config.h.in 	\
 		MSDOS/link.dj		\
 		MSDOS/link.msc		\
 		MSDOS/link.wat		\
+		Linux/ld-version-script	\
 		configure		\
 		configure.in		\
 		install-sh		\
