@@ -473,8 +473,8 @@ bibtool [options] [-o outfile] [[-i] infile] ...
 	-A<c>		Kind of disambiguating key strings: <c>=0|a|A
 	-c		Include crossreferenced entries into the output (toggle)
 	-d		Check double entries (toggle)
-	-f <format>	Key generation enabled (formated key)
-	-F		Key generation enabled with formated key
+	-f <format>	Key generation enabled (formatted key)
+	-F		Key generation enabled with formatted key
 	-h		Print this help info and exit
 	[-i] infile	Specify input file. If -i omitted it may not start
 			with a -. If absent stdin is taken to read from.
