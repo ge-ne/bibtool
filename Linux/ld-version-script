@@ -1,4 +1,4 @@
-BIBTOOL_2.64 {
+BIBTOOL_2.55 {
 	global:
 		TeX_active;
 		TeX_close;
@@ -217,7 +217,6 @@ BIBTOOL_2.64 {
 		record_gc;
 		record_get;
 		remove_field;
-		rename_field;
 		resource;
 		rewrite_1;
 		rewrite_record;
@@ -351,3 +350,22 @@ BIBTOOL_2.64 {
 		x_rule;
 		x_rule_end;
 }
+BIBTOOL_2.56 {
+} BIBTOOL_2.55;
+BIBTOOL_2.57 {
+} BIBTOOL_2.56;
+BIBTOOL_2.58 {
+} BIBTOOL_2.57;
+BIBTOOL_2.59 {
+} BIBTOOL_2.58;
+BIBTOOL_2.60 {
+} BIBTOOL_2.59;
+BIBTOOL_2.61 {
+} BIBTOOL_2.60;
+BIBTOOL_2.62 {
+		rename_field;
+} BIBTOOL_2.61;
+BIBTOOL_2.63 {
+} BIBTOOL_2.62;
+BIBTOOL_2.64 {
+} BIBTOOL_2.63;
