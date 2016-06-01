@@ -11,7 +11,7 @@
 ##*****************************************************************************
 
 LATEX     = latex
-PDFLATEX  = pdflatex
+LUALATEX  = lualatex
 BIBTEX    = bibtex
 MAKEINDEX = makeindex
 
@@ -20,15 +20,15 @@ DIR_SEP   = /
 .SUFFIXES: .tex .toc .dvi .pdf .aux .bbl .ind .idx $(SUFFIXES)
 
 .tex.pdf:
-	$(PDFLATEX) $<
+	$(LUALATEX) $<
 .tex.dvi:
 	$(LATEX) $<
 .tex.toc:
-	$(PDFLATEX) $<
+	$(LUALATEX) $<
 .tex.idx:
-	$(PDFLATEX) $<
+	$(LUALATEX) $<
 .tex.aux:
-	$(PDFLATEX) $<
+	$(LUALATEX) $<
 .aux.bbl:
 	$(BIBTEX) $*
 
@@ -45,8 +45,8 @@ bibtool.dvi: config.tex bibtool.tex bibtool.bbl bibtool.ind
 	$(LATEX) bibtool
 
 bibtool.pdf: config.tex bibtool.tex bibtool.bbl bibtool.ind
-	$(PDFLATEX) bibtool
-	$(PDFLATEX) bibtool
+	$(LUALATEX) bibtool
+	$(LUALATEX) bibtool
 
 bibtool.ind ind index: bibtool.idx
 	$(MAKEINDEX) -s bibtool.ist bibtool
@@ -62,7 +62,7 @@ ref_card.dvi: ref_card.tex config.tex
 	$(LATEX) ref_card.tex
 
 ref_card.pdf: ref_card.tex config.tex
-	$(PDFLATEX) ref_card.tex
+	$(LUALATEX) ref_card.tex
 
 ##-----------------------------------------------------------------------------
 
@@ -129,9 +129,9 @@ c_lib.dvi: c_lib.tex c_main.tex c.tex config.tex
 	$(LATEX) c_lib.tex
 
 c_lib.pdf: c_lib.tex c_main.tex c.tex config.tex
-	$(PDFLATEX) c_lib.tex
+	$(LUALATEX) c_lib.tex
 	$(MAKEINDEX) -s bibtool.ist c_lib
-	$(PDFLATEX) c_lib.tex
+	$(LUALATEX) c_lib.tex
 
 c_main.tex: $(CDIR)main.c c_get.pl
 	perl c_get.pl $(CDIR)main.c > $@
