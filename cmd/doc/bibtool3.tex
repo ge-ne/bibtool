@@ -50,7 +50,7 @@
 
 \makeatletter%>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-\newcommand\opt[1]{\texttt{-{}#1}\index{#1@{\tt-{}#1}}}
+\newcommand\opt[1]{\texttt{-{}#1}\index{#1@\texttt{-{}#1}}}
 
 \definecolor{sh-bg}{rgb}{.9,.9,.9}
 \definecolor{sh-border}{rgb}{.4,.4,.4}
@@ -58,7 +58,7 @@
 \newcommand\sh{\smallskip\par\hspace*{2em}\@ifnextchar[{\sh@}{\sh@@}}
 \def\sh@[#1]#2{%
   \fcolorbox{sh-border}{sh-bg}{\hspace*{1em}\begin{minipage}{.85\textwidth}
-      \texttt{bibtool -{}#1 }\textit{#2}\index{#1@{\tt-{}#1}}
+      \texttt{bibtool -{}#1 }\textit{#2}\index{#1@\texttt{-{}#1}}
     \end{minipage}}\smallskip\par\noindent\ignorespaces}
 \newcommand\sh@@[1]{%
   \fcolorbox{sh-border}{sh-bg}{\hspace*{1em}\begin{minipage}{.85\textwidth}
@@ -71,13 +71,13 @@
 \newcommand\rscEqBraces[2]{\rsc{#1} = \(\{\)#2\(\}\)}
 \newcommand\rscBraces[2]{\rsc{#1} \(\{\)#2\(\}\)}
 \newcommand\rscIt[1]{\textsf{\textit{#1}}}
-\newcommand\env[1]{\texttt{#1}\index{#1@{\tt #1}}}
+\newcommand\env[1]{\texttt{#1}\index{#1@\texttt{#1}}}
 
 \definecolor{rsc-bg}{rgb}{.9,1,.9}
 \definecolor{rsc-border}{rgb}{.4,.6,.4}
 \newbox\rscbox
 \newenvironment{Resources}%
-  {\setbox\rscbox=\hbox\bgroup\hspace*{.06\textwidth}\begin{minipage}{.88\textwidth}\sf\obeylines\obeyspaces
+  {\setbox\rscbox=\hbox\bgroup\hspace*{.06\textwidth}\begin{minipage}{.88\textwidth}\sffamily\obeylines\obeyspaces
   }{\end{minipage}\egroup\vspace{1.5ex}%
     \fcolorbox{rsc-border}{rsc-bg}{\usebox\rscbox}%
     \medskip\par
@@ -115,7 +115,7 @@
 
 \newenvironment{Example}{\smallskip\par\textit{Example}\par}{\smallskip\par}
 
-\newenvironment{Disclaimer}{\begin{center}\sf\tiny --- }{ ---\end{center}}
+\newenvironment{Disclaimer}{\begin{center}\sffamily\tiny --- }{ ---\end{center}}
 
 \newcommand\LINK[2]{\texttt{#2}}
 \newcommand\Link[2]{\href{#1}{\texttt{#2}}}
@@ -255,19 +255,19 @@ Strings are enclosed in double quotes. They may contain arbitrary characters.
 
 The backslash (\verb|\|)acts as escape character.
 \begin{description}
-\item [\tt\BS\BS] \ \\The doubled backslash is stored as single backslash
+\item [\ttfamily\BS\BS] \ \\The doubled backslash is stored as single backslash
   internally.
-\item [\tt\BS "] \ \\The delimiting character \verb|"| can be included in a
+\item [\ttfamily\BS "] \ \\The delimiting character \verb|"| can be included in a
   string by preceeding it with a backslash.
-\item [\tt\BS t] \ \\The tab character can be included in a string as the
+\item [\ttfamily\BS t] \ \\The tab character can be included in a string as the
   sequence \verb|\t|
-\item [\tt\BS n] \ \\The newline character can be included in a string as the
+\item [\ttfamily\BS n] \ \\The newline character can be included in a string as the
   sequence \verb|\n|
-\item [\tt\BS r] \ \\The carrige return character can be included in a string as
+\item [\ttfamily\BS r] \ \\The carrige return character can be included in a string as
   the sequence \verb|\r|
-\item [\tt\BS b] \ \\The backspace character can be included in a string as the
+\item [\ttfamily\BS b] \ \\The backspace character can be included in a string as the
   sequence \verb|\b|
-\item [\tt\BS f] \ \\The formfeed character can be included in a string as the
+\item [\ttfamily\BS f] \ \\The formfeed character can be included in a string as the
   sequence \verb|\f|
 \end{description}
 

@@ -49,7 +49,7 @@
 
 \makeatletter%>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-\newcommand\opt[1]{\texttt{-{}#1}\index{#1@{\tt-{}#1}}}
+\newcommand\opt[1]{\texttt{-{}#1}\index{#1@\texttt{-{}#1}}}
 
 \definecolor{sh-bg}{rgb}{.9,.9,.9}
 \definecolor{sh-border}{rgb}{.4,.4,.4}
@@ -57,7 +57,7 @@
 \newcommand\sh{\smallskip\par\hspace*{2em}\@ifnextchar[{\sh@}{\sh@@}}
 \def\sh@[#1]#2{%
   \fcolorbox{sh-border}{sh-bg}{\hspace*{1em}\begin{minipage}{.85\textwidth}
-      \texttt{bibtool -{}#1 }\textit{#2}\index{#1@{\tt-{}#1}}
+      \texttt{bibtool -{}#1 }\textit{#2}\index{#1@\texttt{-{}#1}}
     \end{minipage}}\smallskip\par\noindent\ignorespaces}
 \newcommand\sh@@[1]{%
   \fcolorbox{sh-border}{sh-bg}{\hspace*{1em}\begin{minipage}{.85\textwidth}
@@ -70,13 +70,13 @@
 \newcommand\rscEqBraces[2]{\rsc{#1} = \(\{\)#2\(\}\)}
 \newcommand\rscBraces[2]{\rsc{#1} \(\{\)#2\(\}\)}
 \newcommand\rscIt[1]{\textsf{\textit{#1}}}
-\newcommand\env[1]{\texttt{#1}\index{#1@{\tt #1}}}
+\newcommand\env[1]{\texttt{#1}\index{#1@\texttt{#1}}}
 
 \definecolor{rsc-bg}{rgb}{.9,1,.9}
 \definecolor{rsc-border}{rgb}{.4,.6,.4}
 \newbox\rscbox
 \newenvironment{Resources}%
-  {\setbox\rscbox=\hbox\bgroup\hspace*{.06\textwidth}\begin{minipage}{.88\textwidth}\sf\obeylines\obeyspaces
+  {\setbox\rscbox=\hbox\bgroup\hspace*{.06\textwidth}\begin{minipage}{.88\textwidth}\sffamily\obeylines\obeyspaces
   }{\end{minipage}\egroup\vspace{1.5ex}%
     \fcolorbox{rsc-border}{rsc-bg}{\usebox\rscbox}%
     \medskip\par
@@ -114,7 +114,7 @@
 
 \newenvironment{Example}{\smallskip\par\textit{Example}\par}{\smallskip\par}
 
-\newenvironment{Disclaimer}{\begin{center}\sf\tiny --- }{ ---\end{center}}
+\newenvironment{Disclaimer}{\begin{center}\sffamily\tiny --- }{ ---\end{center}}
 
 \newcommand\LINK[2]{\texttt{#2}}
 \newcommand\Link[2]{\href{#1}{\texttt{#2}}}
@@ -805,7 +805,7 @@ contains spaces it is very likely that quoting is needed.
 For instance in UN*X shells it is in general a good strategy to enclose
 command line arguments in single quotes (\verb|'|) if they contain white-space
 or special characters like \texttt{\symbol{"5C}}, \texttt{\$}, \texttt{\&},
-\verb|!|, or \verb|#|.´
+\verb|!|, or \verb|#|.
 
 Instead of excessively using command line arguments it is preferable and less
 error-prone to put the major configuration into a resource file and just
@@ -2532,7 +2532,7 @@ list:
     separators.
 
     \begin{Resources}
-      \rsc{fmt.word.separator} = {\tt "+-<=>*/"}
+      \rsc{fmt.word.separator} = \texttt{"+-<=>*/"}
     \end{Resources}
 
     Note that the effect of \rsc{fmt.word.separator} is accumulating more
@@ -3217,7 +3217,7 @@ the keys should be generated:
   should be used.
 \item If the type of the entry is a book then the authors/editors are used
   followed by the year separated by a colon.
-\item If the type of the entry is an article in a journal ({\tt article}) then
+\item If the type of the entry is an article in a journal (\texttt{article}) then
   the author, the journal, the number, and the year should be used. Author and
   journal should be separated by a colon, The journal should be abbreviated
   with the initials and separated from number and year by a period.
@@ -3576,11 +3576,11 @@ otherwise.
   \end{Resources}
 
 \item Field rewriting may be used to remove \LaTeX{} commands. This example
-  shows how to remove from titles a {\tt\char"5C protect} macro together with
+  shows how to remove from titles a \texttt{\char"5C protect} macro together with
   the braces, in case the delimiter is a double quote.
 
   \begin{Resources}
-      \rscBraces{rewrite.rule}{\tt title \# "\char"5E\char"5C"\char32*\char"5C\char"5C \char32*protect\char32*\char"7B \char"5C(.*\char"5C)\char"7D\char"5C"\$" = "\symbol{"5C}"\symbol{"5C}1\char"5C"" }
+      \rscBraces{rewrite.rule}{\texttt{title \# "\char"5E\char"5C"\char32*\char"5C\char"5C \char32*protect\char32*\char"7B \char"5C(.*\char"5C)\char"7D\char"5C"\$" = "\symbol{"5C}"\symbol{"5C}1\char"5C"" }}
   \end{Resources}
 \end{itemize}
 
@@ -4163,8 +4163,8 @@ appropriate directory.
 \bibliography{bibtool}
 
 \ifHTML\else
-\ifx\ptt\undefined\global\let\ptt\tt\fi
-\ifx\psf\undefined\global\let\psf\sf\fi
+\ifx\ptt\undefined\global\let\ptt\ttfamily\fi
+\ifx\psf\undefined\global\let\psf\sffamily\fi
 \ifx\pdollar\undefined\global\let\pdollar\$\fi
 \fi
 \printindex

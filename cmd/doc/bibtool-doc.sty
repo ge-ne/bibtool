@@ -21,7 +21,7 @@
 
 \DeclareRobustCommand\BibTool{\textsc{Bib\hskip-.1em\-%
         \mbox{T\hskip-.15emo\hskip-.05emo\hskip-.05eml}}}
-\DeclareRobustCommand\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em\TeX}}
+\DeclareRobustCommand\BibTeX{\textrm{B\kern-.05em\textsc{i\kern-.025em b}\kern-.08em\TeX}}
 
 \renewcommand\maketitle{\thispagestyle{empty}
   \null\vfill
@@ -46,9 +46,9 @@
 
 \renewcommand\ps@headings{\let\@mkboth\markboth
   \def\@oddfoot{}\def\@evenfoot{}
-  \def\@evenhead{\vbox{\vss\hbox to \textwidth{\rm\thepage \hss
-        {\scriptsize\sc\ \leftmark}}\kern 1.5mm\hrule depth 0.2 true pt}}
-  \def\@oddhead{\vbox{\vss\hbox to \textwidth{\rm{\scriptsize\sc \rightmark\ }
+  \def\@evenhead{\vbox{\vss\hbox to \textwidth{\textrm{\thepage} \hss
+        {\scriptsize\textsc{\ \leftmark}}}\kern 1.5mm\hrule depth 0.2 true pt}}
+  \def\@oddhead{\vbox{\vss\hbox to \textwidth{\textrm{\scriptsize\textsc{\rightmark\ }}
         \hss \thepage}\kern 1.5mm\hrule depth 0.2 true pt}}
   \def\chaptermark##1{\markboth {\ifnum \c@secnumdepth>\m@ne
      \thechapter. \ \fi ##1}{}}

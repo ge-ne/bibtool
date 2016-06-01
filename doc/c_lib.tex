@@ -34,7 +34,7 @@
 \parskip=1ex
 
 \makeatletter
-\newcommand\ClassFont{\scriptsize\sf}
+\newcommand\ClassFont{\scriptsize\sffamily}
 \newcommand\File[2]{\section{The File \texttt{#1}}\label{sec:#2}}
 \newcommand\Header[2]{\section{The Header File \texttt{#1}}\label{sec:#2}}
 \newcommand\Module[2]{\section{The Module \texttt{#1}}\label{sec:#2}}
@@ -60,7 +60,7 @@
     }{\end{description}}
 \newenvironment{Result}{%
   \begin{description}\item[\textmd{Returns:}] }{\end{description}}
-\newenvironment{Arguments}[1]{\begingroup\tt\tabcolsep=0pt
+\newenvironment{Arguments}[1]{\begingroup\ttfamily\tabcolsep=0pt
   \begin{tabular*}{.925\textwidth}{ll@{\extracolsep{\fill}}>{\it\small}p{.55\textwidth}}
     #1%
     }{\end{tabular*}\endgroup\par}
@@ -71,7 +71,7 @@
     \texttt{typedef struct}%
     \textbf{\ #1 }
     \texttt{\char123}\par
-    \begingroup\tt\tabcolsep=0pt\rule{1em}{0pt}%
+    \begingroup\ttfamily\tabcolsep=0pt\rule{1em}{0pt}%
     \begin{tabular*}{.9\textwidth}%
       {ll@{\extracolsep{\fill}}>{\it\small}p{.55\textwidth}}%
 }
@@ -88,17 +88,17 @@
 
 \newcommand\Ccomment[1]{\hfill\parbox[t]{.5\textwidth}{\it/* #1\hfill*/}}
 
-\newcommand\BibTool{{\sc Bib\hskip-.1em\-%
+\newcommand\BibTool{\textsc{Bib\hskip-.1em\-%
         \mbox{T\hskip-.15emo\hskip-.05emo\hskip-.05eml}}}
-\newcommand\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+\newcommand\BibTeX{\textrm{B\kern-.05em\textsc{i\kern-.025em b}\kern-.08em
         T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \makeatletter%>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 \def\ps@headings{\let\@mkboth\markboth
   \def\@oddfoot{}\def\@evenfoot{}
-  \def\@evenhead{\vbox{\vss\hbox to \textwidth{\rm\thepage \hss
-        {\scriptsize\sc\ \leftmark}}\kern 1.5mm\hrule depth 0.2 true pt}}
-  \def\@oddhead{\vbox{\vss\hbox to \textwidth{\rm{\scriptsize\sc \rightmark\ }
+  \def\@evenhead{\vbox{\vss\hbox to \textwidth{\textrm{\thepage} \hss
+        {\scriptsize\textsc{\ \leftmark}}}\kern 1.5mm\hrule depth 0.2 true pt}}
+  \def\@oddhead{\vbox{\vss\hbox to \textwidth{\textrm{\scriptsize\textsc{\rightmark\ }}
         \hss \thepage}\kern 1.5mm\hrule depth 0.2 true pt}}
   \def\chaptermark##1{\markboth {\ifnum \c@secnumdepth>\m@ne
      \thechapter. \ \fi ##1}{}}

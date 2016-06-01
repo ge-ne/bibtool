@@ -40,23 +40,23 @@
 
 \pagestyle{empty}
 
-\newcommand\BibTool{{\sc Bib\hskip-.1em
+\newcommand\BibTool{\textsc{Bib\hskip-.1em
         T\hskip-.15emo\hskip-.05emo\hskip-.05eml}}
-\newcommand\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+\newcommand\BibTeX{\textrm{B\kern-.05em\textsc{i\kern-.025em b}\kern-.08em
         T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \newenvironment{FlatList}{\begin{list}{}{%
       \topsep=0pt\itemsep=0pt\parsep=0pt\let\makelabel=\flatlistlabel}}{\end{list}}%
-\newcommand\flatlistlabel[1]{\descriptionlabel{\sf #1}}
-\newcommand\Arg[1]{{\rm\{}{\sl #1}{\rm\}}}
-\newcommand\ARG[1]{{\sl #1}}
-\newcommand\OnOff{{\sl OnOff}}
-\newcommand\Num{{\sl n}}
-\newcommand\Section[1]{\begin{center}\normalsize\bf
+\newcommand\flatlistlabel[1]{\descriptionlabel{\textsf{#1}}}
+\newcommand\Arg[1]{\textrm{\{}\textsl{#1}\textrm{\}}}
+\newcommand\ARG[1]{\textsl{#1}}
+\newcommand\OnOff{\textsl{OnOff}}
+\newcommand\Num{\textsl{n}}
+\newcommand\Section[1]{\begin{center}\normalsize\bfseries
     #1\end{center}\nobreak }
-\newcommand\Lib[1]{{\tt #1}}
-\newcommand\mailto[1]{\href{mailto:#1}{\tt #1}}
-\newcommand\link[1]{\href{#1}{\tt #1}}
+\newcommand\Lib[1]{\texttt{#1}}
+\newcommand\mailto[1]{\href{mailto:#1}{\texttt{#1}}}
+\newcommand\link[1]{\href{#1}{\texttt{#1}}}
 \newcommand\NewPage{\end{multicols}
  \vfill\vfill\vfill
  \begin{center}\rule{.8\textwidth}{.1pt}\end{center}
@@ -78,14 +78,14 @@
   \rule{.80\textwidth}{.1pt}
 \end{center}
 \vfill
-\footnotesize\rm
+\footnotesize\rmfamily
 \begin{multicols}{4}
   \Section{Command line options}
   \begin{FlatList}
   \item [-{}- \ARG{rsc\_command}]\ \\
     Perform resource command as if given in a file.
   \item [-A \ARG{type}]\ \\
-    Determine key disambiguation. \ARG{type} in {\tt0}, {\tt a}, {\tt A},
+    Determine key disambiguation. \ARG{type} in \texttt{0}, \texttt{a}, \texttt{A},
   \item [-d\ ]\ \\
     Check double entries.
   \item [-f \ARG{key\_format}]\ \\
@@ -121,17 +121,17 @@
   \end{FlatList}
   \Section{Libraries}
   \begin{tabular}{lp{.17\textwidth}}
-  \Lib{check{\rm\_}y}	& Check the value of the year.\\
+  \Lib{check\_y}	& Check the value of the year.\\
   \Lib{default}		& All default settings.\\
   \Lib{field}		& Redefine field names.\\
   \Lib{brace}		& Use braces as delimiters.\\
   \Lib{improve}		& Apply improvements.\\
   \Lib{iso2tex}		& Translate ISO\,8859/1 characters.\\
-  \Lib{iso{\rm\_}def}	& Define ISO\,8859/1 characters for formatting.\\
+  \Lib{iso\_def}	& Define ISO\,8859/1 characters for formatting.\\
   \Lib{month}		& Introduce strings for month names.\\
   \Lib{opt}		& Remove OPT in field names.\\
-  \Lib{sort{\rm\_}fld}	& Specify sort order for fields.\\
-  \Lib{tex{\rm\_}def}	& Define \TeX{} macros for formatting.\\
+  \Lib{sort\_fld}	& Specify sort order for fields.\\
+  \Lib{tex\_def}	& Define \TeX{} macros for formatting.\\
   \Lib{biblatex}	& Capitalize fields known to bib\LaTeX.\\
   \end{tabular}
   \Section{General}
