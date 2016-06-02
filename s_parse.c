@@ -29,6 +29,7 @@
 #include <bibtool/error.h>
 #include <bibtool/parse.h>
 #include <bibtool/s_parse.h>
+#include <bibtool/type.h>
 
 /*****************************************************************************/
 /* Internal Programs							     */
@@ -42,8 +43,7 @@
  String  s_parse _ARG((int type,String *sp,int errp));/* s_parse.c           */
  int sp_open _ARG((String  s));			   /* s_parse.c              */
  void sp_close _ARG((void));			   /* s_parse.c              */
- int sp_expect _ARG((String*sp, String expect));   /* s_parse.c              */
-
+ int sp_expect _ARG((String*sp, String expect, int vaerbose));/* s_parse.c   */
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -53,6 +53,9 @@
 
 #define Error(E,S,A,B)	\
   if(E) error(ERR_ERROR|ERR_POINT,A,(String)B,(String)0,sp_line,(String)S,0,(char*)0)
+
+ static String   unexpected = (String)"Unexpected ";/*                       */
+ static String   expected   = (String)" expected.";/*                        */
 
  static String sp_line = StringNULL;
 
@@ -71,6 +74,20 @@ int sp_open(s)					   /*                        */
   String s;				   	   /*                        */
 { sp_line = s;				   	   /*                        */
   return TRUE;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	sp_close()
+** Type:	void
+** Purpose:	
+**		
+** Arguments:
+**		
+** Returns:	nothing
+**___________________________________________________			     */
+void sp_close()					   /*                        */
+{						   /*                        */
+  sp_line = StringNULL;				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -144,8 +161,6 @@ String s_parse(type, sp, errp)			   /*                        */
 { register String s = *sp;			   /*                        */
   Uchar           c;				   /*                        */
   String	  cp;				   /*                        */
-  static String   unexpected = (String)"Unexpected ";/*                      */
-  static String   expected   = (String)" expected.";/*                       */
  						   /*                        */
   DebugPrint2((type == StringParseSkip ? "ParseSkip ":
 	       type == StringParseNext ? "ParseNext ":
@@ -163,11 +178,11 @@ String s_parse(type, sp, errp)			   /*                        */
  						   /*                        */
   switch ( type )				   /*                        */
   { case StringParseSymbol:			   /*                        */
-      if ( is_allowed(*s) )			   /*                        */
+      if ( is_allowed(*s) && !is_digit(*s) )	   /*                        */
       { do { s++; } while ( is_allowed(*s) );	   /*                        */
       }						   /*                        */
       else			   		   /*                        */
-      { Error(errp,s,"Symbol",expected);	   /*                        */
+      { Error(errp, s, "Symbol", expected);	   /*                        */
 	return NULL;				   /*                        */
       }						   /*                        */
       break;					   /*                        */
@@ -177,7 +192,7 @@ String s_parse(type, sp, errp)			   /*                        */
       { do { s++; } while ( is_digit(*s) );	   /*                        */
       }						   /*                        */
       else					   /*                        */
-      { Error(errp,s,"Number",expected);	   /*                        */
+      { Error(errp, s, "Number", expected);	   /*                        */
 	return NULL;				   /*                        */
       }						   /*                        */
       break;					   /*                        */
@@ -185,7 +200,7 @@ String s_parse(type, sp, errp)			   /*                        */
     case StringParseBraces:			   /*                        */
     case StringParseUnquotedBraces:		   /*                        */
       if ( *s != '{' )				   /*                        */
-      { Error(errp,s,"Brace",expected);	   	   /*                        */
+      { Error(errp, s, "Brace", expected);	   /*                        */
 	return NULL;				   /*                        */
       }						   /*                        */
       s++;					   /*                        */
@@ -208,7 +223,7 @@ String s_parse(type, sp, errp)			   /*                        */
 	  if ( *s ) s++;			   /*                        */
 	}					   /*                        */
 	if ( level > 0 )			   /*                        */
-	{ Error(errp,s,unexpected,"end of braces.");/*                       */
+	{ Error(errp, s, unexpected, "end of braces.");/*                    */
 	}					   /*                        */
 	else if ( type==StringParseUnquotedBraces )/*                        */
 	{ s--; }				   /*                        */
@@ -218,7 +233,7 @@ String s_parse(type, sp, errp)			   /*                        */
     case StringParseString:			   /*                        */
     case StringParseUnquotedString:		   /*                        */
       if ( *s != '"' )				   /*                        */
-      { Error(errp,s,"String",expected);	   /*                        */
+      { Error(errp, s, "String", expected);	   /*                        */
 	return NULL;				   /*                        */
       }						   /*                        */
       s++;					   /*                        */
@@ -234,7 +249,7 @@ String s_parse(type, sp, errp)			   /*                        */
       { if ( type != StringParseUnquotedString ) s++;/*                      */
       }			   			   /*                        */
       else					   /*                        */
-      { Error(errp,s,unexpected,"end of string."); /*                        */
+      { Error(errp, s, unexpected, "end of string.");/*                      */
       }						   /*                        */
       break;					   /*                        */
  						   /*                        */
@@ -262,7 +277,8 @@ String s_parse(type, sp, errp)			   /*                        */
  						   /*                        */
     case StringParseEOS:			   /*                        */
       if ( *s )					   /*                        */
-      { Error(errp,s,unexpected,"characters at end of string.");/*           */
+      { Error(errp, s, unexpected,		   /*                        */
+	      "characters at end of string.");	   /*                        */
       }						   /*                        */
       						   /*                        */
       sp_line = NULL;				   /*                        */
@@ -291,26 +307,89 @@ String s_parse(type, sp, errp)			   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	sp_expect()
 ** Type:	int
+** Purpose:	Read a sequence of expected characters after whitespace.
+**		The source pointer is advanced until the expected
+**		string has been read or to the first character which
+**		is not expected.
+** Arguments:
+**	sp	the pointer to the source string
+**	expect	the expected string
+** Returns:	|TRUE| iff the expected string is found
+**___________________________________________________			     */
+int sp_expect(sp, expect, verbose)		   /*                        */
+  register String *sp;				   /*                        */
+  register String expect;			   /*                        */
+  int verbose;					   /*                        */
+{						   /*                        */
+  while( is_space(**sp) ) (*sp)++;		   /*                        */
+ 						   /*                        */
+  for ( ;*expect; expect++)			   /*                        */
+  { if (*expect != **sp)			   /*                        */
+    { if (verbose)				   /*                        */
+      { Error(1, *sp, expect, expected); }	   /*                        */
+      return FALSE;				   /*                        */
+    }	   					   /*                        */
+    (*sp)++;					   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  return TRUE;					   /*                        */
+}						   /*------------------------*/
+
+#define SkipSpaces(PTR) while( is_space(*PTR) ) (PTR)++
+
+/*-----------------------------------------------------------------------------
+** Function:	sp_symbols()
+** Type:	String*
 ** Purpose:	
 **		
 ** Arguments:
-**	sp	
-**	expect	
+**	sp	the pointer to the value to be parsed
 ** Returns:	
 **___________________________________________________			     */
-int sp_expect(sp, expect)			   /*                        */
+String* sp_symbols(sp)				   /*                        */
   String *sp;					   /*                        */
-  String expect;				   /*                        */
-{ String s = *sp;				   /*                        */
+{ String s;					   /*                        */
+  String *a = NULL;				   /*                        */
+  int n	= 0;					   /*                        */
+  int i = 0;					   /*                        */
  						   /*                        */
-  while( is_space(*s) ) s++;			   /*                        */
-  *sp = s;					   /*                        */
+  if (sp_expect(sp, (String)"{", FALSE))	   /*                        */
+  { n = 4;					   /*                        */
+    a = (String*)malloc(n * sizeof(String));	   /*                        */
+    if (a == (String*)NULL)			   /*                        */
+    { OUT_OF_MEMORY("symbols"); }   		   /*                        */
  						   /*                        */
-  for ( ;*expect; expect++)			   /*                        */
-  { if (*expect  != *s)	{ return FALSE; }	   /*                        */
-    s++;					   /*                        */
+    SkipSpaces(*sp);				   /*                        */
+    while (**sp && **sp != '}')			   /*                        */
+    { SkipSpaces(*sp);				   /*                        */
+      if ((s=SParseSymbol(sp)) == StringNULL) {	   /*                        */
+	return (String*)NULL;			   /*                        */
+      }						   /*                        */
+      if (i >= n - 1)
+      { n += 4;
+	a = (String*)realloc(a, n * sizeof(String));
+	if (a == NULL) { OUT_OF_MEMORY("symbols"); }/*                       */
+      }						   /*                        */
+      a[i++] = s;				   /*                        */
+      SkipSpaces(*sp);				   /*                        */
+    }						   /*                        */
+    if (**sp == '\0')				   /*                        */
+    { Error(TRUE, *sp, unexpected,		   /*                        */
+	    "end of symbols.");			   /*                        */
+      return (String*)NULL;			   /*                        */
+    }					   	   /*                        */
+    (*sp)++;					   /*                        */
+    a[i] = StringNULL;				   /*                        */
+ 						   /*                        */
+  } else if ( !is_digit(**sp) &&
+	     (s=s_parse(StringParseSymbol,
+			sp, 0)) != StringNULL) {
+    a	  = (String*)malloc(2 * sizeof(String));
+    if (a == NULL) { OUT_OF_MEMORY("symbols"); }   /*                        */
+    a[0]  = s;
+    a[1]  = StringNULL;
+  } else {
+    Error(TRUE, *sp, "List of symbols", expected); /*                        */
   }						   /*                        */
- 						   /*                        */
-  *sp = s;					   /*                        */
-  return TRUE;					   /*                        */
+  return a;					   /*                        */
 }						   /*------------------------*/
