@@ -105,6 +105,22 @@
  extern String sym_crossref;
 
 /*-----------------------------------------------------------------------------
+** Variable:	sym_xref
+** Type:	String
+** Purpose:	The symbol |xref|. This variable needs
+**		|init_symbols()| to be called first.
+**___________________________________________________			     */
+ extern String sym_xref;
+
+/*-----------------------------------------------------------------------------
+** Variable:	sym_xdata
+** Type:	String
+** Purpose:	The symbol |xdata|. This variable needs
+**		|init_symbols()| to be called first.
+**___________________________________________________			     */
+ extern String sym_xdata;
+
+/*-----------------------------------------------------------------------------
 ** Macro:	newString()
 ** Type:	
 ** Purpose:	

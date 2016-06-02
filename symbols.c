@@ -148,6 +148,8 @@
 
  String  sym_empty    = StringNULL;		   /*                        */
  String  sym_crossref = StringNULL;		   /*                        */
+ String  sym_xdata    = StringNULL;		   /*                        */
+ String  sym_xref     = StringNULL;		   /*                        */
 
 
 /*****************************************************************************/
@@ -253,6 +255,8 @@ void init_symbols()				   /*			     */
   for ( i = 0; i < HASHMAX; i++ ) sym_tab[i] = NULL;/*			     */
   sym_empty    = sym_add(newString(""),-1);        /*                        */
   sym_crossref = sym_add(newString("crossref"),-1);/*                        */
+  sym_xref     = sym_add(newString("xref"),-1);	   /*                        */
+  sym_xdata    = sym_add(newString("xdata"),-1);   /*                        */
 }						   /*------------------------*/
 
  static StringTab last_stp = NULL;	
