@@ -37,4 +37,8 @@
 #else
 #define _ARG(A) ()
 #endif
- int expand_crossref _ARG((DB db,Record rec));
+ int expand_crossref _ARG((DB db,Record rec));	   /*                        */
+ int clear_map();				   /*                        */
+ void crossref_map();				   /*                        */
+
+/*---------------------------------------------------------------------------*/
