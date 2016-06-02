@@ -680,7 +680,7 @@ static String  check_regex(field, value, rule, db, rec)/*		     */
 ** Purpose:	
 **		
 ** Arguments:
-**	s	
+**	spec	the argument
 ** Returns:	nothing
 **___________________________________________________			     */
 void rename_field(spec)				   /*			     */
@@ -699,7 +699,7 @@ void rename_field(spec)				   /*			     */
   if ( (to = SParseSymbol(&spec)) == StringNULL )  /*		             */
     return;					   /*			     */
  						   /*                        */
-  if (sp_expect(&spec, (String)"if"))		   /*                        */
+  if (sp_expect(&spec, (String)"if", FALSE))	   /*                        */
   { if ( (field = SParseOptionalSymbol(&spec)) != StringNULL )/*	     */
     { (void)SParseSkip(&spec);			   /*			     */
       if ( (pattern = SParseValue(&spec)) == StringNULL )/*		     */
