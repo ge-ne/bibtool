@@ -65,7 +65,7 @@ __EOF__
 \@Manual{	  bibtool,
   title		= {BibTool},
   rohtua	= {Gerd Neugebauer},
-  year		= 2015
+  year		= 2016
 }
 __EOF__
     expected_err => ''

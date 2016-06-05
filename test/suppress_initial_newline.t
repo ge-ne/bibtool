@@ -53,7 +53,6 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
-
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'suppress_initial_newline_1',
 	   args         => '-- suppress.initial.newline=on bib/x1.bib',
@@ -61,7 +60,7 @@ BUnit::run(name         => 'suppress_initial_newline_1',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2015
+  year		= 2016
 }
 __EOF__
     expected_err => ''

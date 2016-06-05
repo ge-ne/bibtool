@@ -62,7 +62,7 @@ BUnit::run(name         => 'input_1',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2015
+  year		= 2016
 }
 __EOF__
     expected_err => '' );
@@ -75,7 +75,7 @@ BUnit::run(name         => '_i_1',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2015
+  year		= 2016
 }
 __EOF__
     expected_err => '' );
