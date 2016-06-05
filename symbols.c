@@ -89,7 +89,7 @@
 
 /*-----------------------------------------------------------------------------
 ** Macro*:	SymbolName()
-** Type:	String 
+** Type:	Symbol
 ** Purpose:	The name slot of a |StringTab|, i.e.\ the string
 **		representation. This macro can also be used as lvalue.
 ** Arguments:
@@ -146,10 +146,10 @@
 
 
 
- String  sym_empty    = StringNULL;		   /*                        */
- String  sym_crossref = StringNULL;		   /*                        */
- String  sym_xdata    = StringNULL;		   /*                        */
- String  sym_xref     = StringNULL;		   /*                        */
+ Symbol  sym_empty    = StringNULL;		   /*                        */
+ Symbol  sym_crossref = StringNULL;		   /*                        */
+ Symbol  sym_xdata    = StringNULL;		   /*                        */
+ Symbol  sym_xref     = StringNULL;		   /*                        */
 
 
 /*****************************************************************************/
@@ -175,7 +175,7 @@ char * new_string(s)				   /*			     */
   if ( (t=malloc((size_t)strlen(s)+1)) == NULL )   /*			     */
   { OUT_OF_MEMORY("string"); }	   		   /*			     */
   (void)strcpy(t,s);				   /*			     */
-  return(t);					   /*			     */
+  return t;					   /*			     */
 }						   /*------------------------*/
 
 
@@ -269,7 +269,7 @@ void init_symbols()				   /*			     */
 ** Returns:	The flags of the recently touched |StringTab|.
 **___________________________________________________			     */
 int sym_flag(s)					   /*			     */
-  String  s;					   /*                        */
+  Symbol s;					   /*                        */
 {						   /*                        */
   if ( last_stp == NULL || SymbolName(last_stp) != s )/*                     */
   { s = sym_add(s,0); }				   /*                        */
@@ -287,7 +287,7 @@ int sym_flag(s)					   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void sym_set_flag(s,flags)			   /*			     */
-  register String s;				   /*			     */
+  register Symbol s;				   /*			     */
   register int  flags;				   /*			     */
 { 						   /*                        */
   if ( last_stp == NULL				   /*                        */
@@ -321,18 +321,19 @@ void sym_set_flag(s,flags)			   /*			     */
 **	count	The use count which should be added to the symbol
 ** Returns:	The new symbol.
 **___________________________________________________			     */
-String  sym_add(s,count)			   /*			     */
+Symbol sym_add(s, count)			   /*			     */
   register String    s;		   	   	   /*			     */
   register int	     count;			   /*			     */
 { register StringTab *stp;			   /*			     */
 						   /*			     */
-  if ( s == StringNULL ) return StringNULL;	   /* ignore dummies.	     */
+  if ( s == StringNULL ) return NO_SYMBOL;	   /* ignore dummies.	     */
  						   /*                        */
   for ( stp = &sym_tab[hashindex(s)];		   /*			     */
        *stp != NULL;		   		   /*			     */
         stp = &NextSymbol(*stp) )		   /*			     */
   {						   /*                        */
-    if ( strcmp((char*)s,(char*)SymbolName(*stp)) == 0 )/*		     */
+    if ( strcmp((char*)s,			   /*                        */
+		(char*)SymbolName(*stp)) == 0 )	   /*		             */
     { if ( count > 0 ) SymbolCount(*stp) += count; /*			     */
       last_stp = *stp;			   	   /*			     */
       if ( s != SymbolName(*stp) )		   /*                        */
@@ -366,7 +367,7 @@ String  sym_add(s,count)			   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void sym_unlink(s)				   /*			     */
-  register String    s;			   	   /*			     */
+  register Symbol    s;			   	   /*			     */
 { register StringTab st;			   /*			     */
 						   /*			     */
   if ( s == NULL ) return;		   	   /* ignore dummies.	     */
@@ -397,11 +398,10 @@ void sym_unlink(s)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void sym_gc()					   /*                        */
-{						   /*                        */
-  register StringTab st, st2;			   /*			     */
+{ register StringTab st, st2;			   /*			     */
   register int i;				   /*                        */
   						   /*                        */
-  for ( i=0;i<HASHMAX;i++ )			   /*			     */
+  for ( i = 0; i < HASHMAX; i++ )		   /*			     */
   {						   /*                        */
     while (sym_tab[i] &&			   /*                        */
 	   SymbolUsed(sym_tab[i]) <= 0)		   /*                        */
@@ -467,7 +467,7 @@ void sym_dump()					   /*			     */
   register long	     cnt  = 0l;			   /*			     */
   register long	     used = 0l;			   /*			     */
 						   /*			     */
-  for ( i=0;i<HASHMAX;i++ )			   /*			     */
+  for ( i = 0; i < HASHMAX; i++ )		   /*			     */
   { for ( st = sym_tab[i]; st; st=NextSymbol(st) ) /*			     */
     { ErrPrintF2("--- BibTool symbol %4d %s\n",	   /*			     */
 		 (int)SymbolCount(st),		   /*			     */

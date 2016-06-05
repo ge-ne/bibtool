@@ -53,7 +53,7 @@
 
 /*-----------------------------------------------------------------------------
 ** Macro:	symbol()
-** Type:	char *
+** Type:	Symbol
 ** Purpose:	Translate a string into a symbol.
 **		The symbol returned is either created or an existing
 **		symbol is returned.
@@ -85,6 +85,10 @@
 /***									   ***/
 /*****************************************************************************/
 
+typedef String Symbol;
+
+#define NO_SYMBOL (Symbol)NULL
+
 #define SYMBOL_STATIC	1
 
 /*-----------------------------------------------------------------------------
@@ -94,7 +98,7 @@
 **		immediately to a |\0| byte.  This needs
 **		|init_symbols()| to be called first.
 **___________________________________________________			     */
- extern String sym_empty;
+ extern Symbol sym_empty;
 
 /*-----------------------------------------------------------------------------
 ** Variable:	sym_crossref
@@ -102,7 +106,7 @@
 ** Purpose:	The symbol |crossref|. This variable needs
 **		|init_symbols()| to be called first.
 **___________________________________________________			     */
- extern String sym_crossref;
+ extern Symbol sym_crossref;
 
 /*-----------------------------------------------------------------------------
 ** Variable:	sym_xref
@@ -110,7 +114,7 @@
 ** Purpose:	The symbol |xref|. This variable needs
 **		|init_symbols()| to be called first.
 **___________________________________________________			     */
- extern String sym_xref;
+ extern Symbol sym_xref;
 
 /*-----------------------------------------------------------------------------
 ** Variable:	sym_xdata
@@ -118,16 +122,17 @@
 ** Purpose:	The symbol |xdata|. This variable needs
 **		|init_symbols()| to be called first.
 **___________________________________________________			     */
- extern String sym_xdata;
+ extern Symbol sym_xdata;
 
 /*-----------------------------------------------------------------------------
 ** Macro:	newString()
-** Type:	
+** Type:	String
 ** Purpose:	
 **		
 ** Arguments:
-**	S	
-** Returns:	
+**	S	the source of the bytes	
+** Returns:	a newly allocated byte array containing the content of
+**		the source
 **___________________________________________________			     */
 #define newString(S) (String)new_string((char*)(S))
 
@@ -136,14 +141,14 @@
 #else
 #define _ARG(A) ()
 #endif
- String  sym_add _ARG((String s,int count));	   /* symbols.c              */
- String  sym_extract _ARG((String ap,String ep,int count));/* symbols.c      */
+ Symbol  sym_add _ARG((String s,int count));	   /* symbols.c              */
+ Symbol  sym_extract _ARG((String ap,String ep,int count));/* symbols.c      */
  char * new_string _ARG((char * s));		   /* symbols.c              */
- int sym_flag _ARG((String  s));		   /* symbols.c              */
+ int sym_flag _ARG((Symbol  s));		   /* symbols.c              */
  void init_symbols _ARG((void));		   /* symbols.c              */
  void sym_dump _ARG((void));			   /* symbols.c              */
  void sym_gc _ARG((void));			   /* symbols.c              */
- void sym_set_flag _ARG((String s,int flags));	   /* symbols.c              */
- void sym_unlink _ARG((String s));		   /* symbols.c              */
+ void sym_set_flag _ARG((Symbol s,int flags));	   /* symbols.c              */
+ void sym_unlink _ARG((Symbol s));		   /* symbols.c              */
 
 #endif /* SYMBOLS_H_LOADED */

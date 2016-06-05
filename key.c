@@ -1276,14 +1276,14 @@ void make_sort_key(db,rec)			   /*			     */
 ** Function:	new_key_node()
 ** Purpose:	Allocate a new key node
 ** Arguments:
-**	type	
-**	string	
+**	type	the type
+**	string	the symbol
 ** Returns:	The address of the new node.
 **		Upon failure exit() is called.
 **___________________________________________________			     */
 static KeyNode new_key_node(type, string)	   /*			     */
   int	  type;					   /*			     */
-  String  string;				   /*			     */
+  Symbol  string;				   /*			     */
 { KeyNode new;					   /*			     */
   if( (new=(KeyNode)malloc(sizeof(SKeyNode))) == (KeyNode)0 )/*		     */
   { OUT_OF_MEMORY(" new_key_node()"); } 	   /*			     */
