@@ -329,7 +329,8 @@ void push_to_record(rec,s,t)			   /*			     */
   register String t;				   /*			     */
 { register int i;		   		   /*			     */
    						   /*                        */
-  if ( s == sym_crossref ) { SetRecordXREF(rec); } /*			     */
+  if ( s == sym_crossref || s == sym_xdata )	   /*                        */
+  { SetRecordXREF(rec); } 			   /*			     */
  						   /*                        */
   for (i = 2; i < RecordFree(rec); i += 2 )	   /* search the field       */
   { if ( RecordHeap(rec)[i] == s )		   /* if found then          */
@@ -376,7 +377,8 @@ void provide_to_record(rec,s,t)			   /*			     */
   register String t;				   /*			     */
 { register int i;		   		   /*			     */
    						   /*                        */
-  if ( s == sym_crossref ) { SetRecordXREF(rec); } /*			     */
+  if ( s == sym_crossref || s == sym_xdata )	   /*                        */
+  { SetRecordXREF(rec); } 			   /*			     */
  						   /*                        */
   for (i = 2; i < RecordFree(rec); i += 2 )	   /* search the field       */
   { if ( RecordHeap(rec)[i] == s )		   /* if found then          */

@@ -499,7 +499,7 @@ int main(argc,argv)				   /*			     */
     }						   /*                        */
   }						   /*                        */
 						   /*			     */
-  if ( rsc_expand_crossref )			   /*                        */
+  if ( rsc_expand_crossref || rsc_expand_xdata )   /*                        */
   {						   /*			     */
     db_forall(the_db,expand_crossref);		   /*                        */
   }						   /*			     */

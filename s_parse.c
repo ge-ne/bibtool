@@ -147,7 +147,7 @@ void sp_close()					   /*                        */
 **		convenience macros defined in |s_parse.h| should be
 **		used instead.
 ** Arguments:
-**	type	is the type of construct to parse. it is defined in s_parse.h
+**	type	is the type of construct to parse. It is defined in s_parse.h
 **	sp	is a pointer to the string which is parsed. The value is
 **		changed to hold the remaining characters at the end.
 **	errp	this boolean indicated whether or not a verbose error
@@ -298,7 +298,7 @@ String s_parse(type, sp, errp)			   /*                        */
   if (type == StringParseSymbol)		   /*                        */
   { (void)lower(cp); }				   /*                        */
  						   /*                        */
-  { String sym = symbol(cp);			   /*                        */
+  { Symbol sym = symbol(cp);			   /*                        */
     free(cp);					   /*                        */
     return sym;					   /*                        */
   }						   /*                        */

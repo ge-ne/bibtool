@@ -241,9 +241,77 @@ __EOF__
     expected_out => '' );
 
 #------------------------------------------------------------------------------
+BUnit::run(name => 'crossref_map_err_30',
+    resource 	      => 'crossref.map {{abc} def {xyz} ghi}',
+    expected_err      => <<__EOF__,
+
+*** BibTool WARNING: Unknown entry type \`abc\'. Mapping ignored.
+__EOF__
+    expected_out => '' );
+
+#------------------------------------------------------------------------------
+BUnit::run(name => 'crossref_map_err_31',
+    resource 	      => 'crossref.map {{book} def {xyz} ghi}',
+    expected_err      => <<__EOF__,
+
+*** BibTool WARNING: Unknown entry type \`xyz\'. Mapping ignored.
+__EOF__
+    expected_out => '' );
+
+#------------------------------------------------------------------------------
 BUnit::run(name => 'crossref_map_1',
-    resource 	      => 'crossref.map {{abc} # def = {xyz} ttt}',
-    expected_out      => <<__EOF__,
+    resource    => 'crossref.map {{abc} # def = {xyz} ttt}',
+    resource    => 'expand.crossref=true',
+    bib		=> <<__EOF__,
+\@Manual{	  bibtool,
+  title		= {BibTool},
+  crossref	= {x}
+}
+\@Book{ x,
+  title		= {BibTool},
+  author	= {Gerd Neugebauer}
+}
+__EOF__
+    expected_out => <<__EOF__,
+
+\@Manual{	  bibtool,
+  title		= {BibTool},
+  author	= {Gerd Neugebauer}
+}
+
+\@Book{		  x,
+  title		= {BibTool},
+  author	= {Gerd Neugebauer}
+}
+__EOF__
+    expected_err => '' );
+
+#------------------------------------------------------------------------------
+BUnit::run(name => 'crossref_map_2',
+    resource    => <<__EOF__,
+crossref.map {{book} \# title = {manual} booktitle}
+expand.crossref=true
+__EOF__
+    bib		=> <<__EOF__,
+\@Manual{	  bibtool,
+  crossref	= {x}
+}
+\@Book{ x,
+  title		= {BibTool},
+  author	= {Gerd Neugebauer}
+}
+__EOF__
+    expected_out => <<__EOF__,
+
+\@Manual{	  bibtool,
+  booktitle	= {BibTool},
+  author	= {Gerd Neugebauer}
+}
+
+\@Book{		  x,
+  title		= {BibTool},
+  author	= {Gerd Neugebauer}
+}
 __EOF__
     expected_err => '' );
 
