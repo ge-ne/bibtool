@@ -307,9 +307,9 @@ int read_db(db, file, verbose)		   	   /*                        */
   if ( !see_bib(file) ) { return 1; }		   /*                        */
   if ( master_record == RecordNULL )		   /*                        */
   { master_record = new_record(0,32); }		   /*                        */
-  RecordSource(master_record) = (file==NULL	   /*                        */
-				 ?sym_empty	   /*                        */
-				 :symbol(file));   /*                        */
+  RecordSource(master_record) = (file == NULL	   /*                        */
+				 ? sym_empty	   /*                        */
+				 : symbol(file));  /*                        */
  						   /*                        */
   if ( file == NULL ) file = (String)"<stdin>";	   /*                        */
   if ( verbose ) 			   	   /* If desired print an    */
