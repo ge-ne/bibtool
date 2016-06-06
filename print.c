@@ -130,8 +130,8 @@ String get_symbol_type()			   /*                        */
 ** Function*:	set_key_type()
 ** Purpose:	Wrapper function to set the static variable key_type.
 **		This function is called from rsc.c
-** Arguments:
 **	s	String description of the value.
+** Arguments:
 ** Returns:	nothing
 **___________________________________________________			     */
 void set_key_type(s)				   /*			     */
@@ -595,6 +595,10 @@ void put_record(fct, rec, db, start)		   /*                        */
       break;					   /*			     */
     case BIB_MODIFY:				   /*			     */
     default:					   /*			     */
+
+      if (RecordType(rec) == type_xdata
+	  && rsc_expand_xdata) return;
+
       PUTS(start);				   /*			     */
       PUTS(EntryName(RecordType(rec)));	   	   /*			     */
       PUTC(open_brace);				   /*			     */

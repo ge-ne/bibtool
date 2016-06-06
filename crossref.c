@@ -268,27 +268,28 @@ void crossref_map(spec)				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	insert_record()
-** Type:	static int
+** Type:	int
 ** Purpose:	
 **		
 ** Arguments:
-**	db	
-**	rec	
-**	hp	
+**	db	the database
+**	rec	the record
+**	hp	the heap pointer
 **	s	
 ** Returns:	
 **___________________________________________________			     */
-static int insert_record(db,rec,hp,s)		   /*                        */
+static int insert_record(db,rec,hp,s, msg)	   /*                        */
   DB     db;					   /*                        */
   Record rec;					   /*                        */
   register String *hp;				   /*			     */
   String s;					   /*                        */
+  String msg;					   /*                        */
 { Record r;					   /*                        */
   String t, ms;					   /*                        */
   int i;					   /*                        */
-
-  if ( (r = db_find(db,s)) == (Record)NULL )   	   /*			     */
-  { ERROR2("Crossref entry not found: ",(char*)s); /*		             */
+ 						   /*                        */
+  if ( (r = db_find(db, s)) == (Record)NULL )	   /*			     */
+  { ERROR3(msg," entry not found: ",(char*)s); 	   /*		             */
     return FALSE;				   /*			     */
   }						   /*			     */
     						   /*                        */
@@ -300,9 +301,6 @@ static int insert_record(db,rec,hp,s)		   /*                        */
     if (t != StringNULL)			   /*                        */
     { ms = map_get(RecordType(r), s,	   	   /*                        */
 		   RecordType(rec));	   	   /*                        */
-#ifdef DEBUG
-      printf("--- %s\n",s);
-#endif
       provide_to_record(rec, ms ? ms : s, t);  	   /*                        */
     }	   				   	   /*                        */
   }						   /*                        */
@@ -338,10 +336,10 @@ int expand_crossref(db, rec)		   	   /*                        */
 	  i -= 2, hp += 2 )			   /*			     */
     { }					   	   /*			     */
  						   /*                        */
-    if (i <= 0)
+    if (i <= 0)					   /*                        */
     { DebugPrint1("*** No crossref found.");	   /*			     */
       return FALSE;				   /*			     */
-    }
+    }						   /*                        */
     else if (*hp == sym_crossref)		   /* ---------------------- */
     {						   /*                        */
       if (rec == r) { *hp = NULL; }		   /* Delete the first xref  */
@@ -351,28 +349,26 @@ int expand_crossref(db, rec)		   	   /*                        */
       if ( (s = SParseSymbol(&t)) == StringNULL )  /*  the crossref as symbol*/
       { return FALSE; }				   /*			     */
 						   /*			     */
-      insert_record(db,rec,hp,s);
+      insert_record(db, rec, hp, s, "Crossref");   /*                        */
     }						   /*			     */
     else if (*hp == sym_xdata)			   /* ---------------------- */
     {						   /*                        */
-
-
-      if (rec == r) { *hp = NULL; }		   /* Delete the first xref  */
+      *hp = NULL;		   		   /* Delete the first xref  */
       t = *++hp;				   /*                        */
       t++;				   	   /*			     */
       (void)sp_open(t);				   /* Try to extract	     */
-
-      if (sp_expect(&t, "}", 0) ) return FALSE;
-      for(;;)
-      { if ((s = SParseSymbol(&t)) == NULL)
-	{ return TRUE; }
-
-	insert_record(db,rec,hp,s);
-
-	if (sp_expect(&t, "}", 0) ) break;
-	sp_expect(&t, ",", 1);
-      }
-    }
+ 						   /*                        */
+      if (sp_expect(&t, "}", 0) ) return FALSE;	   /*                        */
+      for (;;)					   /*                        */
+      { if ((s = SParseSymbol(&t)) == NULL)	   /*                        */
+	{ return TRUE; }			   /*                        */
+ 						   /*                        */
+	insert_record(db, rec, hp, s, "XData");	   /*                        */
+ 						   /*                        */
+	if (sp_expect(&t, "}", 0) ) break;	   /*                        */
+	sp_expect(&t, ",", 1);			   /*                        */
+      }						   /*                        */
+    }						   /*                        */
   }						   /*                        */
  						   /*                        */
   return FALSE;	   				   /*			     */
