@@ -68,6 +68,9 @@
 /***									   ***/
 /*****************************************************************************/
 
+int type_xdata = -1;				   /*                        */
+
+
 #define EntrySizeIncrement 8
 
  String	    *entry_type;
@@ -146,13 +149,17 @@ void def_entry_type(s)				   /*			     */
   if ( entry_ptr <= entry_size )		   /*			     */
   { entry_size += EntrySizeIncrement;		   /*			     */
     entry_type = ( entry_ptr == 0		   /*			     */
-		  ? (String*)malloc((size_t)(entry_size*sizeof(String)))
+		  ? (String*)malloc((size_t)(entry_size * sizeof(String)))
 		  : (String*)realloc((char*)entry_type,
-				     (size_t)(entry_size*sizeof(String)))
+				     (size_t)(entry_size * sizeof(String)))
 		  );				   /*			     */
     if ( entry_type == (String*)NULL )		   /*			     */
     { OUT_OF_MEMORY("entry type"); }		   /*                        */
   }						   /*			     */
+ 						   /*                        */
+  if (case_cmp(s, (String)"xdata"))		   /*                        */
+  { type_xdata = entry_ptr; }			   /*                        */
+ 						   /*                        */
   entry_type[entry_ptr++] = newString(s);	   /*		             */
 }						   /*------------------------*/
 

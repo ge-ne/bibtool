@@ -158,6 +158,7 @@
 **___________________________________________________			     */
 #define IsNormalRecord(Type)  ( Type > 5 )
 
+extern int type_xdata;
 
 #ifdef __STDC__
 #define _ARG(A) A
