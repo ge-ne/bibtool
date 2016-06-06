@@ -229,73 +229,73 @@ new.field.type { verbb		 =  VerbB	   }
 new.field.type { verbc		 =  VerbC	   }
 
 
-crossref.map {["inbook","bookinbook","suppbook"], "bookauthor" = 
-	      ["mvbook","book"],"author"
+crossref.map {{inbook bookinbook suppbook}  bookauthor = 
+	      {mvbook book} author
 }
 
-crossref.map {["book","inbook","bookinbook","suppbook"], "maintitle" = 
-	      "mvbook","title"
+crossref.map {{book inbook bookinbook suppbook}  maintitle = 
+	      mvbook title
 }
-crossref.map {["book","inbook","bookinbook","suppbook"], "mainsubtitle" = 
-	      "mvbook","subtitle"
+crossref.map {{book inbook bookinbook suppbook}  mainsubtitle = 
+	      mvbook subtitle
 }
-crossref.map {["book","inbook","bookinbook","suppbook"], "maintitleaddon" = 
-	      "mvbook","titleaddon"
-}
-
-crossref.map {["collection","reference","incollection","inreference","suppollection"], "maintitle" = 
-	      ["mvcollection","mvreference"],"title"
-}
-crossref.map {["collection","reference","incollection","inreference","suppollection"], "mainsubtitle" = 
-	      ["mvcollection","mvreference"],"subtitle"
-}
-crossref.map {["collection","reference","incollection","inreference","suppollection"], "maintitleaddon" = 
-	      ["mvcollection","mvreference"],"titleaddon"
+crossref.map {{book inbook bookinbook suppbook}  maintitleaddon = 
+	      mvbook titleaddon
 }
 
-crossref.map {["proceedings","inproceedings"], "maintitle" = 
-	      "mvproceedings","title"
+crossref.map {{collection reference incollection inreference suppollection}  maintitle = 
+	      {mvcollection mvreference} title
 }
-crossref.map {["proceedings","inproceedings"], "mainsubtitle" = 
-	      "mvproceedings","subtitle"
+crossref.map {{collection reference incollection inreference suppollection}  mainsubtitle = 
+	      {mvcollection mvreference} subtitle
 }
-crossref.map {["proceedings","inproceedings"], "maintitleaddon" = 
-	      "mvproceedings","titleaddon"
-}
-
-crossref.map {["inbook","bookinbook","suppbook"], "booktitle" = 
-	      "book","title"
-}
-crossref.map {["inbook","bookinbook","suppbook"], "booksubtitle" = 
-	      "book","subtitle"
-}
-crossref.map {["inbook","bookinbook","suppbook"], "booktitleaddon" = 
-	      "book","titleaddon"
+crossref.map {{collection reference incollection inreference suppollection}  maintitleaddon = 
+	      {mvcollection mvreference} titleaddon
 }
 
-crossref.map {["incollection","inreference","suppollection"], "booktitle" = 
-	      ["collection","reference"],"title"
+crossref.map {{proceedings inproceedings}  maintitle = 
+	      mvproceedings title
 }
-crossref.map {["incollection","inreference","suppollection"], "booksubtitle" = 
-	      ["collection","reference"],"subtitle"
+crossref.map {{proceedings inproceedings}  mainsubtitle = 
+	      mvproceedings subtitle
 }
-crossref.map {["incollection","inreference","suppollection"], "booktitleaddon" = 
-	      ["collection","reference"],"titleaddon"
-}
-
-crossref.map {"inproceedings", "booktitle" = 
-	      "proceedings","title"
-}
-crossref.map {"inproceedings", "booksubtitle" = 
-	      "proceedings","subtitle"
-}
-crossref.map {"inproceedings", "booktitleaddon" = 
-	      "proceedings","titleaddon"
+crossref.map {{proceedings inproceedings}  maintitleaddon = 
+	      mvproceedings titleaddon
 }
 
-crossref.map {["article","subperiodical"], "journaltitle" = 
-	      "periodical"],"title"
+crossref.map {{inbook bookinbook suppbook}  booktitle = 
+	      book title
 }
-crossref.map {["article","subperiodical"], "journalsubtitle" = 
-	      "periodical","subtitle"
+crossref.map {{inbook bookinbook suppbook}  booksubtitle = 
+	      book subtitle
+}
+crossref.map {{inbook bookinbook suppbook}  booktitleaddon = 
+	      book titleaddon
+}
+
+crossref.map {{incollection inreference suppollection}  booktitle = 
+	      {collection reference} title
+}
+crossref.map {{incollection inreference suppollection}  booksubtitle = 
+	      {collection reference} subtitle
+}
+crossref.map {{incollection inreference suppollection}  booktitleaddon = 
+	      {collection reference} titleaddon
+}
+
+crossref.map {inproceedings  booktitle = 
+	      proceedings title
+}
+crossref.map {inproceedings  booksubtitle = 
+	      proceedings subtitle
+}
+crossref.map {inproceedings  booktitleaddon = 
+	      proceedings titleaddon
+}
+
+crossref.map {{article subperiodical}  journaltitle = 
+	      periodical} title
+}
+crossref.map {{article subperiodical}  journalsubtitle = 
+	      periodical subtitle
 }
