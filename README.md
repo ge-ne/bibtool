@@ -51,7 +51,7 @@ possibilities of BibTool include
 * Collecting statistics about one or more BibTeX data bases.
 
 
-BibTool  contains a  documentation written  in  LaTeX of  more than 75
+BibTool  contains a  documentation written  in  LaTeX of  more than 80
 pages (and still growing).
 
 BibTool is written  in C and  has  been compiled on  various operating

@@ -36,13 +36,41 @@
 \lstdefinelanguage{BibTeX}{sensitive=false,
   basicstyle=\footnotesize\ttfamily,
   keywordstyle=\bfseries\color{keyword},
-  keywords={@string,@article,@book,@misc,@proceedings,@manual,@modify,@alias,@include},
+  keywords={@string,@article,@book,@misc,@proceedings,@manual,@modify,
+    @alias,@include,@InBook,@XData},
   backgroundcolor=\color{bibtex-bg},
   frame=single,
   framerule=0pt}
 \lstdefinelanguage{BibTool}{sensitive=false,
   basicstyle=\scriptsize\ttfamily,
-  keywordstyle=\bfseries\color{keyword},
+  keywordstyle=\color{keyword}\bfseries,
+  alsoletter=.,%
+  keywords={add.field,apply.alias,apply.modify,apply.include,and,
+    bibtex.env.name,bibtex.search.path,check.double,
+    check.double.delete,check.rule,check.case.sensitive,
+    clear.crossref.map,clear.ignored.words,count.all,count.used,
+    crossref.limit,crossref.map,default.key,delete.field,
+    dir.file.separator,dump.symbols,env.separator,extract.file,
+    extract.regex,expand.macros,expand.crossref,expand.xdata,
+    fmt.inter.name,fmt.name.pre,fmt.name.name,fmt.name.title,
+    fmt.title.title,fmt.et.al,fmt.word.separator,field.type,false,
+    input,ignored.word,ilike,key.generation,key.base,key.format,
+    key.make.alias,key.number.separator,key.expand.macros,like,
+    macro.file,mod,new.entry.type,new.field.type,new.format.type,not,
+    nil,output.file,or,pass.comments,preserve.key.case,preserve.keys,
+    print,print.align.string,print.align.comment,print.align.preamble,
+    print.align.key,print.align,print.all.strings,print.entry.types,
+    print.equal.right,print.braces,print.comma.at.end,
+    print.deleted.prefix,print.deleted.entries,print.indent,
+    print.line.length,print.newline,print.parentheses,
+    print.terminal.comma,print.use.tab,print.wide.equal,quiet,
+    regexp.syntax,rename.field,resource,resource.search.path,
+    rewrite.rule,rewrite.case.sensitive,rewrite.limit,select,
+    select.by.string,select.by.non.string,select.by.string.ignored,
+    select.case.sensitive,select.fields,select.non,select.crossrefs,
+    sort,sort.cased,sort.macros,sort.reverse,sort.order,sort.format,
+    suppress.initial.newline,symbol.type,tex.define,true,verbose,
+    version},
   backgroundcolor=\color{rsc-bg},
   frame=single,
   framerule=0pt}
@@ -63,6 +91,8 @@
   \fcolorbox{sh-border}{sh-bg}{\hspace*{1em}\begin{minipage}{.85\textwidth}
       \texttt{bibtool }\textit{#1}
     \end{minipage}}\smallskip\par\noindent\ignorespaces}
+
+\newcommand\bibLaTeX{Bib\-\LaTeX\index{biblatex@Bib\-\LaTeX}}
 
 \makeatother%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
@@ -208,78 +238,84 @@ utilities emerged to fill the gaps. We will sketch some of them shortly.
 %
 \begin{description}
 \item
-  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/distribs/}{\BibTeX}] is
+  [\href{https://www.ctan.org/pkg/bibtex}{\BibTeX}] is
   a program by Oren Patashnik to select publications used in a \LaTeX{}
   document and format them for inclusion into this document. This program
   should be part of each \TeX{} installation.
+
+\item
+  [\href{https://www.ctan.org/pkg/biber}{biber}] is a program to replace
+  \BibTeX\ when used in combination with
+  \href{https://www.ctan.org/pkg/biblatex/}{\bibLaTeX}
   
 \item
-  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibclean/}{bibclean}]
+  [\href{https://www.ctan.org/pkg/bibclean}{bibclean}]
   is a program by Nelson H.F.~Beebe to pretty-print \BibTeX{} files. It also
   can act as syntax checker. The C sources can be compiled on several systems.
   
 \item
-  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/biblook/}{bibindex/biblook}]
+  [\href{https://www.ctan.org/pkg/biblook}{bibindex/biblook}]
   is a pair of programs by Nelson H.F.~Beebe to generate an index for a
   \BibTeX{} file and use it to perform a fast look-up of certain entries. The
   programs so far run only under UNIX.
     
 \item
-  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibsort/}{bibsort}]
+  [\href{https://www.ctan.org/pkg/bibsort}{bibsort}]
   is a UNIX shell script by Nelson H.F.~Beebe to sort a \BibTeX{} file.
   
 \item
-  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibextract/}{bibextract}]
+  [\href{https://www.ctan.org/pkg/bibextract}{bibextract}]
   is a UNIX shell script by Nelson H.F.~Beebe to extract entries from a
   \BibTeX{} file which are used in a \LaTeX{} document.
     
 \item
-  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/lookbibtex/}{lookbibtex/bibdestringify}]
+  [\href{https://www.ctan.org/pkg/lookbibtex}{lookbibtex/bibdestringify}]
     are Perl scripts by John Heidemann to extract entries from a \BibTeX{}
     file which are used in a \LaTeX{} document and to remove strings from a
     \BibTeX{} file.
     
 \item
-  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibtools/}{bibtools}]
+  [\href{https://www.ctan.org/pkg/bibtools}{bibtools}]
   is a collection of UNIX shell scripts by David Kotz to add and extract
   entries to bibliographic databases. Several small programs are provided to
   perform special tasks.
     
 \item
-  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibview/}{bibview}]
+  [\href{https://www.ctan.org/pkg/bibview}{bibview}]
   is a Perl script by Dana Jacobsen to extract entries from a \BibTeX{} file
   which are used in a \LaTeX{} document.
     
 \item
-  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibcard/}{BibCard}]
+  [\href{https://www.ctan.org/pkg/jabref}{JabRef}]
+  is a graphical front-end to manage \BibTeX\ databases, designed and built to
+  be platform independent.
+  
+\item
+  [\href{https://www.ctan.org/pkg/bibcard}{BibCard}]
   is a program by William C.~Ogden running under X11/xview which provides a
   means to edit bibliographic databases.
   
 \item
-  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/hyperbibtex/}{hyperbibtex}]
-  Something similar for Macintosh computers.
-    
-\item
-  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/xbibtex/}{xbibtex/bibprocess/bibsearch}]
+  [\href{https://www.ctan.org/pkg/xbibtex}{xbibtex/bibprocess/bibsearch}]
   are programs by Nicholas J. Kelly and Christian H. Bischof running under X11
   which provides a means to edit bibliographic databases, add fields to a
   \BibTeX{} file and extract certain entries from a \BibTeX{} file.
     
 \item
-  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/bibview/}{bibview}]
+  [\href{https://www.ctan.org/pkg/bibview}{bibview}]
   is an X11 program by Holger Martin, Peter Urban, and Armin Liebl to search
   in and manipulate \BibTeX{} files. It is similar to BibCard and hyperbibtex.
  
 \item
-  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/tkbibtex/}{tkbibtex}]
+  [\href{https://www.ctan.org/pkg/tkbibtex}{tkbibtex}]
   is a \BibTeX{} file browser with support for editing, searching sorting and
   merging. Written by Peter Corke in Tcl/Tk it runs under Unix and Windows.
 
-\item [\href{http://www.ctan.org/tex-archive/support/bibdb/}{bibdb}] Editor
+\item [\href{https://www.ctan.org/pkg/bibdb}{bibdb}] Editor
   for \BibTeX{} files that runs under Dos and Windows.
   
 \item
-  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/qbibman/}{qbibman}]
+  [\href{https://www.ctan.org/pkg/qbibman}{qbibman}]
   is a graphical user interface by Ralf G\"{o}rtz utilizing \BibTool{} as
   underlying library. It is written in C++ and uses Qt.
       
@@ -291,7 +327,7 @@ utilities emerged to fill the gaps. We will sketch some of them shortly.
   There is also a \BibTeX-Mode for the Emacs-like JED-Editor.
   
 \item
-  [\href{http://www.ctan.org/tex-archive/biblio/bibtex/utils/btOOL/}{btOOL}]
+  [\href{https://www.ctan.org/pkg/btool/}{btOOL}]
   is a Perl library to access \BibTeX{} files. It is implemented in Perl and C
   and has been written by Greg Ward.
   
@@ -665,14 +701,15 @@ crossref fields to the beginning.
 
 
 %------------------------------------------------------------------------------
-\subsection{\BibTool\ for Bib\LaTeX}
+\subsection{\BibTool\ for \bibLaTeX}
 
-\BibTool contais the definitions to cope with \BibTeX\ files prepared for
-Bib\LaTeX. These definitions are contained in the library \file{biblatex.rsc}.
+\BibTool\ contains the definitions to cope with \BibTeX\ files prepared for
+\bibLaTeX. These definitions are contained in the library \file{biblatex.rsc}.
 It can be easily included on the command line:
 
 \sh[r]{biblatex \texttt{-i} in.bib \texttt{-o} out.bib}
 
+Details can be found in section~\ref{lib:biblatex}.
 
 %------------------------------------------------------------------------------
 \section{Interfacing \BibTool{} with Other Programming Languages}
@@ -682,7 +719,7 @@ It can be easily included on the command line:
 prints it in a normalized form which makes it easy for the host programming
 language to parse it and get the information about the entries and fields.
 
-In addition \BibTool{} can already preselect several entries or do other
+In addition \BibTool{} can already pre-select several entries or do other
 useful transformations before the host programming language even sees the
 contents.  Thus it is fairly easy to write a CGI script (e.g.\ in Perl) which
 utilizes \BibTool{} to extract certain entries from a \BibTeX{} data base and
@@ -1906,16 +1943,138 @@ cross-referenced entries:
   \rsc{select.crossrefs} = on
 \end{Resources}
 
-The depth of cross-reference chains can be restricted with the resource
-\rsc{crossref.limit}. This numeric value limits the depth of the
-crossreferences. If the actual depth is greater than this value then the
-cross-referencing is terminated artifically. The default value is 32.
+\subsection{Inheritance and Cross-references}\label{sec:inherit}
+
+\BibTeX\ provides one way to include fields from one entry into another. This
+is accomplished with the help of the \texttt{crossref} field.
+
+\begin{lstlisting}[language=BibTeX]
+@Book{book-entry,
+  bookauthor   = "A. U. Thor",
+  booktitle    = "This is the book title"
+}
+@InBook{in-book-entry,
+   author = {L[eslie] A. Aamport},
+   title = {The Gnats and Gnus Document Preparation System},
+   crossref = {book-entry}
+}
+\end{lstlisting}
+
+Sometimes it is desirable to include the fields referenced via
+\texttt{crossref} and thus avoiding to have referenced entries in the
+bibliography. This can be accomplished with the boolean resource
+\rsc{expand.crossref}. This resource is \texttt{off} by default. This means
+that cross-references left as they are.
+
+The following instruction can be used to turn on the automatic expansion of
+cross-referenced entries:
+
+\begin{Resources}
+  \rsc{expand.crossref} = on
+\end{Resources}
+
+Note that the crossref mechanism implemented in \BibTool\ acts like
+inheritance. This means that fields \emph{not present} in the entry containing
+a \texttt{crossref} field are taken from the referenced entry. If for instance
+the entry and the referenced entry both contain a title filed then the one in
+the entry in not overwritten by one in the referenced entry.
+
+A referenced entry can in turn contain another \texttt{crossref} field. The
+referenced entry is recursively explored. This can lead to infinite
+cross-reference chains when expanding. The depth of cross-reference chains can
+be restricted with the resource \rsc{crossref.limit}. This numeric value
+limits the depth of the cross-references. If the actual depth is greater than
+this value then the cross-referencing is terminated artificially. The default
+value is 32.
 
 \begin{Resources}
   \rsc{crossref.limit} = 42
 \end{Resources}
 
+\bibLaTeX\ \cite{lehmann:biblatex} has introduced a mechanism to modify the
+names of the fields which are included via \texttt{crossref}. This can for
+instance be useful because the standard styles expect a title field of a @Book
+but the same information goes into the booktitle field in an @InBook.
+
+To support this behaviour \BibTool\ contains a mapping which declares which
+name for a field should be substituted when the cross-referencing is expanded.
+It defines which field name to used when the field is expanded from a source
+entry of a type with a certain name into an entry of another type.
+
+This is accomplished with the resource \rsc{crossref.map}. It takes an
+argument with four symbols: source entry type, source field name, target
+entry type, and target field name. This invocation adds a replacement rule to
+the set of rules already present:
+
+\begin{Resources}
+  \rsc{crossref.map} \{source.type source.field target.type target.field\}
+\end{Resources}
+
+The source type and target type need to be defined entry types. Otherwise a
+warning is issued and the new rule is ignored.
+
+To ease the definition of mapping rules the source type and target type can be
+sets of types respectively. Those are enclosed in braces and separated with
+white-space. 
+
+\begin{Resources}
+  \rsc{crossref.map} \{\{source.type$_1$ source.type$_2$\} source.field
+  \{target.type$_1$ target.type$_2$ target.type$_3$\} target.field\}
+\end{Resources}
+
+In such a case each combination with an element of one of the four
+constituents is added as mapping rule.
+
+If a mapping rule exists for one combination of source type, source filed, and
+target type when defining a new rule then the old rule is overwritten. The
+replacement uses the newly defined target field instead.
+
+Initially the set of mapping rules is empty. If some mapping rules have been
+defined they can be cleared with the resource \rsc{clear.crossref.map}. The
+invocation discards all previously defined mapping rules.
+
+\begin{Resources}
+  \rsc{clear.crossref.map} \{\}
+\end{Resources}
+
+\bibLaTeX\ \cite{lehmann:biblatex} knows of an additional inheritance
+mechanism. For this purpose a special entry type \texttt{@XData} can be used.
+This entry carries the fields to be inherited by other entries.
+The inheriting entry contains a field named \texttt{xdata} which contains a
+comma separated list of \texttt{@XData} entries from which it inherits.
+
+\begin{lstlisting}[language=BibTeX]
+@XData{x1,
+  bookauthor   = "A. U. Thor",
+  booktitle    = "This is the book title"
+}
+@XData{aw,
+  publisher    = "Addison-Wesley Publishing",
+  address      = "Reading, Mass."
+}
+@InBook{in-book-entry,
+   author = {L[eslie] A. Aamport},
+   title = {The Gnats and Gnus Document Preparation System},
+   xdata = {x1,aw}
+}
+\end{lstlisting}
+
+\BibTool\ supports this inheritance by taking it into consideration when
+selecting. Similar to the expansion of \texttt{crossref} fields \BibTool\ can
+be asked to expand \texttt{xdata} fields. This can be achieved with the
+boolean resource \rsc{expand.xdata}. This resource is \off\ by default. It can
+be turned on as in the following example:
+
+\begin{Resources}
+  \rsc{expand.xdata} = on
+\end{Resources}
+
+
 \begin{Summary}
+  \Desc{}{\rsc{expand.crossref}=on}{Include the fields for entries references
+  via a \texttt{crossref} field.}
+  \Desc{}{\rsc{expand.xdata}=on}{Include the fields for entries references
+  via an \texttt{xdata} field.}
   \Desc{\opt{x}}{\rsc{extract.file}\{file\}}{Extract the entries from an
     \texttt{aux} file.}
   \Desc{}{\rsc{extract.regexp}\{expr\}}{Discouraged backward
@@ -1950,7 +2109,7 @@ be enabled using the command line option \opt{f} in the following way:
 
 \sh[f]{format}
 
-This command adds format disjunctively to the formatting instructions already
+This command adds format disjunctivly to the formatting instructions already
 given. The same effect can be achieved with the resource \rsc{key.format}.
 
 \begin{Resources}
@@ -4077,7 +4236,6 @@ print.deleted.entries    = on
 print.entry.types        = "pisnmac"
 print.equal.right        = on
 print.indent             = 2
-print.leading.comma      = off
 print.line.length        = 77
 print.newline            = 1
 print.parentheses        = off
@@ -4089,7 +4247,7 @@ rewrite.limit            = 512
 quiet                    = off
 select.case.sensitive    = off
 select.crossrefs	 = off
-select.field             = "\$key"
+select.fields            = "\$key"
 sort                     = off
 sort.cased               = off
 sort.format              = "\%s(\$key)"\index{s@\%s}
@@ -4098,6 +4256,298 @@ sort.reverse             = off
 suppress.initial.newline = off
 symbol.type              = lower
 verbose                  = off
+\end{lstlisting}
+
+\section{\bibLaTeX\ Support}\label{lib:biblatex}
+
+The resource file \verb|biblatex| contains various definitions for \bibLaTeX.
+
+Entry types for \bibLaTeX{}
+
+\begin{lstlisting}[language=BibTool]
+new.entry.type{Article}
+new.entry.type{Book}
+new.entry.type{MVBook}
+new.entry.type{InBook}
+new.entry.type{BookInBook}
+new.entry.type{SuppBook}
+new.entry.type{Booklet}
+new.entry.type{Collection}
+new.entry.type{MVCollection}
+new.entry.type{InCollection}
+new.entry.type{SuppCollection}
+new.entry.type{Manual}
+new.entry.type{Misc}
+new.entry.type{Online}
+new.entry.type{Patent}
+new.entry.type{Periodical}
+new.entry.type{SuppPeriodical}
+new.entry.type{Proceedings}
+new.entry.type{MVProceedings}
+new.entry.type{Reference}
+new.entry.type{MVReference}
+new.entry.type{Inreference}
+new.entry.type{Report}
+new.entry.type{Set}
+new.entry.type{Thesis}
+new.entry.type{Unpublished}
+new.entry.type{Cdata}
+new.entry.type{CustomA}
+new.entry.type{CustomB}
+new.entry.type{CustomC}
+new.entry.type{CustomD}
+new.entry.type{CustomE}
+new.entry.type{CustomF}
+new.entry.type{Conference}
+new.entry.type{Electronic}
+new.entry.type{MasterThesis}
+new.entry.type{PhdThesis}
+new.entry.type{TechReport}
+new.entry.type{WWW}
+new.entry.type{Artwork}
+new.entry.type{Audio}
+new.entry.type{BibNote}
+new.entry.type{Commentary}
+new.entry.type{Image}
+new.entry.type{Jurisdiction}
+new.entry.type{Legislation}
+new.entry.type{Legal}
+new.entry.type{Letter}
+new.entry.type{Movie}
+new.entry.type{Music}
+new.entry.type{Performance}
+new.entry.type{Review}
+new.entry.type{Software}
+new.entry.type{Standard}
+new.entry.type{Video}
+new.entry.type{XData}
+\end{lstlisting}
+
+Field capitalization for \bibLaTeX{}
+
+\begin{lstlisting}[language=BibTool]
+% special fields
+new.field.type { entryset        = EntrySet        }
+new.field.type { entrysubtype    = EntrySubtype    }
+new.field.type { execute         = Execute         }
+new.field.type { hyphenation     = Hyphenation     }
+new.field.type { keywords        = Keywords        }
+new.field.type { label           = Label           }
+new.field.type { options         = Options         }
+new.field.type { presort         = Presort         }
+new.field.type { shorthand       = Shorthand       }
+new.field.type { sortkey         = SortKey         }
+new.field.type { sortname        = SortName        }
+new.field.type { sorttitle       = SortTitle       }
+new.field.type { sortyear        = SortYear        }
+new.field.type { crossref        = CrossRef        }
+new.field.type { xdata           = XData           }
+new.field.type { xref            = XRef            }
+% data fields
+new.field.type { abstract        = Abstract        }
+new.field.type { addendum        = Addendum        }
+new.field.type { address         = Address         }
+new.field.type { afterword       = Afterword       }
+new.field.type { annotation      = Annotation      }
+new.field.type { annote          = Annote          }
+new.field.type { annotator       = Annotator       }
+new.field.type { author          = Author          }
+new.field.type { authortype      = AuthorType      }
+new.field.type { bookauthor      = BookAuthor      }
+new.field.type { booksubtitle    = BookSubtitle    }
+new.field.type { booktitle       = BookTitle       }
+new.field.type { booktitleaddon  = BookTitleAddOn  }
+new.field.type { chapter         = Chapter         }
+new.field.type { commentator     = Commentator     }
+new.field.type { date            = Date            }
+new.field.type { doi             = DOI             }
+new.field.type { edition         = Edition         }
+new.field.type { editor          = Editor          }
+new.field.type { editora         = EditorA         }
+new.field.type { editorb         = EditorB         }
+new.field.type { editorc         = EditorC         }
+new.field.type { editortype      = EditorType      }
+new.field.type { editoratype     = EditorAType     }
+new.field.type { editorbtype     = EditorBType     }
+new.field.type { editorctype     = EditorCType     }
+new.field.type { eid             = EID             }
+new.field.type { eprint          = EPrint          }
+new.field.type { eprintclass     = EPrintClass     }
+new.field.type { eprinttype      = EPrintType      }
+new.field.type { eventdate       = EventDate       }
+new.field.type { eventtitle      = EventTitle      }
+new.field.type { file            = File            }
+new.field.type { foreword        = Foreword        }
+new.field.type { gender          = Gender          }
+new.field.type { howpublished    = HowPublished    }
+new.field.type { indexsorttitle  = IndexSortTitle  }
+new.field.type { indextitle      = IndexTitle      }
+new.field.type { institution     = Institution     }
+new.field.type { introduction    = Introduction    }
+new.field.type { isan            = ISAN            }
+new.field.type { isbn            = ISBN            }
+new.field.type { ismn            = ISMN            }
+new.field.type { isrn            = ISRN            }
+new.field.type { issn            = ISSN            }
+new.field.type { issue           = Issue           }
+new.field.type { issuetitle      = IssueTitle      }
+new.field.type { issuesubtitle   = IssueSubtitle   }
+new.field.type { iswc            = ISWC            }
+new.field.type { journal         = Journal         }
+new.field.type { journaltitle    = JournalTitle    }
+new.field.type { journalsubtitle = JournalSubtitle }
+new.field.type { language        = Language        }
+new.field.type { library         = Library         }
+new.field.type { location        = Location        }
+new.field.type { bookpagination  = BookPagination  }
+new.field.type { mainsubtitle    = MainSubtitle    }
+new.field.type { maintitle       = MainTitle       }
+new.field.type { maintitleaddon  = MainTitleAddOn  }
+new.field.type { month           = Month           }
+new.field.type { nameaddon       = NameAddOn       }
+new.field.type { note            = Note            }
+new.field.type { number          = Number          }
+new.field.type { organization    = Organization    }
+new.field.type { origlanguage    = OrigLanguage    }
+new.field.type { origlocation    = OrigLocation    }
+new.field.type { origpublisher   = OrigPublisher   }
+new.field.type { origtitle       = OrigTitle       }
+new.field.type { origdate        = OrigDate        }
+new.field.type { pages           = Pages           }
+new.field.type { pagetotal       = PageTotal       }
+new.field.type { pagination      = Pagination      }
+new.field.type { part            = Part            }
+new.field.type { pdf             = PDF             }
+new.field.type { pubstate        = PubState        }
+new.field.type { reprinttitle    = ReprintTitle    }
+new.field.type { holder          = Holder          }
+new.field.type { publisher       = Publisher       }
+new.field.type { school          = School          }
+new.field.type { series          = Series          }
+new.field.type { shortauthor     = ShortAuthor     }
+new.field.type { shorteditor     = ShortEditor     }
+new.field.type { shorthandintro  = ShorthandIntro  }
+new.field.type { shortjournal    = ShortJournal    }
+new.field.type { shortseries     = ShortSeries     }
+new.field.type { shorttitle      = ShortTitle      }
+new.field.type { subtitle        = Subtitle        }
+new.field.type { title           = Title           }
+new.field.type { titleaddon      = TitleAddOn      }
+new.field.type { translator      = Translator      }
+new.field.type { type            = Type            }
+new.field.type { url             = URL             }
+new.field.type { urldate         = URLDate         }
+new.field.type { venue           = Venue           }
+new.field.type { version         = Version         }
+new.field.type { volume          = Volume          }
+new.field.type { volumes         = Volumes         }
+new.field.type { year            = Year            }
+% aliases
+new.field.type { archiveprefix	 =  ArchivePrefix  }
+new.field.type { primaryclass	 =  PrimaryClass   }
+% custom fields
+new.field.type { namea		 =  NameA	   }
+new.field.type { nameb		 =  NameB	   }
+new.field.type { namec		 =  NameC	   }
+new.field.type { nameatype	 =  NameAType	   }
+new.field.type { namebtype	 =  NameBType	   }
+new.field.type { namectype	 =  NameCType	   }
+new.field.type { lista		 =  ListA	   }
+new.field.type { listb		 =  ListB	   }
+new.field.type { listc		 =  ListC	   }
+new.field.type { listd		 =  ListD	   }
+new.field.type { liste		 =  ListE	   }
+new.field.type { listf		 =  ListF	   }
+new.field.type { usera		 =  UserA	   }
+new.field.type { userb		 =  UserB	   }
+new.field.type { userc		 =  UserC	   }
+new.field.type { userd		 =  UserD	   }
+new.field.type { usere		 =  UserE	   }
+new.field.type { userf		 =  UserF	   }
+new.field.type { verba		 =  VerbA	   }
+new.field.type { verbb		 =  VerbB	   }
+new.field.type { verbc		 =  VerbC	   }
+\end{lstlisting}
+
+Cross-reference mappings for \bibLaTeX{}
+
+\begin{lstlisting}[language=BibTool]
+crossref.map {{inbook bookinbook suppbook}  bookauthor = 
+	      {mvbook book} author
+}
+crossref.map {{book inbook bookinbook suppbook}  maintitle = 
+	      mvbook title
+}
+crossref.map {{book inbook bookinbook suppbook}  mainsubtitle = 
+	      mvbook subtitle
+}
+crossref.map {{book inbook bookinbook suppbook}  maintitleaddon = 
+	      mvbook titleaddon
+}
+crossref.map {{collection reference incollection inreference suppollection}
+	      maintitle = 
+	      {mvcollection mvreference} title
+}
+crossref.map {{collection reference incollection inreference suppollection}
+	      mainsubtitle = 
+	      {mvcollection mvreference} subtitle
+}
+crossref.map {{collection reference incollection inreference suppollection}
+	      maintitleaddon = 
+	      {mvcollection mvreference} titleaddon
+}
+crossref.map {{proceedings inproceedings}
+	      maintitle = 
+	      mvproceedings title
+}
+crossref.map {{proceedings inproceedings}
+	      mainsubtitle = 
+	      mvproceedings subtitle
+}
+crossref.map {{proceedings inproceedings}
+	      maintitleaddon = 
+	      mvproceedings titleaddon
+}
+crossref.map {{inbook bookinbook suppbook}
+	      booktitle = 
+	      book title
+}
+crossref.map {{inbook bookinbook suppbook}
+	      booksubtitle = 
+	      book subtitle
+}
+crossref.map {{inbook bookinbook suppbook}
+	      booktitleaddon = 
+	      book titleaddon
+}
+crossref.map {{incollection inreference suppollection}
+	      booktitle = 
+	      {collection reference} title
+}
+crossref.map {{incollection inreference suppollection}
+	      booksubtitle = 
+	      {collection reference} subtitle
+}
+crossref.map {{incollection inreference suppollection}
+	      booktitleaddon = 
+	      {collection reference} titleaddon
+}
+crossref.map {inproceedings  booktitle = 
+	      proceedings title
+}
+crossref.map {inproceedings  booksubtitle = 
+	      proceedings subtitle
+}
+crossref.map {inproceedings  booktitleaddon = 
+	      proceedings titleaddon
+}
+
+crossref.map {{article subperiodical}  journaltitle = 
+	      periodical} title
+}
+crossref.map {{article subperiodical}  journalsubtitle = 
+	      periodical subtitle
+}
 \end{lstlisting}
 
 \section{Useful Translations}
@@ -4129,6 +4579,7 @@ tex.define {\LaTeXe=LaTeX2e}
 tex.define {\BibTeX=BibTeX}
 tex.define {\AMSTeX=AMSTeX}
 \end{lstlisting}
+
 
 \section{Other Resource Files}
 

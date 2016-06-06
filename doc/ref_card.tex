@@ -119,21 +119,8 @@
   \item [-X \ARG{regex}]\ \\
     Extract entries matching \ARG{regex}.
   \end{FlatList}
-  \Section{Libraries}
-  \begin{tabular}{lp{.17\textwidth}}
-  \Lib{check\_y}	& Check the value of the year.\\
-  \Lib{default}		& All default settings.\\
-  \Lib{field}		& Redefine field names.\\
-  \Lib{brace}		& Use braces as delimiters.\\
-  \Lib{improve}		& Apply improvements.\\
-  \Lib{iso2tex}		& Translate ISO\,8859/1 characters.\\
-  \Lib{iso\_def}	& Define ISO\,8859/1 characters for formatting.\\
-  \Lib{month}		& Introduce strings for month names.\\
-  \Lib{opt}		& Remove OPT in field names.\\
-  \Lib{sort\_fld}	& Specify sort order for fields.\\
-  \Lib{tex\_def}	& Define \TeX{} macros for formatting.\\
-  \Lib{biblatex}	& Capitalize fields known to bib\LaTeX.\\
-  \end{tabular}
+  \columnbreak
+
   \Section{General}
   \begin{FlatList}
   \item [resource.search.path  	  = \Arg{dir$_1$:dir$_2$\ldots }]
@@ -145,9 +132,7 @@
   \item [print \Arg{message}]
   \item [quiet			  = \OnOff]
   \item [verbose		  = \OnOff]
-  \item [crossref.limit		  = \Arg{n}]
   \end{FlatList}
-  \columnbreak
   \Section{Reading and Printing}
   \begin{FlatList}
   \item [input \Arg{bib\_file}]
@@ -174,6 +159,7 @@
   \item [symbol.type		  = \ARG{type}]\ \\
     upper, lower, cased
   \end{FlatList}
+  \columnbreak
   \Section{Sorting}
   \begin{FlatList}
   \item [sort = \OnOff]
@@ -221,9 +207,15 @@
   \item [macro.file \Arg{file}]
   \item [print.all.strings = \OnOff]
   \item [expand.macros = \OnOff]
-  \item [expand.crossref = \OnOff]
   \end{FlatList}
-\NewPage
+  \Section{Inheritance}
+  \begin{FlatList}
+  \item [crossref.map = \OnOff]
+  \item [clear.crossref.map \Arg{}]
+  \item [crossref.limit = \Arg{n}]
+  \item [expand.crossref = \OnOff]
+  \item [expand.xdata = \OnOff]
+  \end{FlatList}
   \Section{\BibTeX1.0}
   \begin{FlatList}
   \item [apply.alias = \OnOff]
@@ -236,6 +228,7 @@
   \item [count.all = \OnOff]
   \item [count.used = \OnOff]
   \end{FlatList}
+\NewPage
   \Section{Key Generation}
   \begin{FlatList}
   \item [preserve.keys	 	= \OnOff]
@@ -331,6 +324,23 @@
     test whether the  number of not ignored words is between {\it x}\/
     and {\it y}. 
   \end{FlatList} 
+
+  \columnbreak
+  \Section{Libraries}
+  \begin{tabular}{lp{.17\textwidth}}
+  \Lib{check\_y}	& Check the value of the year.\\
+  \Lib{default}		& All default settings.\\
+  \Lib{field}		& Redefine field names.\\
+  \Lib{brace}		& Use braces as delimiters.\\
+  \Lib{improve}		& Apply improvements.\\
+  \Lib{iso2tex}		& Translate ISO\,8859/1 characters.\\
+  \Lib{iso\_def}	& Define ISO\,8859/1 characters for formatting.\\
+  \Lib{month}		& Introduce strings for month names.\\
+  \Lib{opt}		& Remove OPT in field names.\\
+  \Lib{sort\_fld}	& Specify sort order for fields.\\
+  \Lib{tex\_def}	& Define \TeX{} macros for formatting.\\
+  \Lib{biblatex}	& Define entry types and fields known to bib\-\LaTeX.\\
+  \end{tabular}
 \end{multicols}
 \vfill\vfill\vfill
 \begin{center}\rule{.8\textwidth}{.1pt}\\
