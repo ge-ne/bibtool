@@ -296,13 +296,12 @@ int count_record(rec)				   /*                        */
 { int len = 0;					   /*                        */
   int i;					   /*                        */
   register String *hp;				   /*                        */
-  register String s, t;				   /*                        */
+  register String t;				   /*                        */
  						   /*                        */
   for (i = RecordFree(rec), hp = RecordHeap(rec);  /* visit all fields       */
        i > 0;					   /*			     */
        i -= 2)			   	   	   /*			     */
-  { s	= *hp++;                                   /*                        */
-    t	= *hp++;                                   /*                        */
+  { t	= *hp++;                                   /*                        */
     if (t != StringNULL)			   /*                        */
     { len++; }              			   /*                        */
   }						   /*			     */

@@ -366,7 +366,7 @@ String get_base()				   /*                        */
   { case KEY_BASE_UPPER: return (String)"upper";   /*                        */
     case KEY_BASE_LOWER: return (String)"lower";   /*                        */
     case KEY_BASE_DIGIT: return (String)"digit";   /*                        */
-    default: return "";				   /*                        */
+    default: return (String)"";				   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
