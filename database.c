@@ -395,15 +395,13 @@ static void mark_string(rec, s)			   /*                        */
       default:					   /*                        */
 	if ( is_allowed(*s) )			   /*                        */
 	{ Uchar c;				   /*                        */
-	  String t;				   /*                        */
-	  String mac = s;			   /*                        */
+	  String t = s;				   /*                        */
+	  Symbol mac;			   	   /*                        */
 	  while ( is_allowed(*s) ) s++;		   /*                        */
 	  c = *s;				   /*                        */
 	  *s ='\0';				   /*                        */
-	  t = newString(mac);			   /*                        */
+	  mac = sym_add(t, 0);			   /*                        */
 	  *s = c;				   /*                        */
-	  mac = sym_add(t,0);			   /*                        */
-	  free(t);				   /*                        */
 	  for (r = rec; r; r = NextRecord(r))	   /*                        */
 	  {					   /*                        */
 	    if ( *RecordHeap(r) == mac )	   /*                        */
@@ -509,15 +507,13 @@ static void preprint_string(file, db, strings, rec)/*                        */
 	  default:				   /*                        */
 	    if ( is_allowed(*s) )		   /*                        */
 	    { Uchar c;			   	   /*                        */
-	      String t;				   /*                        */
-	      String mac = s;			   /*                        */
+	      Symbol mac;			   /*                        */
+	      String t = s;			   /*                        */
 	      while ( is_allowed(*s) ) s++;	   /*                        */
 	      c = *s;				   /*                        */
 	      *s ='\0';				   /*                        */
-	      t = newString(mac);		   /*                        */
+	      mac = sym_add(t, 0);		   /*                        */
 	      *s = c;				   /*                        */
-	      mac = sym_add(t,0);		   /*                        */
-	      free(t);				   /*                        */
  						   /*                        */
 	      for (r = strings;			   /*                        */
 		   r != RecordNULL;		   /*                        */

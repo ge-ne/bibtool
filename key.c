@@ -355,7 +355,7 @@ void set_base(value)				   /*			     */
 /*-----------------------------------------------------------------------------
 ** Function:	get_base()
 ** Type:	String
-** Purpose:	
+** Purpose:	Getter for the printable representation of the key_base.
 **		
 ** Arguments:	none
 ** Returns:	
@@ -366,7 +366,7 @@ String get_base()				   /*                        */
   { case KEY_BASE_UPPER: return (String)"upper";   /*                        */
     case KEY_BASE_LOWER: return (String)"lower";   /*                        */
     case KEY_BASE_DIGIT: return (String)"digit";   /*                        */
-    default: return (String)"";				   /*                        */
+    default: return s_empty;			   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
@@ -1885,13 +1885,13 @@ static void eval__special(sb,kn,rec)		   /*			     */
 { String	s;				   /*			     */
   int		missing	= TRUE,		   	   /*			     */
 		fmt;			   	   /*			     */
-  static String	s_author    = StringNULL;	   /*			     */
-  static String	s_editor    = StringNULL;	   /*			     */
-  static String	s_title	    = StringNULL;	   /*			     */
-  static String s_booktitle = StringNULL;	   /*			     */
-  static String	s_key	    = StringNULL;	   /*			     */
+  static Symbol	s_author    = NO_SYMBOL;	   /*			     */
+  static Symbol	s_editor    = NO_SYMBOL;	   /*			     */
+  static Symbol	s_title	    = NO_SYMBOL;	   /*			     */
+  static Symbol s_booktitle = NO_SYMBOL;	   /*			     */
+  static Symbol	s_key	    = NO_SYMBOL;	   /*			     */
 						   /*			     */
-  if ( s_author == StringNULL )		   	   /*			     */
+  if ( s_author == NO_SYMBOL )		   	   /*			     */
   { s_author	= sym_add((String)"author",-1);	   /*			     */
     s_editor	= sym_add((String)"editor",-1);	   /*			     */
     s_title	= sym_add((String)"title",-1);	   /*			     */
@@ -1904,30 +1904,30 @@ static void eval__special(sb,kn,rec)		   /*			     */
   NameStrip(format[fmt]) = NodePost(kn);	   /*                        */
     					   	   /*			     */
   IfGetField(s,s_author)			   /*			     */
-  { fmt_names(sb,s,2,fmt,trans_lower);	   	   /*                        */
+  { fmt_names(sb, s, 2, fmt, trans_lower);	   /*                        */
     missing = FALSE;				   /*			     */
   }						   /*			     */
   else IfGetField(s,s_editor)			   /*			     */
-  { fmt_names(sb,s,2,fmt,trans_lower);	   	   /*                        */
+  { fmt_names(sb, s, 2, fmt, trans_lower);	   /*                        */
     missing = FALSE;				   /*			     */
   }						   /*			     */
 						   /*			     */
   IfGetField(s,s_title)				   /*			     */
-  { (void)sbputs((char*)NameTitleSep,sb);	   /*			     */
-    fmt_title(sb,s,1,0,trans_lower,TRUE,TitleTitleSep);/*		     */
+  { (void)sbputs((char*)NameTitleSep, sb);	   /*			     */
+    fmt_title(sb, s, 1, 0, trans_lower, TRUE, TitleTitleSep);/*		     */
     missing = FALSE;				   /*			     */
   }						   /*			     */
   else IfGetField(s,s_booktitle)		   /*			     */
-       { (void)sbputs((char*)NameTitleSep,sb);	   /*			     */
-    fmt_title(sb,s,1,0,trans_lower,TRUE,TitleTitleSep);/*		     */
+       { (void)sbputs((char*)NameTitleSep, sb);	   /*			     */
+    fmt_title(sb, s, 1, 0, trans_lower, TRUE, TitleTitleSep);/*		     */
     missing = FALSE;				   /*			     */
   }						   /*			     */
 						   /*			     */
   if ( missing )				   /*			     */
   { sbrewind(sb);				   /*			     */
-    IfGetField(s,s_key)				   /*			     */
-    { fmt_title(sb,s,1,0,trans_lower,TRUE,TitleTitleSep); }/*	             */
-    else { (void)sbputs((char*)DefaultKey,sb); }   /*			     */
+    IfGetField(s, s_key)			   /*			     */
+    { fmt_title(sb, s, 1, 0, trans_lower, TRUE, TitleTitleSep); }/*	     */
+    else { (void)sbputs((char*)DefaultKey, sb); }  /*			     */
   }						   /*			     */
 }						   /*------------------------*/
 

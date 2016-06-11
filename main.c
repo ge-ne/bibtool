@@ -785,8 +785,8 @@ static int dbl_check(db, rec)			   /*                        */
     { String k1 = *RecordHeap(rec);		   /*                        */
       String k2 = *RecordHeap(PrevRecord(rec));	   /*                        */
       ErrPrint("*** BibTool WARNING: Possible double entries discovered: \n***\t");
-      if ( k1 == NULL ) k1 = (String) "";	   /*                        */
-      if ( k2 == NULL ) k2 = (String) "";	   /*                        */
+      if ( k1 == NULL ) k1 = s_empty;	   	   /*                        */
+      if ( k2 == NULL ) k2 = s_empty;	   	   /*                        */
       ErrPrint((char*)k2);			   /*                        */
       ErrPrint(" =?= ");			   /*                        */
       ErrPrint((char*)k1);			   /*                        */

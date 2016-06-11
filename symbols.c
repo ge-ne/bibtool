@@ -146,6 +146,7 @@
 
 
 
+ String  s_empty      = (String)"";
  Symbol  sym_empty    = StringNULL;		   /*                        */
  Symbol  sym_crossref = StringNULL;		   /*                        */
  Symbol  sym_xdata    = StringNULL;		   /*                        */
@@ -253,7 +254,7 @@ void init_symbols()				   /*			     */
 						   /*			     */
   if ( sym_empty != NULL ) return;		   /*                        */
   for ( i = 0; i < HASHMAX; i++ ) sym_tab[i] = NULL;/*			     */
-  sym_empty    = sym_add(newString(""),-1);        /*                        */
+  sym_empty    = sym_add(newString(""), -1);	   /*                        */
   sym_crossref = sym_add(newString("crossref"),-1);/*                        */
   sym_xref     = sym_add(newString("xref"),-1);	   /*                        */
   sym_xdata    = sym_add(newString("xdata"),-1);   /*                        */
@@ -272,7 +273,7 @@ int sym_flag(s)					   /*			     */
   Symbol s;					   /*                        */
 {						   /*                        */
   if ( last_stp == NULL || SymbolName(last_stp) != s )/*                     */
-  { s = sym_add(s,0); }				   /*                        */
+  { s = sym_add(s, 0); }			   /*                        */
   return SymbolFlags(last_stp);		   	   /*			     */
 }						   /*------------------------*/
 
@@ -341,14 +342,14 @@ Symbol sym_add(s, count)			   /*			     */
       return SymbolName(*stp);			   /*			     */
     }						   /*			     */
   }						   /*			     */
-  if ( count >= 0 )				   /*                        */
-  { s = newString(s); }		   	   	   /*			     */
+ 						   /*                        */
+  if ( count >= 0 ) { s = newString(s); }	   /*			     */
+ 						   /*                        */
   *stp	   = new_string_tab(s,count<0?0:count,0);  /*			     */
   last_stp = *stp;				   /*			     */
   SymbolUsed(*stp)++;				   /*                        */
   if ( count < 0 )				   /*                        */
-  { SymbolFlags(*stp) ^= SYMBOL_STATIC;		   /*                        */
-  }	   					   /*			     */
+  { SymbolFlags(*stp) ^= SYMBOL_STATIC; }	   /*			     */
   return SymbolName(*stp);			   /*			     */
 }						   /*------------------------*/
 

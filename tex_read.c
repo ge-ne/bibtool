@@ -952,12 +952,16 @@ int TeX_read(cp, sp)				   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function*:	new_string()
-** Purpose:	
-**		
+** Purpose:	Allocate a space for a string and copy the argument
+**		there. Note this is just a new copy of the memory not
+**		a symbol!
 **
+**		If no more memory is available then an error is raised
+**		and the program is terminated.
 ** Arguments:
-**	s
-** Returns:	
+**	s	String to duplicate
+** Returns:	Pointer to newly allocated memory containing a
+**		duplicate of the argument string.
 **___________________________________________________			     */
 static char * new_string(s)			   /*			     */
   register char * s;				   /*			     */

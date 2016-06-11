@@ -91,6 +91,8 @@ typedef String Symbol;
 
 #define SYMBOL_STATIC	1
 
+extern String s_empty;
+
 /*-----------------------------------------------------------------------------
 ** Variable:	sym_empty
 ** Type:	String 
