@@ -358,15 +358,15 @@ int expand_crossref(db, rec)		   	   /*                        */
       t++;				   	   /*			     */
       (void)sp_open(t);				   /* Try to extract	     */
  						   /*                        */
-      if (sp_expect(&t, "}", 0) ) return FALSE;	   /*                        */
+      if (sp_expect(&t, (String)"}", 0) ) return FALSE;	   /*                        */
       for (;;)					   /*                        */
       { if ((s = SParseSymbol(&t)) == NULL)	   /*                        */
 	{ return TRUE; }			   /*                        */
  						   /*                        */
 	insert_record(db, rec, hp, s, "XData");	   /*                        */
  						   /*                        */
-	if (sp_expect(&t, "}", 0) ) break;	   /*                        */
-	sp_expect(&t, ",", 1);			   /*                        */
+	if (sp_expect(&t, (String)"}", 0) ) break;	   /*                        */
+	sp_expect(&t, (String)",", 1);			   /*                        */
       }						   /*                        */
     }						   /*                        */
   }						   /*                        */

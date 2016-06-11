@@ -52,7 +52,7 @@
 /*---------------------------------------------------------------------------*/
 
 #define Error(E,S,A,B)	\
-  if(E) error(ERR_ERROR|ERR_POINT,A,(String)B,(String)0,sp_line,(String)S,0,(char*)0)
+  if(E) error(ERR_ERROR|ERR_POINT,(String)A,(String)B,(String)0,sp_line,(String)S,0,(char*)0)
 
  static String   unexpected = (String)"Unexpected ";/*                       */
  static String   expected   = (String)" expected.";/*                        */

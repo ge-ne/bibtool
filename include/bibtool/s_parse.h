@@ -57,6 +57,6 @@
  String s_parse _ARG((int type, String *sp, int errp));/* s_parse.c          */
  int sp_open _ARG((String  s));			   /* s_parse.c              */
  void sp_close _ARG((void));			   /* s_parse.c              */
- int sp_expect _ARG((String*sp, String expect, int vaerbose));/* s_parse.c   */
+ int sp_expect _ARG((String *sp, String expect, int vaerbose));/* s_parse.c   */
  String* sp_symbols _ARG((String *sp));		   /* s_parse.c              */
 
