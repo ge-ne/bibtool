@@ -237,8 +237,7 @@ Symbol map_get(s_rec, s_fld, d_rec)		   /*                        */
 **___________________________________________________			     */
 void crossref_map(spec)				   /*                        */
   String spec;				   	   /*			     */
-{ String s;					   /*                        */
-  String *src, *dest;				   /*                        */
+{ String *src, *dest;				   /*                        */
   String src_field, dest_field;			   /*                        */
   String *sp, *dp;				   /*                        */
  						   /*                        */
@@ -320,7 +319,7 @@ int expand_crossref(db, rec)		   	   /*                        */
   Record rec;					   /*                        */
 { register String *hp;				   /*			     */
   register int    i;				   /*                        */
-  String	  t, s, ms;			   /*			     */
+  String	  t, s;			   /*			     */
   Record          r	= rec;			   /*                        */
   int             limit	= rsc_xref_limit;	   /*                        */
   String xdata 		= (rsc_expand_xdata ? sym_xdata : NONE);/*           */
