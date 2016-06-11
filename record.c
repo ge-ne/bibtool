@@ -322,23 +322,24 @@ int count_record(rec)				   /*                        */
 **	t	Right hand side of the equation.
 ** Returns:	nothing
 **___________________________________________________			     */
-void push_to_record(rec,s,t)			   /*			     */
+void push_to_record(rec, s, t)			   /*			     */
   register Record rec;				   /*                        */
-  register String s;				   /*			     */
-  register String t;				   /*			     */
+  register Symbol s;				   /*			     */
+  register Symbol t;				   /*			     */
 { register int i;		   		   /*			     */
    						   /*                        */
-  if ( s == sym_crossref || s == sym_xdata )	   /*                        */
+  if (s == sym_crossref || s == sym_xdata)	   /*                        */
   { SetRecordXREF(rec); } 			   /*			     */
  						   /*                        */
-  for (i = 2; i < RecordFree(rec); i += 2 )	   /* search the field       */
-  { if ( RecordHeap(rec)[i] == s )		   /* if found then          */
-    { RecordHeap(rec)[i+1] = t;			   /* overwrite the value    */
+  for (i = 2; i < RecordFree(rec); i += 2)	   /* search the field       */
+  { if (RecordHeap(rec)[i] == s)		   /* if found then          */
+    { sym_unlink(RecordHeap(rec)[i + 1]);	   /*                        */
+      RecordHeap(rec)[i + 1] = t;		   /* overwrite the value    */
       return;					   /*                        */
     }   					   /*                        */
   }						   /*                        */
-  for (i = 2; i < RecordFree(rec); i += 2 )	   /* search empty field     */
-  { if ( RecordHeap(rec)[i] == StringNULL )	   /* if found then          */
+  for (i = 2; i < RecordFree(rec); i += 2)	   /* search empty field     */
+  { if (RecordHeap(rec)[i] == NO_SYMBOL)	   /* if found then          */
     { RecordHeap(rec)[i++] = s;			   /* add the new item       */
       RecordHeap(rec)[i]   = t;			   /*                        */
       return;					   /*                        */
@@ -376,13 +377,12 @@ void provide_to_record(rec,s,t)			   /*			     */
   register String t;				   /*			     */
 { register int i;		   		   /*			     */
    						   /*                        */
-  if ( s == sym_crossref || s == sym_xdata )	   /*                        */
+  if (s == sym_crossref || s == sym_xdata)	   /*                        */
   { SetRecordXREF(rec); } 			   /*			     */
  						   /*                        */
   for (i = 2; i < RecordFree(rec); i += 2 )	   /* search the field       */
   { if ( RecordHeap(rec)[i] == s )		   /* if found then          */
-    { return;					   /*  done                  */
-    }   					   /*                        */
+    { return; }					   /*  done                  */
   }						   /*                        */
   for (i = 2; i < RecordFree(rec); i += 2 )	   /* search empty field     */
   { if ( RecordHeap(rec)[i] == StringNULL )	   /* if found then          */

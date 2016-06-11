@@ -2393,7 +2393,7 @@ int set_field(db,rec,name,value)		   /*			     */
   DB db;					   /*                        */
   register Record rec;				   /*			     */
   String	  name;			   	   /*			     */
-  String	  	  value;		   /*			     */
+  String	  value;		   	   /*			     */
 { 						   /*                        */
   POSSIBLY_UNUSED(db);				   /*                        */
 						   /*			     */

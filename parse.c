@@ -467,8 +467,8 @@ static int parse_symbol(alpha)			   /*			     */
   register String cp;				   /*			     */
 						   /*			     */
   c = GetC;					   /*                        */
-  cp = flp-1;			   	   	   /*			     */
   if ( alpha && (! is_alpha(c)) )		   /*			     */
+  cp = flp-1;			   	   	   /*			     */
   { Warning("Symbol does not start with a letter");/*                        */
   }		   				   /*			     */
   while ( is_allowed(CurrentC) ) { SkipC; }	   /*			     */
@@ -529,8 +529,8 @@ static void parse_number()			   /*			     */
   register String cp;				   /*			     */
 						   /*			     */
   cp = flp;				   	   /*                        */
-  while ( is_digit(CurrentC) ) { SkipC; }	   /*			     */
   c = CurrentC;					   /*                        */
+  while ( is_digit(CurrentC) ) { SkipC; }	   /*			     */
   CurrentC = '\0';			   	   /*			     */
   push_string(symbol(cp));			   /*                        */
   CurrentC = c;		   			   /*			     */
@@ -681,14 +681,14 @@ static int parse_equation(rec)		   	   /*			     */
   Record rec;					   /*                        */
 { String s, t;				   	   /*			     */
 						   /*			     */
-  ExpectSymbol(TRUE,FALSE);			   /*			     */
-  Expect('=',FALSE);				   /*			     */
+  ExpectSymbol(TRUE, FALSE);			   /*			     */
+  Expect('=', FALSE);				   /*			     */
   ExpectRhs(FALSE);				   /*			     */
 						   /*			     */
   t = pop_string();				   /*			     */
   s = pop_string();				   /*			     */
-  push_to_record(rec,s,t);			   /*			     */
-  return(TRUE);					   /*			     */
+  push_to_record(rec, s, t);			   /*			     */
+  return TRUE;					   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -715,7 +715,7 @@ int parse_bib(rec)				   /*			     */
 { register int type,				   /*			     */
 	       n,				   /*			     */
 	       c,				   /*			     */
-	       om;				   /*			     */
+	       again;				   /*			     */
   long	       ignored = 0L;			   /*			     */
   char         *name;				   /*                        */
   int          line;				   /*                        */
@@ -746,26 +746,26 @@ int parse_bib(rec)				   /*			     */
 	sbrewind(comment_sb);			   /*                        */
 	return(BIB_COMMENT);		   	   /*			     */
       }						   /*                        */
-      if ( !is_space(c) ) ++ignored;		   /*			     */
-      if ( ignored > 0 && rsc_pass_comment )	   /*			     */
+      if (!is_space(c)) ++ignored;		   /*			     */
+      if (ignored > 0 && rsc_pass_comment)	   /*			     */
       { sbputchar(c,comment_sb); }		   /*			     */
     }						   /*			     */
     						   /*			     */
     if ( ignored != 0L )			   /*			     */
-    { if ( rsc_pass_comment )			   /*                        */
+    { if (rsc_pass_comment)			   /*                        */
       { sbputchar('\n',comment_sb); }	   	   /*			     */
       else					   /*			     */
       { (void)sprintf(buffer,"%ld",ignored);	   /*			     */
-	error(ERR_WARN|ERR_FILE,(String)buffer,	   /*			     */
+	error(ERR_WARN|ERR_FILE, (String)buffer,   /*			     */
 	      (String)" non-space characters ignored.",/*		     */
-	      StringNULL,StringNULL,StringNULL,	   /*			     */
-	      flno,filename);			   /*			     */
+	      StringNULL, StringNULL, StringNULL,  /*			     */
+	      flno, filename);			   /*			     */
       }						   /*			     */
     }						   /*			     */
 						   /*			     */
     if ( (type=find_entry_type(flp)) == BIB_NOOP ) /*		             */
     { Error("Unknown entry type");		   /*                        */
-      return(BIB_NOOP);				   /*                        */
+      return BIB_NOOP;				   /*                        */
     }						   /*		             */
     flp += strlen((char*)EntryName(type));	   /*			     */
  						   /*                        */
@@ -789,16 +789,16 @@ int parse_bib(rec)				   /*			     */
   { case BIB_COMMENT:				   /* This code is not used  */
       UnGetC; 					   /*  any more.             */
       (void)parse_rhs();			   /*                        */
-      push_to_record(rec,pop_string(),StringNULL);  /*			     */
+      push_to_record(rec, pop_string(), NO_SYMBOL);/*			     */
       return type;				   /*                        */
  						   /*                        */
     case BIB_PREAMBLE:				   /*			     */
       ExpectRhs(BIB_NOOP);			   /*			     */
-      push_to_record(rec,pop_string(),StringNULL);  /*			     */
+      push_to_record(rec, pop_string(), NO_SYMBOL);/*			     */
       break;					   /*			     */
 						   /*			     */
     case BIB_STRING:				   /*			     */
-      ExpectEqMac(rec,BIB_NOOP);		   /*			     */
+      ExpectEqMac(rec, BIB_NOOP);		   /*			     */
       break;					   /*			     */
 						   /*			     */
     case BIB_ALIAS:				   /*			     */
@@ -807,25 +807,25 @@ int parse_bib(rec)				   /*			     */
 						   /*			     */
     case BIB_INCLUDE:				   /*			     */
       ExpectRhs(BIB_NOOP);			   /*			     */
-      push_to_record(rec,pop_string(),StringNULL);  /*			     */
+      push_to_record(rec, pop_string(), NO_SYMBOL);/*			     */
       break;					   /*			     */
 						   /*			     */
     case BIB_MODIFY:				   /*			     */
     default:					   /*			     */
       if ( TestC == ',' )			   /*			     */
       { Warning("Missing reference key");	   /*			     */
-	push_to_record(rec,sym_empty,StringNULL);   /*			     */
+	push_to_record(rec, sym_empty, NO_SYMBOL); /*			     */
 	(void)GetC;				   /*			     */
       }						   /*			     */
       else					   /*			     */
-      { ExpectKey(FALSE,BIB_NOOP);		   /*			     */
-	Expect(',',BIB_NOOP);			   /*			     */
-	push_to_record(rec,pop_string(),StringNULL); /*			     */
+      { ExpectKey(FALSE, BIB_NOOP);		   /*			     */
+	Expect(',', BIB_NOOP);			   /*			     */
+	push_to_record(rec, pop_string(), NO_SYMBOL);/*			     */
       }						   /*			     */
 						   /*			     */
       do					   /*			     */
-      { ExpectEq(rec,BIB_NOOP);			   /*			     */
-	for( n=0; GetC==','; n++)		   /*			     */
+      { ExpectEq(rec, BIB_NOOP);		   /*			     */
+	for (n = 0; GetC == ','; n++)		   /*			     */
 	{ if ( n == 1 )				   /*			     */
 	  { Warning("Multiple ',' ignored."); }	   /*			     */
 	}					   /*			     */
@@ -833,12 +833,12 @@ int parse_bib(rec)				   /*			     */
 	switch (TestC)				   /*                        */
 	{ case EOF:				   /*                        */
 	  case '}':				   /*                        */
-	  case ')': om = FALSE; break;		   /*                        */
-	  default:  om = TRUE;			   /*                        */
-	    if ( n == 0 )			   /*			     */
+	  case ')': again = FALSE; break;	   /*                        */
+	  default:  again = TRUE;		   /*                        */
+	    if (n == 0)			   	   /*			     */
 	    { Warning("Missing ',' assumed."); }   /*			     */
 	}					   /*                        */
-      } while ( om );				   /*			     */
+      } while (again);				   /*			     */
   }						   /*			     */
 						   /*			     */
   switch ( GetC )				   /*			     */
@@ -851,10 +851,10 @@ int parse_bib(rec)				   /*			     */
       { Warning("Parenthesis '{' closed by ')'"); }/*			     */
       break;					   /*			     */
     case EOF:					   /*                        */
-      { char *s;				   /*                        */
-        if (c == '{') { s = "'{'"; }		   /*                        */
-	else          { s = "'('"; } 		   /*                        */
-	error(ERR_ERROR|ERR_FILE,(String)s,	   /*                        */
+      { String s;				   /*                        */
+        if (c == '{') { s = (String)"'{'"; }	   /*                        */
+	else          { s = (String)"'('"; }	   /*                        */
+	error(ERR_ERROR|ERR_FILE, s,	   	   /*                        */
 	      (String)" not closed at end of file.",/*                       */
 	      StringNULL,StringNULL,StringNULL,	   /*			     */
 	      line,name);			   /*			     */
@@ -870,7 +870,7 @@ int parse_bib(rec)				   /*			     */
 	      StringNULL,StringNULL,StringNULL,	   /*			     */
 	      line,name);			   /*			     */
       }						   /*                        */
-      return(BIB_NOOP);				   /*			     */
+      return BIB_NOOP;				   /*			     */
   }						   /*			     */
  						   /*                        */
   { char *s, *t;				   /*                        */
@@ -880,7 +880,7 @@ int parse_bib(rec)				   /*			     */
     if ( *t ) RecordComment(rec) = (String)symbol((String)t);/*              */
   }						   /*                        */
   sbrewind(comment_sb);				   /*                        */
-  return(type);					   /*			     */
+  return type;					   /*			     */
 }						   /*------------------------*/
 
 

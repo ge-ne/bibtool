@@ -131,8 +131,8 @@
  void sym_dump _ARG((void));			   /* symbols.c              */
 #endif
  void sym_gc _ARG((void));			   /* symbols.c              */
- void sym_set_flag _ARG((String s, int flags));	   /* symbols.c              */
- void sym_unlink _ARG((String s));		   /* symbols.c              */
+ void sym_set_flag _ARG((Symbol s, int flags));	   /* symbols.c              */
+ void sym_unlink _ARG((Symbol s));		   /* symbols.c              */
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -371,7 +371,7 @@ void sym_unlink(s)				   /*			     */
   register Symbol    s;			   	   /*			     */
 { register StringTab st;			   /*			     */
 						   /*			     */
-  if ( s == NULL ) return;		   	   /* ignore dummies.	     */
+  if (s == NO_SYMBOL) return;		   	   /* ignore dummies.	     */
  						   /*                        */
   for ( st = sym_tab[hashindex(s)];		   /*			     */
         st != NULL;		   		   /*			     */
