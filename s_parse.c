@@ -43,7 +43,7 @@
  String  s_parse _ARG((int type,String *sp,int errp));/* s_parse.c           */
  int sp_open _ARG((String  s));			   /* s_parse.c              */
  void sp_close _ARG((void));			   /* s_parse.c              */
- int sp_expect _ARG((String*sp, String expect, int vaerbose));/* s_parse.c   */
+ int sp_expect _ARG((String*sp, String expect, int verbose));/* s_parse.c    */
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -88,6 +88,25 @@ int sp_open(s)					   /*                        */
 void sp_close()					   /*                        */
 {						   /*                        */
   sp_line = StringNULL;				   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	sp_skip()
+** Type:	Uchar
+** Purpose:	
+**		
+** Arguments:
+**	sp	
+** Returns:	
+**___________________________________________________			     */
+String sp_skip(sp)				   /*                        */
+  register String *sp;				   /*                        */
+{ register String s = *sp;			   /*                        */
+  while(   is_space(*s) 			   /*                        */
+	   || *s == '='			   	   /*                        */
+	   || *s == '#'    ) s++;		   /*                        */
+  *sp = s;					   /*                        */
+  return s;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -162,8 +181,7 @@ String s_parse(type, sp, errp)			   /*                        */
   Uchar           c;				   /*                        */
   String	  cp;				   /*                        */
  						   /*                        */
-  DebugPrint2((type == StringParseSkip ? "ParseSkip ":
-	       type == StringParseNext ? "ParseNext ":
+  DebugPrint2((type == StringParseNext ? "ParseNext ":
 	       type == StringParseNumber ? "ParseNumber ":
 	       type == StringParseSymbol ? "ParseSymbol ":
 	       type == StringParseString ? "ParseString ":
@@ -253,13 +271,6 @@ String s_parse(type, sp, errp)			   /*                        */
       }						   /*                        */
       break;					   /*                        */
  						   /*                        */
-    case StringParseSkip:			   /*                        */
-      while(   is_space(*s) 			   /*                        */
-	    || *s == '='			   /*                        */
-	    || *s == '#'    ) s++;		   /*                        */
-      *sp = s;					   /*                        */
-      return s;					   /*                        */
- 						   /*                        */
     case StringParseValue:			   /*                        */
       switch ( *s )				   /*                        */
       { case '"':				   /*                        */
@@ -299,7 +310,7 @@ String s_parse(type, sp, errp)			   /*                        */
   { (void)lower(cp); }				   /*                        */
  						   /*                        */
   { Symbol sym = symbol(cp);			   /*                        */
-    free(cp);					   /*                        */
+    (void)free(cp);				   /*                        */
     return sym;					   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
@@ -323,7 +334,7 @@ int sp_expect(sp, expect, verbose)		   /*                        */
 {						   /*                        */
   while( is_space(**sp) ) (*sp)++;		   /*                        */
  						   /*                        */
-  for ( ;*expect; expect++)			   /*                        */
+  for ( ; *expect; expect++)			   /*                        */
   { if (*expect != **sp)			   /*                        */
     { if (verbose)				   /*                        */
       { Error(1, *sp, expect, expected); }	   /*                        */
@@ -365,9 +376,9 @@ String* sp_symbols(sp)				   /*                        */
       if ((s=SParseSymbol(sp)) == StringNULL) {	   /*                        */
 	return (String*)NULL;			   /*                        */
       }						   /*                        */
-      if (i >= n - 1)
-      { n += 4;
-	a = (String*)realloc(a, n * sizeof(String));
+      if (i >= n - 1)				   /*                        */
+      { n += 4;					   /*                        */
+	a = (String*)realloc(a, n * sizeof(String));/*                       */
 	if (a == NULL) { OUT_OF_MEMORY("symbols"); }/*                       */
       }						   /*                        */
       a[i++] = s;				   /*                        */

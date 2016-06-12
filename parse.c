@@ -467,8 +467,8 @@ static int parse_symbol(alpha)			   /*			     */
   register String cp;				   /*			     */
 						   /*			     */
   c = GetC;					   /*                        */
-  if ( alpha && (! is_alpha(c)) )		   /*			     */
   cp = flp-1;			   	   	   /*			     */
+  if ( alpha && (! is_alpha(c)) )		   /*			     */
   { Warning("Symbol does not start with a letter");/*                        */
   }		   				   /*			     */
   while ( is_allowed(CurrentC) ) { SkipC; }	   /*			     */
@@ -529,8 +529,8 @@ static void parse_number()			   /*			     */
   register String cp;				   /*			     */
 						   /*			     */
   cp = flp;				   	   /*                        */
-  c = CurrentC;					   /*                        */
   while ( is_digit(CurrentC) ) { SkipC; }	   /*			     */
+  c = CurrentC;					   /*                        */
   CurrentC = '\0';			   	   /*			     */
   push_string(symbol(cp));			   /*                        */
   CurrentC = c;		   			   /*			     */
@@ -758,7 +758,7 @@ int parse_bib(rec)				   /*			     */
       { (void)sprintf(buffer,"%ld",ignored);	   /*			     */
 	error(ERR_WARN|ERR_FILE, (String)buffer,   /*			     */
 	      (String)" non-space characters ignored.",/*		     */
-	      StringNULL, StringNULL, StringNULL,  /*			     */
+	      StringNULL,StringNULL,StringNULL,	   /*			     */
 	      flno, filename);			   /*			     */
       }						   /*			     */
     }						   /*			     */

@@ -227,13 +227,29 @@ Symbol map_get(s_rec, s_fld, d_rec)		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	skip()
+** Type:	static int
+** Purpose:	
+**		
+** Arguments:
+**	sp	
+** Returns:	0
+**___________________________________________________			     */
+static int skip(sp)				   /*                        */
+  String *sp;				   	   /*			     */
+{						   /*                        */
+  (void)SParseSkip(sp);				   /*                        */
+  return 0;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	crossref_map()
 ** Type:	int
 ** Purpose:	
 **		
 ** Arguments:
 **	spec	the argument
-** Returns:	
+** Returns:	nothing
 **___________________________________________________			     */
 void crossref_map(spec)				   /*                        */
   String spec;				   	   /*			     */
@@ -243,11 +259,11 @@ void crossref_map(spec)				   /*                        */
  						   /*                        */
   (void)sp_open(spec);				   /*                        */
   if ((src        = sp_symbols(&spec))   == NULL ||/*                        */
-      SParseSkip(&spec)	== 0 ||			   /*                        */
+      skip(&spec) ||		   		   /*                        */
       (src_field  = SParseSymbol(&spec)) == NULL ||/*                        */
-      SParseSkip(&spec)	== 0 ||			   /*                        */
+      skip(&spec) ||		   		   /*                        */
       (dest       = sp_symbols(&spec))   == NULL ||/*                        */
-      SParseSkip(&spec)	== 0 ||			   /*                        */
+      skip(&spec) ||		   		   /*                        */
       (dest_field = SParseSymbol(&spec)) == NULL ||/*                        */
       SParseEOS(&spec) != NULL			   /*                        */
      )						   /*                        */
@@ -319,7 +335,7 @@ int expand_crossref(db, rec)		   	   /*                        */
   Record rec;					   /*                        */
 { register String *hp;				   /*			     */
   register int    i;				   /*                        */
-  String	  t, s;			   /*			     */
+  String	  t, s;			   	   /*			     */
   Record          r	= rec;			   /*                        */
   int             limit	= rsc_xref_limit;	   /*                        */
   String xdata 		= (rsc_expand_xdata ? sym_xdata : NONE);/*           */
@@ -357,15 +373,15 @@ int expand_crossref(db, rec)		   	   /*                        */
       t++;				   	   /*			     */
       (void)sp_open(t);				   /* Try to extract	     */
  						   /*                        */
-      if (sp_expect(&t, (String)"}", 0) ) return FALSE;	   /*                        */
+      if (sp_expect(&t, (String)"}", 0) ) return FALSE;/*                    */
       for (;;)					   /*                        */
       { if ((s = SParseSymbol(&t)) == NULL)	   /*                        */
 	{ return TRUE; }			   /*                        */
  						   /*                        */
 	insert_record(db, rec, hp, s, "XData");	   /*                        */
  						   /*                        */
-	if (sp_expect(&t, (String)"}", 0) ) break;	   /*                        */
-	sp_expect(&t, (String)",", 1);			   /*                        */
+	if (sp_expect(&t, (String)"}", 0) ) break; /*                        */
+	sp_expect(&t, (String)",", 1);		   /*                        */
       }						   /*                        */
     }						   /*                        */
   }						   /*                        */

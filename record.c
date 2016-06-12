@@ -499,7 +499,7 @@ void add_sort_order(val)			   /*                        */
       wlp = &NextWord(*wlp);			   /*                        */
     }						   /*                        */
     else break;					   /*                        */
-    SParseSkip(&val);				   /*                        */
+    (void)SParseSkip(&val);			   /*                        */
   }						   /*                        */
   						   /*                        */
   wl   = *wlp;					   /*                        */

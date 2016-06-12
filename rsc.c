@@ -258,22 +258,22 @@ static int test_true(s)				   /*			     */
 **___________________________________________________			     */
 int use_rsc(s)					   /*			     */
   String	  s;				   /*			     */
-{ register String name,				   /*			     */
+{ register Symbol name,				   /*			     */
 		  value;			   /*			     */
 						   /*			     */
   (void)sp_open(s);				   /*			     */
-  if ( (name = SParseSymbol(&s)) == NULL ) return 1; /*			     */
+  if ((name = SParseSymbol(&s)) == NULL) return 1; /*			     */
 						   /*			     */
   (void)SParseSkip(&s);				   /*                        */
 						   /*			     */
-  if ( (value = SParseValue(&s)) == NULL )	   /*                        */
+  if ((value = SParseValue(&s)) == NULL)	   /*                        */
   { ReleaseSymbol(name);			   /*                        */
     return 1; 					   /*			     */
   }						   /*                        */
 						   /*			     */
-  if ( r_v == NULL ) { init_rsc(); }		   /*			     */
+  if (r_v == NULL) { init_rsc(); }		   /*			     */
 						   /*			     */
-  return set_rsc(name,value);			   /*                        */
+  return set_rsc(name, value);			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

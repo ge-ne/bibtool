@@ -308,9 +308,9 @@ void sym_set_flag(s,flags)			   /*			     */
 **		is added to the symbol table and the use count is
 **		initialized to |count|. A negative value for |count|
 **		indicates that a static symbol is requested. A static
-**		symbol will never bee deleted from the symbol
-**		table. Static can be used at places where one does not
-**		care about the memory occupied.
+**		symbol will never be deleted from the symbol table.
+**		Static can be used at places where one does not care
+**		about the memory occupied.
 **
 **		If no more memory is available then an error is raised
 **		and the program is terminated.

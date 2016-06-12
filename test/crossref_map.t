@@ -260,8 +260,10 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name => 'crossref_map_1',
-    resource    => 'crossref.map {{abc} # def = {xyz} ttt}',
-    resource    => 'expand.crossref=true',
+    resource    => <<__EOF__,
+crossref.map {{book} # def = {article} ttt}
+expand.crossref=true
+__EOF__
     bib		=> <<__EOF__,
 \@Manual{	  bibtool,
   title		= {BibTool},
