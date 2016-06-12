@@ -65,7 +65,7 @@ CTANFILES =	README.md		\
 		doc/ref_card.pdf	\
 		doc/c_lib.pdf
 
-LATEX	=	pdflatex
+LATEX	=	lualatex
 
 lint:
 	gcc  $(C_FLAGS) $(REGEX_DEF) $(DONT_LINK) -ansi -W -Wall -O2 ${CFILES}
