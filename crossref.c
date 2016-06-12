@@ -55,13 +55,13 @@
 
 /*---------------------------------------------------------------------------*/
 
- typedef struct mAP
- { int src_rec;
-   String src_field;
-   int dest_rec;
-   String dest_field;
-   struct mAP * next_map;
- } *Map, SMap;
+ typedef struct mAP				   /*                        */
+ { int src_rec;					   /*source record type index*/
+   Symbol src_field;				   /*                        */
+   int dest_rec;				   /*target record type index*/
+   Symbol dest_field;				   /*                        */
+   struct mAP * next_map;			   /*                        */
+ } *Map, SMap;					   /*                        */
 
 #define SourceRecord(M)      ((M)->src_rec)
 #define SourceField(M)       ((M)->src_field)
@@ -72,14 +72,13 @@
 /*-----------------------------------------------------------------------------
 ** Function:	new_map()
 ** Type:	Map
-** Purpose:	
-**		
+** Purpose:	allocate a new Map structure
 ** Arguments:
-**	sr	
-**	sf	
-**	dr	
-**	df	
-** Returns:	
+**	sr	source record type index
+**	sf	source field name
+**	dr	destination record type index
+**	df	destination field name
+** Returns:	the new map
 **___________________________________________________			     */
 static Map new_map(sr,sf,dr,df)			   /*                        */
   int sr;					   /*                        */
@@ -101,30 +100,29 @@ static Map new_map(sr,sf,dr,df)			   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	free_map()
 ** Type:	static void
-** Purpose:	
-**		
+** Purpose:	Free a chain of map structures
 ** Arguments:
-**	m	
+**	m	the map
 ** Returns:	nothing
 **___________________________________________________			     */
 static void free_map(m)				   /*                        */
   Map m;					   /*                        */
 { Map nxt;					   /*                        */
   while (m)					   /*                        */
-  { nxt = NextMap(m);
-    (void)free(m);
-    m = nxt;
+  { nxt = NextMap(m);				   /*                        */
+    (void)free(m);				   /*                        */
+    m = nxt;					   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
 #define MAP_SIZE 101
 
-static Map map[MAP_SIZE];
+ static Map map[MAP_SIZE];			   /*                        */
 
-#define MAP_INDEX(SR,SF,DR)			\
-	(int)(((((long)SR) % 31) +		\
-	       (((long)DR) % 37)*16 +		\
-	       (((long)SF) % 1023)) % MAP_SIZE);
+#define MAP_INDEX(SR,SF,DR)				\
+  (int)((((SR) % 31) +					\
+	 (((int)(DR & 0xfff)) % 37) * 4 +		\
+	 ((SF) % 1023)) % MAP_SIZE);
 
 /*-----------------------------------------------------------------------------
 ** Function:	clear_map()
@@ -184,9 +182,9 @@ void map_add(s_rec,s_fld,d_rec,d_fld)		   /*                        */
   }
 
   for (;;)
-  { if (  SourceRecord(m)      == s_idx &&
-	  SourceField(m)       == s_fld &&
-	  DestinationRecord(m) == d_idx )
+  { if ( SourceRecord(m)      == s_idx &&
+	 SourceField(m)       == s_fld &&
+	 DestinationRecord(m) == d_idx )
     { DestinationField(m) = d_fld;
       return;					   /*                        */
     }		   				   /*                        */
