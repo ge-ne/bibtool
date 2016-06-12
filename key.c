@@ -2387,6 +2387,7 @@ String get_field(db,rec,name)		   	   /*			     */
 ** Arguments:
 **	rec	Record to receive the value.
 **	name	Field name to add.
+**	value	the new value
 ** Returns:	|0| if the asignment has succeeded.
 **___________________________________________________			     */
 int set_field(db,rec,name,value)		   /*			     */

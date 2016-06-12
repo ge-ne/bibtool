@@ -32,6 +32,7 @@
 #ifndef RecordNULL
 
 #include <bibtool/type.h>
+#include <bibtool/symbols.h>
 #include <bibtool/wordlist.h>
 
 /*-----------------------------------------------------------------------------
@@ -65,7 +66,7 @@ typedef struct rECORD				/*                           */
     String	*rc_heap;			/* The heap.                 */
     String	rc_comment;			/* The comment following     */
  						/*  the given record.        */
-    String	rc_source;			/* The source of the record. */
+    Symbol	rc_source;			/* The source of the record. */
  						/*  I.e. the file name it    */
  						/*  has been read from.      */
     struct rECORD *rc_next;			/* Pointer to the next       */

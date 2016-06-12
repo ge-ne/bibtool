@@ -168,11 +168,11 @@ void map_add(s_rec,s_fld,d_rec,d_fld)		   /*                        */
     return;					   /*                        */
   }						   /*                        */
  						   /*                        */
-  for (;;)
-  { if ( SourceRecord(m)      == s_rec &&
-	 SourceField(m)       == s_fld &&
-	 DestinationRecord(m) == d_rec )
-    { DestinationField(m) = d_fld;
+  for (;;)					   /*                        */
+  { if ( SourceRecord(m)      == s_rec &&	   /*                        */
+	 SourceField(m)       == s_fld &&	   /*                        */
+	 DestinationRecord(m) == d_rec )	   /*                        */
+    { DestinationField(m) = d_fld;		   /*                        */
       return;					   /*                        */
     }		   				   /*                        */
     if (NextMap(m) == NULL )			   /*                        */
@@ -186,7 +186,7 @@ void map_add(s_rec,s_fld,d_rec,d_fld)		   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	map_get()
-** Type:	String
+** Type:	Symbol
 ** Purpose:	
 **		
 ** Arguments:
@@ -213,11 +213,10 @@ Symbol map_get(s_rec, s_fld, d_rec)		   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	skip()
-** Type:	static int
-** Purpose:	
-**		
+** Type:	int
+** Purpose:	Advance a string position as long as it points to whitespace.
 ** Arguments:
-**	sp	
+**	sp	Pointer to the String position to be advanced
 ** Returns:	0
 **___________________________________________________			     */
 static int skip(sp)				   /*                        */
@@ -291,7 +290,8 @@ void crossref_map(spec)				   /*                        */
 **	db	the database
 **	rec	the record
 **	hp	the heap pointer
-**	s	
+**	s	the string
+**	msg	the message
 ** Returns:	
 **___________________________________________________			     */
 static int insert_record(db,rec,hp,s, msg)	   /*                        */
@@ -304,7 +304,7 @@ static int insert_record(db,rec,hp,s, msg)	   /*                        */
   String t, ms;					   /*                        */
   int i;					   /*                        */
  						   /*                        */
-  if ( (r = db_find(db, s)) == (Record)NULL )	   /*			     */
+  if ( (r = db_find(db, s)) == RecordNULL )	   /*			     */
   { ERROR3(msg," entry not found: ",(char*)s); 	   /*		             */
     return FALSE;				   /*			     */
   }						   /*			     */
@@ -339,8 +339,8 @@ int expand_crossref(db, rec)		   	   /*                        */
   String	  t, s;			   	   /*			     */
   Record          r	= rec;			   /*                        */
   int             limit	= rsc_xref_limit;	   /*                        */
-  String xdata 		= (rsc_expand_xdata ? sym_xdata : NONE);/*           */
-  String crossref	= (rsc_expand_crossref ? sym_crossref : NONE);/*     */
+  Symbol xdata 		= (rsc_expand_xdata ? sym_xdata : NONE);/*           */
+  Symbol crossref	= (rsc_expand_crossref ? sym_crossref : NONE);/*     */
  						   /*                        */
   DebugPrint1("expand_crossref");		   /*                        */
  						   /*                        */
