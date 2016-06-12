@@ -120,9 +120,9 @@ static void free_map(m)				   /*                        */
  static Map map[MAP_SIZE];			   /*                        */
 
 #define MAP_INDEX(SR,SF,DR)				\
-  (int)((((SR) % 31) +					\
-	 (((int)(DR & 0xfff)) % 37) * 4 +		\
-	 ((SF) % 1023)) % MAP_SIZE);
+  (int)((((SR) % 73) +					\
+	 ((long)(SF) & 0xfff) +				\
+	 ((DR) % 1023)) % MAP_SIZE);
 
 /*-----------------------------------------------------------------------------
 ** Function:	clear_map()
@@ -144,47 +144,34 @@ void clear_map()				   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	map_add()
 ** Type:	int
-** Purpose:	
+** Purpose:	Add or overwrite a filed name mapping.
 **		
 ** Arguments:
-**	s_rec	
-**	s_fld	
-**	d_rec	
-**	d_fld	
-** Returns:	
+**	s_rec	the index of the source record type
+**	s_fld	the source field name
+**	d_rec	the index of the destination record type
+**	d_fld	the destination field name
+** Returns:	nothing
 **___________________________________________________			     */
 void map_add(s_rec,s_fld,d_rec,d_fld)		   /*                        */
-  Symbol s_rec;					   /*                        */
+  int s_rec;					   /*                        */
   Symbol s_fld;					   /*                        */
-  Symbol d_rec;					   /*                        */
+  int d_rec;					   /*                        */
   Symbol d_fld;					   /*                        */
-{ int s_idx = find_entry_type(s_rec);		   /*                        */
-  int d_idx = find_entry_type(d_rec);		   /*                        */
-  int idx;					   /*                        */
+{ int idx;					   /*                        */
   Map m;					   /*                        */
  						   /*                        */
-  if (s_idx == BIB_NOOP)			   /*                        */
-  { WARNING3("Unknown entry type `", s_rec,	   /*                        */
-	     "'. Mapping ignored.");		   /*                        */
+  idx = MAP_INDEX(s_rec, s_fld, d_rec);		   /*                        */
+  m = map[idx];					   /*                        */
+  if (m == NULL )				   /*                        */
+  { map[idx] = new_map(s_rec, s_fld, d_rec, d_fld);/*                        */
     return;					   /*                        */
   }						   /*                        */
-  if (d_idx == BIB_NOOP)			   /*                        */
-  { WARNING3("Unknown entry type `", d_rec,	   /*                        */
-	     "'. Mapping ignored.");		   /*                        */
-    return;					   /*                        */
-  }						   /*                        */
-
-  idx = MAP_INDEX(s_idx, s_fld, d_idx);
-  m = map[idx];
-  if (m == NULL )
-  { map[idx] = new_map(s_idx, s_fld, d_idx, d_fld);
-    return;
-  }
-
+ 						   /*                        */
   for (;;)
-  { if ( SourceRecord(m)      == s_idx &&
+  { if ( SourceRecord(m)      == s_rec &&
 	 SourceField(m)       == s_fld &&
-	 DestinationRecord(m) == d_idx )
+	 DestinationRecord(m) == d_rec )
     { DestinationField(m) = d_fld;
       return;					   /*                        */
     }		   				   /*                        */
@@ -254,6 +241,7 @@ void crossref_map(spec)				   /*                        */
 { String *src, *dest;				   /*                        */
   String src_field, dest_field;			   /*                        */
   String *sp, *dp;				   /*                        */
+  int s_rec, d_rec;				   /*                        */
  						   /*                        */
   (void)sp_open(spec);				   /*                        */
   if ((src        = sp_symbols(&spec))   == NULL ||/*                        */
@@ -269,8 +257,23 @@ void crossref_map(spec)				   /*                        */
   sp_close();					   /*                        */
  						   /*                        */
   for (sp = src; *sp; sp++)			   /*                        */
-  { for (dp = dest; *dp; dp++)			   /*                        */
-    { map_add(*sp, src_field, *dp, dest_field); }  /*                        */
+  { s_rec = find_entry_type(*sp);		   /*                        */
+    if (s_rec == BIB_NOOP)			   /*                        */
+    { WARNING3("Unknown source entry type `", *sp, /*                        */
+	       "'. Mapping ignored.");		   /*                        */
+      continue;					   /*                        */
+    }						   /*                        */
+ 
+    for (dp = dest; *dp; dp++)			   /*                        */
+    { d_rec = find_entry_type(*dp);		   /*                        */
+      if (d_rec == BIB_NOOP)			   /*                        */
+      { WARNING3("Unknown destination entry type `", *dp,/*                  */
+		 "'. Mapping ignored.");	   /*                        */
+	continue;				   /*                        */
+      }						   /*                        */
+ 						   /*                        */
+      map_add(s_rec, src_field, d_rec, dest_field);/*                        */
+    }  						   /*                        */
   }						   /*                        */
  						   /*                        */
   (void)free(src);				   /*                        */
