@@ -245,7 +245,7 @@ BUnit::run(name => 'crossref_map_err_30',
     resource 	      => 'crossref.map {{abc} def {xyz} ghi}',
     expected_err      => <<__EOF__,
 
-*** BibTool WARNING: Unknown entry type \`abc\'. Mapping ignored.
+*** BibTool WARNING: Unknown source entry type \`abc\'. Mapping ignored.
 __EOF__
     expected_out => '' );
 
@@ -254,7 +254,7 @@ BUnit::run(name => 'crossref_map_err_31',
     resource 	      => 'crossref.map {{book} def {xyz} ghi}',
     expected_err      => <<__EOF__,
 
-*** BibTool WARNING: Unknown entry type \`xyz\'. Mapping ignored.
+*** BibTool WARNING: Unknown destination entry type \`xyz\'. Mapping ignored.
 __EOF__
     expected_out => '' );
 
