@@ -1077,7 +1077,7 @@ void db_sort(db,less)				   /*                        */
 **___________________________________________________			     */
 String db_string(db, s, localp)			   /*                        */
   DB     db;					   /*                        */
-  String s;					   /*                        */
+  Symbol s;					   /*                        */
   int    localp;				   /*                        */
 { Record rec;					   /*                        */
  						   /*                        */
@@ -1095,7 +1095,7 @@ String db_string(db, s, localp)			   /*                        */
     }						   /*                        */
   }						   /*                        */
   						   /*                        */
-  return (localp?NULL:look_macro(s,0));		   /*                        */
+  return (localp ? NULL : look_macro(s, 0));	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

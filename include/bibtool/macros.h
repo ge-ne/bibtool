@@ -105,7 +105,7 @@
 #else
 #define _ARG(A) ()
 #endif
- Macro new_macro _ARG((String name,String val,Macro next,int count));/* macros.c*/
+ Macro new_macro _ARG((Symbol name,Symbol val,Macro next,int cnt));/*macros.c*/
  String  get_item _ARG((String  name,int type));   /* macros.c               */
  String  get_key_name _ARG((String s));		   /* macros.c               */
  String  look_macro _ARG((String name,int add));   /* macros.c               */

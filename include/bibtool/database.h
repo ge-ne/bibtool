@@ -164,7 +164,7 @@
  Record db_find _ARG((DB db, String key));
  Record db_search _ARG((DB db, String key));
  String  db_new_key _ARG((DB db, String key));
- String  db_string _ARG((DB db, String s, int localp));
+ String  db_string _ARG((DB db, Symbol s, int localp));
  int *db_count _ARG((DB db,int *lp));
  int read_db _ARG((DB db,String file, int verbose));
 void db_insert _ARG((DB db,Record rec, int verbose));

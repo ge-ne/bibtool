@@ -55,8 +55,8 @@
 ** Returns:	The new |Macro|.
 **___________________________________________________			     */
 Macro new_macro(name, value, next, count)	   /*                        */
-  String	 name;				   /*                        */
-  String	 value;				   /*                        */
+  Symbol	 name;				   /*                        */
+  Symbol	 value;				   /*                        */
   int		 count;				   /*                        */
   Macro          next;				   /*                        */
 { register Macro macro;				   /*                        */
