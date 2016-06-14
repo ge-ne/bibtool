@@ -95,7 +95,7 @@ extern String s_empty;
 
 /*-----------------------------------------------------------------------------
 ** Variable:	sym_empty
-** Type:	String 
+** Type:	Symbol 
 ** Purpose:	The empty symbol. This is a symbol pointing
 **		immediately to a |\0| byte.  This needs
 **		|init_symbols()| to be called first.
@@ -104,7 +104,7 @@ extern String s_empty;
 
 /*-----------------------------------------------------------------------------
 ** Variable:	sym_crossref
-** Type:	String
+** Type:	Symbol
 ** Purpose:	The symbol |crossref|. This variable needs
 **		|init_symbols()| to be called first.
 **___________________________________________________			     */
@@ -112,7 +112,7 @@ extern String s_empty;
 
 /*-----------------------------------------------------------------------------
 ** Variable:	sym_xref
-** Type:	String
+** Type:	Symbol
 ** Purpose:	The symbol |xref|. This variable needs
 **		|init_symbols()| to be called first.
 **___________________________________________________			     */
@@ -120,17 +120,24 @@ extern String s_empty;
 
 /*-----------------------------------------------------------------------------
 ** Variable:	sym_xdata
-** Type:	String
+** Type:	Symbol
 ** Purpose:	The symbol |xdata|. This variable needs
 **		|init_symbols()| to be called first.
 **___________________________________________________			     */
  extern Symbol sym_xdata;
 
 /*-----------------------------------------------------------------------------
+** Variable:	sym_space
+** Type:	Symbol
+** Purpose:	The symbol with a single space character. This variable needs
+**		|init_symbols()| to be called first.
+**___________________________________________________			     */
+ extern Symbol sym_space;
+
+/*-----------------------------------------------------------------------------
 ** Macro:	newString()
 ** Type:	String
-** Purpose:	
-**		
+** Purpose:	Create a copy of a given String.
 ** Arguments:
 **	S	the source of the bytes	
 ** Returns:	a newly allocated byte array containing the content of
@@ -144,7 +151,7 @@ extern String s_empty;
 #define _ARG(A) ()
 #endif
  Symbol  sym_add _ARG((String s,int count));	   /* symbols.c              */
- Symbol  sym_extract _ARG((String ap,String ep,int count));/* symbols.c      */
+ Symbol  sym_extract _ARG((String *sp,int lowercase));/* symbols.c           */
  char * new_string _ARG((char * s));		   /* symbols.c              */
  int sym_flag _ARG((Symbol  s));		   /* symbols.c              */
  void init_symbols _ARG((void));		   /* symbols.c              */

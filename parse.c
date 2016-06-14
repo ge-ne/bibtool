@@ -491,6 +491,7 @@ static int parse_key(alpha)			   /*			     */
   register int   alpha;				   /*			     */
 { register Uchar c;				   /*			     */
   register String cp;			   	   /*			     */
+  Symbol name;					   /*                        */
 						   /*			     */
   c  = GetC;					   /*                        */
   cp = flp - 1;			   		   /*			     */
@@ -503,15 +504,15 @@ static int parse_key(alpha)			   /*			     */
   c = CurrentC;					   /*                        */
   CurrentC = '\0';		   		   /*			     */
   if ( rsc_key_case )				   /*                        */
-  { String s;					   /*                        */
-    s  = symbol(cp);				   /*                        */
-    cp = symbol(lower(cp));			   /*                        */
-    save_key(cp,s);				   /*                        */
+  { Symbol val;					   /*                        */
+    val  = symbol(cp);				   /*                        */
+    name = symbol(lower(cp));			   /*                        */
+    save_key(name, val);			   /*                        */
   }						   /*                        */
   else						   /*                        */
-  { cp = symbol(lower(cp));			   /*                        */
+  { name = symbol(lower(cp));			   /*                        */
   }						   /*                        */
-  push_string(cp);			   	   /*			     */
+  push_string(name);			   	   /*			     */
   CurrentC = c;					   /*			     */
   return TRUE;					   /*			     */
 }						   /*------------------------*/

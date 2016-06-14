@@ -219,32 +219,28 @@ static int expand(s, sb, brace, first, q_open, q_close, db)/*                */
 	  s++;					   /*                        */
 	}					   /*                        */
         else		   			   /* Only macros are left.  */
-	{ String sym = (String)s;	   	   /*                        */
-	  String val;			   	   /*                        */
-	  Uchar  c;			   	   /*                        */
+	{ String t = (String)s;	   	   	   /*                        */
+	  String val;				   /*                        */
+	  Symbol sym = sym_extract(&t, FALSE);	   /*                        */
  						   /*                        */
           DebugPrint2("Start symbol: ",s);	   /*                        */
-	  while ( is_allowed(*s) ) ++s;		   /*                        */
-	  c = *s; *s = '\0';			   /*                        */
-	  { String sym_copy =			   /*                        */
-	      (String)malloc(strlen((char*)sym)+1);/* Copy of sym            */
-	    if (sym_copy == StringNULL )	   /* Allocate memory        */
-	    { OUT_OF_MEMORY("expand string"); }	   /* Upon failure exit.     */
-	    (void)strcpy((char*)sym_copy,(char*)sym);/* Save sym             */
-	    *s = c;				   /* Restore end mark       */
-	    sym = symbol(sym_copy);		   /* Intern the symbol.     */
-	    free((char*)sym_copy);		   /* Free the temp. memory  */
-	  }					   /*                        */
-	  val = db_string(db,sym,1);	   	   /*                        */
+	  val = db_string(db, sym, 1); 		   /*                        */
 	  if ( val )			   	   /*                        */
-	  { brace = expand(val,sb,brace,first,q_open,q_close,db); }/*        */
+	  { brace = expand(val,			   /*                        */
+			   sb,			   /*                        */
+			   brace,		   /*                        */
+			   first,		   /*                        */
+			   q_open,		   /*                        */
+			   q_close,		   /*                        */
+			   db); }		   /*                        */
 	  else					   /*                        */
 	  { if ( !brace ) PUTS(q_close,sb);	   /*                        */
 	    if ( !first ) PUTS(" # ",sb);  	   /*                        */
-	    PUTS(sym,sb);		   	   /*                        */
+	    PUTS(sym, sb);		   	   /*                        */
 	    brace = TRUE;			   /*                        */
 	    first = FALSE;			   /*                        */
 	  }					   /*                        */
+	  s = t;				   /*                        */
 	}	   				   /*                        */
     }    					   /*                        */
   }						   /*                        */

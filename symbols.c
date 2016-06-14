@@ -148,6 +148,7 @@
 
  String  s_empty      = (String)"";
  Symbol  sym_empty    = StringNULL;		   /*                        */
+ Symbol  sym_space    = StringNULL;		   /*                        */
  Symbol  sym_crossref = StringNULL;		   /*                        */
  Symbol  sym_xdata    = StringNULL;		   /*                        */
  Symbol  sym_xref     = StringNULL;		   /*                        */
@@ -253,8 +254,11 @@ void init_symbols()				   /*			     */
 { register int i;				   /*			     */
 						   /*			     */
   if ( sym_empty != NULL ) return;		   /*                        */
+ 						   /*                        */
   for ( i = 0; i < HASHMAX; i++ ) sym_tab[i] = NULL;/*			     */
+ 						   /*                        */
   sym_empty    = sym_add(newString(""), -1);	   /*                        */
+  sym_space    = sym_add(newString(" "), -1);	   /*                        */
   sym_crossref = sym_add(newString("crossref"),-1);/*                        */
   sym_xref     = sym_add(newString("xref"),-1);	   /*                        */
   sym_xdata    = sym_add(newString("xdata"),-1);   /*                        */
@@ -327,7 +331,7 @@ Symbol sym_add(s, count)			   /*			     */
   register int	     count;			   /*			     */
 { register StringTab *stp;			   /*			     */
 						   /*			     */
-  if ( s == StringNULL ) return NO_SYMBOL;	   /* ignore dummies.	     */
+  if (s == StringNULL) return NO_SYMBOL;	   /* ignore dummies.	     */
  						   /*                        */
   for ( stp = &sym_tab[hashindex(s)];		   /*			     */
        *stp != NULL;		   		   /*			     */
@@ -343,12 +347,14 @@ Symbol sym_add(s, count)			   /*			     */
     }						   /*			     */
   }						   /*			     */
  						   /*                        */
-  if ( count >= 0 ) { s = newString(s); }	   /*			     */
+  if (count >= 0) { s = newString(s); }	   	   /*			     */
  						   /*                        */
-  *stp	   = new_string_tab(s,count<0?0:count,0);  /*			     */
+  *stp = new_string_tab(count < 0 ? newString(s) : s,/*                      */
+			count < 0 ? 0 : count, 	   /*                        */
+			0);  		   	   /*			     */
   last_stp = *stp;				   /*			     */
   SymbolUsed(*stp)++;				   /*                        */
-  if ( count < 0 )				   /*                        */
+  if (count < 0)				   /*                        */
   { SymbolFlags(*stp) ^= SYMBOL_STATIC; }	   /*			     */
   return SymbolName(*stp);			   /*			     */
 }						   /*------------------------*/
@@ -426,29 +432,34 @@ void sym_gc()					   /*                        */
   }						   /*			     */
 }						   /*------------------------*/
 
-#ifdef New
 /*-----------------------------------------------------------------------------
-** Function*:	sym_extract()
+** Function:	sym_extract()
 ** Purpose:	Extract a symbol from a string.
 ** Arguments:
-**	ap
-**	ep
-**	count
+**	sp	pointer to the string
+**	lowercase	indicate that lowering is requested
 ** Returns:	
 **___________________________________________________			     */
-String  sym_extract(ap,ep,count)		   /*			     */
-  register String ap;				   /* pointer to first char  */
-  register String ep;				   /* pointer after last char*/
-  register int	count;				   /*			     */
+Symbol  sym_extract(sp, lowercase)		   /*			     */
+  register String *sp;				   /* pointer to first char  */
+  int lowercase;				   /*                        */
 { Uchar c;					   /*			     */
+  String t = *sp;				   /*                        */
+  Symbol sym;					   /*                        */
 						   /*			     */
-  c   = *ep;					   /*			     */
-  *ep = '\0';					   /*			     */
-  ap  = sym_add(ap, count < 0 ? 0 : count);	   /*			     */
-  *ep = c;					   /*			     */
-  return ap;					   /*			     */
+  while ( is_allowed(**sp) ) (*sp)++;		   /*                        */
+  c    = **sp;					   /*			     */
+  **sp = '\0';					   /*			     */
+  if (lowercase)				   /*                        */
+  { t	= lower(newString(t));	   		   /*                        */
+    sym	= sym_add(t, 1);		   	   /*			     */
+    (void)free((void *)t);			   /*                        */
+  } else {					   /*                        */
+    sym  = sym_add(t, 1);			   /*			     */
+  }						   /*                        */
+  **sp = c;					   /*			     */
+  return sym;					   /*			     */
 }						   /*------------------------*/
-#endif
 
 #ifdef SYMBOL_DUMP
 /*-----------------------------------------------------------------------------

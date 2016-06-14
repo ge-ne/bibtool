@@ -220,11 +220,9 @@ void set_name_format(nodep,s)			   /*                        */
 	   pre,				   	   /*                        */
 	   post;				   /*                        */
   Uchar	   c;					   /*                        */
-  String   space;				   /*                        */
   char     buffer[256];				   /*                        */
 #define UseBuffer(S) strcpy(buffer,S); s = buffer
  						   /*                        */
-  space = symbol(" ");				   /*                        */
   free_name_node(*nodep);			   /*                        */
   *nodep = NameNULL;				   /*                        */
  						   /*                        */
@@ -253,7 +251,7 @@ void set_name_format(nodep,s)			   /*                        */
  						   /*                        */
     pre   = ++s;				   /*                        */
     type  = NoName;				   /*                        */
-    mid   = space;				   /*                        */
+    mid   = sym_space;				   /*                        */
     strip = 1;					   /*                        */
     for ( n = 1 ; n > 0; ++s )			   /*                        */
     { switch (*s)				   /*                        */

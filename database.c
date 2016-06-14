@@ -357,7 +357,7 @@ int read_db(db, file, verbose)		   	   /*                        */
 **		
 ** Arguments:
 **	rec	the record
-**	s	
+**	s	the string
 ** Returns:	nothing
 **___________________________________________________			     */
 static void mark_string(rec, s)			   /*                        */
@@ -394,19 +394,11 @@ static void mark_string(rec, s)			   /*                        */
 	break;					   /*                        */
       default:					   /*                        */
 	if ( is_allowed(*s) )			   /*                        */
-	{ Uchar c;				   /*                        */
-	  String t = s;				   /*                        */
-	  Symbol mac;			   	   /*                        */
-	  while ( is_allowed(*s) ) s++;		   /*                        */
-	  c = *s;				   /*                        */
-	  *s ='\0';				   /*                        */
-	  mac = sym_add(t, 0);			   /*                        */
-	  *s = c;				   /*                        */
+	{ Symbol mac = sym_extract(&s, FALSE);	   /*                        */
+ 						   /*                        */
 	  for (r = rec; r; r = NextRecord(r))	   /*                        */
-	  {					   /*                        */
-	    if ( *RecordHeap(r) == mac )	   /*                        */
-	    {					   /*                        */
-	      SetRecordMARK(r);			   /*                        */
+	  { if ( *RecordHeap(r) == mac )	   /*                        */
+	    { SetRecordMARK(r);			   /*                        */
 	      break;		   		   /*                        */
 	    }					   /*                        */
 	  }					   /*                        */
@@ -506,23 +498,14 @@ static void preprint_string(file, db, strings, rec)/*                        */
 	    break;				   /*                        */
 	  default:				   /*                        */
 	    if ( is_allowed(*s) )		   /*                        */
-	    { Uchar c;			   	   /*                        */
-	      Symbol mac;			   /*                        */
-	      String t = s;			   /*                        */
-	      while ( is_allowed(*s) ) s++;	   /*                        */
-	      c = *s;				   /*                        */
-	      *s ='\0';				   /*                        */
-	      mac = sym_add(t, 0);		   /*                        */
-	      *s = c;				   /*                        */
+	    { Symbol mac = sym_extract(&s, FALSE); /*                        */
  						   /*                        */
 	      for (r = strings;			   /*                        */
 		   r != RecordNULL;		   /*                        */
 		   r = NextRecord(r) )		   /*                        */
-	      {					   /*                        */
-		if ( *RecordHeap(r) == mac &&	   /*                        */
+	      { if ( *RecordHeap(r) == mac &&	   /*                        */
 		     RecordIsMARKED(r) )	   /*                        */
-	        {				   /*                        */
-		  ClearRecordMARK(r);		   /*                        */
+	        { ClearRecordMARK(r);		   /*                        */
 		  fput_record(file,r,db,(String)"@");/*                      */
  						   /*                        */
 		  preprint_string(file,		   /*                        */

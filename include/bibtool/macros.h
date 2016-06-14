@@ -109,7 +109,7 @@
  String  get_item _ARG((String  name,int type));   /* macros.c               */
  String  get_key_name _ARG((String s));		   /* macros.c               */
  String  look_macro _ARG((String name,int add));   /* macros.c               */
- int def_macro _ARG((String name,String val,int count));/* macros.c          */
+ int def_macro _ARG((Symbol name,Symbol val,int count));/* macros.c          */
  void def_field_type _ARG((String  s));		   /* macros.c               */
  void dump_mac _ARG((char *fname,int allp));	   /* macros.c               */
  int each_macro _ARG((Macro m,int (*fct)(String,String)));/* macros.c        */

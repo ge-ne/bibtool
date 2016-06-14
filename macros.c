@@ -103,13 +103,10 @@ void free_macro(mac)				   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 int def_macro(name, val, count)			   /*                        */
-  String	 name;			   	   /*                        */
-  String	 val;				   /*                        */
+  Symbol	 name;			   	   /*                        */
+  Symbol	 val;				   /*                        */
   int		 count;				   /*                        */
 { register Macro *mp;				   /*                        */
- 						   /*                        */
-  name = symbol(name);				   /*                        */
-  if (val) val  = symbol(val);			   /*                        */
  						   /*                        */
   for (mp   = &macros;				   /*                        */
        *mp != MacroNULL;			   /*                        */
@@ -120,7 +117,7 @@ int def_macro(name, val, count)			   /*                        */
       else					   /*                        */
       { Macro mac = *mp;			   /*                        */
         *mp = NextMacro(*mp);			   /*                        */
-	free(mac);				   /*                        */
+	(void)free(mac);			   /*                        */
       }						   /*                        */
       return 1;					   /*                        */
     }						   /*                        */
@@ -164,7 +161,7 @@ String  look_macro(name, add)			   /*                        */
     }						   /*                        */
   }						   /*                        */
   if (add >= 0)					   /*                        */
-  { def_macro(name,sym_empty,add);		   /*                        */
+  { def_macro(name, sym_empty, add);		   /*                        */
     WARNING3("Macro '",name,"' is undefined.");	   /*                        */
   }						   /*                        */
   return NULL;					   /*                        */
@@ -306,18 +303,16 @@ void init_macros()				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	def_item()
-** Purpose:	Define a macro. The arguments are interned as symbols.
+** Purpose:	Define a macro. The arguments have to be symbols.
 ** Arguments:
 **	name	the name of the item
 **	value	the value of the item
 ** Returns:	nothing
 **___________________________________________________			     */
 static void def_item(name, value)		   /*                        */
-  register String  name;			   /*                        */
-  register String  value;			   /*                        */
+  register Symbol name;			   	   /*                        */
+  register Symbol value;			   /*                        */
 {						   /*                        */
-  name  = symbol(name);				   /*                        */
-  value = symbol(value);			   /*                        */
   items = new_macro(name, value, items, 0);	   /*                        */
 }						   /*------------------------*/
 
@@ -333,37 +328,23 @@ static void def_item(name, value)		   /*                        */
 **		against the internal representation. \textit{value} is
 **		printed at the appropriate places instead.
 ** Arguments:
-**	s	String containing an equation.	
+**	s	String containing an equation. This string is modified
+**		during the process.
 ** Returns:	nothing
 **___________________________________________________			     */
 void def_field_type(s)				   /*                        */
-  String  s;					   /*                        */
-{ String name, val;				   /*                        */
-  Uchar c;				   	   /*                        */
+  String s;					   /*                        */
+{ Symbol name;					   /*                        */
  						   /*                        */
   while (*s && !is_allowed(*s)) ++s;		   /*                        */
-  if ( *s == '\0' ) return;			   /*                        */
-  name = s;					   /*                        */
-  while (is_allowed(*s)) ++s;			   /*                        */
-  c   = *s;					   /*                        */
-  *s  = '\0';					   /*                        */
-  val = newString(name);	   		   /*                        */
-  *s  = c;					   /*                        */
+  if (*s == '\0') return;			   /*                        */
  						   /*                        */
-  { String  cp;				   	   /*                        */
-    for (cp = val; *cp; ++cp) *cp = ToLower(*cp);  /*                        */
-  }						   /*                        */
- 						   /*                        */
-  name = symbol(val);				   /*                        */
-  free((char*)val);				   /*                        */
+  name = sym_extract(&s, TRUE);			   /*                        */
   						   /*                        */
   while (*s && !is_allowed(*s)) ++s;		   /*                        */
-  if ( *s == '\0' ) return;			   /*                        */
-  val = s;					   /*                        */
-  while (is_allowed(*s)) ++s;			   /*                        */
-  c = *s; *s = '\0'; val = symbol(val); *s = c;	   /*                        */
+  if (*s == '\0') return;			   /*                        */
  						   /*                        */
-  def_item(name, val);				   /*                        */
+  def_item(name, sym_extract(&s, FALSE));	   /*                        */
 }						   /*------------------------*/
 
 
@@ -466,8 +447,8 @@ String  get_item(name, type)			   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void save_key(name, key)			   /*                        */
-  String  name;				   	   /*                        */
-  String  key;					   /*                        */
+  Symbol name;				   	   /*                        */
+  Symbol key;					   /*                        */
 {						   /*                        */
   keys = new_macro(name, key, keys, 1);		   /*                        */
 }						   /*------------------------*/

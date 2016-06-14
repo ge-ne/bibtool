@@ -147,7 +147,7 @@ int foreach_addlist(fct)			   /*                        */
 **___________________________________________________			     */
 void add_field(spec)				   /*			     */
   String spec;					   /*			     */
-{ register String field, value;		   	   /*			     */
+{ register Symbol field, value;		   	   /*			     */
 						   /*			     */
   (void)sp_open(spec);				   /*			     */
   if ( (field = SParseSymbol(&spec)) == StringNULL )/*		             */
@@ -157,7 +157,7 @@ void add_field(spec)				   /*			     */
     return;					   /*			     */
   (void)SParseEOS(&spec);			   /*			     */
 						   /*			     */
-  addlist = new_macro(field,value,addlist,0);	   /*			     */
+  addlist = new_macro(field, value, addlist, 0);   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
