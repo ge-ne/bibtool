@@ -527,7 +527,7 @@ test check: Test
 Test:
 	(cd test; $(MAKE))
 
-libbib.a: $(OLIBFILES)
+libbibtool.a: $(OLIBFILES)
 	$(AR) $@ $(OLIBFILES) regex.o
 	$(RANLIB) $@
 

@@ -550,7 +550,7 @@ veryclean: clean
 .c.o:
 	$(CC) $(C_FLAGS) -c $<
 
-libbib.a: $(OLIBFILES)
+libbibtool.a: $(OLIBFILES)
 	$(AR) $@ $(OLIBFILES) regex.o
 	$(RANLIB) $@
 

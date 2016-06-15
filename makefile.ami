@@ -504,7 +504,7 @@ clean:
 veryclean: clean
 	-$(RM) bibtool
 
-libbib.a: $(OLIBFILES)
+libbibtool.a: $(OLIBFILES)
 	$(AR) $@ $(OLIBFILES) regex.o
 	$(RANLIB) $@
 
