@@ -37,14 +37,14 @@
 
 /*-----------------------------------------------------------------------------
 ** Variable:	entry_type
-** Type:	String *
+** Type:	Symbol *
 ** Purpose:	This is an array of strings which represent entry
 **		types. They are either built-in or user defined. Use
 **		the function |def_entry_type()| to allocate a new
 **		entry type and the function |get_entry_type()| to find
 **		a certain entry type.
 **___________________________________________________			     */
- extern String *entry_type;
+ extern Symbol *entry_type;
 
 /*-----------------------------------------------------------------------------
 ** Macro:	EntryName()
@@ -165,7 +165,7 @@ extern int type_xdata;
 #else
 #define _ARG(A) ()
 #endif
- String get_entry_type _ARG((int i));		   /* entry.c                */
+ Symbol get_entry_type _ARG((int i));		   /* entry.c                */
  int find_entry_type _ARG((String s));		   /* entry.c                */
- void def_entry_type _ARG((String  s));		   /* entry.c                */
+ void def_entry_type _ARG((Symbol s));		   /* entry.c                */
  void init_entries _ARG((void));		   /* entry.c                */

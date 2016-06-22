@@ -41,8 +41,8 @@
 **		by a counter which can be used as a reference count.
 **___________________________________________________			     */
  typedef struct mACRO				   /*			     */
- { String	mc_name;		   	   /* Name of the macro.     */
-   String	mc_value;		   	   /* Value of the macro.    */
+ { Symbol	mc_name;		   	   /* Name of the macro.     */
+   Symbol	mc_value;		   	   /* Value of the macro.    */
    int		mc_used;			   /* Reference count.	     */
    struct mACRO *mc_next;			   /* Pointer the next macro.*/
  } SMacro, *Macro;				   /*			     */
@@ -106,16 +106,16 @@
 #define _ARG(A) ()
 #endif
  Macro new_macro _ARG((Symbol name,Symbol val,Macro next,int cnt));/*macros.c*/
- String  get_item _ARG((String  name,int type));   /* macros.c               */
- String  get_key_name _ARG((String s));		   /* macros.c               */
- String  look_macro _ARG((String name,int add));   /* macros.c               */
+ Symbol get_item _ARG((Symbol  name,int type));    /* macros.c               */
+ Symbol get_key_name _ARG((Symbol s));		   /* macros.c               */
+ Symbol look_macro _ARG((Symbol name, int add));   /* macros.c               */
  int def_macro _ARG((Symbol name,Symbol val,int count));/* macros.c          */
  void def_field_type _ARG((String  s));		   /* macros.c               */
  void dump_mac _ARG((char *fname,int allp));	   /* macros.c               */
- int each_macro _ARG((Macro m,int (*fct)(String,String)));/* macros.c        */
- void foreach_macro _ARG((int (*fct)(String,String)));/* macros.c            */
+ int each_macro _ARG((Macro m,int (*fct)(Symbol,Symbol)));/* macros.c        */
+ void foreach_macro _ARG((int (*fct)(Symbol,Symbol)));/* macros.c            */
  void free_macro _ARG((Macro mac));		   /* macros.c               */
  void init_macros _ARG((void));			   /* macros.c               */
- void save_key _ARG((String s, String key));	   /* macros.c               */
+ void save_key _ARG((Symbol name, Symbol key));	   /* macros.c               */
 
 /*---------------------------------------------------------------------------*/

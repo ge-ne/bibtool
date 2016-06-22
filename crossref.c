@@ -127,8 +127,8 @@ static void free_map(m)				   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	clear_map()
 ** Type:	void
-** Purpose:	
-**		
+** Purpose:	Reset the map to it's initial state where no elements are
+**		contained.
 ** Arguments:	none
 ** Returns:	nothing
 **___________________________________________________			     */
@@ -187,8 +187,7 @@ void map_add(s_rec,s_fld,d_rec,d_fld)		   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	map_get()
 ** Type:	Symbol
-** Purpose:	
-**		
+** Purpose:	Getter for a map element.
 ** Arguments:
 **	s_rec	the index of the source entry type
 **	s_fld	the name of the source field
@@ -237,9 +236,9 @@ static int skip(sp)				   /*                        */
 **___________________________________________________			     */
 void crossref_map(spec)				   /*                        */
   String spec;				   	   /*			     */
-{ String *src, *dest;				   /*                        */
-  String src_field, dest_field;			   /*                        */
-  String *sp, *dp;				   /*                        */
+{ Symbol *src, *dest;				   /*                        */
+  Symbol src_field, dest_field;			   /*                        */
+  Symbol *sp, *dp;				   /*                        */
   int s_rec, d_rec;				   /*                        */
  						   /*                        */
   (void)sp_open(spec);				   /*                        */
@@ -256,17 +255,19 @@ void crossref_map(spec)				   /*                        */
   sp_close();					   /*                        */
  						   /*                        */
   for (sp = src; *sp; sp++)			   /*                        */
-  { s_rec = find_entry_type(*sp);		   /*                        */
+  { s_rec = find_entry_type(SymbolValue(*sp));	   /*                        */
     if (s_rec == BIB_NOOP)			   /*                        */
-    { WARNING3("Unknown source entry type `", *sp, /*                        */
+    { WARNING3("Unknown source entry type `",	   /*                        */
+	       SymbolValue(*sp), 		   /*                        */
 	       "'. Mapping ignored.");		   /*                        */
       continue;					   /*                        */
     }						   /*                        */
- 
+  						   /*                        */
     for (dp = dest; *dp; dp++)			   /*                        */
-    { d_rec = find_entry_type(*dp);		   /*                        */
+    { d_rec = find_entry_type(SymbolValue(*dp));   /*                        */
       if (d_rec == BIB_NOOP)			   /*                        */
-      { WARNING3("Unknown destination entry type `", *dp,/*                  */
+      { WARNING3("Unknown destination entry type `",/*                       */
+		 SymbolValue(*dp),		   /*                        */
 		 "'. Mapping ignored.");	   /*                        */
 	continue;				   /*                        */
       }						   /*                        */
@@ -275,11 +276,13 @@ void crossref_map(spec)				   /*                        */
     }  						   /*                        */
   }						   /*                        */
  						   /*                        */
+#ifndef COMPLEX_SYMBOL
   (void)free(src);				   /*                        */
   (void)free(dest);				   /*                        */
+#endif
 }						   /*------------------------*/
 
- static String NONE = (String)"x";		   /*                        */
+ static Symbol NONE = (Symbol)"x";		   /* TODO                   */
 
 /*-----------------------------------------------------------------------------
 ** Function:	insert_record()
@@ -297,15 +300,16 @@ void crossref_map(spec)				   /*                        */
 static int insert_record(db,rec,hp,s, msg)	   /*                        */
   DB     db;					   /*                        */
   Record rec;					   /*                        */
-  register String *hp;				   /*			     */
-  String s;					   /*                        */
+  register Symbol *hp;				   /*			     */
+  Symbol s;					   /*                        */
   String msg;					   /*                        */
 { Record r;					   /*                        */
-  String t, ms;					   /*                        */
-  int i;					   /*                        */
+  Symbol t, ms;					   /*                        */
+  int    i;					   /*                        */
  						   /*                        */
   if ( (r = db_find(db, s)) == RecordNULL )	   /*			     */
-  { ERROR3(msg," entry not found: ",(char*)s); 	   /*		             */
+  { ERROR3(msg," entry not found: ",		   /*                        */
+	   (char*)SymbolValue(s)); 	   	   /*		             */
     return FALSE;				   /*			     */
   }						   /*			     */
     						   /*                        */
@@ -314,7 +318,7 @@ static int insert_record(db,rec,hp,s, msg)	   /*                        */
        i -= 2)			   	   	   /*			     */
   { s = *hp++;			   	   	   /*                        */
     t = *hp++;			   	   	   /*                        */
-    if (t != StringNULL)			   /*                        */
+    if (t != NO_SYMBOL)			   	   /*                        */
     { ms = map_get(RecordType(r), s,	   	   /*                        */
 		   RecordType(rec));	   	   /*                        */
       provide_to_record(rec, ms ? ms : s, t);  	   /*                        */
@@ -334,17 +338,22 @@ static int insert_record(db,rec,hp,s, msg)	   /*                        */
 int expand_crossref(db, rec)		   	   /*                        */
   DB     db;					   /*                        */
   Record rec;					   /*                        */
-{ register String *hp;				   /*			     */
+{ register Symbol *hp;				   /*			     */
   register int    i;				   /*                        */
-  String	  t, s;			   	   /*			     */
+  String	  x;				   /*                        */
+  Symbol	  s;			   	   /*			     */
   Record          r	= rec;			   /*                        */
   int             limit	= rsc_xref_limit;	   /*                        */
-  Symbol xdata 		= (rsc_expand_xdata ? sym_xdata : NONE);/*           */
-  Symbol crossref	= (rsc_expand_crossref ? sym_crossref : NONE);/*     */
+  Symbol	  xdata    = (rsc_expand_xdata	   /*                        */
+			      ? sym_xdata 	   /*                        */
+			      : NONE);		   /*                        */
+  Symbol	  crossref = (rsc_expand_crossref  /*                        */
+			      ? sym_crossref	   /*                        */
+			      : NONE);		   /*                        */
  						   /*                        */
   DebugPrint1("expand_crossref");		   /*                        */
  						   /*                        */
-  while	( RecordIsXREF(r) && limit-- >= 0 )	   /*                        */
+  while	(RecordIsXREF(r) && limit-- >= 0)	   /*                        */
   {						   /*                        */
     for ( i = RecordFree(r), hp = RecordHeap(r);   /* search crossref field  */
 	  i > 0					   /*                        */
@@ -359,10 +368,10 @@ int expand_crossref(db, rec)		   	   /*                        */
     else if (*hp == sym_crossref)		   /* ---------------------- */
     {						   /*                        */
       if (rec == r) { *hp = NULL; }		   /* Delete the first xref  */
-      t = *++hp;				   /*                        */
-      t++;				   	   /*			     */
-      (void)sp_open(t);				   /* Try to extract	     */
-      if ( (s = SParseSymbol(&t)) == StringNULL )  /*  the crossref as symbol*/
+      x = SymbolValue(*++hp);			   /*                        */
+      x++;				   	   /*			     */
+      (void)sp_open(x);		   		   /* Try to extract	     */
+      if ((s = SParseSymbol(&x)) ==  NO_SYMBOL)	   /*  the crossref as symbol*/
       { return FALSE; }				   /*			     */
 						   /*			     */
       insert_record(db, rec, hp, s, "Crossref");   /*                        */
@@ -370,19 +379,20 @@ int expand_crossref(db, rec)		   	   /*                        */
     else if (*hp == sym_xdata)			   /* ---------------------- */
     {						   /*                        */
       *hp = NULL;		   		   /* Delete the first xref  */
-      t = *++hp;				   /*                        */
-      t++;				   	   /*			     */
-      (void)sp_open(t);				   /* Try to extract	     */
+      x = SymbolValue(*++hp);			   /*                        */
+      x++;				   	   /*			     */
+      (void)sp_open(x);		   		   /* Try to extract	     */
  						   /*                        */
-      if (sp_expect(&t, (String)"}", 0) ) return FALSE;/*                    */
+      if (sp_expect(&x,	(String)"}", 0) )	   /*                        */
+	return FALSE;				   /*                        */
       for (;;)					   /*                        */
-      { if ((s = SParseSymbol(&t)) == NULL)	   /*                        */
+      { if ((s = SParseSymbol(&x)) == NO_SYMBOL)   /*                        */
 	{ return TRUE; }			   /*                        */
  						   /*                        */
 	insert_record(db, rec, hp, s, "XData");	   /*                        */
  						   /*                        */
-	if (sp_expect(&t, (String)"}", 0) ) break; /*                        */
-	sp_expect(&t, (String)",", 1);		   /*                        */
+	if (sp_expect(&x, (String)"}", 0) ) break; /*                        */
+	sp_expect(&x, (String)",", 1);		   /*                        */
       }						   /*                        */
     }						   /*                        */
   }						   /*                        */

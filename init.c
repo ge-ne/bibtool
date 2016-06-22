@@ -38,7 +38,6 @@
 #include <bibtool/symbols.h>
 #include <bibtool/macros.h>
 #include <bibtool/parse.h>
-#include <bibtool/type.h>
 #include <bibtool/sbuffer.h>
 #include "config.h"
 #ifdef HAVE_LIBKPATHSEA

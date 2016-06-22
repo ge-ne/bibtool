@@ -33,6 +33,7 @@
 
 #include <bibtool/general.h>
 #include <bibtool/error.h>
+#include <bibtool/symbols.h>
 #include <bibtool/wordlist.h>
 
 /*****************************************************************************/
@@ -65,15 +66,14 @@
 **	wlp	Pointer to a wordlist.
 ** Returns:	nothing
 **___________________________________________________			     */
-void add_word(s,wlp)				   /*			     */
-  register String   s;				   /*			     */
+void add_word(sym, wlp)				   /*			     */
+  register Symbol   sym;			   /*			     */
   register WordList *wlp;			   /*			     */
 { register WordList wl;				   /*			     */
   register int	    cmp = 1;			   /*			     */
 						   /*			     */
-  while ( *wlp != WordNULL			   /*			     */
-	 && (cmp=strcmp((char*)ThisWord(*wlp),	   /*                        */
-			(char*)s)) < 0 )   	   /*			     */
+  while (*wlp != WordNULL			   /*			     */
+	 && (cmp=symcmp(ThisWord(*wlp),	sym)) < 0) /*			     */
   { wlp = & NextWord(*wlp); }			   /*			     */
 						   /*			     */
   if ( cmp == 0 ) return;			   /*			     */
@@ -81,7 +81,7 @@ void add_word(s,wlp)				   /*			     */
   if ( (wl=(WordList)malloc(sizeof(SWordList))) == WordNULL )/*		     */
   { OUT_OF_MEMORY("WordList"); }   		   /*                        */
 						   /*			     */
-  ThisWord(wl) = s;				   /*			     */
+  ThisWord(wl) = sym;				   /*			     */
   NextWord(wl) = *wlp;				   /*			     */
   *wlp	       = wl;				   /*			     */
 }						   /*------------------------*/
@@ -102,22 +102,21 @@ void add_word(s,wlp)				   /*			     */
 **	fct	Function to call to free the memory occupied by the word.
 ** Returns:	|0| if the word was not found. |1| otherwise.
 **___________________________________________________			     */
-int delete_word(s, wlp, fct)			   /*                        */
-  String   s;					   /*                        */
+int delete_word(sym, wlp, fct)			   /*                        */
+  Symbol   sym;					   /*                        */
   WordList *wlp;				   /*                        */
   void    (*fct)_ARG((String));			   /*                        */
 { WordList wl;				   	   /*			     */
   int cmp = 1;					   /*                        */
   while ( *wlp != WordNULL			   /*			     */
-	  && (cmp=strcmp((char*)ThisWord(*wlp),    /*                        */
-			 (char*)s)) < 0 )	   /*		             */
+	  && (cmp=symcmp(ThisWord(*wlp), sym)) < 0 )/*		             */
   { wlp = & NextWord(*wlp); }			   /*			     */
   						   /*                        */
   if ( cmp == 0 ) return 0;			   /*			     */
  						   /*                        */
   wl   = *wlp;					   /*                        */
   *wlp = NextWord(wl);				   /*                        */
-  if ( fct != NULL ) { (*fct)(ThisWord(wl)); }	   /*                        */
+  if ( fct != NULL ) { (*fct)(SymbolValue(ThisWord(wl))); }/*                */
   free(wl);					   /*                        */
   return 1;					   /*                        */
 }						   /*------------------------*/
@@ -136,17 +135,25 @@ int delete_word(s, wlp, fct)			   /*                        */
 **___________________________________________________			     */
 void free_words(wlp, fct)			   /*                        */
   WordList *wlp;				   /*                        */
-  void    (*fct)_ARG((String));			   /*                        */
+  void    (*fct)_ARG((Symbol));			   /*                        */
 { WordList wl, next;				   /*                        */
  						   /*                        */
-  wl   = *wlp;					   /*                        */
-  *wlp = WordNULL;				   /*                        */
-  while ( wl )					   /*                        */
-  { next = NextWord(wl);			   /*                        */
-    if ( fct != NULL ) { (*fct)(ThisWord(wl)); }   /*                        */
-    (void)free(wl);				   /*                        */
-    wl = next;					   /*                        */
+  if (wlp == NULL) return;			   /*                        */
+ 						   /*                        */
+  if (fct != NULL)				   /*                        */
+  { for ( wl = *wlp; wl; wl = next)		   /*                        */
+    { next = NextWord(wl);			   /*                        */
+      (*fct)(ThisWord(wl));   			   /*                        */
+      (void)free(wl);				   /*                        */
+    }						   /*                        */
   }						   /*                        */
+  else						   /*                        */
+  { for ( wl = *wlp; wl; wl = next)		   /*                        */
+    { next = NextWord(wl);			   /*                        */
+      (void)free(wl);				   /*                        */
+    }						   /*                        */
+  }						   /*                        */
+  *wlp = WordNULL;				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -165,7 +172,7 @@ void free_words(wlp, fct)			   /*                        */
 **___________________________________________________			     */
 int foreach_word(wl, fct)			   /*                        */
   WordList wl;					   /*                        */
-  int (*fct)_ARG((String));			   /*                        */
+  int (*fct)_ARG((Symbol));			   /*                        */
 { int ret = 1;					   /*                        */
   while ( wl && (ret=(fct)(ThisWord(wl))) )	   /*                        */
   { wl = NextWord(wl); }			   /*                        */
@@ -187,7 +194,8 @@ int find_word(s, wl)				   /*			     */
 {					   	   /*			     */
   while ( wl != WordNULL )			   /*                        */
   {						   /*                        */
-    if ( case_cmp(ThisWord(wl),s) )		   /*                        */
+    if ( case_cmp(SymbolValue(ThisWord(wl)),	   /*                        */
+		  s) )   		   	   /*                        */
     { return 1; } 				   /*			     */
     wl = NextWord(wl);				   /*                        */
   }			   			   /*			     */

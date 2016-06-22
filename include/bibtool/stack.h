@@ -31,11 +31,12 @@
 ******************************************************************************/
 
 #include <bibtool/type.h>
+#include <bibtool/symbols.h>
 
 #ifdef __STDC__
 #define _ARG(A) A
 #else
 #define _ARG(A) ()
 #endif
- String  pop_string _ARG((void));		   /* stack.c                */
- void push_string _ARG((String  s));		   /* stack.c                */
+ Symbol  pop_string _ARG((void));		   /* stack.c                */
+ void push_string _ARG((Symbol  s));		   /* stack.c                */

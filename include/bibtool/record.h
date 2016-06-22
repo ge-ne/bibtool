@@ -54,26 +54,26 @@
 **
 **________________________________________________   			     */
 typedef struct rECORD				/*                           */
-{ String	rc_key;				/* The sort key.             */
-    String	rc_old_key;			/* The old sort key.         */
-    int		rc_type;			/* The type of the record.   */
-    int		rc_flags;			/* Some bits; e.g. used      */
+{ Symbol	rc_key;				/* The sort key.             */
+  Symbol	rc_old_key;			/* The old sort key.         */
+  int		rc_type;			/* The type of the record.   */
+  int		rc_flags;			/* Some bits; e.g. used      */
  						/*  during selecting aux     */
  						/*  records.                 */
-    int		rc_free;			/* The size of the heap. This*/
+  int		rc_free;			/* The size of the heap. This*/
  						/*  is purely internal and   */
  						/*  must not be modified.    */
-    String	*rc_heap;			/* The heap.                 */
-    String	rc_comment;			/* The comment following     */
+  Symbol	*rc_heap;			/* The heap.                 */
+  Symbol	rc_comment;			/* The comment following     */
  						/*  the given record.        */
-    Symbol	rc_source;			/* The source of the record. */
+  Symbol	rc_source;			/* The source of the record. */
  						/*  I.e. the file name it    */
  						/*  has been read from.      */
-    struct rECORD *rc_next;			/* Pointer to the next       */
+  struct rECORD *rc_next;			/* Pointer to the next       */
  						/*  record.                  */
-    struct rECORD *rc_prev;			/* Pointer to the previous   */
+  struct rECORD *rc_prev;			/* Pointer to the previous   */
  						/*  record.                  */
-  } SRecord, *Record;				/*                           */
+} SRecord, *Record;				/*                           */
 
 /*-----------------------------------------------------------------------------
 ** Constant:	RecordNULL
@@ -378,14 +378,14 @@ typedef struct rECORD				/*                           */
  Record new_record _ARG((int token,int size));	   /* record.c               */
  Record record_gc _ARG((Record rec));		   /* record.c               */
  Record unlink_record _ARG((Record rec));	   /* record.c               */
- String record_get _ARG((Record rec, String key)); /* record.c               */
- WordList new_wordlist _ARG((String  s));	   /* record.c               */
+ Symbol record_get _ARG((Record rec, Symbol key)); /* record.c               */
+ WordList new_wordlist _ARG((Symbol s));	   /* record.c               */
  int count_record _ARG((Record rec));		   /* record.c               */
- void add_sort_order _ARG((String val));	   /* record.c               */
+ void add_sort_order _ARG((Symbol val));	   /* record.c               */
  void free_1_record _ARG((Record rec));		   /* record.c               */
  void free_record _ARG((Record rec));		   /* record.c               */
- void provide_to_record _ARG((Record rec,String s, String t));/*             */
- void push_to_record _ARG((Record rec,String s, String t));/* record.c       */
+ void provide_to_record _ARG((Record rec,Symbol s, Symbol t));/*             */
+ void push_to_record _ARG((Record rec,Symbol s, Symbol t));/* record.c       */
  void sort_record _ARG((Record rec));		   /* record.c               */
 
 

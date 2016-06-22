@@ -34,28 +34,28 @@
 #define StringParseUnquotedString   261
 #define StringParseBraces	    262
 #define StringParseUnquotedBraces   263
-#define StringParseEOS		    264
 #define StringParseValue	    265
 
 #define SParseSymbol(SP)	    s_parse(StringParseSymbol	     ,SP,-1)
 #define SParseOptionalSymbol(SP)    s_parse(StringParseSymbol	     ,SP, 0)
 #define SParseString(SP)	    s_parse(StringParseString	     ,SP,-1)
 #define SParseUnquotedString(SP)    s_parse(StringParseUnquotedString,SP,-1)
-#define SParseEOS(SP)		    s_parse(StringParseEOS   	     ,SP,-1)
 #define SParseNext(SP)		    s_parse(StringParseNext  	     ,SP,-1)
 #define SParseValue(SP)		    s_parse(StringParseValue 	     ,SP,-1)
 #define SParseExpect(C,SP)	    s_parse((C)&0xff           	     ,SP,-1)
 #define SParseSkip(SP)		    sp_skip(SP)
+#define SParseEOS(SP)		    sp_eos(SP)
 
 #ifdef __STDC__
 #define _ARG(A) A
 #else
 #define _ARG(A) ()
 #endif
- String s_parse _ARG((int type, String *sp, int errp));/* s_parse.c          */
+ Symbol s_parse _ARG((int type, String *sp, int errp));/* s_parse.c          */
  int sp_open _ARG((String  s));			   /* s_parse.c              */
  void sp_close _ARG((void));			   /* s_parse.c              */
  int sp_expect _ARG((String *sp, String expect, int verbose));/* s_parse.c   */
- String* sp_symbols _ARG((String *sp));		   /* s_parse.c              */
+ Symbol* sp_symbols _ARG((String *sp));		   /* s_parse.c              */
  String sp_skip _ARG((String *sp));		   /*                        */
+ String sp_eos _ARG((String *sp));		   /*                        */
 

@@ -25,6 +25,7 @@
 ******************************************************************************/
 
 #include <bibtool/type.h>
+#include <bibtool/symbols.h>
 
 /*-----------------------------------------------------------------------------
 ** Typedef:	SNameNode
@@ -37,9 +38,9 @@
  { int		   nn_type;			   /*                        */
    int		   nn_strip;			   /*                        */
    int		   nn_trim;			   /*                        */
-   String	   nn_pre;			   /*                        */
-   String	   nn_mid;			   /*                        */
-   String	   nn_post;			   /*                        */
+   Symbol	   nn_pre;			   /*                        */
+   Symbol	   nn_mid;			   /*                        */
+   Symbol	   nn_post;			   /*                        */
    struct nameNODE *nn_next;			   /* Pointer to the next    */
  						   /*  name node             */
  } SNameNode, *NameNode;			   /*                        */

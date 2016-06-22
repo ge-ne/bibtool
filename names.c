@@ -46,7 +46,7 @@
 #ifdef STANDALONE
  char * pp_names _ARG((char *s,NameNode format,String trans,int max,char *namesep,char *etal));/* names.c*/
 #endif
- static NameNode new_name_node _ARG((int type,int strip,int trim,String pre,String mid,String post));/* names.c*/
+ static NameNode new_name_node _ARG((int type,int strip,int trim,Symbol pre,Symbol mid,Symbol post));/* names.c*/
  static int is_jr _ARG((String  s, int eager));	   /* names.c                */
  static int is_lower_word _ARG((String s));	   /* names.c                */
  static void initial _ARG((String s,String trans,int len,StringBuffer *sb));/* names.c*/
@@ -83,16 +83,16 @@ static NameNode new_name_node(type, strip, trim, pre, mid, post)/*           */
   int      type;				   /*                        */
   int      strip;				   /*                        */
   int      trim;				   /*                        */
-  String   pre;				   	   /*                        */
-  String   mid;				   	   /*                        */
-  String   post;				   /*                        */
+  Symbol   pre;				   	   /*                        */
+  Symbol   mid;				   	   /*                        */
+  Symbol   post;				   /*                        */
 { NameNode node;				   /*                        */
  						   /*                        */
   if ( (node = (NameNode)malloc(sizeof(SNameNode))) == NameNULL )/*          */
   { OUT_OF_MEMORY("NameNode"); }	   	   /*                        */
   NameType(node)  = type;			   /*                        */
   NameStrip(node) = strip;			   /*                        */
-  NameTrim(node) = trim;			   /*                        */
+  NameTrim(node)  = trim;			   /*                        */
   NamePre(node)   = pre;			   /*                        */
   NameMid(node)   = mid;			   /*                        */
   NamePost(node)  = post;			   /*                        */
@@ -293,7 +293,7 @@ NameNode name_format(s)				   /*                        */
 { int	   type,				   /*                        */
 	   strip,				   /*                        */
 	   trim;				   /*                        */
-  String   pre,				   	   /*                        */
+  Symbol   pre,				   	   /*                        */
      	   mid,				   	   /*                        */
      	   post;				   /*                        */
   Uchar	   c;					   /*                        */
@@ -303,9 +303,10 @@ NameNode name_format(s)				   /*                        */
   static char *msg = "Missing ']' in format string.";/*                      */
 #define OptionalArg(S)						\
   if ( *cp == '[' )						\
-  { for ( S=++cp; *cp && *cp != ']'; cp++) ;			\
+  { String sss;							\
+    for ( sss = ++cp; *cp && *cp != ']'; cp++) ;		\
     if ( *cp )							\
-    { c = *cp; *cp = '\0'; S = symbol(S); *(cp++) = c; }	\
+    { c = *cp; *cp = '\0'; S = symbol(sss); *(cp++) = c; }	\
     else { S = sym_empty; WARNING(msg); }			\
   } else { S = sym_empty; }
  						   /*                        */
@@ -353,11 +354,12 @@ NameNode name_format(s)				   /*                        */
       OptionalArg(post);			   /*                        */
     }						   /*                        */
     else 					   /*                        */
-    { mid = cp;					   /*                        */
+    { String mmm;				   /*                        */
+      mmm = cp;					   /*                        */
       while ( *cp && *cp != '%' ) { cp++; }	   /*                        */
       c     = *cp;				   /*                        */
       *cp   = '\0';				   /*                        */
-      mid   = symbol(mid);			   /*                        */
+      mid   = symbol(mmm);			   /*                        */
       *cp   = c;				   /*                        */
       type  = NameString;			   /*                        */
       pre   = NULL;				   /*                        */
@@ -385,9 +387,9 @@ NameNode name_format(s)				   /*                        */
 **
 ** Arguments:
 **	wa	Word array of name constituents
-**	format
-**	trans
-**	max
+**	format	the format of the name
+**	trans	the translation table
+**	max	the limit for the number of names to be formatted
 **	comma	","
 **	and	name separator
 **	namesep
@@ -419,27 +421,33 @@ String  pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
   while ( *wa )					   /*                        */
   {						   /*                        */
     if ( *(wa+1) == NULL			   /* Look at the end        */
-	 && strcmp((char*)(*wa),"others")==0 )	   /*  for `and others'      */
-    { sbputs(etal,sb);			   	   /*                        */
+	 && strcmp((char*)(*wa), "others") == 0 )  /*  for `and others'      */
+    { sbputs(etal, sb);			   	   /*                        */
       break;					   /*                        */
     }						   /*                        */
-    if ( max >= 0 && --max < 0 )		   /*                        */
-    { sbputs(etal,sb);			   	   /*                        */
+    if (max >= 0 && --max < 0)		   	   /*                        */
+    { sbputs(etal, sb);			   	   /*                        */
       break;					   /*                        */
     }						   /*                        */
  						   /*                        */
     commas = 0;					   /*                        */
-    for( w = wa; *w && *w != and; w++ )		   /*                        */
-    { if ( *w == comma ) commas++;		   /*                        */
+    for (w = wa; *w && *w != and; w++)		   /*                        */
+    { if (*w == comma) commas++;		   /*                        */
       DebugPrint1(*w);				   /*                        */
     }						   /*                        */
     word = *w;					   /*                        */
     *w = NULL;					   /*                        */
-    if ( first ) { first = FALSE; }		   /*                        */
-    else { sbputs(namesep,sb); }		   /*                        */
-    pp_one_name(sb,wa,format,trans,(int)(w-wa),comma,commas);/*              */
+    if (first) { first = FALSE; }		   /*                        */
+    else { sbputs(namesep, sb); }		   /*                        */
+    pp_one_name(sb,				   /*                        */
+		wa,				   /*                        */
+		format,				   /*                        */
+		trans,				   /*                        */
+		(int)(w-wa),			   /*                        */
+		comma,				   /*                        */
+		commas);			   /*                        */
     *w = word;					   /*                        */
-    wa = ( word != NULL? ++w : w ) ;		   /*                        */
+    wa = (word != NULL ? ++w : w);		   /*                        */
   }						   /*                        */
  						   /*                        */
   return (String)sbflush(sb);			   /*                        */
@@ -474,7 +482,7 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   int	        first, last, von, jr;		   /*                        */
  						   /*                        */
   first = last = von = jr = 0;			   /*                        */
-  if ( len < 1 ) return;			   /*                        */
+  if (len < 1) return;			   	   /*                        */
  						   /*                        */
   if ( (type=(char*)malloc(len)) == NULL )	   /*                        */
   { OUT_OF_MEMORY("name type"); }   		   /*                        */
@@ -489,14 +497,14 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   if ( commas == 0 )				   /*------------------------*/
   {						   /* ff vv ll               */
     j = len - 1;				   /* ff vv ll jr            */
-    if ( is_jr((String)w[j], TRUE) )		   /*                        */
+    if ( is_jr(w[j], TRUE) )		   	   /*                        */
     { type[j--] = 'j'; jr++; }			   /*                        */
     if ( j >= 0 )				   /*                        */
     { type[j] = 'l'; last++; }  		   /*                        */
     i = 0;					   /*                        */
-    while ( i < j && !is_lower_word((String)w[i]) )/*                        */
+    while ( i < j && !is_lower_word(w[i]) )	   /*                        */
     { type[i++] = 'f'; first++; }		   /*                        */
-    while ( i < j && is_lower_word((String)w[i]) ) /*                        */
+    while ( i < j && is_lower_word(w[i]) ) 	   /*                        */
     { type[i++] = 'v'; von++; }			   /*                        */
     while ( i < j )				   /*                        */
     { type[i++] = 'l'; last++; }		   /*                        */
@@ -510,19 +518,19 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
     type[j--] = ',';				   /*                        */
     if ( j >= 0 ) { type[j--] = 'l'; last++; }	   /*                        */
     i = 0;					   /*                        */
-    while ( i < j && !is_lower_word((String)w[i]) )/*                        */
+    while ( i < j && !is_lower_word(w[i]) )	   /*                        */
     { type[i++] = 'f'; first++; }		   /*                        */
-    while ( i < j && is_lower_word((String)w[i]) ) /*                        */
+    while ( i < j && is_lower_word(w[i]) ) 	   /*                        */
     { type[i++] = 'v'; von++; }			   /*                        */
     while ( i < j )				   /*                        */
     { type[i++] = 'l'; last++; }		   /*                        */
   }						   /*                        */
   else						   /*                        */
   { i = 0;			   		   /*------------------------*/
-    if ( is_lower_word((String)w[i]) )		   /* vv ll, ff              */
+    if ( is_lower_word(w[i]) )		   	   /* vv ll, ff              */
     { while ( i < len &&			   /*                        */
 	      w[i] != comma &&	   		   /*                        */
-	      is_lower_word((String)w[i]) )	   /*                        */
+	      is_lower_word(w[i]) )	   	   /*                        */
       { type[i++] = 'v'; von++; }		   /*                        */
     }						   /*                        */
 			   			   /*------------------------*/
@@ -535,14 +543,14 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
       { type[i++] = 'j'; jr++; }		   /*                        */
       if (i < len) { type[i++] = ','; }		   /*                        */
     }						   /*                        */
-    while ( i < len && !is_lower_word((String)w[i]) )/*                      */
+    while ( i < len && !is_lower_word(w[i]) )	   /*                        */
     { if (w[i] == comma) {	   		   /*                        */
         type[i++] = ',';			   /*                        */
       } else {					   /*                        */
         type[i++] = 'f'; first++;		   /*                        */
       }						   /*                        */
     }		   				   /*                        */
-    while ( i < len && is_lower_word((String)w[i]) )/*                       */
+    while ( i < len && is_lower_word(w[i]) )	   /*                        */
     { type[i++] = 'v'; von++; }			   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -575,19 +583,19 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
     }						   /*                        */
  						   /*                        */
     if ( j > 0 )				   /*                        */
-    { sbputs((char*)NamePre(nn), sb);		   /*                        */
+    { sbputs((char*)SymbolValue(NamePre(nn)), sb); /*                        */
       again = FALSE;				   /*                        */
       for ( i = 0; i < len; i++ )		   /*                        */
       { if ( type[i] == t )			   /*                        */
 	{					   /*                        */
   	  if ( trim-- == 0 ) break;		   /*                        */
-	  if ( again ) sbputs((char*)NameMid(nn), sb);/*                     */
+	  if ( again ) sbputs((char*)SymbolValue(NameMid(nn)), sb);/*        */
 	  else again = TRUE;			   /*                        */
  						   /*                        */
 	  initial(w[i], tr, strip, sb);	   	   /*                        */
 	}					   /*                        */
       }						   /*                        */
-      sbputs((char*)NamePost(nn), sb);		   /*                        */
+      sbputs((char*)SymbolValue(NamePost(nn)), sb);/*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -806,7 +814,8 @@ char * pp_names(s, format, trans, max, namesep, etal)/*                      */
 			       max,		   /*                        */
 			       comma,		   /*                        */
 			       and,		   /*                        */
-			       namesep,etal));	   /*                        */
+			       namesep,		   /*                        */
+			       etal));	   	   /*                        */
  						   /*                        */
   free(words);					   /*                        */
   free(s);					   /*                        */
@@ -835,7 +844,12 @@ int main(argc,argv)				   /*                        */
   format = name_format(s);		   	   /*                        */
  						   /*                        */
   while ( gets(s) ) 				   /*                        */
-  { puts (pp_names(s,format,trans_lower,-1," and "," and others"));/*        */
+  { puts (pp_names(s,				   /*                        */
+		   format,			   /*                        */
+		   trans_lower,			   /*                        */
+		   -1,				   /*                        */
+		   " and ",			   /*                        */
+		   " and others"));		   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 

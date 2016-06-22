@@ -80,7 +80,7 @@ void clear_aux()				   /*                        */
 { int i;					   /*                        */
   cite_star = TRUE;				   /*                        */
   for (i = 0; i < 32; i++)			   /*                        */
-  { free_words(&cite[i],sym_unlink); }		   /*                        */
+  { free_words(&cite[i], sym_unlink); }		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -93,7 +93,7 @@ void clear_aux()				   /*                        */
 ** Returns:	|cite_star|
 **___________________________________________________			     */
 int foreach_aux(fct)				   /*                        */
-  int (fct)_ARG((String));			   /*                        */
+  int (fct)_ARG((Symbol));			   /*                        */
 { int i;					   /*                        */
   for (i = 0; i < 32; i++)			   /*                        */
   { foreach_word(cite[i], fct); }		   /*                        */
@@ -106,17 +106,17 @@ int foreach_aux(fct)				   /*                        */
 **		If the cite key is "*" then all should be selected.
 **		This is written e.g. by \nocite{*}
 ** Arguments:
-**	s
+**	key	the reference key of * for all
 ** Returns:	nothing
 **___________________________________________________			     */
-static void save_ref(s)				   /*                        */
-  register String s;				   /*                        */
+static void save_ref(key)			   /*                        */
+  register String key;				   /*                        */
 { 						   /*                        */
   if ( cite_star ) return;			   /*                        */
  						   /*                        */
-  if (*s == '*' && *(s+1) == '\0')		   /*                        */
+  if (*key == '*' && *(key+1) == '\0')		   /*                        */
   { clear_aux(); }				   /*                        */
-  else { add_word(symbol(s), &cite[*s&31]); }	   /*                        */
+  else { add_word(symbol(key), &cite[*key&31]); }  /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -129,10 +129,11 @@ static void save_ref(s)				   /*                        */
 ** Returns:	
 **___________________________________________________			     */
 int aux_used(s)				   	   /*                        */
-  String s;					   /*                        */
+  Symbol s;					   /*                        */
 {						   /*                        */
-  return (  cite_star				   /*                        */
-	 || find_word(s,cite[*s&31]));		   /*                        */
+  return cite_star				   /*                        */
+    || find_word(SymbolValue(s),		   /*                        */
+		 cite[*SymbolValue(s)&31]);	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -224,7 +225,7 @@ int read_aux(fname, fct, verbose)		   /*                        */
 	  if ( c == ',' || c == '}' )		   /*                        */
 	  { s = (String)sbflush(aux_sb);	   /*                        */
 	    sbrewind(aux_sb);			   /*                        */
-	    (*fct)((char*)symbol(s));	   	   /*                        */
+	    (*fct)((char*)s);	   	   	   /*                        */
 	  }					   /*                        */
 	  else					   /*                        */
 	  { (void)sbputchar(c, aux_sb); }	   /*                        */
@@ -248,9 +249,12 @@ int read_aux(fname, fct, verbose)		   /*                        */
     WordList wl;				   /*			     */
 						   /*			     */
     for (i = 0; i < 32; ++i)			   /*                        */
-    { ErrPrintF("--- BibTool: %d\n",i);	   	   /*                        */
-      for (wl = cite[i]; wl != WordNULL; wl = NextWord(wl) )/*		     */
-      { ErrPrintF("%s\n",ThisWord(wl)); }	   /*			     */
+    { ErrPrintF("--- BibTool: %d\n", i);	   /*                        */
+      for (wl = cite[i];			   /*                        */
+	   wl != WordNULL;			   /*                        */
+	   wl = NextWord(wl) )			   /*		             */
+      { ErrPrintF("%s\n",			   /*                        */
+		  SymbolValue(ThisWord(wl))); }	   /*			     */
     }		   	   			   /*                        */
   }						   /*                        */
 #endif
@@ -292,8 +296,8 @@ int apply_aux(db)				   /*                        */
 	rec != RecordNULL;			   /*  Mark all entries      */
 	rec = NextRecord(rec) )			   /*  contained in the aux  */
   { if ( *RecordHeap(rec) &&		   	   /*  file and unmark the   */
-	 find_word(*RecordHeap(rec),	   	   /*  others.               */
-		   cite[(**RecordHeap(rec))&31]) ) /*                        */
+	 find_word(SymbolValue(*RecordHeap(rec)),  /*  others.               */
+		   cite[(*SymbolValue(*RecordHeap(rec)))&31]) )/*            */
     { SetRecordMARK(rec); }			   /*                        */
     else					   /*                        */
     { ClearRecordMARK(rec); }			   /*                        */
@@ -308,7 +312,7 @@ int apply_aux(db)				   /*                        */
 	 RecordIsXREF(rec)   &&		   	   /*                        */
 	 !RecordIsDELETED(rec)		   	   /*                        */
        )					   /*                        */
-    { String key = (String)"???";		   /*                        */
+    { Symbol key = sym_qqq;	   		   /*                        */
       int    count;				   /*                        */
       Record r = rec;				   /*                        */
  						   /*                        */
@@ -321,12 +325,14 @@ int apply_aux(db)				   /*                        */
 	if ( key == NULL )			   /*                        */
 	{ count = -1; }			   	   /*                        */
 	else					   /*                        */
-	{ key = symbol(lower(expand_rhs(key,	   /*                        */
-					sym_empty, /*                        */
-					sym_empty, /*                        */
-					db)));     /*                        */
-	  if ( (r=db_find(db,key)) == RecordNULL ) /*                        */
-	  { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",key);/*      */
+	{ key = expand_rhs(key,	   		   /*                        */
+			   sym_empty, 		   /*                        */
+			   sym_empty, 		   /*                        */
+			   db,			   /*                        */
+			   TRUE);     		   /*                        */
+	  if ( (r=db_find(db, key)) == RecordNULL )/*                        */
+	  { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",
+		      SymbolValue(key));	   /*                        */
 	    count = -1;			   	   /*                        */
 	  }					   /*                        */
 	  else				   	   /*                        */
@@ -340,7 +346,7 @@ int apply_aux(db)				   /*                        */
       }			   		   	   /*                        */
       if ( count == -1 )			   /*                        */
       { ErrPrintF("*** BibTool: Crossref limit exceeded; `%s' possibly looped.\n",
-		  key);				   /*                        */
+		  SymbolValue(key));		   /*                        */
       }						   /*                        */
     }    					   /*                        */
   }						   /*                        */

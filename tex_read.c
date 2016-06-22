@@ -622,7 +622,7 @@ static MacDef find_macro(name, md)		   /*			     */
   register MacDef md;				   /*			     */
 {						   /*			     */
   for ( ; md != MacDefNULL; md = NextMacro(md) )   /*			     */
-  { if ( strcmp((char*)MacroName(md),		   /*                        */
+  { if ( strcmp((char*)MacroName(md), 		   /*                        */
 		(char*)name) == 0 )  		   /*			     */
       return md;				   /*			     */
   }						   /*			     */
@@ -1042,12 +1042,12 @@ int main(argc,argv)				   /*			     */
 
 #ifdef DEBUG
 /*-----------------------------------------------------------------------------
-** Function:	show_tokens()
+** Function*:	show_tokens()
 ** Purpose:	
 **		
 **
 ** Arguments:
-**	t
+**	t	the token
 ** Returns:	nothing
 **___________________________________________________			     */
 static void show_tokens(t)			   /*			     */

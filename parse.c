@@ -121,14 +121,14 @@
 			      (String)Y,(String)Z,			\
 			      file_line_buffer,flp,flno,filename)
 #define Error(X)	error(ERR_ERROR|ERR_POINT|ERR_FILE,(String)X,	\
-			      sym_empty,sym_empty,			\
+			      s_empty,s_empty,				\
 			      file_line_buffer,flp,flno,filename)
 #define Warning(X)	error(ERR_WARN|ERR_POINT|ERR_FILE,(String)X,	\
-			      sym_empty,sym_empty,			\
+			      s_empty,s_empty,				\
 			      file_line_buffer,flp,flno,filename)
 #define UnterminatedError(X,LINE)					\
 			error(ERR_ERROR|ERR_FILE,(String)X,		\
-			      sym_empty,sym_empty,			\
+			      s_empty,s_empty,				\
 			      NULL,NULL,LINE,filename)
 #define UnexpectedError Error(str_unexpected)
 
@@ -623,51 +623,54 @@ static int parse_block(quotep)			   /*			     */
 ** Returns:	Success status
 **___________________________________________________			     */
 static int parse_rhs()				   /*			     */
-{						   /*			     */
-  int start_flno = flno;			   /*                        */
+{ int start_flno = flno;			   /*                        */
+  Symbol sym;					   /*                        */
  						   /*                        */
   sbrewind(parse_sb);				   /*			     */
   do						   /*			     */
   { if ( sbtell(parse_sb) != 0 )		   /*			     */
-    { (void)sbputs(" # ",parse_sb); }		   /*			     */
+    { (void)sbputs(" # ", parse_sb); }		   /*			     */
 						   /*			     */
     switch ( GetC )				   /*			     */
     { case EOF:					   /*                        */
 	UnterminatedError("Unterminated value",	   /*                        */
 			  start_flno);		   /*                        */
-	return(FALSE);  			   /*			     */
+	return FALSE;  			   	   /*			     */
 						   /*			     */
       case '"':					   /*                        */
-	if ( !parse_string(TRUE) ) return(FALSE);  /*		             */
+	if ( !parse_string(TRUE) ) return FALSE;   /*		             */
 	break;					   /*			     */
 						   /*			     */
       case '{':					   /*                        */
-	if ( !parse_block(TRUE) ) return(FALSE);   /*		             */
+	if ( !parse_block(TRUE) ) return FALSE;    /*		             */
 	break;					   /*			     */
 						   /*			     */
       case '0': case '1': case '2': case '3': case '4':/*		     */
       case '5': case '6': case '7': case '8': case '9':/*		     */
 	UnGetC;					   /*                        */
 	parse_number();			   	   /*			     */
-	(void)sbputs((char*)pop_string(),parse_sb);/*			     */
+	sym = pop_string();			   /*                        */
+	(void)sbputs((char*)SymbolValue(sym),	   /*                        */
+		     parse_sb);			   /*			     */
 	break;					   /*			     */
 						   /*			     */
       default:					   /*			     */
 	UnGetC;					   /*                        */
-	ExpectSymbol(TRUE,FALSE);	   	   /*			     */
-	{ register String  mac;			   /*			     */
-	  mac = pop_string();			   /*			     */
+	ExpectSymbol(TRUE, FALSE);	   	   /*			     */
+	{ sym = pop_string();			   /*			     */
 #ifdef OLD
 	  (void)look_macro(mac,1);		   /*			     */
 #endif
-	  (void)sbputs((char*)mac,parse_sb);	   /*			     */
+	  (void)sbputs((char*)SymbolValue(sym),	   /*                        */
+		       parse_sb);	   	   /*			     */
 	}					   /*			     */
     }						   /*			     */
   } while ( GetC == '#' );			   /*			     */
 						   /*			     */
   push_string(symbol((String)sbflush(parse_sb)));  /*			     */
   sbrewind(parse_sb);				   /*			     */
-  UnGetC; return(TRUE);				   /*			     */
+  UnGetC;					   /*                        */
+  return TRUE;				   	   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -680,7 +683,7 @@ static int parse_rhs()				   /*			     */
 **___________________________________________________			     */
 static int parse_equation(rec)		   	   /*			     */
   Record rec;					   /*                        */
-{ String s, t;				   	   /*			     */
+{ Symbol s, t;				   	   /*			     */
 						   /*			     */
   ExpectSymbol(TRUE, FALSE);			   /*			     */
   Expect('=', FALSE);				   /*			     */
@@ -737,24 +740,25 @@ int parse_bib(rec)				   /*			     */
     while ( (c=skip_c()) != '@' )		   /* Skip to next @	     */
     { if ( c == EOF )				   /*                        */
       { char *s, *t;				   /*                        */
-	if ( ignored == 0 ) return(BIB_EOF); 	   /*			     */
+	if (ignored == 0) return(BIB_EOF); 	   /*			     */
 	RecordType(rec) = BIB_COMMENT;		   /*                        */
  						   /*                        */
 	s = t = sbflush(comment_sb);		   /*                        */
 	while ( *s ) s++;			   /*                        */
-	while ( t <= --s  && is_space(*s) ) *s = '\0';/*                     */
-	if ( *t ) RecordComment(rec) = symbol((String)t);/*                  */
+	while (t <= --s  && is_space(*s)) *s = '\0';/*                       */
+	if ( *t )				   /*                        */
+	  RecordComment(rec) = symbol((String)t);  /*                        */
 	sbrewind(comment_sb);			   /*                        */
 	return(BIB_COMMENT);		   	   /*			     */
       }						   /*                        */
       if (!is_space(c)) ++ignored;		   /*			     */
       if (ignored > 0 && rsc_pass_comment)	   /*			     */
-      { sbputchar(c,comment_sb); }		   /*			     */
+      { sbputchar(c, comment_sb); }		   /*			     */
     }						   /*			     */
     						   /*			     */
     if ( ignored != 0L )			   /*			     */
     { if (rsc_pass_comment)			   /*                        */
-      { sbputchar('\n',comment_sb); }	   	   /*			     */
+      { sbputchar('\n', comment_sb); }	   	   /*			     */
       else					   /*			     */
       { (void)sprintf(buffer,"%ld",ignored);	   /*			     */
 	error(ERR_WARN|ERR_FILE, (String)buffer,   /*			     */
@@ -763,16 +767,19 @@ int parse_bib(rec)				   /*			     */
 	      flno, filename);			   /*			     */
       }						   /*			     */
     }						   /*			     */
+    DebugPrint2("Look-up type ", flp);		   /*                        */
 						   /*			     */
     if ( (type=find_entry_type(flp)) == BIB_NOOP ) /*		             */
     { Error("Unknown entry type");		   /*                        */
       return BIB_NOOP;				   /*                        */
     }						   /*		             */
-    flp += strlen((char*)EntryName(type));	   /*			     */
+ 						   /*                        */
+    flp += strlen((char*)SymbolValue(EntryName(type)));/*		     */
  						   /*                        */
     if ( type == BIB_COMMENT && rsc_pass_comment ) /*                        */
     { sbputchar('@', comment_sb);		   /*                        */
-      sbputs((char*)EntryName(type), comment_sb);  /*                        */
+      sbputs((char*)SymbolValue(EntryName(type)),  /*                        */
+	     comment_sb);  			   /*                        */
     }						   /*                        */
   } while (type == BIB_COMMENT);		   /*                        */
 					   	   /*			     */
@@ -868,17 +875,17 @@ int parse_bib(rec)				   /*			     */
 	error(ERR_ERROR|ERR_FILE,		   /*                        */
 	      s,				   /*                        */
 	      (String)" not properly terminated.", /*                        */
-	      StringNULL,StringNULL,StringNULL,	   /*			     */
+	      StringNULL, StringNULL, StringNULL,  /*			     */
 	      line,name);			   /*			     */
       }						   /*                        */
       return BIB_NOOP;				   /*			     */
   }						   /*			     */
  						   /*                        */
-  { char *s, *t;				   /*                        */
-    s = t = sbflush(comment_sb);		   /*                        */
+  { String s, t;				   /*                        */
+    s = t = (String)sbflush(comment_sb);	   /*                        */
     while ( *s ) s++;				   /*                        */
     while ( t <= --s  && is_space(*s) ) *s = '\0'; /*                        */
-    if ( *t ) RecordComment(rec) = (String)symbol((String)t);/*              */
+    if ( *t ) RecordComment(rec) = symbol(t);	   /*                        */
   }						   /*                        */
   sbrewind(comment_sb);				   /*                        */
   return type;					   /*			     */
@@ -923,18 +930,17 @@ void set_rsc_path(val)				   /*			     */
 static int see_rsc(fname)			   /*			     */
   String fname;				   	   /*			     */
 {						   /*			     */
-  if ( fname )					   /*			     */
-  { init_parse();				   /*			     */
-    InitLine;					   /*			     */
-    file = px_fopen((char*)fname,		   /*			     */
-		    "r",			   /*			     */
-		    r_pattern,			   /*			     */
-		    r_path,			   /*			     */
-		    see_bib_msg);		   /*			     */
-    filename = px_filename;			   /*			     */
-    return( file != NULL );			   /*			     */
-  }						   /*			     */
-  return FALSE;					   /*			     */
+  if (fname  == StringNULL) return FALSE;	   /*			     */
+ 						   /*                        */
+  init_parse();				   	   /*			     */
+  InitLine;					   /*			     */
+  file = px_fopen((char*)fname,		   	   /*			     */
+		  "r",			   	   /*			     */
+		  r_pattern,			   /*			     */
+		  r_path,			   /*			     */
+		  see_bib_msg);		   	   /*			     */
+  filename = px_filename;			   /*			     */
+  return (file != NULL);			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -951,14 +957,14 @@ static int parse_value()			   /*			     */
   int   start_flno = flno;			   /*                        */
  						   /*                        */
   sbrewind(parse_sb);				   /*			     */
-  switch ( GetC )				   /*			     */
+  switch (GetC)				   	   /*			     */
   { case EOF:					   /*                        */
       UnterminatedError("Unterminated value",	   /*                        */
 			start_flno);		   /*                        */
       return FALSE;	   			   /*			     */
 						   /*			     */
     case '"':					   /*			     */
-      if ( !parse_string(FALSE) ) return(FALSE);   /*			     */
+      if ( !parse_string(FALSE) ) return FALSE;    /*			     */
       push_string(symbol((String)sbflush(parse_sb)));/*			     */
       sbrewind(parse_sb);			   /*			     */
       break;					   /*			     */
@@ -1001,7 +1007,7 @@ static int parse_value()			   /*			     */
 int read_rsc(name)				   /*			     */
   String	name;				   /*			     */
 { int	        c;				   /*			     */
-  String	token;				   /*			     */
+  Symbol	token;				   /*			     */
   char		*s_filename;			   /*			     */
   FILE		*s_file;			   /*                        */
   String	s_file_line_buffer;		   /*                        */
@@ -1037,7 +1043,7 @@ int read_rsc(name)				   /*			     */
 	  { (void)seen();			   /*                        */
 	    return(-1);				   /*                        */
 	  }					   /*			     */
-	  (void)set_rsc(token,pop_string());	   /*			     */
+	  (void)set_rsc(token, pop_string());	   /*			     */
 	}					   /*			     */
     }						   /*			     */
     (void)seen();				   /*			     */

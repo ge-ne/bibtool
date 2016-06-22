@@ -42,14 +42,14 @@
  Record new_record _ARG((int token,int size)); 	   /* record.c               */
  Record record_gc _ARG((Record rec)); 		   /* record.c               */
  Record unlink_record _ARG((Record rec)); 	   /* record.c               */
- String record_get _ARG((Record rec, String key)); /* record.c               */
- WordList new_wordlist _ARG((String  s));	   /* record.c               */
+ Symbol record_get _ARG((Record rec, Symbol key)); /* record.c               */
+ WordList new_wordlist _ARG((Symbol  sym));	   /* record.c               */
  int count_record _ARG((Record rec));		   /* record.c               */
- void add_sort_order _ARG((String val)); 	   /* record.c               */
+ void add_sort_order _ARG((Symbol val)); 	   /* record.c               */
  void free_1_record _ARG((Record rec)); 	   /* record.c               */
  void free_record _ARG((Record rec)); 		   /* record.c               */
- void provide_to_record _ARG((Record rec,String s,String t));/* record.c     */
- void push_to_record _ARG((Record rec,String s,String t));/* record.c        */
+ void provide_to_record _ARG((Record rec,Symbol s,Symbol t));/* record.c     */
+ void push_to_record _ARG((Record rec,Symbol s,Symbol t));/* record.c        */
  void sort_record _ARG((Record rec)); 		   /* record.c               */
 
 /*****************************************************************************/
@@ -70,12 +70,12 @@
 Record copy_record(rec)				   /*			     */
   register Record rec;				   /*			     */
 { register Record new;				   /*			     */
-  register String *new_heap,			   /*			     */
+  register Symbol *new_heap,			   /*			     */
 		  *old_heap;			   /*			     */
   register int	  i;				   /*			     */
 						   /*			     */
   if (	(new=(Record)malloc(sizeof(SRecord))) == 0L/*			     */
-     || (new_heap=(String*)malloc(sizeof(String)*(size_t)RecordFree(rec)))/* */
+     || (new_heap=(Symbol*)malloc(sizeof(Symbol)*(size_t)RecordFree(rec)))/* */
 	== 0L )					   /*			     */
   { OUT_OF_MEMORY("Record"); }      		   /*                        */
   RecordSortkey(new)	  = sym_empty;		   /*			     */
@@ -109,12 +109,12 @@ Record new_record(token,size)			   /*			     */
   int		  token;			   /*			     */
   int		  size;				   /*                        */
 { register Record new;				   /*			     */
-  register String *new_heap;			   /*			     */
+  register Symbol *new_heap;			   /*			     */
   register int	  i;				   /*			     */
 						   /*			     */
   if ( size < 1 ) size = 1;			   /*                        */
   if (	(new=(Record)malloc(sizeof(SRecord))) == 0L/*			     */
-     || (new_heap=(String*)malloc(sizeof(String)*(size_t)(size)))/*          */
+     || (new_heap=(Symbol*)malloc(sizeof(Symbol)*(size_t)(size)))/*          */
 	== 0L )					   /*			     */
   { OUT_OF_MEMORY("Record"); }      		   /*                        */
   RecordSortkey(new)	= sym_empty;		   /*			     */
@@ -128,7 +128,7 @@ Record new_record(token,size)			   /*			     */
   RecordFlags(new)	= 0;	   		   /*			     */
   RecordHeap(new)	= new_heap;		   /*			     */
   for (i = 0; i < RecordFree(new); ++i)		   /*			     */
-  { *(new_heap++) = StringNULL; }	   	   /*			     */
+  { *(new_heap++) = NO_SYMBOL; }	   	   /*			     */
   return (new);					   /*			     */
 }						   /*------------------------*/
 
@@ -258,28 +258,27 @@ Record record_gc(rec)				   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	rec	
-**	 key	
+**	rec	the record
+**	key	the key
 ** Returns:	
 **___________________________________________________			     */
-String record_get(rec, key)			   /*                        */
+Symbol record_get(rec, key)			   /*                        */
   Record rec;					   /*                        */
-  String key;					   /*                        */
-{						   /*                        */
-  int i;					   /*                        */
-  register String *hp;				   /*                        */
-  register String s, t;				   /*                        */
+  Symbol key;					   /*                        */
+{ int i;					   /*                        */
+  register Symbol *hp;				   /*                        */
+  register Symbol s, t;				   /*                        */
  						   /*                        */
   for (i = RecordFree(rec), hp = RecordHeap(rec);  /* visit all fields       */
        i > 0;					   /*			     */
        i -= 2)			   	   	   /*			     */
   { s = *hp++;                                     /*                        */
     t = *hp++;                                     /*                        */
-    if (s == key && t != StringNULL)		   /*                        */
+    if (s == key && t != NO_SYMBOL)		   /*                        */
     { return t; }              			   /*                        */
   }						   /*			     */
  						   /*                        */
-  return NULL;					   /*                        */
+  return NO_SYMBOL;				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -288,22 +287,21 @@ String record_get(rec, key)			   /*                        */
 ** Purpose:	
 **		
 ** Arguments:
-**	rec	
+**	rec	the record
 ** Returns:	
 **___________________________________________________			     */
 int count_record(rec)				   /*                        */
   Record rec;					   /*                        */
 { int len = 0;					   /*                        */
   int i;					   /*                        */
-  register String *hp;				   /*                        */
-  register String t;				   /*                        */
+  register Symbol *hp;				   /*                        */
+  register Symbol t;				   /*                        */
  						   /*                        */
   for (i = RecordFree(rec), hp = RecordHeap(rec);  /* visit all fields       */
        i > 0;					   /*			     */
        i -= 2)			   	   	   /*			     */
-  { t	= *hp++;                                   /*                        */
-    if (t != StringNULL)			   /*                        */
-    { len++; }              			   /*                        */
+  { t = *hp++;                                     /*                        */
+    if (t != NO_SYMBOL) { len++; }		   /*                        */
   }						   /*			     */
   						   /*                        */
   return len;					   /*                        */
@@ -348,9 +346,9 @@ void push_to_record(rec, s, t)			   /*			     */
   i = RecordFree(rec);				   /*                        */
   RecordFree(rec) += 2;				   /*                        */
   if ( (RecordHeap(rec)   			   /* enlarge the heap	     */
-	=(String*)realloc(RecordHeap(rec),	   /*	                     */
-			 RecordFree(rec)*sizeof(String)))/*                  */
-     == (String*)NULL )			   	   /*	                     */
+	=(Symbol*)realloc(RecordHeap(rec),	   /*	                     */
+			 RecordFree(rec)*sizeof(Symbol)))/*                  */
+     == (Symbol*)NULL )			   	   /*	                     */
   { OUT_OF_MEMORY("heap"); }      		   /*                        */
 						   /*			     */
   RecordHeap(rec)[i++] = s;		   	   /*			     */
@@ -373,8 +371,8 @@ void push_to_record(rec, s, t)			   /*			     */
 **___________________________________________________			     */
 void provide_to_record(rec,s,t)			   /*			     */
   register Record rec;				   /*                        */
-  register String s;				   /*			     */
-  register String t;				   /*			     */
+  register Symbol s;				   /*			     */
+  register Symbol t;				   /*			     */
 { register int i;		   		   /*			     */
    						   /*                        */
   if (s == sym_crossref || s == sym_xdata)	   /*                        */
@@ -385,7 +383,7 @@ void provide_to_record(rec,s,t)			   /*			     */
     { return; }					   /*  done                  */
   }						   /*                        */
   for (i = 2; i < RecordFree(rec); i += 2 )	   /* search empty field     */
-  { if ( RecordHeap(rec)[i] == StringNULL )	   /* if found then          */
+  { if ( RecordHeap(rec)[i] == NO_SYMBOL )	   /* if found then          */
     { RecordHeap(rec)[i++] = s;			   /* add the new item       */
       RecordHeap(rec)[i]   = t;			   /*                        */
       return;					   /*                        */
@@ -394,9 +392,9 @@ void provide_to_record(rec,s,t)			   /*			     */
   i = RecordFree(rec);				   /*                        */
   RecordFree(rec) += 2;				   /*                        */
   if ( (RecordHeap(rec)   			   /* enlarge the heap	     */
-	=(String*)realloc(RecordHeap(rec),	   /*	                     */
-			 RecordFree(rec)*sizeof(String)))/*                  */
-     == (String*)NULL )			   	   /*	                     */
+	=(Symbol*)realloc(RecordHeap(rec),	   /*	                     */
+			 RecordFree(rec)*sizeof(Symbol)))/*                  */
+     == (Symbol*)NULL )			   	   /*	                     */
   { OUT_OF_MEMORY("heap"); }      		   /*                        */
 						   /*			     */
   RecordHeap(rec)[i++] = s;		   	   /*			     */
@@ -421,7 +419,7 @@ void provide_to_record(rec,s,t)			   /*			     */
 ** Returns:	
 **___________________________________________________			     */
 WordList new_wordlist(s)			   /*                        */
-  String  s;				   	   /*                        */
+  Symbol s;				   	   /*                        */
 { register WordList wl;				   /*                        */
   if ( (wl=(WordList)malloc(sizeof(SWordList))) == WordNULL )/*              */
   { OUT_OF_MEMORY("WordList"); }		   /*                        */
@@ -453,22 +451,23 @@ WordList new_wordlist(s)			   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void add_sort_order(val)			   /*                        */
-  String    val;				   /*                        */
-{ String    s;					   /*                        */
+  Symbol    val;				   /*                        */
+{ Symbol    sym;				   /*                        */
   int       type;				   /*                        */
   OrderList ol;					   /*                        */
   WordList  *wlp = NULL;			   /*                        */
   WordList  wl, wl_next;			   /*                        */
+  String    s = SymbolValue(val);		   /*                        */
  						   /*                        */
-  (void)SParseSkip(&val);			   /*                        */
-  if ( *val == '*' )				   /*                        */
-  { s    = StringNULL;			   	   /*                        */
+  (void)SParseSkip(&s);			   	   /*                        */
+  if (*s == '*')				   /*                        */
+  { sym  = NO_SYMBOL;			   	   /*                        */
     type = BIB_NOOP;				   /*                        */
-    val++;					   /*                        */
+    s++;					   /*                        */
   }						   /*                        */
-  else if ( (s=SParseSymbol(&val)) == StringNULL ) /*                        */
+  else if ((sym=SParseSymbol(&s)) == NO_SYMBOL)    /*                        */
   { return; }					   /*                        */
-  else if ( (type=find_entry_type(s)) == BIB_NOOP )/*                        */
+  else if ((type=find_entry_type(SymbolValue(sym))) == BIB_NOOP)/*           */
   { Err("Undefined entry type for sort order");	   /*                        */
     return;					   /*                        */
   }						   /*                        */
@@ -490,16 +489,16 @@ void add_sort_order(val)			   /*                        */
     wlp           = &OrderVal(ol);		   /*                        */
   }						   /*                        */
    						   /*                        */
-  (void)SParseSkip(&val);			   /*                        */
+  (void)SParseSkip(&s);			   	   /*                        */
   						   /*                        */
-  while ( *val )				   /*                        */
-  { if ( (s=SParseSymbol(&val)) != NULL )	   /*                        */
-    { if ( *wlp ) { ThisWord(*wlp) = s;     }	   /*                        */
-      else        { *wlp = new_wordlist(s); }	   /*                        */
+  while ( *s )				   	   /*                        */
+  { if ( (sym=SParseSymbol(&s)) != NO_SYMBOL )     /*                        */
+    { if ( *wlp ) { ThisWord(*wlp) = sym; }	   /*                        */
+      else        { *wlp = new_wordlist(sym); }	   /*                        */
       wlp = &NextWord(*wlp);			   /*                        */
     }						   /*                        */
     else break;					   /*                        */
-    (void)SParseSkip(&val);			   /*                        */
+    (void)SParseSkip(&s);			   /*                        */
   }						   /*                        */
   						   /*                        */
   wl   = *wlp;					   /*                        */

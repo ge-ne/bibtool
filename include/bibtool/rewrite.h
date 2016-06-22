@@ -26,6 +26,7 @@
 
 #include <bibtool/record.h>
 #include <bibtool/database.h>
+#include <bibtool/symbols.h>
 
 #ifdef __STDC__
 #define _ARG(A) A
@@ -35,13 +36,13 @@
  int is_selected _ARG((DB db, Record rec));	   /*                        */
  int set_regex_syntax _ARG((char* name));	   /*                        */
  void add_check_rule _ARG((String s));		   /*                        */
- void add_extract _ARG((String s, int regexp, int notp));/*                  */
+ void add_extract _ARG((Symbol s, int regexp, int notp));/*                  */
  void add_field _ARG((String spec));		   /*                        */
- int foreach_addlist _ARG((int (*fct)(String,String)));/* rewrite.c          */
+ int foreach_addlist _ARG((int (*fct)(Symbol,Symbol)));/* rewrite.c          */
  void add_rewrite_rule _ARG((String s));	   /*                        */
  void clear_addlist _ARG((void));		   /*                        */
- void remove_field _ARG((String field, Record rec));/*                       */
- void rename_field _ARG((String spec));		   /*                        */
+ void remove_field _ARG((Symbol field, Record rec));/*                       */
+ void rename_field _ARG((Symbol spec));		   /*                        */
  void rewrite_record _ARG((DB db, Record rec));	   /*                        */
  void save_regex _ARG((String s));		   /*                        */
  char* get_regex_syntax();			   /*                        */

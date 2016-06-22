@@ -35,4 +35,4 @@
 #else
 #define _ARG(A) ()
 #endif
- String  expand_rhs _ARG((String s,String pre,String post, DB db));/* expand.c*/
+ Symbol expand_rhs _ARG((Symbol s,Symbol pre,Symbol post,DB db, int lowercase));/* expand.c*/

@@ -110,7 +110,7 @@ $(BIBTOOL_PRG): $(CFILES) $(HFILES)
 	(cd ..; make)
 
 clean:
-	${RM} *.log *.err *.???-expected *.out *~ *.bak
+	${RM} *.log *.err *.???-expected *.out *~ *.bak core
 
 distclean: clean
 

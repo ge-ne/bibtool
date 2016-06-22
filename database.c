@@ -53,10 +53,10 @@
 #define _ARG(A) ()
 #endif
  DB new_db _ARG((void));			   /*                        */
- Record db_find _ARG((DB db, String key));	   /*                        */
- Record db_search _ARG((DB db, String key));	   /*                        */
- String  db_new_key _ARG((DB db, String key));	   /*                        */
- String  db_string _ARG((DB db, String s, int localp));/*                    */
+ Record db_find _ARG((DB db, Symbol key));	   /*                        */
+ Record db_search _ARG((DB db, Symbol key));	   /*                        */
+ Symbol db_new_key _ARG((DB db, Symbol key));	   /*                        */
+ Symbol db_string _ARG((DB db, Symbol s, int localp));/*                     */
  int * db_count _ARG((DB db, int *lp));		   /*                        */
  int read_db _ARG((DB db, String file, int verbose));/*                      */
  static Record insert_record _ARG((Record rec, Record ptr,int (*less)_ARG((Record, Record))));/**/
@@ -145,21 +145,27 @@ void free_db(db)				   /*                        */
 **___________________________________________________			     */
 int apply_modify(db, key, rec)	   		   /*                        */
   DB    db;					   /*                        */
-  String key;					   /*                        */
+  Symbol key;					   /*                        */
   Record rec;					   /*                        */
-{ String *hp = RecordHeap(rec);			   /*                        */
+{ Symbol *hp = RecordHeap(rec);			   /*                        */
   int i;					   /*                        */
-  Record r  = db_find(db,key);			   /*                        */
+  Record r  = db_find(db, key);			   /*                        */
   if (r == RecordNULL)				   /*                        */
-  { WARNING2("Entry to modify not found: ",key);   /*                        */
+  { WARNING2("Entry to modify not found: ",	   /*                        */
+	     SymbolValue(key));   		   /*                        */
     return 0;					   /*			     */
   }						   /*			     */
-  DebugPrint2("Modify ",*RecordHeap(rec));	   /*                        */
+  DebugPrint2("Modify ",			   /*                        */
+	      SymbolValue(*RecordHeap(rec)));	   /*                        */
 						   /*			     */
   for ( i = RecordFree(rec); i > 0; i -= 2 )	   /*			     */
   {		   				   /* No deleted or          */
-    if ( *hp && is_allowed(**hp) && *(hp+1) )	   /*   private entry        */
-    { DebugPrint3(*hp," => ",*(hp+1));	   	   /*                        */
+    if (*hp &&					   /*                        */
+	is_allowed(*SymbolValue(*hp)) &&	   /*                        */
+	*(hp+1) )	   		   	   /*   private entry        */
+    { DebugPrint3(SymbolValue(*hp),		   /*                        */
+		  " => ",			   /*                        */
+		  SymbolValue(*(hp+1)));	   /*                        */
       push_to_record(r, *hp, *(hp+1));		   /*                        */
     }						   /*			     */
     hp += 2;					   /* Goto next pair.	     */
@@ -181,7 +187,7 @@ int apply_modify(db, key, rec)	   		   /*                        */
 **___________________________________________________			     */
 int apply_alias(db, key, rec, verbose)	   	   /*                        */
   DB     db;					   /*                        */
-  String key;					   /*                        */
+  Symbol key;					   /*                        */
   Record rec;					   /*                        */
   int    verbose;				   /*                        */
 { Record r = db_find(db, key);			   /*                        */
@@ -189,7 +195,8 @@ int apply_alias(db, key, rec, verbose)	   	   /*                        */
   { WARNING2("Entry to alias not found: ",key);    /*                        */
     return 0;					   /*			     */
   }						   /*			     */
-  DebugPrint2("Alias ",*RecordHeap(rec));	   /*                        */
+  DebugPrint2("Alias ",				   /*                        */
+	      SymbolValue(*RecordHeap(rec)));	   /*                        */
  						   /*                        */
   r = copy_record(r);	   	   		   /* Make a private copy.   */
   RecordOldKey(r) = *RecordHeap(rec);		   /*                        */
@@ -240,9 +247,13 @@ void db_insert(db, rec, verbose)		   /*                        */
       break;					   /*                        */
     case BIB_INCLUDE:				   /*                        */
       if(rsc_apply_include)			   /*                        */
-      {	DebugPrint2("Including ",*RecordHeap(rec));/*                        */
-	if (read_db(db,*RecordHeap(rec),verbose))  /*                        */
-	{ ERROR2("File not found: ",*RecordHeap(rec));/*                     */
+      {	DebugPrint2("Including ",		   /*                        */
+		    SymbolValue(*RecordHeap(rec)));/*                        */
+	if (read_db(db,				   /*                        */
+		    SymbolValue(*RecordHeap(rec)), /*                        */
+		    verbose))  			   /*                        */
+	{ ERROR2("File not found: ",		   /*                        */
+		 SymbolValue(*RecordHeap(rec)));   /*                        */
 	}					   /*                        */
 	free_record(rec);			   /*                        */
 	return;					   /*                        */
@@ -253,7 +264,8 @@ void db_insert(db, rec, verbose)		   /*                        */
       break;					   /*                        */
     case BIB_ALIAS:				   /*                        */
       if (rsc_apply_alias)			   /*                        */
-      {	DebugPrint2("Alias ",*RecordHeap(rec));	   /*                        */
+      {	DebugPrint2("Alias ",			   /*                        */
+		    SymbolValue(*RecordHeap(rec)));/*                        */
 	apply_alias(db, *(RecordHeap(rec)+1),	   /*                        */
 		    rec, verbose);		   /*                        */
 	free_record(rec);			   /*                        */
@@ -266,7 +278,7 @@ void db_insert(db, rec, verbose)		   /*                        */
     default:	       				   /*                        */
       rp = &DBnormal(db);			   /*                        */
       DebugPrint2("Inserting Entry ",		   /*                        */
-		  *RecordHeap(rec));		   /*                        */
+		  SymbolValue(*RecordHeap(rec)));  /*                        */
       break;					   /*                        */
   }						   /*                        */
 						   /*                        */
@@ -466,9 +478,9 @@ static void preprint_string(file, db, strings, rec)/*                        */
   int d;					   /*                        */
   Record r;					   /*                        */
  						   /*                        */
-  for ( i=0; i < RecordFree(rec); i+=2 )   	   /*                        */
-  { if ( RecordHeap(rec)[i] != NULL )	   	   /*                        */
-    { String  s = RecordHeap(rec)[i+1];   	   /*                        */
+  for (i = 0; i < RecordFree(rec); i += 2)   	   /*                        */
+  { if ( RecordHeap(rec)[i] != NO_SYMBOL )	   /*                        */
+    { String s = SymbolValue(RecordHeap(rec)[i+1]);/*                        */
  						   /*                        */
       while(*s)					   /*                        */
       {						   /*                        */
@@ -573,7 +585,7 @@ static void print_strings(file, db, allp)	   /*                        */
 	  for (i = 2; i < RecordFree(rec); i += 2) /*                        */
 	  { if ( RecordHeap(rec)[i] != NULL )	   /*                        */
 	    { mark_string(strings,		   /*                        */
-			  RecordHeap(rec)[i+1]);   /*                        */
+			  SymbolValue(RecordHeap(rec)[i+1]));/*              */
 	    }					   /*                        */
 	  }					   /*                        */
 	}					   /*                        */
@@ -587,7 +599,8 @@ static void print_strings(file, db, allp)	   /*                        */
 	{					   /*                        */
 	  for (i = 1; i < RecordFree(rec); i++)    /*                        */
 	  { if ( RecordHeap(rec)[i] != NULL )	   /*                        */
-            { mark_string(strings,RecordHeap(rec)[i]);/*                     */
+            { mark_string(strings,		   /*                        */
+			  SymbolValue(RecordHeap(rec)[i]));/*                */
 	    }					   /*                        */
 	  }					   /*                        */
 	}					   /*                        */
@@ -601,7 +614,7 @@ static void print_strings(file, db, allp)	   /*                        */
   {						   /*                        */
     if (!RecordIsDELETED(rec) &&		   /*                        */
 	RecordIsMARKED(rec) )	   	   	   /*                        */
-    { preprint_string(file,db,strings,rec); }	   /*                        */
+    { preprint_string(file, db, strings, rec); }	   /*                        */
   }						   /*                        */
  						   /*                        */
   print_segment(file, db, strings, FALSE);	   /*                        */
@@ -770,10 +783,10 @@ void db_forall(db,fct)				   /*                        */
 **___________________________________________________			     */
 Record db_find(db,key)				   /*                        */
   DB              db;				   /*                        */
-  String	  key;				   /*                        */
+  Symbol	  key;				   /*                        */
 { register Record rec;				   /*                        */
 						   /*                        */
-  DebugPrint2("Finding... ",key); 		   /*                        */
+  DebugPrint2("Finding... ", SymbolValue(key));	   /*                        */
  						   /*                        */
  if ( DBnormal(db) == RecordNULL ) return RecordNULL;/*                      */
 						   /*                        */
@@ -818,7 +831,7 @@ Record db_find(db,key)				   /*                        */
 **___________________________________________________			     */
 Record db_search(db, key)			   /*                        */
   DB              db;				   /*                        */
-  String	  key;				   /*                        */
+  Symbol	  key;				   /*                        */
 { register Record rec;				   /*                        */
 						   /*                        */
   if ( DBnormal(db) == RecordNULL ) return RecordNULL;/*                     */
@@ -826,9 +839,9 @@ Record db_search(db, key)			   /*                        */
   for (rec = DBnormal(db);			   /*                        */
        rec != RecordNULL;			   /*                        */
        rec = NextRecord(rec))			   /*                        */
-  { if ( RecordOldKey(rec) != NULL )		   /*                        */
+  { if ( RecordOldKey(rec) != NO_SYMBOL )	   /*                        */
     { if ( RecordOldKey(rec) == key ) return rec; }/*                        */
-    else if ( *RecordHeap(rec) == key ) return rec; /*                       */
+    else if ( *RecordHeap(rec) == key ) return rec;/*                        */
   }						   /*                        */
  						   /*                        */
   for (rec = PrevRecord(DBnormal(db));		   /*                        */
@@ -850,9 +863,9 @@ Record db_search(db, key)			   /*                        */
 **	key	Key to find.
 ** Returns:	nothing
 **___________________________________________________			     */
-String  db_new_key(db,key)			   /*                        */
+Symbol db_new_key(db, key)			   /*                        */
   DB              db;				   /*                        */
-  String	  key;				   /*                        */
+  Symbol	  key;				   /*                        */
 { register Record rec;				   /*                        */
 						   /*                        */
   if ( DBnormal(db) == RecordNULL ) return NULL;   /*                        */
@@ -1021,8 +1034,9 @@ static Record insert_record(rec,ptr,less)	   /*			     */
 static int cmp_heap(r1,r2)		   	   /*                        */
   register Record r1;				   /*                        */
   register Record r2;				   /*                        */
-{ return strcmp((char*)*RecordHeap(r1),		   /*                        */
-		(char*)*RecordHeap(r2))<0;	   /*                        */
+{						   /*                        */
+  return symcmp(*RecordHeap(r1),		   /*                        */
+		*RecordHeap(r2)) < 0;		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -1071,31 +1085,31 @@ void db_sort(db,less)				   /*                        */
 **		is searched aswell. If all fails |NULL| is returned.
 ** Arguments:
 **	db	Database
-**	s	Name of the \BibTeX{} macro to expand.
+**	sym	Name of the \BibTeX{} macro to expand.
 **	localp	Boolean determining whether the search is only local to the db.
 ** Returns:	The macro expansion or |NULL| upon failure.
 **___________________________________________________			     */
-String db_string(db, s, localp)			   /*                        */
+Symbol db_string(db, sym, localp)		   /*                        */
   DB     db;					   /*                        */
-  Symbol s;					   /*                        */
+  Symbol sym;					   /*                        */
   int    localp;				   /*                        */
 { Record rec;					   /*                        */
  						   /*                        */
   if ((rec=DBstring(db)))			   /*                        */
   {						   /*                        */
     for ( ; rec; rec=NextRecord(rec) )		   /*                        */
-    { if ( RecordHeap(rec)[0] == s )		   /*                        */
+    { if ( RecordHeap(rec)[0] == sym )		   /*                        */
       { return RecordHeap(rec)[1]; }		   /*                        */
     }						   /*                        */
     for (rec = PrevRecord(DBstring(db));	   /*                        */
 	 rec;					   /*                        */
 	 rec = PrevRecord(rec) )		   /*                        */
-    { if ( RecordHeap(rec)[0] == s )		   /*                        */
+    { if ( RecordHeap(rec)[0] == sym )		   /*                        */
       { return RecordHeap(rec)[1]; }		   /*                        */
     }						   /*                        */
   }						   /*                        */
   						   /*                        */
-  return (localp ? NULL : look_macro(s, 0));	   /*                        */
+  return (localp ? NO_SYMBOL : look_macro(sym, 0));/*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -1223,7 +1237,7 @@ void db_xref_undelete(db)			   /*                        */
     if ( RecordIsXREF(rec)   &&		   	   /*                        */
 	 !RecordIsDELETED(rec)		   	   /*                        */
        )					   /*                        */
-    { String key = (String)"???";		   /*                        */
+    { Symbol key = sym_qqq;	   		   /*                        */
       int    count;				   /*                        */
       Record r = rec;				   /*                        */
  						   /*                        */
@@ -1238,12 +1252,14 @@ void db_xref_undelete(db)			   /*                        */
 	}			   	   	   /*                        */
 	else					   /*                        */
 	{					   /*                        */
-	  key = symbol(lower(expand_rhs(key,	   /*                        */
-					sym_empty, /*                        */
-					sym_empty, /*                        */
-					db)));     /*                        */
+	  key = expand_rhs(key,	   		   /*                        */
+			   sym_empty, 		   /*                        */
+			   sym_empty, 		   /*                        */
+			   db,			   /*                        */
+			   TRUE);     	   	   /*                        */
 	  if ( (r=db_search(db,key)) == RecordNULL )/*                       */
-	  { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",key);/*      */
+	  { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",/*           */
+		      SymbolValue(key));	   /*                        */
 	    count = -1;			   	   /*                        */
 	  }					   /*                        */
 	  else if ( !RecordIsDELETED(r) )	   /*                        */
@@ -1255,7 +1271,7 @@ void db_xref_undelete(db)			   /*                        */
       }			   		   	   /*                        */
       if (count == -1)				   /*                        */
       { ErrPrintF("*** BibTool: Crossref limit exceeded; `%s' possibly looped.\n",
-		  key);				   /*                        */
+		  SymbolValue(key));		   /*                        */
       }						   /*                        */
     }    					   /*                        */
   }						   /*                        */

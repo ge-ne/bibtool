@@ -35,7 +35,7 @@
 **		is prety generic.
 **________________________________________________   			     */
  typedef struct wORDlIST			   /*                        */
- { String	   wl_word;			   /* String value of	     */
+ { Symbol	   wl_word;			   /* String value of	     */
  						   /*  this node.            */
    struct wORDlIST *wl_next;			   /* Pointer to the next    */
  						   /*  node.                 */
@@ -77,8 +77,8 @@
 #define _ARG(A) ()
 #endif
  int find_word _ARG((String s, WordList wl));	   /* wordlist.c             */
- int foreach_word _ARG((WordList wl,int (*fct)_ARG((String))));/* wordlist.c */
- void free_words _ARG((WordList *wlp,void (*fct)_ARG((String))));/* wordlist.c*/
- void add_word _ARG((String s,WordList *wlp));	   /* wordlist.c             */
+ int foreach_word _ARG((WordList wl,int (*fct)_ARG((Symbol))));/* wordlist.c */
+ void free_words _ARG((WordList *wlp,void (*fct)_ARG((Symbol))));/* wordlist.c*/
+ void add_word _ARG((Symbol s,WordList *wlp));	   /* wordlist.c             */
 
 #endif

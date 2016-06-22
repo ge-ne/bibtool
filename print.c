@@ -55,7 +55,7 @@
  static int sput_char _ARG((int c));		   /* print.c                */
  static void indent _ARG((int col,int (*fct)_ARG((int))));/* print.c         */
  static void line_breaking _ARG((String t,int align,int (*fct)_ARG((int))));/* print.c*/
- static void print_equation _ARG((String pre,String s,String t,int align,int (*fct)_ARG((int))));/* print.c*/
+ static void print_equation _ARG((String pre,Symbol s,Symbol t,int align,int (*fct)_ARG((int))));/* print.c*/
  static void puts_in _ARG((String s,int in,int (*fct)_ARG((int))));/* print.c */
  void fput_record _ARG((FILE *file,Record rec,DB db,String start));/* print.c*/
  void put_record _ARG((int (*fct)_ARG((int)),Record rec,DB db,String start));/* print.c*/
@@ -109,8 +109,7 @@ void set_symbol_type(s)				   /*			     */
 ** Type:	String
 ** Purpose:	
 **		
-** Arguments:
-**		
+** Arguments:	none
 ** Returns:	
 **___________________________________________________			     */
 String get_symbol_type()			   /*                        */
@@ -154,7 +153,7 @@ void set_key_type(s)				   /*			     */
 
 #define NL	(void)(*fct)('\n'),column=0
 #define PUTC(C) (void)((*fct)(C),++column)
-#define PUTS(S) puts_in((String)S, 0, fct)
+#define PUTS(S) puts_in((String)(S), 0, fct)
 
 /*-----------------------------------------------------------------------------
 ** Function:	puts_in()
@@ -272,7 +271,8 @@ static void line_breaking(t, align, fct)	   /*			     */
       default:					   /* Now we should have a   */
 	while ( is_allowed(*t) ) ++t;		   /*	SYMBOL		     */
 	end_c = *t; *t = '\0';			   /*			     */
-	s = get_item(symbol(s), symbol_type);	   /*			     */
+	s = SymbolValue(get_item(symbol(s),	   /*                        */
+				 symbol_type));	   /*			     */
 	len = strlen((char*)s);			   /*			     */
     }						   /*			     */
 						   /* Now s is a single	     */
@@ -358,35 +358,31 @@ static void line_breaking(t, align, fct)	   /*			     */
 **	fct	function to use for writing a character.
 ** Returns:	nothing
 **___________________________________________________'			     */
-static void print_equation(pre, s, t, align, fct)  /*			     */
+static void print_equation(pre, lhs, rhs, align, fct)/*			     */
   String pre;					   /*                        */
-  String s;				   	   /*			     */
-  String t;				   	   /*			     */
+  Symbol lhs;				   	   /*			     */
+  Symbol rhs;				   	   /*			     */
   int  align;				   	   /*			     */
   int (*fct)_ARG((int));			   /*                        */
 {						   /*			     */
   if ( align < 0 )				   /*			     */
   { PUTS(pre);		   			   /*			     */
-    PUTS(get_item(s,symbol_type));		   /*			     */
-    if ( rsc_print_we )				   /*                        */
-    { PUTS(" = "); }				   /*                        */
-    else					   /*                        */
-    { PUTC('='); }				   /*                        */
-    PUTS(t);					   /*			     */
+    PUTS(SymbolValue(get_item(lhs, symbol_type))); /*			     */
+    PUTS(rsc_print_we ? " = " : "=");		   /*                        */
   }						   /*			     */
   else						   /*			     */
-  { indent(rsc_indent,fct);			   /*			     */
+  { indent(rsc_indent, fct);			   /*			     */
     PUTS(pre);		   			   /*			     */
-    PUTS(get_item(s,symbol_type));		   /*			     */
+    PUTS(SymbolValue(get_item(lhs, symbol_type))); /*			     */
     if ( column >= align - 2 && rsc_print_we )	   /*                        */
     { PUTC(' '); }				   /*                        */
     else if ( rsc_eq_right )			   /*                        */
-    { indent(align-2,fct); }			   /*			     */
+    { indent(align - 2, fct); }			   /*			     */
     else if ( column < align || rsc_print_we )	   /*                        */
     { PUTC(' '); }	   			   /*                        */
     PUTC('=');					   /*			     */
     if ( rsc_print_we )	{ PUTC(' '); }		   /*                        */
-    line_breaking(t,align,fct);			   /*			     */
+    line_breaking(SymbolValue(rhs), align, fct);   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
 
@@ -521,7 +517,7 @@ void put_record(fct, rec, db, start)		   /*                        */
   Record       rec;				   /*                        */
   DB	       db;				   /*                        */
   String       start;		   	   	   /* initial string = "@"   */
-{ String       *hp;			   	   /* heap pointer	     */
+{ Symbol       *hp;			   	   /* heap pointer	     */
   unsigned int i;			   	   /*			     */
   char	       open_brace, close_brace;		   /*			     */
   static int   first = 1;			   /*                        */
@@ -532,12 +528,12 @@ void put_record(fct, rec, db, start)		   /*                        */
   if ( rsc_no_nl && first ) { first = 0; }	   /*                        */
   else if ( IsNormalRecord(RecordType(rec)) ) { NL; }/*			     */
  						   /*                        */
-  if ( *RecordComment(rec) )		   	   /*                        */
-  { PUTS(RecordComment(rec));			   /*                        */
+  if ( *SymbolValue(RecordComment(rec)) )	   /*                        */
+  { PUTS(SymbolValue(RecordComment(rec)));	   /*                        */
     NL;						   /*                        */
   }						   /*                        */
  						   /*                        */
-  if ( rsc_parentheses )			   /*                        */
+  if (rsc_parentheses)			   	   /*                        */
   { open_brace  = '(';			   	   /*                        */
     close_brace = ')';			   	   /*                        */
   }						   /*                        */
@@ -546,7 +542,7 @@ void put_record(fct, rec, db, start)		   /*                        */
     close_brace = '}';			   	   /*                        */
   }						   /*                        */
  						   /*                        */
-  switch ( RecordType(rec) )			   /*			     */
+  switch (RecordType(rec))			   /*			     */
   { case BIB_COMMENT:				   /*			     */
 #ifdef OLD
       indent(rsc_col_c, fct);			   /*			     */
@@ -557,80 +553,93 @@ void put_record(fct, rec, db, start)		   /*                        */
       break;					   /*			     */
     case BIB_PREAMBLE:				   /*			     */
       PUTS(start);				   /*			     */
-      PUTS(EntryName(RecordType(rec)));	   	   /*			     */
+      PUTS(SymbolValue(EntryName(RecordType(rec))));/*			     */
       PUTC(open_brace);				   /*			     */
       indent(rsc_col_p,fct);			   /*			     */
-      line_breaking(*hp, rsc_col_p, fct);	   /*			     */
+      line_breaking(SymbolValue(*hp),		   /*                        */
+		    rsc_col_p,			   /*                        */
+		    fct);	   		   /*			     */
       PUTC(' ');				   /*                        */
       PUTC(close_brace);			   /*                        */
       NL;				   	   /*			     */
       break;					   /*			     */
     case BIB_STRING:				   /*			     */
       PUTS(start);				   /*			     */
-      PUTS(EntryName(RecordType(rec)));	   	   /*			     */
+      PUTS(SymbolValue(EntryName(RecordType(rec))));/*			     */
       PUTC(open_brace);				   /*			     */
-      print_equation(sym_empty,			   /*                        */
-		     *hp, *(hp+1), rsc_col_s, fct);/*		             */
+      print_equation(s_empty,			   /*                        */
+		     *hp,		   	   /*                        */
+		     *(hp+1),	   		   /*                        */
+		     rsc_col_s,			   /*                        */
+		     fct);			   /*		             */
       PUTC(' ');				   /*                        */
       PUTC(close_brace);			   /*                        */
       NL;				   	   /*			     */
       break;					   /*			     */
     case BIB_ALIAS:				   /*			     */
       PUTS(start);				   /*			     */
-      PUTS(EntryName(RecordType(rec)));	   	   /*			     */
+      PUTS(SymbolValue(EntryName(RecordType(rec))));/*			     */
       PUTC(open_brace);				   /*			     */
-      print_equation(sym_empty,			   /*                        */
-		     *hp, *(hp+1), rsc_col_s, fct);/*		             */
+      print_equation(s_empty,			   /*                        */
+		     *hp,		   	   /*                        */
+		     *(hp+1),	   		   /*                        */
+		     rsc_col_s,			   /*                        */
+		     fct);			   /*		             */
       PUTC(' ');				   /*                        */
       PUTC(close_brace);			   /*                        */
       NL;				   	   /*			     */
       break;					   /*			     */
     case BIB_INCLUDE:				   /*			     */
       PUTS(start);				   /*			     */
-      PUTS(EntryName(RecordType(rec)));	   	   /*			     */
+      PUTS(SymbolValue(EntryName(RecordType(rec))));/*			     */
       PUTC(open_brace);				   /*			     */
-      PUTS(*RecordHeap(rec));      	   	   /*			     */
+      PUTS(SymbolValue(*RecordHeap(rec)));	   /*			     */
       PUTC(close_brace);			   /*                        */
       NL;				   	   /*			     */
       break;					   /*			     */
     case BIB_MODIFY:				   /*			     */
     default:					   /*			     */
-
-      if (RecordType(rec) == type_xdata
-	  && rsc_expand_xdata) return;
-
+ 						   /*                        */
+      if (RecordType(rec) == type_xdata		   /*                        */
+	  && rsc_expand_xdata) return;		   /*                        */
+ 						   /*                        */
       PUTS(start);				   /*			     */
-      PUTS(EntryName(RecordType(rec)));	   	   /*			     */
+      PUTS(SymbolValue(EntryName(RecordType(rec))));/*			     */
       PUTC(open_brace);				   /*			     */
-      { String comma1 = sym_empty,		   /*                        */
+      { String comma1 = s_empty,		   /*                        */
 	       comma2 = (String)",";		   /*                        */
  						   /*                        */
         if (rsc_print_ce)			   /*                        */
 	{ comma1 = comma2;			   /*                        */
-	  comma2 = sym_empty;			   /*                        */
+	  comma2 = s_empty;			   /*                        */
 	}					   /*                        */
  						   /*                        */
         for ( i = RecordFree(rec); i > 0; i -= 2 ) /*			     */
 	{		   			   /* No deleted or          */
-	  if ( *hp && is_allowed(**hp) )	   /*   private entry        */
+	  if (*hp && is_allowed(*SymbolValue(*hp)))/*   private entry        */
 	  { 					   /*                        */
 	    if ( *(hp+1) )			   /* If equation	     */
 	    { PUTS(comma1);			   /*                        */
 	      NL;			   	   /*                        */
 	      print_equation(comma2,		   /*                        */
-			     *hp,		   /*                        */
+			     *hp,	   	   /*                        */
 			     (rsc_expand_macros	   /*                        */
 			      ? expand_rhs(*(hp+1),/*                        */
-					   (String)(rsc_braces?"{":"\""),/*  */
-					   (String)(rsc_braces?"}":"\""),/*  */
-					   db)	   /*                        */
+					   (rsc_braces/*                     */
+					    ? sym_open_brace/*               */
+					    : sym_double_quote),/*           */
+					   (rsc_braces/*                     */
+					    ? sym_close_brace/*              */
+					    : sym_double_quote),/*           */
+					   db,	   /*                        */
+					   FALSE)  /*                        */
 			      : *(hp+1) ),	   /*                        */
 			     rsc_col,		   /*                        */
 			     fct);		   /*                        */
 	    }					   /*			     */
 	    else				   /* Otherwise print a key  */
 	    { indent(rsc_col_key, fct);		   /*			     */
-	      PUTS(get_key_name(*hp));      	   /*			     */
+	      PUTS(SymbolValue(get_key_name(*hp)));/*			     */
 	    }					   /*			     */
 	  }					   /*			     */
 	  hp += 2;				   /* Goto next pair.	     */

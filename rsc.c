@@ -65,9 +65,9 @@
  int load_rsc _ARG((String name));		   /*                        */
  int resource _ARG((String name));		   /*                        */
  int search_rsc _ARG((void));			   /*                        */
- int set_rsc _ARG((String name,String val));	   /*                        */
+ int set_rsc _ARG((Symbol name, Symbol val));	   /*                        */
  int use_rsc _ARG((String s));			   /*                        */
- static int test_true _ARG((String  s));	   /*                        */
+ static int test_true _ARG((Symbol  s));	   /*                        */
  static void init_rsc _ARG((void));		   /*                        */
  void rsc_print _ARG((String s));		   /*                        */
 
@@ -89,10 +89,10 @@
 
 /*---------------------------------------------------------------------------*/
 
-#define RscNumeric(SYM,S,V,I) static String S = StringNULL;
-#define RscString(SYM,S,V,I)  static String S = StringNULL;
-#define RscBoolean(SYM,S,V,I) static String S = StringNULL;
-#define RscByFct(SYM,S,FCT)   static String S = StringNULL;
+#define RscNumeric(SYM,S,V,I) static Symbol S = NO_SYMBOL;
+#define RscString(SYM,S,V,I)  static Symbol S = NO_SYMBOL;
+#define RscBoolean(SYM,S,V,I) static Symbol S = NO_SYMBOL;
+#define RscByFct(SYM,S,FCT)   static Symbol S = NO_SYMBOL;
 #include <bibtool/resource.h>
 
 /*-----------------------------------------------------------------------------
@@ -147,7 +147,7 @@ static void init_rsc()				   /*			     */
 ** Returns:	|TRUE| iff the resource loading succeeds somewhere.
 **___________________________________________________			     */
 int search_rsc()				   /*			     */
-{ static String	def = (String)DefaultResourceFile;/*			     */
+{ static String	def = (String)DefaultResourceFile; /*			     */
   register char *ap;				   /*			     */
   register char *fn;				   /*			     */
   int		l;				   /*			     */
@@ -219,12 +219,13 @@ int resource(name)			   	   /*			     */
 **		interpreted as ``false''. 
 **		The comparison is done case insensitive.
 ** Arguments:
-**	s	String to check for the boolean value.
+**	sym	String to check for the boolean value.
 ** Returns:	|TRUE| iff the string represents true.
 **___________________________________________________			     */
-static int test_true(s)				   /*			     */
-  String  s;				   	   /*			     */
-{						   /*			     */
+static int test_true(sym)			   /*			     */
+  Symbol sym;				   	   /*			     */
+{ register String s = SymbolValue(sym);		   /*                        */
+						   /*			     */
   switch ( *s )					   /*                        */
   { case '1':		return (s[1] == '\0');	   /*                        */
     case 'o': case 'O':				   /*                        */
@@ -287,36 +288,42 @@ int use_rsc(s)					   /*			     */
 ** Returns:	|FALSE| iff everything went right.
 **___________________________________________________			     */
 int set_rsc(name,val)				   /*			     */
-  String name;				   	   /*			     */
-  String val;				   	   /*			     */
+  Symbol name;				   	   /*			     */
+  Symbol val;				   	   /*			     */
 {						   /*			     */
   if ( rsc_verbose )				   /*			     */
-  { VerbosePrint4("Resource ",			   /*                        */
-		  (char*)name,			   /*                        */
+  { VerbosePrint4("Set resource ",		   /*                        */
+		  (char*)SymbolValue(name),	   /*                        */
 		  " = ",			   /*                        */
-		  (val==NULL?"*NULL*":(char*)val));/*	                     */
+		  ( val == NO_SYMBOL		   /*                        */
+		    ? "*NULL*"			   /*                        */
+		    : (char*)SymbolValue(val)));   /*	                     */
   }						   /*                        */
 						   /*			     */
 #define SETQ(V,T) V=T; ReleaseSymbol(name);
 #define RscNumeric(SYM,S,V,I)		\
-  if( name==S ) { SETQ(V,atoi((char*)val));  ReleaseSymbol(val); return 0; }
+  if( name==S ) { SETQ(V,atoi((char*)SymbolValue(val)));	\
+    ReleaseSymbol(val); return 0; }
 #define RscString(SYM,S,V,I)		\
-  if( name==S ) { ReleaseSymbol(V); V = val; ReleaseSymbol(name); return 0; }
+  if( name==S ) { V = (String)new_string((char*)SymbolValue(val));	\
+    ReleaseSymbol(name); return 0; }
 #define RscBoolean(SYM,S,V,I)		\
-  if( name==S ) { SETQ(V,test_true(val));    ReleaseSymbol(val); return 0; }
+  if( name==S ) { SETQ(V,test_true(val));	\
+    ReleaseSymbol(val); return 0; }
 #define RscByFct(SYM,S,FCT)		\
-  if( name==S ) { (void)FCT; ReleaseSymbol(name); 	  return 0; }
+  if( name==S ) { (void)FCT;	\
+    ReleaseSymbol(name); return 0; }
 #define RSC_FIRST(C)	      case C:
 #define RSC_NEXT(C)	      break; case C:
 						   /*			     */
-  switch( *name )				   /*			     */
+  switch( *SymbolValue(name) )			   /*			     */
   {						   /*			     */
 #ifndef MAKEDEPEND
 #include <bibtool/resource.h>
 #endif
   }						   /*			     */
 						   /*			     */
-  ERROR3("Resource ",name," unknown.");		   /*			     */
+  ERROR3("Resource ",SymbolValue(name)," unknown.");/*			     */
   return 1;					   /*			     */
 }						   /*------------------------*/
 

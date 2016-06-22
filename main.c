@@ -279,22 +279,24 @@ int keep_xref(db,rec)				   /*                        */
   Record rec;					   /*                        */
 {						   /*                        */
   if ( !RecordIsDELETED(rec) )		   	   /*                        */
-  { String key;				   	   /*                        */
+  { Symbol key;				   	   /*                        */
     int    count;				   /*                        */
  						   /*                        */
     for (count = rsc_xref_limit;		   /* Prevent infinite loop  */
 	 count >= 0;		   	   	   /*                        */
 	 count--)				   /*                        */
     {					   	   /*                        */
-      if ( (key = get_field(db,rec,sym_crossref)) == NULL )/*                */
+      if ((key = get_field(db,rec,sym_crossref)) == NULL)/*                  */
       { return FALSE; }			   	   /*                        */
  						   /*                        */
-      key = symbol(lower(expand_rhs(key,	   /*                        */
-				    sym_empty,     /*                        */
-				    sym_empty, 	   /*                        */
-				    db)));     	   /*                        */
-      if ( (rec=db_search(db,key)) == RecordNULL ) /*                        */
-      { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",key);/*          */
+      key = expand_rhs(key,	   		   /*                        */
+		       sym_empty,     		   /*                        */
+		       sym_empty, 	   	   /*                        */
+		       db,			   /*                        */
+		       TRUE);     	   	   /*                        */
+      if ( (rec=db_search(db, key)) == RecordNULL )/*                        */
+      { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",/*               */
+		  SymbolValue(key));		   /*                        */
         return FALSE;			   	   /*                        */
       }					   	   /*                        */
  						   /*                        */
@@ -303,7 +305,7 @@ int keep_xref(db,rec)				   /*                        */
     }					   	   /*                        */
  						   /*                        */
     ErrPrintF("*** BibTool: Crossref limit exceeded; `%s' possibly looped.\n",
-	      key);				   /*                        */
+	      SymbolValue(key));		   /*                        */
   }    					   	   /*                        */
   return FALSE;					   /*                        */
 }						   /*------------------------*/
@@ -583,7 +585,7 @@ int main(argc,argv)				   /*			     */
     for (i = 0; i < c_len; ++i)			   /*			     */
     { if ( rsc_cnt_all || c[i] > 0 )	   	   /*			     */
       { ErrPrintF3("---  %-15s %5d read  %5d written\n",/*		     */
-		   get_entry_type(i),	   	   /*			     */
+		   SymbolValue(get_entry_type(i)), /*			     */
 		   c[i],		   	   /*			     */
 		   cnt[i]);		   	   /*			     */
       }						   /*			     */
@@ -619,8 +621,8 @@ int main(argc,argv)				   /*			     */
 static int rec_gt(r1, r2)			   /*                        */
   Record r1;					   /*                        */
   Record r2;					   /*                        */
-{ return (strcmp((char*)RecordSortkey(r1),	   /*                        */
-		 (char*)RecordSortkey(r2)) < 0);   /*                        */
+{ return (symcmp(RecordSortkey(r1),		   /*                        */
+		 RecordSortkey(r2)) < 0);	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -636,8 +638,8 @@ static int rec_gt(r1, r2)			   /*                        */
 static int rec_lt(r1, r2)			   /*                        */
   Record r1;					   /*                        */
   Record r2;					   /*                        */
-{ return (strcmp((char*)RecordSortkey(r1),	   /*                        */
-		 (char*)RecordSortkey(r2)) > 0);   /*                        */
+{ return (symcmp(RecordSortkey(r1),	   	   /*                        */
+		 RecordSortkey(r2)) > 0);   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -653,8 +655,8 @@ static int rec_lt(r1, r2)			   /*                        */
 static int rec_gt_cased(r1, r2)			   /*                        */
   Record r1;					   /*                        */
   Record r2;					   /*                        */
-{ return (strcmp((char*)get_key_name(RecordSortkey(r1)),/*                   */
-		 (char*)get_key_name(RecordSortkey(r2))) < 0);/*             */
+{ return (symcmp(get_key_name(RecordSortkey(r1)),  /*                        */
+		 get_key_name(RecordSortkey(r2))) < 0);/*                    */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -670,8 +672,8 @@ static int rec_gt_cased(r1, r2)			   /*                        */
 static int rec_lt_cased(r1, r2)			   /*                        */
   Record r1;					   /*                        */
   Record r2;					   /*                        */
-{ return (strcmp((char*)get_key_name(RecordSortkey(r1)),/*                   */
-		 (char*)get_key_name(RecordSortkey(r2))) > 0);/*             */
+{ return (symcmp(get_key_name(RecordSortkey(r1)),  /*                        */
+		 get_key_name(RecordSortkey(r2))) > 0);/*                    */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -727,11 +729,12 @@ static int do_no_keys(db, rec)			   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 static int update_crossref(db, rec)		   /*			     */
-  DB		 db;				   /*                        */
-  Record	 rec;				   /*			     */
-{ register String *hp;				   /*			     */
-  register int   i;				   /*                        */
-  String	 s, t;			   	   /*			     */
+  DB		  db;				   /*                        */
+  Record	  rec;				   /*			     */
+{ register Symbol *hp;				   /*			     */
+  register int    i;				   /*                        */
+  Symbol	  s;				   /*                        */
+  String	  t;			   	   /*			     */
 						   /*			     */
   if ( !RecordIsXREF(rec) ) return 0;		   /*			     */
 						   /*                        */
@@ -744,20 +747,25 @@ static int update_crossref(db, rec)		   /*			     */
     return 0;					   /*			     */
   }						   /*			     */
 						   /*			     */
-  t = *++hp; t++;				   /*			     */
+  t = SymbolValue(*++hp); t++;			   /*			     */
   (void)sp_open(t);				   /* Try to extract	     */
-  if ( (s = SParseSymbol(&t)) == StringNULL )	   /*  the crossref as symbol*/
+  if ((s = SParseSymbol(&t)) == NO_SYMBOL)	   /*  the crossref as symbol*/
   { return 0; }					   /*			     */
 						   /*			     */
-  if ( (s = db_new_key(db,s)) == StringNULL )	   /*			     */
+  if ((s = db_new_key(db, s)) == NO_SYMBOL)	   /*			     */
   { ERROR2("Crossref not found: ",(char*)s);	   /*			     */
     return 0;					   /*			     */
   }						   /*			     */
   if (rsc_key_case) { s = get_key_name(s); }	   /*                        */
-  if ( (t=(String)malloc(strlen((char*)s)+3))==(String)NULL )/* get temp mem */
+  if ( (t=(String)malloc(symlen(s) + 3))	   /*                        */
+       ==(String)NULL )				   /* get temp mem           */
   { OUT_OF_MEMORY("update_crossref()"); }	   /*		             */
 						   /*			     */
-  (void)sprintf((char*)t,(**hp=='"'?"\"%s\"":"{%s}"),s);/* make new crossref */
+  (void)sprintf((char*)t,			   /*                        */
+		(*SymbolValue(*hp) == '"'	   /*                        */
+		 ? "\"%s\""			   /*                        */
+		 : "{%s}"),			   /*                        */
+		SymbolValue(s));		   /* make new crossref      */
   *hp = symbol(t);				   /* store new crossref     */
   free(t);					   /* free temp memory	     */
   return 0;					   /*                        */
@@ -782,16 +790,16 @@ static int dbl_check(db, rec)			   /*                        */
        && equal_records(PrevRecord(rec),rec) )	   /*			     */
   {						   /*                        */
     if ( !rsc_quiet )				   /*                        */
-    { String k1 = *RecordHeap(rec);		   /*                        */
-      String k2 = *RecordHeap(PrevRecord(rec));	   /*                        */
+    { Symbol k1 = *RecordHeap(rec);		   /*                        */
+      Symbol k2 = *RecordHeap(PrevRecord(rec));	   /*                        */
       ErrPrint("*** BibTool WARNING: Possible double entries discovered: \n***\t");
-      if ( k1 == NULL ) k1 = s_empty;	   	   /*                        */
-      if ( k2 == NULL ) k2 = s_empty;	   	   /*                        */
-      ErrPrint((char*)k2);			   /*                        */
+      if ( k1 == NO_SYMBOL ) k1 = sym_empty;	   /*                        */
+      if ( k2 == NO_SYMBOL ) k2 = sym_empty;	   /*                        */
+      ErrPrint((char*)SymbolValue(k2));		   /*                        */
       ErrPrint(" =?= ");			   /*                        */
-      ErrPrint((char*)k1);			   /*                        */
+      ErrPrint((char*)SymbolValue(k1));		   /*                        */
       ErrPrint("\n***\t");			   /*                        */
-      ErrPrint((char*)RecordSortkey(rec));	   /*			     */
+      ErrPrint((char*)SymbolValue(RecordSortkey(rec)));/*		     */
       ErrPrint("\n");				   /*                        */
     }						   /*                        */
     if (rsc_del_dbl)				   /*                        */

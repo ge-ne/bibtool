@@ -43,7 +43,7 @@
  { short int	  kn_type;
    short int      kn_pre;
    short int      kn_post;
-   String	  kn_string;
+   Symbol	  kn_symbol;
    String	  kn_from;
    String	  kn_to;
    struct kEYnODE *kn_next;
@@ -54,7 +54,7 @@
 #define NodeType(X)   ((X)->kn_type)
 #define NodePre(X)    ((X)->kn_pre)
 #define NodePost(X)   ((X)->kn_post)
-#define NodeSymbol(X) ((X)->kn_string)
+#define NodeSymbol(X) ((X)->kn_symbol)
 #define NodeNext(X)   ((X)->kn_next)
 #define NodeThen(X)   ((X)->kn_then)
 #define NodeElse(X)   ((X)->kn_else)

@@ -40,6 +40,7 @@
 
 #include <bibtool/general.h>
 #include <bibtool/error.h>
+#include <bibtool/stack.h>
 
 /*****************************************************************************/
 /* Internal Programs                                                         */
@@ -50,8 +51,8 @@
 #else
 #define _ARG(A) ()
 #endif
- String  pop_string _ARG((void));		   /* stack.c                */
- void push_string _ARG((String  s));		   /* stack.c                */
+ Symbol  pop_string _ARG((void));		   /* stack.c                */
+ void push_string _ARG((Symbol  s));		   /* stack.c                */
 
 /*****************************************************************************/
 /* External Programs                                                         */
@@ -59,7 +60,7 @@
 
 /*---------------------------------------------------------------------------*/
 
- static String *stack;
+ static Symbol *stack;
  static size_t stack_size = 0;
  static size_t stack_ptr  = 0;
 
@@ -76,19 +77,19 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 void push_string(s)				   /*                        */
-  register String s;				   /*                        */
+  register Symbol s;				   /*                        */
 {						   /*                        */
   if ( stack_ptr >= stack_size )		   /*                        */
   { stack_size += 16;		   		   /*                        */
     stack = (stack_ptr == 0			   /*                        */
-	     ?(String*)malloc((size_t)(stack_size*sizeof(String)))/*         */
-	     :(String*)realloc((char*)stack,	   /*                        */
-			       (size_t)(stack_size*sizeof(String))));/*      */
+	     ?(Symbol*)malloc((size_t)(stack_size*sizeof(Symbol)))/*         */
+	     :(Symbol*)realloc((char*)stack,	   /*                        */
+			       (size_t)(stack_size*sizeof(Symbol))));/*      */
     if ( stack == NULL )			   /*                        */
     { OUT_OF_MEMORY("stack"); }	   		   /*                        */
   }		   				   /*                        */
+  DebugPrint2("pushing ", SymbolValue(s));	   /*                        */
   stack[stack_ptr++] = s;   			   /*                        */
-  DebugPrint2("pushing ",s);		   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -100,10 +101,11 @@ void push_string(s)				   /*                        */
 ** Arguments:	none
 ** Returns:	The old top element or |NULL| if the stack is empty.
 **___________________________________________________			     */
-String  pop_string()				   /*                        */
+Symbol pop_string()				   /*                        */
 {						   /*                        */
-  if ( stack_ptr <= 0 ) return NULL;		   /*                        */
+  if ( stack_ptr <= 0 ) return NO_SYMBOL;	   /*                        */
  						   /*                        */
-  DebugPrint2("poping ",stack[stack_ptr-1]);	   /*                        */
+  DebugPrint2("poping ",			   /*                        */
+	      SymbolValue(stack[stack_ptr-1]));	   /*                        */
   return stack[--stack_ptr];			   /*                        */
 }						   /*------------------------*/

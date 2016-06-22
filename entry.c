@@ -68,12 +68,11 @@
 /***									   ***/
 /*****************************************************************************/
 
-int type_xdata = -1;				   /*                        */
-
+ int type_xdata = -1;				   /*                        */
 
 #define EntrySizeIncrement 8
 
- String	    *entry_type;
+ Symbol	    *entry_type;
  static int entry_ptr	= 0;
  static int entry_size  = 0;
 
@@ -109,15 +108,15 @@ void init_entries()				   /*			     */
   register char**wp;				   /*			     */
 #endif
 						   /*			     */
-  def_entry_type((String)"STRING"  );		   /*			     */
-  def_entry_type((String)"PREAMBLE");		   /*			     */
-  def_entry_type((String)"COMMENT" );		   /*			     */
-  def_entry_type((String)"ALIAS"   );		   /*			     */
-  def_entry_type((String)"MODIFY"  );		   /*			     */
-  def_entry_type((String)"INCLUDE" );		   /*			     */
+  def_entry_type(symbol((String)"STRING")  );	   /*			     */
+  def_entry_type(symbol((String)"PREAMBLE"));	   /*			     */
+  def_entry_type(symbol((String)"COMMENT") );	   /*			     */
+  def_entry_type(symbol((String)"ALIAS")   );	   /*			     */
+  def_entry_type(symbol((String)"MODIFY")  );	   /*			     */
+  def_entry_type(symbol((String)"INCLUDE") );	   /*			     */
 #ifdef INITIALIZE_BIBTEX_ENTRIES
   for ( wp = word_list; *wp != NULL; ++wp )	   /* add compiled in types. */
-  { def_entry_type((String)(*wp)); }		   /*			     */
+  { def_entry_type(symbol((String)(*wp))); }	   /*			     */
 #endif
 }						   /*------------------------*/
 
@@ -133,15 +132,16 @@ void init_entries()				   /*			     */
 **	s	String containing the name of the entry.
 ** Returns:	nothing
 **___________________________________________________			     */
-void def_entry_type(s)				   /*			     */
-  String s;				   	   /*			     */
+void def_entry_type(sym)			   /*			     */
+  Symbol sym;				   	   /*			     */
 { int  i;				   	   /*                        */
+  String s = SymbolValue(sym);			   /*                        */
  						   /*                        */
   for (i = 0; i < entry_ptr; ++i)		   /*			     */
   { 						   /*                        */
-    if ( case_cmp(s,EntryName(i)) )		   /*			     */
-    { free(EntryName(i));			   /*                        */
-      EntryName(i) = newString(s); 		   /*			     */
+    if (case_cmp(s, SymbolValue(EntryName(i))))	   /*			     */
+    { 
+      EntryName(i) = sym; 		   	   /*			     */
       return;				   	   /*			     */
     }						   /*			     */
   }						   /*			     */
@@ -149,18 +149,18 @@ void def_entry_type(s)				   /*			     */
   if ( entry_ptr <= entry_size )		   /*			     */
   { entry_size += EntrySizeIncrement;		   /*			     */
     entry_type = ( entry_ptr == 0		   /*			     */
-		  ? (String*)malloc((size_t)(entry_size * sizeof(String)))
-		  : (String*)realloc((char*)entry_type,
-				     (size_t)(entry_size * sizeof(String)))
+		  ? (Symbol*)malloc((size_t)(entry_size * sizeof(Symbol)))
+		  : (Symbol*)realloc((void*)entry_type,
+				     (size_t)(entry_size * sizeof(Symbol)))
 		  );				   /*			     */
-    if ( entry_type == (String*)NULL )		   /*			     */
+    if ( entry_type == (Symbol*)NULL )		   /*			     */
     { OUT_OF_MEMORY("entry type"); }		   /*                        */
   }						   /*			     */
  						   /*                        */
   if (case_cmp(s, (String)"xdata"))		   /*                        */
   { type_xdata = entry_ptr; }			   /*                        */
  						   /*                        */
-  entry_type[entry_ptr++] = newString(s);	   /*		             */
+  entry_type[entry_ptr++] = sym;	   	   /*		             */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -191,13 +191,13 @@ static int match(s,t)				   /*			     */
 **	s	String of the potential entry name.
 ** Returns:	The index in the array or |NOOP|.
 **___________________________________________________			     */
-int find_entry_type(s)				   /*			     */
+int find_entry_type(s)			   	   /*			     */
   String s;				   	   /*			     */
 { int i;				   	   /*			     */
 						   /*			     */
   for (i = 0; i < entry_ptr; ++i)		   /*			     */
-  { if ( match(s,EntryName(i)) )		   /*			     */
-    { return(i); }				   /*			     */
+  { if ( match(s, SymbolValue(EntryName(i))) )	   /*			     */
+    { return i; }				   /*			     */
   }						   /*			     */
   return BIB_NOOP;				   /*			     */
 }						   /*------------------------*/
@@ -212,10 +212,10 @@ int find_entry_type(s)				   /*			     */
 **	idx	Index of entry type.
 ** Returns:	Print representation of the entry type or |NULL|.
 **___________________________________________________			     */
-String  get_entry_type(idx)			   /*                        */
+Symbol  get_entry_type(idx)			   /*                        */
   int idx;				   	   /*                        */
 {						   /*                        */
   return (idx < 0 || idx >= entry_ptr		   /*                        */
-	  ? NULL				   /*                        */
+	  ? NO_SYMBOL				   /*                        */
 	  : EntryName(idx));			   /*                        */
 }						   /*------------------------*/

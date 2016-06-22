@@ -33,6 +33,7 @@
 ******************************************************************************/
 
 #include <bibtool/type.h>
+#include <bibtool/symbols.h>
 
 #ifdef RSC_INIT
 #define RscNumeric(SYM,S,V,I) int    V = I;
@@ -53,7 +54,7 @@
 DECLARE( int   , rsc_select        , FALSE  			);
 
 DECLARE( char* , rsc_e_rsc         , RSC_BIBTOOL		);
-DECLARE( String , rsc_v_rsc , (String)(RSC_BIBTOOL_DEFAULT)	);
+DECLARE( String, rsc_v_rsc , (String)(RSC_BIBTOOL_DEFAULT)	);
 
 
 #ifdef __STDC__
@@ -64,6 +65,6 @@ DECLARE( String , rsc_v_rsc , (String)(RSC_BIBTOOL_DEFAULT)	);
  int load_rsc _ARG((String name));
  int resource _ARG((String name));
  int search_rsc _ARG((void));
- int set_rsc _ARG((String name,String val));
+ int set_rsc _ARG((Symbol name, Symbol val));
  int use_rsc _ARG((String s));
  void rsc_print _ARG((String s));

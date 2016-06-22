@@ -42,14 +42,14 @@
 #else
 #define _ARG(A) ()
 #endif
- String get_field _ARG((DB db, Record rec, String name));/* key.c              */
+ Symbol get_field _ARG((DB db, Record rec, Symbol name));/* key.c            */
  String fmt_expand _ARG((StringBuffer *sb, String cp, DB db, Record rec));/* key.c*/
  int apply_fmt _ARG((StringBuffer *sb,char *fmt,Record rec,DB db));/* key.c  */
- int foreach_ignored_word _ARG((int (*fct)_ARG((String))));/* key.c          */
+ int foreach_ignored_word _ARG((int (*fct)_ARG((Symbol))));/* key.c          */
  int mark_key _ARG((DB db,Record rec));		   /* key.c                  */
- int set_field _ARG((DB db,Record rec,String name,String value));/* key.c    */
+ int set_field _ARG((DB db,Record rec,Symbol name,Symbol value));/* key.c    */
  void add_format _ARG((char *s));		   /* key.c                  */
- void add_ignored_word _ARG((String s));	   /* key.c                  */
+ void add_ignored_word _ARG((Symbol s));	   /* key.c                  */
  void add_sort_format _ARG((char *s));		   /* key.c                  */
  void clear_ignored_words _ARG((void));		   /* key.c                  */
  void def_format_type _ARG((String s));		   /* key.c                  */
@@ -60,6 +60,6 @@
  void set_base _ARG((String value));		   /* key.c                  */
  String get_base _ARG(());		   	   /* key.c                  */
  void set_separator _ARG((int n,String s));	   /* key.c                  */
- String get_separator _ARG((int n));	   	   /* key.c                  */
+ Symbol get_separator _ARG((int n));	   	   /* key.c                  */
  void start_key_gen _ARG((void));		   /* key.c                  */
 

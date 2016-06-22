@@ -46,7 +46,7 @@
 #else
 #define _ARG(A) ()
 #endif
- String  expand_rhs _ARG((String s,String pre,String post,DB db));/* expand.c*/
+ Symbol expand_rhs _ARG((Symbol s,Symbol pre,Symbol post,DB db, int lowercase));/* expand.c*/
  static int expand _ARG((String s,StringBuffer *sb,int brace,int first,String q_open,String q_close,DB db));/* expand.c*/
  static void expand__ _ARG((String s,StringBuffer *sb,String q_open,String q_close,DB db));/* expand.c*/
 
@@ -71,26 +71,34 @@
 **		\BibTeX{} the valid values are |}| or |"|. This value
 **		has to match to |pre|.
 **	db	Database containing the macros.
+**	lowercase	
 ** Returns:	A pointer to the expanded string. This value is kept in a
 **		static variable of this function and will be overwritten with
 **		the next invocation.
 **___________________________________________________			     */
-String  expand_rhs(s,pre,post,db)		   /*                        */
-  String s;					   /*                        */
-  String pre;					   /*                        */
-  String post;					   /*                        */
+Symbol expand_rhs(sym,pre,post,db,lowercase)	   /*                        */
+  Symbol sym;					   /*                        */
+  Symbol pre;					   /*                        */
+  Symbol post;					   /*                        */
   DB   db;					   /*                        */
+  int lowercase;				   /*                        */
 { static StringBuffer *sb = NULL;		   /*                        */
+  String s;					   /*                        */
 						   /*                        */
   DebugPrint1("expand_rhs");			   /*                        */
   if ( sb == NULL && (sb = sbopen()) == NULL )	   /*                        */
   { OUT_OF_MEMORY("string expansion");}		   /*                        */
  						   /*                        */
-  DebugPrint2("Expanding ",s);			   /*                        */
+  DebugPrint2("Expanding ",SymbolValue(sym));	   /*                        */
  						   /*                        */
   sbrewind(sb);					   /*                        */
-  expand__(s, sb, pre, post, db);		   /*                        */
-  return (String)sbflush(sb);			   /*                        */
+  expand__(SymbolValue(sym),			   /*                        */
+	   sb,					   /*                        */
+	   SymbolValue(pre),			   /*                        */
+	   SymbolValue(post),			   /*                        */
+	   db);		   			   /*                        */
+  s = (String)sbflush(sb);			   /*                        */
+  return symbol(lowercase ? lower(s): s);	   /*                        */
 }						   /*------------------------*/
 
 #define PUTS(S,SB) (void)sbputs((char*)S,SB)
@@ -220,13 +228,13 @@ static int expand(s, sb, brace, first, q_open, q_close, db)/*                */
 	}					   /*                        */
         else		   			   /* Only macros are left.  */
 	{ String t = (String)s;	   	   	   /*                        */
-	  String val;				   /*                        */
+	  Symbol val;				   /*                        */
 	  Symbol sym = sym_extract(&t, FALSE);	   /*                        */
  						   /*                        */
-          DebugPrint2("Start symbol: ",s);	   /*                        */
+          DebugPrint2("Start symbol: ", s);	   /*                        */
 	  val = db_string(db, sym, 1); 		   /*                        */
 	  if ( val )			   	   /*                        */
-	  { brace = expand(val,			   /*                        */
+	  { brace = expand(SymbolValue(val),	   /*                        */
 			   sb,			   /*                        */
 			   brace,		   /*                        */
 			   first,		   /*                        */
@@ -234,8 +242,8 @@ static int expand(s, sb, brace, first, q_open, q_close, db)/*                */
 			   q_close,		   /*                        */
 			   db); }		   /*                        */
 	  else					   /*                        */
-	  { if ( !brace ) PUTS(q_close,sb);	   /*                        */
-	    if ( !first ) PUTS(" # ",sb);  	   /*                        */
+	  { if ( !brace ) PUTS(q_close, sb);	   /*                        */
+	    if ( !first ) PUTS(" # ", sb);  	   /*                        */
 	    PUTS(sym, sb);		   	   /*                        */
 	    brace = TRUE;			   /*                        */
 	    first = FALSE;			   /*                        */

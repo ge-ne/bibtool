@@ -85,13 +85,34 @@
 /***									   ***/
 /*****************************************************************************/
 
-typedef String Symbol;
+#ifdef COMPLEX_SYMBOL
 
+typedef struct
+ { String value;
+ } sSymbol, *Symbol;
+#define SymbolValue(X) ((X)->value)
+
+#else
+
+typedef String Symbol;
+#define SymbolValue(X) (X)
+
+#endif
+
+#define symlen(SYM) strlen((char*)SymbolValue(SYM))
+#define symcmp(S,T) strcmp((char*)SymbolValue(S),(char*)SymbolValue(T))
+
+/*-----------------------------------------------------------------------------
+** Constant:	NO_SYMBOL
+** Type:	Symbol
+** Purpose:	The NULL pointer for Symbols
+** Returns:	
+**___________________________________________________			     */
 #define NO_SYMBOL (Symbol)NULL
 
 #define SYMBOL_STATIC	1
 
-extern String s_empty;
+ extern String s_empty;
 
 /*-----------------------------------------------------------------------------
 ** Variable:	sym_empty
@@ -134,6 +155,16 @@ extern String s_empty;
 **___________________________________________________			     */
  extern Symbol sym_space;
 
+ extern Symbol sym_qqq;
+
+ extern Symbol sym_comma;
+
+ extern Symbol sym_double_quote;
+
+ extern Symbol sym_open_brace;
+
+ extern Symbol sym_close_brace;
+
 /*-----------------------------------------------------------------------------
 ** Macro:	newString()
 ** Type:	String
@@ -150,7 +181,7 @@ extern String s_empty;
 #else
 #define _ARG(A) ()
 #endif
- Symbol  sym_add _ARG((String s,int count));	   /* symbols.c              */
+ Symbol  sym_add _ARG((String s, int count));	   /* symbols.c              */
  Symbol  sym_extract _ARG((String *sp,int lowercase));/* symbols.c           */
  char * new_string _ARG((char * s));		   /* symbols.c              */
  int sym_flag _ARG((Symbol  s));		   /* symbols.c              */

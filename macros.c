@@ -144,12 +144,10 @@ int def_macro(name, val, count)			   /*                        */
 **		is required.
 ** Returns:	The value or |NULL|.
 **___________________________________________________			     */
-String  look_macro(name, add)			   /*                        */
-  String	 name;			   	   /*                        */
+Symbol look_macro(name, add)			   /*                        */
+  Symbol	 name;			   	   /*                        */
   int		 add;				   /*                        */
 { register Macro *mp;				   /*                        */
-						   /*                        */
-  name = symbol(name);				   /*                        */
 						   /*                        */
   for (mp   = &macros;				   /*                        */
        *mp != MacroNULL;			   /*                        */
@@ -187,7 +185,7 @@ String  look_macro(name, add)			   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void foreach_macro(fct)				   /*                        */
-  int (*fct) _ARG((String ,String ));		   /*                        */
+  int (*fct) _ARG((Symbol ,Symbol ));		   /*                        */
 { Macro mac;					   /*                        */
   for (mac = macros; 				   /*                        */
        mac != MacroNULL; 			   /*                        */
@@ -210,10 +208,9 @@ void foreach_macro(fct)				   /*                        */
 **___________________________________________________			     */
 int each_macro(m, fct)				   /*                        */
   Macro m;					   /*                        */
-  int (*fct) _ARG((String ,String));		   /*                        */
+  int (*fct) _ARG((Symbol ,Symbol));		   /*                        */
 {						   /*                        */
-  for (; m != MacroNULL; 			   /*                        */
-       m = NextMacro(m))			   /*                        */
+  for ( ; m != MacroNULL; m = NextMacro(m))	   /*                        */
   { if (! (*fct)(MacroName(m), MacroValue(m))) 	   /*                        */
       return 1;					   /*                        */
   }						   /*                        */
@@ -249,15 +246,15 @@ void dump_mac(fname,allp)			   /*                        */
     { if (MacroName(mac) == MacroValue(mac))	   /*                        */
       { (void)fprintf(file,			   /*                        */
 		      "_string{ %s = %s } used: %d\n",/*                     */
-		      MacroName(mac),		   /*                        */
-		      MacroValue(mac),		   /*                        */
+		      SymbolValue(MacroName(mac)), /*                        */
+		      SymbolValue(MacroValue(mac)),/*                        */
 		      MacroCount(mac));		   /*                        */
       }						   /*                        */
       else					   /*                        */
       { (void)fprintf(file,			   /*                        */
 		      "@STRING{ %s = %s } used: %d\n",/*                     */
-		      MacroName(mac),		   /*                        */
-		      MacroValue(mac),		   /*                        */
+		      SymbolValue(MacroName(mac)), /*                        */
+		      SymbolValue(MacroValue(mac)),/*                        */
 		      MacroCount(mac));		   /*                        */
       }						   /*                        */
     }						   /*                        */
@@ -282,7 +279,7 @@ void dump_mac(fname,allp)			   /*                        */
 void init_macros()				   /*                        */
 { 						   /*                        */
 #ifdef INITIALIZE_MACROS	
-  register String name;				   /*                        */
+  register Symbol name;				   /*                        */
   register char**wp;				   /*			     */
   static char *word_list[] =			   /*                        */
   { INITIALIZE_MACROS, NULL };			   /*                        */
@@ -363,8 +360,8 @@ void def_field_type(s)				   /*                        */
 **	type
 ** Returns:	
 **___________________________________________________			     */
-static String  get_mapped_or_cased(name, mac, type)/*                        */
-  String	 name;				   /*                        */
+static Symbol get_mapped_or_cased(name, mac, type) /*                        */
+  Symbol	 name;				   /*                        */
   int            type;				   /*                        */
   register Macro mac;				   /*                        */
 { static StringBuffer* sb = (StringBuffer*)NULL;   /*                        */
@@ -378,30 +375,31 @@ static String  get_mapped_or_cased(name, mac, type)/*                        */
   { OUT_OF_MEMORY("get_item()"); } 		   /*                        */
   sbrewind(sb);					   /*                        */
   if (type == SYMBOL_TYPE_LOWER) 	   	   /*                        */
-  { sbputs((char*)name, sb);			   /*                        */
+  { sbputs((char*)SymbolValue(name), sb);	   /*                        */
   }						   /*                        */
   else						   /*                        */
-  { switch ( type )			   	   /*                        */
+  { register String s = SymbolValue(name);	   /*                        */
+    switch (type)			   	   /*                        */
     { case SYMBOL_TYPE_CASED:			   /*                        */
-	while (*name)				   /*                        */
-	{ if (is_alpha(*name))			   /*                        */
-	  { (void)sbputc(ToUpper(*name), sb);	   /*                        */
-	    for (++name; is_alpha(*name); ++name)  /*                        */
-	    { (void)sbputc(*name, sb); }	   /*                        */
+	while (*s)				   /*                        */
+	{ if (is_alpha(*s))			   /*                        */
+	  { (void)sbputc(ToUpper(*s), sb);	   /*                        */
+	    for (++s; is_alpha(*s); ++s)  	   /*                        */
+	    { (void)sbputc(*s, sb); }	   	   /*                        */
 	  }					   /*                        */
 	  else					   /*                        */
-	  { (void)sbputc(*name, sb);		   /*                        */
-	    ++name;				   /*                        */
+	  { (void)sbputc(*s, sb);		   /*                        */
+	    ++s;				   /*                        */
 	  }					   /*                        */
 	}					   /*                        */
 	break;					   /*                        */
       case SYMBOL_TYPE_UPPER:			   /*                        */
-	for ( ; *name; ++name )			   /*                        */
-	{ (void)sbputc(ToUpper(*name), sb); }	   /*                        */
+	for ( ; *s; ++s )			   /*                        */
+	{ (void)sbputc(ToUpper(*s), sb); }	   /*                        */
 	break;					   /*                        */
     }						   /*                        */
   }						   /*                        */
-  return (String)sbflush(sb);			   /*                        */
+  return symbol((String)sbflush(sb));		   /*                        */
 }						   /*------------------------*/
 
 
@@ -424,9 +422,9 @@ static String  get_mapped_or_cased(name, mac, type)/*                        */
 ** Returns:	A pointer to a static string. This location  is reused
 **		upon the next invocation of this function.
 **___________________________________________________			     */
-String  get_item(name, type)			   /*                        */
-  String name;				   	   /*                        */
-  int   type;				   	   /*                        */
+Symbol get_item(name, type)			   /*                        */
+  Symbol name;				   	   /*                        */
+  int    type;				   	   /*                        */
 { return get_mapped_or_cased(name, items, type);   /*                        */
 }						   /*------------------------*/
 
@@ -461,9 +459,9 @@ void save_key(name, key)			   /*                        */
 **	name	the name of the key to find
 ** Returns:	
 **___________________________________________________			     */
-String  get_key_name(name)			   /*                        */
-  String name;			   	   	   /*                        */
-{ return get_mapped_or_cased(name,		   /*                        */
-			     keys,		   /*                        */
+Symbol get_key_name(name)			   /*                        */
+  Symbol name;			   	   	   /*                        */
+{ return get_mapped_or_cased(name,	   	   /*                        */
+			     keys,	   	   /*                        */
 			     SYMBOL_TYPE_LOWER);   /*                        */
 }						   /*------------------------*/

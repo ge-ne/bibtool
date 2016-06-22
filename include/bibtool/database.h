@@ -161,13 +161,13 @@
 #define _ARG(A) ()
 #endif
  DB new_db _ARG((void));
- Record db_find _ARG((DB db, String key));
- Record db_search _ARG((DB db, String key));
- String  db_new_key _ARG((DB db, String key));
- String  db_string _ARG((DB db, Symbol s, int localp));
- int *db_count _ARG((DB db,int *lp));
+ Record db_find _ARG((DB db, Symbol key));
+ Record db_search _ARG((DB db, Symbol key));
+ Symbol db_new_key _ARG((DB db, Symbol key));
+ Symbol db_string _ARG((DB db, Symbol sym, int localp));
+ int *db_count _ARG((DB db, int *lp));
  int read_db _ARG((DB db,String file, int verbose));
-void db_insert _ARG((DB db,Record rec, int verbose));
+ void db_insert _ARG((DB db,Record rec, int verbose));
  void db_forall _ARG((DB db,int (*fct)_ARG((DB, Record))));
  void db_mac_sort _ARG((DB db));
  void db_rewind _ARG((DB db));
