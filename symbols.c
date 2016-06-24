@@ -90,17 +90,6 @@
 **___________________________________________________			     */
 #define SymTabSymbol(ST) ((ST)->st_name)
 
-/*-----------------------------------------------------------------------------
-** Macro*:	SymTabFlags()
-** Type:	int
-** Purpose:	The flags slot of a |SymTab|. This macro
-**		can also be used as lvalue.
-** Arguments:
-**	ST	Current |SymTab|
-** Returns:	The flags slot of |ST|.
-**___________________________________________________			     */
-#define SymTabFlags(ST)	((ST)->st_flags)
-
 /*****************************************************************************/
 /* Internal Programs							     */
 /*===========================================================================*/
@@ -113,7 +102,7 @@
  Symbol  symbol _ARG((String s));	   	   /* symbols.c              */
  Symbol  sym_extract _ARG((String *sp, int lowercase));/* symbols.c          */
  char * new_string _ARG((char * s));		   /* symbols.c              */
- static SymTab new_sym_tab _ARG((Symbol name,int count,int flags));/* symbols.c*/
+ static SymTab new_sym_tab _ARG((String value));   /* symbols.c              */
  static int hashindex _ARG((String s));		   /* symbols.c              */
  void init_symbols _ARG((void));		   /* symbols.c              */
  void sym_del _ARG((Symbol sym));		   /* symbols.c              */
@@ -188,28 +177,31 @@ char * new_string(s)				   /*			     */
 **		If no more memory is available then an error is raised
 **		and the program is terminated.
 ** Arguments:
-**	name	String value of the |SymTab| node.
-**	count	Initial use count of the |SymTab| node.
-**	flags	Flags of the new |SymTab| node.
+**	value	String value of the |SymTab| node.
 ** Returns:	Pointer to a new instance of a |SymTab|.
 **___________________________________________________			     */
-static SymTab new_sym_tab(sym, count, flags)	   /*			     */
-  Symbol	  sym;			   	   /*			     */
-  int		  count;			   /*			     */
-  int		  flags;			   /*			     */
-{ register SymTab new_sym_tab;		   	   /*			     */
+static SymTab new_sym_tab(value)		   /*			     */
+  String value;			   	   	   /*			     */
+{ register SymTab new_symtab;		   	   /*			     */
+  Symbol sym;
 						   /*			     */
-  if ( (new_sym_tab=(SymTab)malloc(sizeof(struct STAB))) == 0L )/*           */
+  if ((new_symtab=(SymTab)malloc(sizeof(struct STAB))) == 0L)/*              */
   { OUT_OF_MEMORY("SymTab"); }   		   /*			     */
  						   /*                        */
-  SymTabSymbol(new_sym_tab)  = sym;		   /*			     */
 #ifdef COMPLEX_SYMBOL
-  SymbolCount(sym) += count;			   /*                        */
+  sym = (Symbol)malloc(sizeof(sSymbol));	   /*                        */
+  if ( (sym=(Symbol)malloc(sizeof(sSymbol))) == NO_SYMBOL )/*                */
+  { OUT_OF_MEMORY("Symbol"); }   		   /*			     */
+  SymbolValue(sym) = newString(value);		   /*                        */
+  SymbolCount(sym) += 1;			   /*                        */
 #else
-  SymTabCount(new_sym_tab) = count;		   /*			     */
+  sym = newString(value);			   /*                        */
+  SymTabSymbol(new_symtab) = sym;		   /*			     */
+  SymTabCount(new_symtab)  = 1;		   	   /*			     */
 #endif
-  NextSymTab(new_sym_tab) = (SymTab)NULL;	   /*			     */
-  return new_sym_tab;			   	   /*			     */
+  SymTabSymbol(new_symtab) = sym;		   /*			     */
+  NextSymTab(new_symtab)   = (SymTab)NULL;	   /*			     */
+  return new_symtab;			   	   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -354,13 +346,7 @@ Symbol symbol(s)			   	   /*			     */
     }						   /*                        */
   }						   /*			     */
  						   /*                        */
-#ifdef COMPLEX_SYMBOL
-  sym = (Symbol)malloc(sizeof(sSymbol));	   /*                        */
-  SymbolValue(sym) = newString(s);		   /*                        */
-#else
-  sym = newString(s);				   /*                        */
-#endif
-  *stp = new_sym_tab(sym, 1, 0);  		   /*			     */
+  *stp = new_sym_tab(s);  		   	   /*			     */
   SymTabCount(*stp)++; 		   	   	   /*			     */
   DebugPrint2("Symbol created ",		   /*                        */
 	      SymbolValue(SymTabSymbol(*stp)));	   /*                        */
