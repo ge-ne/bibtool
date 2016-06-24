@@ -268,7 +268,7 @@ int use_rsc(s)					   /*			     */
   (void)SParseSkip(&s);				   /*                        */
 						   /*			     */
   if ((value = SParseValue(&s)) == NULL)	   /*                        */
-  { ReleaseSymbol(name);			   /*                        */
+  { UnlinkSymbol(name);			   	   /*                        */
     return 1; 					   /*			     */
   }						   /*                        */
 						   /*			     */
@@ -300,19 +300,19 @@ int set_rsc(name,val)				   /*			     */
 		    : (char*)SymbolValue(val)));   /*	                     */
   }						   /*                        */
 						   /*			     */
-#define SETQ(V,T) V=T; ReleaseSymbol(name);
-#define RscNumeric(SYM,S,V,I)		\
+#define SETQ(V,T) V=T; UnlinkSymbol(name);
+#define RscNumeric(SYM,S,V,I)			\
   if( name==S ) { SETQ(V,atoi((char*)SymbolValue(val)));	\
-    ReleaseSymbol(val); return 0; }
-#define RscString(SYM,S,V,I)		\
+    UnlinkSymbol(val); return 0; }
+#define RscString(SYM,S,V,I)			\
   if( name==S ) { V = (String)new_string((char*)SymbolValue(val));	\
-    ReleaseSymbol(name); return 0; }
-#define RscBoolean(SYM,S,V,I)		\
+    UnlinkSymbol(name); return 0; }
+#define RscBoolean(SYM,S,V,I)			\
   if( name==S ) { SETQ(V,test_true(val));	\
-    ReleaseSymbol(val); return 0; }
-#define RscByFct(SYM,S,FCT)		\
-  if( name==S ) { (void)FCT;	\
-    ReleaseSymbol(name); return 0; }
+    UnlinkSymbol(val); return 0; }
+#define RscByFct(SYM,S,FCT)			\
+  if( name==S ) { (void)FCT;			\
+    UnlinkSymbol(name); return 0; }
 #define RSC_FIRST(C)	      case C:
 #define RSC_NEXT(C)	      break; case C:
 						   /*			     */

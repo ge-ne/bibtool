@@ -86,8 +86,8 @@ void free_macro(mac)				   /*                        */
  						   /*                        */
   while (mac)					   /*                        */
   { next = NextMacro(mac);			   /*                        */
-    ReleaseSymbol(MacroName(mac));		   /*                        */
-    ReleaseSymbol(MacroValue(mac));		   /*                        */
+    UnlinkSymbol(MacroName(mac));		   /*                        */
+    UnlinkSymbol(MacroValue(mac));		   /*                        */
     free(mac);					   /*                        */
     mac = next;					   /*                        */
   }						   /*                        */

@@ -851,7 +851,7 @@ void rewrite_record(db, rec)			   /*			     */
     sbputc('}', sb);				   /*                        */
     push_to_record(rec,			   	   /*                        */
 		   MacroName(mac),		   /*                        */
-		   sym_add((String)sbflush(sb),1));/*                        */
+		   symbol((String)sbflush(sb)));   /*                        */
   }						   /*			     */
 }						   /*------------------------*/
 

@@ -40,73 +40,66 @@
 #include "config.h"
 
 /*-----------------------------------------------------------------------------
-** Typedef*:	StringTab
+** Typedef*:	SymTab
 ** Purpose:	This is the pointer type representing an entry in the symbol
 **		table. It contains a string and some integers.
 **		
 **___________________________________________________			     */
  typedef struct STAB		/*                                           */
-  { Symbol	st_name;	/* The string representation of the symbol   */
+  { Symbol	st_name;	/* The symbol itself			     */
+#ifndef COMPLEX_SYMBOL
     int		st_count;	/* 			                     */
-    int		st_flags;	/* Bits of certain flags.                    */
-    int		st_used; 	/* Counter for determining the number of uses*/
+#endif
     struct STAB *st_next;	/* Pointer to the next item.                 */
-  } *StringTab;
+  } *SymTab;
 
 /*-----------------------------------------------------------------------------
-** Macro*:	NextSymbol()
-** Type:	StringTab
-** Purpose:	The next |StringTab| of the argument. This macro
+** Macro*:	NextSymTab()
+** Type:	SymTab
+** Purpose:	The next |SymTab| of the argument. This macro
 **		can also be used as lvalue.
 ** Arguments:
-**	ST	Current |StringTab|
-** Returns:	The next |StringTab| or |NULL|.
+**	ST	Current |SymTab|
+** Returns:	The next |SymTab| or |NULL|.
 **___________________________________________________			     */
-#define NextSymbol(ST)	((ST)->st_next)
+#define NextSymTab(ST)	((ST)->st_next)
 
 /*-----------------------------------------------------------------------------
-** Macro*:	SymbolCount()
+** Macro*:	SymTabCount()
 ** Type:	int
-** Purpose:	The count slot of a |StringTab|. This macro
+** Purpose:	The count slot of a |SymTab|. This macro
 **		can also be used as lvalue.
 ** Arguments:
-**	ST	Current |StringTab|
+**	ST	Current |SymTab|
 ** Returns:	The count slot of |ST|.
 **___________________________________________________			     */
-#define SymbolCount(ST)	((ST)->st_count)
+#ifndef COMPLEX_SYMBOL
+#define SymTabCount(ST)	((ST)->st_count)
+#else
+#define SymTabCount(SYM) SymbolCount(SymTabSymbol(SYM))
+#endif
 
 /*-----------------------------------------------------------------------------
-** Macro*:	SymbolUsed()
-** Type:	int
-** Purpose:	The used slot of a |StringTab|. This macro
-**		can also be used as lvalue.
-** Arguments:
-**	ST	Current |StringTab|
-** Returns:	The used slot of |ST|.
-**___________________________________________________			     */
-#define SymbolUsed(ST)	((ST)->st_used)
-
-/*-----------------------------------------------------------------------------
-** Macro*:	SymbolName()
+** Macro*:	SymTabSymbol()
 ** Type:	Symbol
-** Purpose:	The name slot of a |StringTab|, i.e.\ the string
+** Purpose:	The name slot of a |SymTab|, i.e.\ the string
 **		representation. This macro can also be used as lvalue.
 ** Arguments:
-**	ST	Current |StringTab|
+**	ST	Current |SymTab|
 ** Returns:	The name slot of |ST|.
 **___________________________________________________			     */
-#define SymbolName(ST)	((ST)->st_name)
+#define SymTabSymbol(ST) ((ST)->st_name)
 
 /*-----------------------------------------------------------------------------
-** Macro*:	SymbolFlags()
+** Macro*:	SymTabFlags()
 ** Type:	int
-** Purpose:	The flags slot of a |StringTab|. This macro
+** Purpose:	The flags slot of a |SymTab|. This macro
 **		can also be used as lvalue.
 ** Arguments:
-**	ST	Current |StringTab|
+**	ST	Current |SymTab|
 ** Returns:	The flags slot of |ST|.
 **___________________________________________________			     */
-#define SymbolFlags(ST)	((ST)->st_flags)
+#define SymTabFlags(ST)	((ST)->st_flags)
 
 /*****************************************************************************/
 /* Internal Programs							     */
@@ -117,18 +110,17 @@
 #else
 #define _ARG(A) ()
 #endif
- Symbol  sym_add _ARG((String s, int count));	   /* symbols.c              */
+ Symbol  symbol _ARG((String s));	   	   /* symbols.c              */
  Symbol  sym_extract _ARG((String *sp, int lowercase));/* symbols.c          */
  char * new_string _ARG((char * s));		   /* symbols.c              */
- int sym_flag _ARG((Symbol  s));		   /* symbols.c              */
- static StringTab new_string_tab _ARG((Symbol name,int count,int flags));/* symbols.c*/
+ static SymTab new_sym_tab _ARG((Symbol name,int count,int flags));/* symbols.c*/
  static int hashindex _ARG((String s));		   /* symbols.c              */
  void init_symbols _ARG((void));		   /* symbols.c              */
+ void sym_del _ARG((Symbol sym));		   /* symbols.c              */
 #ifdef SYMBOL_DUMP
  void sym_dump _ARG((void));			   /* symbols.c              */
 #endif
  void sym_gc _ARG((void));			   /* symbols.c              */
- void sym_set_flag _ARG((Symbol s, int flags));	   /* symbols.c              */
  void sym_unlink _ARG((Symbol s));		   /* symbols.c              */
 
 /*****************************************************************************/
@@ -177,9 +169,9 @@
 char * new_string(s)				   /*			     */
   register char * s;				   /*			     */
 { register char * t;				   /*			     */
-  if ( (t=malloc((size_t)strlen(s)+1)) == NULL )   /*			     */
+  if ( (t=malloc((size_t)strlen(s) + 1)) == NULL ) /*			     */
   { OUT_OF_MEMORY("string"); }	   		   /*			     */
-  (void)strcpy(t,s);				   /*			     */
+  (void)strcpy(t, s);				   /*			     */
   return t;					   /*			     */
 }						   /*------------------------*/
 
@@ -189,33 +181,35 @@ char * new_string(s)				   /*			     */
 /*****************************************************************************/
 
 /*-----------------------------------------------------------------------------
-** Function:	new_string_tab()
-** Purpose:	Allocate a new |StringTab| structure and fill it with initial
+** Function:	new_sym_tab()
+** Purpose:	Allocate a new |SymTab| structure and fill it with initial
 **		values.
 **
 **		If no more memory is available then an error is raised
 **		and the program is terminated.
 ** Arguments:
-**	name	String value of the |StringTab| node.
-**	count	Initial use count of the |StringTab| node.
-**	flags	Flags of the new |StringTab| node.
-** Returns:	Pointer to a new instance of a |StringTab|.
+**	name	String value of the |SymTab| node.
+**	count	Initial use count of the |SymTab| node.
+**	flags	Flags of the new |SymTab| node.
+** Returns:	Pointer to a new instance of a |SymTab|.
 **___________________________________________________			     */
-static StringTab new_string_tab(name, count, flags)/*			     */
-  Symbol	     name;			   /*			     */
-  int		     count;			   /*			     */
-  int		     flags;			   /*			     */
-{ register StringTab new_string_tab;		   /*			     */
+static SymTab new_sym_tab(sym, count, flags)	   /*			     */
+  Symbol	  sym;			   	   /*			     */
+  int		  count;			   /*			     */
+  int		  flags;			   /*			     */
+{ register SymTab new_sym_tab;		   	   /*			     */
 						   /*			     */
-  if ( (new_string_tab=(StringTab)malloc(sizeof(struct STAB))) == 0L )/*     */
-  { OUT_OF_MEMORY("StringTab"); }   		   /*			     */
+  if ( (new_sym_tab=(SymTab)malloc(sizeof(struct STAB))) == 0L )/*           */
+  { OUT_OF_MEMORY("SymTab"); }   		   /*			     */
  						   /*                        */
-  SymbolName(new_string_tab)  = name;		   /*			     */
-  SymbolCount(new_string_tab) = count;		   /*			     */
-  SymbolFlags(new_string_tab) = flags;		   /*			     */
-  SymbolUsed(new_string_tab)  = 0;		   /*			     */
-  NextSymbol(new_string_tab)  = (StringTab)0;	   /*			     */
-  return(new_string_tab);			   /*			     */
+  SymTabSymbol(new_sym_tab)  = sym;		   /*			     */
+#ifdef COMPLEX_SYMBOL
+  SymbolCount(sym) += count;			   /*                        */
+#else
+  SymTabCount(new_sym_tab) = count;		   /*			     */
+#endif
+  NextSymTab(new_sym_tab) = (SymTab)NULL;	   /*			     */
+  return new_sym_tab;			   	   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -233,7 +227,13 @@ static int hashindex(s)				   /*                        */
   return ( index < 0 ? -index : index );	   /*                        */
 }						   /*------------------------*/
 
- static StringTab sym_tab[HASHMAX];
+/*-----------------------------------------------------------------------------
+** Variable:	sym_tab
+** Purpose:	
+**		
+**		
+**___________________________________________________			     */
+ static SymTab sym_tab[HASHMAX];		   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	init_symbols()
@@ -261,58 +261,48 @@ void init_symbols()				   /*			     */
  						   /*                        */
   for (i = 0; i < HASHMAX; i++) sym_tab[i] = NULL; /*			     */
  						   /*                        */
-  sym_empty    = sym_add(newString(s_empty), -1);  /*                        */
-  sym_space    = sym_add(newString(" "), -1);	   /*                        */
-  sym_crossref = sym_add(newString("crossref"),-1);/*                        */
-  sym_xref     = sym_add(newString("xref"),-1);	   /*                        */
-  sym_xdata    = sym_add(newString("xdata"),-1);   /*                        */
-  sym_qqq      = sym_add(newString("???"),-1);     /*                        */
-  sym_comma    = sym_add(newString(","),-1);       /*                        */
-  sym_double_quote = sym_add(newString("\""),-1);  /*                        */
-  sym_open_brace   = sym_add(newString("{"),-1);   /*                        */
-  sym_close_brace  = sym_add(newString("}"),-1);   /*                        */
+  sym_empty        = symbol((String)s_empty);	   /*                        */
+  sym_space        = symbol((String)" ");	   /*                        */
+  sym_crossref     = symbol((String)"crossref");   /*                        */
+  sym_xref         = symbol((String)"xref");	   /*                        */
+  sym_xdata        = symbol((String)"xdata");	   /*                        */
+  sym_qqq          = symbol((String)"???");	   /*                        */
+  sym_comma        = symbol((String)",");	   /*                        */
+  sym_double_quote = symbol((String)"\"");	   /*                        */
+  sym_open_brace   = symbol((String)"{");	   /*                        */
+  sym_close_brace  = symbol((String)"}");	   /*                        */
 }						   /*------------------------*/
 
- static StringTab last_stp = NULL;	
-
 /*-----------------------------------------------------------------------------
-** Function:	sym_flag()
-** Purpose:	Get the flags of the symbol given as argument.
+** Function:	get_sym_tab()
+** Type:	SymTab
+** Purpose:	
+**		
 ** Arguments:
-**	s	Symbol
-** Returns:	The flags of the recently touched |StringTab|.
+**	sym	the symbol to search for
+** Returns:	
 **___________________________________________________			     */
-int sym_flag(s)					   /*			     */
-  Symbol s;					   /*                        */
-{						   /*                        */
-  if (last_stp == NULL				   /*                        */
-      || SymbolName(last_stp) != s)		   /*                        */
-  { s = sym_add(SymbolValue(s), 0); }		   /*                        */
-  return SymbolFlags(last_stp);		   	   /*			     */
+static SymTab* get_sym_tab(sym)			   /*			     */
+  register Symbol sym;			   	   /*			     */
+{ register SymTab *stp;			   	   /*			     */
+						   /*			     */
+  if (sym == NO_SYMBOL) return NULL;	   	   /* ignore dummies.	     */
+ 						   /*                        */
+  for (stp = &sym_tab[hashindex(SymbolValue(sym))];/*			     */
+       *stp != NULL;		   		   /*			     */
+       stp = &NextSymTab(*stp) )		   /*			     */
+  { if (sym == SymTabSymbol(*stp))	   	   /*		             */
+    { DebugPrint2("Symbol found ",		   /*                        */
+		  SymbolValue(sym));  		   /*                        */
+      return stp;			   	   /*			     */
+    }						   /*			     */
+  }						   /*			     */
+ 						   /*                        */
+  return NULL;			   		   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	sym_set_flag()
-** Purpose:	Add the flags to the symbol corresponding to the
-**		argument |s| by oring them together with the given
-**		value. 
-** Arguments:
-**	s	Symbol to augment.
-**	flags	New flags to add.
-** Returns:	nothing
-**___________________________________________________			     */
-void sym_set_flag(s,flags)			   /*			     */
-  register Symbol s;				   /*			     */
-  register int    flags;			   /*			     */
-{ 						   /*                        */
-  if (last_stp == NULL				   /*                        */
-      || SymbolName(last_stp) != s )		   /*                        */
-  { s = sym_add(SymbolValue(s), 0); }		   /*                        */
-  SymbolFlags(last_stp) |= flags;		   /*			     */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
-** Function:	sym_add()
+** Function:	symbol()
 ** Purpose:	Add a symbol to the global symbol table. If the string
 **		already has a symbol assigned to it then this symbol
 **		is returned. If the symbol is not static then the use
@@ -333,55 +323,48 @@ void sym_set_flag(s,flags)			   /*			     */
 **		convenient alternative to this function.
 ** Arguments:
 **	s	String which should be translated into a symbol.
-**	count	The use count which should be added to the symbol
 ** Returns:	The new symbol.
 **___________________________________________________			     */
-Symbol sym_add(s, count)			   /*			     */
-  register String    s;		   	   	   /*			     */
-  register int	     count;			   /*			     */
-{ register StringTab *stp;			   /*			     */
-  Symbol sym;					   /*                        */
+Symbol symbol(s)			   	   /*			     */
+  String  s;				   	   /*			     */
+{ register SymTab *stp;			   	   /*			     */
+  Symbol sym;				   	   /*                        */
 						   /*			     */
   if (s == StringNULL) return NO_SYMBOL;	   /* ignore dummies.	     */
  						   /*                        */
+  DebugPrint2("Lookup symbol ", s);  		   /*                        */
+ 						   /*                        */
   for ( stp = &sym_tab[hashindex(s)];		   /*			     */
        *stp != NULL;		   		   /*			     */
-        stp = &NextSymbol(*stp) )		   /*			     */
-  {						   /*                        */
-    if ( strcmp((char*)s,			   /*                        */
-		(char*)SymbolValue(SymbolName(*stp))) == 0 )/*		     */
-    { if ( count > 0 ) SymbolCount(*stp) += count; /*			     */
-      last_stp = *stp;			   	   /*			     */
-#ifdef QUESTIONABLE
-      if ( s != SymbolName(*stp) )		   /*                        */
-#endif
-      { SymbolUsed(*stp)++; }			   /*                        */
- 						   /*                        */
+        stp = &NextSymTab(*stp) )		   /*			     */
+  { sym	= SymTabSymbol(*stp);			   /*                        */
+    DebugPrintF3("\tlooking at '%s' == '%s'\n",	   /*                        */
+	      (char*)s, (char*)SymbolValue(sym));  /*                        */
+    if (strcmp((char*)s,			   /*                        */
+	       (char*)SymbolValue(sym)) == 0 )	   /*		             */
+    {						   /*                        */
       DebugPrint2("Symbol found ",		   /*                        */
-		  SymbolValue(SymbolName(*stp)));  /*                        */
-      return SymbolName(*stp);			   /*			     */
-    }						   /*			     */
+		  SymbolValue(sym));  		   /*                        */
+#ifdef COMPLEX_SYMBOL
+      SymbolCount(sym)++; 		   	   /*			     */
+#else
+      SymTabCount(*stp)++; 		   	   /*			     */
+#endif
+    return sym;			   	   	   /*			     */
+    }						   /*                        */
   }						   /*			     */
  						   /*                        */
-  if (count >= 0) { s = newString(s); }	   	   /*			     */
-  						   /*                        */
 #ifdef COMPLEX_SYMBOL
   sym = (Symbol)malloc(sizeof(sSymbol));	   /*                        */
-  SymbolValue(sym) = (count < 0 ? newString(s) : s);/*                       */
+  SymbolValue(sym) = newString(s);		   /*                        */
 #else
-  sym = (count < 0 ? newString(s) : s);		   /*                        */
+  sym = newString(s);				   /*                        */
 #endif
-  *stp = new_string_tab(sym,			   /*                        */
-			count < 0 ? 0 : count, 	   /*                        */
-			0);  		   	   /*			     */
- 						   /*                        */
-  last_stp = *stp;				   /*			     */
-  SymbolUsed(*stp)++;				   /*                        */
-  if (count < 0)				   /*                        */
-  { SymbolFlags(*stp) ^= SYMBOL_STATIC; }	   /*			     */
+  *stp = new_sym_tab(sym, 1, 0);  		   /*			     */
+  SymTabCount(*stp)++; 		   	   	   /*			     */
   DebugPrint2("Symbol created ",		   /*                        */
-	      SymbolValue(SymbolName(*stp)));	   /*                        */
-  return SymbolName(*stp);			   /*			     */
+	      SymbolValue(SymTabSymbol(*stp)));	   /*                        */
+  return SymTabSymbol(*stp);			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -395,26 +378,64 @@ Symbol sym_add(s, count)			   /*			     */
 **		If the argument is |NULL| or an arbitrary string (no
 **		symbol) then this case is also dealt with.
 ** Arguments:
-**	s	Symbol to be released.
+**	sym	Symbol to be released.
 ** Returns:	nothing
 **___________________________________________________			     */
-void sym_unlink(s)				   /*			     */
-  register Symbol    s;			   	   /*			     */
-{ register StringTab st;			   /*			     */
-						   /*			     */
-  if (s == NO_SYMBOL) return;		   	   /* ignore dummies.	     */
+void sym_unlink(sym)				   /*			     */
+  register Symbol sym;			   	   /*			     */
+{						   /*                        */
+  if (sym == NO_SYMBOL) return;		   	   /* ignore dummies.	     */
+#ifdef COMPLEX_SYMBOL
+  if (--SymbolCount(sym) > 0) return;		   /* double check used.     */
+#else
  						   /*                        */
-  for ( st = sym_tab[hashindex(SymbolValue(s))];   /*			     */
-        st != NULL;		   		   /*			     */
-        st = NextSymbol(st) )		   	   /*			     */
-  { if ( s == SymbolName(st) )	   		   /*			     */
-    { SymbolUsed(st)--;				   /* reduce reference count */
-      return;			   		   /*			     */
-    }						   /*			     */
-  }						   /*			     */
 #ifdef DEBUG
-  ErrPrintF("*** Attempt to free an undefined symbol: %s\n",/*               */
-	    SymbolValue(s));			   /*                        */
+  if ((stp=get_sym_tab()) == NULL)		   /*                        */
+  { ErrPrintF("*** Attempt to free an undefined symbol: %s\n",/*             */
+	      SymbolValue(s));			   /*                        */
+  }						   /*                        */
+#endif
+#endif
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Constant:	SYM_PIPE_SIZE
+** Type:	
+** Purpose:	
+**		
+** Returns:	
+**___________________________________________________			     */
+#define SYM_PIPE_SIZE 32
+
+#ifdef COMPLEX_SYMBOL
+ static Symbol sym_pipe[SYM_PIPE_SIZE];
+ static int sym_pipe_ptr = 0;
+#endif
+
+/*-----------------------------------------------------------------------------
+** Function:	sym_del()
+** Type:	void
+** Purpose:	
+**		
+** Arguments:
+**	sym	
+** Returns:	nothing
+**___________________________________________________			     */
+void sym_del(sym)				   /*                        */
+  Symbol sym;		   			   /*                        */
+{						   /*                        */
+#ifdef COMPLEX_SYMBOL
+  sym_pipe[sym_pipe_ptr] = sym;			   /*                        */
+  if ( ++sym_pipe_ptr < SYM_PIPE_SIZE) return;	   /*                        */
+
+  while (--sym_pipe_ptr > 0)
+  {
+    if (SymbolCount(sym_pipe[sym_pipe_ptr]) > 0)
+      continue;
+
+    
+						 /* TODO: free sym tab*/
+  }
 #endif
 }						   /*------------------------*/
 
@@ -431,31 +452,33 @@ void sym_unlink(s)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void sym_gc()					   /*                        */
-{ register StringTab st, st2;			   /*			     */
+{
+#ifdef COMPLEX_SYMBOL
+#else
+  register SymTab st, st2;			   /*			     */
   register int i;				   /*                        */
   						   /*                        */
   for ( i = 0; i < HASHMAX; i++ )		   /*			     */
   {						   /*                        */
     while (sym_tab[i] &&			   /*                        */
-	   SymbolUsed(sym_tab[i]) <= 0)		   /*                        */
+	   SymTabCount(sym_tab[i]) <= 0)	   /*                        */
     { st = sym_tab[i];				   /*                        */
-      sym_tab[i] = NextSymbol(st);		   /*                        */
-      if ( (SymbolFlags(st) & SYMBOL_STATIC) == 0 )/*                        */
-      { free(SymbolName(st)); }			   /*                        */
+      sym_tab[i] = NextSymTab(st);		   /*                        */
+      free(SymTabSymbol(st));			   /*                        */
       free(st);					   /*                        */
     }						   /*                        */
     st = sym_tab[i];				   /*                        */
     if ( st )					   /*                        */
     {						   /*                        */
-      while ( (st2=NextSymbol(st)) != NULL &&	   /*                        */
-	      SymbolUsed(st) <= 0 )		   /*                        */
-      { NextSymbol(st) = NextSymbol(st2);	   /*                        */
-        if ( (SymbolFlags(st2) & SYMBOL_STATIC) == 0 )/*                     */
-	{ free(SymbolName(st2)); }		   /*                        */
+      while ( (st2=NextSymTab(st)) != NULL &&	   /*                        */
+	      SymTabCount(st) <= 0 )		   /*                        */
+      { NextSymTab(st) = NextSymTab(st2);	   /*                        */
+        free(SymTabSymbol(st2));		   /*                        */
 	free(st2);				   /*                        */
       }						   /*                        */
     }						   /*                        */
   }						   /*			     */
+#endif
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -499,20 +522,20 @@ Symbol  sym_extract(sp, lowercase)		   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void sym_dump()					   /*			     */
-{ register int	     i,l;			   /*			     */
-  register StringTab st;			   /*			     */
-  register long	     len  = 0l;			   /*			     */
-  register long	     cnt  = 0l;			   /*			     */
-  register long	     used = 0l;			   /*			     */
+{ register int	  i,l;			   	   /*			     */
+  register SymTab st;			   	   /*			     */
+  register long	  len  = 0l;			   /*			     */
+  register long	  cnt  = 0l;			   /*			     */
+  register long	  used = 0l;			   /*			     */
 						   /*			     */
   for ( i = 0; i < HASHMAX; i++ )		   /*			     */
-  { for ( st = sym_tab[i]; st; st=NextSymbol(st) ) /*			     */
+  { for ( st = sym_tab[i]; st; st=NextSymTab(st) ) /*			     */
     { ErrPrintF2("--- BibTool symbol %4d %s\n",	   /*			     */
-		 (int)SymbolCount(st),		   /*			     */
-		 SymbolName(st));		   /*			     */
-      l     = symlen(st) + 1;	   		   /*			     */
+		 SymTabCount(st),		   /*			     */
+		 SymbolValue(SymTabSymbol(st)));   /*			     */
+      l     = symlen(SymTabSymbol(st)) + 1;	   /*			     */
       len  += l;				   /*			     */
-      used += l * SymbolCount(st);		   /*                        */
+      used += l * SymTabCount(st);		   /*                        */
       ++cnt;					   /*			     */
     }						   /*			     */
   }						   /*			     */

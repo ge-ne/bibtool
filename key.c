@@ -1160,7 +1160,7 @@ void make_key(db,rec)				   /*			     */
   { sbputs((char*)SymbolValue(DefaultKey), key_sb);/*                        */
   }			   			   /*			     */
 						   /*			     */
-  ReleaseSymbol(RecordOldKey(rec));		   /*                        */
+  UnlinkSymbol(RecordOldKey(rec));		   /*                        */
   RecordOldKey(rec) = *RecordHeap(rec);		   /* save old key	     */
 #ifndef NEW
 #define trans trans_id
@@ -1889,11 +1889,11 @@ static void eval__special(sb,kn,rec)		   /*			     */
   static Symbol	s_key	    = NO_SYMBOL;	   /*			     */
 						   /*			     */
   if ( s_author == NO_SYMBOL )		   	   /*			     */
-  { s_author	= sym_add((String)"author",-1);	   /*			     */
-    s_editor	= sym_add((String)"editor",-1);	   /*			     */
-    s_title	= sym_add((String)"title",-1);	   /*			     */
-    s_booktitle = sym_add((String)"booktitle",-1); /*			     */
-    s_key	= sym_add((String)"key",-1);	   /*			     */
+  { s_author	= symbol((String)"author");	   /*			     */
+    s_editor	= symbol((String)"editor");	   /*			     */
+    s_title	= symbol((String)"title");	   /*			     */
+    s_booktitle = symbol((String)"booktitle"); 	   /*			     */
+    s_key	= symbol((String)"key");	   /*			     */
   }						   /*			     */
 						   /*			     */
   if (key_seps == NULL) { init_key(); }	   	   /*                        */

@@ -171,14 +171,14 @@ void free_1_record(rec)				   /*                        */
  						   /*                        */
   if ( rec != RecordNULL )			   /*                        */
   {						   /*                        */
-    ReleaseSymbol(RecordSortkey(rec));		   /*                        */
-    ReleaseSymbol(RecordOldKey(rec));		   /*                        */
-    ReleaseSymbol(RecordComment(rec));		   /*                        */
-    ReleaseSymbol(RecordSource(rec));		   /*                        */
+    UnlinkSymbol(RecordSortkey(rec));		   /*                        */
+    UnlinkSymbol(RecordOldKey(rec));		   /*                        */
+    UnlinkSymbol(RecordComment(rec));		   /*                        */
+    UnlinkSymbol(RecordSource(rec));		   /*                        */
     if ( RecordHeap(rec) != NULL )		   /*                        */
     {						   /*                        */
       for (i = 0; i < RecordFree(rec); i++ )	   /*                        */
-      { ReleaseSymbol(RecordHeap(rec)[i]); }	   /*                        */
+      { UnlinkSymbol(RecordHeap(rec)[i]); }	   /*                        */
       free(RecordHeap(rec));			   /*                        */
     }						   /*                        */
     free(rec);					   /*                        */

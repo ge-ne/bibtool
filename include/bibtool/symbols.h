@@ -52,19 +52,7 @@
 #include <bibtool/type.h>
 
 /*-----------------------------------------------------------------------------
-** Macro:	symbol()
-** Type:	Symbol
-** Purpose:	Translate a string into a symbol.
-**		The symbol returned is either created or an existing
-**		symbol is returned.
-** Arguments:
-**	STR	String to translate into a symbol.
-** Returns:	The symbol corresponding to the argument.
-**___________________________________________________			     */
-#define symbol(STR) sym_add(STR,1)
-
-/*-----------------------------------------------------------------------------
-** Macro:	ReleaseSymbol()
+** Macro:	UnlinkSymbol()
 ** Type:	void
 ** Purpose:	The symbol given as argument is released. In fact the
 **		memory is not really freed but one instance is marked
@@ -76,9 +64,11 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 #ifdef FREE_MEMORY
-#define ReleaseSymbol(SYM) sym_del(SYM)
+#define UnlinkSymbol(SYM) if (--SymbolCount(SYM) == 0) sym_del(SYM)
+#define LinkSymbol(SYM) SymbolCount(SYM)++
 #else
-#define ReleaseSymbol(SYM)
+#define UnlinkSymbol(SYM)
+#define LinkSymbol(SYM)
 #endif
 
 /*****************************************************************************/
@@ -89,8 +79,10 @@
 
 typedef struct
  { String value;
+   int count;
  } sSymbol, *Symbol;
 #define SymbolValue(X) ((X)->value)
+#define SymbolCount(X) ((X)->count)
 
 #else
 
@@ -181,14 +173,13 @@ typedef String Symbol;
 #else
 #define _ARG(A) ()
 #endif
- Symbol  sym_add _ARG((String s, int count));	   /* symbols.c              */
+ Symbol  symbol _ARG((String s));	   	   /* symbols.c              */
  Symbol  sym_extract _ARG((String *sp,int lowercase));/* symbols.c           */
  char * new_string _ARG((char * s));		   /* symbols.c              */
- int sym_flag _ARG((Symbol  s));		   /* symbols.c              */
  void init_symbols _ARG((void));		   /* symbols.c              */
  void sym_dump _ARG((void));			   /* symbols.c              */
+ void sym_del _ARG((Symbol sym));		   /* symbols.c              */
  void sym_gc _ARG((void));			   /* symbols.c              */
- void sym_set_flag _ARG((Symbol s,int flags));	   /* symbols.c              */
  void sym_unlink _ARG((Symbol s));		   /* symbols.c              */
 
 #endif /* SYMBOLS_H_LOADED */
