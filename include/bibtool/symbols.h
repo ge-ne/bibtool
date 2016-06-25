@@ -65,10 +65,8 @@
 **___________________________________________________			     */
 #ifdef FREE_MEMORY
 #define UnlinkSymbol(SYM) if (--SymbolCount(SYM) == 0) sym_del(SYM)
-#define LinkSymbol(SYM) SymbolCount(SYM)++
 #else
 #define UnlinkSymbol(SYM)
-#define LinkSymbol(SYM)
 #endif
 
 /*****************************************************************************/
@@ -78,16 +76,19 @@
 #ifdef COMPLEX_SYMBOL
 
 typedef struct
- { String value;
-   int count;
+ { String sy_value;
+   int sy_count;
  } sSymbol, *Symbol;
-#define SymbolValue(X) ((X)->value)
-#define SymbolCount(X) ((X)->count)
+#define SymbolValue(X) ((X)->sy_value)
+#define SymbolCount(X) ((X)->sy_count)
+
+#define LinkSymbol(SYM) SymbolCount(SYM)++
 
 #else
 
 typedef String Symbol;
 #define SymbolValue(X) (X)
+#define LinkSymbol(SYM)
 
 #endif
 
@@ -98,12 +99,15 @@ typedef String Symbol;
 ** Constant:	NO_SYMBOL
 ** Type:	Symbol
 ** Purpose:	The NULL pointer for Symbols
-** Returns:	
 **___________________________________________________			     */
 #define NO_SYMBOL (Symbol)NULL
 
-#define SYMBOL_STATIC	1
-
+/*-----------------------------------------------------------------------------
+** Variable:	s_empty
+** Type:	String 
+** Purpose:	Unmodifiable value containing the empty string. This
+**		variable needs |init_symbols()| to be called first.
+**___________________________________________________			     */
  extern String s_empty;
 
 /*-----------------------------------------------------------------------------
@@ -149,13 +153,45 @@ typedef String Symbol;
 
  extern Symbol sym_qqq;
 
+/*-----------------------------------------------------------------------------
+** Variable:	sym_comma
+** Type:	Symbol
+** Purpose:	The symbol with a single comma character. This variable needs
+**		|init_symbols()| to be called first.
+**___________________________________________________			     */
  extern Symbol sym_comma;
 
+/*-----------------------------------------------------------------------------
+** Variable:	sym_double_quote
+** Type:	Symbol
+** Purpose:	The symbol with a single double quote character (").
+**		This variable needs |init_symbols()| to be called first.
+**___________________________________________________			     */
  extern Symbol sym_double_quote;
 
+/*-----------------------------------------------------------------------------
+** Variable:	sym_open_brace
+** Type:	Symbol
+** Purpose:	The symbol with a single open brace character. This
+**		variable needs |init_symbols()| to be called first.
+**___________________________________________________			     */
  extern Symbol sym_open_brace;
 
+/*-----------------------------------------------------------------------------
+** Variable:	sym_close_brace
+** Type:	Symbol
+** Purpose:	The symbol with a single close brace character. This
+**		variable needs |init_symbols()| to be called first.
+**___________________________________________________			     */
  extern Symbol sym_close_brace;
+
+/*-----------------------------------------------------------------------------
+** Variable:	sym_et
+** Type:	Symbol
+** Purpose:	The symbol with a single et character (&). This
+**		variable needs |init_symbols()| to be called first.
+**___________________________________________________			     */
+ extern Symbol sym_et;
 
 /*-----------------------------------------------------------------------------
 ** Macro:	newString()

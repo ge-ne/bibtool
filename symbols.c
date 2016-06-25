@@ -74,9 +74,11 @@
 ** Returns:	The count slot of |ST|.
 **___________________________________________________			     */
 #ifndef COMPLEX_SYMBOL
-#define SymTabCount(ST)	((ST)->st_count)
+#define SymTabCount(SYMTAB)  ((SYMTAB)->st_count)
+#define SymCount(SYM,SYMTAB) SymbolCount(SYM)
 #else
-#define SymTabCount(SYM) SymbolCount(SymTabSymbol(SYM))
+#define SymTabCount(SYMTAB)  SymbolCount(SymTabSymbol(SYMTAB))
+#define SymCount(SYM,SYMTAB) SymbolCount(SymTabSymbol(SYMTAB))
 #endif
 
 /*-----------------------------------------------------------------------------
@@ -136,6 +138,7 @@
  Symbol  sym_double_quote = NO_SYMBOL;		   /*                        */
  Symbol  sym_open_brace   = NO_SYMBOL;		   /*                        */
  Symbol  sym_close_brace  = NO_SYMBOL;		   /*                        */
+ Symbol  sym_et           = NO_SYMBOL;		   /*                        */
 
 
 /*****************************************************************************/
@@ -183,8 +186,8 @@ char * new_string(s)				   /*			     */
 static SymTab new_sym_tab(value)		   /*			     */
   String value;			   	   	   /*			     */
 { register SymTab new_symtab;		   	   /*			     */
-  Symbol sym;
-						   /*			     */
+  Symbol sym;					   /*                        */
+ 						   /*			     */
   if ((new_symtab=(SymTab)malloc(sizeof(struct STAB))) == 0L)/*              */
   { OUT_OF_MEMORY("SymTab"); }   		   /*			     */
  						   /*                        */
@@ -193,13 +196,11 @@ static SymTab new_sym_tab(value)		   /*			     */
   if ( (sym=(Symbol)malloc(sizeof(sSymbol))) == NO_SYMBOL )/*                */
   { OUT_OF_MEMORY("Symbol"); }   		   /*			     */
   SymbolValue(sym) = newString(value);		   /*                        */
-  SymbolCount(sym) += 1;			   /*                        */
 #else
   sym = newString(value);			   /*                        */
-  SymTabSymbol(new_symtab) = sym;		   /*			     */
-  SymTabCount(new_symtab)  = 1;		   	   /*			     */
 #endif
   SymTabSymbol(new_symtab) = sym;		   /*			     */
+  SymCount(sym, new_symtab)  = 1;		   /*			     */
   NextSymTab(new_symtab)   = (SymTab)NULL;	   /*			     */
   return new_symtab;			   	   /*			     */
 }						   /*------------------------*/
@@ -215,7 +216,7 @@ static SymTab new_sym_tab(value)		   /*			     */
 static int hashindex(s)				   /*                        */
   String s;					   /*                        */
 { int	index = 0;				   /*                        */
-  while ( *s ) index = (index+*(s++)) % HASHMAX;   /*                        */
+  while (*s) index = (index + *(s++)) % HASHMAX;   /*                        */
   return ( index < 0 ? -index : index );	   /*                        */
 }						   /*------------------------*/
 
@@ -263,6 +264,7 @@ void init_symbols()				   /*			     */
   sym_double_quote = symbol((String)"\"");	   /*                        */
   sym_open_brace   = symbol((String)"{");	   /*                        */
   sym_close_brace  = symbol((String)"}");	   /*                        */
+  sym_et	   = symbol((String)"&");	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -334,20 +336,14 @@ Symbol symbol(s)			   	   /*			     */
 	      (char*)s, (char*)SymbolValue(sym));  /*                        */
     if (strcmp((char*)s,			   /*                        */
 	       (char*)SymbolValue(sym)) == 0 )	   /*		             */
-    {						   /*                        */
-      DebugPrint2("Symbol found ",		   /*                        */
+    { DebugPrint2("Symbol found ",		   /*                        */
 		  SymbolValue(sym));  		   /*                        */
-#ifdef COMPLEX_SYMBOL
-      SymbolCount(sym)++; 		   	   /*			     */
-#else
-      SymTabCount(*stp)++; 		   	   /*			     */
-#endif
-    return sym;			   	   	   /*			     */
+      SymCount(sym,*stp)++; 		   	   /*			     */
+      return sym;				   /*			     */
     }						   /*                        */
   }						   /*			     */
  						   /*                        */
   *stp = new_sym_tab(s);  		   	   /*			     */
-  SymTabCount(*stp)++; 		   	   	   /*			     */
   DebugPrint2("Symbol created ",		   /*                        */
 	      SymbolValue(SymTabSymbol(*stp)));	   /*                        */
   return SymTabSymbol(*stp);			   /*			     */
@@ -411,17 +407,24 @@ void sym_del(sym)				   /*                        */
   Symbol sym;		   			   /*                        */
 {						   /*                        */
 #ifdef COMPLEX_SYMBOL
+  SymTab *stp;					   /*                        */
+  SymTab st;					   /*                        */
+ 						   /*                        */
   sym_pipe[sym_pipe_ptr] = sym;			   /*                        */
   if ( ++sym_pipe_ptr < SYM_PIPE_SIZE) return;	   /*                        */
-
+ 						   /*                        */
   while (--sym_pipe_ptr > 0)
-  {
-    if (SymbolCount(sym_pipe[sym_pipe_ptr]) > 0)
-      continue;
+  { sym = sym_pipe[sym_pipe_ptr];
+    if (SymbolCount(sym) > 0) continue;
 
-    
-						 /* TODO: free sym tab*/
-  }
+    stp = get_sym_tab(sym);
+    if (stp == NULL) continue;
+    st	 = *stp;
+    *stp = NextSymTab(st);
+    (void)free(st);
+    (void)free(SymbolValue(sym));
+    (void)free(sym);
+  }						   /*                        */
 #endif
 }						   /*------------------------*/
 

@@ -385,8 +385,6 @@ static char * itostr(i,digits)			   /*			     */
 /***			       Key Init Section				   ***/
 /*****************************************************************************/
 
- static Symbol and = NO_SYMBOL;
-
 /*-----------------------------------------------------------------------------
 ** Function:	init_key()
 ** Purpose:	Global initializations for the key module.
@@ -431,8 +429,6 @@ static void init_key()			   	   /*                        */
   if (NextName(format[1]))			   /*                        */
   { NamePre(NextName(format[1])) = NamePreSep;     /*                        */
   }						   /*                        */
-  if (and == NO_SYMBOL)				   /*                        */
-    and = symbol((String)"&"); 			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -878,10 +874,10 @@ static void fmt_names(sb,line,maxname,post,trans)  /*		             */
   {						   /*                        */
     DebugPrintF3("+++ %3d '%s'\n", i, words[i]);   /*                        */
  						   /*                        */
-    if ( strcmp((char*)words[i],"and") == 0 )	   /*                        */
-    { words[i] = (String)SymbolValue(and); }	   /*                        */
-    else if ( strcmp((char*)words[i], ",") == 0 )  /*                        */
-    { words[i] = (String)SymbolValue(sym_comma); } /*                        */
+    if (strcmp((char*)words[i],"and") == 0)	   /*                        */
+    { words[i] = SymbolValue(sym_et); }	   	   /*                        */
+    else if (strcmp((char*)words[i], ",") == 0)    /*                        */
+    { words[i] = SymbolValue(sym_comma); } 	   /*                        */
   }						   /*                        */
  						   /*                        */
   PushS(sb,					   /*                        */
@@ -890,7 +886,7 @@ static void fmt_names(sb,line,maxname,post,trans)  /*		             */
 			 trans,		   	   /*                        */
 			 maxname,		   /*                        */
 			 SymbolValue(sym_comma),   /*                        */
-			 SymbolValue(and),	   /*                        */
+			 SymbolValue(sym_et),	   /*                        */
 			 (char*)SymbolValue(NameNameSep),/*                  */
 			 (char*)SymbolValue(EtAl)));/*                       */
 }						   /*------------------------*/
