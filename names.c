@@ -382,7 +382,7 @@ NameNode name_format(s)				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	pp_list_of_names()
-** Purpose:	
+** Purpose:	Pretty-print a list of names.
 **		
 **
 ** Arguments:
