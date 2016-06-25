@@ -316,15 +316,20 @@ int read_db(db, file, verbose)		   	   /*                        */
   Record	  rec;				   /*			     */
   register Record dbn;				   /*                        */
 						   /*                        */
-  if ( !see_bib(file) ) { return 1; }		   /*                        */
-  if ( master_record == RecordNULL )		   /*                        */
-  { master_record = new_record(0,32); }		   /*                        */
-  RecordSource(master_record) = (file == NULL	   /*                        */
-				 ? sym_empty	   /*                        */
-				 : symbol(file));  /*                        */
+  if (!see_bib(file)) return 1;		   	   /*                        */
+  if (master_record == RecordNULL)		   /*                        */
+  { master_record = new_record(0, 32); }	   /*                        */
  						   /*                        */
-  if ( file == NULL ) file = (String)"<stdin>";	   /*                        */
-  if ( verbose ) 			   	   /* If desired print an    */
+  if (file == NULL)				   /*                        */
+  { file = (String)"<stdin>";	   		   /*                        */
+    RecordSource(master_record) = sym_empty;  	   /*                        */
+    LinkSymbol(sym_empty);			   /*                        */
+  }						   /*                        */
+  else						   /*                        */
+  { RecordSource(master_record) = symbol(file);    /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  if (verbose) 			   	   	   /* If desired print an    */
   { VerbosePrint2("Reading ",file); }	   	   /*	open message.	     */
  						   /*                        */
   dbn = DBnormal(db);				   /*                        */
