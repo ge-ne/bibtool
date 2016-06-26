@@ -192,8 +192,8 @@ static SymTab new_sym_tab(value)		   /*			     */
   { OUT_OF_MEMORY("SymTab"); }   		   /*			     */
  						   /*                        */
 #ifdef COMPLEX_SYMBOL
-  sym = (Symbol)malloc(sizeof(sSymbol));	   /*                        */
-  if ( (sym=(Symbol)malloc(sizeof(sSymbol))) == NO_SYMBOL )/*                */
+  if ((sym=(Symbol)malloc(sizeof(sSymbol)))	   /*                        */
+      == NO_SYMBOL)				   /*                        */
   { OUT_OF_MEMORY("Symbol"); }   		   /*			     */
   SymbolValue(sym) = newString(value);		   /*                        */
 #else
@@ -497,6 +497,23 @@ Symbol  sym_extract(sp, lowercase)		   /*			     */
   }						   /*                        */
   **sp = c;					   /*			     */
   return sym;					   /*			     */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function:	free_sym_array()
+** Type:	void
+** Purpose:	
+**		
+** Arguments:
+**	sym_arr	symbol array
+** Returns:	nothing
+**___________________________________________________			     */
+void free_sym_array(sym_arr)			   /*                        */
+  Symbol *sym_arr;				   /*                        */
+{ Symbol *a;					   /*                        */
+  for (a = sym_arr; *a; a++)			   /*                        */
+  { if (*a) UnlinkSymbol(*a); }			   /*                        */
+  free(sym_arr);				   /*                        */
 }						   /*------------------------*/
 
 #ifdef SYMBOL_DUMP

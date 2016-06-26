@@ -66,7 +66,7 @@
 #ifdef FREE_MEMORY
 #define UnlinkSymbol(SYM) if (--SymbolCount(SYM) == 0) sym_del(SYM)
 #else
-#define UnlinkSymbol(SYM)
+#define UnlinkSymbol(SYM) --SymbolCount(SYM)
 #endif
 
 /*****************************************************************************/
@@ -217,5 +217,6 @@ typedef String Symbol;
  void sym_del _ARG((Symbol sym));		   /* symbols.c              */
  void sym_gc _ARG((void));			   /* symbols.c              */
  void sym_unlink _ARG((Symbol s));		   /* symbols.c              */
+ void free_sym_array _ARG((Symbol *sym_arr));	   /*                        */
 
 #endif /* SYMBOLS_H_LOADED */
