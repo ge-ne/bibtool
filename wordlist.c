@@ -144,13 +144,13 @@ void free_words(wlp, fct)			   /*                        */
   { for ( wl = *wlp; wl; wl = next)		   /*                        */
     { next = NextWord(wl);			   /*                        */
       (*fct)(ThisWord(wl));   			   /*                        */
-      (void)free(wl);				   /*                        */
+      free(wl);				   	   /*                        */
     }						   /*                        */
   }						   /*                        */
   else						   /*                        */
   { for ( wl = *wlp; wl; wl = next)		   /*                        */
     { next = NextWord(wl);			   /*                        */
-      (void)free(wl);				   /*                        */
+      free(wl);				   	   /*                        */
     }						   /*                        */
   }						   /*                        */
   *wlp = WordNULL;				   /*                        */

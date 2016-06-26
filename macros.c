@@ -117,7 +117,7 @@ int def_macro(name, val, count)			   /*                        */
       else					   /*                        */
       { Macro mac = *mp;			   /*                        */
         *mp = NextMacro(*mp);			   /*                        */
-	(void)free(mac);			   /*                        */
+	free(mac);			   	   /*                        */
       }						   /*                        */
       return 1;					   /*                        */
     }						   /*                        */

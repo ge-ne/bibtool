@@ -199,9 +199,9 @@ static SymTab new_sym_tab(value)		   /*			     */
 #else
   sym = newString(value);			   /*                        */
 #endif
-  SymTabSymbol(new_symtab) = sym;		   /*			     */
-  SymCount(sym, new_symtab)  = 1;		   /*			     */
-  NextSymTab(new_symtab)   = (SymTab)NULL;	   /*			     */
+  SymTabSymbol(new_symtab)  = sym;		   /*			     */
+  SymCount(sym, new_symtab) = 1;		   /*			     */
+  NextSymTab(new_symtab)    = (SymTab)NULL;	   /*			     */
   return new_symtab;			   	   /*			     */
 }						   /*------------------------*/
 
@@ -421,9 +421,9 @@ void sym_del(sym)				   /*                        */
     if (stp == NULL) continue;
     st	 = *stp;
     *stp = NextSymTab(st);
-    (void)free(st);
-    (void)free(SymbolValue(sym));
-    (void)free(sym);
+    free(st);
+    free(SymbolValue(sym));
+    free(sym);
   }						   /*                        */
 #endif
 }						   /*------------------------*/
@@ -491,7 +491,7 @@ Symbol  sym_extract(sp, lowercase)		   /*			     */
   if (lowercase)				   /*                        */
   { t	= lower(newString(t));	   		   /*                        */
     sym	= symbol(t);		   	   	   /*			     */
-    (void)free((void *)t);			   /*                        */
+    free((void *)t);			   	   /*                        */
   } else {					   /*                        */
     sym  = symbol(t);			   	   /*			     */
   }						   /*                        */

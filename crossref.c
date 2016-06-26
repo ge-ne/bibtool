@@ -110,7 +110,7 @@ static void free_map(m)				   /*                        */
 { Map nxt;					   /*                        */
   while (m)					   /*                        */
   { nxt = NextMap(m);				   /*                        */
-    (void)free(m);				   /*                        */
+    free(m);				   	   /*                        */
     m = nxt;					   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
@@ -277,8 +277,8 @@ void crossref_map(spec)				   /*                        */
   }						   /*                        */
  						   /*                        */
 #ifndef COMPLEX_SYMBOL
-  (void)free(src);				   /*                        */
-  (void)free(dest);				   /*                        */
+  free(src);				   	   /*                        */
+  free(dest);				   	   /*                        */
 #endif
 }						   /*------------------------*/
 

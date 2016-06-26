@@ -621,8 +621,8 @@ int main(argc,argv)				   /*			     */
 static int rec_gt(r1, r2)			   /*                        */
   Record r1;					   /*                        */
   Record r2;					   /*                        */
-{ return (symcmp(RecordSortkey(r1),		   /*                        */
-		 RecordSortkey(r2)) < 0);	   /*                        */
+{ return symcmp(RecordSortkey(r1),		   /*                        */
+		RecordSortkey(r2)) < 0;	   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -638,8 +638,8 @@ static int rec_gt(r1, r2)			   /*                        */
 static int rec_lt(r1, r2)			   /*                        */
   Record r1;					   /*                        */
   Record r2;					   /*                        */
-{ return (symcmp(RecordSortkey(r1),	   	   /*                        */
-		 RecordSortkey(r2)) > 0);   	   /*                        */
+{ return symcmp(RecordSortkey(r1),	   	   /*                        */
+		RecordSortkey(r2)) > 0;   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -655,8 +655,8 @@ static int rec_lt(r1, r2)			   /*                        */
 static int rec_gt_cased(r1, r2)			   /*                        */
   Record r1;					   /*                        */
   Record r2;					   /*                        */
-{ return (symcmp(get_key_name(RecordSortkey(r1)),  /*                        */
-		 get_key_name(RecordSortkey(r2))) < 0);/*                    */
+{ return symcmp(get_key_name(RecordSortkey(r1)),   /*                        */
+		get_key_name(RecordSortkey(r2))) < 0;/*                      */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -672,8 +672,8 @@ static int rec_gt_cased(r1, r2)			   /*                        */
 static int rec_lt_cased(r1, r2)			   /*                        */
   Record r1;					   /*                        */
   Record r2;					   /*                        */
-{ return (symcmp(get_key_name(RecordSortkey(r1)),  /*                        */
-		 get_key_name(RecordSortkey(r2))) > 0);/*                    */
+{ return symcmp(get_key_name(RecordSortkey(r1)),   /*                        */
+		get_key_name(RecordSortkey(r2))) > 0;/*                      */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -757,8 +757,8 @@ static int update_crossref(db, rec)		   /*			     */
     return 0;					   /*			     */
   }						   /*			     */
   if (rsc_key_case) { s = get_key_name(s); }	   /*                        */
-  if ( (t=(String)malloc(symlen(s) + 3))	   /*                        */
-       ==(String)NULL )				   /* get temp mem           */
+  if ( (t=(String)malloc((size_t)symlen(s) + 3))   /*                        */
+       == StringNULL )				   /* get temp mem           */
   { OUT_OF_MEMORY("update_crossref()"); }	   /*		             */
 						   /*			     */
   (void)sprintf((char*)t,			   /*                        */

@@ -323,7 +323,7 @@ Symbol s_parse(type, sp, errp)			   /*                        */
   { (void)lower(cp); }				   /*                        */
  						   /*                        */
   { Symbol sym = symbol(cp);			   /*                        */
-    (void)free(cp);				   /*                        */
+    free(cp);				   	   /*                        */
     return sym;					   /*                        */
   }						   /*                        */
 }						   /*------------------------*/

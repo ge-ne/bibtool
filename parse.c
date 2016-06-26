@@ -774,7 +774,7 @@ int parse_bib(rec)				   /*			     */
       return BIB_NOOP;				   /*                        */
     }						   /*		             */
  						   /*                        */
-    flp += strlen((char*)SymbolValue(EntryName(type)));/*		     */
+    flp += symlen(EntryName(type));		   /*		             */
  						   /*                        */
     if ( type == BIB_COMMENT && rsc_pass_comment ) /*                        */
     { sbputchar('@', comment_sb);		   /*                        */
