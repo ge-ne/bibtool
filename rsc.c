@@ -150,7 +150,7 @@ int search_rsc()				   /*			     */
 { static String	def = (String)DefaultResourceFile; /*			     */
   register char *ap;				   /*			     */
   register char *fn;				   /*			     */
-  int		l;				   /*			     */
+  size_t	len;			   	   /*			     */
 						   /*			     */
 #ifdef RSC_ENV_VAR
   if ( (ap=getenv(RSC_ENV_VAR)) != NULL		   /* Try to get the name    */
@@ -159,16 +159,16 @@ int search_rsc()				   /*			     */
 						   /*			     */
 #ifdef HOME_ENV_VAR
   if ( (ap=getenv(HOME_ENV_VAR)) != NULL )	   /* Try to get the resource*/
-  { l = strlen(ap) +				   /*                        */
-        strlen(DIR_SEP) +			   /*                        */
-        strlen((char*)def) + 1;			   /*  file from the home    */
-    if ( (fn=malloc(l)) != NULL )		   /*  directory	     */
+  { len = strlen(ap) +				   /*                        */
+          strlen(DIR_SEP) +			   /*                        */
+          strlen((char*)def) + 1;		   /*  file from the home    */
+    if ((fn=malloc(len)) != NULL)		   /*  directory	     */
     { (void)strcpy(fn, ap);			   /*			     */
       (void)strcat(fn, DIR_SEP);		   /*			     */
       (void)strcat(fn, (char*)def);		   /*			     */
-      l = load_rsc((String)fn);			   /*			     */
+      len = load_rsc((String)fn);		   /*			     */
       free(fn);					   /*			     */
-      if ( l ) return TRUE;			   /*			     */
+      if (len) return TRUE;			   /*			     */
     }						   /*			     */
   }						   /*			     */
 #endif
@@ -301,29 +301,32 @@ int set_rsc(name,val)				   /*			     */
   }						   /*                        */
 						   /*			     */
 #define SETQ(V,T) V=T; UnlinkSymbol(name);
-#define RscNumeric(SYM,S,V,I)			\
-  if( name==S ) { SETQ(V,atoi((char*)SymbolValue(val)));	\
+#define RscNumeric(SYM,S,V,I)						\
+  if ( name==S ) { SETQ(V,atoi((char*)SymbolValue(val)));		\
     UnlinkSymbol(val); return 0; }
-#define RscString(SYM,S,V,I)			\
-  if( name==S ) { V = (String)new_string((char*)SymbolValue(val));	\
+#define RscString(SYM,S,V,I)						\
+  if ( name==S ) { V = (String)new_string((char*)SymbolValue(val));	\
     UnlinkSymbol(name); return 0; }
-#define RscBoolean(SYM,S,V,I)			\
-  if( name==S ) { SETQ(V,test_true(val));	\
+#define RscBoolean(SYM,S,V,I)						\
+  if ( name==S ) { SETQ(V,test_true(val));				\
     UnlinkSymbol(val); return 0; }
-#define RscByFct(SYM,S,FCT)			\
-  if( name==S ) { (void)FCT;			\
+#define RscByFct(SYM,S,FCT)						\
+  if ( name==S ) { (void)FCT;						\
     UnlinkSymbol(name); return 0; }
 #define RSC_FIRST(C)	      case C:
 #define RSC_NEXT(C)	      break; case C:
 						   /*			     */
-  switch( *SymbolValue(name) )			   /*			     */
+  switch (*SymbolValue(name))			   /*			     */
   {						   /*			     */
 #ifndef MAKEDEPEND
 #include <bibtool/resource.h>
 #endif
   }						   /*			     */
 						   /*			     */
-  ERROR3("Resource ",SymbolValue(name)," unknown.");/*			     */
+  ERROR3("Resource ", SymbolValue(name),	   /*                        */
+	 " unknown.");				   /*			     */
+  UnlinkSymbol(name);				   /*                        */
+  UnlinkSymbol(val);				   /*                        */
   return 1;					   /*			     */
 }						   /*------------------------*/
 
@@ -339,6 +342,6 @@ int set_rsc(name,val)				   /*			     */
 **___________________________________________________			     */
 void rsc_print(s)				   /*			     */
   String s;				   	   /*			     */
-{ ErrPrintF("%s\n",(char*)s);			   /* print the string itself*/
+{ ErrPrintF("%s\n", (char*)s);			   /* print the string itself*/
 			   			   /* followed by a newline  */
 }						   /*------------------------*/

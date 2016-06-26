@@ -484,7 +484,7 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   first = last = von = jr = 0;			   /*                        */
   if (len < 1) return;			   	   /*                        */
  						   /*                        */
-  if ( (type=(char*)malloc(len)) == NULL )	   /*                        */
+  if ( (type=(char*)malloc((size_t)len)) == NULL ) /*                        */
   { OUT_OF_MEMORY("name type"); }   		   /*                        */
  						   /*                        */
 #ifdef DEBUG

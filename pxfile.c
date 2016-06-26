@@ -114,7 +114,7 @@ static int absolute_file(name,basename,path)	   /*                        */
   char        ***path;				   /*                        */
 { static char *absolut_path[2];			   /*                        */
   static int  first = (-1);			   /*                        */
-  int         l;				   /*                        */
+  size_t         l;				   /*                        */
   char        *sp;				   /*                        */
 #undef SEPARATOR
   						   /*                        */
@@ -140,8 +140,8 @@ static int absolute_file(name,basename,path)	   /*                        */
 #ifdef AMIGA
   if ( sp == NULL ) sp = strchr(name,':');	   /*                        */
 #endif
-  l = (int)(sp-name);				   /* length of directory.   */
-  if ( first )				   	   /*                        */
+  l = (size_t)(sp-name);			   /* length of directory.   */
+  if (first)				   	   /*                        */
   { first = 0;					   /*                        */
     absolut_path[1] = NULL;			   /* mark end of array.     */
     absolut_path[0] = malloc(l+1);		   /* allocate               */
@@ -301,7 +301,7 @@ char ** px_s2p(s,sep)				   /*			     */
   { pattern[l] = cp + array[l]; }		   /*                        */
   pattern[array_ptr] = 0L;			   /* Mark end		     */
 						   /*			     */
-  (void)free(array);				   /*                        */
+  free(array);				   	   /*                        */
   sbclose(sb);					   /*                        */
   return pattern;				   /*			     */
 }						   /*------------------------*/
