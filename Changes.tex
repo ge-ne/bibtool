@@ -50,6 +50,19 @@
 \begin{multicols}2\RaggedRight
 
  % =====================================================================
+ \begin{Release}{2.66}{?? ??, 2016}
+  \begin{New}{gene}
+    Resource \rsc{keep.field} added to get rid of unknown fields.
+  \end{New}
+  \begin{Update}{gene}
+    Internal memory management rewritten to get rid of unused memory
+    some time in the future. For now just the C code is changed
+    incompatibly if thee macro |COMPLEX_SYMBOL| is defined upon
+    compilation.
+  \end{Update}
+ \end{Release}
+
+ % =====================================================================
  \begin{Release}{2.65}{June 14, 2016}
   \begin{Fix}{gene}
     Hash function and value storing for field name mapping during xref

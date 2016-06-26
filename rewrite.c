@@ -67,7 +67,8 @@
 #define RULE_REGEXP	0x02
 #define RULE_NOT	0x04
 #define RULE_RENAME	0x08
-#define RULE_DELETE	0x016
+#define RULE_DELETE	0x10
+#define RULE_KEEP	0x20
 
 /*****************************************************************************/
 /* Internal Programs							     */
@@ -104,6 +105,11 @@
 /*****************************************************************************/
 /* External Programs							     */
 /*===========================================================================*/
+
+
+/*---------------------------------------------------------------------------*/
+
+ static String s_if = (String)"if";
 
 
 /*****************************************************************************/
@@ -231,11 +237,15 @@ static Rule new_rule(field, value, pattern, frame, flags, casep)/*           */
   { OUT_OF_MEMORY("rewrite rule"); } 		   /*			     */
 						   /*			     */
   RuleField(rule) = field;			   /*			     */
+  if (field) { LinkSymbol(field); }		   /*                        */
   RuleValue(rule) = value;			   /*			     */
+  if (value) { LinkSymbol(value); }		   /*                        */
   RuleFrame(rule) = frame;			   /*			     */
+  if (frame) { LinkSymbol(frame); }		   /*                        */
   RuleFlag(rule)  = flags;			   /*			     */
   NextRule(rule)  = RuleNULL;			   /*			     */
   RuleGoal(rule)  = pattern;			   /*                        */
+  if (pattern) { LinkSymbol(pattern); }		   /*                        */
 					       	   /*                        */
 #ifdef REGEX
   if ( pattern &&				   /*                        */
@@ -272,6 +282,7 @@ static Rule new_rule(field, value, pattern, frame, flags, casep)/*           */
   DebugPrintF1(flags & RULE_NOT ? " NOT" : "");	   /*                        */
   DebugPrintF1(flags & RULE_ADD ? " ADD" : "");	   /*                        */
   DebugPrintF1(flags & RULE_RENAME ? " RENAME" : "");/*                      */
+  DebugPrintF1(flags & RULE_KEEP ? " KEEP" : "");  /*                        */
   DebugPrintF1(flags & RULE_REGEXP ? " REGEXP" : "");/*                      */
   DebugPrintF1("\n");		   		   /*			     */
   DebugPrintF2("+++ BibTool: New rule = %lx\n",	   /*                        */
@@ -346,11 +357,11 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
   {						   /*                        */
     DebugPrint2("\tlooking for symbol in: ", s);   /*			     */
     field = SParseSymbol(&s);			   /*                        */
-    DebugPrint2("\tok ",s);			   /*                        */
     if (field == NO_SYMBOL)			   /*                        */
     { DebugPrint2("\tno symbol found in: ", s);	   /*			     */
       return;					   /*                        */
     }					   	   /*                        */
+    DebugPrint2("\tok ",s);			   /*                        */
     DebugPrint2("field   = ", SymbolValue(field)); /*			     */
     (void)SParseSkip(&s);			   /*                        */
 						   /*			     */
@@ -467,13 +478,14 @@ static void rewrite_1(frame,sb,match,db,rec)	   /*			     */
 #ifdef REGEX
 
 /*-----------------------------------------------------------------------------
-** Function:	selector_hits()
+** Function*:	selector_hits()
 ** Type:	static int
 ** Purpose:	
 **		
 ** Arguments:
-**	rule	
-**	 rec	
+**	rule	the rule
+**	 db	the database
+**	 rec	the record
 ** Returns:	
 **___________________________________________________			     */
 static int selector_hits(rule, db, rec)		   /*                        */
@@ -543,17 +555,17 @@ static String repl_regex(field, value, rule, db, rec)/*			     */
   limit     = rsc_rewrite_limit;		   /*			     */
   once_more = TRUE;				   /*                        */
     					   	   /*			     */
-  while ( once_more ) 				   /*			     */
+  while (once_more) 				   /*			     */
   {						   /*			     */
     once_more = FALSE;				   /*                        */
-    while (rule != RuleNULL)			   /*                        */
+    while (rule)			   	   /*                        */
     {						   /*                        */
 #ifdef DEBUG
-	printf("+++ BibTool: repl_regex rule:0x%lx flags:0x%x field:%s <> %s\n",
-	       (long)rule,			   /*                        */
-	       RuleFlag(rule),			   /*                        */
-	       (char*)SymbolValue(RuleField(rule)),/*                        */
-	       (char*)SymbolValue(field));	   /*                        */
+      printf("+++ BibTool: repl_regex rule:0x%lx flags:0x%x field:%s <> %s\n",
+	     (long)rule,			   /*                        */
+	     RuleFlag(rule),			   /*                        */
+	     (char*)SymbolValue(RuleField(rule)),  /*                        */
+	     (char*)SymbolValue(field));	   /*                        */
 #endif
       if ((RuleFlag(rule) & RULE_RENAME) != 0)	   /*                        */
       {						   /*                        */
@@ -574,15 +586,15 @@ static String repl_regex(field, value, rule, db, rec)/*			     */
 	rule = NextRule(rule);			   /*                        */
 	limit = rsc_rewrite_limit;		   /*			     */
       }						   /*                        */
-      else if ( ( RuleField(rule) == NULL	   /*			     */
-	    || RuleField(rule) == field ) &&	   /*			     */
-	   (RuleFlag(rule) & RULE_ADD) == 0 &&	   /*                        */
-	   re_search(&RulePattern(rule),	   /*			     */
-		     (char*)val,		   /*                        */
-		     len,			   /*                        */
-		     0,				   /*                        */
-		     len-1,			   /*                        */
-		     &reg) >= 0 )		   /*			     */
+      else if ((RuleField(rule) == NULL	   	   /*			     */
+		|| RuleField(rule) == field ) &&   /*			     */
+	       (RuleFlag(rule) & RULE_ADD) == 0 && /*                        */
+	       re_search(&RulePattern(rule),	   /*			     */
+			 (char*)val,		   /*                        */
+			 len,			   /*                        */
+			 0,			   /*                        */
+			 len-1,			   /*                        */
+			 &reg) >= 0 )		   /*			     */
       {					   	   /*			     */
 	if (--limit < 0)			   /*                        */
 	{ ErrPrintF2("\n*** BibTool WARNING: Rewrite limit exceeded for field %s\n\t\t     in record %s\n",
@@ -682,6 +694,8 @@ static String check_regex(field, value, rule, db, rec)/*		     */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/
+/*---			    Rewrite Rule Section			  ---*/
+/*---------------------------------------------------------------------------*/
 
  static Rule r_rule = RuleNULL;
  static Rule r_rule_end	= RuleNULL;
@@ -711,14 +725,24 @@ void rename_field(spec)				   /*			     */
   if ( (to = SParseSymbol(&s)) == NO_SYMBOL )      /*		             */
     return;					   /*			     */
  						   /*                        */
-  if (sp_expect(&s, (String)"if", FALSE))	   /*                        */
-  { if ( (field = SParseOptionalSymbol(&s)) != NO_SYMBOL )/*	             */
+  if (sp_expect(&s, s_if, FALSE))	   	   /*                        */
+  { if ((field = SParseOptionalSymbol(&s)) != NO_SYMBOL)/*	             */
     { (void)SParseSkip(&s);			   /*			     */
-      if ( (pattern = SParseValue(&s)) == NO_SYMBOL )/*		             */
+      if ((pattern = SParseValue(&s)) == NO_SYMBOL)/*		             */
+      { if (to)    UnlinkSymbol(to);		   /*                        */
+	if (from)  UnlinkSymbol(from);		   /*                        */
+	if (field) UnlinkSymbol(field);		   /*                        */
 	return;					   /*			     */
+      }						   /*                        */
     }						   /*                        */
   }						   /*                        */
-  if (SParseEOS(&s) != StringNULL ) return;	   /*			     */
+  if (SParseEOS(&s) != StringNULL )		   /*                        */
+  { if (to)      UnlinkSymbol(to);		   /*                        */
+    if (from)    UnlinkSymbol(from);		   /*                        */
+    if (field)   UnlinkSymbol(field);		   /*                        */
+    if (pattern) UnlinkSymbol(pattern);		   /*                        */
+    return;					   /*			     */
+  }						   /*                        */
  						   /*                        */
   Rule rule = new_rule(from,			   /*                        */
 		       to,		   	   /*                        */
@@ -754,6 +778,84 @@ void add_rewrite_rule(s)			   /*			     */
 	   RULE_REGEXP,				   /*                        */
 	   rsc_case_rewrite);			   /*			     */
 }						   /*------------------------*/
+
+/*---------------------------------------------------------------------------*/
+/*---			       Keep Rule Section			  ---*/
+/*---------------------------------------------------------------------------*/
+
+#define K_RULES_SIZE 37
+
+static Rule *k_rules = (Rule*)NULL;
+
+/*-----------------------------------------------------------------------------
+** Function:	keep_field()
+** Type:	void
+** Purpose:	
+**		
+** Arguments:
+**	spec	
+** Returns:	nothing
+**___________________________________________________			     */
+void keep_field(spec)				   /*			     */
+  Symbol spec;					   /*                        */
+{ String s = SymbolValue(spec);			   /*                        */
+  Symbol* names;				   /*                        */
+  Symbol* np;				   	   /*                        */
+  Symbol field 	 = NO_SYMBOL;			   /*                        */
+  Symbol pattern = NO_SYMBOL;		   	   /*                        */
+  int i;					   /*                        */
+ 						   /*                        */
+  (void)sp_open(s);				   /*			     */
+  if ( (names = sp_symbols(&s)) == NULL )    	   /*		             */
+    return;					   /*			     */
+ 						   /*                        */
+  if (sp_expect(&s, s_if, FALSE))	   	   /*                        */
+  { if ((field = SParseOptionalSymbol(&s)) != NO_SYMBOL)/*	             */
+    { (void)SParseSkip(&s);			   /*			     */
+      if ((pattern = SParseValue(&s)) == NO_SYMBOL)/*		             */
+      { free_sym_array(names);			   /*                        */
+	UnlinkSymbol(field);			   /*                        */
+	return;					   /*			     */
+      }						   /*                        */
+    }						   /*                        */
+    else					   /*                        */
+    { free_sym_array(names);			   /*                        */
+      return;					   /*                        */
+    }						   /*                        */
+  }						   /*                        */
+  if (SParseEOS(&s) != StringNULL )	   	   /*			     */
+  { free_sym_array(names);			   /*                        */
+    if (field)   UnlinkSymbol(field);		   /*                        */
+    if (pattern) UnlinkSymbol(pattern);		   /*                        */
+    return;					   /*			     */
+  }						   /*                        */
+ 						   /*                        */
+  if (k_rules == NULL)				   /*                        */
+  { if ((k_rules=calloc(K_RULES_SIZE, sizeof(Rule))) == NULL)/*              */
+    { OUT_OF_MEMORY("keep rules"); }		   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  for (np = names; *np; np++)			   /*                        */
+  { LinkSymbol(*np);				   /*                        */
+    Rule rule = new_rule(*np,			   /*                        */
+			 NULL,		   	   /*                        */
+			 pattern,		   /*                        */
+			 field,			   /*                        */
+			 RULE_KEEP | RULE_REGEXP,  /*                        */
+			 TRUE);	   	   	   /*                        */
+    i = (int)(*np) % K_RULES_SIZE;		   /*                        */
+    if (i < 0) i = -i;				   /*                        */
+ 						   /*                        */
+    NextRule(rule) = k_rules[i];		   /*                        */
+    k_rules[i] = rule;				   /*                        */
+  }						   /*                        */
+  						   /*                        */
+  free_sym_array(names);			   /*                        */
+}						   /*------------------------*/
+
+/*---------------------------------------------------------------------------*/
+/*---			      Check Rule Section			  ---*/
+/*---------------------------------------------------------------------------*/
 
  static Rule c_rule = RuleNULL;
  static Rule c_rule_end = RuleNULL;
@@ -793,10 +895,11 @@ void rewrite_record(db, rec)			   /*			     */
   register Macro  mac;				   /*			     */
   String          cp;				   /*			     */
   static StringBuffer *sb = NULL;		   /*                        */
+  int idx;					   /*                        */
  						   /*                        */
   if (sb == NULL) sb = sbopen();		   /*                        */
 						   /*			     */
-  if (c_rule != RuleNULL)			   /*			     */
+  if (c_rule)			   		   /*			     */
   {						   /*                        */
     for (i = RecordFree(rec), hp = RecordHeap(rec);/*			     */
 	 i > 0;				   	   /*			     */
@@ -815,7 +918,7 @@ void rewrite_record(db, rec)			   /*			     */
     }						   /*			     */
   }						   /*			     */
 						   /*			     */
-  if (r_rule != RuleNULL)			   /*			     */
+  if (r_rule)			   		   /*			     */
   {   						   /*			     */
     for (i = RecordFree(rec), hp = RecordHeap(rec);/*			     */
 	 i > 0;					   /*			     */
@@ -824,11 +927,45 @@ void rewrite_record(db, rec)			   /*			     */
       if (*hp && *(hp+1))			   /*			     */
       {						   /*			     */
 	cp = repl_regex(*hp,*(hp+1),r_rule,db,rec);/*			     */
-	if ( cp == StringNULL )		   	   /*			     */
-	{ *hp = *(hp+1) = NO_SYMBOL; }	   	   /*			     */
+	if (cp == StringNULL)		   	   /*			     */
+	{ if (*hp) UnlinkSymbol(*hp);		   /*                        */
+	  if (*(hp+1)) UnlinkSymbol(*(hp+1));	   /*                        */
+	  *hp = *(hp+1) = NO_SYMBOL;		   /*                        */
+	}					   /*                        */
 	else if (strcmp((char*)cp,		   /*                        */
-			(char*)SymbolValue(*(hp+1))) )/*		     */
-	{ *(hp+1) = symbol(cp); }		   /*			     */
+			(char*)SymbolValue(*(hp+1))))/*		             */
+	{ if (*(hp+1)) UnlinkSymbol(*(hp+1));	   /*                        */
+	  *(hp+1) = symbol(cp);			   /*                        */
+	}		   			   /*			     */
+      }						   /*			     */
+    }						   /*			     */
+  }						   /*			     */
+						   /*                        */
+  if (k_rules)			   		   /*			     */
+  { Rule r;					   /*			     */
+    int keep;					   /*                        */
+     						   /*                        */
+    for (i = RecordFree(rec), hp = RecordHeap(rec);/*			     */
+	 i > 0;					   /*			     */
+	 i -= 2, hp += 2)			   /*			     */
+    {						   /*			     */
+      if (*hp && *(hp+1))			   /*			     */
+      {	keep = FALSE;				   /*			     */
+	idx = (int)(*hp) % K_RULES_SIZE;
+	if (idx < 0) idx = -idx;
+
+	for (r = k_rules[idx]; r; r = NextRule(r))
+	{ if (RuleField(r) == *hp &&
+	      selector_hits(r, db, rec))
+	  { keep = TRUE;
+	    break;
+	  }
+	}
+	if (!keep)
+	{ if (*hp) UnlinkSymbol(*hp);
+	  if (*(hp+1)) UnlinkSymbol(*(hp+1));
+	  *hp = *(hp+1) = NO_SYMBOL;
+	}
       }						   /*			     */
     }						   /*			     */
   }						   /*			     */
@@ -856,7 +993,8 @@ void rewrite_record(db, rec)			   /*			     */
 }						   /*------------------------*/
 
 /*---------------------------------------------------------------------------*/
-
+/*---			    Extract Rule Section			  ---*/
+/*---------------------------------------------------------------------------*/
 
  static Rule x_rule = RuleNULL;
  static Rule x_rule_end = RuleNULL;
@@ -935,11 +1073,11 @@ void save_regex(s)				   /*                        */
 **		
 **		
 ** Arguments:
-**	ignored	
+**	ignored	the letters to be ignored
 ** Returns:	Nothing
 **___________________________________________________			     */
 static void init_s_search(ignored)		   /*                        */
-  String  ignored;				   /*                        */
+  String ignored;				   /*                        */
 { int i;					   /*                        */
   for (i = 0; i < 256; i++) s_class[i] = i;	   /*                        */
  						   /*                        */
@@ -985,8 +1123,8 @@ static void init_s_search(ignored)		   /*                        */
 **		
 **		
 ** Arguments:
-**	p	
-**	s	
+**	pattern	the pattern
+**	s	the string
 ** Returns:	
 **___________________________________________________			     */
 static int s_match(p,s)				   /*                        */
@@ -1013,8 +1151,8 @@ static int s_match(p,s)				   /*                        */
 **		a match is found then |TRUE| is returned. Otherwise
 **		|FALSE|.
 ** Arguments:
-**	pattern	
-**	s	
+**	pattern	the pattern
+**	s	the string
 ** Returns:	
 **___________________________________________________			     */
 static int s_search(pattern,s)			   /*                        */
@@ -1031,7 +1169,6 @@ static int s_search(pattern,s)			   /*                        */
   }						   /*                        */
   return FALSE;					   /*                        */
 }						   /*------------------------*/
-
 
 #define ReturnIf(COND)					\
   if ( COND )						\
