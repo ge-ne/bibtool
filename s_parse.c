@@ -346,7 +346,7 @@ int sp_expect(sp, expect, verbose)		   /*                        */
   register String expect;			   /*                        */
   int verbose;					   /*                        */
 {						   /*                        */
-  while( is_space(**sp) ) (*sp)++;		   /*                        */
+  while( is_space(**sp) ) (*sp)++;	   	   /*                        */
  						   /*                        */
   for ( ; *expect; expect++)			   /*                        */
   { if (*expect != **sp)			   /*                        */
