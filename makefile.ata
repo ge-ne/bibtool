@@ -381,6 +381,8 @@ LIBFILES      = lib$(DIR_SEP)biblatex.rsc	\
 		lib$(DIR_SEP)field.rsc		\
 		lib$(DIR_SEP)improve.rsc	\
 		lib$(DIR_SEP)iso2tex.rsc	\
+		lib$(DIR_SEP)keep_bibtex.rsc	\
+		lib$(DIR_SEP)keep_biblatex.rsc	\
 		lib$(DIR_SEP)month.rsc		\
 		lib$(DIR_SEP)opt.rsc		\
 		lib$(DIR_SEP)sort_fld.rsc	\
