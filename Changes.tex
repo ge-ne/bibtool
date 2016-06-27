@@ -57,7 +57,7 @@
   \begin{Update}{gene}
     Internal memory management rewritten to get rid of unused memory
     some time in the future. For now just the C code is changed
-    incompatibly if thee macro |COMPLEX_SYMBOL| is defined upon
+    incompatibly if the macro |COMPLEX_SYMBOL| is defined upon
     compilation.
   \end{Update}
  \end{Release}
@@ -78,11 +78,11 @@
   \end{New}
   \begin{New}{gene}
     New resource \rsc{crossref.map} introduced to add a field name
-    mapping for crossrefs.
+    mapping for cross-refs.
   \end{New}
   \begin{New}{gene}
     New resource \rsc{clear.crossref.map} introduced to clear the
-    field name mapping for crossrefs.
+    field name mapping for cross-refs.
   \end{New}
   \begin{Update}{gene}
     \File{io.c} introduced to contain input and output file parameters.
@@ -198,7 +198,7 @@
     fields used in bib\LaTeX.
   \end{New}
   \begin{Fix}{gene}
-    Fix for a misbehaviour when selecting entries according to an aux file
+    Fix for a misbehavior when selecting entries according to an aux file
     with deeply nested @strings.
   \end{Fix}
  \end{Release}
@@ -244,7 +244,7 @@
     leading to unwanted definitions.
   \end{Update}
   \begin{Fix}{gene}
-    An intialization error showed up on MacOS. This has been fixed.
+    An initialization error showed up on MacOS. This has been fixed.
   \end{Fix}
   \begin{Fix}{gene}
     The prepared makefiles for various operating systems missed an
@@ -272,7 +272,7 @@
  % =====================================================================
  \begin{Release}{2.51}{May 12, 2010}
   \begin{Fix}{gene}
-    Bugfix in \File{names.c}: The classification of name parts
+    Bug fix in \File{names.c}: The classification of name parts
     erroneously has used a wrong translation under certain circumstances.
   \end{Fix}
  \end{Release}
@@ -280,7 +280,7 @@
  % =====================================================================
  \begin{Release}{2.50}{May 12, 2010}
   \begin{Fix}{gene}
-    Bugfix in \File{names.c}: The classification of name parts
+    Bug fix in \File{names.c}: The classification of name parts
     erroneously has used a wrong translation under certain
     circumstances.
   \end{Fix}
@@ -288,7 +288,7 @@
  % =====================================================================
  %\begin{Release}{2.50}{February 6, 2010}
   \begin{Fix}{gene}
-    Bugfix in \File{key.c}: The classification of name parts
+    Bug fix in \File{key.c}: The classification of name parts
     erroneously has considered, to be a first name under certain
     circumstances. This has been improved.
   \end{Fix}
@@ -302,11 +302,11 @@
  \begin{Release}{2.49}{February 8, 2007}
   \begin{New}{gene}
     New resource \rsc{expand.crossref} introduced. This resource
-    enables the expansion of fields inherited via the crossref
+    enables the expansion of fields inherited via the cross-ref
     mechanism.
   \end{New}
   \begin{Fix}{gene}
-    Bugfix in \File{names.c}: The classification of name parts
+    Bug fix in \File{names.c}: The classification of name parts
     erroneously has considered the initials V., I., and X. to be Roman
     numerals belonging to the jr part under special circumstances.
     This has been improved.
@@ -323,11 +323,11 @@
  %\begin{Release}{2.49}{February 8, 2007}
   \begin{New}{gene}
     New resource \rsc{expand.crossref} introduced. This resource
-    enables the expansion of fields inherited via the crossref
+    enables the expansion of fields inherited via the cross-ref
     mechanism.
   \end{New}
   \begin{Fix}{gene}
-    Bugfix in \File{print.c}: Some national characters have been lost.
+    Bug fix in \File{print.c}: Some national characters have been lost.
     It was necessary to use an unsigned character as elsewhere.
   \end{Fix}
  \end{Release}
@@ -345,14 +345,14 @@
     directories.
   \end{New}
   \begin{Fix}{gene}
-    Bugfix in \File{main.c}: Some compilers didn't like the method
+    Bug fix in \File{main.c}: Some compilers didn't like the method
     true().
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfix for kpathsea under Suse 9.1.
+    Bug fix for kpathsea under Suse 9.1.
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfixes in expansion.
+    Bug fixes in expansion.
   \end{Fix}
  %\end{Release}
 
@@ -389,16 +389,16 @@
     statistics any more.
   \end{Update}
   \begin{Fix}{gene}
-    Bugfix: Bug in extracting by aux file. Crossrefed entries where
+    Bug fix: Bug in extracting by aux file. Crossrefed entries where
     sometimes ignored.
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfix: Bug in parsing of backslashes in resources has been fixed.
+    Bug fix: Bug in parsing of backslashes in resources has been fixed.
     Unfortunately this bug appeared in one of the examples in the
     manual.
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfix: Bug in expansion introduced in 2.47 has been fixed. An
+    Bug fix: Bug in expansion introduced in 2.47 has been fixed. An
     error occurred when expanding macros.
   \end{Fix}
   \begin{New}{gene}
@@ -410,15 +410,15 @@
     documented.
   \end{Doc}
   \begin{Fix}{gene}
-    Bugfix: \BibTool{} has misinterpreted pre for the format specifier
+    Bug fix: \BibTool{} has misinterpreted pre for the format specifier
     \%t and \%T due to an over-optimization. This has been fixed.
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfix: \BibTool{} has ignored \rsc{preserve.key.case} for
+    Bug fix: \BibTool{} has ignored \rsc{preserve.key.case} for
     cross-referenced keys. This has been fixed.
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfix: Some compilers don't like it if static strings are
+    Bug fix: Some compilers don't like it if static strings are
     modified. Thus I have made them dynamic.
   \end{Fix}
   \begin{New}{gene}
@@ -429,7 +429,7 @@
  % =====================================================================
  \begin{Release}{2.47}{January 16, 2003}
   \begin{Fix}{gene}
-    Bugfix: \BibTool{} looped when parsing unbalanced blocks due to a
+    Bug fix: \BibTool{} looped when parsing unbalanced blocks due to a
     too short type in \File{parse.c}. This has been fixed and some
     error messages have been improved.
   \end{Fix}
@@ -442,16 +442,16 @@
     separators.
   \end{New}
   \begin{Fix}{gene}
-    Bugfix: \BibTool{} looped when a malformed string of some kind was
+    Bug fix: \BibTool{} looped when a malformed string of some kind was
     given to expansion. This has been fixed in \verb|expand()|.
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfix: \BibTool{} crashed when called with empty format string
+    Bug fix: \BibTool{} crashed when called with empty format string
     due to an uninitialized variable. This has been fixed in
     \verb|parse_fmt()|.
   \end{Fix}
   \begin{Doc}{gene}
-    Bugfix: Documentation bug fixed. The default for \rsc{sort.key}
+    Bug fix: Documentation bug fixed. The default for \rsc{sort.key}
     should be \verb|%s($key)|. This has been fixed in
     \File{Lib/default.rsc} and the manual.
   \end{Doc}
@@ -473,16 +473,16 @@
     empty line at the beginning of the output file.
   \end{New}
   \begin{Fix}{gene}
-    Bugfix: Some C compilers don't like the initialization of static
+    Bug fix: Some C compilers don't like the initialization of static
     variables with \texttt{stderr}. The code has been moved to a
     initialization routine.
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfix: \texttt{-R} disables the reading of the resource at the
+    Bug fix: \texttt{-R} disables the reading of the resource at the
     end of processing of command line arguments.
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfix: Parsing of select arguments with backslashes were not treated
+    Bug fix: Parsing of select arguments with backslashes were not treated
     correctly.
   \end{Fix}
   \begin{Doc}{gene}
@@ -503,7 +503,7 @@
     Searching for the kpathsea library is now the default in the
     configure script. Thus it is possible to simply place \BibTool{}
     in a web2c tree. This only requires that the directory is named
-    bibtool and bibtool is added to the filelists in Makefile,
+    bibtool and bibtool is added to the file lists in Makefile,
     configure, and configure.in of the web2c main directory.
   \end{New}
   \begin{Fix}{gene}
@@ -513,13 +513,13 @@
     Initialization bug for kpathsea fixed.
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfix for cross referencing: normalization to lowercase was
+    Bug fix for cross referencing: normalization to lowercase was
     missing twice.
   \end{Fix}
   \begin{Fix}{gene}
-    Bugfix in the \TeX{} reading routines: spaces after active
+    Bug fix in the \TeX{} reading routines: spaces after active
     characters are not ignored. All characters are treated as
-    unsigned. This seems to be preferrable for extended ASCII
+    unsigned. This seems to be preferable for extended ASCII
     characters.
   \end{Fix}
   \begin{Update}{gene}
@@ -536,7 +536,7 @@
     The configuration of \BibTcl{} is now done automatically.
   \end{New}
   \begin{New}{gene}
-    New datatype introduced: \verb|Uchar| will hold UniCode characters in a
+    New data type introduced: \verb|Uchar| will hold Unicode characters in a
     future release. I just have to find regexp routines to work with UTF-8.
   \end{New}
   \begin{Update}{gene}
@@ -560,15 +560,15 @@
     \BibTool.
   \end{Update}
   \begin{Fix}{gene}
-    Bugfix: comments are no longer crippled.
+    Bug fix: comments are no longer crippled.
   \end{Fix}
   \begin{Fix}{gene}
-    Minor bugfix in rewriting code: empty pattern works again.
+    Minor bug fix in rewriting code: empty pattern works again.
   \end{Fix}
   \begin{Fix}{gene}
-    The regression tests have revealed a bugfix in the key generation
+    The regression tests have revealed a bug fix in the key generation
     code. I am not aware of the change that has let to this effect but
-    the new behaviour is correct. Before, the macro expansion was
+    the new behavior is correct. Before, the macro expansion was
     suppressed under certain circumstances.
   \end{Fix}
   \begin{New}{gene}
@@ -612,12 +612,12 @@
  \begin{Release}{2.42}{}
   \begin{New}{gene}
     New selection operation introduced. The selection with regular expressions
-    is complemented by a selection according to simple substrings. This
+    is complemented by a selection according to simple sub-strings. This
     selection is initiated with the new resource \rsc{select.string}
     which takes the same arguments as the resource \rsc{select} but
-    does comparison for a substring instead of regular expression matching.
+    does comparison for a sub-string instead of regular expression matching.
     The value of \rsc{select.case.sensitive} is taken into account but
-    at runtime and not at specification time. Certain characters can be
+    at run-time and not at specification time. Certain characters can be
     ignored for the comparison. Those are contained in the new string resource
     \rsc{select.ignored}.
   \end{New}
@@ -630,11 +630,11 @@
   \begin{New}{gene}
     New resource \rsc{clear.ignored.words} introduced. In fact this is
     a function which deletes all ignored words. Thus it is possible to
-    determine all ignored words at runtime--even the compiled in
+    determine all ignored words at run-time--even the compiled in
     defaults.
   \end{New}
   \begin{Fix}{gene}
-    Bug fixed: selection honours the resource \rsc{print.all.strings}
+    Bug fixed: selection honors the resource \rsc{print.all.strings}
     now.
   \end{Fix}
   \begin{Update}{gene}
@@ -699,21 +699,21 @@
  % =====================================================================
  \begin{Release}{2.41}{}
   \begin{New}{gene}
-    New boolean resource \rsc{print.equal.right} which controls whether
+    New Boolean resource \rsc{print.equal.right} which controls whether
     the = in normal entries is aligned right or left.
   \end{New}
   \begin{New}{gene}
-    New boolean \rsc{resource print.wide.equal} which controlls whether
+    New Boolean \rsc{resource print.wide.equal} which controls whether
     the equal sign is surrounded by spaces even if the alignment forces a
     narrower layout.
   \end{New}
   \begin{New}{gene}
-    New boolean resource \rsc{print.comma.at.end} which controlls
+    New Boolean resource \rsc{print.comma.at.end} which control-ls
     whether the comma between fields is printed at the end or at the beginning
     of a field/value pair.
   \end{New}
   \begin{New}{gene}
-    New boolean resource \rsc{print.deleted.entries} which controls the
+    New Boolean resource \rsc{print.deleted.entries} which controls the
     treatment of deleted entries. If this resource is true then delete entries
     are put as comments into the output. This is the old behavior and thus it
     is the default.
@@ -722,7 +722,7 @@
     Pseudo field \rsc{sortkey} added.
   \end{New}
   \begin{New}{gene}
-    Pseudo field \rsc{source} added which contains the filename the
+    Pseudo field \rsc{source} added which contains the file name the
     record has been read from or the empty string if this can not be
     determined.
   \end{New}
@@ -730,7 +730,7 @@
     Makefile adapted to meet the description.
   \end{Fix}
   \begin{New}{gene}
-	configure creates \File{./config.h} aswell.
+	configure creates \File{./config.h} as well.
   \end{New}
   \begin{New}{gene}
     Strings can be either local to a database or global. The output of macros
@@ -756,7 +756,7 @@
     for line length and alignment column was given.
   \end{Fix}
   \begin{Fix}{gene}
-    Minor bugfix in \File{key.c}. The resource \rsc{crossref.limit} was
+    Minor bug-fix in \File{key.c}. The resource \rsc{crossref.limit} was
     off by 1.
   \end{Fix}
   \begin{New}{gene}
@@ -773,7 +773,7 @@
  \begin{Release}{2.40}{}
   \begin{New}{gene}
     Sorting uses the new key instead of the old one as before. This has not
-    been specified, but the new behaviour might be more intuitive.
+    been specified, but the new behavior might be more intuitive.
   \end{New}
   \begin{Fix}{gene}
     \rsc{key.format=empty} fixed. \rsc{key.format} \rsc{short.need}
@@ -793,7 +793,7 @@
     documentation.
   \end{Doc}
   \begin{Update}{gene}
-    Field deletetion completely covered by the rewriting mechanism.
+    Field deletion completely covered by the rewriting mechanism.
     \rsc{delete.field} is kept for backward compatibility as an alias.
   \end{Update}
  \end{Release}
@@ -814,7 +814,7 @@
     used the reverse order which was contra-intuitive.
   \end{Update}
   \begin{Update}{gene}
-    Formating names: Names connected by ~ or tight initials (A.U. Thor) are
+    Formatting names: Names connected by ~ or tight initials (A.U. Thor) are
     now treated better.
   \end{Update}
   \begin{Fix}{gene}
@@ -839,11 +839,11 @@
   \end{New}
   \begin{New}{gene}
     Format specifier \%D introduced. It acts like \%d but does not truncate
-    the number. Thus larger numbers are used completetly.
+    the number. Thus larger numbers are used completely.
   \end{New}
   \begin{Fix}{gene}
     Bug fixed. If the key format failed then the key was left empty. Now the
-    default key is used as written in the documentation. Somehow the bugfix
+    default key is used as written in the documentation. Somehow the bug fix
     for the select statement has not made it into the last release. Now it
     should be in.
   \end{Fix}
@@ -861,7 +861,7 @@
     Bugs fixed: Searching/key generation combination and aux file evaluation.
   \end{Fix}
   \begin{New}{gene}
-    The distribution is now availlable in two forms: as a gzipped tar file and
+    The distribution is now available in two forms: as a gzipped tar file and
     as a zip archive.
   \end{New}
  \end{Release}
@@ -901,12 +901,12 @@
     previous releases). The default is 32.
   \end{Update}
   \begin{New}{gene}
-    New boolean resource \rsc{check.do.delete} introduced. If this
-    resource is on then the double entries are not only preceeded by
+    New Boolean resource \rsc{check.do.delete} introduced. If this
+    resource is on then the double entries are not only preceded by
     \#\#\# instead of @ but deleted completely.
   \end{New}
   \begin{New}{gene}
-    New boolean resource \rsc{sort.macros} introduced. If this is on
+    New Boolean resource \rsc{sort.macros} introduced. If this is on
     then the macro definitions are sorted alphabetically. Default: on
   \end{New}
   \begin{Update}{gene}
@@ -940,7 +940,7 @@
  \begin{Release}{2.34}{}
   \begin{Update}{gene}
     Default value of \rsc{key.expand.macros} changed to on. This seems
-    to be a more sensible default value. (Possible incomatibility to old
+    to be a more sensible default value. (Possible incompatibility to old
     version)
   \end{Update}
   \begin{New}{gene}
@@ -950,7 +950,7 @@
   \end{New}
   \begin{New}{gene}
     The format specifiers for counting names/words/characters have been added.
-    Those act as booleans which force backtracking if they fail. The qualifier
+    Those act as boo leans which force backtracking if they fail. The qualifier
     \# is used to enable counting.
   \end{New}
   \begin{Update}{gene}
@@ -973,7 +973,7 @@
     Reference card added (prepared for A4 paper).
   \end{New}
   \begin{Fix}{gene}
-    Bugfix in \File{rewrite.c}. \rsc{add.field} no longer crashes.
+    Bug fix in \File{rewrite.c}. \rsc{add.field} no longer crashes.
   \end{Fix}
   \begin{Update}{gene}
     Format specifiers \%n and \%N now also use the post argument. This
@@ -985,7 +985,7 @@
  \begin{Release}{2.32}{}
   \begin{New}{gene}
     New resource \rsc{select.fields} introduced. This resource
-    controlls which fields are considered when selecting with
+    controls which fields are considered when selecting with
     \Arg{-X}.
   \end{New}
  \end{Release}
@@ -1016,7 +1016,7 @@
  % =====================================================================
  \begin{Release}{2.30}{}
   \begin{Fix}{gene}
-    Minor bugfix in \File{s\_parse.c}. Resource specifications in
+    Minor bug fix in \File{s\_parse.c}. Resource specifications in
     the command line may have let to an overflow of an array. This has
     been fixed.
   \end{Fix}
@@ -1036,7 +1036,7 @@
   \begin{Update}{gene}
     The \verb|@comment| is really more liberal than I thought. This
     prefix is simply ignored (As I have read in the \BibTeX{}
-    sources). This behaviour is now also performed by \BibTool{}.
+    sources). This behavior is now also performed by \BibTool{}.
   \end{Update}
  \end{Release}
 
@@ -1046,7 +1046,7 @@
     Some additional updates for the new makefiles.
   \end{Update}
   \begin{Fix}{gene}
-    Bugfix in \File{print.c} which let to additional strings after the
+    Bug fix in \File{print.c} which let to additional strings after the
     regular end of an entry.
   \end{Fix}
  \end{Release}
@@ -1055,7 +1055,7 @@
  \begin{Release}{2.27}{}
   \begin{Update}{gene}
     Reorganization of the files. Slight corrections of function
-    protptypes in various files. Change of the \File{Makefile} to
+    prototypes in various files. Change of the \File{Makefile} to
     support Amiga SAS/C.
   \end{Update}
  \end{Release}
@@ -1067,7 +1067,7 @@
     program. I wonder which 8-bit traps are still hidden in \BibTool.
   \end{Fix}
   \begin{Update}{gene}
-    The \TeX{} macro mechnism has been enhanced to allow one to define
+    The \TeX{} macro mechanism has been enhanced to allow one to define
     single character macros. This means \rsc{tex.define}
     automatically makes a character active if it is encountered as
     macro name of a definition.
@@ -1097,7 +1097,7 @@
     compatibility.
   \end{New}
   \begin{Fix}{gene}
-    A bugfix in 2.23 corrected.
+    A bug fix in 2.23 corrected.
   \end{Fix}
  \end{Release}
 
@@ -1210,11 +1210,11 @@
     \rsc{key.expand.macro}
   \end{New}
   \begin{Fix}{gene}
-    Hashindex was computed wrong for some strings with ASCII values $>$
+    Hash index was computed wrong for some strings with ASCII values $>$
     127.
   \end{Fix}
   \begin{Update}{gene}
-    Hashtable enlarged and new algorithm for hashindex
+    Hash table enlarged and new algorithm for hash index
   \end{Update}
  \end{Release}
 
