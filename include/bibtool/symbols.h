@@ -151,6 +151,8 @@ typedef String Symbol;
 **___________________________________________________			     */
  extern Symbol sym_space;
 
+ extern Symbol sym_star;
+
  extern Symbol sym_qqq;
 
 /*-----------------------------------------------------------------------------

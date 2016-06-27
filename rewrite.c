@@ -501,13 +501,14 @@ static int selector_hits(rule, db, rec)		   /*                        */
   value = get_field(db, rec, field);		   /*                        */
 #ifdef REGEX
   len	= (value ? symlen(value) : 0) ;		   /*                        */
-  return (SymbolValue(value) &&			   /*			     */
-	  (re_search(&RulePattern(rule),	   /*			     */
-		     (char*)SymbolValue(value),	   /*                        */
-		     len,	   		   /*                        */
-		     0,			   	   /*                        */
-		     len - 1,		   	   /*                        */
-		     &reg)) >= 0 );	   	   /*			     */
+  return (value &&				   /*                        */
+	  SymbolValue(value) &&			   /*			     */
+	  re_search(&RulePattern(rule),	   	   /*			     */
+		    (char*)SymbolValue(value),	   /*                        */
+		    len,	   		   /*                        */
+		    0,			   	   /*                        */
+		    len - 1,		   	   /*                        */
+		    &reg) >= 0 );	   	   /*			     */
 #else
   return TRUE;					   /*                        */
 #endif
@@ -879,6 +880,34 @@ void add_check_rule(s)				   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
+** Function:	dont_keep()
+** Type:	static int
+** Purpose:	
+**		
+** Arguments:
+**	sym	
+**	rec	
+**	db	
+** Returns:	
+**___________________________________________________			     */
+static int dont_keep(sym,rec,db)		   /*                        */
+  Symbol sym;					   /*                        */
+  Record rec;					   /*                        */
+  DB db;					   /*                        */
+{ Rule r;					   /*                        */
+  int idx = (int)(sym) % K_RULES_SIZE;		   /*                        */
+  if (idx < 0) idx = -idx;			   /*                        */
+ 						   /*                        */
+  for (r = k_rules[idx]; r; r = NextRule(r))	   /*                        */
+  {						   /*                        */
+    if (RuleField(r) == sym &&			   /*                        */
+	selector_hits(r, db, rec))		   /*                        */
+    { return FALSE; }				   /*                        */
+  }						   /*                        */
+  return TRUE;					   /*                        */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
 ** Function:	rewrite_record()
 ** Purpose:	Apply deletions, checks, additions, and rewriting steps
 **		in this order.
@@ -895,7 +924,6 @@ void rewrite_record(db, rec)			   /*			     */
   register Macro  mac;				   /*			     */
   String          cp;				   /*			     */
   static StringBuffer *sb = NULL;		   /*                        */
-  int idx;					   /*                        */
  						   /*                        */
   if (sb == NULL) sb = sbopen();		   /*                        */
 						   /*			     */
@@ -942,30 +970,18 @@ void rewrite_record(db, rec)			   /*			     */
   }						   /*			     */
 						   /*                        */
   if (k_rules)			   		   /*			     */
-  { Rule r;					   /*			     */
-    int keep;					   /*                        */
-     						   /*                        */
+  {						   /*                        */
     for (i = RecordFree(rec), hp = RecordHeap(rec);/*			     */
 	 i > 0;					   /*			     */
 	 i -= 2, hp += 2)			   /*			     */
     {						   /*			     */
-      if (*hp && *(hp+1))			   /*			     */
-      {	keep = FALSE;				   /*			     */
-	idx = (int)(*hp) % K_RULES_SIZE;
-	if (idx < 0) idx = -idx;
-
-	for (r = k_rules[idx]; r; r = NextRule(r))
-	{ if (RuleField(r) == *hp &&
-	      selector_hits(r, db, rec))
-	  { keep = TRUE;
-	    break;
-	  }
-	}
-	if (!keep)
-	{ if (*hp) UnlinkSymbol(*hp);
-	  if (*(hp+1)) UnlinkSymbol(*(hp+1));
-	  *hp = *(hp+1) = NO_SYMBOL;
-	}
+      if (*hp &&
+	  *(hp+1) &&
+	  dont_keep(sym_star, rec, db) &&	   /*                        */
+	  dont_keep(*hp, rec, db))		   /*                        */
+      { if (*hp) UnlinkSymbol(*hp);		   /*                        */
+	if (*(hp+1)) UnlinkSymbol(*(hp+1));	   /*                        */
+	*hp = *(hp+1) = NO_SYMBOL;		   /*                        */
       }						   /*			     */
     }						   /*			     */
   }						   /*			     */

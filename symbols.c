@@ -126,19 +126,20 @@
 
 
 
- String  s_empty          = (String)"";
+ String s_empty		  = (String)"";
 
- Symbol  sym_empty        = NO_SYMBOL;		   /*                        */
- Symbol  sym_space        = NO_SYMBOL;		   /*                        */
- Symbol  sym_crossref     = NO_SYMBOL;		   /*                        */
- Symbol  sym_xdata        = NO_SYMBOL;		   /*                        */
- Symbol  sym_xref         = NO_SYMBOL;		   /*                        */
- Symbol  sym_qqq          = NO_SYMBOL;		   /*                        */
- Symbol  sym_comma        = NO_SYMBOL;		   /*                        */
- Symbol  sym_double_quote = NO_SYMBOL;		   /*                        */
- Symbol  sym_open_brace   = NO_SYMBOL;		   /*                        */
- Symbol  sym_close_brace  = NO_SYMBOL;		   /*                        */
- Symbol  sym_et           = NO_SYMBOL;		   /*                        */
+ Symbol sym_empty	  = NO_SYMBOL;		   /*			     */
+ Symbol sym_space	  = NO_SYMBOL;		   /*			     */
+ Symbol sym_star	  = NO_SYMBOL;		   /*			     */
+ Symbol sym_crossref	  = NO_SYMBOL;		   /*			     */
+ Symbol sym_xdata	  = NO_SYMBOL;		   /*			     */
+ Symbol sym_xref	  = NO_SYMBOL;		   /*			     */
+ Symbol sym_qqq		  = NO_SYMBOL;		   /*			     */
+ Symbol sym_comma	  = NO_SYMBOL;		   /*			     */
+ Symbol sym_double_quote  = NO_SYMBOL;		   /*			     */
+ Symbol sym_open_brace	  = NO_SYMBOL;		   /*			     */
+ Symbol sym_close_brace	  = NO_SYMBOL;		   /*			     */
+ Symbol sym_et		  = NO_SYMBOL;		   /*			     */
 
 
 /*****************************************************************************/
@@ -256,6 +257,7 @@ void init_symbols()				   /*			     */
  						   /*                        */
   sym_empty        = symbol((String)s_empty);	   /*                        */
   sym_space        = symbol((String)" ");	   /*                        */
+  sym_star         = symbol((String)"*");	   /*                        */
   sym_crossref     = symbol((String)"crossref");   /*                        */
   sym_xref         = symbol((String)"xref");	   /*                        */
   sym_xdata        = symbol((String)"xdata");	   /*                        */
