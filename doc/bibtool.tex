@@ -154,6 +154,9 @@
 
 \newcommand\ASCII{\textsc{ascii}}
 
+\let\BIBTEX\BibTeX
+\renewcommand\BibTeX{\BIBTEX\index{bibtex@\BIBTEX}}
+
 \begin{document} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title{\BibTool{} Manual}
@@ -165,16 +168,12 @@
   bibliographies into \LaTeX\ documents. But the user is left alone with the
   management of the \BibTeX\ files. The program \BibTool\ is intended to fill
   this gap. \BibTool\ allows the manipulation of \BibTeX\ files which goes
-  beyond the possibilities---and intentions---of \BibTeX. The
-  possibilities of \BibTool\ include sorting and merging of \BibTeX\ data
-  bases, generation of uniform reference keys, and selecting of references
-  used in a publication.
+  beyond the possibilities -- and intentions -- of \BibTeX. The possibilities
+  of \BibTool\ include sorting and merging of \BibTeX\ data bases, generation
+  of uniform reference keys, and selecting of references used in a
+  publication.
 \end{Abstract}
 
-%\begin{Disclaimer}
-%  This documentation is still in a rudimentary form and needs additional
-%  efforts.
-%\end{Disclaimer}
 %------------------------------------------------------------------------------
 \newpage
 \begingroup\setlength\parskip{1ex}\setlength\parindent{0pt}
@@ -382,7 +381,6 @@ The result of this command can at once be seen on the screen. The contents of
 the file \texttt{file.bib} is pretty printed.
 
 
-
 Now that we have seen the simplest case of the application of \BibTool{} we
 will see the case of a useful application of \BibTool. This application is the
 sorting and merging of \BibTeX{} databases.
@@ -452,7 +450,7 @@ First, we want to see how we can make keys consisting of author and title.
 This is one of my favorite algorithms thus it is rather easy to use it. You
 simply have to run the following command:
 
-\sh[k]{\texttt{sample.bib -o sample1.bib}}
+\sh[k]{\texttt{sample.bib \opt{o} sample1.bib}}
 
 After the command has completed it's work the following entry can be found in
 the output file \file{sample1.bib}: 
@@ -476,7 +474,7 @@ name and the first relevant word of the title, separated by a colon. Sometimes
 it might be desirable to incorporate the initial names as well. This can be
 achieved by the command
 
-\sh[K]{\texttt{sample.bib -o sample1.bib}}
+\sh[K]{\texttt{sample.bib \opt{o} sample1.bib}}
 
 The resulting reference key is \texttt{aamport.la:gnats}. The initials are
 appended after the first name. Thus the usual lexicographic order on the keys
@@ -487,13 +485,12 @@ with the following command:\footnote{Note that some command line interpreters
   (like the UN*X shells) require the format string to be quoted (enclosed in
   single quotes).}\index{n@\%n}
 
-\sh[f]{\texttt{\%n(author):\%2d(year) sample.bib -o sample1.bib}}
+\sh[f]{\texttt{\%n(author):\%2d(year) sample.bib \opt{o} sample1.bib}}
 
 The resulting key is \texttt{Aamport:86}. Note that the last example works as
 desired for our sample file. But for a real application of this technique a
 deep understanding of the key generation mechanism as described in
 section~\ref{sec:key.gen} is necessary.
-
 
 
 %------------------------------------------------------------------------------
@@ -507,7 +504,7 @@ desirable to use one style only. For this purpose the rewriting facility of
 
 \sh{-{}- \texttt{ 'rewrite.rule=\symbol{"7B}"\symbol{"5E}\symbol{"5C}"%
     \symbol{"5C}([\symbol{"5E}\#]*\symbol{"5C})\symbol{"5C}"\$"
-    "\symbol{"7B}\symbol{"5C}1\symbol{"7D}"\symbol{"7D}'} \texttt{-o} out.bib}
+    "\symbol{"7B}\symbol{"5C}1\symbol{"7D}"\symbol{"7D}'} \opt{o} out.bib}
 
 Since this seems to be rather cryptic we will have a closer look at this
 example. First we have to mention that the outer quotes are there because the
@@ -578,7 +575,7 @@ given there. This includes the names of the \BibTeX{} files. Thus no \BibTeX{}
 files have to be given in the command line. Instead the \verb|.aux| file has
 to specified---preceded by the option \opt{x}.
 
-\sh[x]{document.aux \texttt{-o} document.bib}
+\sh[x]{document.aux \opt{o} document.bib}
 
 The second option \opt{o} followed by a file name specifies the destination of
 the output. This means, instead of writing the result to the standard output
@@ -650,7 +647,7 @@ sequences. Suppose you have edited a \BibTeX\ file and by mistake used those
 nice characters that are incompatible with standard \ASCII{} as used in
 \BibTeX. You can use \BibTool\ to do the trick:
 
-\sh[r]{iso2tex \texttt{-i} iso.bib \texttt{-o} ascii.bib}
+\sh[r]{iso2tex \opt{i} iso.bib \opt{o} ascii.bib}
 
 
 %------------------------------------------------------------------------------
@@ -701,13 +698,46 @@ crossref fields to the beginning.
 
 
 %------------------------------------------------------------------------------
+\subsection{Petering Out Fields}
+
+Sometimes you might be collecting \BibTeX\ files form various sources. Then
+there might be additional and for you useless fields. For instance a creator
+of the \BibTeX\ files may have included a library number in the field |libno|
+and you want to get rid of it. In such a case you can use the resource
+\rsc{delete.field} as in the following example.
+
+The following instruction si placed in a resoruce file which is passed to
+\BibTool\ with the command line option \opt{r}.
+
+\begin{Resources}
+  \rsc{delete.field} = \{ libno \}
+\end{Resources}
+
+If you have several fileds to delete then you can use the resource
+\rsc{delete.field} several times. All fields will be deleted.
+
+Another example can be achieved with the following command line:
+
+\sh[r]{keep\_bibtex wild.bib \opt{o} reduced.bib}
+
+This invocation utilizes the library \file{keep\_bibtex.rsc} which declares
+that only those fields should not be deleted which are defined for the
+standard styles of \BibTeX.
+
+And in a similar way the standard fields of \bibLaTeX\ can be kept with the
+following command line:
+
+\sh[r]{keep\_biblatex wild.bib \opt{o} reduced.bib}
+
+
+%------------------------------------------------------------------------------
 \subsection{\BibTool\ for \bibLaTeX}
 
 \BibTool\ contains the definitions to cope with \BibTeX\ files prepared for
 \bibLaTeX. These definitions are contained in the library \file{biblatex.rsc}.
 It can be easily included on the command line:
 
-\sh[r]{biblatex \texttt{-i} in.bib \texttt{-o} out.bib}
+\sh[r]{biblatex \opt{i} in.bib \opt{o} out.bib}
 
 Details can be found in section~\ref{lib:biblatex}.
 
@@ -921,18 +951,18 @@ file \file{my\_rsc}.
 The following invocation of \BibTool{} uses only the resource file
 \textit{my\_rsc}: 
 
-\sh{\texttt{-r} my\_rsc \texttt{-i} sample}
+\sh{\opt{r} my\_rsc \opt{i} sample}
 
 If you want to initialize the resources from the default resource file before
 you can use the \opt{R} \emph{before} the inclusion of the resource file:
 
-\sh{\texttt{-R} \texttt{-r} my\_rsc \texttt{-i} sample}
+\sh{\opt{R} \opt{r} my\_rsc \opt{i} sample}
 
 If you add the \opt{R} argument after the resource specification then the
 default resource is evaluated after your resource file. Thus settings are
 potentially overwritten:
 
-\sh{\texttt{-r} my\_rsc \texttt{-R} \texttt{-i} sample}
+\sh{\opt{r} my\_rsc \opt{R} \opt{i} sample}
 
 Additionally note that resource files are evaluated at once whereas input
 files are read in one chunk at the end. Thus you can not specify one set of
@@ -943,8 +973,8 @@ file. This is impossible within one invocation of \BibTool\footnote{This might
 As a consequence of this behavior the last example is equivalent to the
 following invocations:
 
-\sh{\texttt{-r} my\_rsc  \texttt{-i} sample \texttt{-R}}\vspace*{-4ex}
-\sh{\texttt{-i} sample \texttt{-r} my\_rsc \texttt{-R}}
+\sh{\opt{r} my\_rsc  \opt{i} sample \opt{R}}\vspace*{-4ex}
+\sh{\opt{i} sample \opt{r} my\_rsc \opt{R}}
 \medskip
 
 Now we have to describe the commands allowed in a resource file.  The general
@@ -2077,7 +2107,7 @@ be turned on as in the following example:
   via an \texttt{xdata} field.}
   \Desc{\opt{x}}{\rsc{extract.file}\{file\}}{Extract the entries from an
     \texttt{aux} file.}
-  \Desc{}{\rsc{extract.regexp}\{expr\}}{Discouraged backward
+  \Desc{}{\rsc{extract.regex}\{expr\}}{Discouraged backward
     compatibility command.}
   \Desc{\opt{X} regex}{\rsc{select}\{spec\}}{Select certain entries according
     to a regular expression.}
@@ -3530,6 +3560,69 @@ The following instruction deletes all fields named \textit{field}:
   \rscBraces{delete.field}{\textit{field}}
 \end{Resources}
 
+Several instructions of this type can be used to delete several fields.
+
+
+%------------------------------------------------------------------------------
+\subsection{Keeping Fields}
+
+The reverse to the specification of fields to be deleted is the specification
+of fields to be kept. Then all fields which are not declared to be kept are
+deleted. The resource \rsc{keep.field} allows such a specification.
+
+In the simplest form you can specify the name of a field to be kept. This is
+shown in the following example.
+
+\begin{Resources}
+  \rscBraces{keep.field}{\textit{field}}
+\end{Resources}
+
+Several instructions with the resource \rsc{keep.field} can be given. Then all
+fields which are not specified to be kept are deleted.
+
+Note that in the extreme case all fields are deleted and an empty entry
+containing just the key remains.
+
+Next you can add a condition
+
+\begin{Resources}
+  \rscBraces{keep.field}{\textit{field} if \textit{field$_c$} = "\textit{pattern}"}
+\end{Resources}
+
+The condition follows the key word \texttt{if}. It consists of the comparison
+of a field -- or pseudo-field -- with a pattern. The pattern is a regular
+expression with which the field is matched. The matching is perfomed
+case-insensitiv.
+
+As simplification you can specify several fields to be kept in one rule. For
+this purpose you enclose the field names in braces and separate them with
+white-space. This is illustrated in the following resources:
+
+\begin{Resources}
+  \rscBraces{keep.field}{\{\textit{field$_1$} \ldots \textit{field$_n$}\}}
+  \rscBraces{keep.field}{\{\textit{field$_1$} \ldots \textit{field$_n$}\} if \textit{field$_c$} = "\textit{pattern}"}
+\end{Resources}
+
+The forms of the arguments given above require to list the fields to be given
+explicitly. In addition to these forms you can specify the star (\verb|*|) as
+field name. If the special field name \verb|*| is encountered then this is
+interpreted as arbitrary field name.
+
+\begin{Resources}
+  \rscBraces{keep.field}{*}
+  \rscBraces{keep.field}{* if \textit{field$_c$} = "\textit{pattern}"}
+\end{Resources}
+
+The first form is rather useless since it means that all fields should be
+kept. This nullifies any other rule to keep a field.
+
+The second form can be used to express that all fields should be kept if the
+record satisfies the given condition.
+
+The libraries \file{keep\_bibtex.rsc} and  \file{keep\_biblatex.rsc} contain
+\rsc{keep.field} resources contain declarations to keep the fields in the
+record types defined in the standard styles of \BibTeX\ and \bibLaTeX\
+respectively.
 
 %------------------------------------------------------------------------------
 \subsection{Renaming Fields}
@@ -3711,7 +3804,7 @@ highlight places where spaces have to be used which would be hard to recognize
 otherwise.
 
 \begin{itemize}
-\item Empty entries are composed of delimiters --- either double quotes or
+\item Empty entries are composed of delimiters -- either double quotes or
   curly braces which enclose an arbitrary number of spaces. If we want to
   delete empty entries we can use the following two rules.
 
@@ -3722,11 +3815,11 @@ otherwise.
 
   The caret '\texttt{\symbol{"5E}}' denotes the beginning of the whole string
   and the dollar is its end. The star is an operator which says that an
-  arbitrary number of the preceding regular expression --- i.e.\ the space ---
+  arbitrary number of the preceding regular expression -- i.e.\ the space --
   can occur at this point.
 
 \item Ranges of pages should usually be composed of numbers separated by an
-  n-dash (\texttt{-{}-}). The next example shows how the pages field can be
+  n-dash (\opt{-}). The next example shows how the pages field can be
   normalized. Spaces are deleted and a single minus sign is replaced by a
   double minus.
 
@@ -3931,7 +4024,7 @@ error message. \texttt{\BS@} is replaced by the current type and
 
 
 %------------------------------------------------------------------------------
-\section{Strings --- also called Macros}\label{sec:macros}
+\section{Strings -- also called Macros}\label{sec:macros}
 
 Strings in \BibTeX{} files play an important role when managing large
 bibliographic data bases. Thus the deserve special treatment. If the resource
@@ -3979,7 +4072,7 @@ simplified. Imagine the following \BibTeX{} file.
 \end{lstlisting}
 
 If \BibTool{} is applied with \rsc{expand.macros} turned on this results in
-the following output --- if the default settings are used for every other
+the following output -- if the default settings are used for every other
 resource.
 \begin{lstlisting}[language=BibTeX]
   @STRING{wga   = " World Gnus Almanac" }
@@ -4584,7 +4677,7 @@ tex.define {\AMSTeX=AMSTeX}
 \section{Other Resource Files}
 
 The distribution contains additional resource files. Some of them are sketched
-here. Others may be contained in the distribution as well. Look in the
+here. Others may be contained in the distribution as well. Look into the
 appropriate directory.
 
 \begin{description}
@@ -4606,6 +4699,12 @@ appropriate directory.
   copes with \texttt{OPT} prefixes as introduced e.g. by bibtex-mode.
 \item [\file{braces}]\ \\
   tries to replace double quotes as field delimiters by braces.
+\item [\file{keep\_bibtex}]\ \\
+  defines the entry types and attributes according to the standard \BibTeX\
+  styles to be kept. Any undeclared attribute will be deleted.
+\item [\file{keep\_biblatex}]\ \\
+  defines the entry types and attributes according to the standard \bibLaTeX\
+  styles to be kept. Any undeclared attribute will be deleted.
 \end{description}
 
 
