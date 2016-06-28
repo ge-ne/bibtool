@@ -190,7 +190,7 @@ typedef String Symbol;
 /*-----------------------------------------------------------------------------
 ** Variable:	sym_et
 ** Type:	Symbol
-** Purpose:	The symbol with a single et character (&). This
+** Purpose:	The symbol with a single et character (\&). This
 **		variable needs |init_symbols()| to be called first.
 **___________________________________________________			     */
  extern Symbol sym_et;
