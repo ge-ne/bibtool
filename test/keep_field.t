@@ -257,6 +257,102 @@ __EOF__
 __EOF__
     expected_err => '' );
 
+#------------------------------------------------------------------------------
+BUnit::run(name => 'keep_field_21',
+    resource 	 => <<__EOF__,
+keep.field{*}
+__EOF__
+    bib		 => <<__EOF__,
+\@Article{	  bibtool,
+  title		= {The BibTool Manual},
+  author	= {Gerd Neugebauer},
+  year		= 2016
+}
+
+\@Manual{	  bibtool2,
+  title		= {The BibTool Manual},
+  author	= {Gerd Neugebauer},
+  year		= 2016
+}
+__EOF__
+    expected_out => <<__EOF__,
+
+\@Article{	  bibtool,
+  title		= {The BibTool Manual},
+  author	= {Gerd Neugebauer},
+  year		= 2016
+}
+
+\@Manual{	  bibtool2,
+  title		= {The BibTool Manual},
+  author	= {Gerd Neugebauer},
+  year		= 2016
+}
+__EOF__
+    expected_err => '' );
+
+#------------------------------------------------------------------------------
+BUnit::run(name => 'keep_field_22',
+    resource	=> <<__EOF__,
+keep.field{* if \$type = article}
+__EOF__
+    bib		 => <<__EOF__,
+\@Article{	  bibtool,
+  title		= {The BibTool Manual},
+  author	= {Gerd Neugebauer},
+  year		= 2016
+}
+
+\@Manual{	  bibtool2,
+  title		= {The BibTool Manual},
+  author	= {Gerd Neugebauer},
+  year		= 2016
+}
+__EOF__
+    expected_out => <<__EOF__,
+
+\@Article{	  bibtool,
+  title		= {The BibTool Manual},
+  author	= {Gerd Neugebauer},
+  year		= 2016
+}
+
+\@Manual{	  bibtool2
+}
+__EOF__
+    expected_err => '' );
+
+#------------------------------------------------------------------------------
+BUnit::run(name => 'keep_field_23',
+    resource	=> <<__EOF__,
+keep.field{{abc *} if \$type = article}
+__EOF__
+    bib		 => <<__EOF__,
+\@Article{	  bibtool,
+  title		= {The BibTool Manual},
+  author	= {Gerd Neugebauer},
+  year		= 2016
+}
+
+\@Manual{	  bibtool2,
+  title		= {The BibTool Manual},
+  author	= {Gerd Neugebauer},
+  year		= 2016
+}
+__EOF__
+    expected_out => <<__EOF__,
+
+\@Article{	  bibtool,
+  title		= {The BibTool Manual},
+  author	= {Gerd Neugebauer},
+  year		= 2016
+}
+
+\@Manual{	  bibtool2
+}
+__EOF__
+    expected_err => '' );
+
 1;
 #------------------------------------------------------------------------------
 # Local Variables: 
