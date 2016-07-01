@@ -73,12 +73,12 @@
 **	ST	Current |SymTab|
 ** Returns:	The count slot of |ST|.
 **___________________________________________________			     */
-#ifndef COMPLEX_SYMBOL
-#define SymTabCount(SYMTAB)  ((SYMTAB)->st_count)
-#define SymCount(SYM,SYMTAB) SymbolCount(SYM)
-#else
+#ifdef COMPLEX_SYMBOL
 #define SymTabCount(SYMTAB)  SymbolCount(SymTabSymbol(SYMTAB))
 #define SymCount(SYM,SYMTAB) SymbolCount(SymTabSymbol(SYMTAB))
+#else
+#define SymTabCount(SYMTAB)  ((SYMTAB)->st_count)
+#define SymCount(SYM,SYMTAB) SymTabCount(SYMTAB)
 #endif
 
 /*-----------------------------------------------------------------------------

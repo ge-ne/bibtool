@@ -66,7 +66,11 @@
 #ifdef FREE_MEMORY
 #define UnlinkSymbol(SYM) if (--SymbolCount(SYM) == 0) sym_del(SYM)
 #else
+#ifdef COMPLEX_SYMBOL
 #define UnlinkSymbol(SYM) --SymbolCount(SYM)
+#else
+#define UnlinkSymbol(SYM)
+#endif
 #endif
 
 /*****************************************************************************/
