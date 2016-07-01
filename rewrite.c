@@ -320,11 +320,11 @@ static void free_rule(rule)			   /*                        */
 ** Function:	add_rule()
 ** Purpose:	Generic addition of a rule to a list of rules.
 ** Arguments:
-**	s	
-**	rp	
-**	rp_end	
-**	flags	
-**	casep	
+**	s	the specification string
+**	rp	the pointer to the first rule
+**	rp_end	the pointer to the last rule
+**	flags	the flags
+**	casep	the indicator for cased matching
 ** Returns:	nothing
 **___________________________________________________			     */
 static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
@@ -437,14 +437,14 @@ static void rewrite_1(frame,sb,match,db,rec)	   /*			     */
   DB		db;			   	   /*                        */
   Record	rec;			   	   /*			     */
 {						   /*                        */
-  for ( ; *frame; frame++ )			   /*			     */
-  { if ( *frame == '%' )			   /*	                     */
+  for (; *frame; frame++)			   /*			     */
+  { if (*frame == '%')			   	   /*	                     */
     { frame = fmt_expand(sb, frame, db, rec); }	   /*	                     */
-    else if ( *frame != '\\' )			   /* Transfer normal	     */
+    else if (*frame != '\\')			   /* Transfer normal	     */
     { (void)sbputchar(*frame,sb); }		   /*	characters.	     */
     else					   /*			     */
     {						   /*			     */
-      switch ( *++frame )			   /*			     */
+      switch (*++frame)			   	   /*			     */
       { case '1': case '2': case '3':		   /*			     */
 	case '4': case '5': case '6':		   /*			     */
 	case '7': case '8': case '9':		   /*			     */
@@ -452,7 +452,7 @@ static void rewrite_1(frame,sb,match,db,rec)	   /*			     */
 	  { int i = *frame - '0';		   /* Look for register no   */
 	    int e = reg.end[i];			   /* get end of match	     */
 						   /*			     */
-	    for ( i=reg.start[i]; i<e; ++i )	   /* transfer from start    */
+	    for (i = reg.start[i]; i < e; ++i)	   /* transfer from start    */
 	    { (void)sbputchar(match[i],sb); }	   /*	to end of match.     */
 	  }					   /*			     */
 #endif
@@ -465,10 +465,14 @@ static void rewrite_1(frame,sb,match,db,rec)	   /*			     */
 	  (void)sbputs((char*)SymbolValue(EntryName(RecordType(rec))),/*     */
 		       sb);			   /*		             */
 	  break;				   /*			     */
-	case 'n': (void)sbputchar('\n',sb); break; /*			     */
-	case 't': (void)sbputchar('\t',sb); break; /*			     */
+	case 'n':				   /*                        */
+	  (void)sbputchar('\n', sb);		   /*                        */
+	  break; 				   /*			     */
+	case 't':				   /*                        */
+	  (void)sbputchar('\t', sb);		   /*                        */
+	  break; 				   /*			     */
 	default:				   /*			     */
-	  if ( *frame ) (void)sbputchar(*frame,sb);/* Use '\\' as quote	     */
+	  if (*frame) (void)sbputchar(*frame,sb);  /* Use '\\' as quote	     */
 	  else --frame;				   /* or ignore at end of str*/
       }						   /*			     */
     }						   /*			     */
@@ -479,7 +483,7 @@ static void rewrite_1(frame,sb,match,db,rec)	   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function*:	selector_hits()
-** Type:	static int
+** Type:	int
 ** Purpose:	
 **		
 ** Arguments:
@@ -522,8 +526,9 @@ static int selector_hits(rule, db, rec)		   /*                        */
 **
 ** Arguments:
 **	field	the field
-**	value	
-**	rule
+**	value	the replacement value
+**	rule	the rule
+**	db	the database
 **	rec	the record
 ** Returns:	
 **___________________________________________________			     */
@@ -621,11 +626,11 @@ static String repl_regex(field, value, rule, db, rec)/*			     */
 		  val,			   	   /*                        */
 		  db,				   /*                        */
 		  rec);				   /*		             */
-	(void)sbputs((char*)(val+reg.end[0]),s2);  /* Transfer the end.	     */
+	(void)sbputs((char*)(val+reg.end[0]), s2); /* Transfer the end.	     */
 						   /*			     */
 	val = (String)sbflush(s2);		   /* update the value	     */
-	len   = strlen((char*)val);		   /*  and its length	     */
-	sp = s1; s1 = s2; s2 = sp;		   /* rotate the two string  */
+	len = strlen((char*)val);		   /*  and its length	     */
+	sp  = s1; s1 = s2; s2 = sp;		   /* rotate the two string  */
 	sbrewind(s2);				   /*  buffers and reset     */
 						   /*  the destination.      */
 	once_more = TRUE;			   /*                        */
@@ -662,7 +667,7 @@ static String check_regex(field, value, rule, db, rec)/*		     */
   int			len;			   /*			     */
   static StringBuffer	*s2 = 0L;		   /*			     */
 						   /*			     */
-  if ( rule == RuleNULL ) return SymbolValue(value);/*			     */
+  if (rule == RuleNULL) return SymbolValue(value); /*			     */
 						   /*			     */
   if ( s2 == NULL ) { s2 = sbopen(); }		   /*			     */
   else		    { sbrewind(s2);  }		   /*			     */
@@ -765,7 +770,7 @@ void rename_field(spec)				   /*			     */
 ** Purpose:	Save a rewrite rule for later use.
 **		The main task is performed by |add_rule()|.
 ** Arguments:
-**	s	Rule to save.
+**	s	Rule to save
 ** Returns:	nothing
 **___________________________________________________			     */
 void add_rewrite_rule(s)			   /*			     */
