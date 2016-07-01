@@ -1156,7 +1156,9 @@ void make_key(db,rec)				   /*			     */
   { sbputs((char*)SymbolValue(DefaultKey), key_sb);/*                        */
   }			   			   /*			     */
 						   /*			     */
-  UnlinkSymbol(RecordOldKey(rec));		   /*                        */
+  if (RecordOldKey(rec))
+  { UnlinkSymbol(RecordOldKey(rec));		   /*                        */
+  }
   RecordOldKey(rec) = *RecordHeap(rec);		   /* save old key	     */
 #ifndef NEW
 #define trans trans_id
