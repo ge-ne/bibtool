@@ -211,21 +211,6 @@ Symbol map_get(s_rec, s_fld, d_rec)		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	skip()
-** Type:	int
-** Purpose:	Advance a string position as long as it points to white-space.
-** Arguments:
-**	sp	Pointer to the String position to be advanced
-** Returns:	0
-**___________________________________________________			     */
-static int skip(sp)				   /*                        */
-  String *sp;				   	   /*			     */
-{						   /*                        */
-  sp_skip(sp);				   	   /*                        */
-  return 0;					   /*                        */
-}						   /*------------------------*/
-
-/*-----------------------------------------------------------------------------
 ** Function:	crossref_map()
 ** Type:	int
 ** Purpose:	
@@ -242,16 +227,14 @@ void crossref_map(spec)				   /*                        */
   int s_rec, d_rec;				   /*                        */
  						   /*                        */
   sp_open(spec);				   /*                        */
-  if ((src        = sp_symbols(&spec))   == NULL ||/*                        */
-      skip(&spec) ||		   		   /*                        */
-      (src_field  = SParseSymbol(&spec)) == NULL ||/*                        */
-      skip(&spec) ||		   		   /*                        */
-      (dest       = sp_symbols(&spec))   == NULL ||/*                        */
-      skip(&spec) ||		   		   /*                        */
-      (dest_field = SParseSymbol(&spec)) == NULL ||/*                        */
-      sp_eos(&spec) != NULL			   /*                        */
-     )						   /*                        */
-  { return; }					   /*                        */
+  if ((src = sp_symbols(&spec)) == NULL) return;   /*                        */
+  sp_skip(&spec);				   /*                        */
+  if ((src_field = SParseSymbol(&spec)) == NULL) return;/*                   */
+  sp_skip(&spec);				   /*                        */
+  if ((dest = sp_symbols(&spec)) == NULL) return;  /*                        */
+  sp_skip(&spec);				   /*                        */
+  if ((dest_field = SParseSymbol(&spec)) == NULL) return;/*                  */
+  sp_eos(&spec);			   	   /*                        */
   sp_close();					   /*                        */
  						   /*                        */
   for (sp = src; *sp; sp++)			   /*                        */
