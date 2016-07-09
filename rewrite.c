@@ -159,7 +159,7 @@ void add_field(spec)				   /*			     */
   sp_open(spec);				   /*			     */
   if ((field = SParseSymbol(&spec)) == NO_SYMBOL)  /*		             */
     return;					   /*			     */
-  SParseSkip(&spec);			   	   /*			     */
+  sp_skip(&spec);			   	   /*			     */
   if ((value=SParseValue(&spec)) == NO_SYMBOL)     /*			     */
     return;					   /*			     */
   sp_eos(&spec);			   	   /*			     */
@@ -348,7 +348,7 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
 						   /*			     */
   DebugPrint2("Adding rule: Parsing from: ", s);   /*			     */
   sp_open(s);				   	   /*			     */
-  SParseSkip(&s);				   /*			     */
+  sp_skip(&s);				   	   /*			     */
 						   /*			     */
   while (*s && *s != '"')			   /*                        */
   {						   /*                        */
@@ -360,7 +360,7 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
     }					   	   /*                        */
     DebugPrint2("\tok ",s);			   /*                        */
     DebugPrint2("field   = ", SymbolValue(field)); /*			     */
-    SParseSkip(&s);			   	   /*                        */
+    sp_skip(&s);			   	   /*                        */
 						   /*			     */
     if (stackp >= stacksize)			   /*                        */
     { stacksize += 8;				   /*                        */
@@ -378,7 +378,7 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
     return;					   /*			     */
   }						   /*                        */
 						   /*			     */
-  SParseSkip(&s);				   /*			     */
+  sp_skip(&s);				   	   /*			     */
 						   /*			     */
   if (*s == '\0')				   /*			     */
   { frame = NO_SYMBOL; }			   /*			     */
@@ -721,16 +721,16 @@ void rename_field(spec)				   /*			     */
   Symbol pattern = NO_SYMBOL;		   	   /*                        */
  						   /*                        */
   sp_open(s);				   	   /*			     */
-  SParseSkip(&s);			   	   /*			     */
-  if ( (from = SParseSymbol(&s)) == NO_SYMBOL )    /*		             */
+  sp_skip(&s);			   	   	   /*			     */
+  if ((from = SParseSymbol(&s)) == NO_SYMBOL)      /*		             */
     return;					   /*			     */
-  SParseSkip(&s);			   	   /*			     */
-  if ( (to = SParseSymbol(&s)) == NO_SYMBOL )      /*		             */
+  sp_skip(&s);			   	   	   /*			     */
+  if ((to = SParseSymbol(&s)) == NO_SYMBOL)        /*		             */
     return;					   /*			     */
  						   /*                        */
   if (sp_expect(&s, s_if, FALSE))	   	   /*                        */
   { if ((field = SParseOptionalSymbol(&s)) != NO_SYMBOL)/*	             */
-    { SParseSkip(&s);			   	   /*			     */
+    { sp_skip(&s);			   	   /*			     */
       if ((pattern = SParseValue(&s)) == NO_SYMBOL)/*		             */
       { if (to)    UnlinkSymbol(to);		   /*                        */
 	if (from)  UnlinkSymbol(from);		   /*                        */
@@ -814,7 +814,7 @@ void keep_field(spec)				   /*			     */
  						   /*                        */
   if (sp_expect(&s, s_if, FALSE))	   	   /*                        */
   { if ((field = SParseOptionalSymbol(&s)) != NO_SYMBOL)/*	             */
-    { SParseSkip(&s);			   	   /*			     */
+    { sp_skip(&s);			   	   /*			     */
       if ((pattern = SParseValue(&s)) == NO_SYMBOL)/*		             */
       { free_sym_array(names);			   /*                        */
 	UnlinkSymbol(field);			   /*                        */

@@ -43,7 +43,6 @@
 #define SParseNext(SP)		    s_parse(StringParseNext  	     ,SP,-1)
 #define SParseValue(SP)		    s_parse(StringParseValue 	     ,SP,-1)
 #define SParseExpect(C,SP)	    s_parse((C)&0xff           	     ,SP,-1)
-#define SParseSkip(SP)		    sp_skip(SP)
 
 #ifdef __STDC__
 #define _ARG(A) A

@@ -221,7 +221,7 @@ Symbol map_get(s_rec, s_fld, d_rec)		   /*                        */
 static int skip(sp)				   /*                        */
   String *sp;				   	   /*			     */
 {						   /*                        */
-  SParseSkip(sp);				   /*                        */
+  sp_skip(sp);				   	   /*                        */
   return 0;					   /*                        */
 }						   /*------------------------*/
 

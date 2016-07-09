@@ -156,11 +156,6 @@ void sp_skip(sp)				   /*                        */
 **		  pairs. Double quotes which are inside of braces are
 **		  not considered as end of the string. The string
 **		  without the outer double quotes is returned.
-**		\item[StringParseSkip] The string is analyzed and the
-**		  first position not containing whitespace, |=|, or |#|
-**		  is returned. In this case the returned value is not
-**		  translated into a symbol.
-**		  is returned upon success
 **		\end{description}
 **		If an error occurs or the requested entity is not
 **		found then |NULL| is returned. As a side effect |sp|
