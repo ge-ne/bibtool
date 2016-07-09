@@ -157,10 +157,10 @@ void add_field(spec)				   /*			     */
 { register Symbol field, value;		   	   /*			     */
 						   /*			     */
   (void)sp_open(spec);				   /*			     */
-  if ( (field = SParseSymbol(&spec)) == NO_SYMBOL )/*		             */
+  if ((field = SParseSymbol(&spec)) == NO_SYMBOL)  /*		             */
     return;					   /*			     */
-  (void)SParseSkip(&spec);			   /*			     */
-  if ( (value=SParseValue(&spec)) == NO_SYMBOL )   /*			     */
+  SParseSkip(&spec);			   	   /*			     */
+  if ((value=SParseValue(&spec)) == NO_SYMBOL)     /*			     */
     return;					   /*			     */
   (void)SParseEOS(&spec);			   /*			     */
 						   /*			     */
@@ -265,7 +265,7 @@ static Rule new_rule(field, value, pattern, frame, flags, casep)/*           */
     msg = (char*)re_compile_pattern((char*)SymbolValue(pattern),/*	     */
 				    symlen(pattern),/*		             */
 				    &RulePattern(rule) );/*	             */
-    if ( msg ) {				   /*                        */
+    if (msg) {				   	   /*                        */
       Err(msg);					   /*                        */
       free(rule);				   /*                        */
       return NULL;				   /*                        */
@@ -275,7 +275,6 @@ static Rule new_rule(field, value, pattern, frame, flags, casep)/*           */
   { RuleFlag(rule) = (flags & ~RULE_REGEXP);	   /*                        */
   }						   /*                        */
 #endif
-
   DebugPrint2("pattern = ", SymbolValue(pattern)); /*			     */
   DebugPrint2("frame   = ", SymbolValue(frame));   /*			     */
   DebugPrintF1("+++ BibTool: flags   =");	   /*			     */
@@ -295,8 +294,6 @@ static Rule new_rule(field, value, pattern, frame, flags, casep)/*           */
 /*-----------------------------------------------------------------------------
 ** Function:	free_rule()
 ** Purpose:	Free a list of rules.
-**		
-**		
 ** Arguments:
 **	rule	First rule in the list.
 ** Returns:	nothing
@@ -305,7 +302,7 @@ static void free_rule(rule)			   /*                        */
   Rule rule;					   /*                        */
 { Rule next;					   /*                        */
  						   /*                        */
-  while ( rule )				   /*                        */
+  while (rule)				   	   /*                        */
   { next = NextRule(rule);			   /*                        */
 #ifdef REGEX
     free(RulePattern(rule).buffer);		   /*                        */
@@ -351,7 +348,7 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
 						   /*			     */
   DebugPrint2("Adding rule: Parsing from: ", s);   /*			     */
   (void)sp_open(s);				   /*			     */
-  (void)SParseSkip(&s);				   /*			     */
+  SParseSkip(&s);				   /*			     */
 						   /*			     */
   while (*s && *s != '"')			   /*                        */
   {						   /*                        */
@@ -363,7 +360,7 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
     }					   	   /*                        */
     DebugPrint2("\tok ",s);			   /*                        */
     DebugPrint2("field   = ", SymbolValue(field)); /*			     */
-    (void)SParseSkip(&s);			   /*                        */
+    SParseSkip(&s);			   	   /*                        */
 						   /*			     */
     if (stackp >= stacksize)			   /*                        */
     { stacksize += 8;				   /*                        */
@@ -381,9 +378,9 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
     return;					   /*			     */
   }						   /*                        */
 						   /*			     */
-  (void)SParseSkip(&s);				   /*			     */
+  SParseSkip(&s);				   /*			     */
 						   /*			     */
-  if ( *s == '\0' )				   /*			     */
+  if (*s == '\0')				   /*			     */
   { frame = NO_SYMBOL; }			   /*			     */
   else if ((frame=SParseUnquotedString(&s)) == NO_SYMBOL)/*		     */
   { return; }					   /*			     */
@@ -724,16 +721,16 @@ void rename_field(spec)				   /*			     */
   Symbol pattern = NO_SYMBOL;		   	   /*                        */
  						   /*                        */
   (void)sp_open(s);				   /*			     */
-  (void)SParseSkip(&s);			   	   /*			     */
+  SParseSkip(&s);			   	   /*			     */
   if ( (from = SParseSymbol(&s)) == NO_SYMBOL )    /*		             */
     return;					   /*			     */
-  (void)SParseSkip(&s);			   	   /*			     */
+  SParseSkip(&s);			   	   /*			     */
   if ( (to = SParseSymbol(&s)) == NO_SYMBOL )      /*		             */
     return;					   /*			     */
  						   /*                        */
   if (sp_expect(&s, s_if, FALSE))	   	   /*                        */
   { if ((field = SParseOptionalSymbol(&s)) != NO_SYMBOL)/*	             */
-    { (void)SParseSkip(&s);			   /*			     */
+    { SParseSkip(&s);			   	   /*			     */
       if ((pattern = SParseValue(&s)) == NO_SYMBOL)/*		             */
       { if (to)    UnlinkSymbol(to);		   /*                        */
 	if (from)  UnlinkSymbol(from);		   /*                        */
@@ -817,7 +814,7 @@ void keep_field(spec)				   /*			     */
  						   /*                        */
   if (sp_expect(&s, s_if, FALSE))	   	   /*                        */
   { if ((field = SParseOptionalSymbol(&s)) != NO_SYMBOL)/*	             */
-    { (void)SParseSkip(&s);			   /*			     */
+    { SParseSkip(&s);			   	   /*			     */
       if ((pattern = SParseValue(&s)) == NO_SYMBOL)/*		             */
       { free_sym_array(names);			   /*                        */
 	UnlinkSymbol(field);			   /*                        */

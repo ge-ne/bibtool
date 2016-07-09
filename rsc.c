@@ -265,7 +265,7 @@ int use_rsc(s)					   /*			     */
   (void)sp_open(s);				   /*			     */
   if ((name = SParseSymbol(&s)) == NULL) return 1; /*			     */
 						   /*			     */
-  (void)SParseSkip(&s);				   /*                        */
+  SParseSkip(&s);				   /*                        */
 						   /*			     */
   if ((value = SParseValue(&s)) == NULL)	   /*                        */
   { UnlinkSymbol(name);			   	   /*                        */

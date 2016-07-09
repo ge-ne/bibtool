@@ -56,6 +56,6 @@
  void sp_close _ARG((void));			   /* s_parse.c              */
  int sp_expect _ARG((String *sp, String expect, int verbose));/* s_parse.c   */
  Symbol* sp_symbols _ARG((String *sp));		   /* s_parse.c              */
- String sp_skip _ARG((String *sp));		   /*                        */
+ void sp_skip _ARG((String *sp));		   /*                        */
  String sp_eos _ARG((String *sp));		   /*                        */
 

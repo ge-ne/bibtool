@@ -459,7 +459,7 @@ void add_sort_order(val)			   /*                        */
   WordList  wl, wl_next;			   /*                        */
   String    s = SymbolValue(val);		   /*                        */
  						   /*                        */
-  (void)SParseSkip(&s);			   	   /*                        */
+  SParseSkip(&s);			   	   /*                        */
   if (*s == '*')				   /*                        */
   { sym  = NO_SYMBOL;			   	   /*                        */
     type = BIB_NOOP;				   /*                        */
@@ -489,7 +489,7 @@ void add_sort_order(val)			   /*                        */
     wlp           = &OrderVal(ol);		   /*                        */
   }						   /*                        */
    						   /*                        */
-  (void)SParseSkip(&s);			   	   /*                        */
+  SParseSkip(&s);			   	   /*                        */
   						   /*                        */
   while ( *s )				   	   /*                        */
   { if ( (sym=SParseSymbol(&s)) != NO_SYMBOL )     /*                        */
@@ -498,7 +498,7 @@ void add_sort_order(val)			   /*                        */
       wlp = &NextWord(*wlp);			   /*                        */
     }						   /*                        */
     else break;					   /*                        */
-    (void)SParseSkip(&s);			   /*                        */
+    SParseSkip(&s);			   	   /*                        */
   }						   /*                        */
   						   /*                        */
   wl   = *wlp;					   /*                        */

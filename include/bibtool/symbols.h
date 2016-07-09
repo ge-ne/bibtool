@@ -96,6 +96,11 @@ typedef String Symbol;
 
 #endif
 
+#define SetSym(VAR,SYM)			\
+  if (VAR) { UnlinkSymbol(VAR); }	\
+  VAR = SYM;				\
+  if (VAR) { LinkSymbol(VAR); }
+
 #define symlen(SYM) strlen((char*)SymbolValue(SYM))
 #define symcmp(S,T) strcmp((char*)SymbolValue(S),(char*)SymbolValue(T))
 

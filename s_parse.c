@@ -115,21 +115,20 @@ String sp_eos(sp)				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	sp_skip()
-** Type:	String
-** Purpose:	
-**		
+** Type:	void
+** Purpose:	Advance a String pointer to the next character which is not a
+**		white-space, equals or hash.
 ** Arguments:
 **	sp	the string pointer
 ** Returns:	
 **___________________________________________________			     */
-String sp_skip(sp)				   /*                        */
+void sp_skip(sp)				   /*                        */
   register String *sp;				   /*                        */
 { register String s = *sp;			   /*                        */
-  while(   is_space(*s) 			   /*                        */
-	   || *s == '='			   	   /*                        */
-	   || *s == '#'    ) s++;		   /*                        */
+  while (   is_space(*s) 			   /*                        */
+	 || *s == '='			   	   /*                        */
+	 || *s == '#'    ) s++;		   	   /*                        */
   *sp = s;					   /*                        */
-  return s;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

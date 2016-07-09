@@ -213,7 +213,7 @@ Symbol map_get(s_rec, s_fld, d_rec)		   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	skip()
 ** Type:	int
-** Purpose:	Advance a string position as long as it points to whitespace.
+** Purpose:	Advance a string position as long as it points to white-space.
 ** Arguments:
 **	sp	Pointer to the String position to be advanced
 ** Returns:	0
@@ -221,7 +221,7 @@ Symbol map_get(s_rec, s_fld, d_rec)		   /*                        */
 static int skip(sp)				   /*                        */
   String *sp;				   	   /*			     */
 {						   /*                        */
-  (void)SParseSkip(sp);				   /*                        */
+  SParseSkip(sp);				   /*                        */
   return 0;					   /*                        */
 }						   /*------------------------*/
 

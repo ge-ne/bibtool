@@ -1156,10 +1156,8 @@ void make_key(db,rec)				   /*			     */
   { sbputs((char*)SymbolValue(DefaultKey), key_sb);/*                        */
   }			   			   /*			     */
 						   /*			     */
-  if (RecordOldKey(rec))
-  { UnlinkSymbol(RecordOldKey(rec));		   /*                        */
-  }
-  RecordOldKey(rec) = *RecordHeap(rec);		   /* save old key	     */
+  SetSym(RecordOldKey(rec), *RecordHeap(rec));	   /*                        */
+ 						   /*                        */
 #ifndef NEW
 #define trans trans_id
   ResetWords;					   /*                        */
@@ -1951,7 +1949,9 @@ static void eval__special(sb,kn,rec)		   /*			     */
 		trans_lower,			   /*                        */
 		TRUE,				   /*                        */
 		TitleTitleSep); }		   /*	                     */
-    else { (void)sbputs((char*)SymbolValue(DefaultKey), sb); }/*	     */
+    else					   /*                        */
+    { (void)sbputs((char*)SymbolValue(DefaultKey), /*                        */
+		   sb); }			   /*	                     */
   }						   /*			     */
 }						   /*------------------------*/
 
@@ -2261,6 +2261,7 @@ Symbol get_field(db,rec,name)		   	   /*			     */
   register Record rec;				   /*			     */
   register Symbol name;			   	   /*			     */
 { String s = SymbolValue(name);			   /*                        */
+  Symbol sym;					   /*                        */
   DebugPrint2("get_field ", s);		   	   /*                        */
 #ifdef HAVE_TIME_H
   static struct tm *tp;				   /*                        */
@@ -2274,15 +2275,17 @@ Symbol get_field(db,rec,name)		   	   /*			     */
 #define ReturnTime(F) if ( the_time > 0 )	\
   { (void)strftime(buffer,32,F,tp);		\
     return symbol((String)buffer); }		\
-  return sym_empty
+  LinkSymbol(sym_empty); return sym_empty
 #else
 #define ReturnTime(F) return sym_empty
 #endif
 				   		   /*                        */
   if (*s == '@')				   /*			     */
-  { if ( case_cmp(s + 1,			   /*                        */
-		  SymbolValue(EntryName(RecordType(rec)))) )/*		     */
-      return EntryName(RecordType(rec));	   /*		             */
+  { sym = EntryName(RecordType(rec));		   /*                        */
+    if (case_cmp(s + 1, SymbolValue(sym)))	   /*		             */
+    { LinkSymbol(sym);
+      return sym;	   			   /*		             */
+    }
   }						   /*			     */
   else if (*s == '$')			   	   /*			     */
   { ++s;					   /*			     */
@@ -2296,34 +2299,44 @@ Symbol get_field(db,rec,name)		   	   /*			     */
         break;					   /*                        */
       case 'd': case 'D':			   /*                        */
 	if (case_cmp(s, (String)"default.key"))    /*			     */
-	{ return DefaultKey; }			   /*			     */
+	{ LinkSymbol(DefaultKey);		   /*                        */
+	  return DefaultKey;			   /*                        */
+	}			   		   /*			     */
 	else if (case_cmp(s, (String)"day"))       /*			     */
 	{ ReturnTime("%d"); }			   /*			     */
 	break;    				   /*                        */
       case 'f': case 'F':			   /*                        */
 	if (case_cmp(s, (String)"fmt.et.al"))      /*			     */
-	{ return EtAl; }			   /*			     */
+	{ LinkSymbol(EtAl);		   	   /*                        */
+	  return EtAl; }			   /*			     */
 	else if (case_cmp(s,		   	   /*                        */
 			  (String)"fmt.name.pre")) /*		             */
-	{ return NamePreSep; }			   /*			     */
+	{ LinkSymbol(NamePreSep);		   /*                        */
+	  return NamePreSep; }			   /*			     */
 	else if (case_cmp(s,		   	   /*                        */
 			  (String)"fmt.inter.name"))/*		             */
-	{ return InterNameSep; }		   /*			     */
+	{ LinkSymbol(InterNameSep);		   /*                        */
+	  return InterNameSep; }		   /*			     */
 	else if (case_cmp(s,		   	   /*                        */
 			  (String)"fmt.name.name"))/*		             */
-	{ return NameNameSep; }			   /*			     */
+	{ LinkSymbol(NameNameSep);		   /*                        */
+	  return NameNameSep; }			   /*			     */
 	else if (case_cmp(s,		   	   /*                        */
 			  (String)"fmt.name.title"))/*		             */
-	{ return NameTitleSep; }		   /*			     */
+	{ LinkSymbol(NameTitleSep);		   /*                        */
+	  return NameTitleSep; }		   /*			     */
 	else if (case_cmp(s,		   	   /*                        */
-			  (String)"fmt.title.title") )/*		     */
-	{ return TitleTitleSep; }		   /*			     */
+			  (String)"fmt.title.title"))/*		             */
+	{ LinkSymbol(TitleTitleSep);		   /*                        */
+	  return TitleTitleSep; }		   /*			     */
       case 'h': case 'H':			   /*                        */
 	if (case_cmp(s, (String)"hostname"))       /*			     */
 	{ if (sym_host == NULL)			   /*                        */
 	  { s = (String)getenv("HOSTNAME"); 	   /*                        */
-	    sym_host = s ? symbol(s): sym_empty;   /*                        */
+	    sym_host = symbol(s ? s : s_empty);	   /*                        */
 	  }					   /*                        */
+	  else					   /*                        */
+	  { LinkSymbol(sym_host); }		   /*                        */
 	  return sym_host;			   /*                        */
 	}	   	   			   /*			     */
         else if (case_cmp(s, (String)"hour"))      /*			     */
@@ -2339,15 +2352,19 @@ Symbol get_field(db,rec,name)		   	   /*			     */
 	break;    				   /*                        */
       case 's': case 'S':			   /*                        */
 	if (case_cmp(s, (String)"sortkey"))	   /*			     */
-	{ return RecordSortkey(rec); }		   /*			     */
+	{ LinkSymbol(RecordSortkey(rec));	   /*                        */
+	  return RecordSortkey(rec); }		   /*			     */
 	else if (case_cmp(s, (String)"source"))    /*			     */
-	{ return RecordSource(rec); }		   /*			     */
+	{ LinkSymbol(RecordSource(rec));	   /*                        */
+	  return RecordSource(rec); }		   /*			     */
 	else if (case_cmp(s, (String)"second"))    /*			     */
 	{ ReturnTime("%S"); }			   /*			     */
 	break;    				   /*                        */
       case 't': case 'T':			   /*                        */
 	if (case_cmp(s, (String)"type"))	   /*			     */
-	{ return EntryName(RecordType(rec)); }	   /*			     */
+	{ sym = EntryName(RecordType(rec));	   /*                        */
+	  if (sym) LinkSymbol(sym);		   /*                        */
+	  return sym; }	   			   /*			     */
 	else if (case_cmp(s, (String)"time"))      /*			     */
 	{ ReturnTime("%H:%M:%S"); }		   /*			     */
         break;					   /*                        */
@@ -2355,8 +2372,10 @@ Symbol get_field(db,rec,name)		   	   /*			     */
 	if (case_cmp(s, (String)"user"))	   /*			     */
 	{ if (sym_user == NULL)			   /*                        */
 	  { s = (String)getenv("USER");	   	   /*                        */
-	    sym_user = s ? symbol(s) : sym_empty;  /*                        */
+	    sym_user = symbol(s ? s : s_empty);	   /*                        */
 	  }					   /*                        */
+	  else					   /*                        */
+	  { LinkSymbol(sym_user); }		   /*                        */
 	  return sym_user;			   /*                        */
 	}	   	   			   /*			     */
         break;					   /*                        */
@@ -2386,13 +2405,15 @@ Symbol get_field(db,rec,name)		   	   /*			     */
       {						   /*                        */
 	if ( *cpp == name && *(cpp+1) != NO_SYMBOL )/*                       */
 	{					   /*                        */
-	  return ( rsc_key_expand_macros	   /*                        */
-		   ? expand_rhs(*(cpp+1),	   /*                        */
-				sym_open_brace,	   /*                        */
-				sym_close_brace,   /*                        */
-				db,		   /*                        */
-				FALSE)		   /*                        */
-		   : *(cpp+1) );		   /*			     */
+	  sym = ( rsc_key_expand_macros	   	   /*                        */
+		  ? expand_rhs(*(cpp+1),	   /*                        */
+			       sym_open_brace,	   /*                        */
+			       sym_close_brace,    /*                        */
+			       db,		   /*                        */
+			       FALSE)		   /*                        */
+		  : *(cpp+1) );		   	   /*			     */
+	  LinkSymbol(sym);		   	   /*                        */
+	  return sym;				   /*                        */
 	}					   /*                        */
  						   /*                        */
         if ( *cpp == sym_crossref )		   /*                        */
@@ -2401,7 +2422,7 @@ Symbol get_field(db,rec,name)		   	   /*			     */
         cpp++;			   	   	   /*			     */
       }					   	   /*			     */
        						   /*                        */
-      if ( xref == NO_SYMBOL ) { return NO_SYMBOL; }/* No crossref field found*/
+      if ( xref == NO_SYMBOL ) return NO_SYMBOL;   /* No crossref field found*/
       xref = expand_rhs(xref,			   /*                        */
 			sym_empty,		   /*                        */
 			sym_empty,		   /*                        */
@@ -2455,46 +2476,66 @@ int set_field(db,rec,name,value)		   /*			     */
     switch (c)				   	   /*                        */
     { case 'k': case 'K':			   /*                        */
         if ( case_cmp(s, (String)"key") )	   /*			     */
-	{ *RecordHeap(rec) = value;	   	   /*                        */
+	{ SetSym(*RecordHeap(rec), value);	   /*                        */
 	  return 0;			   	   /*                        */
 	}					   /*		             */
         break;					   /*                        */
       case 'd': case 'D':			   /*                        */
 	if ( case_cmp(s, (String)"default.key") )  /*			     */
-	{ DefaultKey = value;		   	   /*                        */
+	{ SetSym(DefaultKey, value);		   /*                        */
 	  return 0;				   /*                        */
 	}		   			   /*			     */
 	break;    				   /*                        */
       case 'f': case 'F':			   /*                        */
 	if ( case_cmp(s, (String)"fmt.et.al") )    /*			     */
-	{ EtAl = value; return 0; }	   	   /*			     */
-	else if ( case_cmp(s, (String)"fmt.name.pre") )/*		     */
-	{ NamePreSep = value; return 0; }  	   /*			     */
-	else if ( case_cmp(s, (String)"fmt.inter.name") )/*		     */
-	{ InterNameSep = value; return 0; }	   /*			     */
-	else if ( case_cmp(s, (String)"fmt.name.name") )/*		     */
-	{ NameNameSep = value; return 0; } 	   /*			     */
-	else if ( case_cmp(s, (String)"fmt.name.title") )/*		     */
-	{ NameTitleSep = value; return 0; }	   /*		             */
-	else if ( case_cmp(s, (String)"fmt.title.title") )/*		     */
-	{ TitleTitleSep = value; return 0; }	   /*			     */
+	{ SetSym(EtAl, value);			   /*                        */
+	  return 0;				   /*                        */
+	}	   	   			   /*			     */
+	else if (case_cmp(s, (String)"fmt.name.pre"))/*		             */
+	{ SetSym(NamePreSep, value);		   /*                        */
+	  return 0;				   /*                        */
+	}  	   				   /*			     */
+	else if (case_cmp(s, (String)"fmt.inter.name"))/*		     */
+	{ SetSym(InterNameSep, value);		   /*                        */
+	  return 0;				   /*                        */
+	}	   				   /*			     */
+	else if (case_cmp(s, (String)"fmt.name.name"))/*		     */
+	{ SetSym(NameNameSep, value);		   /*                        */
+	  return 0;				   /*                        */
+	} 	   				   /*			     */
+	else if (case_cmp(s, (String)"fmt.name.title"))/*		     */
+	{ SetSym(NameTitleSep, value);		   /*                        */
+	  return 0;				   /*                        */
+	}	   				   /*		             */
+	else if (case_cmp(s, (String)"fmt.title.title"))/*		     */
+	{ SetSym(TitleTitleSep, value);		   /*                        */
+	  return 0;				   /*                        */
+	}	   				   /*			     */
       case 's': case 'S':			   /*                        */
-	if ( case_cmp(s, (String)"sortkey") )	   /*			     */
-	{ RecordSortkey(rec) = value; return 0; }  /*			     */
-	else if ( case_cmp(s, (String)"source") )/*			     */
-	{ RecordSource(rec) = value; return 0; }   /*		             */
+	if (case_cmp(s, (String)"sortkey"))	   /*			     */
+	{ SetSym(RecordSortkey(rec), value);	   /*                        */
+	  return 0;				   /*                        */
+	}  					   /*			     */
+	else if (case_cmp(s, (String)"source"))    /*			     */
+	{ SetSym(RecordSource(rec), value);	   /*                        */
+	  return 0;				   /*                        */
+	}   					   /*		             */
 	break;    				   /*                        */
       case 't': case 'T':			   /*                        */
-	if ( case_cmp(s, (String)"type") )	   /*			     */
+	if (case_cmp(s, (String)"type"))	   /*			     */
 	{ int type;				   /*                        */
-	  if ( IsNormalRecord(RecordType(rec)) &&  /*                        */
-	       (type=find_entry_type(SymbolValue(value))) >= 0 )/*           */
-	  { RecordType(rec) = type; return 0; }    /*                        */
+	  if (IsNormalRecord(RecordType(rec)) &&   /*                        */
+	      (type=find_entry_type(SymbolValue(value))) >= 0)/*             */
+	  { SetSym(RecordType(rec), type);	   /*                        */
+	    return 0;				   /*                        */
+	  }    					   /*                        */
 	}					   /*                        */
         break;					   /*                        */
       case 'u': case 'U':			   /*                        */
-	if ( case_cmp(s, (String)"user") )	   /*			     */
-	{ sym_user = value; return 0; }	   	   /*			     */
+	if (case_cmp(s, (String)"user"))	   /*			     */
+	{ SetSym(sym_user, value);		   /*                        */
+	  return 0;				   /*                        */
+	}	   	   			   /*			     */
         break;					   /*                        */
     }						   /*                        */
   }						   /*			     */
