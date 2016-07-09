@@ -35,16 +35,6 @@
 /* Internal Programs							     */
 /*===========================================================================*/
 
-#ifdef __STDC__
-#define _ARG(A) A
-#else
-#define _ARG(A) ()
-#endif
- Symbol s_parse _ARG((int type,String *sp,int errp));/* s_parse.c            */
- int sp_open _ARG((String  s));			   /* s_parse.c              */
- void sp_close _ARG((void));			   /* s_parse.c              */
- int sp_expect _ARG((String*sp, String expect, int verbose));/* s_parse.c    */
-
 /*****************************************************************************/
 /* External Programs							     */
 /*===========================================================================*/
@@ -68,12 +58,11 @@
 **		allocated memory.
 ** Arguments:
 **	s	String to open for parsing.
-** Returns:	|TRUE|
+** Returns:	nothing
 **___________________________________________________			     */
-int sp_open(s)					   /*                        */
+void sp_open(s)					   /*                        */
   String s;				   	   /*                        */
 { sp_line = s;				   	   /*                        */
-  return TRUE;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -91,8 +80,9 @@ void sp_close()					   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	sp_eos()
 ** Type:	Sting
-** Purpose:	
-**		
+** Purpose:	The string is analyzed and any remaining characters which are
+**		not whitespace are reported as error. A pointer to the
+**		terminating 0 byte
 ** Arguments:
 **	sp	the string pointer
 ** Returns:	
@@ -170,9 +160,6 @@ void sp_skip(sp)				   /*                        */
 **		  first position not containing whitespace, |=|, or |#|
 **		  is returned. In this case the returned value is not
 **		  translated into a symbol.
-**		\item[StringParseEOS] The string is analyzed and any
-**		  remaining characters which are not whitespace are
-**		  reported as error. A pointer to the terminating 0 byte
 **		  is returned upon success
 **		\end{description}
 **		If an error occurs or the requested entity is not

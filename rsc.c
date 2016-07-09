@@ -262,7 +262,7 @@ int use_rsc(s)					   /*			     */
 { register Symbol name,				   /*			     */
 		  value;			   /*			     */
 						   /*			     */
-  (void)sp_open(s);				   /*			     */
+  sp_open(s);				   	   /*			     */
   if ((name = SParseSymbol(&s)) == NULL) return 1; /*			     */
 						   /*			     */
   SParseSkip(&s);				   /*                        */

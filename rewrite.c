@@ -156,13 +156,13 @@ void add_field(spec)				   /*			     */
   String spec;					   /*			     */
 { register Symbol field, value;		   	   /*			     */
 						   /*			     */
-  (void)sp_open(spec);				   /*			     */
+  sp_open(spec);				   /*			     */
   if ((field = SParseSymbol(&spec)) == NO_SYMBOL)  /*		             */
     return;					   /*			     */
   SParseSkip(&spec);			   	   /*			     */
   if ((value=SParseValue(&spec)) == NO_SYMBOL)     /*			     */
     return;					   /*			     */
-  (void)SParseEOS(&spec);			   /*			     */
+  sp_eos(&spec);			   	   /*			     */
 						   /*			     */
   addlist = new_macro(field, value, addlist, 0);   /*			     */
 }						   /*------------------------*/
@@ -347,7 +347,7 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
   stackp = 0;					   /*                        */
 						   /*			     */
   DebugPrint2("Adding rule: Parsing from: ", s);   /*			     */
-  (void)sp_open(s);				   /*			     */
+  sp_open(s);				   	   /*			     */
   SParseSkip(&s);				   /*			     */
 						   /*			     */
   while (*s && *s != '"')			   /*                        */
@@ -385,7 +385,7 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
   else if ((frame=SParseUnquotedString(&s)) == NO_SYMBOL)/*		     */
   { return; }					   /*			     */
   else						   /*			     */
-  { (void)SParseEOS(&s); }			   /*			     */
+  { sp_eos(&s); }			   	   /*			     */
 						   /*			     */
   if (stackp == 0)				   /* No field specified.    */
   { rule = new_rule(NO_SYMBOL,			   /*                        */
@@ -720,7 +720,7 @@ void rename_field(spec)				   /*			     */
   Symbol field 	 = NO_SYMBOL;			   /*                        */
   Symbol pattern = NO_SYMBOL;		   	   /*                        */
  						   /*                        */
-  (void)sp_open(s);				   /*			     */
+  sp_open(s);				   	   /*			     */
   SParseSkip(&s);			   	   /*			     */
   if ( (from = SParseSymbol(&s)) == NO_SYMBOL )    /*		             */
     return;					   /*			     */
@@ -739,7 +739,7 @@ void rename_field(spec)				   /*			     */
       }						   /*                        */
     }						   /*                        */
   }						   /*                        */
-  if (SParseEOS(&s) != StringNULL )		   /*                        */
+  if (sp_eos(&s) != StringNULL )		   /*                        */
   { if (to)      UnlinkSymbol(to);		   /*                        */
     if (from)    UnlinkSymbol(from);		   /*                        */
     if (field)   UnlinkSymbol(field);		   /*                        */
@@ -796,7 +796,7 @@ static Rule *k_rules = (Rule*)NULL;
 ** Purpose:	
 **		
 ** Arguments:
-**	spec	
+**	spec	the specification
 ** Returns:	nothing
 **___________________________________________________			     */
 void keep_field(spec)				   /*			     */
@@ -808,8 +808,8 @@ void keep_field(spec)				   /*			     */
   Symbol pattern = NO_SYMBOL;		   	   /*                        */
   int i;					   /*                        */
  						   /*                        */
-  (void)sp_open(s);				   /*			     */
-  if ( (names = sp_symbols(&s)) == NULL )    	   /*		             */
+  sp_open(s);				   	   /*			     */
+  if ((names = sp_symbols(&s)) == NULL)    	   /*		             */
     return;					   /*			     */
  						   /*                        */
   if (sp_expect(&s, s_if, FALSE))	   	   /*                        */
@@ -826,7 +826,7 @@ void keep_field(spec)				   /*			     */
       return;					   /*                        */
     }						   /*                        */
   }						   /*                        */
-  if (SParseEOS(&s) != StringNULL )	   	   /*			     */
+  if (sp_eos(&s) != StringNULL )	   	   /*			     */
   { free_sym_array(names);			   /*                        */
     if (field)   UnlinkSymbol(field);		   /*                        */
     if (pattern) UnlinkSymbol(pattern);		   /*                        */

@@ -241,7 +241,7 @@ void crossref_map(spec)				   /*                        */
   Symbol *sp, *dp;				   /*                        */
   int s_rec, d_rec;				   /*                        */
  						   /*                        */
-  (void)sp_open(spec);				   /*                        */
+  sp_open(spec);				   /*                        */
   if ((src        = sp_symbols(&spec))   == NULL ||/*                        */
       skip(&spec) ||		   		   /*                        */
       (src_field  = SParseSymbol(&spec)) == NULL ||/*                        */
@@ -249,7 +249,7 @@ void crossref_map(spec)				   /*                        */
       (dest       = sp_symbols(&spec))   == NULL ||/*                        */
       skip(&spec) ||		   		   /*                        */
       (dest_field = SParseSymbol(&spec)) == NULL ||/*                        */
-      SParseEOS(&spec) != NULL			   /*                        */
+      sp_eos(&spec) != NULL			   /*                        */
      )						   /*                        */
   { return; }					   /*                        */
   sp_close();					   /*                        */
@@ -370,7 +370,7 @@ int expand_crossref(db, rec)		   	   /*                        */
       if (rec == r) { *hp = NULL; }		   /* Delete the first xref  */
       x = SymbolValue(*++hp);			   /*                        */
       x++;				   	   /*			     */
-      (void)sp_open(x);		   		   /* Try to extract	     */
+      sp_open(x);		   		   /* Try to extract	     */
       if ((s = SParseSymbol(&x)) ==  NO_SYMBOL)	   /*  the crossref as symbol*/
       { return FALSE; }				   /*			     */
 						   /*			     */
@@ -381,7 +381,7 @@ int expand_crossref(db, rec)		   	   /*                        */
       *hp = NULL;		   		   /* Delete the first xref  */
       x = SymbolValue(*++hp);			   /*                        */
       x++;				   	   /*			     */
-      (void)sp_open(x);		   		   /* Try to extract	     */
+      sp_open(x);		   		   /* Try to extract	     */
  						   /*                        */
       if (sp_expect(&x,	(String)"}", 0) )	   /*                        */
 	return FALSE;				   /*                        */

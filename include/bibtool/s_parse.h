@@ -44,7 +44,6 @@
 #define SParseValue(SP)		    s_parse(StringParseValue 	     ,SP,-1)
 #define SParseExpect(C,SP)	    s_parse((C)&0xff           	     ,SP,-1)
 #define SParseSkip(SP)		    sp_skip(SP)
-#define SParseEOS(SP)		    sp_eos(SP)
 
 #ifdef __STDC__
 #define _ARG(A) A
@@ -52,10 +51,10 @@
 #define _ARG(A) ()
 #endif
  Symbol s_parse _ARG((int type, String *sp, int errp));/* s_parse.c          */
- int sp_open _ARG((String  s));			   /* s_parse.c              */
  void sp_close _ARG((void));			   /* s_parse.c              */
+ void sp_open _ARG((String  s));		   /* s_parse.c              */
+ void sp_skip _ARG((String *sp));		   /*                        */
  int sp_expect _ARG((String *sp, String expect, int verbose));/* s_parse.c   */
  Symbol* sp_symbols _ARG((String *sp));		   /* s_parse.c              */
- void sp_skip _ARG((String *sp));		   /*                        */
  String sp_eos _ARG((String *sp));		   /*                        */
 

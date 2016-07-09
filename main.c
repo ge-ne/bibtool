@@ -748,7 +748,7 @@ static int update_crossref(db, rec)		   /*			     */
   }						   /*			     */
 						   /*			     */
   t = SymbolValue(*++hp); t++;			   /*			     */
-  (void)sp_open(t);				   /* Try to extract	     */
+  sp_open(t);				   	   /* Try to extract	     */
   if ((s = SParseSymbol(&t)) == NO_SYMBOL)	   /*  the crossref as symbol*/
   { return 0; }					   /*			     */
 						   /*			     */
