@@ -23,7 +23,10 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl 
 dnl ***************************************************************************
-AC_REVISION($Revision: 1.10 $)dnl
+AC_REVISION($Revision: 1.11 $)
+AC_COPYRIGHT(Copyright (C) 2016 Gerd Neugebauer
+This configure script is part of BibTool.
+Revision 1.11)
 AC_PREREQ(2.69)
 
 dnl ---------------------------------------------------------------------------
