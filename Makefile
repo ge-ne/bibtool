@@ -68,6 +68,7 @@ CTANFILES =	README.md		\
 LATEX	=	lualatex
 
 configure: configure.ac
+	autoconf
 
 lint:
 	gcc  $(C_FLAGS) $(REGEX_DEF) $(DONT_LINK) -ansi -W -Wall -O2 ${CFILES}
