@@ -47,8 +47,8 @@
  char * pp_names _ARG((char *s,NameNode format,String trans,int max,char *namesep,char *etal));/* names.c*/
 #endif
  static NameNode new_name_node _ARG((int type,int strip,int trim,Symbol pre,Symbol mid,Symbol post));/* names.c*/
- static int is_jr _ARG((String  s, int eager));	   /* names.c                */
- static int is_lower_word _ARG((String s));	   /* names.c                */
+ static bool is_jr _ARG((String  s, bool eager));  /* names.c                */
+ static bool is_lower_word _ARG((String s));	   /* names.c                */
  static void initial _ARG((String s,String trans,int len,StringBuffer *sb));/* names.c*/
  static void pp_one_name _ARG((StringBuffer *sb,String *w,NameNode format,String trans,int len,String comma,int commas));/* names.c*/
 
@@ -409,7 +409,7 @@ String  pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
 { String	    *w;			   	   /*                        */
   String	    word;		   	   /*                        */
   int  		    commas;			   /*                        */
-  int  		    first = TRUE;		   /*                        */
+  bool 		    first = true;		   /*                        */
   static StringBuffer *sb = (StringBuffer*)0;	   /*                        */
  						   /*                        */
   if ( sb == (StringBuffer*)0 			   /*                        */
@@ -418,10 +418,10 @@ String  pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
   else						   /*                        */
   { sbrewind(sb); }				   /*                        */
  						   /*                        */
-  while ( *wa )					   /*                        */
+  while (*wa)					   /*                        */
   {						   /*                        */
-    if ( *(wa+1) == NULL			   /* Look at the end        */
-	 && strcmp((char*)(*wa), "others") == 0 )  /*  for `and others'      */
+    if (*(wa+1) == NULL			   	   /* Look at the end        */
+	&& strcmp((char*)(*wa), "others") == 0)    /*  for `and others'      */
     { sbputs(etal, sb);			   	   /*                        */
       break;					   /*                        */
     }						   /*                        */
@@ -437,7 +437,7 @@ String  pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
     }						   /*                        */
     word = *w;					   /*                        */
     *w = NULL;					   /*                        */
-    if (first) { first = FALSE; }		   /*                        */
+    if (first) { first = false; }		   /*                        */
     else { sbputs(namesep, sb); }		   /*                        */
     pp_one_name(sb,				   /*                        */
 		wa,				   /*                        */
@@ -478,7 +478,8 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   char          t;				   /*                        */
   char          *type;				   /*                        */
   String 	tr;				   /*                        */
-  int           i, j, again;			   /*                        */
+  int           i, j;				   /*                        */
+  bool		again;			   	   /*                        */
   int	        first, last, von, jr;		   /*                        */
  						   /*                        */
   first = last = von = jr = 0;			   /*                        */
@@ -497,7 +498,7 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   if ( commas == 0 )				   /*------------------------*/
   {						   /* ff vv ll               */
     j = len - 1;				   /* ff vv ll jr            */
-    if ( is_jr(w[j], TRUE) )		   	   /*                        */
+    if ( is_jr(w[j], true) )		   	   /*                        */
     { type[j--] = 'j'; jr++; }			   /*                        */
     if ( j >= 0 )				   /*                        */
     { type[j] = 'l'; last++; }  		   /*                        */
@@ -512,7 +513,7 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
   else if (   commas == 1			   /*------------------------*/
 	   && len > 2				   /* ff vv ll, jj           */
 	   && w[len-2] == comma			   /*                        */
-	   && is_jr(w[len-1], FALSE) )	   	   /*                        */
+	   && is_jr(w[len-1], false) )	   	   /*                        */
   { j = len - 1;				   /*                        */
     type[j--] = 'j'; jr++;			   /*                        */
     type[j--] = ',';				   /*                        */
@@ -584,13 +585,13 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
  						   /*                        */
     if ( j > 0 )				   /*                        */
     { sbputs((char*)SymbolValue(NamePre(nn)), sb); /*                        */
-      again = FALSE;				   /*                        */
+      again = false;				   /*                        */
       for ( i = 0; i < len; i++ )		   /*                        */
       { if ( type[i] == t )			   /*                        */
 	{					   /*                        */
   	  if ( trim-- == 0 ) break;		   /*                        */
 	  if ( again ) sbputs((char*)SymbolValue(NameMid(nn)), sb);/*        */
-	  else again = TRUE;			   /*                        */
+	  else again = true;			   /*                        */
  						   /*                        */
 	  initial(w[i], tr, strip, sb);	   	   /*                        */
 	}					   /*                        */
@@ -641,28 +642,28 @@ static void initial(s,trans,len,sb)		   /*                        */
 **		Roman numbers
 ** Returns:	
 **___________________________________________________			     */
-static int is_jr(s, eager)			   /*                        */
+static bool is_jr(s, eager)			   /*                        */
   String  s;					   /*                        */
-  int  eager;					   /*                        */
+  bool    eager;				   /*                        */
 {						   /*                        */
   switch ( ToLower(*s) )			   /*                        */
   { case 'j':					   /*                        */
       s++;					   /*                        */
-      return ( case_cmp(s,(String)"r")    ||	   /*                        */
-	       case_cmp(s,(String)"r.")   ||	   /*                        */
-	       case_cmp(s,(String)"unior") );	   /*                        */
+      return ( case_eq(s,(String)"r")    ||	   /*                        */
+	       case_eq(s,(String)"r.")   ||	   /*                        */
+	       case_eq(s,(String)"unior") );	   /*                        */
     case 's':					   /*                        */
       s++;					   /*                        */
-      return ( case_cmp(s,(String)"en")   ||	   /*                        */
-	       case_cmp(s,(String)"en.")  ||	   /*                        */
-	       case_cmp(s,(String)"enior") );	   /*                        */
+      return ( case_eq(s,(String)"en")   ||	   /*                        */
+	       case_eq(s,(String)"en.")  ||	   /*                        */
+	       case_eq(s,(String)"enior") );	   /*                        */
     case 'm':					   /*                        */
       s++;					   /*                        */
-      return ( case_cmp(s,(String)"d") );	   /*                        */
+      return ( case_eq(s,(String)"d") );	   /*                        */
     case 'p':					   /*                        */
       s++;					   /*                        */
-      return ( case_cmp(s,(String)"hD")   ||	   /*                        */
-	       case_cmp(s,(String)"hD.")  );	   /*                        */
+      return ( case_eq(s,(String)"hD")   ||	   /*                        */
+	       case_eq(s,(String)"hD.")  );	   /*                        */
     case 'i':					   /*                        */
       s++;					   /*                        */
       return ( (*s == '\0' && eager)      ||	   /*                        */
@@ -700,10 +701,10 @@ static int is_jr(s, eager)			   /*                        */
 	       strcmp((char*)s,"XIX")   == 0 ||	   /*                        */
 	       strcmp((char*)s,"XX")    == 0 );	   /*                        */
     case 'e':					   /*                        */
-      return ( case_cmp(++s,(String)"sc") ||	   /*                        */
-	       case_cmp(s,(String)"sc.")  );	   /*                        */
+      return ( case_eq(++s,(String)"sc") ||	   /*                        */
+	       case_eq(s,(String)"sc.")  );	   /*                        */
   }						   /*                        */
-  return FALSE;					   /*                        */
+  return false;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -714,18 +715,18 @@ static int is_jr(s, eager)			   /*                        */
 **
 ** Arguments:
 **	s	Word to test
-** Returns:	TRUE or FALSE
+** Returns:	|true| or |false|
 **___________________________________________________			     */
-static int is_lower_word(s)			   /*                        */
+static bool is_lower_word(s)			   /*                        */
   register String s;				   /*                        */
 { 						   /*                        */
   while(*s)					   /*                        */
-  { if ( is_lower(*s) ) return TRUE;		   /*                        */
-    if ( is_upper(*s) ) return FALSE;		   /*                        */
+  { if ( is_lower(*s) ) return true;		   /*                        */
+    if ( is_upper(*s) ) return false;		   /*                        */
     if ( *s == '\\' ) { s++; if (*s) s++; }	   /*                        */
     else s++;					   /*                        */
   }						   /*                        */
-  return FALSE;					   /*                        */
+  return false;					   /*                        */
 }						   /*------------------------*/
 
 

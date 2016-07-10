@@ -38,11 +38,12 @@
 **
 ******************************************************************************/
 
-#include <bibtool/config.h>
+#include <bibtool/general.h>
+#include <bibtool/symbols.h>
+
 #include <bibtool/entry.h>
 #include <bibtool/error.h>
 #include <bibtool/expand.h>
-#include <bibtool/general.h>
 #include <bibtool/init.h>
 #include <bibtool/key.h>
 #include <bibtool/macros.h>
@@ -55,7 +56,6 @@
 #include <bibtool/rsc.h>
 #include <bibtool/s_parse.h>
 #include <bibtool/stack.h>
-#include <bibtool/symbols.h>
 #include <bibtool/tex_aux.h>
 #include <bibtool/tex_read.h>
 #include <bibtool/type.h>

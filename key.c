@@ -49,45 +49,27 @@
 #else
 #define _ARG(A) ()
 #endif
- Symbol get_field _ARG((DB db,Record rec,Symbol name));/* key.c              */
- String fmt_expand _ARG((StringBuffer *sb,String cp,DB db,Record rec));/* key.c*/
- int apply_fmt _ARG((StringBuffer *sb,char *fmt,Record rec,DB db));/* key.c  */
- int foreach_ignored_word _ARG((int (*fct)_ARG((Symbol))));/* key.c          */
- int mark_key _ARG((DB db,Record rec));		   /* key.c                  */
- int set_field _ARG((DB db,Record rec,Symbol name,Symbol value));/* key.c    */
  static KeyNode new_key_node _ARG((int type,Symbol sym));/* key.c            */
+ static bool fmt_digits _ARG((StringBuffer *sb,String s,int mp,int pp,int n,int sel,bool trunc));/* key.c*/
+ static bool fmt_c_words _ARG((String line,int min,int max,bool not,bool ignore));/* key.c*/
+ static bool fmt_c_names _ARG((String line,int min,int max,int not));/* key.c*/
+ static bool fmt_c_string _ARG((String  s,int min,int max,bool not));/* key.c  */
+ static bool add_fmt_tree _ARG((char *s,KeyNode *treep));/* key.c             */
+ static bool eval__fmt _ARG((StringBuffer *sb,KeyNode kn,Record rec));/* key.c*/
+ static bool eval_fmt _ARG((StringBuffer *sb,KeyNode kn,Record rec,DB db));/* key.c*/
  static char * itostr _ARG((int i,char *digits));  /* key.c                  */
- static int add_fmt_tree _ARG((char *s,KeyNode *treep));/* key.c             */
  static int deTeX _ARG((String line,void (*save_fct)_ARG((String)),int commap));/*key.c*/
- static int eval__fmt _ARG((StringBuffer *sb,KeyNode kn,Record rec));/* key.c*/
- static int eval_fmt _ARG((StringBuffer *sb,KeyNode kn,Record rec,DB db));/* key.c*/
  static int fmt__parse _ARG((char **sp,KeyNode *knp));/* key.c               */
- static int fmt_c_names _ARG((String line,int min,int max,int not));/* key.c */
- static int fmt_c_string _ARG((String  s,int min,int max,int not));/* key.c  */
- static int fmt_c_words _ARG((String line,int min,int max,int not,int ignore));/* key.c*/
- static int fmt_digits _ARG((StringBuffer *sb,String s,int mp,int pp,int n,int sel,int trunc));/* key.c*/
  static int fmt_parse _ARG((char **sp,KeyNode *knp));/* key.c                */
  static void Push_Word _ARG((String s));	   /* key.c                  */
  static void eval__special _ARG((StringBuffer *sb,KeyNode kn,Record rec));/* key.c*/
  static void fmt_names _ARG((StringBuffer *sb,String line,int maxname,int post,String trans));/* key.c*/
  static void fmt_string _ARG((StringBuffer *sb,String  s,int n,String trans,String sep));/* key.c*/
- static void fmt_title _ARG((StringBuffer *sb,String line,int len,int in,String trans,int ignore,Symbol sep));/* key.c*/
+ static void fmt_title _ARG((StringBuffer *sb,String line,int len,int in,String trans,bool ignore,Symbol sep));/* key.c*/
  static void init_key _ARG(());	   		   /* key.c                  */
  static void key_init _ARG((void));		   /* key.c                  */
  static void push_s _ARG((StringBuffer *sb,String s,int max,String trans));/* key.c*/
  static void push_word _ARG((String s));	   /* key.c                  */
- void add_format _ARG((char *s));		   /* key.c                  */
- void add_ignored_word _ARG((Symbol s));	   /* key.c                  */
- void add_sort_format _ARG((char *s));		   /* key.c                  */
- void clear_ignored_words _ARG((void));		   /* key.c                  */
- void def_format_type _ARG((String s));		   /* key.c                  */
- void end_key_gen _ARG((void));			   /* key.c                  */
- void free_key_node _ARG((KeyNode kn));		   /* key.c                  */
- void make_key _ARG((DB db,Record rec));	   /* key.c                  */
- void make_sort_key _ARG((DB db,Record rec));	   /* key.c                  */
- void set_base _ARG((String value));		   /* key.c                  */
- void set_separator _ARG((int n,String s));	   /* key.c                  */
- void start_key_gen _ARG((void));		   /* key.c                  */
 
 #ifdef DEBUG
  static void show_fmt _ARG((KeyNode kn,int in));   /* key.c                  */
@@ -254,7 +236,7 @@ void set_separator(n,s)				   /*			     */
  						   /*                        */
   if (key_seps == NULL) init_key();		   /*                        */
  						   /*                        */
-  key_seps[n] = sym_extract(&s, FALSE);		   /*			     */
+  key_seps[n] = sym_extract(&s, false);		   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -314,9 +296,9 @@ Symbol get_separator(n)				   /*                        */
 void set_base(value)				   /*			     */
   String value;				   	   /*			     */
 {						   /*			     */
-  if	  ( case_cmp(value,(String)"upper") ) key_base = KEY_BASE_UPPER;/*   */
-  else if ( case_cmp(value,(String)"lower") ) key_base = KEY_BASE_LOWER;/*   */
-  else if ( case_cmp(value,(String)"digit") ) key_base = KEY_BASE_DIGIT;/*   */
+  if	  ( case_eq(value,(String)"upper") ) key_base = KEY_BASE_UPPER;/*    */
+  else if ( case_eq(value,(String)"lower") ) key_base = KEY_BASE_LOWER;/*    */
+  else if ( case_eq(value,(String)"digit") ) key_base = KEY_BASE_DIGIT;/*    */
   else if ( is_upper(*value) )	      key_base = KEY_BASE_UPPER;/*	     */
   else if ( is_lower(*value) )	      key_base = KEY_BASE_LOWER;/*	     */
   else if ( is_digit(*value) )	      key_base = KEY_BASE_DIGIT;/*	     */
@@ -665,17 +647,17 @@ void clear_ignored_words()			   /*                        */
 **	fct	Function to apply.
 ** Returns:	The return status of the last |fct| call.
 **___________________________________________________			     */
-int foreach_ignored_word(fct)			   /*                        */
-  int (*fct)_ARG((Symbol));			   /*                        */
+bool foreach_ignored_word(fct)			   /*                        */
+  bool (*fct)_ARG((Symbol));			   /*                        */
 { int i;					   /*                        */
  						   /*                        */
   key_init();					   /*                        */
  						   /*                        */
   for (i = 0; i < 32; i++)			   /*                        */
   { if (!foreach_word(ignored_words[i], fct))	   /*                        */
-    { return 0; }				   /*                        */
+    { return false; }				   /*                        */
   }						   /*                        */
-  return 1;					   /*                        */
+  return true;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -688,7 +670,7 @@ int foreach_ignored_word(fct)			   /*                        */
 **	len	Number of words to use
 **	in	Number of characters per word to use
 **	trans	Translation table
-**	ignore	Boolean. Certain words are ignored if it is TRUE
+**	ignore	Boolean. Certain words are ignored if it is |true|
 **	sep	String separating the words.
 ** Returns:	nothing
 **___________________________________________________			     */
@@ -698,9 +680,9 @@ static void fmt_title(sb, line, len, in, trans, ignore, sep)/*		     */
   int	        len;				   /*			     */
   int	        in;				   /*			     */
   String	trans;				   /* Translation table	     */
-  int           ignore;				   /*                        */
+  bool          ignore;				   /*                        */
   Symbol        sep;				   /*                        */
-{ int	        first = TRUE;			   /*			     */
+{ bool	        first = true;			   /*			     */
   int	        nw, i, j;			   /*			     */
   String        s;				   /*			     */
 						   /*			     */
@@ -715,7 +697,7 @@ static void fmt_title(sb, line, len, in, trans, ignore, sep)/*		     */
 	     push_word,				   /*                        */
 	     DETEX_FLAG_NONE);			   /*	                     */
  						   /*                        */
-  for ( i = 0; i < nw; ++i )		   	   /*			     */
+  for (i = 0; i < nw; ++i)		   	   /*			     */
   {						   /*			     */
     sbrewind(tmp_sb);				   /* Reset the string buffer*/
     for (s = words[i]; *s; ++s)	   		   /* Translate the current  */
@@ -725,7 +707,7 @@ static void fmt_title(sb, line, len, in, trans, ignore, sep)/*		     */
     if ( ! ignore || 				   /*                        */
 	 ! find_word((String)s,		   	   /*                        */
 		     ignored_words[(*s)&31] ) )	   /*		             */
-    { if ( first ) { first = FALSE; }		   /*			     */
+    { if (first) { first = false; }		   /*			     */
       else { PushS(sb, SymbolValue(sep)); }	   /*			     */
       if ( in <= 0 )				   /*                        */
       { PushS(sb, words[i]); }	   		   /* Push the current word  */
@@ -744,8 +726,6 @@ static void fmt_title(sb, line, len, in, trans, ignore, sep)/*		     */
 /*-----------------------------------------------------------------------------
 ** Function:	fmt_c_words()
 ** Purpose:	Count a list of words.
-**		
-**
 ** Arguments:
 **	line	string to analyze
 **	min	minimum
@@ -754,12 +734,12 @@ static void fmt_title(sb, line, len, in, trans, ignore, sep)/*		     */
 **	ignore	flag to indicate if certain words should be ignored.
 ** Returns:	
 **___________________________________________________			     */
-static int fmt_c_words(line, min, max, not, ignore)/*			     */
+static bool fmt_c_words(line, min, max, not, ignore)/*			     */
   String line;					   /*			     */
   int	 min;					   /*			     */
   int	 max;					   /*			     */
-  int	 not;					   /*			     */
-  int	 ignore;				   /*			     */
+  bool	 not;					   /*			     */
+  bool	 ignore;				   /*			     */
 { int	 n, i, nw;				   /*			     */
 						   /*			     */
   ResetWords;					   /*                        */
@@ -768,18 +748,18 @@ static int fmt_c_words(line, min, max, not, ignore)/*			     */
 	     DETEX_FLAG_NONE);			   /*                        */
   n = 0;					   /*                        */
  						   /*                        */
-  for ( i = 0; i < nw; ++i )		   	   /*			     */
+  for (i = 0; i < nw; ++i)		   	   /*			     */
   {						   /*			     */
-    if ( !ignore || 				   /*                        */
-	 !find_word(words[i],			   /*                        */
-		    ignored_words[(*words[i])&31]) )/*	                     */
+    if (!ignore || 				   /*                        */
+	!find_word(words[i],			   /*                        */
+		   ignored_words[(*words[i])&31]) )/*	                     */
     { n++; }					   /*			     */
   }						   /*			     */
  						   /*                        */
-  if ( n < min || (max > 0 && n > max))		   /*                        */
-  { return (not ? FALSE : TRUE); }		   /*                        */
+  if (n < min || (max > 0 && n > max))		   /*                        */
+  { return (not ? false : true); }		   /*                        */
  						   /*                        */
-  return (not ? TRUE : FALSE);			   /*                        */
+  return (not ? true : false);			   /*                        */
 }						   /*------------------------*/
 
 
@@ -849,7 +829,7 @@ static void fmt_names(sb,line,maxname,post,trans)  /*		             */
   String	trans;				   /* Translation table	     */
 { int	        wp,				   /*			     */
 	        i;				   /*			     */
-  static int    undef_warning = FALSE;		   /*                        */
+  static bool   undef_warning = false;		   /*                        */
   						   /*                        */
   if ( maxname == 0 ) return;			   /*                        */
  						   /*                        */
@@ -859,7 +839,7 @@ static void fmt_names(sb,line,maxname,post,trans)  /*		             */
   { if (undef_warning)				   /*                        */
     { ErrPrintF("*** BibTool: Format %d is not defined. Ignored.\n",/*       */
 		post);				   /*                        */
-      undef_warning = TRUE;			   /*                        */
+      undef_warning = true;			   /*                        */
     }						   /*                        */
     return;					   /*                        */
   }						   /*                        */
@@ -894,16 +874,14 @@ static void fmt_names(sb,line,maxname,post,trans)  /*		             */
 /*-----------------------------------------------------------------------------
 ** Function:	fmt_c_names()
 ** Purpose:	Count a list of names
-**		
-**
 ** Arguments:
 **	line	string to analyze
 **	min	minimum
 **	max	maximum or 0
 **	not	negation flag
-** Returns:	nothing
+** Returns:	
 **___________________________________________________			     */
-static int fmt_c_names(line,min,max,not)	   /*		             */
+static bool fmt_c_names(line,min,max,not)	   /*		             */
   String line;				   	   /* Name list string	     */
   int   min;				   	   /* number of relevant char*/
   int   max;				   	   /* number of names b4 etal*/
@@ -919,14 +897,14 @@ static int fmt_c_names(line,min,max,not)	   /*		             */
   words[wp] = NULL;				   /*                        */
  						   /*                        */
   for ( i = 0, n = 1; i < wp; i++)		   /*			     */
-  { if ( strcmp((char*)words[i],"and") == 0 )	   /*                        */
+  { if (strcmp((char*)words[i],"and") == 0)	   /*                        */
     { n++; }					   /*                        */
   }						   /*                        */
  						   /*                        */
-  if ( n < min || (max > 0 && n > max))		   /*                        */
-  { return (not ? FALSE : TRUE); }		   /*                        */
+  if (n < min || (max > 0 && n > max))		   /*                        */
+  { return (not ? false : true); }		   /*                        */
  						   /*                        */
-  return (not ? TRUE : FALSE);			   /*                        */
+  return (not ? true : false);			   /*                        */
 }						   /*------------------------*/
 
 
@@ -948,39 +926,39 @@ static int fmt_c_names(line,min,max,not)	   /*		             */
 **	n	Length
 **	sel	The number to select.
 **	trunc	Boolean indicating whether or not to truncate the number.
-** Returns:	nothing
+** Returns:	
 **___________________________________________________			     */
-static int fmt_digits(sb,s,mp,pp,n,sel,trunc)	   /*			     */
+static bool fmt_digits(sb,s,mp,pp,n,sel,trunc)	   /*			     */
   StringBuffer    *sb;				   /*                        */
   register String s;				   /*			     */
   int             mp;				   /*                        */
   int             pp;				   /*                        */
   register int 	  n;				   /*			     */
   int		  sel;				   /*                        */
-  int             trunc;			   /*                        */
+  bool            trunc;			   /*                        */
 { register String cp;				   /*			     */
 						   /*			     */
-  if ( n < 0 ) { n = ( mp ? 1 : 0x7fff ); }	   /*                        */
+  if (n < 0) { n = ( mp ? 1 : 0x7fff ); }	   /*                        */
  						   /*                        */
   cp = s;					   /*                        */
-  while ( sel-->0 )				   /*                        */
+  while (sel-->0)				   /*                        */
   { s = cp;					   /*                        */
-    while( *s && !is_digit(*s) ) { ++s; }   	   /* search first digit     */
+    while (*s && !is_digit(*s)) { ++s; }   	   /* search first digit     */
     if ( *s == '\0' )				   /*                        */
     { cp = s; sel = 0; }			   /*                        */
     else					   /*                        */
-    { for ( cp = s; *cp && is_digit(*cp); ++cp) {} /* skip over digits	     */
+    { for (cp = s; *cp && is_digit(*cp); ++cp) {}  /* skip over digits	     */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
-  if ( trunc && cp-s > n ) s = cp-n;		   /*			     */
-  else if ( mp )				   /*                        */
-  { while ( cp-s < n-- )			   /*                        */
+  if (trunc && cp-s > n) s = cp-n;		   /*			     */
+  else if (mp)				   	   /*                        */
+  { while (cp - s < n--)			   /*                        */
     { (void)sbputchar('0', sb); }		   /*                        */
   }						   /*                        */
-  if ( !mp && *s == '\0' )			   /*                        */
-  { if ( pp ) (void)sbputchar('0', sb);	   	   /*                        */
-    else return 1;				   /*                        */
+  if (!mp && *s == '\0')			   /*                        */
+  { if (pp) (void)sbputchar('0', sb);	   	   /*                        */
+    else return true;				   /*                        */
   }						   /*                        */
   else						   /*                        */
   {						   /*                        */
@@ -989,7 +967,7 @@ static int fmt_digits(sb,s,mp,pp,n,sel,trunc)	   /*			     */
       ++s;					   /*                        */
     }	   					   /*			     */
   }						   /*                        */
-  return 0;					   /*                        */
+  return false;					   /*                        */
 }						   /*------------------------*/
 
 
@@ -1016,15 +994,15 @@ static void fmt_string(sb,s,n,trans,sep)	   /*			     */
   register String trans;			   /*			     */
   String       	  sep;			   	   /*                        */
 {						   /*			     */
-  while ( *s && n > 0 )				   /*			     */
-  { if ( is_allowed(*s) )			   /*			     */
+  while (*s && n > 0)				   /*			     */
+  { if (is_allowed(*s))			   	   /*			     */
     { (void)sbputchar(trans[*s],sb);		   /*                        */
       n--;					   /*                        */
     }						   /*		             */
-    else if ( is_space(*s) )			   /*			     */
+    else if (is_space(*s))			   /*			     */
     { (void)sbputs((char*)sep, sb);		   /*                        */
       n--;	   	   			   /*                        */
-      while ( is_space(*s) ) s++;		   /* skip over multiple SPC */
+      while (is_space(*s)) s++;		   	   /* skip over multiple SPC */
       s--;					   /*                        */
     }   					   /*			     */
     ++s;					   /*			     */
@@ -1043,32 +1021,32 @@ static void fmt_string(sb,s,n,trans,sep)	   /*			     */
 **	not	negation flag
 ** Returns:	
 **___________________________________________________			     */
-static int fmt_c_string(s,min,max,not)		   /*			     */
+static bool fmt_c_string(s,min,max,not)		   /*			     */
   register String  s;				   /*			     */
   register int   min;				   /*			     */
   register int   max;				   /*			     */
-  register int   not;				   /*			     */
+  register bool  not;				   /*			     */
 { int            n = 0;				   /*			     */
  						   /*                        */
-  while ( *s )				   	   /*			     */
-  { if ( is_allowed(*s) ) { n++; }	   	   /*			     */
-    else if ( is_space(*s) )			   /*			     */
+  while (*s)				   	   /*			     */
+  { if (is_allowed(*s)) { n++; }	   	   /*			     */
+    else if (is_space(*s))			   /*			     */
     { n += symlen(TitleTitleSep);		   /*                        */
-      while ( is_space(*s) ) s++;		   /* skip over multiple SPC */
+      while (is_space(*s)) s++;		   	   /* skip over multiple SPC */
     }   					   /*			     */
     ++s;					   /*			     */
   }						   /*			     */
  						   /*                        */
-  if ( n < min || (max > 0 && n > max))		   /*                        */
-  { return (not ? FALSE : TRUE); }		   /*                        */
+  if (n < min || (max > 0 && n > max))		   /*                        */
+  { return (not ? false : true); }		   /*                        */
  						   /*                        */
-  return (not ? TRUE : FALSE);			   /*                        */
+  return (not ? true : false);			   /*                        */
 }						   /*------------------------*/
 
-#define IfGetField(S,NAME) if((S=get_field(tmp_key_db,rec,NAME))!=NULL)
+#define IfGetField(S,NAME) if ((S=get_field(tmp_key_db,rec,NAME)) != NULL)
 
 #define GetEntryOrReturn(S,NAME)					\
-	if((S=get_field(tmp_key_db,rec,NAME))==NULL) return(FALSE)
+	if ((S=get_field(tmp_key_db,rec,NAME)) == NULL) return false
 
  static WordList old_keys = WordNULL;
 
@@ -1106,7 +1084,7 @@ void end_key_gen()				   /*                        */
 **	rec	Record to consider
 ** Returns:	nothing
 **___________________________________________________			     */
-int mark_key(db,rec)				   /*			     */
+bool mark_key(db,rec)				   /*			     */
   DB	 db;					   /*                        */
   Record rec;				   	   /*			     */
 {						   /*			     */
@@ -1114,10 +1092,10 @@ int mark_key(db,rec)				   /*			     */
 						   /*			     */
   if ( IsSpecialRecord(RecordType(rec)) ||	   /*                        */
        *RecordHeap(rec) == NULL )		   /*                        */
-  { return 0; }	   				   /*			     */
+  { return false; }				   /*			     */
    						   /*                        */
   add_word(*RecordHeap(rec), &old_keys);	   /*                        */
-  return 0;					   /*                        */
+  return false;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -1138,21 +1116,21 @@ void make_key(db,rec)				   /*			     */
 						   /*			     */
   if ( IsSpecialRecord(RecordType(rec)) ) return;  /*			     */
 						   /*			     */
-  if ( key_tree == (KeyNode)0 )			   /*			     */
+  if (key_tree == (KeyNode)NULL)		   /*			     */
   { *RecordHeap(rec) = sym_empty;		   /* store an empty key     */
     return;					   /*			     */
   }						   /*			     */
  						   /*                        */
   if (key_seps == NULL)	{ init_key(); }	   	   /*                        */
 						   /*			     */
-  if ( rsc_key_preserve &&			   /*                        */
-       *SymbolValue(*RecordHeap(rec)) != '\0' )	   /*		             */
+  if (rsc_key_preserve &&			   /*                        */
+      *SymbolValue(*RecordHeap(rec)) != '\0' )	   /*		             */
   { return; }					   /*			     */
 						   /*			     */
   key_init();					   /*			     */
   sbrewind(key_sb);				   /* clear key		     */
 						   /*			     */
-  if ( eval_fmt(key_sb, key_tree, rec,db) )	   /*                        */
+  if (eval_fmt(key_sb, key_tree, rec,db))	   /*                        */
   { sbputs((char*)SymbolValue(DefaultKey), key_sb);/*                        */
   }			   			   /*			     */
 						   /*			     */
@@ -1181,9 +1159,9 @@ void make_key(db,rec)				   /*			     */
   pos = sbtell(key_sb);		   		   /*			     */
   kp  = (String)sbflush(key_sb);	   	   /* get collected key	     */
 						   /*			     */
-  if ( find_word(kp, old_keys) )		   /* is key already used?   */
+  if (find_word(kp, old_keys))		   	   /* is key already used?   */
   { int n = 1;					   /* Then disambiguate:     */
-    (void)sbseek(key_sb,pos);			   /*			     */
+    (void)sbseek(key_sb, pos);			   /*			     */
     (void)sbputs((char*)SymbolValue(KeyNumberSep), /*                        */
 		 key_sb);	   		   /* put separator at end   */
     pos = sbtell(key_sb);			   /*			     */
@@ -1192,7 +1170,7 @@ void make_key(db,rec)				   /*			     */
       (void)sbputs(itostr(n++,key__base[key_base]),/*			     */
 		   key_sb);			   /*			     */
       kp = (String)sbflush(key_sb);	   	   /*	get new key	     */
-    } while ( find_word(kp, old_keys) );	   /*			     */
+    } while (find_word(kp, old_keys));	   	   /*			     */
   }						   /*			     */
  						   /*                        */
   key = symbol(kp);				   /*                        */
@@ -1211,7 +1189,7 @@ void make_key(db,rec)				   /*			     */
  						   /*                        */
     *RecordHeap(tmp_rec)   = old;		   /*                        */
     RecordHeap(tmp_rec)[1] = key;		   /*                        */
-    db_insert(db,copy_record(tmp_rec), FALSE);	   /*                        */
+    db_insert(db, copy_record(tmp_rec), false);	   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
@@ -1303,21 +1281,21 @@ void free_key_node(kn)				   /*			     */
 ** Arguments:
 **	s	the specification of th format
 **	treep	the pointer to the tree to be extended
-** Returns:	|TRUE| iff the operation succeeds
+** Returns:	|true| iff the operation succeeds
 **___________________________________________________			     */
-static int add_fmt_tree(s, treep)		   /*			     */
+static bool add_fmt_tree(s, treep)		   /*			     */
   char	  *s;					   /*			     */
   KeyNode *treep;				   /*			     */
 { KeyNode kn, kn_or;				   /*			     */
   int	  special   = 0;			   /*			     */
   String  s0 = (String)s;			   /*			     */
 						   /*			     */
-  if ( s == (char*)NULL ) return FALSE;		   /*			     */
+  if (s == (char*)NULL) return false;		   /*			     */
 						   /*			     */
   if ( strcmp(s,"empty") == 0 )			   /*			     */
   { free_key_node(*treep);			   /*			     */
     *treep = (KeyNode)0;			   /*                        */
-    return TRUE;				   /*                        */
+    return true;				   /*                        */
   }		   				   /*                        */
   else if ( strcmp(s,"short"	) == 0 )	   /*                        */
   { special = KEYSTYLE_SHORT;	  }		   /*                        */
@@ -1326,26 +1304,26 @@ static int add_fmt_tree(s, treep)		   /*			     */
   else if ( strcmp(s,"new.short")  == 0 ||	   /*                        */
 	    strcmp(s,"short.need") == 0 )	   /*                        */
   { special = KEYSTYLE_SHORT;			   /*                        */
-    rsc_key_preserve = TRUE;			   /*                        */
+    rsc_key_preserve = true;			   /*                        */
   }						   /*                        */
   else if ( strcmp(s,"new.long" ) == 0 ||	   /*                        */
 	    strcmp(s,"long.need") == 0 )	   /*                        */
   { special = KEYSTYLE_LONG;			   /*                        */
-    rsc_key_preserve = TRUE;			   /*                        */
+    rsc_key_preserve = true;			   /*                        */
   }						   /*                        */
 						   /*			     */
   if ( special )				   /*			     */
   { free_key_node(*treep);			   /*			     */
     *treep = new_key_node(NodeSPECIAL, NO_SYMBOL); /*			     */
     NodePre(*treep) = special;			   /*			     */
-    return TRUE;				   /*			     */
+    return true;				   /*			     */
   }						   /*			     */
 						   /*			     */
   if ( fmt_parse(&s,&kn) > 0 )			   /*			     */
   { error(ERR_POINT|ERR_WARN,			   /*			     */
 	  (String)"Format Error. Format ignored.", /*			     */
 	  StringNULL,StringNULL,s0,(String)s,0,(char*)s_empty);/*	     */
-    return FALSE;				   /*			     */
+    return false;				   /*			     */
   }						   /*			     */
   if ( *treep == (KeyNode)0 ) { *treep	= kn; }	   /*			     */
   else if ( NodeType(*treep) == NodeSPECIAL )	   /*			     */
@@ -1362,7 +1340,7 @@ static int add_fmt_tree(s, treep)		   /*			     */
 #ifdef DEBUG
   show_fmt(*treep,0);			   	   /*			     */
 #endif
-  return TRUE;					   /*			     */
+  return true;					   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -1404,7 +1382,7 @@ void add_format(s)				   /*			     */
   { WARNING("Missing key format.");		   /*			     */
     return;					   /*			     */
   }						   /*			     */
-  rsc_make_key = TRUE;				   /*			     */
+  rsc_make_key = true;				   /*			     */
   (void)add_fmt_tree(s,&key_tree);		   /*			     */
 }						   /*------------------------*/
 
@@ -1608,9 +1586,9 @@ static int fmt__parse(sp,knp)			   /*			     */
 **	kn	the key node
 **	rec	the record
 **	db	the database
-** Returns:	0 upon success.
+** Returns:	|false| upon success.
 **___________________________________________________			     */
-static int eval_fmt(sb,kn,rec,db)		   /*			     */
+static bool eval_fmt(sb,kn,rec,db)		   /*			     */
   StringBuffer *sb;				   /*                        */
   KeyNode	kn;				   /*			     */
   Record	rec;				   /*			     */
@@ -1620,10 +1598,10 @@ static int eval_fmt(sb,kn,rec,db)		   /*			     */
   tmp_key_db = db;				   /*                        */
   if ( eval__fmt(sb, kn, rec) != 0 )		   /*			     */
   { (void)sbseek(sb, pos);			   /*                        */
-    return 1;					   /*                        */
+    return true;				   /*                        */
   }	   	   				   /*			     */
 						   /*			     */
-  return 0;					   /*			     */
+  return false;					   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -1636,7 +1614,7 @@ static int eval_fmt(sb,kn,rec,db)		   /*			     */
 **	rec	the record
 ** Returns:	
 **___________________________________________________			     */
-static int eval__fmt(sb,kn,rec)			   /*			     */
+static bool eval__fmt(sb,kn,rec)		   /*			     */
   StringBuffer  *sb;				   /*                        */
   KeyNode	kn;				   /*			     */
   Record	rec;				   /*			     */
@@ -1679,7 +1657,7 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 	  if ( eval__fmt(sb,NodeElse(kn),rec) != 0 )/*			     */
 	  { (void)sbseek(sb,pos);		   /*			     */
 	    DebugPrint1("OR ELSE part failed");    /*			     */
-	    return 1;				   /*			     */
+	    return true;				   /*			     */
 	  }					   /*			     */
 	  DebugPrint1("OR ELSE part succeeded");   /*			     */
 	}					   /*			     */
@@ -1752,7 +1730,7 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 			UsePreOr(1),		   /*                        */
 			UsePostOr(0),		   /*                        */
 			trans,			   /*                        */
-			TRUE,			   /*                        */
+			true,			   /*                        */
 			TitleTitleSep);		   /*                        */
 	      break;				   /*			     */
 	    case 't':				   /*			     */
@@ -1761,7 +1739,7 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 			UsePreOr(1),		   /*                        */
 			UsePostOr(0),		   /*                        */
 			trans,			   /*                        */
-			FALSE,			   /*                        */
+			false,			   /*                        */
 			TitleTitleSep);		   /*                        */
 	      break;				   /*			     */
 	    case 'd':				   /*			     */
@@ -1771,8 +1749,8 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 			      HasPlus,		   /*                        */
 			      NodePre(kn),	   /*                        */
 			      UsePostOr(1),	   /*                        */
-			      TRUE) )		   /*                        */
-	      { return 1; }			   /*                        */
+			      true) )		   /*                        */
+	      { return true; }			   /*                        */
 	      break;				   /*			     */
 	    case 'D':				   /*			     */
 	      if ( fmt_digits(sb,		   /*                        */
@@ -1781,8 +1759,8 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 			      HasPlus,		   /*                        */
 			      NodePre(kn),	   /*                        */
 			      UsePostOr(1),	   /*                        */
-			      FALSE) )		   /*                        */
-	      { return 1; }			   /*                        */
+			      false) )		   /*                        */
+	      { return true; }			   /*                        */
 	      break;				   /*			     */
 	    case 's':				   /*			     */
 	      fmt_string(sb,		   	   /*                        */
@@ -1797,7 +1775,7 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 			UsePreOr(1),		   /*                        */
 			UsePostOr(0),		   /*                        */
 			trans,			   /*                        */
-			TRUE,			   /*                        */
+			true,			   /*                        */
 			sym_empty);		   /*                        */
 	      break;				   /*			     */
 	    case 'w':				   /*			     */
@@ -1806,7 +1784,7 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 			UsePreOr(1),		   /*                        */
 			UsePostOr(0),		   /*                        */
 			trans,			   /*                        */
-			FALSE,			   /*                        */
+			false,			   /*                        */
 			sym_empty);		   /*                        */
 	      break;				   /*			     */
 	    case 'p' | NodeCountMask:		   /*			     */
@@ -1816,7 +1794,7 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 			      UsePreOr(0),	   /*                        */
 			      UsePostOr(0),	   /*                        */
 			      HasMinus))	   /*                        */
-	      { return 1; }			   /*	                     */
+	      { return true; }			   /*	                     */
 	      break;				   /*			     */
 	    case 'd' | NodeCountMask:		   /*			     */
 	    case 's' | NodeCountMask:		   /*			     */
@@ -1824,7 +1802,7 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 			       UsePreOr(0),	   /*                        */
 			       UsePostOr(0),	   /*                        */
 			       HasMinus))	   /*                        */
-	      { return 1; }			   /*	                     */
+	      { return true; }			   /*	                     */
 	      break;				   /*			     */
 	    case 'T' | NodeCountMask:		   /*			     */
 	    case 'W' | NodeCountMask:		   /*			     */
@@ -1832,8 +1810,8 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 			      UsePreOr(0),	   /*                        */
 			      UsePostOr(0),	   /*                        */
 			      HasMinus,		   /*                        */
-			      TRUE))		   /*                        */
-	      { return 1; }			   /*	                     */
+			      true))		   /*                        */
+	      { return true; }			   /*	                     */
 	      break;				   /*			     */
 	    case 't' | NodeCountMask:		   /*			     */
 	    case 'w' | NodeCountMask:		   /*			     */
@@ -1841,16 +1819,16 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 			      UsePreOr(0),	   /*                        */
 			      UsePostOr(0),	   /*                        */
 			      HasMinus,		   /*                        */
-			      FALSE))		   /*                        */
-	      { return 1; }			   /*	                     */
+			      false))		   /*                        */
+	      { return true; }			   /*	                     */
 	      break;				   /*			     */
-	    default: return 1;			   /*			     */
+	    default: return true;		   /*			     */
 	  }					   /*			     */
 	}					   /*			     */
 	else					   /*                        */
 	{					   /*                        */
 	  DebugPrint1("Field not found");	   /*			     */
-	  return 1;				   /*                        */
+	  return true;				   /*                        */
 	}			   		   /*			     */
     }						   /*			     */
     kn = NodeNext(kn);				   /*			     */
@@ -1859,7 +1837,7 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 #undef UsePreOr
 #undef HasMinus
 #undef HasPlus
-  return 0;					   /*			     */
+  return false;					   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -1867,8 +1845,9 @@ static int eval__fmt(sb,kn,rec)			   /*			     */
 ** Purpose:	
 **
 ** Arguments:
-**	kn
-**	rec
+**	sb	the target StringBuffer
+**	kn	the key node
+**	rec	the record
 ** Returns:	nothing
 **___________________________________________________			     */
 static void eval__special(sb,kn,rec)		   /*			     */
@@ -1876,8 +1855,8 @@ static void eval__special(sb,kn,rec)		   /*			     */
   KeyNode	kn;				   /*			     */
   Record	rec;				   /*			     */
 { Symbol	s;				   /*			     */
-  int		missing	= TRUE,		   	   /*			     */
-		fmt;			   	   /*			     */
+  bool		missing	= true;		   	   /*			     */
+  int		fmt;			   	   /*			     */
   static Symbol	s_author    = NO_SYMBOL;	   /*			     */
   static Symbol	s_editor    = NO_SYMBOL;	   /*			     */
   static Symbol	s_title	    = NO_SYMBOL;	   /*			     */
@@ -1903,7 +1882,7 @@ static void eval__special(sb,kn,rec)		   /*			     */
 	      2,				   /*                        */
 	      fmt,				   /*                        */
 	      trans_lower);	   		   /*                        */
-    missing = FALSE;				   /*			     */
+    missing = false;				   /*			     */
   }						   /*			     */
   else IfGetField(s, s_editor)			   /*			     */
   { fmt_names(sb,				   /*                        */
@@ -1911,7 +1890,7 @@ static void eval__special(sb,kn,rec)		   /*			     */
 	      2,				   /*                        */
 	      fmt,				   /*                        */
 	      trans_lower);	   		   /*                        */
-    missing = FALSE;				   /*			     */
+    missing = false;				   /*			     */
   }						   /*			     */
 						   /*			     */
   IfGetField(s, s_title)			   /*			     */
@@ -1922,9 +1901,9 @@ static void eval__special(sb,kn,rec)		   /*			     */
 	      1,				   /*                        */
 	      0,				   /*                        */
 	      trans_lower,			   /*                        */
-	      TRUE,				   /*                        */
+	      true,				   /*                        */
 	      TitleTitleSep);			   /*		             */
-    missing = FALSE;				   /*			     */
+    missing = false;				   /*			     */
   }						   /*			     */
   else IfGetField(s, s_booktitle)		   /*			     */
   { (void)sbputs((char*)SymbolValue(NameTitleSep), /*                        */
@@ -1934,12 +1913,12 @@ static void eval__special(sb,kn,rec)		   /*			     */
 	      1,				   /*                        */
 	      0,				   /*                        */
 	      trans_lower,			   /*                        */
-	      TRUE,				   /*                        */
+	      true,				   /*                        */
 	      TitleTitleSep);			   /*		             */
-    missing = FALSE;				   /*			     */
+    missing = false;				   /*			     */
   }						   /*			     */
 						   /*			     */
-  if ( missing )				   /*			     */
+  if (missing)				   	   /*			     */
   { sbrewind(sb);				   /*			     */
     IfGetField(s, s_key)			   /*			     */
     { fmt_title(sb,				   /*                        */
@@ -1947,7 +1926,7 @@ static void eval__special(sb,kn,rec)		   /*			     */
 		1,				   /*                        */
 		0,				   /*                        */
 		trans_lower,			   /*                        */
-		TRUE,				   /*                        */
+		true,				   /*                        */
 		TitleTitleSep); }		   /*	                     */
     else					   /*                        */
     { (void)sbputs((char*)SymbolValue(DefaultKey), /*                        */
@@ -2107,7 +2086,7 @@ String fmt_expand(sb,cp,db,rec)			   /*                        */
 		    PreOr(1),		   	   /*                        */
 		    PostOr(0),		   	   /*                        */
 		    trans,			   /*                        */
-		    TRUE,			   /*                        */
+		    true,			   /*                        */
 		    TitleTitleSep);		   /*                        */
 	  break;				   /*			     */
 	case 't':				   /*			     */
@@ -2116,7 +2095,7 @@ String fmt_expand(sb,cp,db,rec)			   /*                        */
 		    PreOr(1),		   	   /*                        */
 		    PostOr(0),		   	   /*                        */
 		    trans,			   /*                        */
-		    FALSE,			   /*                        */
+		    false,			   /*                        */
 		    TitleTitleSep);		   /*                        */
 	  break;				   /*			     */
 	case 'd':				   /*			     */
@@ -2126,7 +2105,7 @@ String fmt_expand(sb,cp,db,rec)			   /*                        */
 			   HasPlus,		   /*                        */
 			   pre,	   	   	   /*                        */
 			   PostOr(1),	   	   /*                        */
-			   TRUE);		   /*                        */
+			   true);		   /*                        */
 	  break;				   /*			     */
 	case 'D':				   /*			     */
 	  (void)fmt_digits(sb,			   /*                        */
@@ -2135,7 +2114,7 @@ String fmt_expand(sb,cp,db,rec)			   /*                        */
 			   HasPlus,		   /*                        */
 			   pre,	   	   	   /*                        */
 			   PostOr(1),	   	   /*                        */
-			   FALSE);		   /*                        */
+			   false);		   /*                        */
 	  break;				   /*			     */
 	case 's':				   /*			     */
 	  fmt_string(sb,			   /*                        */
@@ -2150,7 +2129,7 @@ String fmt_expand(sb,cp,db,rec)			   /*                        */
 		    PreOr(1),		   	   /*                        */
 		    PostOr(0),		   	   /*                        */
 		    trans,			   /*                        */
-		    TRUE,			   /*                        */
+		    true,			   /*                        */
 		    sym_empty);			   /*                        */
 	  break;				   /*			     */
 	case 'w':				   /*			     */
@@ -2159,7 +2138,7 @@ String fmt_expand(sb,cp,db,rec)			   /*                        */
 		    PreOr(1),		   	   /*                        */
 		    PostOr(0),		   	   /*                        */
 		    trans,			   /*                        */
-		    FALSE,			   /*                        */
+		    false,			   /*                        */
 		    sym_empty);			   /*                        */
 	  break;				   /*			     */
       }					   	   /*			     */
@@ -2282,7 +2261,7 @@ Symbol get_field(db,rec,name)		   	   /*			     */
 				   		   /*                        */
   if (*s == '@')				   /*			     */
   { sym = EntryName(RecordType(rec));		   /*                        */
-    if (case_cmp(s + 1, SymbolValue(sym)))	   /*		             */
+    if (case_eq(s + 1, SymbolValue(sym)))	   /*		             */
     { LinkSymbol(sym);
       return sym;	   			   /*		             */
     }
@@ -2291,46 +2270,46 @@ Symbol get_field(db,rec,name)		   	   /*			     */
   { ++s;					   /*			     */
     switch (*s)				   	   /*                        */
     { case 'k': case 'K':			   /*                        */
-        if ( case_cmp(s, (String)"key") )	   /*			     */
+        if (case_eq(s, (String)"key"))	   	   /*			     */
 	{ return (*SymbolValue(*RecordHeap(rec))   /*                        */
 		  ? *RecordHeap(rec)		   /*                        */
 		  : NO_SYMBOL);		   	   /*                        */
 	}					   /*		             */
         break;					   /*                        */
       case 'd': case 'D':			   /*                        */
-	if (case_cmp(s, (String)"default.key"))    /*			     */
+	if (case_eq(s, (String)"default.key"))     /*			     */
 	{ LinkSymbol(DefaultKey);		   /*                        */
 	  return DefaultKey;			   /*                        */
 	}			   		   /*			     */
-	else if (case_cmp(s, (String)"day"))       /*			     */
+	else if (case_eq(s, (String)"day"))        /*			     */
 	{ ReturnTime("%d"); }			   /*			     */
 	break;    				   /*                        */
       case 'f': case 'F':			   /*                        */
-	if (case_cmp(s, (String)"fmt.et.al"))      /*			     */
+	if (case_eq(s, (String)"fmt.et.al"))       /*			     */
 	{ LinkSymbol(EtAl);		   	   /*                        */
 	  return EtAl; }			   /*			     */
-	else if (case_cmp(s,		   	   /*                        */
-			  (String)"fmt.name.pre")) /*		             */
+	else if (case_eq(s,		   	   /*                        */
+			 (String)"fmt.name.pre"))  /*		             */
 	{ LinkSymbol(NamePreSep);		   /*                        */
 	  return NamePreSep; }			   /*			     */
-	else if (case_cmp(s,		   	   /*                        */
-			  (String)"fmt.inter.name"))/*		             */
+	else if (case_eq(s,		   	   /*                        */
+			 (String)"fmt.inter.name"))/*		             */
 	{ LinkSymbol(InterNameSep);		   /*                        */
 	  return InterNameSep; }		   /*			     */
-	else if (case_cmp(s,		   	   /*                        */
-			  (String)"fmt.name.name"))/*		             */
+	else if (case_eq(s,		   	   /*                        */
+			 (String)"fmt.name.name")) /*		             */
 	{ LinkSymbol(NameNameSep);		   /*                        */
 	  return NameNameSep; }			   /*			     */
-	else if (case_cmp(s,		   	   /*                        */
-			  (String)"fmt.name.title"))/*		             */
+	else if (case_eq(s,		   	   /*                        */
+			 (String)"fmt.name.title"))/*		             */
 	{ LinkSymbol(NameTitleSep);		   /*                        */
 	  return NameTitleSep; }		   /*			     */
-	else if (case_cmp(s,		   	   /*                        */
-			  (String)"fmt.title.title"))/*		             */
+	else if (case_eq(s,		   	   /*                        */
+			 (String)"fmt.title.title"))/*		             */
 	{ LinkSymbol(TitleTitleSep);		   /*                        */
 	  return TitleTitleSep; }		   /*			     */
       case 'h': case 'H':			   /*                        */
-	if (case_cmp(s, (String)"hostname"))       /*			     */
+	if (case_eq(s, (String)"hostname"))        /*			     */
 	{ if (sym_host == NULL)			   /*                        */
 	  { s = (String)getenv("HOSTNAME"); 	   /*                        */
 	    sym_host = symbol(s ? s : s_empty);	   /*                        */
@@ -2339,37 +2318,37 @@ Symbol get_field(db,rec,name)		   	   /*			     */
 	  { LinkSymbol(sym_host); }		   /*                        */
 	  return sym_host;			   /*                        */
 	}	   	   			   /*			     */
-        else if (case_cmp(s, (String)"hour"))      /*			     */
+        else if (case_eq(s, (String)"hour"))       /*			     */
 	{ ReturnTime("%H"); }			   /*			     */
 	break;					   /*                        */
       case 'm': case 'M':			   /*                        */
-	if (case_cmp(s, (String)"month"))	   /*			     */
+	if (case_eq(s, (String)"month"))	   /*			     */
 	{ ReturnTime("%m"); }			   /*			     */
-	else if (case_cmp(s, (String)"minute"))    /*			     */
+	else if (case_eq(s, (String)"minute"))     /*			     */
 	{ ReturnTime("%M"); }			   /*			     */
-	else if (case_cmp(s, (String)"mon"))       /*			     */
+	else if (case_eq(s, (String)"mon"))        /*			     */
 	{ ReturnTime("%B"); }			   /*			     */
 	break;    				   /*                        */
       case 's': case 'S':			   /*                        */
-	if (case_cmp(s, (String)"sortkey"))	   /*			     */
+	if (case_eq(s, (String)"sortkey"))	   /*			     */
 	{ LinkSymbol(RecordSortkey(rec));	   /*                        */
 	  return RecordSortkey(rec); }		   /*			     */
-	else if (case_cmp(s, (String)"source"))    /*			     */
+	else if (case_eq(s, (String)"source"))     /*			     */
 	{ LinkSymbol(RecordSource(rec));	   /*                        */
 	  return RecordSource(rec); }		   /*			     */
-	else if (case_cmp(s, (String)"second"))    /*			     */
+	else if (case_eq(s, (String)"second"))     /*			     */
 	{ ReturnTime("%S"); }			   /*			     */
 	break;    				   /*                        */
       case 't': case 'T':			   /*                        */
-	if (case_cmp(s, (String)"type"))	   /*			     */
+	if (case_eq(s, (String)"type"))	   	   /*			     */
 	{ sym = EntryName(RecordType(rec));	   /*                        */
 	  if (sym) LinkSymbol(sym);		   /*                        */
 	  return sym; }	   			   /*			     */
-	else if (case_cmp(s, (String)"time"))      /*			     */
+	else if (case_eq(s, (String)"time"))       /*			     */
 	{ ReturnTime("%H:%M:%S"); }		   /*			     */
         break;					   /*                        */
       case 'u': case 'U':			   /*                        */
-	if (case_cmp(s, (String)"user"))	   /*			     */
+	if (case_eq(s, (String)"user"))	   	   /*			     */
 	{ if (sym_user == NULL)			   /*                        */
 	  { s = (String)getenv("USER");	   	   /*                        */
 	    sym_user = symbol(s ? s : s_empty);	   /*                        */
@@ -2380,11 +2359,11 @@ Symbol get_field(db,rec,name)		   	   /*			     */
 	}	   	   			   /*			     */
         break;					   /*                        */
       case 'w': case 'W':			   /*                        */
-	if (case_cmp(s, (String)"weekday"))	   /*			     */
+	if (case_eq(s, (String)"weekday"))	   /*			     */
 	{ ReturnTime("%a"); }			   /*			     */
 	break;    				   /*                        */
       case 'y': case 'Y':			   /*                        */
-	if (case_cmp(s, (String)"year"))	   /*			     */
+	if (case_eq(s, (String)"year"))	   	   /*			     */
 	{ ReturnTime("%Y"); }			   /*			     */
 	break;    				   /*                        */
     }						   /*                        */
@@ -2410,7 +2389,7 @@ Symbol get_field(db,rec,name)		   	   /*			     */
 			       sym_open_brace,	   /*                        */
 			       sym_close_brace,    /*                        */
 			       db,		   /*                        */
-			       FALSE)		   /*                        */
+			       false)		   /*                        */
 		  : *(cpp+1) );		   	   /*			     */
 	  LinkSymbol(sym);		   	   /*                        */
 	  return sym;				   /*                        */
@@ -2427,7 +2406,7 @@ Symbol get_field(db,rec,name)		   	   /*			     */
 			sym_empty,		   /*                        */
 			sym_empty,		   /*                        */
 			db,			   /*                        */
-			TRUE);			   /*                        */
+			true);			   /*                        */
       if ( (rec = db_search(db, xref)) == RecordNULL )/*                     */
       { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",/*               */
 		  SymbolValue(xref));		   /*                        */
@@ -2458,9 +2437,9 @@ Symbol get_field(db,rec,name)		   	   /*			     */
 **	rec	Record to receive the value.
 **	name	Field name to add.
 **	value	the new value
-** Returns:	|0| if the asignment has succeeded.
+** Returns:	|false| if the asignment has succeeded.
 **___________________________________________________			     */
-int set_field(db,rec,name,value)		   /*			     */
+bool set_field(db,rec,name,value)		   /*			     */
   DB db;					   /*                        */
   register Record rec;				   /*			     */
   Symbol	  name;			   	   /*			     */
@@ -2475,74 +2454,74 @@ int set_field(db,rec,name,value)		   /*			     */
   { String s = ++SymbolValue(name);		   /*			     */
     switch (c)				   	   /*                        */
     { case 'k': case 'K':			   /*                        */
-        if ( case_cmp(s, (String)"key") )	   /*			     */
+        if ( case_eq(s, (String)"key") )	   /*			     */
 	{ SetSym(*RecordHeap(rec), value);	   /*                        */
-	  return 0;			   	   /*                        */
+	  return false;			   	   /*                        */
 	}					   /*		             */
         break;					   /*                        */
       case 'd': case 'D':			   /*                        */
-	if ( case_cmp(s, (String)"default.key") )  /*			     */
+	if ( case_eq(s, (String)"default.key") )   /*			     */
 	{ SetSym(DefaultKey, value);		   /*                        */
-	  return 0;				   /*                        */
+	  return false;				   /*                        */
 	}		   			   /*			     */
 	break;    				   /*                        */
       case 'f': case 'F':			   /*                        */
-	if ( case_cmp(s, (String)"fmt.et.al") )    /*			     */
+	if ( case_eq(s, (String)"fmt.et.al") )     /*			     */
 	{ SetSym(EtAl, value);			   /*                        */
-	  return 0;				   /*                        */
+	  return false;				   /*                        */
 	}	   	   			   /*			     */
-	else if (case_cmp(s, (String)"fmt.name.pre"))/*		             */
+	else if (case_eq(s, (String)"fmt.name.pre"))/*		             */
 	{ SetSym(NamePreSep, value);		   /*                        */
-	  return 0;				   /*                        */
+	  return false;				   /*                        */
 	}  	   				   /*			     */
-	else if (case_cmp(s, (String)"fmt.inter.name"))/*		     */
+	else if (case_eq(s, (String)"fmt.inter.name"))/*		     */
 	{ SetSym(InterNameSep, value);		   /*                        */
-	  return 0;				   /*                        */
+	  return false;				   /*                        */
 	}	   				   /*			     */
-	else if (case_cmp(s, (String)"fmt.name.name"))/*		     */
+	else if (case_eq(s, (String)"fmt.name.name"))/*		             */
 	{ SetSym(NameNameSep, value);		   /*                        */
-	  return 0;				   /*                        */
+	  return false;				   /*                        */
 	} 	   				   /*			     */
-	else if (case_cmp(s, (String)"fmt.name.title"))/*		     */
+	else if (case_eq(s, (String)"fmt.name.title"))/*		     */
 	{ SetSym(NameTitleSep, value);		   /*                        */
-	  return 0;				   /*                        */
+	  return false;				   /*                        */
 	}	   				   /*		             */
-	else if (case_cmp(s, (String)"fmt.title.title"))/*		     */
+	else if (case_eq(s, (String)"fmt.title.title"))/*		     */
 	{ SetSym(TitleTitleSep, value);		   /*                        */
-	  return 0;				   /*                        */
+	  return false;				   /*                        */
 	}	   				   /*			     */
       case 's': case 'S':			   /*                        */
-	if (case_cmp(s, (String)"sortkey"))	   /*			     */
+	if (case_eq(s, (String)"sortkey"))	   /*			     */
 	{ SetSym(RecordSortkey(rec), value);	   /*                        */
-	  return 0;				   /*                        */
+	  return false;				   /*                        */
 	}  					   /*			     */
-	else if (case_cmp(s, (String)"source"))    /*			     */
+	else if (case_eq(s, (String)"source"))     /*			     */
 	{ SetSym(RecordSource(rec), value);	   /*                        */
-	  return 0;				   /*                        */
+	  return false;				   /*                        */
 	}   					   /*		             */
 	break;    				   /*                        */
       case 't': case 'T':			   /*                        */
-	if (case_cmp(s, (String)"type"))	   /*			     */
+	if (case_eq(s, (String)"type"))	   	   /*			     */
 	{ int type;				   /*                        */
 	  if (IsNormalRecord(RecordType(rec)) &&   /*                        */
 	      (type=find_entry_type(SymbolValue(value))) >= 0)/*             */
 	  { SetSym(RecordType(rec), type);	   /*                        */
-	    return 0;				   /*                        */
+	    return false;			   /*                        */
 	  }    					   /*                        */
 	}					   /*                        */
         break;					   /*                        */
       case 'u': case 'U':			   /*                        */
-	if (case_cmp(s, (String)"user"))	   /*			     */
+	if (case_eq(s, (String)"user"))	   	   /*			     */
 	{ SetSym(sym_user, value);		   /*                        */
-	  return 0;				   /*                        */
+	  return false;				   /*                        */
 	}	   	   			   /*			     */
         break;					   /*                        */
     }						   /*                        */
   }						   /*			     */
   else						   /*			     */
   { push_to_record(rec, name, value);	   	   /*			     */
-    return 0;					   /*                        */
+    return false;				   /*                        */
   }						   /*                        */
  						   /*                        */
-  return 1;				   	   /* Nothing found.	     */
+  return true;				   	   /* Nothing found.	     */
 }						   /*------------------------*/

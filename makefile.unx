@@ -435,7 +435,7 @@ ETCFILES      = README.md			\
 		$(BIBTCLFILES)
 
 AUTOCONFFILES = configure			\
-		configure.in			\
+		configure.ac			\
 		install-sh			\
 		mkdirchain			\
 		AutoConf$(DIR_SEP)config.h.in	\

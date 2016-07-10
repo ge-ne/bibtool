@@ -29,6 +29,7 @@
 **      |record.h|.
 ******************************************************************************/
 
+#include <bibtool/general.h>
 #include <bibtool/database.h>
 #include <bibtool/record.h>
 
@@ -37,7 +38,7 @@
 #else
 #define _ARG(A) ()
 #endif
- int expand_crossref _ARG((DB db,Record rec));	   /*                        */
+ bool expand_crossref _ARG((DB db,Record rec));	   /*                        */
  void clear_map();				   /*                        */
  void crossref_map _ARG((String spec));		   /*                        */
 

@@ -24,6 +24,7 @@
 **
 ******************************************************************************/
 
+#include <bibtool/general.h>
 #include <bibtool/record.h>
 #include <bibtool/database.h>
 #include <bibtool/symbols.h>
@@ -33,7 +34,7 @@
 #else
 #define _ARG(A) ()
 #endif
- int is_selected _ARG((DB db, Record rec));	   /*                        */
+ bool is_selected _ARG((DB db, Record rec));	   /*                        */
  int foreach_addlist _ARG((int (*fct)(Symbol,Symbol)));/* rewrite.c          */
  int set_regex_syntax _ARG((char* name));	   /*                        */
  void add_check_rule _ARG((String s));		   /*                        */

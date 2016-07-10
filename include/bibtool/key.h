@@ -44,10 +44,10 @@
 #endif
  Symbol get_field _ARG((DB db, Record rec, Symbol name));/* key.c            */
  String fmt_expand _ARG((StringBuffer *sb, String cp, DB db, Record rec));/* key.c*/
+ bool foreach_ignored_word _ARG((bool (*fct)_ARG((Symbol))));/* key.c        */
+ bool mark_key _ARG((DB db,Record rec));	   /* key.c                  */
+ bool set_field _ARG((DB db,Record rec,Symbol name,Symbol value));/* key.c   */
  int apply_fmt _ARG((StringBuffer *sb,char *fmt,Record rec,DB db));/* key.c  */
- int foreach_ignored_word _ARG((int (*fct)_ARG((Symbol))));/* key.c          */
- int mark_key _ARG((DB db,Record rec));		   /* key.c                  */
- int set_field _ARG((DB db,Record rec,Symbol name,Symbol value));/* key.c    */
  void add_format _ARG((char *s));		   /* key.c                  */
  void add_ignored_word _ARG((Symbol s));	   /* key.c                  */
  void add_sort_format _ARG((char *s));		   /* key.c                  */

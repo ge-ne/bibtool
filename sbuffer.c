@@ -93,15 +93,15 @@ StringBuffer* sbopen()				   /*                        */
 ** Purpose:	Free an old string buffer.
 ** Arguments:
 **	sb	Pointer to string buffer which should be closed
-** Returns:	Return 0 upon failure.
+** Returns:	Return |false| upon failure.
 **___________________________________________________			     */
-int sbclose(sb)					   /*                        */
+bool sbclose(sb)				   /*                        */
   StringBuffer* sb;				   /*                        */
 {						   /*                        */
-  if ( sb == NULL ) return 1;			   /*                        */
-  if ( sb->sb__string != NULL ) free(sb->sb__string);/*                      */
+  if (sb == NULL) return true;		   	   /*                        */
+  if (sb->sb__string != NULL) free(sb->sb__string);/*                        */
   free((char*)sb);				   /*                        */
-  return 0;					   /*                        */
+  return false;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -110,18 +110,18 @@ int sbclose(sb)					   /*                        */
 ** Arguments:
 **	s	String to be pushed.
 **	sb	Destination string buffer.
-** Returns:	|FALSE| if something went wrong.
+** Returns:	|false| if something went wrong.
 **___________________________________________________			     */
-int sbputs(s,sb)				   /*                        */
+bool sbputs(s,sb)				   /*                        */
   char         *s;				   /*                        */
   StringBuffer* sb;				   /*                        */
 {						   /*                        */
-  if ( sb == NULL ) return 1;			   /*                        */
+  if (sb == NULL) return false;			   /*                        */
  						   /*                        */
   while ( *s )					   /*                        */
   { (void)sbputchar(*s,sb); ++s;		   /*                        */
   }						   /*                        */
-  return 0;					   /*                        */
+  return true;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -137,9 +137,9 @@ int sbputs(s,sb)				   /*                        */
 ** Arguments:
 **	c	Character to put to the string buffer.
 **	sb	Destination string buffer.
-** Returns:	|FALSE| if no memory is left.
+** Returns:	|false| if no memory is left.
 **___________________________________________________			     */
-int sbputc(c,sb)				   /*                        */
+bool sbputc(c,sb)				   /*                        */
   register int           c;			   /*                        */
   register StringBuffer* sb;			   /*                        */
 { register char         *cp;			   /*                        */
@@ -151,13 +151,13 @@ int sbputc(c,sb)				   /*                        */
 	      : realloc(sb->sb__string,sb->sb__size))/*                      */
 	 ) == NULL )				   /*                        */
     { sb->sb__size -= StringBufferIncrement;	   /*                        */
-      return 1;					   /*                        */
+      return false;				   /*                        */
     }						   /*                        */
     sb->sb__string = cp;			   /*                        */
   }						   /*                        */
  						   /*                        */
   sb->sb__string[sb->sb__ptr++] = c;		   /*                        */
-  return 0;					   /*                        */
+  return true;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -211,18 +211,18 @@ int sbtell(sb)					   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	sbseek()
 ** Purpose:	Reset the current pointer to the position given. If
-**		the position is outside the valid region then |TRUE|
+**		the position is outside the valid region then |true|
 **		is returned and the position is left unchanged.
 ** Arguments:
 **	sb	String buffer to reposition.
 **	pos	New position of the string buffer.
-** Returns:	|FALSE| if everything went right.
+** Returns:	|false| if everything went right.
 **___________________________________________________			     */
-int sbseek(sb,pos)				   /*                        */
+bool sbseek(sb, pos)				   /*                        */
   StringBuffer* sb;				   /*                        */
   int           pos;				   /*                        */
 { 						   /*                        */
-  if ( pos < 0 || pos > sb->sb__ptr ) return 1;	   /*                        */
+  if ( pos < 0 || pos > sb->sb__ptr ) return true; /*                        */
   sb->sb__ptr = pos;				   /*                        */
-  return 0;					   /*                        */
+  return false;					   /*                        */
 }						   /*------------------------*/

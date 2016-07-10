@@ -79,13 +79,13 @@
 #else
 #define _ARG(A) ()
 #endif
- int is_selected _ARG((DB db,Record rec));	   /*                        */
+ bool is_selected _ARG((DB db,Record rec));	   /*                        */
  int set_regex_syntax _ARG((char* name));	   /*                        */
  static Rule new_rule _ARG((Symbol field,Symbol value,Symbol pattern,Symbol frame,int flags,int casep));
  static String  check_regex _ARG((Symbol field,Symbol value,Rule rule,DB db,Record rec));
  static String  repl_regex _ARG((Symbol field,Symbol value,Rule rule,DB db,Record rec));
- static int s_match _ARG((String  p,String  s));   /*                        */
- static int s_search _ARG((String  pattern,String  s));/*                    */
+ static bool s_match _ARG((String  p,String  s));  /*                        */
+ static bool s_search _ARG((String  pattern,String  s));/*                    */
  static void add_rule _ARG((String s,Rule *rp,Rule *rp_end,int flags,int casep));/**/
 #ifdef UNUSED
  static void free_rule _ARG((Rule rule));	   /*                        */
@@ -480,7 +480,7 @@ static void rewrite_1(frame,sb,match,db,rec)	   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function*:	selector_hits()
-** Type:	int
+** Type:	bool
 ** Purpose:	
 **		
 ** Arguments:
@@ -489,7 +489,7 @@ static void rewrite_1(frame,sb,match,db,rec)	   /*			     */
 **	 rec	the record
 ** Returns:	
 **___________________________________________________			     */
-static int selector_hits(rule, db, rec)		   /*                        */
+static bool selector_hits(rule, db, rec)	   /*                        */
   Rule rule;					   /*                        */
   DB db;					   /*                        */
   Record rec;					   /*                        */
@@ -497,7 +497,7 @@ static int selector_hits(rule, db, rec)		   /*                        */
   Symbol value;					   /*                        */
   int len;					   /*                        */
  						   /*                        */
-  if (field == NO_SYMBOL) { return TRUE; }	   /*                        */
+  if (field == NO_SYMBOL) { return true; }	   /*                        */
  						   /*                        */
   value = get_field(db, rec, field);		   /*                        */
 #ifdef REGEX
@@ -511,7 +511,7 @@ static int selector_hits(rule, db, rec)		   /*                        */
 		    len - 1,		   	   /*                        */
 		    &reg) >= 0 );	   	   /*			     */
 #else
-  return TRUE;					   /*                        */
+  return true;					   /*                        */
 #endif
 }						   /*------------------------*/
 #endif
@@ -541,7 +541,7 @@ static String repl_regex(field, value, rule, db, rec)/*			     */
   char		c;			   	   /*			     */
   int		len;			   	   /*			     */
   StringBuffer	*sp;			   	   /* intermediate pointer   */
-  int		once_more;		   	   /*                        */
+  bool		once_more;		   	   /*                        */
   int		limit;			   	   /* depth counter to break */
  						   /*  out of infinite loops */
   static StringBuffer *s1 = NULL;		   /*			     */
@@ -556,11 +556,11 @@ static String repl_regex(field, value, rule, db, rec)/*			     */
   val       = (String)sbflush(s1);	   	   /*			     */
   len	    = strlen((char*)val);   		   /*			     */
   limit     = rsc_rewrite_limit;		   /*			     */
-  once_more = TRUE;				   /*                        */
+  once_more = true;				   /*                        */
     					   	   /*			     */
   while (once_more) 				   /*			     */
   {						   /*			     */
-    once_more = FALSE;				   /*                        */
+    once_more = false;				   /*                        */
     while (rule)			   	   /*                        */
     {						   /*                        */
 #ifdef DEBUG
@@ -596,7 +596,7 @@ static String repl_regex(field, value, rule, db, rec)/*			     */
 			 (char*)val,		   /*                        */
 			 len,			   /*                        */
 			 0,			   /*                        */
-			 len-1,			   /*                        */
+			 len - 1,		   /*                        */
 			 &reg) >= 0 )		   /*			     */
       {					   	   /*			     */
 	if (--limit < 0)			   /*                        */
@@ -605,7 +605,7 @@ static String repl_regex(field, value, rule, db, rec)/*			     */
 		     (*RecordHeap(rec)		   /*                        */
 		      ? (char*)SymbolValue(*RecordHeap(rec))/*               */
 		      : "") );			   /*                        */
-	  once_more = FALSE;			   /*                        */
+	  once_more = false;			   /*                        */
 	  break;				   /*                        */
 	}					   /*                        */
 	if (RuleFrame(rule) == NO_SYMBOL)	   /*			     */
@@ -630,7 +630,7 @@ static String repl_regex(field, value, rule, db, rec)/*			     */
 	sp  = s1; s1 = s2; s2 = sp;		   /* rotate the two string  */
 	sbrewind(s2);				   /*  buffers and reset     */
 						   /*  the destination.      */
-	once_more = TRUE;			   /*                        */
+	once_more = true;			   /*                        */
       }						   /*                        */
       else					   /*                        */
       { rule = NextRule(rule);			   /*                        */
@@ -728,7 +728,7 @@ void rename_field(spec)				   /*			     */
   if ((to = SParseSymbol(&s)) == NO_SYMBOL)        /*		             */
     return;					   /*			     */
  						   /*                        */
-  if (sp_expect(&s, s_if, FALSE))	   	   /*                        */
+  if (sp_expect(&s, s_if, false))	   	   /*                        */
   { if ((field = SParseOptionalSymbol(&s)) != NO_SYMBOL)/*	             */
     { sp_skip(&s);			   	   /*			     */
       if ((pattern = SParseValue(&s)) == NO_SYMBOL)/*		             */
@@ -812,7 +812,7 @@ void keep_field(spec)				   /*			     */
   if ((names = sp_symbols(&s)) == NULL)    	   /*		             */
     return;					   /*			     */
  						   /*                        */
-  if (sp_expect(&s, s_if, FALSE))	   	   /*                        */
+  if (sp_expect(&s, s_if, false))	   	   /*                        */
   { if ((field = SParseOptionalSymbol(&s)) != NO_SYMBOL)/*	             */
     { sp_skip(&s);			   	   /*			     */
       if ((pattern = SParseValue(&s)) == NO_SYMBOL)/*		             */
@@ -845,7 +845,7 @@ void keep_field(spec)				   /*			     */
 			 pattern,		   /*                        */
 			 field,			   /*                        */
 			 RULE_KEEP | RULE_REGEXP,  /*                        */
-			 TRUE);	   	   	   /*                        */
+			 true);	   	   	   /*                        */
     i = (int)(*np) % K_RULES_SIZE;		   /*                        */
     if (i < 0) i = -i;				   /*                        */
  						   /*                        */
@@ -883,30 +883,30 @@ void add_check_rule(s)				   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function:	dont_keep()
-** Type:	static int
+** Type:	static bool
 ** Purpose:	
 **		
 ** Arguments:
-**	sym	
-**	rec	
-**	db	
+**	sym	the symbol
+**	rec	the record
+**	db	the database
 ** Returns:	
 **___________________________________________________			     */
-static int dont_keep(sym,rec,db)		   /*                        */
+static bool dont_keep(sym,rec,db)		   /*                        */
   Symbol sym;					   /*                        */
   Record rec;					   /*                        */
-  DB db;					   /*                        */
-{ Rule r;					   /*                        */
-  int idx = (int)(sym) % K_RULES_SIZE;		   /*                        */
+  DB     db;					   /*                        */
+{ Rule   r;					   /*                        */
+  int    idx = (int)(sym) % K_RULES_SIZE;	   /*                        */
   if (idx < 0) idx = -idx;			   /*                        */
  						   /*                        */
   for (r = k_rules[idx]; r; r = NextRule(r))	   /*                        */
   {						   /*                        */
     if (RuleField(r) == sym &&			   /*                        */
 	selector_hits(r, db, rec))		   /*                        */
-    { return FALSE; }				   /*                        */
+    { return false; }				   /*                        */
   }						   /*                        */
-  return TRUE;					   /*                        */
+  return true;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -1046,7 +1046,7 @@ void add_extract(s,regexp,notp)			   /*			     */
 	   (regexp?RULE_REGEXP:RULE_NONE) |	   /*                        */
 	   (notp  ?RULE_NOT   :RULE_NONE) ,	   /*                        */
 	   !rsc_case_select);			   /*			     */
-  rsc_select = TRUE;				   /*                        */
+  rsc_select = true;				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -1077,7 +1077,7 @@ void save_regex(s)				   /*                        */
 	   !rsc_case_select);			   /*			     */
  						   /*                        */
   free((char*)t);				   /*                        */
-  rsc_select = TRUE;				   /*                        */
+  rsc_select = true;				   /*                        */
 }						   /*------------------------*/
 
 
@@ -1145,35 +1145,34 @@ static void init_s_search(ignored)		   /*                        */
 **	s	the string
 ** Returns:	
 **___________________________________________________			     */
-static int s_match(p,s)				   /*                        */
+static bool s_match(p,s)			   /*                        */
   String  p;					   /*                        */
   String  s;					   /*                        */
 {						   /*                        */
-  while ( *p && s_class[(unsigned int)*p] == '\0' ) p++;/*                   */
+  while (*p && s_class[(unsigned int)*p] == '\0') p++;/*                     */
  						   /*                        */
-  while ( *p )					   /*                        */
+  while (*p)					   /*                        */
   {						   /*                        */
-    while ( *s && s_class[(unsigned int)*s] == '\0' ) s++;/*                 */
+    while (*s && s_class[(unsigned int)*s] == '\0') s++;/*                   */
  						   /*                        */
-    if ( s_class[(unsigned int)*s] != s_class[(unsigned int)*p] ) return FALSE;
-    while ( *p && s_class[(unsigned int)*p] == '\0' ) p++;/*                 */
+    if (s_class[(unsigned int)*s] != s_class[(unsigned int)*p]) return false;
+    while (*p && s_class[(unsigned int)*p] == '\0') p++;/*                   */
     if (*s) s++;				   /*                        */
     if (*p) p++;				   /*                        */
   }						   /*                        */
-  return TRUE;					   /*                        */
+  return true;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	s_search()
-** Purpose:	Match a pattern against all positions in a string. If
-**		a match is found then |TRUE| is returned. Otherwise
-**		|FALSE|.
+** Purpose:	Match a pattern against all positions in a string.
 ** Arguments:
 **	pattern	the pattern
 **	s	the string
-** Returns:	
+** Returns:	If a match is found then |true| is returned. Otherwise
+**		|false|.
 **___________________________________________________			     */
-static int s_search(pattern,s)			   /*                        */
+static bool s_search(pattern,s)			   /*                        */
   String  pattern;				   /*                        */
   String  s;					   /*                        */
 {						   /*                        */
@@ -1183,16 +1182,16 @@ static int s_search(pattern,s)			   /*                        */
   { init_s_search(rsc_sel_ignored); }		   /*                        */
  						   /*                        */
   for ( ; *s; s++ )				   /*                        */
-  { if ( s_match(pattern,s) ) return TRUE;	   /*                        */
+  { if (s_match(pattern,s)) return true;	   /*                        */
   }						   /*                        */
-  return FALSE;					   /*                        */
+  return false;					   /*                        */
 }						   /*------------------------*/
 
 #define ReturnIf(COND)					\
   if ( COND )						\
-  { if ( !(RuleFlag(rule) & RULE_NOT) ) return TRUE; }	\
+  { if ( !(RuleFlag(rule) & RULE_NOT) ) return true; }	\
   else							\
-  { if (  (RuleFlag(rule) & RULE_NOT) ) return TRUE; }
+  { if (  (RuleFlag(rule) & RULE_NOT) ) return true; }
 
 /*-----------------------------------------------------------------------------
 ** Function:	is_selected()
@@ -1203,10 +1202,10 @@ static int s_search(pattern,s)			   /*                        */
 ** Arguments:
 **	db	Database containing the record.
 **	rec	Record to look at.
-** Returns:	|TRUE| iff the record is seleced by a regexp or none is
+** Returns:	|true| iff the record is seleced by a regexp or none is
 **		given.
 **___________________________________________________			     */
-int is_selected(db,rec)	   		   	   /*			     */
+bool is_selected(db,rec)			   /*			     */
   DB     db;					   /*                        */
   Record rec;			   		   /*			     */
 {						   /*			     */
@@ -1217,7 +1216,7 @@ int is_selected(db,rec)	   		   	   /*			     */
   if ( (rule=x_rule) == RuleNULL ||		   /* If no rule is given or */
        !rsc_select	   			   /*  no selection is       */
      )				   		   /*  requested then        */
-    return TRUE;				   /*  select all records.   */
+    return true;				   /*  select all records.   */
  						   /*                        */
   for ( ;			   		   /* Loop through all rules */
 	rule != RuleNULL;			   /*			     */
@@ -1285,10 +1284,10 @@ int is_selected(db,rec)	   		   	   /*			     */
 			     SymbolValue(value)))  /*                        */
     }						   /*			     */
     else if ( RuleFlag(rule) & RULE_NOT )	   /*                        */
-    { return TRUE;				   /*                        */
+    { return true;				   /*                        */
     }						   /*                        */
   }						   /*                        */
-  return FALSE;				   	   /* return the result.     */
+  return false;				   	   /* return the result.     */
 }						   /*------------------------*/
 
 #ifdef REGEX

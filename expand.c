@@ -47,7 +47,7 @@
 #define _ARG(A) ()
 #endif
  Symbol expand_rhs _ARG((Symbol s,Symbol pre,Symbol post,DB db, int lowercase));/* expand.c*/
- static int expand _ARG((String s,StringBuffer *sb,int brace,int first,String q_open,String q_close,DB db));/* expand.c*/
+ static bool expand _ARG((String s,StringBuffer *sb,int brace,int first,String q_open,String q_close,DB db));/* expand.c*/
  static void expand__ _ARG((String s,StringBuffer *sb,String q_open,String q_close,DB db));/* expand.c*/
 
 /*****************************************************************************/
@@ -123,9 +123,9 @@ static void expand__(s, sb, q_open, q_close, db)   /*                        */
   String         q_close;			   /*                        */
   DB		 db;				   /*                        */
 {						   /*                        */
-  if ( ! expand(s,sb,TRUE,TRUE,q_open,q_close,db) )/*                        */
+  if (!expand(s,sb,true,true,q_open,q_close,db))   /*                        */
   { PUTS(q_close, sb); }			   /*                        */
-  else if ( sbtell(sb) == 0 )			   /*                        */
+  else if (sbtell(sb) == 0)			   /*                        */
   { PUTS(q_open, sb);			   	   /*                        */
     PUTS(q_close, sb);			   	   /*                        */
   }						   /*                        */
@@ -146,11 +146,11 @@ static void expand__(s, sb, q_open, q_close, db)   /*                        */
 **	q_close	Close delimiter. This is a close brace or a double quote.
 ** Returns:	
 **___________________________________________________			     */
-static int expand(s, sb, brace, first, q_open, q_close, db)/*                */
+static bool expand(s, sb, brace, first, q_open, q_close, db)/*                */
   register String s;				   /* specification          */
   StringBuffer   *sb;				   /* output device          */
-  int            brace;				   /* is a brace needed?     */
-  int            first;				   /* is this the first part?*/
+  bool           brace;				   /* is a brace needed?     */
+  bool           first;				   /* is this the first part?*/
   String         q_open;			   /* open delimiter         */
   String         q_close;			   /* close delimiter        */
   DB		 db;				   /*                        */
@@ -164,9 +164,10 @@ static int expand(s, sb, brace, first, q_open, q_close, db)/*                */
         if ( *++s == '"' ) { ++s; break; }	   /* Ignore the empty string*/
         if ( brace ) 				   /*                        */
 	{ if ( !first ) { PUTS(" # ",sb); }	   /*                        */
-	  PUTS(q_open,sb); brace = FALSE;  	   /*                        */
+	  PUTS(q_open,sb);			   /*                        */
+	  brace = false;  	   		   /*                        */
         }					   /*                        */
-        first = FALSE;				   /*                        */
+        first = false;				   /*                        */
  						   /*                        */
         for ( ; *s && *s != '"'; ++s )		   /* Until the end is found */
 	{ PUTC(*s,sb);		   		   /*  transfer character.   */
@@ -180,16 +181,17 @@ static int expand(s, sb, brace, first, q_open, q_close, db)/*                */
         if ( *++s == '}' ) { ++s; break; }	   /* Ignore empty block.    */
         if ( brace ) 				   /*                        */
 	{ if ( !first ) { PUTS(" # ",sb); }	   /*                        */
-	  PUTS(q_open,sb); brace = FALSE;  	   /*                        */
+	  PUTS(q_open,sb);			   /*                        */
+	  brace = false;  	   		   /*                        */
         }					   /*                        */
-        first = FALSE;				   /*                        */
+        first = false;				   /*                        */
  						   /*                        */
         { register int level = 1;		   /* Initialize brace count */
 	  for ( ; *s && level > 0; ++s )	   /* Until level 0 or end   */
 	  { switch ( *s )			   /*                        */
 	    { case '\\':			   /* \ is for quoting.      */
 		PUTC(*s,sb);		   	   /*                        */
-		if ( *++s ) { PUTC(*s,sb); }	   /*                        */
+		if (*++s) { PUTC(*s,sb); }	   /*                        */
 		break;				   /*                        */
 	      case '{':				   /*                        */
 		++level;			   /*                        */
@@ -211,9 +213,10 @@ static int expand(s, sb, brace, first, q_open, q_close, db)/*                */
         					   /*                        */
         if ( brace ) 				   /*                        */
 	{ if ( !first ) { PUTS(" # ",sb); }	   /*                        */
-	  PUTS(q_open,sb); brace = FALSE;  	   /*                        */
+	  PUTS(q_open,sb);			   /*                        */
+	  brace = false;  	   		   /*                        */
         }					   /*                        */
-        first = FALSE;				   /*                        */
+        first = false;				   /*                        */
  						   /*                        */
         do					   /*                        */
 	{ PUTC(*s,sb);		   		   /*                        */
@@ -229,7 +232,7 @@ static int expand(s, sb, brace, first, q_open, q_close, db)/*                */
         else		   			   /* Only macros are left.  */
 	{ String t = (String)s;	   	   	   /*                        */
 	  Symbol val;				   /*                        */
-	  Symbol sym = sym_extract(&t, FALSE);	   /*                        */
+	  Symbol sym = sym_extract(&t, false);	   /*                        */
  						   /*                        */
           DebugPrint2("Start symbol: ", s);	   /*                        */
 	  val = db_string(db, sym, 1); 		   /*                        */
@@ -245,8 +248,8 @@ static int expand(s, sb, brace, first, q_open, q_close, db)/*                */
 	  { if ( !brace ) PUTS(q_close, sb);	   /*                        */
 	    if ( !first ) PUTS(" # ", sb);  	   /*                        */
 	    PUTS(sym, sb);		   	   /*                        */
-	    brace = TRUE;			   /*                        */
-	    first = FALSE;			   /*                        */
+	    brace = true;			   /*                        */
+	    first = false;			   /*                        */
 	  }					   /*                        */
 	  s = t;				   /*                        */
 	}	   				   /*                        */

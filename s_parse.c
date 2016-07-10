@@ -180,7 +180,7 @@ void sp_skip(sp)				   /*                        */
 Symbol s_parse(type, sp, errp)			   /*                        */
   int 		  type;				   /*                        */
   String	  *sp;				   /*                        */
-  int		  errp;				   /*                        */
+  bool		  errp;				   /*                        */
 { register String s = *sp;			   /*                        */
   Uchar           c;				   /*                        */
   String	  cp;				   /*                        */
@@ -194,10 +194,10 @@ Symbol s_parse(type, sp, errp)			   /*                        */
 	       type == StringParseUnquotedBraces ? "ParseUnquotedBraces ":
 	       type == StringParseValue ? "ParseValue ":
 	       "???"),s);		   	   /*			     */
-  while( is_space(*s) ) s++;			   /*                        */
+  while(is_space(*s)) s++;			   /*                        */
   *sp = s;					   /*                        */
  						   /*                        */
-  switch ( type )				   /*                        */
+  switch (type)				   	   /*                        */
   { case StringParseSymbol:			   /*                        */
       if ( is_allowed(*s) && !is_digit(*s) )	   /*                        */
       { do { s++; } while ( is_allowed(*s) );	   /*                        */
@@ -243,10 +243,10 @@ Symbol s_parse(type, sp, errp)			   /*                        */
 	  }					   /*                        */
 	  if ( *s ) s++;			   /*                        */
 	}					   /*                        */
-	if ( level > 0 )			   /*                        */
+	if (level > 0)			   	   /*                        */
 	{ Error(errp, s, unexpected, "end of braces.");/*                    */
 	}					   /*                        */
-	else if ( type==StringParseUnquotedBraces )/*                        */
+	else if (type == StringParseUnquotedBraces)/*                        */
 	{ s--; }				   /*                        */
       }						   /*                        */
       break;					   /*                        */
@@ -320,25 +320,24 @@ Symbol s_parse(type, sp, errp)			   /*                        */
 **	sp	the pointer to the source string
 **	expect	the expected string
 **	verbose	the indicator whether an error message should be produced
-** Returns:	|TRUE| iff the expected string is found
+** Returns:	|true| iff the expected string is found
 **___________________________________________________			     */
-int sp_expect(sp, expect, verbose)		   /*                        */
+bool sp_expect(sp, expect, verbose)		   /*                        */
   register String *sp;				   /*                        */
   register String expect;			   /*                        */
-  int verbose;					   /*                        */
+  bool verbose;					   /*                        */
 {						   /*                        */
-  while( is_space(**sp) ) (*sp)++;	   	   /*                        */
+  while (is_space(**sp)) (*sp)++;	   	   /*                        */
  						   /*                        */
   for ( ; *expect; expect++)			   /*                        */
   { if (*expect != **sp)			   /*                        */
     { if (verbose)				   /*                        */
       { Error(1, *sp, expect, expected); }	   /*                        */
-      return FALSE;				   /*                        */
+      return false;				   /*                        */
     }	   					   /*                        */
     (*sp)++;					   /*                        */
   }						   /*                        */
- 						   /*                        */
-  return TRUE;					   /*                        */
+  return true;					   /*                        */
 }						   /*------------------------*/
 
 #define SkipSpaces(PTR) while( is_space(*PTR) ) (PTR)++
@@ -359,7 +358,7 @@ Symbol* sp_symbols(sp)				   /*                        */
   int n	= 0;					   /*                        */
   int i = 0;					   /*                        */
  						   /*                        */
-  if (sp_expect(sp, (String)"{", FALSE))	   /*                        */
+  if (sp_expect(sp, (String)"{", false))	   /*                        */
   { n = 4;					   /*                        */
     a = (Symbol*)malloc(n * sizeof(Symbol));	   /*                        */
     if (a == (Symbol*)NULL)			   /*                        */
@@ -380,7 +379,7 @@ Symbol* sp_symbols(sp)				   /*                        */
       SkipSpaces(*sp);				   /*                        */
     }						   /*                        */
     if (**sp == '\0')				   /*                        */
-    { Error(TRUE, *sp, unexpected,		   /*                        */
+    { Error(true, *sp, unexpected,		   /*                        */
 	    "end of symbols.");			   /*                        */
       return (Symbol*)NULL;			   /*                        */
     }					   	   /*                        */
@@ -395,7 +394,7 @@ Symbol* sp_symbols(sp)				   /*                        */
     a[0] = s;					   /*                        */
     a[1] = NO_SYMBOL;				   /*                        */
   } else {					   /*                        */
-    Error(TRUE, *sp, "List of symbols", expected); /*                        */
+    Error(true, *sp, "List of symbols", expected); /*                        */
   }						   /*                        */
   return a;					   /*                        */
 }						   /*------------------------*/

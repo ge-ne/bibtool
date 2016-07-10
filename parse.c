@@ -50,19 +50,19 @@
 #else
 #define _ARG(A) ()
 #endif
+ bool read_rsc _ARG((String name));		   /* parse.c                */
+ bool see_bib _ARG((String fname));		   /* parse.c                */
+ bool seen _ARG((void));			   /* parse.c                */
  int parse_bib _ARG((Record rec));		   /* parse.c                */
- int read_rsc _ARG((String name));		   /* parse.c                */
- int see_bib _ARG((String fname));		   /* parse.c                */
- static int see_rsc _ARG((String fname));	   /* parse.c                */
- int seen _ARG((void));				   /* parse.c                */
+ static bool parse_block _ARG((int quotep));	   /* parse.c                */
+ static bool parse_equation _ARG((Record rec));	   /* parse.c                */
+ static bool parse_key _ARG((int alpha));	   /* parse.c                */
+ static bool parse_rhs _ARG((void));		   /* parse.c                */
+ static bool parse_string _ARG((int quotep));	   /* parse.c                */
+ static bool parse_symbol _ARG((int alpha));	   /* parse.c                */
+ static bool parse_value _ARG((void));		   /* parse.c                */
+ static bool see_rsc _ARG((String fname));	   /* parse.c                */
  static int fill_line _ARG((void));		   /* parse.c                */
- static int parse_block _ARG((int quotep));	   /* parse.c                */
- static int parse_equation _ARG((Record rec));	   /* parse.c                */
- static int parse_key _ARG((int alpha));	   /* parse.c                */
- static int parse_rhs _ARG((void));		   /* parse.c                */
- static int parse_string _ARG((int quotep));	   /* parse.c                */
- static int parse_symbol _ARG((int alpha));	   /* parse.c                */
- static int parse_value _ARG((void));		   /* parse.c                */
  static int see_bib_msg _ARG((char *s));	   /* parse.c                */
  static int skip _ARG((int inc));		   /* parse.c                */
  static int skip_c _ARG((void));		   /* parse.c                */
@@ -102,10 +102,10 @@
 #define CurrentC	*flp
 #define FutureC		*(flp+1)
 #define ClearLine	(*flp='\0')
-#define GetC		skip(TRUE)
+#define GetC		skip(true)
 #define NextC		*(flp++)
 #define SkipC		++flp
-#define TestC		skip(FALSE)
+#define TestC		skip(false)
 #define UnGetC		flp--
 
 #define InitLine	*file_line_buffer = '\0';	\
@@ -210,13 +210,13 @@ void init_read()				   /*			     */
 ** Purpose:	Message function for use with  |px_fopen()|.
 ** Arguments:
 **	s	String to print
-** Returns:	|TRUE| to indicate that continuation is desired.
+** Returns:	|true| to indicate that continuation is desired.
 **___________________________________________________			     */
 static int see_bib_msg(s)			   /*			     */
   register char *s;				   /*			     */
 {						   /*			     */
-  if ( rsc_verbose ) VerbosePrint2("Trying ",s);   /*			     */
-  return TRUE;					   /*			     */
+  if (rsc_verbose) VerbosePrint2("Trying ", s);	   /*			     */
+  return true;					   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -238,24 +238,24 @@ static int see_bib_msg(s)			   /*			     */
 **		database. 
 ** Arguments:
 **	fname	Name of the file or |NULL|.
-** Returns:	|TRUE| iff the file could be opened for reading.
+** Returns:	|true| iff the file could be opened for reading.
 **___________________________________________________			     */
-int see_bib(fname)				   /*			     */
-  register String  fname;			   /*			     */
+bool see_bib(fname)				   /*			     */
+  register String fname;			   /*			     */
 {						   /*			     */
   init_parse();					   /*			     */
   InitLine;					   /*			     */
-  if ( fname == NULL )				   /*			     */
+  if (fname == NULL)				   /*			     */
   {						   /*                        */
     filename = str_stdin;		   	   /*			     */
     file     = stdin;			   	   /*			     */
-    return TRUE;				   /*			     */
+    return true;				   /*			     */
   }						   /*                        */
 #ifdef HAVE_LIBKPATHSEA
   filename = kpse_find_file((char*)fname,	   /*                        */
 			    kpse_bib_format,	   /*                        */
 			    TRUE);		   /*                        */
-  if ( filename == NULL ) return FALSE;	   	   /*                        */
+  if (filename == NULL) return false;	   	   /*                        */
   file = fopen(filename,"r");			   /*                        */
 #else
   file = px_fopen((char*)fname,			   /*			     */
@@ -265,7 +265,7 @@ int see_bib(fname)				   /*			     */
 		  see_bib_msg);		   	   /*			     */
   filename = px_filename;			   /*			     */
 #endif
-  return ( file != NULL );			   /*			     */
+  return (file != NULL);			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -278,21 +278,21 @@ int see_bib(fname)				   /*			     */
 **		|read_db()| for a higher level function to read a
 **		database. 
 ** Arguments:	none
-** Returns:	|FALSE| if an attempt was made to close an already
+** Returns:	|false| if an attempt was made to close an already
 **		closed file.
 **___________________________________________________			     */
-int seen()					   /*			     */
+bool seen()					   /*			     */
 { 						   /*                        */
-  if ( file == stdin )			   	   /*			     */
+  if (file == stdin)			   	   /*			     */
   { file = NULL;				   /*                        */
-    return TRUE;				   /*                        */
+    return true;				   /*                        */
   }    						   /*                        */
-  else if ( file )			   	   /*			     */
+  else if (file)			   	   /*			     */
   { (void)fclose(file);				   /*			     */
     file = NULL;				   /*			     */
-    return TRUE;				   /*			     */
+    return true;				   /*			     */
   }						   /*			     */
-  return FALSE;					   /*			     */
+  return false;					   /*			     */
 }						   /*------------------------*/
 
 
@@ -381,19 +381,18 @@ static int fill_line()				   /*			     */
 /*-----------------------------------------------------------------------------
 ** Function:	skip()
 ** Purpose:	Skip over spaces. Return the next non-space character or |EOF|.
-**		If inc is TRUE point to the first character after the one
-**		returned.
 ** Arguments:
-**	inc
+**	inc	If inc is |true| point to the first character after the one
+**		returned.
 ** Returns:	The next character
 **___________________________________________________			     */
 static int skip(inc)				   /*			     */
-  register int inc;				   /*			     */
+  register bool inc;				   /*			     */
 {						   /*			     */
   FOREVER					   /*			     */
   { if ( EmptyC && fill_line() )   return EOF;	   /*			     */
     else if ( is_space(CurrentC) ) SkipC;	   /*			     */
-    else return ( inc ? NextC : CurrentC );	   /*			     */
+    else return (inc ? NextC : CurrentC);	   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
 
@@ -420,33 +419,33 @@ static int skip_c()				   /*			     */
 ** Returns:	
 **___________________________________________________			     */
 static int skip_nl()				   /*			     */
-{ static int state = FALSE;			   /*			     */
+{ static bool state = false;			   /*			     */
   int c;					   /*                        */
  						   /*                        */
-  if ( state ) { state = FALSE; return '\n'; }	   /*                        */
+  if (state) { state = false; return '\n'; }	   /*                        */
  						   /*                        */
   FOREVER					   /*			     */
-  { if ( EmptyC && fill_line() )   return EOF;	   /*			     */
-    else if ( is_space(CurrentC) )		   /*			     */
+  { if (EmptyC && fill_line()) return EOF;	   /*			     */
+    else if (is_space(CurrentC))		   /*			     */
     {						   /*                        */
-      for ( c = skip_c();			   /*                        */
-	    c != EOF && is_space(c) && c != '\n';  /*                        */
-	    c = skip_c() ) {}			   /*                        */
-      if ( c == EOF  ) return EOF;		   /*                        */
-      if ( c != '\n' ) { UnGetC; return ' '; }	   /*                        */
+      for (c = skip_c();			   /*                        */
+	   c != EOF && is_space(c) && c != '\n';   /*                        */
+	   c = skip_c()) {}			   /*                        */
+      if (c == EOF ) return EOF;		   /*                        */
+      if (c != '\n') { UnGetC; return ' '; }	   /*                        */
  						   /*                        */
-      for ( c = skip_c();			   /*                        */
-	    c != EOF && is_space(c) && c != '\n';  /*                        */
-	    c = skip_c() ) {}			   /*                        */
-      if ( c == EOF  ) return EOF;		   /*                        */
-      if ( c != '\n' ) { UnGetC; return ' '; }	   /*                        */
+      for (c = skip_c();			   /*                        */
+	   c != EOF && is_space(c) && c != '\n';   /*                        */
+	   c = skip_c()) {}			   /*                        */
+      if (c == EOF ) return EOF;		   /*                        */
+      if (c != '\n') { UnGetC; return ' '; }	   /*                        */
  						   /*                        */
-      for ( c = skip_c();			   /*                        */
-	    c != EOF && is_space(c);		   /*                        */
-	    c = skip_c() ) {}			   /*                        */
-      if ( c == EOF  ) return EOF;		   /*                        */
+      for (c = skip_c();			   /*                        */
+	   c != EOF && is_space(c);		   /*                        */
+	   c = skip_c()) {}			   /*                        */
+      if (c == EOF) return EOF;		   	   /*                        */
       UnGetC;					   /*                        */
-      state = TRUE;				   /*                        */
+      state = true;				   /*                        */
       return '\n';				   /*                        */
     }						   /*			     */
     else { return ( NextC ); }		   	   /*			     */
@@ -461,7 +460,7 @@ static int skip_nl()				   /*			     */
 **	alpha	indicator that the symbol has to start with an alpha character
 ** Returns:	Success status
 **___________________________________________________			     */
-static int parse_symbol(alpha)			   /*			     */
+static bool parse_symbol(alpha)			   /*			     */
   register int   alpha;				   /*			     */
 { register Uchar c;				   /*			     */
   register String cp;				   /*			     */
@@ -476,7 +475,7 @@ static int parse_symbol(alpha)			   /*			     */
   CurrentC = '\0';		   		   /*			     */
   push_string(symbol(lower(cp)));		   /*			     */
   CurrentC = c;					   /*			     */
-  return TRUE;					   /*			     */
+  return true;					   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -487,7 +486,7 @@ static int parse_symbol(alpha)			   /*			     */
 **	alpha	indicator that the symbol has to start with an alpha character
 ** Returns:	Success status
 **___________________________________________________			     */
-static int parse_key(alpha)			   /*			     */
+static bool parse_key(alpha)			   /*			     */
   register int   alpha;				   /*			     */
 { register Uchar c;				   /*			     */
   register String cp;			   	   /*			     */
@@ -497,13 +496,13 @@ static int parse_key(alpha)			   /*			     */
   cp = flp - 1;			   		   /*			     */
   if ( alpha && (! is_alpha(c)) )		   /*			     */
   { Error("Key does not start with a letter");	   /*                        */
-    return(FALSE);				   /*                        */
+    return false;				   /*                        */
   }		   				   /*			     */
   while ( is_allowed(CurrentC) || CurrentC == '\'')/*                        */
   { SkipC; }	   				   /*			     */
   c = CurrentC;					   /*                        */
   CurrentC = '\0';		   		   /*			     */
-  if ( rsc_key_case )				   /*                        */
+  if (rsc_key_case)				   /*                        */
   { Symbol val;					   /*                        */
     val  = symbol(cp);				   /*                        */
     name = symbol(lower(cp));			   /*                        */
@@ -514,7 +513,7 @@ static int parse_key(alpha)			   /*			     */
   }						   /*                        */
   push_string(name);			   	   /*			     */
   CurrentC = c;					   /*			     */
-  return TRUE;					   /*			     */
+  return true;					   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -543,39 +542,39 @@ static void parse_number()			   /*			     */
 **		A string is something enclosed in ""
 **		Consider the brace level to determine the end of the string.
 ** Arguments:
-**	quotep	Boolean. TRUE iff the leading " has already been stripped off
-**		the input stream.
+**	quotep	Boolean. |true| iff the leading " has already been stripped
+**		off the input stream.
 ** Returns:	Success status
 **___________________________________________________"			     */
-static int parse_string(quotep)			   /*			     */
+static bool parse_string(quotep)		   /*			     */
   int quotep;				   	   /*			     */
 { int c;					   /*                        */
   int left;				   	   /*			     */
   int start_flno = flno;			   /*                        */
 						   /*			     */
   left = 0;					   /*			     */
-  if ( quotep ) (void)sbputchar('"',parse_sb);	   /*"			     */
+  if (quotep) (void)sbputchar('"', parse_sb);	   /*"			     */
   do						   /*			     */
   { switch ( c=skip_nl() )			   /*			     */
     { case EOF:					   /*                        */
 	UnterminatedError("Unterminated double quote",/*                     */
 			  start_flno);		   /*                        */
-	return(FALSE);	   			   /*			     */
+	return false;	   			   /*			     */
       case '{':	 left++; (void)sbputchar((char)c,parse_sb); break;/*	     */
-      case '}':	 if ( left--<0 )		   /*			     */
+      case '}':	 if (left-- < 0)		   /*			     */
 		 { Warning("Expecting \" here"); } /*			     */
 		 (void)sbputchar((char)c,parse_sb);/*                        */
 		 break;                            /*                        */
       case '\\': (void)sbputchar((char)c,parse_sb); c = NextC;/*	     */
 		 (void)sbputchar((char)c,parse_sb); c = ' ';/*		     */
 		 break;				   /*			     */
-      case '"':	 if ( !quotep ) break;		   /*			     */
+      case '"':	 if (!quotep) break;		   /*			     */
       default:	 (void)sbputchar((char)c,parse_sb);/*			     */
     }						   /*			     */
-  } while ( c != '"' );				   /*			     */
+  } while (c != '"');				   /*			     */
 						   /*			     */
-  if ( left ) Warning("Unbalanced parenthesis");   /*			     */
-  return(TRUE);					   /*			     */
+  if (left) Warning("Unbalanced parenthesis");     /*			     */
+  return true;					   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -584,33 +583,34 @@ static int parse_string(quotep)			   /*			     */
 **		A block is something enclosed in {}
 **		Consider the brace level to determine the end of the string.
 ** Arguments:
-**	quotep	Boolean. TRUE iff the leading { has already been stripped off
+**	quotep	Boolean. |true| iff the leading { has already been stripped off
 **		the input stream.
 ** Returns:	Success status
 **___________________________________________________			     */
-static int parse_block(quotep)			   /*			     */
-  int quotep;					   /*			     */
+static bool parse_block(quotep)			   /*			     */
+  bool quotep;					   /*			     */
 { int c;					   /*                        */
   int left;				   	   /*			     */
   int start_flno = flno;			   /*                        */
 						   /*			     */
   left = 1;					   /*			     */
-  if ( quotep ) (void)sbputchar('{',parse_sb);	   /*			     */
+  if (quotep) (void)sbputchar('{',parse_sb);	   /*			     */
  						   /*                        */
   FOREVER					   /*			     */
-  { switch ( c=skip_nl() )			   /*			     */
+  { switch (c = skip_nl())			   /*			     */
     { case EOF:					   /*                        */
 	UnterminatedError("Unterminated open brace",/*                       */
 			  start_flno);		   /*                        */
-	return FALSE;		   		   /*			     */
+	return false;		   		   /*			     */
       case '{': left++; break;			   /*			     */
       case '}':					   /*			     */
-	if ( --left < 1 )			   /*			     */
-	{ if ( quotep ) (void)sbputchar('}',parse_sb);/*		     */
-	  return TRUE;				   /*			     */
+	if (--left < 1)			   	   /*			     */
+	{ if (quotep) (void)sbputchar('}',	   /*                        */
+				      parse_sb);   /*		             */
+	  return true;				   /*			     */
 	}					   /*			     */
     }						   /*			     */
-    (void)sbputchar(c,parse_sb);		   /*			     */
+    (void)sbputchar(c, parse_sb);		   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
 
@@ -622,7 +622,7 @@ static int parse_block(quotep)			   /*			     */
 ** Arguments:	none
 ** Returns:	Success status
 **___________________________________________________			     */
-static int parse_rhs()				   /*			     */
+static bool parse_rhs()				   /*			     */
 { int start_flno = flno;			   /*                        */
   Symbol sym;					   /*                        */
  						   /*                        */
@@ -631,18 +631,18 @@ static int parse_rhs()				   /*			     */
   { if ( sbtell(parse_sb) != 0 )		   /*			     */
     { (void)sbputs(" # ", parse_sb); }		   /*			     */
 						   /*			     */
-    switch ( GetC )				   /*			     */
+    switch (GetC)				   /*			     */
     { case EOF:					   /*                        */
 	UnterminatedError("Unterminated value",	   /*                        */
 			  start_flno);		   /*                        */
-	return FALSE;  			   	   /*			     */
+	return false;  			   	   /*			     */
 						   /*			     */
       case '"':					   /*                        */
-	if ( !parse_string(TRUE) ) return FALSE;   /*		             */
+	if ( !parse_string(true) ) return false;   /*		             */
 	break;					   /*			     */
 						   /*			     */
       case '{':					   /*                        */
-	if ( !parse_block(TRUE) ) return FALSE;    /*		             */
+	if ( !parse_block(true) ) return false;    /*		             */
 	break;					   /*			     */
 						   /*			     */
       case '0': case '1': case '2': case '3': case '4':/*		     */
@@ -656,7 +656,7 @@ static int parse_rhs()				   /*			     */
 						   /*			     */
       default:					   /*			     */
 	UnGetC;					   /*                        */
-	ExpectSymbol(TRUE, FALSE);	   	   /*			     */
+	ExpectSymbol(true, false);	   	   /*			     */
 	{ sym = pop_string();			   /*			     */
 #ifdef OLD
 	  (void)look_macro(mac,1);		   /*			     */
@@ -665,34 +665,33 @@ static int parse_rhs()				   /*			     */
 		       parse_sb);	   	   /*			     */
 	}					   /*			     */
     }						   /*			     */
-  } while ( GetC == '#' );			   /*			     */
+  } while (GetC == '#');			   /*			     */
 						   /*			     */
   push_string(symbol((String)sbflush(parse_sb)));  /*			     */
   sbrewind(parse_sb);				   /*			     */
   UnGetC;					   /*                        */
-  return TRUE;				   	   /*			     */
+  return true;				   	   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	parse_equation()
 ** Purpose:	Parse a pair separated by an equals sign.
-**
 ** Arguments:
 **	rec	The record to store the result in
 ** Returns:	Success status
 **___________________________________________________			     */
-static int parse_equation(rec)		   	   /*			     */
+static bool parse_equation(rec)		   	   /*			     */
   Record rec;					   /*                        */
 { Symbol s, t;				   	   /*			     */
 						   /*			     */
-  ExpectSymbol(TRUE, FALSE);			   /*			     */
-  Expect('=', FALSE);				   /*			     */
-  ExpectRhs(FALSE);				   /*			     */
+  ExpectSymbol(true, false);			   /*			     */
+  Expect('=', false);				   /*			     */
+  ExpectRhs(false);				   /*			     */
 						   /*			     */
   t = pop_string();				   /*			     */
   s = pop_string();				   /*			     */
   push_to_record(rec, s, t);			   /*			     */
-  return TRUE;					   /*			     */
+  return true;					   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -718,15 +717,15 @@ int parse_bib(rec)				   /*			     */
   Record rec;					   /*                        */
 { register int type,				   /*			     */
 	       n,				   /*			     */
-	       c,				   /*			     */
-	       again;				   /*			     */
+	       c;				   /*			     */
+  bool	       again;				   /*			     */
   long	       ignored = 0L;			   /*			     */
   char         *name;				   /*                        */
   int          line;				   /*                        */
   char	       buffer[32];			   /*                        */
   static StringBuffer * comment_sb = (StringBuffer*)NULL;/*                  */
  						   /*                        */
-  if ( file == NULL ) return BIB_EOF;	   	   /*                        */
+  if (file == NULL) return BIB_EOF;	   	   /*                        */
   if ( comment_sb == (StringBuffer*)NULL )	   /*                        */
   { comment_sb = sbopen(); } 			   /*                        */
  						   /*                        */
@@ -740,7 +739,7 @@ int parse_bib(rec)				   /*			     */
     while ( (c=skip_c()) != '@' )		   /* Skip to next @	     */
     { if ( c == EOF )				   /*                        */
       { char *s, *t;				   /*                        */
-	if (ignored == 0) return(BIB_EOF); 	   /*			     */
+	if (ignored == 0) return BIB_EOF; 	   /*			     */
 	RecordType(rec) = BIB_COMMENT;		   /*                        */
  						   /*                        */
 	s = t = sbflush(comment_sb);		   /*                        */
@@ -749,7 +748,7 @@ int parse_bib(rec)				   /*			     */
 	if ( *t )				   /*                        */
 	  RecordComment(rec) = symbol((String)t);  /*                        */
 	sbrewind(comment_sb);			   /*                        */
-	return(BIB_COMMENT);		   	   /*			     */
+	return BIB_COMMENT;		   	   /*			     */
       }						   /*                        */
       if (!is_space(c)) ++ignored;		   /*			     */
       if (ignored > 0 && rsc_pass_comment)	   /*			     */
@@ -786,7 +785,7 @@ int parse_bib(rec)				   /*			     */
   c = GetC;					   /*			     */
   if ( c != '{' && c != '(' )			   /*			     */
   { Error("Expected '{' or '(' missing");	   /*			     */
-    return(BIB_NOOP);				   /*			     */
+    return BIB_NOOP;				   /*			     */
   }						   /*			     */
   line = flno;					   /*                        */
   name = filename;				   /*                        */
@@ -810,7 +809,7 @@ int parse_bib(rec)				   /*			     */
       break;					   /*			     */
 						   /*			     */
     case BIB_ALIAS:				   /*			     */
-      ExpectEq(rec,BIB_NOOP);			   /*			     */
+      ExpectEq(rec, BIB_NOOP);			   /*			     */
       break;					   /*			     */
 						   /*			     */
     case BIB_INCLUDE:				   /*			     */
@@ -826,7 +825,7 @@ int parse_bib(rec)				   /*			     */
 	(void)GetC;				   /*			     */
       }						   /*			     */
       else					   /*			     */
-      { ExpectKey(FALSE, BIB_NOOP);		   /*			     */
+      { ExpectKey(false, BIB_NOOP);		   /*			     */
 	Expect(',', BIB_NOOP);			   /*			     */
 	push_to_record(rec, pop_string(), NO_SYMBOL);/*			     */
       }						   /*			     */
@@ -841,8 +840,8 @@ int parse_bib(rec)				   /*			     */
 	switch (TestC)				   /*                        */
 	{ case EOF:				   /*                        */
 	  case '}':				   /*                        */
-	  case ')': again = FALSE; break;	   /*                        */
-	  default:  again = TRUE;		   /*                        */
+	  case ')': again = false; break;	   /*                        */
+	  default:  again = true;		   /*                        */
 	    if (n == 0)			   	   /*			     */
 	    { Warning("Missing ',' assumed."); }   /*			     */
 	}					   /*                        */
@@ -925,12 +924,12 @@ void set_rsc_path(val)				   /*			     */
 **		full file name.
 ** Arguments:
 **	fname	The file name to take into account.
-** Returns:	|TRUE| iff the operation succeeds.
+** Returns:	|true| iff the operation succeeds.
 **___________________________________________________			     */
-static int see_rsc(fname)			   /*			     */
+static bool see_rsc(fname)			   /*			     */
   String fname;				   	   /*			     */
 {						   /*			     */
-  if (fname  == StringNULL) return FALSE;	   /*			     */
+  if (fname  == StringNULL) return false;	   /*			     */
  						   /*                        */
   init_parse();				   	   /*			     */
   InitLine;					   /*			     */
@@ -952,19 +951,19 @@ static int see_rsc(fname)			   /*			     */
 **	
 ** Returns:	
 **___________________________________________________			     */
-static int parse_value()			   /*			     */
+static bool parse_value()			   /*			     */
 {						   /*			     */
-  int   start_flno = flno;			   /*                        */
+  int start_flno = flno;			   /*                        */
  						   /*                        */
   sbrewind(parse_sb);				   /*			     */
   switch (GetC)				   	   /*			     */
   { case EOF:					   /*                        */
       UnterminatedError("Unterminated value",	   /*                        */
 			start_flno);		   /*                        */
-      return FALSE;	   			   /*			     */
+      return false;	   			   /*			     */
 						   /*			     */
     case '"':					   /*			     */
-      if ( !parse_string(FALSE) ) return FALSE;    /*			     */
+      if ( !parse_string(false) ) return false;    /*			     */
       push_string(symbol((String)sbflush(parse_sb)));/*			     */
       sbrewind(parse_sb);			   /*			     */
       break;					   /*			     */
@@ -975,16 +974,16 @@ static int parse_value()			   /*			     */
       break;					   /*			     */
 						   /*			     */
     case '{':					   /*			     */
-      if ( !parse_block(FALSE) ) return FALSE;	   /*			     */
+      if ( !parse_block(false) ) return false;	   /*			     */
       push_string(symbol((String)sbflush(parse_sb)));/*			     */
       sbrewind(parse_sb);			   /*			     */
       break;					   /*			     */
 						   /*			     */
     default:					   /*			     */
-      UnGetC; ExpectSymbol(TRUE,FALSE);		   /*			     */
+      UnGetC; ExpectSymbol(true, false);	   /*			     */
   }						   /*			     */
 						   /*			     */
-  return TRUE;					   /*			     */
+  return true;					   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -1002,9 +1001,9 @@ static int parse_value()			   /*			     */
 **		routines. 
 ** Arguments:
 **	name	Name of the file to read from.
-** Returns:	
+** Returns:	|true| if an error has occured
 **___________________________________________________			     */
-int read_rsc(name)				   /*			     */
+bool read_rsc(name)				   /*			     */
   String	name;				   /*			     */
 { int	        c;				   /*			     */
   Symbol	token;				   /*			     */
@@ -1014,6 +1013,7 @@ int read_rsc(name)				   /*			     */
   size_t	s_fl_size;			   /*                        */
   int		s_flno;				   /*                        */
   String	s_flp;				   /*                        */
+  bool	        ret;				   /*                        */
  						   /* Save the old state in  */
  						   /*  local variables to    */
  						   /*  restore it later.     */
@@ -1036,23 +1036,25 @@ int read_rsc(name)				   /*			     */
 	  ClearLine; break;			   /*			     */
 	default:				   /*			     */
 	  if ( !parse_symbol(c) )		   /*			     */
-	  { (void)seen(); return(1); }		   /*			     */
+	  { (void)seen();			   /*                        */
+	    return true;			   /*                        */
+	  }	   				   /*			     */
 	  token = pop_string();			   /*			     */
 	  if ( TestC == '=' ) (void)GetC;	   /* = is optional	     */
 	  if ( !parse_value() )			   /*			     */
 	  { (void)seen();			   /*                        */
-	    return(-1);				   /*                        */
+	    return true;			   /*                        */
 	  }					   /*			     */
 	  (void)set_rsc(token, pop_string());	   /*			     */
 	}					   /*			     */
     }						   /*			     */
     (void)seen();				   /*			     */
-    c = TRUE;					   /*			     */
+    ret = true;					   /*			     */
   }						   /*                        */
   else						   /*                        */
-  { c = FALSE;		   			   /*			     */
+  { ret = false;				   /*			     */
   }						   /*                        */
-  if ( fl_size > 0 ) 				   /*                        */
+  if (fl_size > 0) 				   /*                        */
   { free((char*)file_line_buffer);		   /*                        */
   }						   /*                        */
   filename	   = s_filename;		   /*			     */
@@ -1062,5 +1064,5 @@ int read_rsc(name)				   /*			     */
   flno		   = s_flno;			   /*                        */
   flp		   = s_flp;			   /*                        */
  						   /*                        */
-  return c;					   /*                        */
+  return ret;					   /*                        */
 }						   /*------------------------*/

@@ -42,13 +42,6 @@
 /* Internal Programs                                                         */
 /*===========================================================================*/
 
-#ifdef __STDC__
-#define _ARG(A) A
-#else
-#define _ARG(A) ()
-#endif
- int expand_crossref _ARG((DB db,Record rec));
-
 /*****************************************************************************/
 /* External Programs                                                         */
 /*===========================================================================*/
@@ -269,18 +262,17 @@ void crossref_map(spec)				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	insert_record()
-** Type:	int
-** Purpose:	
-**		
+** Type:	bool
+** Purpose:	Find a record and insert some new entryies.
 ** Arguments:
 **	db	the database
 **	rec	the record
 **	hp	the heap pointer
-**	s	the string
-**	msg	the message
-** Returns:	
+**	s	the key of the entry
+**	msg	the message prefix for an unknown entry message
+** Returns:	|true| iff the record could be inserted
 **___________________________________________________			     */
-static int insert_record(db,rec,hp,s, msg)	   /*                        */
+static bool insert_record(db, rec, hp, s, msg)	   /*                        */
   DB     db;					   /*                        */
   Record rec;					   /*                        */
   register Symbol *hp;				   /*			     */
@@ -290,10 +282,10 @@ static int insert_record(db,rec,hp,s, msg)	   /*                        */
   Symbol t, ms;					   /*                        */
   int    i;					   /*                        */
  						   /*                        */
-  if ( (r = db_find(db, s)) == RecordNULL )	   /*			     */
+  if ((r = db_find(db, s)) == RecordNULL)	   /*			     */
   { ERROR3(msg," entry not found: ",		   /*                        */
 	   (char*)SymbolValue(s)); 	   	   /*		             */
-    return FALSE;				   /*			     */
+    return false;				   /*			     */
   }						   /*			     */
     						   /*                        */
   for (i = RecordFree(r), hp = RecordHeap(r);  	   /* visit all fields       */
@@ -307,7 +299,7 @@ static int insert_record(db,rec,hp,s, msg)	   /*                        */
       provide_to_record(rec, ms ? ms : s, t);  	   /*                        */
     }	   				   	   /*                        */
   }						   /*                        */
-  return TRUE;					   /*                        */
+  return true;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -316,9 +308,9 @@ static int insert_record(db,rec,hp,s, msg)	   /*                        */
 ** Arguments:
 **	db	Database containing the entries.
 **	rec	The record to expand
-** Returns:	FALSE
+** Returns:	|false| iff an error has occured
 **___________________________________________________			     */
-int expand_crossref(db, rec)		   	   /*                        */
+bool expand_crossref(db, rec)		   	   /*                        */
   DB     db;					   /*                        */
   Record rec;					   /*                        */
 { register Symbol *hp;				   /*			     */
@@ -346,7 +338,7 @@ int expand_crossref(db, rec)		   	   /*                        */
  						   /*                        */
     if (i <= 0)					   /*                        */
     { DebugPrint1("*** No crossref found.");	   /*			     */
-      return FALSE;				   /*			     */
+      return false;				   /*			     */
     }						   /*                        */
     else if (*hp == sym_crossref)		   /* ---------------------- */
     {						   /*                        */
@@ -355,7 +347,7 @@ int expand_crossref(db, rec)		   	   /*                        */
       x++;				   	   /*			     */
       sp_open(x);		   		   /* Try to extract	     */
       if ((s = SParseSymbol(&x)) ==  NO_SYMBOL)	   /*  the crossref as symbol*/
-      { return FALSE; }				   /*			     */
+      { return false; }				   /*			     */
 						   /*			     */
       insert_record(db, rec, hp, s, "Crossref");   /*                        */
     }						   /*			     */
@@ -367,10 +359,10 @@ int expand_crossref(db, rec)		   	   /*                        */
       sp_open(x);		   		   /* Try to extract	     */
  						   /*                        */
       if (sp_expect(&x,	(String)"}", 0) )	   /*                        */
-	return FALSE;				   /*                        */
+	return false;				   /*                        */
       for (;;)					   /*                        */
       { if ((s = SParseSymbol(&x)) == NO_SYMBOL)   /*                        */
-	{ return TRUE; }			   /*                        */
+	{ return true; }			   /*                        */
  						   /*                        */
 	insert_record(db, rec, hp, s, "XData");	   /*                        */
  						   /*                        */
@@ -379,6 +371,5 @@ int expand_crossref(db, rec)		   	   /*                        */
       }						   /*                        */
     }						   /*                        */
   }						   /*                        */
- 						   /*                        */
-  return FALSE;	   				   /*			     */
+  return false;	   				   /*			     */
 }						   /*------------------------*/

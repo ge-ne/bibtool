@@ -62,14 +62,8 @@
 #else
 #define _ARG(A) ()
 #endif
- int load_rsc _ARG((String name));		   /*                        */
- int resource _ARG((String name));		   /*                        */
- int search_rsc _ARG((void));			   /*                        */
- int set_rsc _ARG((Symbol name, Symbol val));	   /*                        */
- int use_rsc _ARG((String s));			   /*                        */
- static int test_true _ARG((Symbol  s));	   /*                        */
+ static bool test_true _ARG((Symbol  s));	   /*                        */
  static void init_rsc _ARG((void));		   /*                        */
- void rsc_print _ARG((String s));		   /*                        */
 
 #define NoRscError(X)	      WARNING3("Resource file ",X," not found.")
 
@@ -144,17 +138,18 @@ static void init_rsc()				   /*			     */
 **		|DefaultResourceFile| at compile time of the
 **		module. (see |bibtool.h|)
 ** Arguments:	none
-** Returns:	|TRUE| iff the resource loading succeeds somewhere.
+** Returns:	|true| iff the resource loading succeeds somewhere.
 **___________________________________________________			     */
-int search_rsc()				   /*			     */
+bool search_rsc()				   /*			     */
 { static String	def = (String)DefaultResourceFile; /*			     */
   register char *ap;				   /*			     */
   register char *fn;				   /*			     */
   size_t	len;			   	   /*			     */
+  bool		found;
 						   /*			     */
 #ifdef RSC_ENV_VAR
   if ( (ap=getenv(RSC_ENV_VAR)) != NULL		   /* Try to get the name    */
-       && load_rsc((String)ap) ) return TRUE;	   /*  from the environment. */
+       && load_rsc((String)ap) ) return true;	   /*  from the environment. */
 #endif
 						   /*			     */
 #ifdef HOME_ENV_VAR
@@ -166,9 +161,9 @@ int search_rsc()				   /*			     */
     { (void)strcpy(fn, ap);			   /*			     */
       (void)strcat(fn, DIR_SEP);		   /*			     */
       (void)strcat(fn, (char*)def);		   /*			     */
-      len = load_rsc((String)fn);		   /*			     */
+      found = load_rsc((String)fn);		   /*			     */
       free(fn);					   /*			     */
-      if (len) return TRUE;			   /*			     */
+      if (found) return true;			   /*			     */
     }						   /*			     */
   }						   /*			     */
 #endif
@@ -185,13 +180,13 @@ int search_rsc()				   /*			     */
 ** 		in |parse.c| since it shares subroutines with the parser.
 ** Arguments:
 **	name	The name of the resource file to read.
-** Returns:	|FALSE| iff the reading failed.
+** Returns:	|false| iff the reading failed.
 **___________________________________________________			     */
-int load_rsc(name)			   	   /*			     */
+bool load_rsc(name)			   	   /*			     */
   register String name;				   /*			     */
 {						   /*			     */
-  if ( r_v == NULL ) { init_rsc(); }		   /*			     */
-  return ( name != NULL ? read_rsc(name) : 0 );	   /*			     */
+  if (r_v == NULL) { init_rsc(); }		   /*			     */
+  return (name != NULL ? read_rsc(name) : false);  /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -200,14 +195,14 @@ int load_rsc(name)			   	   /*			     */
 ** Purpose:	
 **		
 ** Arguments:
-**	name	
+**	name	the name of the resource file
 ** Returns:	
 **___________________________________________________			     */
-int resource(name)			   	   /*			     */
+bool resource(name)			   	   /*			     */
   register String name;				   /*			     */
 {						   /*			     */
-  int ret = load_rsc(name);			   /*                        */
-  if ( !ret ) { NoRscError(name); }		   /*                        */
+  bool ret = load_rsc(name);			   /*                        */
+  if (!ret) { NoRscError(name); }		   /*                        */
   return ret;	   				   /*			     */
 }						   /*------------------------*/
 
@@ -220,9 +215,9 @@ int resource(name)			   	   /*			     */
 **		The comparison is done case insensitive.
 ** Arguments:
 **	sym	String to check for the boolean value.
-** Returns:	|TRUE| iff the string represents true.
+** Returns:	|true| iff the string represents true.
 **___________________________________________________			     */
-static int test_true(sym)			   /*			     */
+static bool test_true(sym)			   /*			     */
   Symbol sym;				   	   /*			     */
 { register String s = SymbolValue(sym);		   /*                        */
 						   /*			     */
@@ -242,7 +237,7 @@ static int test_true(sym)			   /*			     */
 	       (s[3] == 'e' || s[3] == 'E') &&	   /*                        */
 	       s[4] == '\0'));			   /*                        */
   }						   /*                        */
-  return 0;					   /*                        */
+  return false;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -255,21 +250,21 @@ static int test_true(sym)			   /*			     */
 **		set resources. 
 ** Arguments:
 **	s	String containing a resource command.
-** Returns:	|FALSE| iff no error has occurred.
+** Returns:	|true| iff an error has occurred.
 **___________________________________________________			     */
-int use_rsc(s)					   /*			     */
+bool use_rsc(s)					   /*			     */
   String	  s;				   /*			     */
 { register Symbol name,				   /*			     */
 		  value;			   /*			     */
 						   /*			     */
   sp_open(s);				   	   /*			     */
-  if ((name = SParseSymbol(&s)) == NULL) return 1; /*			     */
+  if ((name = SParseSymbol(&s)) == NULL) return true;/*			     */
 						   /*			     */
   sp_skip(&s);				   	   /*                        */
 						   /*			     */
   if ((value = SParseValue(&s)) == NULL)	   /*                        */
   { UnlinkSymbol(name);			   	   /*                        */
-    return 1; 					   /*			     */
+    return true;				   /*			     */
   }						   /*                        */
 						   /*			     */
   if (r_v == NULL) { init_rsc(); }		   /*			     */
@@ -285,9 +280,9 @@ int use_rsc(s)					   /*			     */
 ** Arguments:
 **	name	Name of the resource to set.
 **	val	The new value of the resource.
-** Returns:	|FALSE| iff everything went right.
+** Returns:	|false| iff everything went right.
 **___________________________________________________			     */
-int set_rsc(name,val)				   /*			     */
+bool set_rsc(name,val)				   /*			     */
   Symbol name;				   	   /*			     */
   Symbol val;				   	   /*			     */
 {						   /*			     */
@@ -302,17 +297,17 @@ int set_rsc(name,val)				   /*			     */
 						   /*			     */
 #define SETQ(V,T) V=T; UnlinkSymbol(name);
 #define RscNumeric(SYM,S,V,I)						\
-  if ( name==S ) { SETQ(V,atoi((char*)SymbolValue(val)));		\
-    UnlinkSymbol(val); return 0; }
+  if ( name == S ) { SETQ(V,atoi((char*)SymbolValue(val)));		\
+    UnlinkSymbol(val); return false; }
 #define RscString(SYM,S,V,I)						\
-  if ( name==S ) { V = (String)new_string((char*)SymbolValue(val));	\
-    UnlinkSymbol(name); return 0; }
+  if ( name == S ) { V = (String)new_string((char*)SymbolValue(val));	\
+    UnlinkSymbol(name); return false; }
 #define RscBoolean(SYM,S,V,I)						\
-  if ( name==S ) { SETQ(V,test_true(val));				\
-    UnlinkSymbol(val); return 0; }
+  if ( name == S ) { SETQ(V,test_true(val));				\
+    UnlinkSymbol(val); return false; }
 #define RscByFct(SYM,S,FCT)						\
-  if ( name==S ) { (void)FCT;						\
-    UnlinkSymbol(name); return 0; }
+  if ( name == S ) { (void)FCT;						\
+    UnlinkSymbol(name); return false; }
 #define RSC_FIRST(C)	      case C:
 #define RSC_NEXT(C)	      break; case C:
 						   /*			     */

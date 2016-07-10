@@ -46,18 +46,18 @@
 		       void
 #endif
 		      );
- extern int     sbclose(
+ extern bool    sbclose(
 #ifdef __STDC__
 		       StringBuffer*
 #endif
 		      );
- extern int      sbputs(
+ extern bool    sbputs(
 #ifdef __STDC__
 		       char *,
 		       StringBuffer*
 #endif
 		      );
- extern int      sbputc(
+ extern bool    sbputc(
 #ifdef __STDC__
 		       int,
 		       StringBuffer*
@@ -68,7 +68,7 @@
 		       StringBuffer*
 #endif
 		      );
- extern int      sbtell(
+ extern int     sbtell(
 #ifdef __STDC__
 		       StringBuffer*
 #endif
@@ -78,7 +78,7 @@
 		       StringBuffer*
 #endif
 		      );
- extern int      sbseek(
+ extern bool   sbseek(
 #ifdef __STDC__
 		       StringBuffer*,
 		       int

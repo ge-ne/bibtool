@@ -58,7 +58,7 @@
 #else
 #define _ARG(A) ()
 #endif
- static int match _ARG((String s, String t));	   /* entry.c                */
+ static bool match _ARG((String s, String t));	   /* entry.c                */
 
 /*****************************************************************************/
 /* External Programs							     */
@@ -139,7 +139,7 @@ void def_entry_type(sym)			   /*			     */
  						   /*                        */
   for (i = 0; i < entry_ptr; ++i)		   /*			     */
   { 						   /*                        */
-    if (case_cmp(s, SymbolValue(EntryName(i))))	   /*			     */
+    if (case_eq(s, SymbolValue(EntryName(i))))	   /*			     */
     { 
       EntryName(i) = sym; 		   	   /*			     */
       return;				   	   /*			     */
@@ -157,7 +157,7 @@ void def_entry_type(sym)			   /*			     */
     { OUT_OF_MEMORY("entry type"); }		   /*                        */
   }						   /*			     */
  						   /*                        */
-  if (case_cmp(s, (String)"xdata"))		   /*                        */
+  if (case_eq(s, (String)"xdata"))		   /*                        */
   { type_xdata = entry_ptr; }			   /*                        */
  						   /*                        */
   entry_type[entry_ptr++] = sym;	   	   /*		             */
@@ -166,22 +166,23 @@ void def_entry_type(sym)			   /*			     */
 /*-----------------------------------------------------------------------------
 ** Function:	match()
 ** Purpose:	Compare two strings ignoring case.
-**		Return TRUE iff they are identical or the second string is a
-**		substring not followed by a letter or digit.
 ** Arguments:
 **	s	First string
 **	t	Second string
-** Returns:	
+** Returns:	|true| iff the arguments are identical or the second
+**		string is a substring not followed by a letter or digit.
 **___________________________________________________			     */
-static int match(s,t)				   /*			     */
+static bool match(s,t)				   /*			     */
   register String s;				   /*			     */
   register String t;				   /*			     */
 {						   /*			     */
-  while( *t )					   /*			     */
-  { if ( ToLower(*s) != ToLower(*t) ) return(FALSE);/*			     */
+  while (*t)					   /*			     */
+  { if ( ToLower(*s) != ToLower(*t) ) return false;/*			     */
     s++; t++;					   /*			     */
   }						   /*			     */
-  return( is_alpha(*s) || is_digit(*s) ? FALSE : TRUE );/*		     */
+  return (is_alpha(*s) || is_digit(*s)		   /*                        */
+	  ? false				   /*                        */
+	  : true);				   /*		             */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -196,7 +197,7 @@ int find_entry_type(s)			   	   /*			     */
 { int i;				   	   /*			     */
 						   /*			     */
   for (i = 0; i < entry_ptr; ++i)		   /*			     */
-  { if ( match(s, SymbolValue(EntryName(i))) )	   /*			     */
+  { if (match(s, SymbolValue(EntryName(i))))	   /*			     */
     { return i; }				   /*			     */
   }						   /*			     */
   return BIB_NOOP;				   /*			     */

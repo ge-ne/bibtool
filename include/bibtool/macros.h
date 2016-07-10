@@ -113,7 +113,7 @@
  void def_field_type _ARG((String  s));		   /* macros.c               */
  void dump_mac _ARG((char *fname,int allp));	   /* macros.c               */
  int each_macro _ARG((Macro m,int (*fct)(Symbol,Symbol)));/* macros.c        */
- void foreach_macro _ARG((int (*fct)(Symbol,Symbol)));/* macros.c            */
+ void foreach_macro _ARG((bool (*fct)(Symbol,Symbol)));/* macros.c           */
  void free_macro _ARG((Macro mac));		   /* macros.c               */
  void init_macros _ARG((void));			   /* macros.c               */
  void save_key _ARG((Symbol name, Symbol key));	   /* macros.c               */

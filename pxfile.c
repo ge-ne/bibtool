@@ -68,7 +68,7 @@
 #endif
  FILE * px_fopen _ARG((char * name,char * mode,char **pattern,char **path,int (*show)_ARG((char*))));
  char ** px_s2p _ARG((char * s,int sep));
- static int absolute_file _ARG((char *name,char **basename,char ***path));
+ static bool absolute_file _ARG((char *name,char **basename,char ***path));
  static void expand_env _ARG((char * s,char * se,StringBuffer * res));
 
 /*****************************************************************************/
@@ -98,17 +98,17 @@
 ** Purpose:	Check is the file is an absolute file name.
 **		In this case make a new path array which contains the absolute
 **		path only and its location in path. basename is the modified
-**		file name. The return value is TRUE
-**		Otherwise FALSE is returned and nothing changed.
+**		file name.
 **
 **		Currently UN*X and MSDOS like file names are supported.
 ** Arguments:
-**	name
+**	name	the name of the file
 **	basename
 **	path
-** Returns:	
+** Returns:	The return value is |true|
+**		Otherwise |false| is returned and nothing changed.
 **___________________________________________________			     */
-static int absolute_file(name,basename,path)	   /*                        */
+static bool absolute_file(name,basename,path)	   /*                        */
   char        *name;				   /*                        */
   char        **basename;			   /*                        */
   char        ***path;				   /*                        */
@@ -133,7 +133,7 @@ static int absolute_file(name,basename,path)	   /*                        */
 #define SEPARATOR '/'
   if ( *name != SEPARATOR )			   /* starting with root     */
 #endif
-  { return 0; }					   /*                        */
+  { return false; }				   /*                        */
  						   /*                        */
   sp = strrchr(name,SEPARATOR);			   /* find last separator    */
   						   /* existence guarenteed!  */
@@ -156,7 +156,7 @@ static int absolute_file(name,basename,path)	   /*                        */
   *basename = name+l+1;				   /* return the base name   */
   *path = absolut_path;				   /* return the path array  */
   						   /*                        */
-  return 1;					   /* finished.              */
+  return true;					   /* finished.              */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -301,8 +301,8 @@ char ** px_s2p(s,sep)				   /*			     */
   { pattern[l] = cp + array[l]; }		   /*                        */
   pattern[array_ptr] = 0L;			   /* Mark end		     */
 						   /*			     */
-  free(array);				   	   /*                        */
-  sbclose(sb);					   /*                        */
+  (void)free(array);				   /*                        */
+  (void)sbclose(sb);				   /*                        */
   return pattern;				   /*			     */
 }						   /*------------------------*/
 

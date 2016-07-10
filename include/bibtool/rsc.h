@@ -38,13 +38,13 @@
 #ifdef RSC_INIT
 #define RscNumeric(SYM,S,V,I) int    V = I;
 #define RscString(SYM,S,V,I)  String V = (String)I;
-#define RscBoolean(SYM,S,V,I) int    V = I;
+#define RscBoolean(SYM,S,V,I) bool   V = I;
 #define RscByFct(SYM,S,FCT)   
 #define DECLARE(TYPE,VAR,VAL) TYPE VAR = VAL
 #else
 #define RscNumeric(SYM,S,V,I) extern int    V;
 #define RscString(SYM,S,V,I)  extern String V;
-#define RscBoolean(SYM,S,V,I) extern int    V;
+#define RscBoolean(SYM,S,V,I) extern bool   V;
 #define RscByFct(SYM,S,FCT)   
 #define DECLARE(TYPE,VAR,VAL) extern TYPE VAR
 #endif
@@ -62,9 +62,9 @@ DECLARE( String, rsc_v_rsc , (String)(RSC_BIBTOOL_DEFAULT)	);
 #else
 #define _ARG(A) ()
 #endif
- int load_rsc _ARG((String name));
- int resource _ARG((String name));
- int search_rsc _ARG((void));
- int set_rsc _ARG((Symbol name, Symbol val));
- int use_rsc _ARG((String s));
+ bool load_rsc _ARG((String name));
+ bool search_rsc _ARG((void));
+ bool resource _ARG((String name));
+ bool set_rsc _ARG((Symbol name, Symbol val));
+ bool use_rsc _ARG((String s));
  void rsc_print _ARG((String s));

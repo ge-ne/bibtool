@@ -102,7 +102,7 @@
 #define _ARG(A) ()
 #endif
  Symbol  symbol _ARG((String s));	   	   /* symbols.c              */
- Symbol  sym_extract _ARG((String *sp, int lowercase));/* symbols.c          */
+ Symbol  sym_extract _ARG((String *sp, bool lowercase));/* symbols.c         */
  char * new_string _ARG((char * s));		   /* symbols.c              */
  static SymTab new_sym_tab _ARG((String value));   /* symbols.c              */
  static int hashindex _ARG((String s));		   /* symbols.c              */
@@ -374,9 +374,9 @@ void sym_unlink(sym)				   /*			     */
 #else
  						   /*                        */
 #ifdef DEBUG
-  if ((stp=get_sym_tab()) == NULL)		   /*                        */
+  if (get_sym_tab(sym) == NULL)		   	   /*                        */
   { ErrPrintF("*** Attempt to free an undefined symbol: %s\n",/*             */
-	      SymbolValue(s));			   /*                        */
+	      SymbolValue(sym));		   /*                        */
   }						   /*                        */
 #endif
 #endif
@@ -482,12 +482,12 @@ void sym_gc()					   /*                        */
 **___________________________________________________			     */
 Symbol  sym_extract(sp, lowercase)		   /*			     */
   register String *sp;				   /* pointer to first char  */
-  int lowercase;				   /*                        */
-{ Uchar c;					   /*			     */
+  bool   lowercase;				   /*                        */
+{ Uchar  c;					   /*			     */
   String t = *sp;				   /*                        */
   Symbol sym;					   /*                        */
 						   /*			     */
-  while ( is_allowed(**sp) ) (*sp)++;		   /*                        */
+  while (is_allowed(**sp)) (*sp)++;		   /*                        */
   c    = **sp;					   /*			     */
   **sp = '\0';					   /*			     */
   if (lowercase)				   /*                        */

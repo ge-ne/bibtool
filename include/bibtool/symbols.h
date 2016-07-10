@@ -221,7 +221,7 @@ typedef String Symbol;
 #define _ARG(A) ()
 #endif
  Symbol  symbol _ARG((String s));	   	   /* symbols.c              */
- Symbol  sym_extract _ARG((String *sp,int lowercase));/* symbols.c           */
+ Symbol  sym_extract _ARG((String *sp,bool lowercase));/* symbols.c          */
  char * new_string _ARG((char * s));		   /* symbols.c              */
  void init_symbols _ARG((void));		   /* symbols.c              */
  void sym_dump _ARG((void));			   /* symbols.c              */

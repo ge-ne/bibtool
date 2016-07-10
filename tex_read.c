@@ -88,7 +88,7 @@
 #else
 #define _ARG(A) ()
 #endif
- int TeX_read _ARG((String  cp,String *sp));	   /* tex_read.c             */
+ bool TeX_read _ARG((String  cp,String *sp));	   /* tex_read.c             */
  static MacDef find_macro _ARG((String name,MacDef md));/* tex_read.c        */
  static MacDef new_macdef _ARG((String name,int arity,Token tokens));/* tex_read.c*/
  static Token TeX_get_token _ARG((int (*get_fct)_ARG((void))));/* tex_read.c */
@@ -181,12 +181,12 @@
 **___________________________________________________			     */
 static void init_TeX()				   /*			     */
 { register int i;				   /*			     */
-  static int   initialized = FALSE;		   /*			     */
+  static bool  initialized = false;		   /*			     */
 						   /*			     */
-  if ( initialized ) return;			   /*			     */
-  initialized = TRUE;				   /*			     */
+  if (initialized) return;			   /*			     */
+  initialized = true;				   /*			     */
 						   /*			     */
-  for ( i=0; i<256; ++i )			   /*			     */
+  for (i = 0; i < 256; ++i)			   /*			     */
   { active[i]  = MacDefNULL;			   /*			     */
     catcode[i] = (  isalpha(i)			   /*			     */
 		  ? CATCODE_LETTER		   /*			     */
@@ -863,9 +863,9 @@ static int fill_token(tp)			   /*			     */
 ** Arguments:
 **	cp	Pointer to position where the character is stored.
 **	sp	Pointer to position where the string is stored.
-** Returns:	|FALSE| iff everything went right.
+** Returns:	|false| iff everything went right.
 **___________________________________________________			     */
-int TeX_read(cp, sp)				   /*			     */
+bool TeX_read(cp, sp)				   /*			     */
   String	cp;				   /*			     */
   String	*sp;				   /*			     */
 { static Token	t     = TokenNULL;		   /*			     */
@@ -895,7 +895,7 @@ int TeX_read(cp, sp)				   /*			     */
     { *cp = TokenChar(t);			   /*			     */
       *sp = TokenSeq(t);			   /*			     */
       UnlinkToken(t,old_t);			   /*			     */
-      return 1;					   /*			     */
+      return true;				   /*			     */
     }						   /*			     */
 						   /*			     */
     for (i = 1; i <= MacroArity(mac); ++i)	   /* Fill the argument	     */
@@ -941,7 +941,7 @@ int TeX_read(cp, sp)				   /*			     */
     }						   /*			     */
   }						   /*			     */
   old_t = TokenNULL;				   /*			     */
-  return 0;					   /*			     */
+  return false;					   /*			     */
 }						   /*------------------------*/
 
 

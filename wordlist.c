@@ -164,16 +164,16 @@ void free_words(wlp, fct)			   /*                        */
 **		-- e.g. determined by matching against a
 **		template. Another application the the processing of
 **		all elements in the |WordList|. In this case |fct|
-**		must always return |TRUE|.
+**		must always return |true|.
 ** Arguments:
 **	wl	WordList to traverse.
 **	fct	function to apply.
-** Returns:	return value of last function or 1.
+** Returns:	return value of last function or |true|.
 **___________________________________________________			     */
-int foreach_word(wl, fct)			   /*                        */
+bool foreach_word(wl, fct)			   /*                        */
   WordList wl;					   /*                        */
-  int (*fct)_ARG((Symbol));			   /*                        */
-{ int ret = 1;					   /*                        */
+  bool (*fct)_ARG((Symbol));			   /*                        */
+{ bool ret = true;				   /*                        */
   while ( wl && (ret=(fct)(ThisWord(wl))) )	   /*                        */
   { wl = NextWord(wl); }			   /*                        */
   return ret;					   /*                        */
@@ -186,19 +186,17 @@ int foreach_word(wl, fct)			   /*                        */
 ** Arguments:
 **	s	String to find.
 **	wl	Word list to search in.
-** Returns:	|FALSE| iff the word does not occur in the word list.
+** Returns:	|false| iff the word does not occur in the word list.
 **___________________________________________________			     */
-int find_word(s, wl)				   /*			     */
+bool find_word(s, wl)				   /*			     */
   register String   s;				   /*			     */
   register WordList wl;				   /*			     */
 {					   	   /*			     */
   while ( wl != WordNULL )			   /*                        */
-  {						   /*                        */
-    if ( case_cmp(SymbolValue(ThisWord(wl)),	   /*                        */
-		  s) )   		   	   /*                        */
-    { return 1; } 				   /*			     */
+  { if (case_eq(SymbolValue(ThisWord(wl)), s))	   /*                        */
+    { return true; } 				   /*			     */
     wl = NextWord(wl);				   /*                        */
   }			   			   /*			     */
 					   	   /*			     */
-  return 0;				   	   /*			     */
+  return false;				   	   /*			     */
 }						   /*------------------------*/

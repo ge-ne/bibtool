@@ -169,7 +169,7 @@ Symbol look_macro(name, add)			   /*                        */
 ** Function:	foreach_macro()
 ** Purpose:	Apply a function to each macro in turn. The function
 **		is called with the name and the value of the macro. If
-**		it returns |FALSE| then the processing of further
+**		it returns |false| then the processing of further
 **		macros is suppressed.
 **
 **		The function given as argument is called with two
@@ -185,7 +185,7 @@ Symbol look_macro(name, add)			   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void foreach_macro(fct)				   /*                        */
-  int (*fct) _ARG((Symbol ,Symbol ));		   /*                        */
+  bool (*fct) _ARG((Symbol ,Symbol ));		   /*                        */
 { Macro mac;					   /*                        */
   for (mac = macros; 				   /*                        */
        mac != MacroNULL; 			   /*                        */
@@ -336,12 +336,12 @@ void def_field_type(s)				   /*                        */
   while (*s && !is_allowed(*s)) ++s;		   /*                        */
   if (*s == '\0') return;			   /*                        */
  						   /*                        */
-  name = sym_extract(&s, TRUE);			   /*                        */
+  name = sym_extract(&s, true);			   /*                        */
   						   /*                        */
   while (*s && !is_allowed(*s)) ++s;		   /*                        */
   if (*s == '\0') return;			   /*                        */
  						   /*                        */
-  def_item(name, sym_extract(&s, FALSE));	   /*                        */
+  def_item(name, sym_extract(&s, false));	   /*                        */
 }						   /*------------------------*/
 
 

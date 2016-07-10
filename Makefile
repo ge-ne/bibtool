@@ -52,7 +52,7 @@ DISTFILES += 	AutoConf/config.h.in 	\
 		MSDOS/link.wat		\
 		Linux/ld-version-script	\
 		configure		\
-		configure.in		\
+		configure.ac		\
 		install-sh		\
 		mkdirchain		\
 		test/lib/BUnit.pm	\
@@ -66,6 +66,8 @@ CTANFILES =	README.md		\
 		doc/c_lib.pdf
 
 LATEX	=	lualatex
+
+configure: configure.ac
 
 lint:
 	gcc  $(C_FLAGS) $(REGEX_DEF) $(DONT_LINK) -ansi -W -Wall -O2 ${CFILES}

@@ -31,8 +31,8 @@
 #else
 #define _ARG(A) ()
 #endif
- int apply_aux _ARG((DB db));			   /* tex_aux.c              */
- int foreach_aux _ARG((int (fct)_ARG((Symbol))));  /* tex_aux.c              */
+ bool read_aux _ARG((String fname,void (*fct)(char*),bool verbose));/*tex_aux.c*/
+ bool apply_aux _ARG((DB db));			   /* tex_aux.c              */
+ int foreach_aux _ARG((bool (fct)_ARG((Symbol)))); /* tex_aux.c              */
  int aux_used _ARG((Symbol s));	   		   /* tex_aux.c              */
- int read_aux _ARG((String fname,void (*fct)(char*),int verbose));/*tex_aux.c*/
  void clear_aux _ARG((void));			   /* tex_aux.c              */

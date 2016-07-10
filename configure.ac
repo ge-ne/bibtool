@@ -24,7 +24,7 @@ dnl Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl 
 dnl ***************************************************************************
 AC_REVISION($Revision: 1.10 $)dnl
-AC_PREREQ(2.59)
+AC_PREREQ(2.69)
 
 dnl ---------------------------------------------------------------------------
 dnl Process this file with autoconf to produce a configure script.
@@ -50,7 +50,6 @@ dnl Checks for libraries.
 
 dnl ---------------------------------------------------------------------------
 dnl Checks for header files.
-AC_HEADER_STDC
 AC_STDC_HEADERS
 
 dnl ---------------------------------------------------------------------------
@@ -67,6 +66,7 @@ dnl ---------------------------------------------------------------------------
 dnl Check for headers.
 AC_CHECK_HEADERS(string.h)
 AC_CHECK_HEADERS(stdlib.h)
+AC_CHECK_HEADERS(stdbool.h)
 AC_CHECK_HEADERS(time.h)
 AC_CHECK_FUNCS(getenv)
 AC_CHECK_FUNCS(strrchr)

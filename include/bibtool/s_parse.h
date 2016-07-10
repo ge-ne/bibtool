@@ -49,11 +49,11 @@
 #else
 #define _ARG(A) ()
 #endif
- Symbol s_parse _ARG((int type, String *sp, int errp));/* s_parse.c          */
+ Symbol s_parse _ARG((int type, String *sp, bool errp));/* s_parse.c         */
  void sp_close _ARG((void));			   /* s_parse.c              */
  void sp_open _ARG((String  s));		   /* s_parse.c              */
  void sp_skip _ARG((String *sp));		   /*                        */
- int sp_expect _ARG((String *sp, String expect, int verbose));/* s_parse.c   */
+ bool sp_expect _ARG((String *sp, String expect, bool verbose));/* s_parse.c */
  Symbol* sp_symbols _ARG((String *sp));		   /* s_parse.c              */
  String sp_eos _ARG((String *sp));		   /*                        */
 

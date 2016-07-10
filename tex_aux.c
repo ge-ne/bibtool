@@ -55,7 +55,7 @@
 
  static StringBuffer* aux_sb = (StringBuffer*)0;
 
- static int cite_star        = TRUE;
+ static bool cite_star       = true;
 
  static WordList cite[32]    = 
  { WordNULL, WordNULL, WordNULL, WordNULL,
@@ -78,7 +78,7 @@
 **___________________________________________________			     */
 void clear_aux()				   /*                        */
 { int i;					   /*                        */
-  cite_star = TRUE;				   /*                        */
+  cite_star = true;				   /*                        */
   for (i = 0; i < 32; i++)			   /*                        */
   { free_words(&cite[i], sym_unlink); }		   /*                        */
 }						   /*------------------------*/
@@ -87,13 +87,12 @@ void clear_aux()				   /*                        */
 ** Function:	foreach_aux()
 ** Purpose:	Apply the function to all words in the citation list of the
 **		aux file.
-**		
 ** Arguments:
 **	fct	funtion to apply
 ** Returns:	|cite_star|
 **___________________________________________________			     */
 int foreach_aux(fct)				   /*                        */
-  int (fct)_ARG((Symbol));			   /*                        */
+  bool (fct)_ARG((Symbol));			   /*                        */
 { int i;					   /*                        */
   for (i = 0; i < 32; i++)			   /*                        */
   { foreach_word(cite[i], fct); }		   /*                        */
@@ -112,7 +111,7 @@ int foreach_aux(fct)				   /*                        */
 static void save_ref(key)			   /*                        */
   register String key;				   /*                        */
 { 						   /*                        */
-  if ( cite_star ) return;			   /*                        */
+  if (cite_star) return;			   /*                        */
  						   /*                        */
   if (*key == '*' && *(key+1) == '\0')		   /*                        */
   { clear_aux(); }				   /*                        */
@@ -160,34 +159,34 @@ int aux_used(s)				   	   /*                        */
 **	fct	A function to be called for each \BibTeX{} file requested.
 **	verbose	Boolean indicating whether messages should be produced
 **		indicating the status of the operation.
-** Returns:	|TRUE| iff the file could not be opened.
+** Returns:	|true| iff the file could not be opened.
 **___________________________________________________			     */
-int read_aux(fname, fct, verbose)		   /*                        */
+bool read_aux(fname, fct, verbose)		   /*                        */
   String 	fname;			   	   /* aux file name          */
   void		(*fct)_ARG((char*));		   /*                        */
-  int           verbose;			   /*                        */
+  bool          verbose;			   /*                        */
 { FILE 	        *file;				   /*                        */
   int           c;                                 /*                        */
   String	s;				   /*                        */
  						   /*                        */
-  cite_star  = FALSE;				   /*                        */
-  rsc_select = TRUE; 				   /*                        */
+  cite_star  = false;				   /*                        */
+  rsc_select = true; 				   /*                        */
   					   	   /*                        */
   if ( (file=fopen((char*)fname,"r") ) == NULL )   /*                        */
   { StringBuffer *sb = sbopen();                   /*                        */
     sbputs((char*)fname,sb);			   /*                        */
     sbputs(".aux",sb);                             /*                        */
     file = fopen(sbflush(sb),"r");                 /*                        */
-    sbclose(sb);                                   /*                        */
+    (void)sbclose(sb);				   /*                        */
   }			   			   /*                        */
-  if ( file == NULL )				   /*                        */
+  if (file == NULL)				   /*                        */
   { ERROR3("aux file ",fname," not found.");	   /*                        */
-    return TRUE;				   /*                        */
+    return true;				   /*                        */
   }						   /*                        */
  						   /*                        */
-  rsc_del_q = FALSE;				   /*                        */
+  rsc_del_q = false;				   /*                        */
  						   /*                        */
-  if ( verbose ) 				   /*                        */
+  if (verbose) 				   	   /*                        */
   { VerbosePrint2("Analyzing ",fname); }	   /*                        */
  						   /*                        */
   if ( aux_sb == (StringBuffer*)0 )		   /*                        */
@@ -258,7 +257,7 @@ int read_aux(fname, fct, verbose)		   /*                        */
     }		   	   			   /*                        */
   }						   /*                        */
 #endif
-  return FALSE;					   /*                        */
+  return false;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -274,21 +273,21 @@ int read_aux(fname, fct, verbose)		   /*                        */
 **		necessary. 
 ** Arguments:
 **	db	Database to clean.
-** Returns:	|FALSE| iff all entries are kept because of an
+** Returns:	|false| iff all entries are kept because of an
 **		explicit or implicit star (*).
 **___________________________________________________			     */
-int apply_aux(db)				   /*                        */
+bool apply_aux(db)				   /*                        */
   DB     db;					   /*                        */
 { Record rec, rec1;				   /*                        */
  						   /*                        */
-  if ( cite_star ) return FALSE;		   /* No selection desired.  */
+  if (cite_star) return false;		   	   /* No selection desired.  */
 						   /*                        */
   DebugPrint1("Filtering from aux");		   /*                        */
  						   /*                        */
   rec = DBnormal(db);				   /*                        */
-  if ( rec == RecordNULL ) return TRUE;		   /* No entries left anyhow.*/
+  if (rec == RecordNULL) return true;		   /* No entries left anyhow.*/
  						   /*                        */
-  while ( PrevRecord(rec) != RecordNULL )	   /* Rewind                 */
+  while (PrevRecord(rec) != RecordNULL)	   	   /* Rewind                 */
   { rec = PrevRecord(rec); }			   /*                        */
   rec1 = rec;					   /*                        */
  						   /*                        */
@@ -329,7 +328,7 @@ int apply_aux(db)				   /*                        */
 			   sym_empty, 		   /*                        */
 			   sym_empty, 		   /*                        */
 			   db,			   /*                        */
-			   TRUE);     		   /*                        */
+			   true);     		   /*                        */
 	  if ( (r=db_find(db, key)) == RecordNULL )/*                        */
 	  { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",
 		      SymbolValue(key));	   /*                        */
@@ -358,6 +357,6 @@ int apply_aux(db)				   /*                        */
     { SetRecordDELETED(rec); }			   /*                        */
   }						   /*                        */
  						   /*                        */
-  return TRUE;					   /*                        */
+  return true;					   /*                        */
 }						   /*------------------------*/
 

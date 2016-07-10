@@ -94,11 +94,11 @@
 **___________________________________________________			     */
 void set_symbol_type(s)				   /*			     */
   register String  s;				   /*			     */
-{ if ( case_cmp(s, s_upper) )			   /*			     */
+{ if ( case_eq(s, s_upper) )			   /*			     */
   { symbol_type = SYMBOL_TYPE_UPPER; }		   /*			     */
-  else if ( case_cmp(s, s_cased) )		   /*			     */
+  else if ( case_eq(s, s_cased) )		   /*			     */
   { symbol_type = SYMBOL_TYPE_CASED; }		   /*			     */
-  else if ( case_cmp(s, s_lower) )		   /*			     */
+  else if ( case_eq(s, s_lower) )		   /*			     */
   { symbol_type = SYMBOL_TYPE_LOWER; }		   /*			     */
   else						   /*			     */
   { Err("Unknown symbol type ignored.\n"); }	   /*			     */
@@ -232,17 +232,17 @@ static void line_breaking(t, align, fct)	   /*			     */
 { register String s;			   	   /* intermediate pointer   */
   char		  end_c;			   /* temp. character.	     */
   int		  brace,			   /* brace counter	     */
-		  len,				   /* length of rem. output  */
-		  first = TRUE;			   /* indicator for #	     */
+		  len;				   /* length of rem. output  */
+  bool		  first = true;			   /* indicator for #	     */
 						   /*			     */
-  while ( is_space(*t) ) ++t;			   /* skip leading spaces    */
+  while (is_space(*t)) ++t;			   /* skip leading spaces    */
 						   /*			     */
   indent(align, fct);				   /* goto alignment column  */
 						   /*			     */
-  while ( *t )					   /* as long as sth to print*/
+  while (*t)					   /* as long as sth to print*/
   { s = t;					   /*			     */
 						   /*			     */
-    switch ( *t )				   /*			     */
+    switch (*t)				   	   /*			     */
     { case '"':					   /* QUOTED PART	     */
 	for ( len = 2, ++t;			   /*			     */
 	     *t && *t != '\"';			   /* Search terminating "   */
@@ -288,7 +288,7 @@ static void line_breaking(t, align, fct)	   /*			     */
       }						   /*			     */
       else if ( !first )			   /* If sth has been before */
       { puts_in((String)"\n# ", align - 2, fct);   /*  start a new line	     */
-	first = TRUE;				   /*			     */
+	first = true;				   /*			     */
       }						   /* Now we have to break   */
       else					   /*  a single entry	     */
       { Uchar  save_c;			   	   /*                        */
@@ -341,7 +341,7 @@ static void line_breaking(t, align, fct)	   /*			     */
     while ( *t && *t != '#' ) ++t;		   /* Search next #	     */
     if ( *t ) ++t;				   /* Skip beyond the #	     */
     while ( is_space(*t) ) ++t;			   /* Ignore following spaces*/
-    first = FALSE;				   /*			     */
+    first = false;				   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
 
@@ -468,13 +468,12 @@ char * sput_record(rec, db, start)	   	   /*			     */
 **		|rsc.c|) are taken into account:
 **		\begin{description}
 **		\item[rsc\_parentheses] If this boolean variable is
-**		  |TRUE| then |(| and |)| are used to delimit the
+**		  |true| then |(| and |)| are used to delimit the
 **		  record. Otherwise |{| and |}| are used.
 **		\item[rsc\_col\_p] This integer variable controls the
 **		  indentation of preamble records.
 **		\item[rsc\_col\_s] This integer variable controls the
 **		  indentation of string records.
-**
 **		\item[rsc\_expand\_macros] If this boolean variable is
 **		  set then macros are expanded before the record is
 **		  printed. This does not effect the internal
@@ -485,7 +484,6 @@ char * sput_record(rec, db, start)	   	   /*			     */
 **		  indentation of the key in a normal record.
 **		\item[rsc\_newlines] This integer variable controls
 **		  the number of newlines printed after a normal record.
-**
 **		\item[rsc\_linelen] This integer variable controls
 **		  the length of the line. The line breaking algorithm
 **		  is applied if this column is about to be violated.
@@ -632,7 +630,7 @@ void put_record(fct, rec, db, start)		   /*                        */
 					    ? sym_close_brace/*              */
 					    : sym_double_quote),/*           */
 					   db,	   /*                        */
-					   FALSE)  /*                        */
+					   false)  /*                        */
 			      : *(hp+1) ),	   /*                        */
 			     rsc_col,		   /*                        */
 			     fct);		   /*                        */

@@ -41,6 +41,7 @@
 /*===========================================================================*/
 
 #define INIT_TYPE
+#include <bibtool/general.h>
 #include <bibtool/type.h>
 
 /*****************************************************************************/
@@ -97,41 +98,40 @@ void add_word_sep(s)				   /*                        */
 #endif
 
 /*-----------------------------------------------------------------------------
-** Function:	case_cmp()
+** Function:	case_eq()
 ** Purpose:	Compare two strings ignoring cases. If the strings are
 **		identical up to differences in case then this function
-**		returns |TRUE|.
+**		returns |true|.
 ** Arguments:
 **	s	First string to consider.
 **	t	Second string to consider.
-** Returns:	|FALSE| iff the strings differ.
+** Returns:	|true| iff the strings are equal.
 **___________________________________________________			     */
-int case_cmp(s, t)				   /*                        */
+bool case_eq(s, t)				   /*                        */
   register String s;			   	   /*                        */
   register String t;			   	   /*                        */
 {						   /*                        */
 #ifdef DEBUG
-  assert(s!=NULL);				   /*                        */
-  assert(t!=NULL);				   /*                        */
+  assert(s != NULL);				   /*                        */
+  assert(t != NULL);				   /*                        */
 #endif
   while ( *s )					   /*                        */
-  { if ( ToLower(*(s++)) != ToLower(*(t++)) )	   /*                        */
-      return 0;				   	   /*                        */
+  { if (ToLower(*(s++)) != ToLower(*(t++)))	   /*                        */
+      return false;				   /*                        */
   }						   /*                        */
 #ifdef DEBUG
-  assert(t!=NULL);				   /*                        */
+  assert(t != NULL);				   /*                        */
 #endif
-  return (*t=='\0'?1:0);			   /*                        */
+  return (*t == '\0' ? true : false);		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	cmp()
 ** Type:	int
-** Purpose:	
-**		
+** Purpose:	Compare two strings.
 ** Arguments:
-**	s	
-**	t	
+**	s	the first string
+**	t	the second string
 ** Returns:	
 **___________________________________________________			     */
 int cmp(s, t)				   	   /*                        */

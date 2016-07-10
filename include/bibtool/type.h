@@ -48,7 +48,7 @@
 #ifndef TYPE_H
 #define TYPE_H
 
-#include <stdio.h>
+#include <bibtool/general.h>
 
  typedef unsigned char Uchar;
  typedef Uchar* String;
@@ -493,7 +493,7 @@ Uchar trans_id[256];			   	   /*                        */
 #define _ARG(A) ()
 #endif
  String lower _ARG((String s));		   	   /* type.c                 */
- int case_cmp _ARG((String s, String t));	   /* type.c                 */
+ bool case_eq _ARG((String s, String t));	   /* type.c                 */
  int cmp _ARG((String s, String t));	   	   /* type.c                 */
  void add_word_sep _ARG((String s));		   /* type.c                 */
  void init_type _ARG((void));			   /* type.c                 */
