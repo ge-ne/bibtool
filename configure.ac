@@ -23,12 +23,19 @@ dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl 
 dnl ***************************************************************************
-AC_REVISION($Revision: 1.10 $)dnl
-AC_PREREQ(2.69)
 
 dnl ---------------------------------------------------------------------------
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(sbuffer.c)
+AC_INIT(BibTool,2.*)
+
+dnl ---------------------------------------------------------------------------
+AC_REVISION($Revision: 1.11 $)
+AC_COPYRIGHT(Copyright (C) 2016 Gerd Neugebauer
+This configure script is part of BibTool.
+Revision 1.11)
+
+dnl ---------------------------------------------------------------------------
+AC_PREREQ(2.69)
 
 dnl ---------------------------------------------------------------------------
 dnl Checks for programs.
@@ -132,4 +139,4 @@ dnl AC_CONFIG_SUBDIRS(BibTcl)
 AC_CONFIG_HEADER(include/bibtool/config.h:AutoConf/config.h.in regex-0.12/config.h:AutoConf/reconfig.h.in)
 
 AC_OUTPUT(makefile:AutoConf/makefile.in)
-
+dnl ---------------------------------------------------------------------------

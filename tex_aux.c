@@ -71,8 +71,6 @@
 /*-----------------------------------------------------------------------------
 ** Function:	clear_aux()
 ** Purpose:	Reset the aux table to the initial state.
-**		
-**		
 ** Arguments:   none
 ** Returns:	nothing
 **___________________________________________________			     */
@@ -91,7 +89,7 @@ void clear_aux()				   /*                        */
 **	fct	funtion to apply
 ** Returns:	|cite_star|
 **___________________________________________________			     */
-int foreach_aux(fct)				   /*                        */
+bool foreach_aux(fct)				   /*                        */
   bool (fct)_ARG((Symbol));			   /*                        */
 { int i;					   /*                        */
   for (i = 0; i < 32; i++)			   /*                        */
@@ -125,9 +123,9 @@ static void save_ref(key)			   /*                        */
 **		or implicit if a * is used.
 ** Arguments:
 **	s	reference key to check
-** Returns:	
+** Returns:	|true| if the reference is used.
 **___________________________________________________			     */
-int aux_used(s)				   	   /*                        */
+bool aux_used(s)				   /*                        */
   Symbol s;					   /*                        */
 {						   /*                        */
   return cite_star				   /*                        */
@@ -187,13 +185,13 @@ bool read_aux(fname, fct, verbose)		   /*                        */
   rsc_del_q = false;				   /*                        */
  						   /*                        */
   if (verbose) 				   	   /*                        */
-  { VerbosePrint2("Analyzing ",fname); }	   /*                        */
+  { VerbosePrint2("Analyzing ", fname); }	   /*                        */
  						   /*                        */
-  if ( aux_sb == (StringBuffer*)0 )		   /*                        */
+  if (aux_sb == (StringBuffer*)0)		   /*                        */
   { aux_sb = sbopen(); }			   /*                        */
  						   /*                        */
   for(c = getc(file); c != EOF; c = getc(file))    /*                        */
-  { if ( c == '\\' ) 				   /*                        */
+  { if (c == '\\') 				   /*                        */
     { for(c = getc(file);                          /*                        */
           c != EOF && (is_alpha(c&0xff) || c == '@');/*                      */
           c = getc(file))			   /*                        */
@@ -203,7 +201,7 @@ bool read_aux(fname, fct, verbose)		   /*                        */
  						   /*                        */
       if (strcmp((char*)s, "citation") == 0 )	   /*                        */
       { do					   /* Save a cite key.       */
-	{ switch ( c=getc(file) )		   /*                        */
+	{ switch (c=getc(file))		   	   /*                        */
 	  { case EOF: break;			   /*                        */
 	    case ',':				   /*                        */
 	    case '}':		   	   	   /*                        */
@@ -231,7 +229,7 @@ bool read_aux(fname, fct, verbose)		   /*                        */
 	}					   /*                        */
       }						   /*                        */
       else if (strcmp((char*)s, "@input") == 0 )   /* Read another aux file  */
-      { while( (c=getc(file)) != '}' && c != EOF ) /*                        */
+      { while ((c=getc(file)) != '}' && c != EOF)  /*                        */
 	{ (void)sbputchar(c,aux_sb); }		   /*                        */
 	s = (String)sbflush(aux_sb);		   /*                        */
 	sbrewind(aux_sb);			   /*                        */
@@ -294,34 +292,33 @@ bool apply_aux(db)				   /*                        */
   for ( ;					   /* Phase 1:               */
 	rec != RecordNULL;			   /*  Mark all entries      */
 	rec = NextRecord(rec) )			   /*  contained in the aux  */
-  { if ( *RecordHeap(rec) &&		   	   /*  file and unmark the   */
-	 find_word(SymbolValue(*RecordHeap(rec)),  /*  others.               */
-		   cite[(*SymbolValue(*RecordHeap(rec)))&31]) )/*            */
+  { if (*RecordHeap(rec) &&		   	   /*  file and unmark the   */
+	find_word(SymbolValue(*RecordHeap(rec)),   /*  others.               */
+		  cite[(*SymbolValue(*RecordHeap(rec)))&31]) )/*             */
     { SetRecordMARK(rec); }			   /*                        */
     else					   /*                        */
     { ClearRecordMARK(rec); }			   /*                        */
   }						   /*                        */
  						   /*                        */
- 						   /*                        */
-  for ( rec = rec1;				   /* Phase 2:               */
-	rec != RecordNULL;			   /*  For all marked entries*/
-	rec = NextRecord(rec) )		   	   /*  which have a xref and */
+  for (rec = rec1;				   /* Phase 2:               */
+       rec != RecordNULL;			   /*  For all marked entries*/
+       rec = NextRecord(rec) )		   	   /*  which have a xref and */
   {						   /*  mark all xrefs.       */
-    if ( RecordIsMARKED(rec) &&		   	   /*                        */
-	 RecordIsXREF(rec)   &&		   	   /*                        */
-	 !RecordIsDELETED(rec)		   	   /*                        */
+    if (RecordIsMARKED(rec) &&		   	   /*                        */
+	RecordIsXREF(rec)   &&		   	   /*                        */
+	!RecordIsDELETED(rec)		   	   /*                        */
        )					   /*                        */
     { Symbol key = sym_qqq;	   		   /*                        */
       int    count;				   /*                        */
       Record r = rec;				   /*                        */
  						   /*                        */
-      for ( count = rsc_xref_limit;		   /* Prevent infinite loop  */
-	    count >= 0	      &&		   /*                        */
-	      RecordIsXREF(r) &&		   /*                        */
-	      !RecordIsDELETED(r);		   /*                        */
-	    count-- )				   /*                        */
+      for (count = rsc_xref_limit;		   /* Prevent infinite loop  */
+	   count >= 0	      &&		   /*                        */
+	     RecordIsXREF(r) &&		   	   /*                        */
+	     !RecordIsDELETED(r);		   /*                        */
+	   count-- )				   /*                        */
       {	key = get_field(db,r,sym_crossref);	   /*                        */
-	if ( key == NULL )			   /*                        */
+	if (key == NULL)			   /*                        */
 	{ count = -1; }			   	   /*                        */
 	else					   /*                        */
 	{ key = expand_rhs(key,	   		   /*                        */
@@ -329,30 +326,30 @@ bool apply_aux(db)				   /*                        */
 			   sym_empty, 		   /*                        */
 			   db,			   /*                        */
 			   true);     		   /*                        */
-	  if ( (r=db_find(db, key)) == RecordNULL )/*                        */
-	  { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",
+	  if ((r=db_find(db, key)) == RecordNULL)  /*                        */
+	  { ErrPrintF("*** BibTool: Crossref `%s' not found.\n",/*           */
 		      SymbolValue(key));	   /*                        */
 	    count = -1;			   	   /*                        */
 	  }					   /*                        */
 	  else				   	   /*                        */
 	  {					   /*                        */
-	    if ( RecordIsMARKED(r) )		   /*                        */
+	    if (RecordIsMARKED(r))		   /*                        */
 	    { count = -1; }			   /*                        */
 	    SetRecordMARK(r);			   /*                        */
 	    ClearRecordDELETED(r);		   /*                        */
 	  }					   /*                        */
 	}			   		   /*                        */
       }			   		   	   /*                        */
-      if ( count == -1 )			   /*                        */
+      if (count == -1)			   	   /*                        */
       { ErrPrintF("*** BibTool: Crossref limit exceeded; `%s' possibly looped.\n",
 		  SymbolValue(key));		   /*                        */
       }						   /*                        */
     }    					   /*                        */
   }						   /*                        */
  						   /*                        */
-  for ( rec = rec1;				   /* Phase 3:               */
-	rec != RecordNULL;			   /*  Delete unmarked       */
-	rec = NextRecord(rec) )			   /*  entries.              */
+  for (rec = rec1;				   /* Phase 3:               */
+       rec != RecordNULL;			   /*  Delete unmarked       */
+       rec = NextRecord(rec))			   /*  entries.              */
   { if ( !RecordIsMARKED(rec) )			   /*                        */
     { SetRecordDELETED(rec); }			   /*                        */
   }						   /*                        */
