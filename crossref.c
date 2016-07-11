@@ -128,7 +128,7 @@ static void free_map(m)				   /*                        */
 void clear_map()				   /*                        */
 { register int i;				   /*                        */
   						   /*                        */
-  for (i = 0; i < MAP_SIZE; i++ )		   /*                        */
+  for (i = 0; i < MAP_SIZE; i++)		   /*                        */
   { free_map(map[i]);				   /*                        */
     map[i] = NULL;				   /*                        */
   }				   		   /*                        */
@@ -162,9 +162,9 @@ void map_add(s_rec,s_fld,d_rec,d_fld)		   /*                        */
   }						   /*                        */
  						   /*                        */
   for (;;)					   /*                        */
-  { if ( SourceRecord(m)      == s_rec &&	   /*                        */
-	 SourceField(m)       == s_fld &&	   /*                        */
-	 DestinationRecord(m) == d_rec )	   /*                        */
+  { if (SourceRecord(m)      == s_rec &&	   /*                        */
+	SourceField(m)       == s_fld &&	   /*                        */
+	DestinationRecord(m) == d_rec )	   	   /*                        */
     { DestinationField(m) = d_fld;		   /*                        */
       return;					   /*                        */
     }		   				   /*                        */
@@ -195,9 +195,9 @@ Symbol map_get(s_rec, s_fld, d_rec)		   /*                        */
   Map m	= map[i];	   			   /*                        */
 						   /*                        */
   for (; m; m = NextMap(m))			   /*                        */
-  { if (  SourceRecord(m)      == s_rec &&	   /*                        */
-	  SourceField(m)       == s_fld &&	   /*                        */
-	  DestinationRecord(m) == d_rec )	   /*                        */
+  { if (SourceRecord(m)      == s_rec &&	   /*                        */
+	SourceField(m)       == s_fld &&	   /*                        */
+	DestinationRecord(m) == d_rec )	   	   /*                        */
     { return DestinationField(m); }		   /*                        */
   }						   /*                        */
   return NO_SYMBOL;				   /*                        */
@@ -330,10 +330,10 @@ bool expand_crossref(db, rec)		   	   /*                        */
  						   /*                        */
   while	(RecordIsXREF(r) && limit-- >= 0)	   /*                        */
   {						   /*                        */
-    for ( i = RecordFree(r), hp = RecordHeap(r);   /* search crossref field  */
-	  i > 0					   /*                        */
-	    && (*hp != crossref && *hp != xdata);  /*			     */
-	  i -= 2, hp += 2 )			   /*			     */
+    for (i = RecordFree(r), hp = RecordHeap(r);    /* search crossref field  */
+	 i > 0					   /*                        */
+	   && (*hp != crossref && *hp != xdata);   /*			     */
+	 i -= 2, hp += 2)			   /*			     */
     { }					   	   /*			     */
  						   /*                        */
     if (i <= 0)					   /*                        */
