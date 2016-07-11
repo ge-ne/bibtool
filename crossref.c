@@ -63,7 +63,7 @@
 #define NextMap(M)	     ((M)->next_map)
 
 /*-----------------------------------------------------------------------------
-** Function:	new_map()
+** Function*:	new_map()
 ** Type:	Map
 ** Purpose:	allocate a new Map structure
 ** Arguments:
@@ -91,8 +91,8 @@ static Map new_map(sr,sf,dr,df)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	free_map()
-** Type:	static void
+** Function*:	free_map()
+** Type:	void
 ** Purpose:	Free a chain of map structures
 ** Arguments:
 **	m	the map
@@ -261,7 +261,7 @@ void crossref_map(spec)				   /*                        */
  static Symbol NONE = (Symbol)"x";		   /* TODO                   */
 
 /*-----------------------------------------------------------------------------
-** Function:	insert_record()
+** Function*:	insert_record()
 ** Type:	bool
 ** Purpose:	Find a record and insert some new entryies.
 ** Arguments:

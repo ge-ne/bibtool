@@ -158,7 +158,7 @@ int apply_modify(db, key, rec)	   		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	apply_alias()
+** Function*:	apply_alias()
 ** Type:	bool
 ** Purpose:	
 **		
@@ -352,7 +352,7 @@ bool read_db(db, file, verbose)		   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	mark_string()
+** Function*:	mark_string()
 ** Purpose:	
 **		
 **		
@@ -410,7 +410,7 @@ static void mark_string(rec, s)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	print_segment()
+** Function*:	print_segment()
 ** Type:	void
 ** Purpose:	
 **		
@@ -445,8 +445,8 @@ static void print_segment(file, db, rec, allp)	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	preprint_string()
-** Type:	static void
+** Function*:	preprint_string()
+** Type:	void
 ** Purpose:	
 **		
 ** Arguments:
@@ -524,7 +524,7 @@ static void preprint_string(file, db, strings, rec)/*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	print_strings()
+** Function*:	print_strings()
 ** Type:	void
 ** Purpose:	
 **		
@@ -900,13 +900,12 @@ void db_rewind(db)				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	rec__sort()
+** Function*:	rec__sort()
 ** Purpose:	
 **		
-**		
 ** Arguments:
-**	rec	
-**	less	
+**	rec	the record
+**	less	the comparator
 ** Returns:	
 **___________________________________________________			     */
 static Record rec__sort(rec,less)		   /*                        */
@@ -1014,7 +1013,7 @@ static Record insert_record(rec,ptr,less)	   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	cmp_heap()
+** Function*:	cmp_heap()
 ** Purpose:	Compare the keys of two records. The keys are stored at the
 **		top of the heap. 
 ** Arguments:

@@ -164,7 +164,7 @@ void def_entry_type(sym)			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	match()
+** Function*:	match()
 ** Purpose:	Compare two strings ignoring case.
 ** Arguments:
 **	s	First string

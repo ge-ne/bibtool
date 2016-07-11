@@ -174,7 +174,7 @@ char * new_string(s)				   /*			     */
 /*****************************************************************************/
 
 /*-----------------------------------------------------------------------------
-** Function:	new_sym_tab()
+** Function*:	new_sym_tab()
 ** Purpose:	Allocate a new |SymTab| structure and fill it with initial
 **		values.
 **
@@ -207,7 +207,7 @@ static SymTab new_sym_tab(value)		   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	hashindex()
+** Function*:	hashindex()
 ** Purpose:	Compute the sum of ASCII values modulo |HASHMAX|
 **		to be used as an hash index.
 ** Arguments:
@@ -222,9 +222,8 @@ static int hashindex(s)				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Variable:	sym_tab
+** Variable*:	sym_tab
 ** Purpose:	
-**		
 **		
 **___________________________________________________			     */
  static SymTab sym_tab[HASHMAX];		   /*                        */
@@ -270,7 +269,7 @@ void init_symbols()				   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	get_sym_tab()
+** Function*:	get_sym_tab()
 ** Type:	SymTab
 ** Purpose:	
 **		

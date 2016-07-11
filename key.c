@@ -138,19 +138,19 @@ static size_t words_used = 0;
 #define ResetWords	words_used = 0
 
 /*-----------------------------------------------------------------------------
-** Function:	push_word()
+** Function*:	push_word()
 ** Purpose:	Push a word to the stack. Wrapper function.
 ** Arguments:
-**	s	word to push
+**	word	word to push
 ** Returns:	nothing
 **___________________________________________________			     */
-static void push_word(s)			   /*			     */
-  register String s;				   /*			     */
-{ PushWord(s);					   /*			     */
+static void push_word(word)			   /*			     */
+  register String word;				   /*			     */
+{ PushWord(word);				   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	Push_Word()
+** Function*:	Push_Word()
 ** Purpose:	Push a word to the stack when no space is left in the
 **		allocated array. 
 ** Arguments:
@@ -326,7 +326,7 @@ String get_base()				   /*                        */
 #define ITOA_LEN 64
 
 /*-----------------------------------------------------------------------------
-** Function:	itostr()
+** Function*:	itostr()
 ** Purpose:	Translate number using the ``digits'' given.
 **		A static string is returned containing the result.
 **		This is a routine generalizing |itoa()|.
@@ -368,7 +368,7 @@ static char * itostr(i,digits)			   /*			     */
 /*****************************************************************************/
 
 /*-----------------------------------------------------------------------------
-** Function:	init_key()
+** Function*:	init_key()
 ** Purpose:	Global initializations for the key module.
 **		This function has to be called before some of the
 **		functions provided in this module are guaranteed to
@@ -414,7 +414,7 @@ static void init_key()			   	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	key_init()
+** Function*:	key_init()
 ** Purpose:	Perform initializations for key generation.
 **		The string buffer is opened.
 **		Ignored words are initialized if necessary.
@@ -452,7 +452,7 @@ static void key_init()				   /*			     */
 #define DETEX_FLAG_ALLOWED 2
 
 /*-----------------------------------------------------------------------------
-** Function:	deTeX()
+** Function*:	deTeX()
 ** Purpose:	Expand TeX sequences or eliminate them.
 **
 ** Arguments:
@@ -565,7 +565,7 @@ static int deTeX(line,save_fct,flags)		   /*			     */
 #define PushC(SB,C)	(void)sbputchar(trans[(unsigned int)(C)],SB);
 
 /*-----------------------------------------------------------------------------
-** Function:	push_s()
+** Function*:	push_s()
 ** Purpose:	Write a translated string to the key string buffer.
 ** Arguments:
 **	s	String to translate
@@ -661,7 +661,7 @@ bool foreach_ignored_word(fct)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	fmt_title()
+** Function*:	fmt_title()
 ** Purpose:	Format a string according to rules for titles.
 **		\TeX{} sequences are expanded and some words may be ignored.
 **		The result is pushed to the local string buffer.
@@ -724,7 +724,7 @@ static void fmt_title(sb, line, len, in, trans, ignore, sep)/*		     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	fmt_c_words()
+** Function*:	fmt_c_words()
 ** Purpose:	Count a list of words.
 ** Arguments:
 **	line	string to analyze
@@ -810,7 +810,7 @@ void def_format_type(s)				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	fmt_names()
+** Function*:	fmt_names()
 ** Purpose:	Format a list of names separated by 'and'.
 **		'and others' is handled properly.
 ** Arguments:
@@ -872,7 +872,7 @@ static void fmt_names(sb,line,maxname,post,trans)  /*		             */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	fmt_c_names()
+** Function*:	fmt_c_names()
 ** Purpose:	Count a list of names
 ** Arguments:
 **	line	string to analyze
@@ -913,7 +913,7 @@ static bool fmt_c_names(line,min,max,not)	   /*		             */
 /*****************************************************************************/
 
 /*-----------------------------------------------------------------------------
-** Function:	fmt_digits()
+** Function*:	fmt_digits()
 ** Purpose:	Search a sequence of digits and push at most n of them 
 **		counting from right to the string buffer.
 ** Example:	fmt_digits("jun 1958",2) pushes "58" to the string buffer.
@@ -976,7 +976,7 @@ static bool fmt_digits(sb,s,mp,pp,n,sel,trunc)	   /*			     */
 /*****************************************************************************/
 
 /*-----------------------------------------------------------------------------
-** Function:	fmt_string()
+** Function*:	fmt_string()
 ** Purpose:	Push characters from s onto the string buffer.
 **		At most n characters are transfered.
 **		Letters are translated according to mode.
@@ -1010,7 +1010,7 @@ static void fmt_string(sb,s,n,trans,sep)	   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	fmt_c_string()
+** Function*:	fmt_c_string()
 ** Purpose:	Count the number of characters in a string and compare it
 **		against an interval.
 **
@@ -1228,7 +1228,7 @@ void make_sort_key(db,rec)			   /*			     */
 /*****************************************************************************/
 
 /*-----------------------------------------------------------------------------
-** Function:	new_key_node()
+** Function*:	new_key_node()
 ** Purpose:	Allocate a new key node
 ** Arguments:
 **	type	the type
@@ -1276,7 +1276,7 @@ void free_key_node(kn)				   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	add_fmt_tree()
+** Function*:	add_fmt_tree()
 ** Purpose:	Extend the format tree
 ** Arguments:
 **	s	the specification of th format
@@ -1428,7 +1428,7 @@ void add_sort_format(s)				   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	fmt_parse()
+** Function*:	fmt_parse()
 ** Purpose:	Parse the format specification given in the string *sp.
 **		Store the resulting KeyNode tree in *knp.
 **		*sp is modified to point to the first character not used.
@@ -1462,7 +1462,7 @@ static int fmt_parse(sp,knp)			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	fmt__parse()
+** Function*:	fmt__parse()
 ** Purpose:	
 **
 ** Arguments:
@@ -1580,7 +1580,7 @@ static int fmt__parse(sp,knp)			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	eval_fmt()
+** Function*:	eval_fmt()
 ** Purpose:	Evaluate the given KeyNode tree w.r.t. the given Record.
 ** Arguments:
 **	kn	the key node
@@ -1605,7 +1605,7 @@ static bool eval_fmt(sb,kn,rec,db)		   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	eval__fmt()
+** Function*:	eval__fmt()
 ** Purpose:	Evaluate the given KeyNode tree w.r.t. the given Record
 **		Internal version. trash of conjunctions is not removed.
 ** Arguments:
@@ -1841,7 +1841,7 @@ static bool eval__fmt(sb,kn,rec)		   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	eval__special()
+** Function*:	eval__special()
 ** Purpose:	
 **
 ** Arguments:
@@ -2158,7 +2158,7 @@ String fmt_expand(sb,cp,db,rec)			   /*                        */
 
 #ifdef DEBUG
 /*-----------------------------------------------------------------------------
-** Function:	show_fmt()
+** Function*:	show_fmt()
 ** Purpose:	Print a format tree onto the error stream
 ** Arguments:
 **	kn

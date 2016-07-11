@@ -299,7 +299,7 @@ void init_macros()				   /*                        */
  static Macro items = MacroNULL;		
 
 /*-----------------------------------------------------------------------------
-** Function:	def_item()
+** Function*:	def_item()
 ** Purpose:	Define a macro. The arguments have to be symbols.
 ** Arguments:
 **	name	the name of the item
@@ -350,7 +350,7 @@ void def_field_type(s)				   /*                        */
 /*****************************************************************************/
 
 /*-----------------------------------------------------------------------------
-** Function:	get_mapped_or_cased()
+** Function*:	get_mapped_or_cased()
 ** Purpose:	
 **		
 **

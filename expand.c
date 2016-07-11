@@ -105,15 +105,15 @@ Symbol expand_rhs(sym,pre,post,db,lowercase)	   /*                        */
 #define PUTC(C,SB) (void)sbputchar(C,SB)
 
 /*-----------------------------------------------------------------------------
-** Function:	expand__()
+** Function*:	expand__()
 ** Purpose:	Wrapper for expand().
 **		Things have to be cleaned up afterwards.
 ** Arguments:
-**	s
-**	sb
-**	q_open
-**	q_close
-**	db
+**	s	the string
+**	sb	the string buffer
+**	q_open	the open characters
+**	q_close	the close characters
+**	db	the database
 ** Returns:	nothing
 **___________________________________________________			     */
 static void expand__(s, sb, q_open, q_close, db)   /*                        */
@@ -132,7 +132,7 @@ static void expand__(s, sb, q_open, q_close, db)   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	expand()
+** Function*:	expand()
 ** Purpose:	
 **		
 **
@@ -146,7 +146,7 @@ static void expand__(s, sb, q_open, q_close, db)   /*                        */
 **	q_close	Close delimiter. This is a close brace or a double quote.
 ** Returns:	
 **___________________________________________________			     */
-static bool expand(s, sb, brace, first, q_open, q_close, db)/*                */
+static bool expand(s, sb, brace, first, q_open, q_close, db)/*               */
   register String s;				   /* specification          */
   StringBuffer   *sb;				   /* output device          */
   bool           brace;				   /* is a brace needed?     */
