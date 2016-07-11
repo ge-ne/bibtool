@@ -227,9 +227,8 @@ static void usage(fullp)			   /*			     */
 /***				    MAIN				   ***/
 /*****************************************************************************/
 
-
 /*-----------------------------------------------------------------------------
-** Function:	keep_selected()
+** Function*:	keep_selected()
 ** Type:	bool
 ** Purpose:	Mark the record as deleted if it is not selected.
 **		
@@ -250,7 +249,7 @@ static bool keep_selected(db, rec)		   /*                        */
 
 #ifdef UNUSED
 /*-----------------------------------------------------------------------------
-** Function:	keep_xref()
+** Function*:	keep_xref()
 ** Type:	int 
 ** Purpose:	Undelete crossreferenced entries
 **		
@@ -259,7 +258,7 @@ static bool keep_selected(db, rec)		   /*                        */
 **	rec	the record
 ** Returns:	|false|
 **___________________________________________________			     */
-bool keep_xref(db,rec)				   /*                        */
+static bool keep_xref(db,rec)			   /*                        */
   DB db;					   /*                        */
   Record rec;					   /*                        */
 {						   /*                        */
@@ -297,7 +296,7 @@ bool keep_xref(db,rec)				   /*                        */
 #endif
 
 /*-----------------------------------------------------------------------------
-** Function:	write_macros()
+** Function*:	write_macros()
 ** Type:	static void
 ** Purpose:	
 **		
@@ -324,7 +323,7 @@ static void write_macros(m_file, the_db)	   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	read_in_files()
+** Function*:	read_in_files()
 ** Type:	static void
 ** Purpose:	
 **		
@@ -594,7 +593,7 @@ int main(argc,argv)				   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	rec_gt()
+** Function*:	rec_gt()
 ** Purpose:	
 **		
 **
@@ -611,7 +610,7 @@ static int rec_gt(r1, r2)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	rec_lt()
+** Function*:	rec_lt()
 ** Purpose:	
 **		
 **
@@ -628,7 +627,7 @@ static int rec_lt(r1, r2)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	rec_gt_cased()
+** Function*:	rec_gt_cased()
 ** Type:	static int
 ** Purpose:	
 **		
@@ -645,7 +644,7 @@ static int rec_gt_cased(r1, r2)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	rec_lt_cased()
+** Function*:	rec_lt_cased()
 ** Type:	static int
 ** Purpose:	
 **		
@@ -681,7 +680,7 @@ static bool do_keys(db, rec)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	do_no_keys()
+** Function*:	do_no_keys()
 ** Purpose:	Do what's need to be done if no keys need to be created.
 **		In fact the existing key is just marked.
 ** Arguments:
@@ -701,7 +700,7 @@ static bool do_no_keys(db, rec)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	update_crossref()
+** Function*:	update_crossref()
 ** Purpose:	
 **		
 **
@@ -756,7 +755,7 @@ static bool update_crossref(db, rec)		   /*			     */
 #define equal_records(R1,R2) RecordSortkey(R1) == RecordSortkey(R2)
 
 /*-----------------------------------------------------------------------------
-** Function:	dbl_check()
+** Function*:	dbl_check()
 ** Purpose:	
 **		
 **
