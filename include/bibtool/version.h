@@ -25,6 +25,7 @@
 ******************************************************************************/
 
  extern char * bibtool_version;
+ extern char * bibtool_year;
 
 #ifdef __STDC__
 #define _ARG(A) A
