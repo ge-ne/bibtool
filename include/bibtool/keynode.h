@@ -31,6 +31,7 @@
 **
 ******************************************************************************/
 
+#include <bibtool/symbols.h>
 #include <bibtool/type.h>
 
 /*-----------------------------------------------------------------------------
@@ -40,15 +41,15 @@
 **		
 **___________________________________________________			     */
  typedef struct kEYnODE				   /*                        */
- { short int	  kn_type;
-   short int      kn_pre;
-   short int      kn_post;
-   Symbol	  kn_symbol;
-   String	  kn_from;
-   String	  kn_to;
-   struct kEYnODE *kn_next;
-   struct kEYnODE *kn_then;
-   struct kEYnODE *kn_else;
+ { short int	  kn_type;			   /*                        */
+   short int      kn_pre;			   /*                        */
+   short int      kn_post;			   /*                        */
+   Symbol	  kn_symbol;			   /*                        */
+   String	  kn_from;			   /*                        */
+   String	  kn_to;			   /*                        */
+   struct kEYnODE *kn_next;			   /*                        */
+   struct kEYnODE *kn_then;			   /*                        */
+   struct kEYnODE *kn_else;			   /*                        */
  } *KeyNode, SKeyNode;				   /*                        */
 
 #define NodeType(X)   ((X)->kn_type)

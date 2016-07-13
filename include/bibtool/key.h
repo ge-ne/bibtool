@@ -33,6 +33,7 @@
 **
 ******************************************************************************/
 
+#include <bibtool/symbols.h>
 #include <bibtool/database.h>
 #include <bibtool/sbuffer.h>
 #include <bibtool/keynode.h>

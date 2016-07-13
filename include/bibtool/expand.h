@@ -28,11 +28,13 @@
 **	|expand.c|. This file includes the header file |database.h|.
 ******************************************************************************/
 
+#include <bibtool/general.h>
 #include <bibtool/database.h>
+#include <bibtool/symbols.h>
 
 #ifdef __STDC__
 #define _ARG(A) A
 #else
 #define _ARG(A) ()
 #endif
- Symbol expand_rhs _ARG((Symbol s,Symbol pre,Symbol post,DB db, int lowercase));/* expand.c*/
+ Symbol expand_rhs _ARG((Symbol s,Symbol pre,Symbol post,DB db, bool lowercase));/* expand.c*/

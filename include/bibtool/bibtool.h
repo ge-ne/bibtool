@@ -58,5 +58,4 @@
 #include <bibtool/stack.h>
 #include <bibtool/tex_aux.h>
 #include <bibtool/tex_read.h>
-#include <bibtool/type.h>
 #include <bibtool/version.h>
