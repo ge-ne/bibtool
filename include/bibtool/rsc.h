@@ -32,7 +32,6 @@
 **	accessible to those modules including this header file.
 ******************************************************************************/
 
-#include <bibtool/type.h>
 #include <bibtool/symbols.h>
 
 #ifdef RSC_INIT
@@ -56,6 +55,7 @@ DECLARE( int   , rsc_select        , FALSE  			);
 DECLARE( char* , rsc_e_rsc         , RSC_BIBTOOL		);
 DECLARE( String, rsc_v_rsc , (String)(RSC_BIBTOOL_DEFAULT)	);
 
+/*---------------------------------------------------------------------------*/
 
 #ifdef __STDC__
 #define _ARG(A) A
@@ -68,3 +68,5 @@ DECLARE( String, rsc_v_rsc , (String)(RSC_BIBTOOL_DEFAULT)	);
  bool set_rsc _ARG((Symbol name, Symbol val));
  bool use_rsc _ARG((String s));
  void rsc_print _ARG((String s));
+
+/*---------------------------------------------------------------------------*/

@@ -36,3 +36,5 @@
  bool foreach_aux _ARG((bool (fct)_ARG((Symbol))));/* tex_aux.c              */
  bool aux_used _ARG((Symbol s));		   /* tex_aux.c              */
  void clear_aux _ARG((void));			   /* tex_aux.c              */
+
+/*---------------------------------------------------------------------------*/

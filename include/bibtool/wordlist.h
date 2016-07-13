@@ -32,7 +32,7 @@
 ** Typedef:	WordList
 ** Purpose:	This data type represents a node in a list of
 **		strings. This list only provides a next pointer. and
-**		is prety generic.
+**		is pretty generic.
 **________________________________________________   			     */
  typedef struct wORDlIST			   /*                        */
  { Symbol	   wl_word;			   /* String value of	     */
@@ -81,4 +81,5 @@
  void free_words _ARG((WordList *wlp,void (*fct)_ARG((Symbol))));/* wordlist.c*/
  void add_word _ARG((Symbol s,WordList *wlp));	   /* wordlist.c             */
 
+/*---------------------------------------------------------------------------*/
 #endif

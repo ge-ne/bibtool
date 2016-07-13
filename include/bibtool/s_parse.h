@@ -23,9 +23,16 @@
 ** Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 **
 **-----------------------------------------------------------------------------
-** Description:
+** Description: This header file contains definitions and declarations for the
+**		string parser.
 ** 
 ******************************************************************************/
+
+#ifndef S_PARSE_H_LOADED
+#define S_PARSE_H_LOADED
+
+#include <bibtool/general.h>
+#include <bibtool/symbols.h>
 
 #define StringParseNext		    257
 #define StringParseNumber	    258
@@ -57,3 +64,5 @@
  Symbol* sp_symbols _ARG((String *sp));		   /* s_parse.c              */
  String sp_eos _ARG((String *sp));		   /*                        */
 
+/*---------------------------------------------------------------------------*/
+#endif
