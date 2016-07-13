@@ -30,7 +30,9 @@
 ** 
 ******************************************************************************/
 
-#include <bibtool/type.h>
+#ifndef STACK_H_LOADED
+#define STACK_H_LOADED
+
 #include <bibtool/symbols.h>
 
 #ifdef __STDC__
@@ -40,3 +42,6 @@
 #endif
  Symbol  pop_string _ARG((void));		   /* stack.c                */
  void push_string _ARG((Symbol  s));		   /* stack.c                */
+
+/*---------------------------------------------------------------------------*/
+#endif

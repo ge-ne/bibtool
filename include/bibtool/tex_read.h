@@ -30,6 +30,9 @@
 **	    
 ******************************************************************************/
 
+#include <stdio.h>
+#include <bibtool/type.h>
+
 #ifdef __STDC__
 #define _ARG(A) A
 #else
@@ -43,3 +46,5 @@
  void TeX_open_file _ARG((FILE * file));	   /* tex_read.c             */
  void TeX_open_string _ARG((String s));   	   /* tex_read.c             */
  void TeX_reset _ARG((void));			   /* tex_read.c             */
+
+/*---------------------------------------------------------------------------*/

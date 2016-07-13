@@ -45,8 +45,8 @@
 **
 ******************************************************************************/
 
-#ifndef TYPE_H
-#define TYPE_H
+#ifndef TYPE_H_LOADED
+#define TYPE_H_LOADED
 
 #include <bibtool/general.h>
 
@@ -498,3 +498,4 @@ Uchar trans_id[256];			   	   /*                        */
  void add_word_sep _ARG((String s));		   /* type.c                 */
  void init_type _ARG((void));			   /* type.c                 */
 
+/*---------------------------------------------------------------------------*/
