@@ -388,5 +388,4 @@ typedef struct rECORD				/*                           */
  void push_to_record _ARG((Record rec,Symbol s, Symbol t));/* record.c       */
  void sort_record _ARG((Record rec));		   /* record.c               */
 
-
 #endif

@@ -36,7 +36,6 @@
 
 extern char * px_filename;
 
-
 extern FILE * px_fopen(
 #ifdef __STDC__
 	char  * name,

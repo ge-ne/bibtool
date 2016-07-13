@@ -62,7 +62,7 @@
 **		
 **		
 ** Arguments:
-**	NN	
+**	NN	the name node
 ** Returns:	
 **___________________________________________________			     */
 #define NameType(NN)  ((NN)->nn_type)
@@ -74,11 +74,10 @@
 **		
 **		
 ** Arguments:
-**	NN	
+**	NN	the name node
 ** Returns:	
 **___________________________________________________			     */
 #define NameStrip(NN) ((NN)->nn_strip)
-
 
 /*-----------------------------------------------------------------------------
 ** Macro:	NameTrim()
@@ -87,7 +86,7 @@
 **		
 **		
 ** Arguments:
-**	NN	
+**	NN	the name node
 ** Returns:	
 **___________________________________________________			     */
 #define NameTrim(NN) ((NN)->nn_trim)
@@ -99,7 +98,7 @@
 **		
 **		
 ** Arguments:
-**	NN	
+**	NN	the name node
 ** Returns:	
 **___________________________________________________			     */
 #define NamePre(NN)   ((NN)->nn_pre)
@@ -111,7 +110,7 @@
 **		
 **		
 ** Arguments:
-**	NN	
+**	NN	the name node
 ** Returns:	
 **___________________________________________________			     */
 #define NameMid(NN)   ((NN)->nn_mid)
@@ -123,7 +122,7 @@
 **		
 **		
 ** Arguments:
-**	NN	
+**	NN	the name node
 ** Returns:	
 **___________________________________________________			     */
 #define NamePost(NN)  ((NN)->nn_post)
@@ -135,7 +134,7 @@
 **		|NameNode|.
 ** Arguments:
 **	NN	|NameNode| to consider.
-** Returns:	The next |Namenode|.
+** Returns:	The next |NameNode|.
 **___________________________________________________			     */
 #define NextName(NN)  ((NN)->nn_next)
 

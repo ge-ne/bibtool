@@ -24,7 +24,7 @@
 **
 **-----------------------------------------------------------------------------
 ** Description:
-**	This header file provides functions to deal with io files.
+**	This header file provides functions to deal with file I/O.
 **
 ******************************************************************************/
 
