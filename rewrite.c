@@ -132,15 +132,15 @@ void clear_addlist()				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	foreach_addlist()
-** Type:	int
+** Type:	bool
 ** Purpose:	
 **		
 ** Arguments:
 **	fct	the function to be applied
 ** Returns:	
 **___________________________________________________			     */
-int foreach_addlist(fct)			   /*                        */
-  int (*fct) _ARG((Symbol key, Symbol val));	   /*                        */
+bool foreach_addlist(fct)			   /*                        */
+  bool (*fct) _ARG((Symbol key, Symbol val));	   /*                        */
 { return each_macro(addlist, fct);		   /*                        */
 }						   /*------------------------*/
 
@@ -149,7 +149,7 @@ int foreach_addlist(fct)			   /*                        */
 ** Purpose:	Save a token and value for addition.
 ** Arguments:
 **	spec	A string of the form
-**		  token=value
+**		  | token=value|
 ** Returns:	nothing
 **___________________________________________________			     */
 void add_field(spec)				   /*			     */

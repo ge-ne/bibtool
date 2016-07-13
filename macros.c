@@ -199,22 +199,24 @@ void foreach_macro(fct)				   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	each_macro()
 ** Type:	int
-** Purpose:	
-**		
+** Purpose:	Iterate over a linked list of macros. A function is applied	
+**		to each macro found. The loop terminates if the
+**		function returns |false|.
 ** Arguments:
-**	m	
-**	fct	
-** Returns:	
+**	m	the macro to start with
+**	fct	the function to apply
+** Returns:	|true| if the function has terminated the loop and
+**		|false| in case the end of the list has been reached
 **___________________________________________________			     */
-int each_macro(m, fct)				   /*                        */
+bool each_macro(m, fct)				   /*                        */
   Macro m;					   /*                        */
-  int (*fct) _ARG((Symbol ,Symbol));		   /*                        */
+  bool (*fct) _ARG((Symbol ,Symbol));		   /*                        */
 {						   /*                        */
   for ( ; m != MacroNULL; m = NextMacro(m))	   /*                        */
   { if (! (*fct)(MacroName(m), MacroValue(m))) 	   /*                        */
-      return 1;					   /*                        */
+      return true;				   /*                        */
   }						   /*                        */
-  return 0;					   /*                        */
+  return false;					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------

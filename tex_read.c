@@ -91,13 +91,13 @@
  bool TeX_read _ARG((String  cp,String *sp));	   /* tex_read.c             */
  static MacDef find_macro _ARG((String name,MacDef md));/* tex_read.c        */
  static MacDef new_macdef _ARG((String name,int arity,Token tokens));/* tex_read.c*/
- static Token TeX_get_token _ARG((int (*get_fct)_ARG((void))));/* tex_read.c */
+ static Token TeX_get_token _ARG((int (*get_fct)_ARG((void))));/* tex_read.c*/
  static Token new_token _ARG((int type,String string));/* tex_read.c         */
  static Token token_list_copy _ARG((Token t,Token nt,Token *argp));/* tex_read.c*/
  static Token tokenize _ARG((String s,int arity)); /* tex_read.c             */
- static int TeX_fill_line _ARG((int (*get_fct)_ARG((void))));/* tex_read.c   */
+ static bool fill_token _ARG((Token*tp));	   /* tex_read.c             */
  static int do_get _ARG((void));		   /* tex_read.c             */
- static int fill_token _ARG((Token*tp));	   /* tex_read.c             */
+ static int TeX_fill_line _ARG((int (*get_fct)_ARG((void))));/* tex_read.c   */
  static int get_EOF _ARG((void));		   /* tex_read.c             */
  static int get_file _ARG((void));		   /* tex_read.c             */
  static int get_string _ARG((void));		   /* tex_read.c             */
@@ -428,10 +428,10 @@ static int TeX_fill_line(get_fct)		   /*			     */
 ** Function:	TeX_get_token()
 ** Purpose:	Get characters and pack them into a Token structure.
 **		The argument is a function called to get the next character.
-**		It returns the next character of EOF if no more can be read.
+**		It returns the next character of |EOF| if no more can be read.
 ** Arguments:
-**	get_fct
-** Returns:	
+**	get_fct	the function to acquire a character
+** Returns:	the token read
 **___________________________________________________			     */
 static Token TeX_get_token(get_fct)		   /*			     */
   int		 (*get_fct)_ARG((void));	   /* function * to get char */
@@ -508,7 +508,7 @@ static Token TeX_get_token(get_fct)		   /*			     */
 **		
 **
 ** Arguments:
-**	s
+**	s	the string to read from
 ** Returns:	nothing
 **___________________________________________________			     */
 static void init_get(s)				   /*			     */
@@ -521,11 +521,10 @@ static void init_get(s)				   /*			     */
 ** Purpose:	
 **		
 **
-** Arguments:
-**	
+** Arguments:	none
 ** Returns:	
 **___________________________________________________			     */
-static bool do_get()				   /*			     */
+static int do_get()				   /*			     */
 { return (*g_p == '\0' ? EOF : *(g_p++));	   /*			     */
 }						   /*------------------------*/
 
@@ -756,10 +755,9 @@ void TeX_reset()				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	get_EOF()
-** Purpose:	
-** Arguments:
-**	
-** Returns:	
+** Purpose:	Character getter function to indicate an empty stream.
+** Arguments:	none
+** Returns:	|EOF| in any case
 **___________________________________________________			     */
 static int get_EOF()				   /*			     */
 { return EOF;					   /*			     */
@@ -772,15 +770,12 @@ static int get_EOF()				   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function:	get_string()
-** Purpose:	
-**		
-**
-** Arguments:
-**	
-** Returns:	
+** Purpose:	Character getter function to access the stored string..
+** Arguments:	none
+** Returns:	the next character or |EOF| in case of end-of-string
 **___________________________________________________			     */
 static int get_string()				   /*			     */
-{ return ( *src_ptr ? *(src_ptr++) : EOF );	   /*			     */
+{ return (*src_ptr ? *(src_ptr++) : EOF);	   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -847,13 +842,13 @@ void TeX_close()				   /*			     */
 **	tp	the pointer to the token
 ** Returns:	
 **___________________________________________________			     */
-static int fill_token(tp)			   /*			     */
+static bool fill_token(tp)			   /*			     */
   register Token *tp;				   /*			     */
 {						   /*                        */
   if (	 *tp == TokenNULL			   /*			     */
       && (*tp=TeX_get_token(src_get)) == TokenNULL)/*			     */
-  { return 0; }				   	   /*			     */
-  return 1;					   /*			     */
+  { return false; }				   /*			     */
+  return true;					   /*			     */
 }						   /*------------------------*/
 
 #define UnlinkToken(T,T2)		T2 = T; T = NextToken(T)

@@ -46,7 +46,7 @@
 #else
 #define _ARG(A) ()
 #endif
- Symbol expand_rhs _ARG((Symbol s,Symbol pre,Symbol post,DB db, int lowercase));/* expand.c*/
+ Symbol expand_rhs _ARG((Symbol s,Symbol pre,Symbol post,DB db, bool lowercase));/* expand.c*/
  static bool expand _ARG((String s,StringBuffer *sb,int brace,int first,String q_open,String q_close,DB db));/* expand.c*/
  static void expand__ _ARG((String s,StringBuffer *sb,String q_open,String q_close,DB db));/* expand.c*/
 
@@ -81,7 +81,7 @@ Symbol expand_rhs(sym,pre,post,db,lowercase)	   /*                        */
   Symbol pre;					   /*                        */
   Symbol post;					   /*                        */
   DB   db;					   /*                        */
-  int lowercase;				   /*                        */
+  bool lowercase;				   /*                        */
 { static StringBuffer *sb = NULL;		   /*                        */
   String s;					   /*                        */
 						   /*                        */

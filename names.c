@@ -454,16 +454,18 @@ String  pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function*:	pp_one_name()
+** Function:	pp_one_name()
+** Type:	void
 ** Purpose:	
 **		
-**
 ** Arguments:
-**	sb
-**	w
-**	len
-**	comma
-**	commas
+**	sb	
+**	w	
+**	format	
+**	trans	
+**	len	
+**	comma	
+**	commas	
 ** Returns:	nothing
 **___________________________________________________			     */
 static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
@@ -583,14 +585,14 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
       default:	        tr = trans; 	   	   /*                        */
     }						   /*                        */
  						   /*                        */
-    if ( j > 0 )				   /*                        */
+    if (j > 0)				   	   /*                        */
     { sbputs((char*)SymbolValue(NamePre(nn)), sb); /*                        */
       again = false;				   /*                        */
-      for ( i = 0; i < len; i++ )		   /*                        */
-      { if ( type[i] == t )			   /*                        */
+      for (i = 0; i < len; i++)		   	   /*                        */
+      { if (type[i] == t)			   /*                        */
 	{					   /*                        */
-  	  if ( trim-- == 0 ) break;		   /*                        */
-	  if ( again ) sbputs((char*)SymbolValue(NameMid(nn)), sb);/*        */
+  	  if (trim-- == 0) break;		   /*                        */
+	  if (again) sbputs((char*)SymbolValue(NameMid(nn)), sb);/*          */
 	  else again = true;			   /*                        */
  						   /*                        */
 	  initial(w[i], tr, strip, sb);	   	   /*                        */
@@ -609,8 +611,10 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
 **		
 **
 ** Arguments:
-**	s
-**	sb
+**	s	
+**	trans	the translation to apply
+**	len	
+**	sb	the target string buffer
 ** Returns:	nothing
 **___________________________________________________			     */
 static void initial(s,trans,len,sb)		   /*                        */
@@ -619,9 +623,9 @@ static void initial(s,trans,len,sb)		   /*                        */
   int           len;				   /*                        */
   StringBuffer  *sb;				   /*                        */
 { 						   /*                        */
-  if ( len < 0 ) { sbputs((char*)s, sb); return; } /*                        */
+  if (len < 0) { sbputs((char*)s, sb); return; }   /*                        */
  						   /*                        */
-  while ( len > 0 )				   /*                        */
+  while (len > 0)				   /*                        */
   { if (*s=='\0') { return; }			   /*                        */
     if ( is_alpha(*s) )				   /*                        */
     { sbputc(trans[*s], sb);			   /*                        */
