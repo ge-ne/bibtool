@@ -65,7 +65,7 @@
 
 
 /*-----------------------------------------------------------------------------
-** Function:	new_name_node()
+** Function*:	new_name_node()
 ** Purpose:	Allocate a name node structure and fill it with the values 
 **		given as arguments.
 **		If no more memory is available then en error is raised and
@@ -103,7 +103,7 @@ static NameNode new_name_node(type, strip, trim, pre, mid, post)/*           */
 #ifdef UNUSED
 
 /*-----------------------------------------------------------------------------
-** Function:	free_name_node()
+** Function*:	free_name_node()
 ** Purpose:	Release the memory allocated for a node together with all
 **		nodes reachable via a |NextName| chain.
 **		It is not save to access a freed node.
@@ -125,7 +125,7 @@ static void free_name_node(node)		   /*                        */
 
 #ifdef DEBUG
 /*-----------------------------------------------------------------------------
-** Function:	dump_name_node()
+** Function*:	dump_name_node()
 ** Purpose:	
 **		
 **		
@@ -167,7 +167,7 @@ static void dump_name_node(n)			   /*                        */
 
 #ifdef BIBTEX_SYNTAX
 /*-----------------------------------------------------------------------------
-** Function:	set_type()
+** Function*:	set_type()
 ** Purpose:	
 **		
 **
@@ -454,7 +454,7 @@ String  pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	pp_one_name()
+** Function*:	pp_one_name()
 ** Purpose:	
 **		
 **
@@ -604,7 +604,7 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	initial()
+** Function*:	initial()
 ** Purpose:	
 **		
 **
@@ -632,7 +632,7 @@ static void initial(s,trans,len,sb)		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	is_jr()
+** Function*:	is_jr()
 ** Purpose:	
 **		
 **
@@ -708,11 +708,10 @@ static bool is_jr(s, eager)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	is_lower_word()
+** Function*:	is_lower_word()
 ** Purpose:	Test if the word given as argument starts with a lower case
 **		letter. Non letter characters are ignored.
-**		TeX control sequences are partially ignored: 
-**
+**		\TeX\ control sequences are partially ignored: 
 ** Arguments:
 **	s	Word to test
 ** Returns:	|true| or |false|
@@ -728,7 +727,6 @@ static bool is_lower_word(s)			   /*                        */
   }						   /*                        */
   return false;					   /*                        */
 }						   /*------------------------*/
-
 
 /*---------------------------------------------------------------------------*/
 

@@ -94,7 +94,7 @@
  static char   * no_pattern[] = { DEFAULT_PATTERN, NULL };
 
 /*-----------------------------------------------------------------------------
-** Function:	absolute_file()
+** Function*:	absolute_file()
 ** Purpose:	Check is the file is an absolute file name.
 **		In this case make a new path array which contains the absolute
 **		path only and its location in path. basename is the modified
@@ -253,7 +253,7 @@ char ** px_s2p(s,sep)				   /*			     */
   char 		  *t;				   /*                        */
   StringBuffer    *sb;				   /*                        */
 					       	   /*			     */
-  if ( s == NULL ) return(NULL);		   /* No string to analyze   */
+  if (s == NULL) return NULL;		   	   /* No string to analyze   */
 						   /*			     */
   if ( (array=(int*)malloc(array_size*sizeof(int)))/*                        */
        == NULL )				   /*                        */
@@ -307,7 +307,7 @@ char ** px_s2p(s,sep)				   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	expand_env()
+** Function*:	expand_env()
 ** Type:	static char *
 ** Purpose:	
 **		
@@ -323,9 +323,9 @@ static void expand_env(s,se,res)		   /*                        */
 {						   /*                        */
   StringBuffer * val = sbopen();		   /*                        */
  						   /*                        */
-  for ( ; s<se; s++ )				   /*                        */
+  for (; s < se; s++)				   /*                        */
   {						   /*                        */
-    if ( *s == '$' )				   /*                        */
+    if (*s == '$')				   /*                        */
     { char beg = '\0';				   /*                        */
       char * env;				   /*                        */
       sbrewind(val);				   /*                        */
@@ -341,17 +341,17 @@ static void expand_env(s,se,res)		   /*                        */
 	 )					   /*                        */
       { s++; }					   /*                        */
       env = sbflush(val);			   /*                        */
-      if ( *env )				   /*                        */
+      if (*env)				   	   /*                        */
       { env = getenv(env);			   /*                        */
         if ( env != NULL )			   /*                        */
 	{ sbputs(env,res); }			   /*                        */
       }						   /*                        */
     }						   /*                        */
 #ifdef HOME_ENV_VAR 
-    else if ( *s == '~' )			   /*                        */
+    else if (*s == '~')			   	   /*                        */
     {						   /*                        */
       char * env = getenv(HOME_ENV_VAR);	   /*                        */
-      if ( env != NULL )			   /*                        */
+      if (env != NULL)			   	   /*                        */
       { sbputs(env,res); }			   /*                        */
     }						   /*                        */
 #endif

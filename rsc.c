@@ -207,7 +207,7 @@ bool resource(name)			   	   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	test_true()
+** Function*:	test_true()
 ** Purpose:	A boolean resource can be set to true in different ways:
 **		|true|, |t|, |yes|, |on|, |1|
 **		which represent ``true''.  Each other value is

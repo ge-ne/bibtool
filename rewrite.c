@@ -201,7 +201,7 @@ void remove_field(field, rec)			   /*			     */
 #endif
 
 /*-----------------------------------------------------------------------------
-** Function:	new_rule()
+** Function*:	new_rule()
 ** Purpose:	Allocate a new Rule and fill some slots.
 ** Arguments:
 **	field	The field to apply this rule to, or |NULL| for each field.
@@ -292,7 +292,7 @@ static Rule new_rule(field, value, pattern, frame, flags, casep)/*           */
 
 #ifdef UNUSED
 /*-----------------------------------------------------------------------------
-** Function:	free_rule()
+** Function*:	free_rule()
 ** Purpose:	Free a list of rules.
 ** Arguments:
 **	rule	First rule in the list.
@@ -314,7 +314,7 @@ static void free_rule(rule)			   /*                        */
 #endif
 
 /*-----------------------------------------------------------------------------
-** Function:	add_rule()
+** Function*:	add_rule()
 ** Purpose:	Generic addition of a rule to a list of rules.
 ** Arguments:
 **	s	the specification string
@@ -416,7 +416,7 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	rewrite_1()
+** Function*:	rewrite_1()
 ** Purpose:	
 **		
 **
@@ -517,7 +517,7 @@ static bool selector_hits(rule, db, rec)	   /*                        */
 #endif
 
 /*-----------------------------------------------------------------------------
-** Function:	repl_regex()
+** Function*:	repl_regex()
 ** Purpose:	
 **		
 **
@@ -643,7 +643,7 @@ static String repl_regex(field, value, rule, db, rec)/*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	check_regex()
+** Function*:	check_regex()
 ** Purpose:	
 **		
 ** Arguments:
@@ -882,7 +882,7 @@ void add_check_rule(s)				   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	dont_keep()
+** Function*:	dont_keep()
 ** Type:	static bool
 ** Purpose:	
 **		
@@ -977,8 +977,8 @@ void rewrite_record(db, rec)			   /*			     */
 	 i > 0;					   /*			     */
 	 i -= 2, hp += 2)			   /*			     */
     {						   /*			     */
-      if (*hp &&
-	  *(hp+1) &&
+      if (*hp &&				   /*                        */
+	  *(hp+1) &&				   /*                        */
 	  dont_keep(sym_star, rec, db) &&	   /*                        */
 	  dont_keep(*hp, rec, db))		   /*                        */
       { if (*hp) UnlinkSymbol(*hp);		   /*                        */
@@ -1086,7 +1086,7 @@ void save_regex(s)				   /*                        */
  static int  s_cased    = -33;			   /*                        */
 
 /*-----------------------------------------------------------------------------
-** Function:	init_s_search()
+** Function*:	init_s_search()
 ** Purpose:	
 **		
 **		
@@ -1136,7 +1136,7 @@ static void init_s_search(ignored)		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	s_match()
+** Function*:	s_match()
 ** Purpose:	
 **		
 **		
@@ -1164,7 +1164,7 @@ static bool s_match(p,s)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	s_search()
+** Function*:	s_search()
 ** Purpose:	Match a pattern against all positions in a string.
 ** Arguments:
 **	pattern	the pattern

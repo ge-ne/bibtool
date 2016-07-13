@@ -169,7 +169,7 @@
 #define EnsureInit init_TeX()
 
 /*-----------------------------------------------------------------------------
-** Function:	init_TeX()
+** Function*:	init_TeX()
 ** Purpose:	Initialize the \TeX{} reading apparatus.
 **		Mainly the catcodes are assigned and the macros are
 **		cleared.  This function has to be called before the
@@ -214,7 +214,7 @@ static void init_TeX()				   /*			     */
  static Token token_free_list = TokenNULL;
 
 /*-----------------------------------------------------------------------------
-** Function:	new_token()
+** Function*:	new_token()
 ** Purpose:	Allocate a new token cell and fill it with values.
 ** Arguments:
 **	type	the type
@@ -245,7 +245,7 @@ static Token new_token(type, string)		   /*			     */
 #define NewToken(C) new_token(C, StringNULL)
 
 /*-----------------------------------------------------------------------------
-** Function:	token_list_copy()
+** Function*:	token_list_copy()
 ** Purpose:	Copy a list of tokens.
 ** Arguments:
 **	t
@@ -260,10 +260,12 @@ static Token token_list_copy(t,nt,argp)		   /*			     */
 { register Token a,p;				   /*			     */
   int		 i;				   /*			     */
 						   /*			     */
-  if ( t == TokenNULL ) return TokenNULL;	   /*			     */
-  if ( (i=TokenChar(t)) > 0xff )		   /*			     */
-  { a = p = token_list_copy(argp[i>>8],TokenNULL,argp);/*		     */
-    while ( NextToken(p) != TokenNULL )		   /*			     */
+  if (t == TokenNULL) return TokenNULL;	   	   /*			     */
+  if ((i=TokenChar(t)) > 0xff)		   	   /*			     */
+  { a = p = token_list_copy(argp[i>>8],		   /*                        */
+			    TokenNULL,		   /*                        */
+			    argp);		   /*		             */
+    while (NextToken(p) != TokenNULL)		   /*			     */
     { p = NextToken(p); }			   /*			     */
   }						   /*			     */
   else { a = p = CopyToken(t);	}		   /*			     */
@@ -271,7 +273,9 @@ static Token token_list_copy(t,nt,argp)		   /*			     */
   while ( (t=NextToken(t)) != TokenNULL )	   /*			     */
   {						   /*			     */
     if ( (i=TokenChar(t)) > 0xff )		   /*			     */
-    { NextToken(p) = token_list_copy(argp[i>>8],TokenNULL,argp);/*	     */
+    { NextToken(p) = token_list_copy(argp[i>>8],   /*                        */
+				     TokenNULL,	   /*                        */
+				     argp);	   /*	                     */
       while ( NextToken(p) != TokenNULL )	   /*			     */
       { p = NextToken(p); }			   /*			     */
     }						   /*			     */
@@ -285,7 +289,7 @@ static Token token_list_copy(t,nt,argp)		   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	free_1_token()
+** Function*:	free_1_token()
 ** Purpose:	Free a single Token.
 **		Free the string and place it in the free list.
 ** Arguments:
@@ -300,7 +304,7 @@ static void free_1_token(t)			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	free_tokens()
+** Function*:	free_tokens()
 ** Purpose:	Free a list of Tokens.
 **		Walk along to the end and free the strings on the way.
 **		Link it into the free list.
@@ -323,7 +327,7 @@ static void free_tokens(t)			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	tokens_to_string()
+** Function*:	tokens_to_string()
 ** Purpose:	Make a string out of a list of tokens.
 ** Arguments:
 **	t
@@ -367,7 +371,7 @@ static String tokens_to_string(t)		   /*			     */
 #define tex_clear tex_state = StateN; tex_line = TokenNULL
 
 /*-----------------------------------------------------------------------------
-** Function:	TeX_fill_line()
+** Function*:	TeX_fill_line()
 ** Purpose:	
 **		
 **
@@ -521,8 +525,8 @@ static void init_get(s)				   /*			     */
 **	
 ** Returns:	
 **___________________________________________________			     */
-static int do_get()				   /*			     */
-{ return ( *g_p == '\0' ? EOF : *(g_p++));	   /*			     */
+static bool do_get()				   /*			     */
+{ return (*g_p == '\0' ? EOF : *(g_p++));	   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -832,7 +836,7 @@ void TeX_close()				   /*			     */
 { Uchar  c;					   /*                        */
   String s;				   	   /*			     */
   src_get = get_EOF;				   /*			     */
-  while ( TeX_read(&c, &s) ) ;			   /*			     */
+  while (TeX_read(&c, &s)) ;			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -847,7 +851,7 @@ static int fill_token(tp)			   /*			     */
   register Token *tp;				   /*			     */
 {						   /*                        */
   if (	 *tp == TokenNULL			   /*			     */
-      && (*tp=TeX_get_token(src_get)) == TokenNULL )/*			     */
+      && (*tp=TeX_get_token(src_get)) == TokenNULL)/*			     */
   { return 0; }				   	   /*			     */
   return 1;					   /*			     */
 }						   /*------------------------*/

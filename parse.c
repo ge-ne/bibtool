@@ -133,7 +133,7 @@
 #define UnexpectedError Error(str_unexpected)
 
 /*-----------------------------------------------------------------------------
-** Function:	init___()
+** Function*:	init___()
 ** Purpose:	Initialize the reading apparatus.
 ** Arguments:
 **	pathp
@@ -150,27 +150,27 @@ static void init___(pathp,pattern,envvp,env)	   /*			     */
 { register char **cpp,				   /*			     */
 		*cp;				   /*			     */
 						   /*			     */
-  if ( *pathp != (char**)0 )			   /*			     */
+  if (*pathp != (char**)0)			   /*			     */
   { free((char*)*pathp);			   /*                        */
     *pathp = (char**)0;				   /*                        */
   }	   					   /*			     */
 						   /*			     */
-  if ( (cp = getenv(env)) != NULL )		   /*			     */
+  if ((cp = getenv(env)) != NULL)		   /*			     */
   { *envvp = cp; }				   /*			     */
 						   /*			     */
-  if ( *envvp )					   /*			     */
+  if (*envvp)					   /*			     */
   { *pathp = px_s2p(*envvp,*rsc_env_sep);	   /*			     */
-    if ( *pathp == (char**)0 )			   /*			     */
+    if (*pathp == (char**)0)			   /*			     */
     { WARNING2(env,"search path extension failed.");/*			     */
     }						   /*			     */
     DebugPrint2("Path extension ",env);		   /*                        */
   }						   /*			     */
 						   /*			     */
-  if ( *rsc_dir_file_sep != '/' )		   /*			     */
-  { for ( cpp = pattern; *cpp; ++cpp )		   /*			     */
+  if (*rsc_dir_file_sep != '/')		   	   /*			     */
+  { for (cpp = pattern; *cpp; ++cpp)		   /*			     */
     { *cpp = new_string(*cpp);			   /*                        */
-      for (cp = *cpp; *cp; ++cp )		   /*			     */
-      { if ( *cp == '/' ) *cp = *rsc_dir_file_sep; /*			     */
+      for (cp = *cpp; *cp; ++cp)		   /*			     */
+      { if (*cp == '/') *cp = *rsc_dir_file_sep;   /*			     */
       }						   /*			     */
     }						   /*			     */
   }						   /*			     */
@@ -206,7 +206,7 @@ void init_read()				   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	see_bib_msg()
+** Function*:	see_bib_msg()
 ** Purpose:	Message function for use with  |px_fopen()|.
 ** Arguments:
 **	s	String to print
@@ -295,7 +295,6 @@ bool seen()					   /*			     */
   return false;					   /*			     */
 }						   /*------------------------*/
 
-
 #define Expect(C,N)	  if ( GetC != C ) { UnexpectedError; return(N); }
 #define ExpectSymbol(C,N) if (!parse_symbol(C))		return(N)
 #define ExpectKey(C,N)    if (!parse_key(C))		return(N)
@@ -304,7 +303,7 @@ bool seen()					   /*			     */
 #define ExpectEqMac(R,N)  if (!parse_equation(R))	return(N)
 
 /*-----------------------------------------------------------------------------
-** Function:	init_parse()
+** Function*:	init_parse()
 ** Purpose:	Initialize the parser.
 **
 ** Arguments:	none
@@ -325,7 +324,7 @@ static void init_parse()			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	fill_line()
+** Function*:	fill_line()
 ** Purpose:	Filling the line buffer until end-of-line or end-of-file
 **		encountered.
 **		
@@ -379,7 +378,7 @@ static int fill_line()				   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	skip()
+** Function*:	skip()
 ** Purpose:	Skip over spaces. Return the next non-space character or |EOF|.
 ** Arguments:
 **	inc	If inc is |true| point to the first character after the one
@@ -397,21 +396,21 @@ static int skip(inc)				   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	skip_c()
+** Function*:	skip_c()
 ** Purpose:	Return the next character or EOF.
 ** Arguments:	none
-** Returns:	
+** Returns:	the next character or |EOF|
 **___________________________________________________			     */
 static int skip_c()				   /*			     */
 {						   /*			     */
   FOREVER					   /*			     */
-  { if ( EmptyC && fill_line() )   return EOF;	   /*			     */
-    else { return ( NextC ); }			   /*			     */
+  { if (EmptyC && fill_line()) return EOF;	   /*			     */
+    else { return (NextC); }			   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	skip_nl()
+** Function*:	skip_nl()
 ** Purpose:	Return the next character or EOF.
 **		Any number of spaces is returned as a single space.
 **		Doubled newlines are preserved.
@@ -453,7 +452,7 @@ static int skip_nl()				   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	parse_symbol()
+** Function*:	parse_symbol()
 ** Purpose:	Parse a symbol and push it to the stack.
 **		Upon failure issue an appropriate message.
 ** Arguments:
@@ -479,7 +478,7 @@ static bool parse_symbol(alpha)			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	parse_key()
+** Function*:	parse_key()
 ** Purpose:	Parse a symbol and push it to the stack.
 **		Upon failure issue an appropriate message.
 ** Arguments:
@@ -517,7 +516,7 @@ static bool parse_key(alpha)			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	parse_number()
+** Function*:	parse_number()
 ** Purpose:	Parse a number and push it to the stack.
 **		This function is called when at least one digit has been seen.
 **		Thus no error can occur in this function.
@@ -537,7 +536,7 @@ static void parse_number()			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	parse_string()
+** Function*:	parse_string()
 ** Purpose:	Parse a string and push it to the stack.
 **		A string is something enclosed in ""
 **		Consider the brace level to determine the end of the string.
@@ -578,7 +577,7 @@ static bool parse_string(quotep)		   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	parse_block()
+** Function*:	parse_block()
 ** Purpose:	Parse a block and push it to the stack.
 **		A block is something enclosed in {}
 **		Consider the brace level to determine the end of the string.
@@ -615,7 +614,7 @@ static bool parse_block(quotep)			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	parse_rhs()
+** Function*:	parse_rhs()
 ** Purpose:	Parse the right hand side of an item.
 **		This can be composed of strings, blocks, numbers, and symbols
 **		separated by #
@@ -628,7 +627,7 @@ static bool parse_rhs()				   /*			     */
  						   /*                        */
   sbrewind(parse_sb);				   /*			     */
   do						   /*			     */
-  { if ( sbtell(parse_sb) != 0 )		   /*			     */
+  { if (sbtell(parse_sb) != 0)		   	   /*			     */
     { (void)sbputs(" # ", parse_sb); }		   /*			     */
 						   /*			     */
     switch (GetC)				   /*			     */
@@ -674,7 +673,7 @@ static bool parse_rhs()				   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	parse_equation()
+** Function*:	parse_equation()
 ** Purpose:	Parse a pair separated by an equals sign.
 ** Arguments:
 **	rec	The record to store the result in
@@ -796,12 +795,14 @@ int parse_bib(rec)				   /*			     */
   { case BIB_COMMENT:				   /* This code is not used  */
       UnGetC; 					   /*  any more.             */
       (void)parse_rhs();			   /*                        */
-      push_to_record(rec, pop_string(), NO_SYMBOL);/*			     */
+      push_to_record(rec, pop_string(),		   /*                        */
+		     NO_SYMBOL);		   /*			     */
       return type;				   /*                        */
  						   /*                        */
     case BIB_PREAMBLE:				   /*			     */
       ExpectRhs(BIB_NOOP);			   /*			     */
-      push_to_record(rec, pop_string(), NO_SYMBOL);/*			     */
+      push_to_record(rec, pop_string(),		   /*                        */
+		     NO_SYMBOL);		   /*			     */
       break;					   /*			     */
 						   /*			     */
     case BIB_STRING:				   /*			     */
@@ -814,20 +815,23 @@ int parse_bib(rec)				   /*			     */
 						   /*			     */
     case BIB_INCLUDE:				   /*			     */
       ExpectRhs(BIB_NOOP);			   /*			     */
-      push_to_record(rec, pop_string(), NO_SYMBOL);/*			     */
+      push_to_record(rec, pop_string(),		   /*                        */
+		     NO_SYMBOL);		   /*			     */
       break;					   /*			     */
 						   /*			     */
     case BIB_MODIFY:				   /*			     */
     default:					   /*			     */
-      if ( TestC == ',' )			   /*			     */
+      if (TestC == ',')			   	   /*			     */
       { Warning("Missing reference key");	   /*			     */
-	push_to_record(rec, sym_empty, NO_SYMBOL); /*			     */
+	push_to_record(rec, sym_empty,		   /*                        */
+		       NO_SYMBOL); 		   /*			     */
 	(void)GetC;				   /*			     */
       }						   /*			     */
       else					   /*			     */
       { ExpectKey(false, BIB_NOOP);		   /*			     */
 	Expect(',', BIB_NOOP);			   /*			     */
-	push_to_record(rec, pop_string(), NO_SYMBOL);/*			     */
+	push_to_record(rec, pop_string(),	   /*                        */
+		       NO_SYMBOL);		   /*			     */
       }						   /*			     */
 						   /*			     */
       do					   /*			     */
@@ -848,7 +852,7 @@ int parse_bib(rec)				   /*			     */
       } while (again);				   /*			     */
   }						   /*			     */
 						   /*			     */
-  switch ( GetC )				   /*			     */
+  switch (GetC)				   	   /*			     */
   { case '}':					   /*			     */
       if( c != '{' )				   /*			     */
       { Warning("Parenthesis '(' closed by '}'"); }/*			     */
@@ -918,7 +922,7 @@ void set_rsc_path(val)				   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	see_rsc()
+** Function*:	see_rsc()
 ** Purpose:	Open a rsc file to read from. The resource file path
 **		and the optional extensions are used to construct the
 **		full file name.
@@ -943,17 +947,15 @@ static bool see_rsc(fname)			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	parse_value()
+** Function*:	parse_value()
 ** Purpose:	
 **		
 **
-** Arguments:
-**	
+** Arguments:	none
 ** Returns:	
 **___________________________________________________			     */
 static bool parse_value()			   /*			     */
-{						   /*			     */
-  int start_flno = flno;			   /*                        */
+{ int start_flno = flno;			   /*                        */
  						   /*                        */
   sbrewind(parse_sb);				   /*			     */
   switch (GetC)				   	   /*			     */

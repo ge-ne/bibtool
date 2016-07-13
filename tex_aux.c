@@ -98,7 +98,7 @@ bool foreach_aux(fct)				   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	save_ref()
+** Function*:	save_ref()
 ** Purpose:	Store the cite key for selection.
 **		If the cite key is "*" then all should be selected.
 **		This is written e.g. by \nocite{*}
