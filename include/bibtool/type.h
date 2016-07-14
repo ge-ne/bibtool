@@ -362,7 +362,7 @@ Uchar trans_id[256];			   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_allowed()
-** Type:	int
+** Type:	bool
 ** Purpose:	Decide whether the character given as argument is an
 **		allowed character in the sense of \BibTeX.
 ** Arguments:
@@ -373,7 +373,7 @@ Uchar trans_id[256];			   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_upper()
-** Type:	int
+** Type:	bool
 ** Purpose:	Decide whether the character given as argument is a
 **		upper case letter.
 **		(Characters outside the ASCII range are not considered
@@ -386,7 +386,7 @@ Uchar trans_id[256];			   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_lower()
-** Type:	int
+** Type:	bool
 ** Purpose:	Decide whether the character given as argument is a
 **		lower case letter.
 **		(Characters outside the ASCII range are not considered
@@ -399,7 +399,7 @@ Uchar trans_id[256];			   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_alpha()
-** Type:	int
+** Type:	bool
 ** Purpose:	Decide whether the character given as argument is a
 **		letter.
 **		(Characters outside the ASCII range are not considered
@@ -412,7 +412,7 @@ Uchar trans_id[256];			   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_digit()
-** Type:	int
+** Type:	bool
 ** Purpose:	Decide whether the character given as argument is a
 **		digit.
 **		(Characters outside the ASCII range are not considered
@@ -425,7 +425,7 @@ Uchar trans_id[256];			   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_space()
-** Type:	int
+** Type:	bool
 ** Purpose:	Decide whether the character given as argument is a
 **		space character. |'\0'| is not a space character.
 ** Arguments:
@@ -436,7 +436,7 @@ Uchar trans_id[256];			   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_extended()
-** Type:	int
+** Type:	bool
 ** Purpose:	Decide whether the character given as argument is an
 **		extended character outside the ASCII range.
 ** Arguments:
@@ -447,7 +447,7 @@ Uchar trans_id[256];			   	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	is_wordsep()
-** Type:	int
+** Type:	bool
 ** Purpose:	Decide whether the character given as argument is a
 **		word separator which denotes no word constituent.
 ** Arguments:
@@ -479,7 +479,6 @@ Uchar trans_id[256];			   	   /*                        */
 ** Returns:	The upper case letter or the character itself.
 **___________________________________________________			     */
 #define ToUpper(C)	  trans_upper[(Uchar)(C)]
-
 
 #define SYMBOL_TYPE_LOWER 0
 #define SYMBOL_TYPE_UPPER 1
