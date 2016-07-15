@@ -108,7 +108,7 @@
 #endif
  Macro new_macro _ARG((Symbol name,Symbol val,Macro next,int cnt));/*macros.c*/
  Symbol get_item _ARG((Symbol  name,int type));    /* macros.c               */
- Symbol get_key_name _ARG((Symbol s));		   /* macros.c               */
+ Symbol get_key _ARG((Symbol name));		   /* macros.c               */
  Symbol look_macro _ARG((Symbol name, int add));   /* macros.c               */
  bool each_macro _ARG((Macro m,bool (*fct)(Symbol,Symbol)));/* macros.c      */
  int def_macro _ARG((Symbol name,Symbol val,int count));/* macros.c          */

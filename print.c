@@ -637,7 +637,7 @@ void put_record(fct, rec, db, start)		   /*                        */
 	    }					   /*			     */
 	    else				   /* Otherwise print a key  */
 	    { indent(rsc_col_key, fct);		   /*			     */
-	      PUTS(SymbolValue(get_key_name(*hp)));/*			     */
+	      PUTS(SymbolValue(get_key(*hp)));	   /*			     */
 	    }					   /*			     */
 	  }					   /*			     */
 	  hp += 2;				   /* Goto next pair.	     */

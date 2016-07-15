@@ -357,9 +357,9 @@ void def_field_type(s)				   /*                        */
 **		
 **
 ** Arguments:
-**	name
-**	mac
-**	type
+**	name	the lower-case name of the macro to get
+**	mac	the list of macros to query
+**	type	the type of the fall-back
 ** Returns:	
 **___________________________________________________			     */
 static Symbol get_mapped_or_cased(name, mac, type) /*                        */
@@ -367,39 +367,41 @@ static Symbol get_mapped_or_cased(name, mac, type) /*                        */
   int            type;				   /*                        */
   register Macro mac;				   /*                        */
 { static StringBuffer* sb = (StringBuffer*)NULL;   /*                        */
+  register String s;	   			   /*                        */
  						   /*                        */
   for ( ; mac != MacroNULL; mac = NextMacro(mac) ) /*                        */
-  { if ( name == MacroName(mac) )		   /*                        */
+  { if (name == MacroName(mac))		   	   /*                        */
       return MacroValue(mac);			   /*                        */
   }						   /*                        */
  						   /*                        */
-  if (sb == NULL && (sb=sbopen()) == NULL)	   /*                        */
-  { OUT_OF_MEMORY("get_item()"); } 		   /*                        */
-  sbrewind(sb);					   /*                        */
-  if (type == SYMBOL_TYPE_LOWER) 	   	   /*                        */
-  { sbputs((char*)SymbolValue(name), sb);	   /*                        */
-  }						   /*                        */
-  else						   /*                        */
-  { register String s = SymbolValue(name);	   /*                        */
-    switch (type)			   	   /*                        */
-    { case SYMBOL_TYPE_CASED:			   /*                        */
-	while (*s)				   /*                        */
-	{ if (is_alpha(*s))			   /*                        */
-	  { (void)sbputc(ToUpper(*s), sb);	   /*                        */
-	    for (++s; is_alpha(*s); ++s)  	   /*                        */
-	    { (void)sbputc(*s, sb); }	   	   /*                        */
-	  }					   /*                        */
-	  else					   /*                        */
-	  { (void)sbputc(*s, sb);		   /*                        */
-	    ++s;				   /*                        */
-	  }					   /*                        */
+  if (sb == NULL)				   /*                        */
+  { if ((sb=sbopen()) == NULL)	   		   /*                        */
+    { OUT_OF_MEMORY("get_item()"); } 		   /*                        */
+  } else 					   /*                        */
+  { sbrewind(sb); }				   /*                        */
+ 						   /*                        */
+  switch (type)			   	   	   /*                        */
+  { case SYMBOL_TYPE_LOWER:			   /*                        */
+      return name;				   /*                        */
+ 						   /*                        */
+    case SYMBOL_TYPE_CASED:			   /*                        */
+      for (s = SymbolValue(name); *s; )		   /*                        */
+      { if (is_alpha(*s))			   /*                        */
+	{ (void)sbputc(ToUpper(*s), sb);	   /*                        */
+	  for (++s; is_alpha(*s); ++s)  	   /*                        */
+	  { (void)sbputc(*s, sb); }	   	   /*                        */
 	}					   /*                        */
-	break;					   /*                        */
-      case SYMBOL_TYPE_UPPER:			   /*                        */
-	for ( ; *s; ++s )			   /*                        */
-	{ (void)sbputc(ToUpper(*s), sb); }	   /*                        */
-	break;					   /*                        */
-    }						   /*                        */
+	else					   /*                        */
+	{ (void)sbputc(*s, sb);		   	   /*                        */
+	  ++s;				   	   /*                        */
+	}					   /*                        */
+      }					   	   /*                        */
+      break;					   /*                        */
+ 						   /*                        */
+    case SYMBOL_TYPE_UPPER:			   /*                        */
+      for (s = SymbolValue(name); *s; ++s)	   /*                        */
+      { (void)sbputc(ToUpper(*s), sb); }	   /*                        */
+      break;					   /*                        */
   }						   /*                        */
   return symbol((String)sbflush(sb));		   /*                        */
 }						   /*------------------------*/
@@ -439,11 +441,11 @@ Symbol get_item(name, type)			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	save_key()
-** Purpose:	
-**		
+** Purpose:	Save a mapping of a lower-case key to a printed
+**		representation.
 ** Arguments:
-**	name	the name of the key
-**	key	the key
+**	name	the name of the key in lower
+**	key	the key as printed
 ** Returns:	nothing
 **___________________________________________________			     */
 void save_key(name, key)			   /*                        */
@@ -454,14 +456,16 @@ void save_key(name, key)			   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
-** Function:	get_key_name()
-** Purpose:	
-**		
+** Function:	get_key()
+** Purpose:	Get the printable representation of a key. If a special
+**		representation has been registered then this
+**		representation is returned. Otherwise the (lower-case)
+**		key is returned.
 ** Arguments:
-**	name	the name of the key to find
+**	name	the name of the key to find. This must be in lower-case
 ** Returns:	
 **___________________________________________________			     */
-Symbol get_key_name(name)			   /*                        */
+Symbol get_key(name)			   	   /*                        */
   Symbol name;			   	   	   /*                        */
 { return get_mapped_or_cased(name,	   	   /*                        */
 			     keys,	   	   /*                        */
