@@ -87,7 +87,7 @@
 **		If no appropriate value is found then an error message
 **		is issued as the only action.
 **		
-**		This function is called from |rsc.c|.
+**		This function is called from \file{rsc.c}.
 ** Arguments:
 **	s	String description of the value.
 ** Returns:	nothing
@@ -107,10 +107,10 @@ void set_symbol_type(s)				   /*			     */
 /*-----------------------------------------------------------------------------
 ** Function:	get_symbol_type()
 ** Type:	String
-** Purpose:	
-**		
+** Purpose:	Getter for the symbol type.
 ** Arguments:	none
-** Returns:	
+** Returns:	one of the values |SYMBOL_TYPE_UPPER|, |SYMBOL_TYPE_LOWER|,
+**		or |SYMBOL_TYPE_CASED| as defined in header \file{type.h}
 **___________________________________________________			     */
 String get_symbol_type()			   /*                        */
 { switch (symbol_type)				   /*                        */
@@ -129,8 +129,8 @@ String get_symbol_type()			   /*                        */
 ** Function*:	set_key_type()
 ** Purpose:	Wrapper function to set the static variable key_type.
 **		This function is called from rsc.c
-**	s	String description of the value.
 ** Arguments:
+**	s	String description of the value.
 ** Returns:	nothing
 **___________________________________________________			     */
 void set_key_type(s)				   /*			     */
