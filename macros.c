@@ -353,14 +353,14 @@ void def_field_type(s)				   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function*:	get_mapped_or_cased()
-** Purpose:	
-**		
-**
+** Purpose:	Query a mapping in a macro list or return the
+**		translated name.
 ** Arguments:
 **	name	the lower-case name of the macro to get
 **	mac	the list of macros to query
-**	type	the type of the fall-back
-** Returns:	
+**	type	the type of the fall-back from |SYMBOL_TYPE_LOWER|,
+**		|SYMBOL_TYPE_UPPER|, or |SYMBOL_TYPE_CASED|.
+** Returns:	the requested value
 **___________________________________________________			     */
 static Symbol get_mapped_or_cased(name, mac, type) /*                        */
   Symbol	 name;				   /*                        */
@@ -371,6 +371,7 @@ static Symbol get_mapped_or_cased(name, mac, type) /*                        */
  						   /*                        */
   for ( ; mac != MacroNULL; mac = NextMacro(mac) ) /*                        */
   { if (name == MacroName(mac))		   	   /*                        */
+      LinkSymbol(MacroValue(mac));		   /*                        */
       return MacroValue(mac);			   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -451,8 +452,7 @@ Symbol get_item(name, type)			   /*                        */
 void save_key(name, key)			   /*                        */
   Symbol name;				   	   /*                        */
   Symbol key;					   /*                        */
-{						   /*                        */
-  keys = new_macro(name, key, keys, 1);		   /*                        */
+{ keys = new_macro(name, key, keys, 1);		   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -463,7 +463,7 @@ void save_key(name, key)			   /*                        */
 **		key is returned.
 ** Arguments:
 **	name	the name of the key to find. This must be in lower-case
-** Returns:	
+** Returns:	the requested representation
 **___________________________________________________			     */
 Symbol get_key(name)			   	   /*                        */
   Symbol name;			   	   	   /*                        */
