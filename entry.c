@@ -192,7 +192,7 @@ static bool match(s,t)				   /*			     */
 **	s	String of the potential entry name.
 ** Returns:	The index in the array or |NOOP|.
 **___________________________________________________			     */
-int find_entry_type(s)			   	   /*			     */
+rec_type find_entry_type(s)			   /*			     */
   String s;				   	   /*			     */
 { int i;				   	   /*			     */
 						   /*			     */

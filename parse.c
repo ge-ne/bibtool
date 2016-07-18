@@ -26,6 +26,7 @@
 
 #include <bibtool/general.h>
 #include <bibtool/symbols.h>
+#include <bibtool/record.h>
 #include <bibtool/entry.h>
 #include <bibtool/error.h>
 #include <bibtool/pxfile.h>
@@ -714,8 +715,8 @@ static bool parse_equation(rec)		   	   /*			     */
 **___________________________________________________			     */
 int parse_bib(rec)				   /*			     */
   Record rec;					   /*                        */
-{ register int type,				   /*			     */
-	       n,				   /*			     */
+{ register rec_type type;			   /*			     */
+  register int n,				   /*			     */
 	       c;				   /*			     */
   bool	       again;				   /*			     */
   long	       ignored = 0L;			   /*			     */
@@ -725,7 +726,7 @@ int parse_bib(rec)				   /*			     */
   static StringBuffer * comment_sb = (StringBuffer*)NULL;/*                  */
  						   /*                        */
   if (file == NULL) return BIB_EOF;	   	   /*                        */
-  if ( comment_sb == (StringBuffer*)NULL )	   /*                        */
+  if (comment_sb == (StringBuffer*)NULL)	   /*                        */
   { comment_sb = sbopen(); } 			   /*                        */
  						   /*                        */
   RecordOldKey(rec)  = NULL;	   	   	   /*			     */

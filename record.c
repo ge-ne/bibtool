@@ -453,7 +453,7 @@ WordList new_wordlist(s)			   /*                        */
 void add_sort_order(val)			   /*                        */
   Symbol    val;				   /*                        */
 { Symbol    sym;				   /*                        */
-  int       type;				   /*                        */
+  rec_type  type;				   /*                        */
   OrderList ol;					   /*                        */
   WordList  *wlp = NULL;			   /*                        */
   WordList  wl, wl_next;			   /*                        */

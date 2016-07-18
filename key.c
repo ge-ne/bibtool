@@ -2502,7 +2502,7 @@ bool set_field(db,rec,name,value)		   /*			     */
 	break;    				   /*                        */
       case 't': case 'T':			   /*                        */
 	if (case_eq(s, (String)"type"))	   	   /*			     */
-	{ int type;				   /*                        */
+	{ rec_type type;			   /*                        */
 	  if (IsNormalRecord(RecordType(rec)) &&   /*                        */
 	      (type=find_entry_type(SymbolValue(value))) >= 0)/*             */
 	  { SetSym(RecordType(rec), type);	   /*                        */

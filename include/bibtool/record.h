@@ -35,6 +35,8 @@
 #include <bibtool/symbols.h>
 #include <bibtool/wordlist.h>
 
+typedef int rec_type;
+
 /*-----------------------------------------------------------------------------
 ** Typedef:	Record
 ** Purpose:	This data type represents a record in a \BibTeX{}
@@ -56,7 +58,7 @@
 typedef struct rECORD				/*                           */
 { Symbol	rc_key;				/* The sort key.             */
   Symbol	rc_old_key;			/* The old sort key.         */
-  int		rc_type;			/* The type of the record.   */
+  rec_type	rc_type;			/* The type of the record.   */
   int		rc_flags;			/* Some bits; e.g. used      */
  						/*  during selecting aux     */
  						/*  records.                 */
@@ -85,7 +87,7 @@ typedef struct rECORD				/*                           */
 
 /*-----------------------------------------------------------------------------
 ** Macro:	RecordType()
-** Type:	int
+** Type:	rec_type
 ** Purpose:	Functional representation of the record
 **		token. This can be used to access the token component
 **		of a record. It can also be used as lvalue.

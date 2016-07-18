@@ -49,9 +49,9 @@
 /*---------------------------------------------------------------------------*/
 
  typedef struct mAP				   /*                        */
- { int src_rec;					   /*source record type index*/
+ { rec_type src_rec;				   /*source record type index*/
    Symbol src_field;				   /*                        */
-   int dest_rec;				   /*target record type index*/
+   rec_type dest_rec;				   /*target record type index*/
    Symbol dest_field;				   /*                        */
    struct mAP * next_map;			   /*                        */
  } *Map, SMap;					   /*                        */
@@ -74,9 +74,9 @@
 ** Returns:	the new map
 **___________________________________________________			     */
 static Map new_map(sr,sf,dr,df)			   /*                        */
-  int sr;					   /*                        */
+  rec_type sr;					   /*                        */
   Symbol sf;					   /*                        */
-  int dr;					   /*                        */
+  rec_type dr;					   /*                        */
   Symbol df;					   /*                        */
 { Map m;					   /*                        */
   if ( (m = (Map)malloc(sizeof(SMap))) == (Map)NULL)/*                       */
@@ -147,9 +147,9 @@ void clear_map()				   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void map_add(s_rec,s_fld,d_rec,d_fld)		   /*                        */
-  int s_rec;					   /*                        */
+  rec_type s_rec;				   /*                        */
   Symbol s_fld;					   /*                        */
-  int d_rec;					   /*                        */
+  rec_type d_rec;				   /*                        */
   Symbol d_fld;					   /*                        */
 { int idx;					   /*                        */
   Map m;					   /*                        */
@@ -188,9 +188,9 @@ void map_add(s_rec,s_fld,d_rec,d_fld)		   /*                        */
 ** Returns:	the new field name or |NO_SYMBOL|
 **___________________________________________________			     */
 Symbol map_get(s_rec, s_fld, d_rec)		   /*                        */
-  int s_rec;					   /*                        */
+  rec_type s_rec;				   /*                        */
   Symbol s_fld;					   /*                        */
-  int d_rec;					   /*                        */
+  rec_type d_rec;				   /*                        */
 { int i = MAP_INDEX(s_rec, s_fld, d_rec);	   /*                        */
   Map m	= map[i];	   			   /*                        */
 						   /*                        */
@@ -217,7 +217,7 @@ void crossref_map(spec)				   /*                        */
 { Symbol *src, *dest;				   /*                        */
   Symbol src_field, dest_field;			   /*                        */
   Symbol *sp, *dp;				   /*                        */
-  int s_rec, d_rec;				   /*                        */
+  rec_type s_rec, d_rec;			   /*                        */
  						   /*                        */
   sp_open(spec);				   /*                        */
   if ((src = sp_symbols(&spec)) == NULL) return;   /*                        */

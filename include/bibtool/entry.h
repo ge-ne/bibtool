@@ -34,6 +34,7 @@
 ******************************************************************************/
 
 #include <bibtool/type.h>
+#include <bibtool/record.h>
 
 /*-----------------------------------------------------------------------------
 ** Variable:	entry_type
@@ -166,6 +167,6 @@ extern int type_xdata;
 #define _ARG(A) ()
 #endif
  Symbol get_entry_type _ARG((int i));		   /* entry.c                */
- int find_entry_type _ARG((String s));		   /* entry.c                */
+ rec_type find_entry_type _ARG((String s));	   /* entry.c                */
  void def_entry_type _ARG((Symbol s));		   /* entry.c                */
  void init_entries _ARG((void));		   /* entry.c                */
