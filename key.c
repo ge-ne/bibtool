@@ -52,7 +52,7 @@
  static KeyNode new_key_node _ARG((int type,Symbol sym));/* key.c            */
  static bool fmt_digits _ARG((StringBuffer *sb,String s,int mp,int pp,int n,int sel,bool trunc));/* key.c*/
  static bool fmt_c_words _ARG((String line,int min,int max,bool not,bool ignore));/* key.c*/
- static bool fmt_c_names _ARG((String line,int min,int max,int not));/* key.c*/
+ static bool fmt_c_names _ARG((String line,int min,int max,bool not));/* key.c*/
  static bool fmt_c_string _ARG((String  s,int min,int max,bool not));/* key.c  */
  static bool add_fmt_tree _ARG((char *s,KeyNode *treep));/* key.c             */
  static bool eval__fmt _ARG((StringBuffer *sb,KeyNode kn,Record rec));/* key.c*/
@@ -104,8 +104,8 @@
 
  static NameNode format[NUMBER_OF_FORMATS];	   /*                        */
 
-#define SkipSpaces(CP)	  while ( is_space(*CP) ) ++(CP)
-#define SkipAllowed(CP)	  while ( is_allowed(*CP) ) ++(CP)
+#define SkipSpaces(CP)	  while (is_space(*CP)) ++(CP)
+#define SkipAllowed(CP)	  while (is_allowed(*CP)) ++(CP)
 #define ParseNumber(CP,N) if (is_digit(*CP)) { N = 0;			\
    while(is_digit(*CP) ){ N = N*10 + (*CP)-'0'; ++CP; }}
 #define Expect(CP,C,RET)  SkipSpaces(CP);				\
@@ -120,7 +120,7 @@
 			  *KNP = new_key_node(TYPE,symbol((String)*SP));\
 			  *CP  = c;
 #define ParseOrReturn(CP,NODEP,MSG)					\
-  if ( (ret=fmt_parse(CP,NODEP)) != 0  )				\
+  if ((ret=fmt_parse(CP,NODEP)) != 0 )					\
   { DebugPrintF1(MSG); return ret; }
 
 
@@ -133,8 +133,8 @@ static size_t words_len  = 0;
 static size_t words_used = 0;
 #define WordLenInc 16
 
-#define PushWord(S)	if(words_len>words_used) words[words_used++]=S;	\
-			else			 Push_Word(S)
+#define PushWord(S)	if (words_len>words_used) words[words_used++]=S; \
+			else			  Push_Word(S)
 #define ResetWords	words_used = 0
 
 /*-----------------------------------------------------------------------------
@@ -162,11 +162,11 @@ static void Push_Word(s)			   /*			     */
 { register String *wp;				   /*			     */
 						   /*			     */
   words_len += WordLenInc;			   /*			     */
-  if ( words_len == WordLenInc )		   /*			     */
+  if (words_len == WordLenInc)		   	   /*			     */
   { wp = (String*)malloc(words_len*sizeof(String)); }/*			     */
   else						   /*			     */
   { wp = (String*)realloc(words,words_len*sizeof(String)); }/*		     */
-  if ( wp == (String*)0 )			   /*			     */
+  if (wp == (String*)0)			   	   /*			     */
   { words_len -= WordLenInc;			   /*			     */
     ERROR((String)"Push_Word() failed: Word not pushed.");/*		     */
     return;					   /*			     */
@@ -229,7 +229,7 @@ void set_separator(n,s)				   /*			     */
   register int	n;				   /*			     */
   String s;				   	   /*			     */
 { 						   /*                        */
-  if ( n < 0 || n >= NoSeps || !is_allowed(*s) )   /*			     */
+  if (n < 0 || n >= NoSeps || !is_allowed(*s))     /*			     */
   { ERROR("Invalid separator specification.");     /*			     */
     return;					   /*			     */
   }						   /*			     */
@@ -242,15 +242,19 @@ void set_separator(n,s)				   /*			     */
 /*-----------------------------------------------------------------------------
 ** Function:	get_separator()
 ** Type:	String
-** Purpose:	
-**		
+** Purpose:	Getter for the key separator.
 ** Arguments:
-**	n	
+**	n	the index
 ** Returns:	
 **___________________________________________________			     */
 Symbol get_separator(n)				   /*                        */
   int n;					   /*                        */
-{ return key_seps[n];				   /*                        */
+{ 						   /*                        */
+  if (n < 0 || n >= NoSeps)   			   /*			     */
+  { ERROR("Invalid separator specification.");     /*			     */
+    return null;				   /*			     */
+  }						   /*			     */
+  return key_seps[n];				   /*                        */
 }						   /*------------------------*/
 
 
@@ -296,12 +300,12 @@ Symbol get_separator(n)				   /*                        */
 void set_base(value)				   /*			     */
   String value;				   	   /*			     */
 {						   /*			     */
-  if	  ( case_eq(value,(String)"upper") ) key_base = KEY_BASE_UPPER;/*    */
-  else if ( case_eq(value,(String)"lower") ) key_base = KEY_BASE_LOWER;/*    */
-  else if ( case_eq(value,(String)"digit") ) key_base = KEY_BASE_DIGIT;/*    */
-  else if ( is_upper(*value) )	      key_base = KEY_BASE_UPPER;/*	     */
-  else if ( is_lower(*value) )	      key_base = KEY_BASE_LOWER;/*	     */
-  else if ( is_digit(*value) )	      key_base = KEY_BASE_DIGIT;/*	     */
+  if	  (case_eq(value,(String)"upper")) key_base = KEY_BASE_UPPER;/*      */
+  else if (case_eq(value,(String)"lower")) key_base = KEY_BASE_LOWER;/*      */
+  else if (case_eq(value,(String)"digit")) key_base = KEY_BASE_DIGIT;/*      */
+  else if (is_upper(*value))		   key_base = KEY_BASE_UPPER;/*	     */
+  else if (is_lower(*value))		   key_base = KEY_BASE_LOWER;/*	     */
+  else if (is_digit(*value))		   key_base = KEY_BASE_DIGIT;/*	     */
   else { ERROR("Unknown base ignored."); }	   /*			     */
 }						   /*------------------------*/
 
@@ -315,7 +319,7 @@ void set_base(value)				   /*			     */
 **___________________________________________________			     */
 String get_base()				   /*                        */
 {						   /*                        */
-  switch(key_base)				   /*                        */
+  switch (key_base)				   /*                        */
   { case KEY_BASE_UPPER: return (String)"upper";   /*                        */
     case KEY_BASE_LOWER: return (String)"lower";   /*                        */
     case KEY_BASE_DIGIT: return (String)"digit";   /*                        */
@@ -352,9 +356,9 @@ static char * itostr(i,digits)			   /*			     */
   base	  = strlen(digits);			   /* how many digits?	     */
   bp	  = buffer+ITOA_LEN-1;			   /* set pointer to the end.*/
   *(bp--) = '\0';				   /* mark the end.	     */
-  if ( i<0 ) { sign = -1; i = -i; }		   /*			     */
+  if (i < 0) { sign = -1; i = -i; }		   /*			     */
   else { sign = 0; if ( i == 0 ) *(bp--) = '0'; }  /*			     */
-  while ( i > 0 )				   /*			     */
+  while (i > 0)				   	   /*			     */
   { *(bp--) = digits[i%base];			   /*			     */
     i	    = i/base;				   /*			     */
   }						   /*			     */
@@ -381,8 +385,8 @@ static void init_key()			   	   /*                        */
   String s;					   /*                        */
   						   /*                        */
   if (key_seps != NULL) return;			   /*                        */
-
-  key_seps   = (Symbol*)malloc(8*sizeof(Symbol));/*                        */
+ 						   /*                        */
+  key_seps   = (Symbol*)malloc(8*sizeof(Symbol));  /*                        */
   key_seps[0] = symbol((String)"**key*");	   /*                        */
   key_seps[1] = symbol((String)"-");		   /*                        */
   key_seps[2] = symbol((String)".");		   /*                        */
@@ -785,14 +789,14 @@ void def_format_type(s)				   /*                        */
  						   /*                        */
   SkipSpaces(s);				   /*                        */
   n = 0;					   /*                        */
-  while ( is_digit(*s) ) { n = n*10 + (*s++) - '0'; }/*                      */
+  while (is_digit(*s)) { n = n*10 + (*s++) - '0'; }/*                        */
   if ( n >= NUMBER_OF_FORMATS )			   /*                        */
   { WARNING("Format type number is out of range.");/*                        */
     return;					   /*                        */
   }						   /*                        */
   if ( rsc_verbose && n <= 1 )			   /*                        */
   { VerbosePrint3("Name format specifier ",	   /*                        */
-		  (n==0?"0":"1"),		   /*                        */
+		  (n == 0 ? "0" : "1"),		   /*                        */
 		  " has been changed.\n");	   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -831,7 +835,7 @@ static void fmt_names(sb,line,maxname,post,trans)  /*		             */
 	        i;				   /*			     */
   static bool   undef_warning = false;		   /*                        */
   						   /*                        */
-  if ( maxname == 0 ) return;			   /*                        */
+  if (maxname == 0) return;			   /*                        */
  						   /*                        */
   if (   post < 0				   /*                        */
       || post >= NUMBER_OF_FORMATS		   /*                        */
@@ -885,7 +889,7 @@ static bool fmt_c_names(line,min,max,not)	   /*		             */
   String line;				   	   /* Name list string	     */
   int   min;				   	   /* number of relevant char*/
   int   max;				   	   /* number of names b4 etal*/
-  int   not;				   	   /* negation flag          */
+  bool  not;				   	   /* negation flag          */
 { int   wp,				   	   /*			     */
         i,				   	   /*                        */
 	n;				   	   /*			     */
@@ -896,7 +900,7 @@ static bool fmt_c_names(line,min,max,not)	   /*		             */
 	     DETEX_FLAG_COMMA);			   /*	                     */
   words[wp] = NULL;				   /*                        */
  						   /*                        */
-  for ( i = 0, n = 1; i < wp; i++)		   /*			     */
+  for (i = 0, n = 1; i < wp; i++)		   /*			     */
   { if (strcmp((char*)words[i],"and") == 0)	   /*                        */
     { n++; }					   /*                        */
   }						   /*                        */
