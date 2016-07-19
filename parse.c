@@ -296,12 +296,12 @@ bool seen()					   /*			     */
   return false;					   /*			     */
 }						   /*------------------------*/
 
-#define Expect(C,N)	  if ( GetC != C ) { UnexpectedError; return(N); }
-#define ExpectSymbol(C,N) if (!parse_symbol(C))		return(N)
-#define ExpectKey(C,N)    if (!parse_key(C))		return(N)
-#define ExpectRhs(N)	  if (!parse_rhs())		return(N)
-#define ExpectEq(R,N)	  if (!parse_equation(R))	return(N)
-#define ExpectEqMac(R,N)  if (!parse_equation(R))	return(N)
+#define Expect(C,N)	  if (GetC != C) { UnexpectedError; return(N); }
+#define ExpectSymbol(C,N) if (!parse_symbol(C))	  return (N)
+#define ExpectKey(C,N)    if (!parse_key(C))	  return (N)
+#define ExpectRhs(N)	  if (!parse_rhs())	  return (N)
+#define ExpectEq(R,N)	  if (!parse_equation(R)) return (N)
+#define ExpectEqMac(R,N)  if (!parse_equation(R)) return (N)
 
 /*-----------------------------------------------------------------------------
 ** Function*:	init_parse()
@@ -312,14 +312,15 @@ bool seen()					   /*			     */
 **___________________________________________________			     */
 static void init_parse()			   /*			     */
 {						   /*			     */
-  if ( fl_size != 0 ) return;			   /* Already initialzed?    */
+  if (fl_size != 0) return;			   /* Already initialzed?    */
 						   /*			     */
   fl_size = FLBLEN;				   /*			     */
-  if ( (file_line_buffer=(String)malloc(fl_size*sizeof(Uchar))) == NULL )/*  */
+  if ((file_line_buffer=(String)malloc(fl_size * sizeof(Uchar)))/*           */
+      == NULL)					   /*                        */
   { OUT_OF_MEMORY("line buffer"); }		   /* Allocate line buffer   */
 				   		   /*  or message and exit.  */
-  if ( parse_sb		   == (StringBuffer*)0 &&  /* Try to initialize the  */
-       (parse_sb=sbopen()) == (StringBuffer*)0 )   /*  string buffer for the */
+  if (parse_sb		   == (StringBuffer*)0 &&  /* Try to initialize the  */
+       (parse_sb=sbopen()) == (StringBuffer*)0)    /*  string buffer for the */
   { OUT_OF_MEMORY("parser");	   		   /*  parser or exit	     */
   }			   			   /*  with error message.   */
 }						   /*------------------------*/
@@ -347,7 +348,8 @@ static int fill_line()				   /*			     */
   flp = file_line_buffer;			   /* Reset line pointer     */
   ++flno;					   /* Increase line number   */
 						   /*			     */
-  if ( fgets((char*)file_line_buffer,fl_size,file) == NULL )/*Get first chunk*/
+  if (fgets((char*)file_line_buffer, fl_size,file) /*                        */
+      == NULL)					   /*Get first chunk         */
   { ClearLine; 		   			   /*	or report EOF	     */
     DebugPrint1("Reading failed for first line."); /*                        */
     return 1;					   /*                        */
@@ -356,24 +358,28 @@ static int fill_line()				   /*			     */
   FOREVER					   /*			     */
   { for (len = 0;				   /* Find the end	     */
 	 file_line_buffer[len] != '\0';		   /*  of the buffer and     */
-	 ++len ) ;				   /*  count the length.     */
+	 ++len) ;				   /*  count the length.     */
 						   /*			     */
 #ifdef DEBUG
-    ErrPrintF2("+++ BibTool: line buffer: used %d of %d\n",len+1,fl_size);/* */
+    ErrPrintF2("+++ BibTool: line buffer: used %d of %d\n",/*                */
+	       len + 1,				   /*                        */
+	       fl_size);			   /*                        */
 #endif
 						   /*			     */
-    if ( file_line_buffer[len-1] == '\n'	   /*			     */
+    if (file_line_buffer[len-1] == '\n'	   	   /*			     */
 	|| len < fl_size - 1)			   /*			     */
     { return 0; }				   /*			     */
 						   /*			     */
-    if ( (file_line_buffer = (String)		   /* Try to enlarge	     */
+    if ((file_line_buffer = (String)		   /* Try to enlarge	     */
 	  realloc((char*)file_line_buffer,	   /*  the line buffer	     */
-		  fl_size+=FLBLEN)) == NULL )	   /*			     */
+		  fl_size+=FLBLEN)) == NULL)	   /*			     */
     { OUT_OF_MEMORY("line buffer"); }		   /*			     */
     flp = file_line_buffer;			   /* Reset line pointer     */
 						   /*			     */
-    if ( fgets((char*)file_line_buffer+len,FLBLEN+1,file)/*		     */
-	== NULL )				   /*			     */
+    if (fgets((char*)file_line_buffer + len,	   /*                        */
+	      FLBLEN + 1,			   /*                        */
+	      file)				   /*		             */
+	== NULL)				   /*			     */
     { return 0; }				   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
@@ -390,8 +396,8 @@ static int skip(inc)				   /*			     */
   register bool inc;				   /*			     */
 {						   /*			     */
   FOREVER					   /*			     */
-  { if ( EmptyC && fill_line() )   return EOF;	   /*			     */
-    else if ( is_space(CurrentC) ) SkipC;	   /*			     */
+  { if (EmptyC && fill_line())   return EOF;	   /*			     */
+    else if (is_space(CurrentC)) SkipC;	   	   /*			     */
     else return (inc ? NextC : CurrentC);	   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
@@ -406,7 +412,7 @@ static int skip_c()				   /*			     */
 {						   /*			     */
   FOREVER					   /*			     */
   { if (EmptyC && fill_line()) return EOF;	   /*			     */
-    else { return (NextC); }			   /*			     */
+    else { return NextC; }			   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
 
@@ -431,13 +437,13 @@ static int skip_nl()				   /*			     */
       for (c = skip_c();			   /*                        */
 	   c != EOF && is_space(c) && c != '\n';   /*                        */
 	   c = skip_c()) {}			   /*                        */
-      if (c == EOF ) return EOF;		   /*                        */
+      if (c == EOF) return EOF;		   	   /*                        */
       if (c != '\n') { UnGetC; return ' '; }	   /*                        */
  						   /*                        */
       for (c = skip_c();			   /*                        */
 	   c != EOF && is_space(c) && c != '\n';   /*                        */
 	   c = skip_c()) {}			   /*                        */
-      if (c == EOF ) return EOF;		   /*                        */
+      if (c == EOF) return EOF;		   	   /*                        */
       if (c != '\n') { UnGetC; return ' '; }	   /*                        */
  						   /*                        */
       for (c = skip_c();			   /*                        */
@@ -448,7 +454,7 @@ static int skip_nl()				   /*			     */
       state = true;				   /*                        */
       return '\n';				   /*                        */
     }						   /*			     */
-    else { return ( NextC ); }		   	   /*			     */
+    else { return NextC; }		   	   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
 
@@ -467,10 +473,10 @@ static bool parse_symbol(alpha)			   /*			     */
 						   /*			     */
   c = GetC;					   /*                        */
   cp = flp-1;			   	   	   /*			     */
-  if ( alpha && (! is_alpha(c)) )		   /*			     */
+  if (alpha && (! is_alpha(c)))		   	   /*			     */
   { Warning("Symbol does not start with a letter");/*                        */
   }		   				   /*			     */
-  while ( is_allowed(CurrentC) ) { SkipC; }	   /*			     */
+  while (is_allowed(CurrentC)) { SkipC; }	   /*			     */
   c = CurrentC;					   /*                        */
   CurrentC = '\0';		   		   /*			     */
   push_string(symbol(lower(cp)));		   /*			     */
@@ -494,11 +500,11 @@ static bool parse_key(alpha)			   /*			     */
 						   /*			     */
   c  = GetC;					   /*                        */
   cp = flp - 1;			   		   /*			     */
-  if ( alpha && (! is_alpha(c)) )		   /*			     */
+  if (alpha && (! is_alpha(c)))		   	   /*			     */
   { Error("Key does not start with a letter");	   /*                        */
     return false;				   /*                        */
   }		   				   /*			     */
-  while ( is_allowed(CurrentC) || CurrentC == '\'')/*                        */
+  while (is_allowed(CurrentC) || CurrentC == '\'')/*                        */
   { SkipC; }	   				   /*			     */
   c = CurrentC;					   /*                        */
   CurrentC = '\0';		   		   /*			     */
@@ -529,7 +535,7 @@ static void parse_number()			   /*			     */
   register String cp;				   /*			     */
 						   /*			     */
   cp = flp;				   	   /*                        */
-  while ( is_digit(CurrentC) ) { SkipC; }	   /*			     */
+  while (is_digit(CurrentC)) { SkipC; }	   	   /*			     */
   c = CurrentC;					   /*                        */
   CurrentC = '\0';			   	   /*			     */
   push_string(symbol(cp));			   /*                        */
@@ -555,7 +561,7 @@ static bool parse_string(quotep)		   /*			     */
   left = 0;					   /*			     */
   if (quotep) (void)sbputchar('"', parse_sb);	   /*"			     */
   do						   /*			     */
-  { switch ( c=skip_nl() )			   /*			     */
+  { switch (c=skip_nl())			   /*			     */
     { case EOF:					   /*                        */
 	UnterminatedError("Unterminated double quote",/*                     */
 			  start_flno);		   /*                        */
@@ -638,11 +644,11 @@ static bool parse_rhs()				   /*			     */
 	return false;  			   	   /*			     */
 						   /*			     */
       case '"':					   /*                        */
-	if ( !parse_string(true) ) return false;   /*		             */
+	if (!parse_string(true)) return false;     /*		             */
 	break;					   /*			     */
 						   /*			     */
       case '{':					   /*                        */
-	if ( !parse_block(true) ) return false;    /*		             */
+	if (!parse_block(true)) return false;      /*		             */
 	break;					   /*			     */
 						   /*			     */
       case '0': case '1': case '2': case '3': case '4':/*		     */
@@ -736,16 +742,16 @@ int parse_bib(rec)				   /*			     */
   do						   /*                        */
   { init_parse();				   /*			     */
 						   /*			     */
-    while ( (c=skip_c()) != '@' )		   /* Skip to next @	     */
-    { if ( c == EOF )				   /*                        */
+    while ((c=skip_c()) != '@')		   	   /* Skip to next @	     */
+    { if (c == EOF)				   /*                        */
       { char *s, *t;				   /*                        */
 	if (ignored == 0) return BIB_EOF; 	   /*			     */
 	RecordType(rec) = BIB_COMMENT;		   /*                        */
  						   /*                        */
 	s = t = sbflush(comment_sb);		   /*                        */
-	while ( *s ) s++;			   /*                        */
+	while (*s) s++;			   	   /*                        */
 	while (t <= --s  && is_space(*s)) *s = '\0';/*                       */
-	if ( *t )				   /*                        */
+	if (*t)				   	   /*                        */
 	  RecordComment(rec) = symbol((String)t);  /*                        */
 	sbrewind(comment_sb);			   /*                        */
 	return BIB_COMMENT;		   	   /*			     */
@@ -755,7 +761,7 @@ int parse_bib(rec)				   /*			     */
       { sbputchar(c, comment_sb); }		   /*			     */
     }						   /*			     */
     						   /*			     */
-    if ( ignored != 0L )			   /*			     */
+    if (ignored != 0L)			   	   /*			     */
     { if (rsc_pass_comment)			   /*                        */
       { sbputchar('\n', comment_sb); }	   	   /*			     */
       else					   /*			     */
@@ -768,14 +774,14 @@ int parse_bib(rec)				   /*			     */
     }						   /*			     */
     DebugPrint2("Look-up type ", flp);		   /*                        */
 						   /*			     */
-    if ( (type=find_entry_type(flp)) == BIB_NOOP ) /*		             */
+    if ((type=find_entry_type(flp)) == BIB_NOOP)   /*		             */
     { Error("Unknown entry type");		   /*                        */
       return BIB_NOOP;				   /*                        */
     }						   /*		             */
  						   /*                        */
     flp += symlen(EntryName(type));		   /*		             */
  						   /*                        */
-    if ( type == BIB_COMMENT && rsc_pass_comment ) /*                        */
+    if (type == BIB_COMMENT && rsc_pass_comment)   /*                        */
     { sbputchar('@', comment_sb);		   /*                        */
       sbputs((char*)SymbolValue(EntryName(type)),  /*                        */
 	     comment_sb);  			   /*                        */
@@ -783,7 +789,7 @@ int parse_bib(rec)				   /*			     */
   } while (type == BIB_COMMENT);		   /*                        */
 					   	   /*			     */
   c = GetC;					   /*			     */
-  if ( c != '{' && c != '(' )			   /*			     */
+  if (c != '{' && c != '(')			   /*			     */
   { Error("Expected '{' or '(' missing");	   /*			     */
     return BIB_NOOP;				   /*			     */
   }						   /*			     */
@@ -792,7 +798,7 @@ int parse_bib(rec)				   /*			     */
 						   /*			     */
   RecordType(rec) = type;			   /*                        */
 						   /*			     */
-  switch ( type )				   /*			     */
+  switch (type)				   	   /*			     */
   { case BIB_COMMENT:				   /* This code is not used  */
       UnGetC; 					   /*  any more.             */
       (void)parse_rhs();			   /*                        */
@@ -838,7 +844,7 @@ int parse_bib(rec)				   /*			     */
       do					   /*			     */
       { ExpectEq(rec, BIB_NOOP);		   /*			     */
 	for (n = 0; GetC == ','; n++)		   /*			     */
-	{ if ( n == 1 )				   /*			     */
+	{ if (n == 1)				   /*			     */
 	  { Warning("Multiple ',' ignored."); }	   /*			     */
 	}					   /*			     */
 	UnGetC;					   /*			     */
@@ -855,11 +861,11 @@ int parse_bib(rec)				   /*			     */
 						   /*			     */
   switch (GetC)				   	   /*			     */
   { case '}':					   /*			     */
-      if( c != '{' )				   /*			     */
+      if(c != '{')				   /*			     */
       { Warning("Parenthesis '(' closed by '}'"); }/*			     */
       break;					   /*			     */
     case ')':					   /*			     */
-      if( c != '(' )				   /*			     */
+      if(c != '(')				   /*			     */
       { Warning("Parenthesis '{' closed by ')'"); }/*			     */
       break;					   /*			     */
     case EOF:					   /*                        */
@@ -887,9 +893,9 @@ int parse_bib(rec)				   /*			     */
  						   /*                        */
   { String s, t;				   /*                        */
     s = t = (String)sbflush(comment_sb);	   /*                        */
-    while ( *s ) s++;				   /*                        */
-    while ( t <= --s  && is_space(*s) ) *s = '\0'; /*                        */
-    if ( *t ) RecordComment(rec) = symbol(t);	   /*                        */
+    while (*s) s++;				   /*                        */
+    while (t <= --s  && is_space(*s)) *s = '\0';   /*                        */
+    if (*t) RecordComment(rec) = symbol(t);	   /*                        */
   }						   /*                        */
   sbrewind(comment_sb);				   /*                        */
   return type;					   /*			     */
@@ -919,7 +925,7 @@ void set_rsc_path(val)				   /*			     */
   init___(&r_path,				   /*			     */
 	  r_pattern,				   /*			     */
 	  (char**)&rsc_v_rsc,			   /*			     */
-	  (char*)rsc_e_rsc  );			   /*			     */
+	  (char*)rsc_e_rsc);			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -966,7 +972,7 @@ static bool parse_value()			   /*			     */
       return false;	   			   /*			     */
 						   /*			     */
     case '"':					   /*			     */
-      if ( !parse_string(false) ) return false;    /*			     */
+      if (!parse_string(false)) return false;      /*			     */
       push_string(symbol((String)sbflush(parse_sb)));/*			     */
       sbrewind(parse_sb);			   /*			     */
       break;					   /*			     */
@@ -977,7 +983,7 @@ static bool parse_value()			   /*			     */
       break;					   /*			     */
 						   /*			     */
     case '{':					   /*			     */
-      if ( !parse_block(false) ) return false;	   /*			     */
+      if (!parse_block(false)) return false;	   /*			     */
       push_string(symbol((String)sbflush(parse_sb)));/*			     */
       sbrewind(parse_sb);			   /*			     */
       break;					   /*			     */
@@ -1031,20 +1037,20 @@ bool read_rsc(name)				   /*			     */
 						   /*			     */
   init_parse();					   /*			     */
 						   /*			     */
-  if ( see_rsc(name) )				   /*                        */
+  if (see_rsc(name))				   /*                        */
   {						   /*                        */
-    while ( (c=TestC) != EOF )			   /*			     */
+    while ((c=TestC) != EOF)			   /*			     */
     { switch (c)				   /*			     */
       { case '#': case '%': case ';':		   /*			     */
 	  ClearLine; break;			   /*			     */
 	default:				   /*			     */
-	  if ( !parse_symbol(c) )		   /*			     */
+	  if (!parse_symbol(c))		   	   /*			     */
 	  { (void)seen();			   /*                        */
 	    return true;			   /*                        */
 	  }	   				   /*			     */
 	  token = pop_string();			   /*			     */
-	  if ( TestC == '=' ) (void)GetC;	   /* = is optional	     */
-	  if ( !parse_value() )			   /*			     */
+	  if (TestC == '=') (void)GetC;	   	   /* = is optional	     */
+	  if (!parse_value())			   /*			     */
 	  { (void)seen();			   /*                        */
 	    return true;			   /*                        */
 	  }					   /*			     */
