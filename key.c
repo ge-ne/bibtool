@@ -252,7 +252,7 @@ Symbol get_separator(n)				   /*                        */
 { 						   /*                        */
   if (n < 0 || n >= NoSeps)   			   /*			     */
   { ERROR("Invalid separator specification.");     /*			     */
-    return null;				   /*			     */
+    return NULL;				   /*			     */
   }						   /*			     */
   return key_seps[n];				   /*                        */
 }						   /*------------------------*/
