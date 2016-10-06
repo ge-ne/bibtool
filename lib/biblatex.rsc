@@ -243,13 +243,13 @@ crossref.map {{book inbook bookinbook suppbook}  maintitleaddon =
 	      mvbook titleaddon
 }
 
-crossref.map {{collection reference incollection inreference suppollection}  maintitle = 
+crossref.map {{collection reference incollection inreference suppcollection}  maintitle = 
 	      {mvcollection mvreference} title
 }
-crossref.map {{collection reference incollection inreference suppollection}  mainsubtitle = 
+crossref.map {{collection reference incollection inreference suppcollection}  mainsubtitle = 
 	      {mvcollection mvreference} subtitle
 }
-crossref.map {{collection reference incollection inreference suppollection}  maintitleaddon = 
+crossref.map {{collection reference incollection inreference suppcollection}  maintitleaddon = 
 	      {mvcollection mvreference} titleaddon
 }
 
@@ -273,13 +273,13 @@ crossref.map {{inbook bookinbook suppbook}  booktitleaddon =
 	      book titleaddon
 }
 
-crossref.map {{incollection inreference suppollection}  booktitle = 
+crossref.map {{incollection inreference suppcollection}  booktitle = 
 	      {collection reference} title
 }
-crossref.map {{incollection inreference suppollection}  booksubtitle = 
+crossref.map {{incollection inreference suppcollection}  booksubtitle = 
 	      {collection reference} subtitle
 }
-crossref.map {{incollection inreference suppollection}  booktitleaddon = 
+crossref.map {{incollection inreference suppcollection}  booktitleaddon = 
 	      {collection reference} titleaddon
 }
 
@@ -293,9 +293,9 @@ crossref.map {inproceedings  booktitleaddon =
 	      proceedings titleaddon
 }
 
-crossref.map {{article subperiodical}  journaltitle = 
-	      periodical} title
+crossref.map {{article suppperiodical}  journaltitle = 
+	      periodical title
 }
-crossref.map {{article subperiodical}  journalsubtitle = 
+crossref.map {{article suppperiodical}  journalsubtitle = 
 	      periodical subtitle
 }
