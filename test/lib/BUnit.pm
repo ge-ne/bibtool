@@ -277,7 +277,7 @@ sub suites {
     $suite   = $_;
     $suite   =~ s/\.t$//;
 
-    my $ret = do "$_";
+    my $ret = do "./$_";
     unless($ret) {
       if ($@) {                   warn "couldn't parse $_: $@\n"
       } elsif(not defined $ret) { warn "couldn't do $_: $!\n"
