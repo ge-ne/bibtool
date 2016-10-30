@@ -122,6 +122,7 @@ sub analyze_file
 	  s/\\_//go;
 	  if ( $head{$name} eq '' ) { $n = "\\Mac{$name}"; }
 	  else { $n = $head{$name}; }
+	  $n =~ s/([^\\])_/$1\\_/g;
 	  print "\\begin{Macro}{$n}{$_}\n  \\begin{Arguments}";
 	  foreach $a (@a)
 	  { print "\n    & \\Var{$a} & $arg{$a}\\\\";
@@ -231,6 +232,7 @@ sub analyze_file
 	$t = $1;
 	$c = $3;
 	s/_/\\_/go;
+	$t =~ s/_/\\_/g;
 	print "$NL    $t\\ \t&\\Member{$_};\t& $c";
 	$NL = "\\\\\n";
       } elsif ( /^[ {]*([a-zA-Z_][^(]*[^a-zA-Z0-9_(])([a-zA-Z0-9_]+);/o )

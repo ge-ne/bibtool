@@ -87,7 +87,7 @@
 **		If no appropriate value is found then an error message
 **		is issued as the only action.
 **		
-**		This function is called from \file{rsc.c}.
+**		This function is called from \File{rsc.c}.
 ** Arguments:
 **	s	String description of the value.
 ** Returns:	nothing
@@ -109,8 +109,8 @@ void set_symbol_type(s)				   /*			     */
 ** Type:	String
 ** Purpose:	Getter for the symbol type.
 ** Arguments:	none
-** Returns:	one of the values |SYMBOL_TYPE_UPPER|, |SYMBOL_TYPE_LOWER|,
-**		or |SYMBOL_TYPE_CASED| as defined in header \file{type.h}
+** Returns:	one of the values SYMBOL\_TYPE\_UPPER, SYMBOL\_TYPE\_LOWER,
+**		or SYMBOL\_TYPE\_CASED as defined in header \textsf{type.h}
 **___________________________________________________			     */
 String get_symbol_type()			   /*                        */
 { switch (symbol_type)				   /*                        */
