@@ -371,8 +371,10 @@ static Symbol get_mapped_or_cased(name, mac, type) /*                        */
  						   /*                        */
   for ( ; mac != MacroNULL; mac = NextMacro(mac) ) /*                        */
   { if (name == MacroName(mac))		   	   /*                        */
+    {						   /*                        */
       LinkSymbol(MacroValue(mac));		   /*                        */
       return MacroValue(mac);			   /*                        */
+    }						   /*                        */
   }						   /*                        */
  						   /*                        */
   if (sb == NULL)				   /*                        */
