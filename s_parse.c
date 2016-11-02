@@ -41,8 +41,15 @@
 
 /*---------------------------------------------------------------------------*/
 
-#define Error(E,S,A,B)	\
-  if(E) error(ERR_ERROR|ERR_POINT,(String)A,(String)B,(String)0,sp_line,(String)S,0,(char*)0)
+#define Error(E,S,A,B)				\
+  if (E) error(ERR_ERROR|ERR_POINT,		\
+	       (String)A,			\
+	       (String)B,			\
+	       (String)0,			\
+	       sp_line == NULL ? S : sp_line,	\
+	       (String)S,			\
+	       0,				\
+	       (char*)0)
 
  static String unexpected = (String)"Unexpected "; /*                        */
  static String expected   = (String)" expected.";  /*                        */
@@ -225,7 +232,7 @@ Symbol s_parse(type, sp, errp)			   /*                        */
 	return NULL;				   /*                        */
       }						   /*                        */
       s++;					   /*                        */
-      if ( type == StringParseUnquotedBraces )	   /*                        */
+      if (type == StringParseUnquotedBraces)	   /*                        */
       { *sp = s; }				   /*                        */
       { int level = 1;				   /*                        */
       						   /*                        */
@@ -267,7 +274,7 @@ Symbol s_parse(type, sp, errp)			   /*                        */
       }						   /*                        */
   						   /*                        */
       if ( *s == '"' ) 				   /*                        */
-      { if ( type != StringParseUnquotedString ) s++;/*                      */
+      { if (type != StringParseUnquotedString) s++;/*                        */
       }			   			   /*                        */
       else					   /*                        */
       { Error(errp, s, unexpected, "end of string.");/*                      */
@@ -277,15 +284,15 @@ Symbol s_parse(type, sp, errp)			   /*                        */
     case StringParseValue:			   /*                        */
       switch ( *s )				   /*                        */
       { case '"':				   /*                        */
-	  return s_parse(StringParseUnquotedString,sp,errp);/*               */
+	  return s_parse(StringParseUnquotedString, sp, errp);/*             */
 	case '{':				   /*                        */
-	  return s_parse(StringParseUnquotedBraces,sp,errp);/*               */
+	  return s_parse(StringParseUnquotedBraces, sp, errp);/*             */
 	case '0': case '1': case '2': case '3':    /*                        */
 	case '4': case '5': case '6': case '7':	   /*                        */
 	case '8': case '9':			   /*			     */
-	  return s_parse(StringParseNumber,sp,errp);/*                       */
+	  return s_parse(StringParseNumber, sp, errp);/*                     */
 	default:				   /*                        */
-	  return s_parse(StringParseSymbol,sp,errp);/*                       */
+	  return s_parse(StringParseSymbol, sp, errp);/*                     */
       }						   /*                        */
       break;					   /*                        */
  						   /*                        */
@@ -388,7 +395,7 @@ Symbol* sp_symbols(sp)				   /*                        */
  						   /*                        */
   } else if ( !is_digit(**sp) &&		   /*                        */
 	     (s=s_parse(StringParseSymbol,	   /*                        */
-			sp, 0)) != NO_SYMBOL) {   /*                        */
+			sp, 0)) != NO_SYMBOL) {    /*                        */
     a	  = (Symbol*)malloc(2 * sizeof(Symbol));   /*                        */
     if (a == NULL) { OUT_OF_MEMORY("symbols"); }   /*                        */
     a[0] = s;					   /*                        */

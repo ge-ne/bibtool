@@ -43,13 +43,13 @@
 #define StringParseUnquotedBraces   263
 #define StringParseValue	    265
 
-#define SParseSymbol(SP)	    s_parse(StringParseSymbol	     ,SP,-1)
-#define SParseOptionalSymbol(SP)    s_parse(StringParseSymbol	     ,SP, 0)
-#define SParseString(SP)	    s_parse(StringParseString	     ,SP,-1)
-#define SParseUnquotedString(SP)    s_parse(StringParseUnquotedString,SP,-1)
-#define SParseNext(SP)		    s_parse(StringParseNext  	     ,SP,-1)
-#define SParseValue(SP)		    s_parse(StringParseValue 	     ,SP,-1)
-#define SParseExpect(C,SP)	    s_parse((C)&0xff           	     ,SP,-1)
+#define SParseSymbol(SP)	    s_parse(StringParseSymbol	     ,SP, true)
+#define SParseOptionalSymbol(SP)    s_parse(StringParseSymbol	     ,SP, false)
+#define SParseString(SP)	    s_parse(StringParseString	     ,SP, true)
+#define SParseUnquotedString(SP)    s_parse(StringParseUnquotedString,SP, true)
+#define SParseNext(SP)		    s_parse(StringParseNext  	     ,SP, true)
+#define SParseValue(SP)		    s_parse(StringParseValue 	     ,SP, true)
+#define SParseExpect(C,SP)	    s_parse((C)&0xff           	     ,SP, true)
 
 #ifdef __STDC__
 #define _ARG(A) A
