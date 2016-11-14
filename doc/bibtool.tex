@@ -1064,6 +1064,17 @@ counterpart. One example we have already seen. The \rsc{print} instruction can
 be used from the command line with the following
 
 \sh[-]{print\{hello\_world\}}
+
+%------------------------------------------------------------------------------
+\section{Exit Code}
+
+\BibTool{} as invoked on the command line returns an exit code. This exit code
+can be used to control the flow of control for any script which uses
+\BibTool{} internally.
+
+In general \BibTool{} returns an exit code of \verb|0| if no error occurs.
+Errors lead to an exit code different from \verb|0|.
+
 \medskip
 
 \begin{Summary}
