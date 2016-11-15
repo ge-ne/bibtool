@@ -1265,6 +1265,13 @@ parsing and pretty printing. This is not superfluous since \BibTeX{} is rather
 pedantic about the accepted syntax. Thus I decided to try to be generous and
 correct as many errors as I can.
 
+This can be changed with the resource \rsc{parse.exit.on.error}. If this
+resouce is turned on then \BibTool\ exits iimediately when an error during the
+parsing is encountered. The default is \textsf{off}.
+\begin{Resources}
+  \rsc{parse.exit.on.error} = on
+\end{Resources}
+
 Each input file is parsed and stored in an internal representation. \BibTeX{}
 simply ignores any characters between entries. \BibTool{} stores the comments
 and attaches them to the entry immediately following them. Normally anything
@@ -1524,6 +1531,8 @@ this holds for sorting which does not recognize differences in case.
 \begin{Summary}
   \Desc{}{\rsc{new.entry.type}\{type\}}{Define a new entry type \textit{type}.}
   \Desc{}{\rsc{new.field.type}\{type\}}{Define a new field type \textit{type}.}
+  \Desc{}{\rsc{parse.exit.on.error}=on}{Force immediate exit at the first
+    parse error encountered.}
   \Desc{}{\rsc{pass.comments}=on}{Do not discard comments but attach
     them to the entry following them.} 
   \Desc{}{\rsc{preserve.key.case}=on}{Do not translate keys to lower

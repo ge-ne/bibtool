@@ -82,9 +82,7 @@
 
 /*-----------------------------------------------------------------------------
 ** Variable*:	parse_sb
-** Purpose:	
-**		
-**		
+** Purpose:	This string buffer is used temporaliry during parsing.
 **___________________________________________________			     */
  static StringBuffer * parse_sb = (StringBuffer*)NULL;
 
@@ -118,18 +116,21 @@
  static String str_unexpected	= (String)"Unexpected character encountered";
  static char *str_stdin		= "<stdin>";
 
-#define Error3(X,Y,Z)	error(ERR_ERROR|ERR_POINT|ERR_FILE,(String)X,	\
-			      (String)Y,(String)Z,			\
+#define Error3(X,Y,Z)	error(ERR_ERROR|ERR_POINT|ERR_FILE		\
+			      | (rsc_parse_exit ? ERR_EXIT : 0),	\
+			      (String)X,(String)Y,(String)Z,		\
 			      file_line_buffer,flp,flno,filename)
-#define Error(X)	error(ERR_ERROR|ERR_POINT|ERR_FILE,(String)X,	\
-			      s_empty,s_empty,				\
+#define Error(X)	error(ERR_ERROR|ERR_POINT|ERR_FILE		\
+			      | (rsc_parse_exit ? ERR_EXIT : 0),	\
+			      (String)X, s_empty,s_empty,		\
 			      file_line_buffer,flp,flno,filename)
 #define Warning(X)	error(ERR_WARN|ERR_POINT|ERR_FILE,(String)X,	\
 			      s_empty,s_empty,				\
 			      file_line_buffer,flp,flno,filename)
 #define UnterminatedError(X,LINE)					\
-			error(ERR_ERROR|ERR_FILE,(String)X,		\
-			      s_empty,s_empty,				\
+			error(ERR_ERROR|ERR_FILE			\
+			      | (rsc_parse_exit ? ERR_EXIT : 0),	\
+			      (String)X, s_empty,s_empty,		\
 			      NULL,NULL,LINE,filename)
 #define UnexpectedError Error(str_unexpected)
 
@@ -137,10 +138,10 @@
 ** Function*:	init___()
 ** Purpose:	Initialize the reading apparatus.
 ** Arguments:
-**	pathp
-**	pattern
-**	envvp
-**	env
+**	pathp	the path array
+**	pattern	the pattern array
+**	envvp	the environment array
+**	env	the environment string
 ** Returns:	nothing
 **___________________________________________________			     */
 static void init___(pathp,pattern,envvp,env)	   /*			     */
@@ -306,7 +307,7 @@ bool seen()					   /*			     */
 /*-----------------------------------------------------------------------------
 ** Function*:	init_parse()
 ** Purpose:	Initialize the parser.
-**
+**		This function has to be invoked before the parser can be used.
 ** Arguments:	none
 ** Returns:	nothing
 **___________________________________________________			     */
@@ -422,7 +423,7 @@ static int skip_c()				   /*			     */
 **		Any number of spaces is returned as a single space.
 **		Doubled newlines are preserved.
 ** Arguments:	none
-** Returns:	
+** Returns:	the next character or EOF
 **___________________________________________________			     */
 static int skip_nl()				   /*			     */
 { static bool state = false;			   /*			     */
