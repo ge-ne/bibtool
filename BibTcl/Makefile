@@ -31,7 +31,7 @@ TCL_PREFIX	= /usr
 TCL_INCLUDE	= /usr/include
 RM		= /bin/rm -f
 
-LATEX 		= latex
+LATEX 		= lualatex
 BIBTEX 		= bibtex
 MAKEINDEX	= makeindex
 
@@ -81,7 +81,7 @@ INST_DIR = `echo 'puts $(LIBDIR)/$$tcl_platform(os)$$tcl_platform(osVersion)'|$(
 
 bibtcl.aux bibtcl.idx: bibtcl.tex bibtcl.ltx
 	$(LATEX) bibtcl.ltx
-bibtcl.dvi: bibtcl.tex bibtcl.ltx bibtcl.bbl bibtcl.ind
+bibtcl.pdf: bibtcl.tex bibtcl.ltx bibtcl.bbl bibtcl.ind
 	$(LATEX) bibtcl.ltx
 	$(LATEX) bibtcl.ltx
 bibtcl.ind: bibtcl.idx

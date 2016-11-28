@@ -4,22 +4,24 @@
 %% Author: Gerd Neugebauer
 %%-----------------------------------------------------------------------------
 
-\newif\ifAfour \Afourtrue
+\documentclass[11pt,a4paper]{scrbook}
 
-\ifx\documentclass\undefined
-\ifAfour
-\documentstyle[11pt,dina4,makeidx]{book}
-\else
-\documentstyle[11pt,makeidx]{book}
-\fi
-  \newcommand\LaTeXTeX{(\kern-.15emL\kern-.36em\raise.3ex\hbox{\sc
-      a}\kern-.3em)\kern-.15em\TeX}%
-\else
-\documentclass[11pt]{book}
+%\newif\ifAfour \Afourtrue
+%
+%\ifx\documentclass\undefined
+%\ifAfour
+%\documentstyle[11pt,dina4,makeidx]{book}
+%\else
+%\documentstyle[11pt,makeidx]{book}
+%\fi
+%  \newcommand\LaTeXTeX{(\kern-.15emL\kern-.36em\raise.3ex\hbox{\textsc{
+%      a}}\kern-.3em)\kern-.15em\TeX}%
+%\else
+%\documentclass[11pt]{book}
 \usepackage{makeidx}
-\ifAfour
+%\ifAfour
 \makeatletter
-\input{dina4.sty}
+%\input{../doc/dina4.sty}
 
   \DeclareRobustCommand{\LaTeXTeX}{(\kern-.15emL\kern-.36em%
     {\sbox\z@ T%
@@ -33,17 +35,17 @@
     \kern-.15em%
     \TeX}
 \makeatother
-\fi
+%\fi
   \DeclareFontShape{OT1}{cmss}{m}{it}{<-> ssub * cmss/m/sl}{}
 
-\fi
+%\fi
 
 \makeatletter%>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 \def\ps@headings{\let\@mkboth\markboth
   \def\@oddfoot{}\def\@evenfoot{}
-  \def\@evenhead{\vbox{\vss\hbox to \textwidth{\rm\thepage \hss
-        {\scriptsize\sc\ \leftmark}}\kern 1.5mm\hrule depth 0.2 true pt}}
-  \def\@oddhead{\vbox{\vss\hbox to \textwidth{\rm{\scriptsize\sc \rightmark\ }
+  \def\@evenhead{\vbox{\vss\hbox to \textwidth{\textrm{\thepage}\hss
+        {\textsc{\scriptsize \leftmark}}}\kern 1.5mm\hrule depth 0.2 true pt}}
+  \def\@oddhead{\vbox{\vss\hbox to \textwidth{\textsc{\scriptsize \rightmark\ }
         \hss \thepage}\kern 1.5mm\hrule depth 0.2 true pt}}
   \def\chaptermark##1{\markboth {\ifnum \c@secnumdepth>\m@ne
      \thechapter. \ \fi ##1}{}}
@@ -54,27 +56,26 @@
 \addtolength{\headheight}{2pt}
 
 
-\newcommand\opt[1]{{\tt-#1}\index{#1@{\tt-#1}}}
+\newcommand\opt[1]{\texttt{-#1}\index{#1@{\texttt{-#1}}}}
 \newcommand\sh{\smallskip\par\hspace*{2em}\@ifnextchar[{\sh@}{\sh@@}}
-\def\sh@[#1]#2{{\tt bibtool -#1 {\it #2}}\index{#1@{\tt-#1}}
+\def\sh@[#1]#2{{\texttt{bibtool -#1 \textit{#2}}}\index{#1@{\texttt{-#1}}}
         \smallskip\par\noindent\ignorespaces}
-\def\sh@@#1{{\tt bibtool {\it #1}}
+\def\sh@@#1{\texttt{bibtool \textit{#1}}
         \smallskip\par\noindent\ignorespaces}
-\newcommand\rsc[1]{{\sf #1}\index{#1@{\sf #1}}}
-\newcommand\RSc[2]{\smallskip\par\hspace*{2em}{\sf #1 #2}\index{#1@{\sf #1}}
+\newcommand\rsc[1]{{\sf #1}\index{#1@{\textsf{#1}}}}
+\newcommand\RSc[2]{\smallskip\par\hspace*{2em}{\textsf{ #1 #2}}\index{#1@{\textsf{#1}}}
         \smallskip\par\noindent\ignorespaces}
 \newcommand\RSC[2]{\RSc{#1}{= \(\{\)#2\(\}\)}}
 \newcommand\Rsc[2]{\RSc{#1}{= #2}}
-\newcommand\env[1]{{\tt #1}\index{#1@{\tt #1}}}
-
+\newcommand\env[1]{\texttt{ #1}\index{#1@\texttt{#1}}}
 
 \makeatother%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 \newcommand\BS{$\backslash$}
 
-\newcommand\BibTool{{\sc Bib\hskip-.1em\-%
+\newcommand\BibTool{\textsc{Bib\hskip-.1em\-%
         \mbox{T\hskip-.15emo\hskip-.05emo\hskip-.05eml}}}
-\newcommand\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+\newcommand\BibTeX{\textrm{B\kern-.05em\textsc{i\kern-.025em b}\kern-.08em
         T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 \newfont\cminch{cminch}
@@ -103,11 +104,11 @@
 \medskip\par\normalsize
 \mbox{}\rfill{5pt}\ A Tool to Manipulate \BibTeX\ Files\ \rfill{5pt}\null
 %\medskip\par\normalsize          Version  \Version
-\vfill {\Huge\bf Tcl Programmers Manual}\vfill
-{\LARGE\it        $\cal G$\kern-.1emerd $\cal N$\kern-.2emeugebauer}
+\vfill \textbf{\Huge Tcl Programmers Manual}\vfill
+\textit{\LARGE       $\cal G$\kern-.1emerd $\cal N$\kern-.2emeugebauer}
 \vfill\vfill
 \begin{minipage}{.8\textwidth}\small
-  \begin{center} \bf Abstract \end{center}
+  \begin{center} \textbf{Abstract} \end{center}
   
   \BibTool{} provides a library of useful C functions to manipulate
   \BibTeX{} files.  This library has been used to implement new
@@ -143,12 +144,10 @@ Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 \end{minipage}
 \vfill\par\noindent
 Gerd Neugebauer\\
-Mainzer Str.\ 8\\
-56321 Rhens (Germany)\smallskip\par\noindent
-WWW: {\tt http://www.uni-koblenz.de/\~{}gerd}\smallskip\par\noindent
-Net: {\tt gerd@informatik.uni-koblenz.de}\\
-\phantom{Net:} {\scriptsize\tt gerd@imn.th-leipzig.de}\\
-\phantom{Net:} {\tiny\tt gerd@intellektik.informatik.th-darmstadt.de}
+Im Lerchelsb\"ohl.\ 5\\
+64521 Gro\ss-Gerau (Germany)\smallskip\par\noindent
+WWW: \texttt{http://www.gerd-neugebauer.de}\par\noindent
+Net: \texttt{gene@gerd-neugebauer.de}\\
 %------------------------------------------------------------------------------
 \tableofcontents
 

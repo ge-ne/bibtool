@@ -73,7 +73,7 @@
     \texttt{\char123}\par
     \begingroup\ttfamily\tabcolsep=0pt\rule{1em}{0pt}%
     \begin{tabular*}{.9\textwidth}%
-      {ll@{\extracolsep{\fill}}>{\it\small}p{.55\textwidth}}%
+      {ll@{\extracolsep{\fill}}>{\itshape\small}p{.55\textwidth}}%
 }
 
 \newcommand\EndSTRUCT[1]{\end{tabular*}\endgroup\par
@@ -86,7 +86,7 @@
 
 \MakeShortVerb{|}
 
-\newcommand\Ccomment[1]{\hfill\parbox[t]{.5\textwidth}{\it/* #1\hfill*/}}
+\newcommand\Ccomment[1]{\hfill\parbox[t]{.5\textwidth}{\textit{/* #1\hfill*/}}}
 
 \newcommand\BibTool{\textsc{Bib\hskip-.1em\-%
         \mbox{T\hskip-.15emo\hskip-.05emo\hskip-.05eml}}}
@@ -134,11 +134,11 @@
 \medskip\par\normalsize
 \mbox{}\rfill{5pt}\ A Tool to Manipulate \BibTeX\ Files\ \rfill{5pt}\null
 %\medskip\par\normalsize          Version  \Version
-\vfill {\Huge\bf C Programmer's Manual}\vfill
-{\LARGE\it        $\cal G$\kern-.1emerd $\cal N$\kern-.2emeugebauer}
+\vfill \textbf{\Huge C Programmer's Manual}\vfill
+\textit{\LARGE       $\cal G$\kern-.1emerd $\cal N$\kern-.2emeugebauer}
 \vfill\vfill
 \begin{minipage}{.8\textwidth}\small
-  \begin{center} \bf Abstract \end{center}
+  \begin{center}\textbf{Abstract}\end{center}
   
   \BibTool{} provides a library of useful C functions to manipulate
   \BibTeX{} files.  This library has been used to implement the
