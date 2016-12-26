@@ -63,7 +63,7 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
-use constant BIB => <<__EOF__;
+use constant BIBTEX => <<__EOF__;
 \@Misc{		  xxx
   author	= "A. U. Thor"
 }
@@ -75,7 +75,7 @@ BUnit::run(name         => 'parse_exit_on_error_1',
 	   resource	=> <<__EOF__ ,
 parse.exit.on.error = off
 __EOF__
-	   bib 	        => BIB,
+	   bib 	        => BIBTEX,
 	   expected_err => <<__EOF__ ,
 
   author	= "A. U. Thor"
@@ -91,7 +91,7 @@ BUnit::run(name         => 'parse_exit_on_error_2',
 	   resource	=> <<__EOF__ ,
 parse.exit.on.error = on
 __EOF__
-	   bib 	        => BIB,
+	   bib 	        => BIBTEX,
 	   expected_err => <<__EOF__ ,
 
   author	= "A. U. Thor"
