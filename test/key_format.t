@@ -27,11 +27,11 @@
 
 =head1 NAME
 
-key.t - Test suite for BibTool key.
+key_format.t - Test suite for BibTool key.format.
 
 =head1 SYNOPSIS
 
-key.t 
+key_format.t 
 
 =head1 DESCRIPTION
 
