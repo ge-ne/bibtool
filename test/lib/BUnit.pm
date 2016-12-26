@@ -291,7 +291,8 @@ sub suites {
   $success = 0;
   $ignored = 0;
   $failure = 0;
-  printf("\n%-${len}s  success ignored failure\n", '') if $verbose;
+  printf("\n%-${len}s  success ignored failure\n%s\n", '',
+	 ('-' x ($len + 25))) if $verbose; 
 
   foreach $suite (@a) {
     $_ = $suite;
@@ -311,7 +312,7 @@ sub suites {
   else { $_ = 100. * $success/$no; }
 
   printf("%s\n%-${len}s%7d %7d %7d\nSuccess rate: %3.2f%%\n",
-	 ('_' x ($len+24)),
+	 ('_' x ($len + 25)),
 	 'TOTAL',
 	 $success,
 	 $ignored,
