@@ -222,36 +222,64 @@ static void Push_Word(s)			   /*			     */
 **	s	New value for the given separator. The new value is
 **		stored as a symbol. Thus the memory of |s| need not to
 **		be preserved after this function is completed.
-**		The characters which are not allowed are silently sypressed.
+**		The characters which are not allowed are silently suppressed.
 ** Returns:	nothing
 **___________________________________________________			     */
-void set_separator(n,s)				   /*			     */
+void set_separator(n, s)			   /*			     */
   register int	n;				   /*			     */
   String s;				   	   /*			     */
 { 						   /*                        */
-  if (n < 0 || n >= NoSeps || !is_allowed(*s))     /*			     */
-  { ERROR("Invalid separator specification.");     /*			     */
+  if (n < 0 || n >= NoSeps)     		   /*			     */
+  { ERROR("Invalid separator reference.");	   /*			     */
+    return;					   /*			     */
+  }						   /*			     */
+  while (*s && !is_allowed(*s)) { s++; }	   /*                        */
+  if (*s && !is_allowed(*s))     	   	   /*			     */
+  { ERROR2("Invalid separator specification: ", s);/*			     */
     return;					   /*			     */
   }						   /*			     */
  						   /*                        */
   if (key_seps == NULL) init_key();		   /*                        */
  						   /*                        */
-  key_seps[n] = sym_extract(&s, false);		   /*			     */
+  if (*s)					   /*                        */
+  { key_seps[n] = sym_extract(&s, false);	   /*			     */
+  } else {					   /*                        */
+    key_seps[n] = sym_empty;	   		   /*			     */
+  }						   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	get_separator()
 ** Type:	String
-** Purpose:	Getter for the key separator.
+** Purpose:	Getter for the key separator. The
+**		elements under the index have the following meaning:
+**		\begin{description}
+**		\item[0] The default key which is used when the
+**		  formatting instruction fails completely.
+**		\item[1] The separator which is inserted between
+**		  different names of a multi-authored publication.
+**		\item[2] The separator inserted between the first name
+**		  and the last name when a name is formatted.
+**		\item[3] The separator inserted between the last names
+**		  when more then one last name is present
+**		\item[4] The separator between the name and the title
+**		  of a publication.
+**		\item[5] The separator inserted between words of the
+**		  title.
+**		\item[6] The separator inserted before the number
+**		  which might be added to disambiguate reference keys.
+**		\item[7] The string which is added when a list of
+**		  names is truncated. (|.ea|)
+**		\end{description}
 ** Arguments:
 **	n	the index
-** Returns:	
+** Returns:	the separator for the given index or NULL
 **___________________________________________________			     */
 Symbol get_separator(n)				   /*                        */
   int n;					   /*                        */
 { 						   /*                        */
   if (n < 0 || n >= NoSeps)   			   /*			     */
-  { ERROR("Invalid separator specification.");     /*			     */
+  { ERROR("Invalid separator reference.");     	   /*			     */
     return NULL;				   /*			     */
   }						   /*			     */
   return key_seps[n];				   /*                        */
@@ -1283,7 +1311,7 @@ void free_key_node(kn)				   /*			     */
 ** Function*:	add_fmt_tree()
 ** Purpose:	Extend the format tree
 ** Arguments:
-**	s	the specification of th format
+**	s	the specification of the format
 **	treep	the pointer to the tree to be extended
 ** Returns:	|true| iff the operation succeeds
 **___________________________________________________			     */
