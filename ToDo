@@ -4,7 +4,7 @@
 ## It is distributed under the GNU General Public License.
 ## See the file COPYING for details.
 ## 
-## (c) 1996-2015 Gerd Neugebauer
+## (c) 1996-2016 Gerd Neugebauer
 ## 
 ## Net: gene@gerd-neugebauer.de
 ## 
@@ -43,7 +43,7 @@ General ideas:
 
     *	Add a SQL like extraction language (partially exists).
 	Maybe this is the time to completely redesign the resource
-	language. I think I will make a major revision or a seperate
+	language. I think I will make a major revision or a separate
 	program/library for this.
 
 Special ideas:
@@ -79,7 +79,7 @@ Special ideas:
 	(The reverse is done. Key formats are evaluated when rewriting)
 
     *	General formatting language (Maybe a replacement for BibTeX)
-	Other applications: extract all keys, prettyprint entries in
+	Other applications: extract all keys, pretty-print entries in
 	pure ASCII (HTML), etc.
 	The main problem is to make a decision for the scripting language.
 	I think I should use something existing and not roll a new one.
