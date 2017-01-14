@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2016 Gerd Neugebauer
+#  (c) 2017 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -64,7 +64,7 @@ __EOF__
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 __EOF__
     expected_err => <<__EOF__
@@ -86,7 +86,7 @@ __EOF__
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 __EOF__
     expected_err => <<__EOF__
@@ -108,7 +108,7 @@ __EOF__
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 __EOF__
     expected_err => <<__EOF__
@@ -130,7 +130,7 @@ __EOF__
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 __EOF__
     expected_err => <<__EOF__
@@ -152,7 +152,7 @@ __EOF__
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 __EOF__
     expected_err => <<__EOF__
@@ -172,13 +172,13 @@ __EOF__
 \@Article{	  bibtool,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 
 \@Manual{	  bibtool2,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 __EOF__
     expected_out => <<__EOF__,
@@ -202,13 +202,13 @@ __EOF__
 \@Article{	  bibtool,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 
 \@Manual{	  bibtool2,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 __EOF__
     expected_out => <<__EOF__,
@@ -235,13 +235,13 @@ __EOF__
 \@Article{	  bibtool,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 
 \@Manual{	  bibtool2,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 __EOF__
     expected_out => <<__EOF__,
@@ -266,13 +266,13 @@ __EOF__
 \@Article{	  bibtool,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 
 \@Manual{	  bibtool2,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 __EOF__
     expected_out => <<__EOF__,
@@ -280,13 +280,13 @@ __EOF__
 \@Article{	  bibtool,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 
 \@Manual{	  bibtool2,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 __EOF__
     expected_err => '' );
@@ -300,13 +300,13 @@ __EOF__
 \@Article{	  bibtool,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 
 \@Manual{	  bibtool2,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 __EOF__
     expected_out => <<__EOF__,
@@ -314,7 +314,7 @@ __EOF__
 \@Article{	  bibtool,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 
 \@Manual{	  bibtool2
@@ -331,13 +331,13 @@ __EOF__
 \@Article{	  bibtool,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 
 \@Manual{	  bibtool2,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 __EOF__
     expected_out => <<__EOF__,
@@ -345,7 +345,7 @@ __EOF__
 \@Article{	  bibtool,
   title		= {The BibTool Manual},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 
 \@Manual{	  bibtool2

@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #
-#  (c) 2011-2016 Gerd Neugebauer
+#  (c) 2011-2017 Gerd Neugebauer
 #
 #  Net: gene@gerd-neugebauer.de
 #

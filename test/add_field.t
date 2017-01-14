@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #
-#  (c) 2011-2016 Gerd Neugebauer
+#  (c) 2011-2017 Gerd Neugebauer
 #
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -63,7 +63,7 @@ BUnit::run(name => 'add_field_1',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2016,
+  year		= 2017,
   xyzzy		= {abc}
 }
 __EOF__
@@ -78,7 +78,7 @@ BUnit::run(name => 'add_field_2',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2016,
+  year		= 2017,
   xyzzy		= {abc}
 }
 __EOF__
@@ -93,7 +93,7 @@ BUnit::run(name => 'add_field_3',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2016,
+  year		= 2017,
   xyzzy		= {abc}
 }
 __EOF__

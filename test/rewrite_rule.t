@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2011-2016 Gerd Neugebauer
+#  (c) 2011-2017 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -75,7 +75,7 @@ BUnit::run(name => 'rewrite_rule_2',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {A.U. Thor},
-  year		= 2016
+  year		= 2017
 }
 __EOF__
     expected_err => '' );
@@ -89,7 +89,7 @@ BUnit::run(name => 'rewrite_rule_3',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {A.U. Thor},
-  year		= 2016
+  year		= 2017
 }
 __EOF__
     expected_err => '' );
@@ -103,7 +103,7 @@ BUnit::run(name => 'rewrite_rule_4',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2016
+  year		= 2017
 }
 __EOF__
     expected_err => '' );
