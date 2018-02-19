@@ -188,21 +188,21 @@ To install BibTool you can try to apply the following instructions:
  H  To prepare the documentation contained  in the sub-directory doc go into
     the doc sub-directory and run
 
-	latex   bibtool
-	latex   bibtool
-	bibtex  bibtool
-	makeidx bibtool
-	latex   bibtool
-	latex   bibtool
+	latex     bibtool
+	latex     bibtool
+	bibtex    bibtool
+	makeindex bibtool
+	latex     bibtool
+	latex     bibtool
 
-	latex   ref_card
-	latex   ref_card
-	bibtex  ref_card
-	makeidx ref_card
-	latex   ref_card
-	latex   ref_card
+	latex     ref_card
+	latex     ref_card
+	bibtex    ref_card
+	makeindex ref_card
+	latex     ref_card
+	latex     ref_card
 
-    The makeidx program  may be named differently on  your system or missing
+    The makeindex program  may be named differently on  your system or missing
     at all. In this case you can omit this step and do without the index.
 
     On UN*X you can try
