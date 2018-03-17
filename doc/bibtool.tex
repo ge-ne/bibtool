@@ -4,7 +4,7 @@
 %% It is distributed under the Creative Commons Attribution-Share
 %% Alike 3.0 License.
 %%
-%% (c) 1995-2017 Gerd Neugebauer
+%% (c) 1995-2018 Gerd Neugebauer
 %%
 %% Net: gene@gerd-neugebauer.de
 %%
@@ -409,6 +409,15 @@ This means that the sorting order is determined by the (normalized) author
 field. Note that single quotes encapsulating the \rsc{sort.format} are
 necessary to prevent the command line interpreter to gobble the special
 characters.
+
+
+If you want to sort the \BibTeX{} files according to the date then you have to
+know how the year field is filled. Suppose you know that the year contains the
+year preceeded by the month like in \texttt{Mar 2018}. Then the following
+invocation sorts according to the year:\index{d@\%d}
+
+\sh[s]{--sort.format="\%d(year)" file1.bib file2.bib}
+
 
 %------------------------------------------------------------------------------
 \subsection{Key Generation}
