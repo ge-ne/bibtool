@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2015-2017 Gerd Neugebauer
+#  (c) 2015-2018 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -62,7 +62,7 @@ BUnit::run(name => 'rename_field_0',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2017
+  year		= 2018
 }
 __EOF__
     expected_err => '' );
@@ -76,7 +76,7 @@ BUnit::run(name => 'rename_field_1',
 \@Manual{	  bibtool,
   booktitle	= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2017
+  year		= 2018
 }
 __EOF__
     expected_err => '' );
@@ -90,7 +90,7 @@ BUnit::run(name => 'rename_field_2',
 \@Manual{	  bibtool,
   booktitle	= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2017
+  year		= 2018
 }
 __EOF__
     expected_err => '' );
@@ -104,7 +104,7 @@ BUnit::run(name => 'rename_field_err_1',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2017
+  year		= 2018
 }
 __EOF__
     expected_err => <<__EOF__,
@@ -125,7 +125,7 @@ BUnit::run(name => 'rename_field_err_2',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2017
+  year		= 2018
 }
 __EOF__
     expected_err => <<__EOF__,
@@ -145,7 +145,7 @@ BUnit::run(name => 'rename_field_10',
 \@Manual{	  bibtool,
   booktitle	= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2017
+  year		= 2018
 }
 __EOF__
     expected_err => '' );
@@ -159,7 +159,7 @@ BUnit::run(name => 'rename_field_11',
 \@Manual{	  bibtool,
   title		= {BibTool},
   author	= {Gerd Neugebauer},
-  year		= 2017
+  year		= 2018
 }
 __EOF__
     expected_err => '' );

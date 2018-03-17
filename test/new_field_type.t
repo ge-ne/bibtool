@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the fiel COPYING for details.
 #  
-#  (c) 2011-2017 Gerd Neugebauer
+#  (c) 2011-2018 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -65,7 +65,7 @@ __EOF__
 \@Manual{	  bibtool,
   title		= {BibTool},
   rohtua	= {Gerd Neugebauer},
-  year		= 2017
+  year		= 2018
 }
 __EOF__
     expected_err => ''

@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2017 Gerd Neugebauer
+#  (c) 2017-2018 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -53,7 +53,7 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
-use constant BIBTEX => <<__EOF__;
+my $BIBTEX = <<__EOF__;
 
 \@Book{		  x,
   title	= {The Gnats and Gnus Document Preparation System}
@@ -67,7 +67,7 @@ BUnit::run(name => 'fmt_title_title_1',
 fmt.title.title	= {}
 key.format	= "%2t(title)"
 __EOF__
-	bib => BIBTEX,
+	bib => $BIBTEX,
 	expected_out => <<__EOF__,
 
 \@Book{		  TheGnats,
@@ -82,7 +82,7 @@ BUnit::run(name => 'fmt_title_title_2',
 fmt.title.title	= ""
 key.format	= "%2t(title)"
 __EOF__
-	bib => BIBTEX,
+	bib => $BIBTEX,
 	expected_out => <<__EOF__,
 
 \@Book{		  TheGnats,
@@ -97,7 +97,7 @@ BUnit::run(name => 'fmt_title_title_3',
 fmt.title.title	= "  "
 key.format	= "%2t(title)"
 __EOF__
-	bib => BIBTEX,
+	bib => $BIBTEX,
 	expected_out => <<__EOF__,
 
 \@Book{		  TheGnats,
@@ -112,7 +112,7 @@ BUnit::run(name => 'fmt_title_title_4',
 fmt.title.title	= " -- "
 key.format	= "%2t(title)"
 __EOF__
-	bib => BIBTEX,
+	bib => $BIBTEX,
 	expected_out => <<__EOF__,
 
 \@Book{		  The--Gnats,
@@ -127,7 +127,7 @@ BUnit::run(name => 'fmt_title_title_5',
 fmt.title.title	= " -- xx "
 key.format	= "%2t(title)"
 __EOF__
-	bib => BIBTEX,
+	bib => $BIBTEX,
 	expected_out => <<__EOF__,
 
 \@Book{		  The--Gnats,

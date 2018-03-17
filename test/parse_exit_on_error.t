@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2017 Gerd Neugebauer
+#  (c) 2016-2018 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -63,7 +63,7 @@ Gerd Neugebauer
 use strict;
 use BUnit;
 
-use constant BIBTEX => <<__EOF__;
+my $BIBTEX = <<__EOF__;
 \@Misc{		  xxx
   author	= "A. U. Thor"
 }
@@ -75,7 +75,7 @@ BUnit::run(name         => 'parse_exit_on_error_1',
 	   resource	=> <<__EOF__ ,
 parse.exit.on.error = off
 __EOF__
-	   bib 	        => BIBTEX,
+	   bib 	        => $BIBTEX,
 	   expected_err => <<__EOF__ ,
 
   author	= "A. U. Thor"
@@ -91,7 +91,7 @@ BUnit::run(name         => 'parse_exit_on_error_2',
 	   resource	=> <<__EOF__ ,
 parse.exit.on.error = on
 __EOF__
-	   bib 	        => BIBTEX,
+	   bib 	        => $BIBTEX,
 	   expected_err => <<__EOF__ ,
 
   author	= "A. U. Thor"

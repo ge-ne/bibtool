@@ -4,7 +4,7 @@ dnl This file is part of BibTool.
 dnl It is distributed under the GNU General Public License.
 dnl See the file COPYING for details.
 dnl 
-dnl (c) 1996-2016 Gerd Neugebauer
+dnl (c) 1996-2018 Gerd Neugebauer
 dnl 
 dnl Net: gene@gerd-neugebauer.de
 dnl 
@@ -24,21 +24,15 @@ dnl Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 dnl 
 dnl ***************************************************************************
 
-AC_REVISION($Revision: 1.11 $)
-AC_COPYRIGHT(Copyright (C) 2016 Gerd Neugebauer
+AC_REVISION($Revision: 1.12 $)
+AC_COPYRIGHT(Copyright (C) 2017-2018 Gerd Neugebauer
 This configure script is part of BibTool.
-Revision 1.11)
+Revision 1.12)
 AC_PREREQ(2.69)
 
 dnl ---------------------------------------------------------------------------
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(BibTool,2.*)
-
-dnl ---------------------------------------------------------------------------
-AC_REVISION($Revision: 1.11 $)
-AC_COPYRIGHT(Copyright (C) 2016 Gerd Neugebauer
-This configure script is part of BibTool.
-Revision 1.11)
 
 dnl ---------------------------------------------------------------------------
 AC_PREREQ(2.69)
