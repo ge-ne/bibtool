@@ -760,33 +760,36 @@ static bool update_crossref(db, rec)		   /*			     */
 **		
 **
 ** Arguments:
-**	rec	teh record
+**	rec	the record
 ** Returns:	|false|
 **___________________________________________________			     */
 static bool dbl_check(db, rec)			   /*                        */
   DB	 db;					   /*                        */
   Record rec;					   /*                        */
-{						   /*                        */
-  if (PrevRecord(rec) != RecordNULL		   /*                        */
-      && equal_records(PrevRecord(rec),rec))	   /*			     */
-  {						   /*                        */
-    if (!rsc_quiet)				   /*                        */
-    { Symbol k1 = *RecordHeap(rec);		   /*                        */
-      Symbol k2 = *RecordHeap(PrevRecord(rec));	   /*                        */
-      ErrPrint("*** BibTool WARNING: Possible double entries discovered: \n***\t");
-      if (k1 == NO_SYMBOL) k1 = sym_empty;	   /*                        */
-      if (k2 == NO_SYMBOL) k2 = sym_empty;	   /*                        */
-      ErrPrint((char*)SymbolValue(k2));		   /*                        */
-      ErrPrint(" =?= ");			   /*                        */
-      ErrPrint((char*)SymbolValue(k1));		   /*                        */
-      ErrPrint("\n***\t");			   /*                        */
-      ErrPrint((char*)SymbolValue(RecordSortkey(rec)));/*		     */
-      ErrPrint("\n");				   /*                        */
-    }						   /*                        */
-    if (rsc_del_dbl)				   /*                        */
-    { delete_record(db,rec); }		   	   /*                        */
-    else 					   /*                        */
-    { SetRecordDELETED(rec); }			   /*                        */
+{ register Record prev, r;                         /*                        */
+  for(r = PrevRecord(rec); r != RecordNULL; r = prev) /*                        */
+  { 				                   /*                        */
+    prev = PrevRecord(r);                          /*                        */
+    if (equal_records(r, rec))	                   /*			     */
+    {						   /*                        */
+      if (!rsc_quiet)				   /*                        */
+      { Symbol k1 = *RecordHeap(rec);		   /*                        */
+        Symbol k2 = *RecordHeap(r);                /*                        */
+        ErrPrint("*** BibTool WARNING: Possible double entries discovered: \n***\t");
+        if (k1 == NO_SYMBOL) k1 = sym_empty;	   /*                        */
+        if (k2 == NO_SYMBOL) k2 = sym_empty;	   /*                        */
+        ErrPrint((char*)SymbolValue(k2));          /*                        */
+        ErrPrint(" =?= ");			   /*                        */
+        ErrPrint((char*)SymbolValue(k1));	   /*                        */
+        ErrPrint("\n***\t");			   /*                        */
+        ErrPrint((char*)SymbolValue(RecordSortkey(rec)));/*		     */
+        ErrPrint("\n");				   /*                        */
+      } 					   /*                        */
+      if (rsc_del_dbl)				   /*                        */
+      { delete_record(db,rec); }		   /*                        */
+      else 					   /*                        */
+      { SetRecordDELETED(rec); }		   /*                        */
+    }                                              /*                        */
   }						   /*			     */
  						   /*                        */
   return false;					   /*                        */
