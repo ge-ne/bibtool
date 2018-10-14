@@ -376,6 +376,7 @@ int main(argc,argv)				   /*			     */
   int	c_len;					   /*                        */
   int   *c = NULL;				   /*                        */
   char  *o_file;				   /*                        */
+  bool  have_input_file = false;		   /*                        */
  						   /*                        */
   init_error(stderr);				   /*                        */
   init_bibtool(argv[0]);			   /*                        */
@@ -384,6 +385,7 @@ int main(argc,argv)				   /*			     */
   { char *ap;				   	   /*			     */
     if (*(ap=argv[i]) != OptionLeadingCharacter)   /*			     */
     { save_input_file(argv[i]);			   /*			     */
+      have_input_file = true;			   /*                        */
     }						   /*			     */
     else					   /*			     */
     { switch (*++ap)				   /*			     */
@@ -430,6 +432,7 @@ int main(argc,argv)				   /*			     */
 	  { read_aux((String)(argv[i]),		   /*                        */
 		     save_input_file,		   /*                        */
 		     *++ap=='v');  		   /*                        */
+	    have_input_file = true;		   /*                        */
 	  }					   /*                        */
 	  else					   /*                        */
 	  { NoSFileWarning; }	   		   /*			     */
@@ -459,7 +462,7 @@ int main(argc,argv)				   /*			     */
 						   /*			     */
   if (need_rsc) { (void)search_rsc(); }	   	   /*			     */
 						   /*			     */
-  if (get_no_inputs() == 0)			   /* If no input file given */
+  if (!have_input_file)				   /* If no input file given */
   { save_input_file("-"); }			   /*  then read from stdin  */
 						   /*			     */
   init_read();					   /* Just in case the path  */

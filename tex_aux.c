@@ -166,7 +166,7 @@ bool read_aux(fname, fct, verbose)		   /*                        */
 { FILE 	        *file;				   /*                        */
   int           c;                                 /*                        */
   String	s;				   /*                        */
- 						   /*                        */
+               */
   cite_star  = false;				   /*                        */
   rsc_select = true; 				   /*                        */
   					   	   /*                        */
@@ -175,8 +175,12 @@ bool read_aux(fname, fct, verbose)		   /*                        */
     sbputs((char*)fname,sb);			   /*                        */
     sbputs(".aux",sb);                             /*                        */
     file = fopen(sbflush(sb),"r");                 /*                        */
+    if (file != NULL && verbose)	   	   /*                        */
+    { VerbosePrint2("Analyzing ", sbflush(sb)); }  /*                        */
     (void)sbclose(sb);				   /*                        */
-  }			   			   /*                        */
+  } else if (verbose) {	   			   /*                        */
+    VerbosePrint2("Analyzing ", fname); 	   /*                        */
+  }						   /*                        */
   if (file == NULL)				   /*                        */
   { ERROR3("aux file ",fname," not found.");	   /*                        */
     return true;				   /*                        */
@@ -184,17 +188,14 @@ bool read_aux(fname, fct, verbose)		   /*                        */
  						   /*                        */
   rsc_del_q = false;				   /*                        */
  						   /*                        */
-  if (verbose) 				   	   /*                        */
-  { VerbosePrint2("Analyzing ", fname); }	   /*                        */
- 						   /*                        */
   if (aux_sb == (StringBuffer*)0)		   /*                        */
   { aux_sb = sbopen(); }			   /*                        */
  						   /*                        */
-  for(c = getc(file); c != EOF; c = getc(file))    /*                        */
+  for (c = getc(file); c != EOF; c = getc(file))   /*                        */
   { if (c == '\\') 				   /*                        */
-    { for(c = getc(file);                          /*                        */
-          c != EOF && (is_alpha(c&0xff) || c == '@');/*                      */
-          c = getc(file))			   /*                        */
+    { for (c = getc(file);                         /*                        */
+           c != EOF && (is_alpha(c&0xff) || c == '@');/*                     */
+           c = getc(file))			   /*                        */
       { (void)sbputchar(c, aux_sb); }              /*                        */
       s = (String)sbflush(aux_sb);		   /*                        */
       sbrewind(aux_sb);				   /*                        */
@@ -236,11 +237,14 @@ bool read_aux(fname, fct, verbose)		   /*                        */
 	    					   /*                        */
 	read_aux(s, fct, verbose);	   	   /*                        */
       }						   /*                        */
+      else if (strcmp((char*)s, "endinput") == 0 ) /* At end                 */
+      { break;					   /*                        */
+      }						   /*                        */
     }						   /*                        */
   }						   /*                        */
  						   /*                        */
   (void)fclose(file);				   /*                        */
- 						   /*                        */
+						   /*                        */
 #ifdef DEBUG
   { register int i;				   /*                        */
     WordList wl;				   /*			     */
@@ -313,7 +317,7 @@ bool apply_aux(db)				   /*                        */
       Record r = rec;				   /*                        */
  						   /*                        */
       for (count = rsc_xref_limit;		   /* Prevent infinite loop  */
-	   count >= 0	      &&		   /*                        */
+	   count >= 0	     && 		   /*                        */
 	     RecordIsXREF(r) &&		   	   /*                        */
 	     !RecordIsDELETED(r);		   /*                        */
 	   count-- )				   /*                        */
