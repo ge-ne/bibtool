@@ -166,7 +166,7 @@ bool read_aux(fname, fct, verbose)		   /*                        */
 { FILE 	        *file;				   /*                        */
   int           c;                                 /*                        */
   String	s;				   /*                        */
-               */
+  	  	  	  	  	  	   /*                        */
   cite_star  = false;				   /*                        */
   rsc_select = true; 				   /*                        */
   					   	   /*                        */
