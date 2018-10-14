@@ -806,7 +806,7 @@ void keep_field(spec)				   /*			     */
   Symbol* np;				   	   /*                        */
   Symbol field 	 = NO_SYMBOL;			   /*                        */
   Symbol pattern = NO_SYMBOL;		   	   /*                        */
-  int i;					   /*                        */
+  intptr_t i;					   /*                        */
  						   /*                        */
   sp_open(s);				   	   /*			     */
   if ((names = sp_symbols(&s)) == NULL)    	   /*		             */
@@ -846,7 +846,7 @@ void keep_field(spec)				   /*			     */
 			 field,			   /*                        */
 			 RULE_KEEP | RULE_REGEXP,  /*                        */
 			 true);	   	   	   /*                        */
-    i = (int)(*np) % K_RULES_SIZE;		   /*                        */
+    i = (intptr_t)(*np) % K_RULES_SIZE;		   /*                        */
     if (i < 0) i = -i;				   /*                        */
  						   /*                        */
     NextRule(rule) = k_rules[i];		   /*                        */
@@ -893,11 +893,11 @@ void add_check_rule(s)				   /*			     */
 ** Returns:	
 **___________________________________________________			     */
 static bool dont_keep(sym,rec,db)		   /*                        */
-  Symbol sym;					   /*                        */
-  Record rec;					   /*                        */
-  DB     db;					   /*                        */
-{ Rule   r;					   /*                        */
-  int    idx = (int)(sym) % K_RULES_SIZE;	   /*                        */
+  Symbol   sym;					   /*                        */
+  Record   rec;					   /*                        */
+  DB       db;					   /*                        */
+{ Rule     r;					   /*                        */
+  intptr_t idx = (int)(sym) % K_RULES_SIZE;	   /*                        */
   if (idx < 0) idx = -idx;			   /*                        */
  						   /*                        */
   for (r = k_rules[idx]; r; r = NextRule(r))	   /*                        */
