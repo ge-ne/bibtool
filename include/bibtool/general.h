@@ -71,12 +71,18 @@
 #endif
 
 
+#ifdef HAVE_STDINT_H
+#include <stdint.h>
+#else
+typedef intptr_t int;
+#endif
+
 #ifdef HAVE_STDBOOL_H
 #include <stdbool.h>
 #else
 typedef int bool;
 #define true  (1)
-#define false (0) 
+#define false (0)
 #endif
 
 /*-----------------------------------------------------------------------------
