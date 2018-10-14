@@ -763,7 +763,7 @@ static bool update_crossref(db, rec)		   /*			     */
 **		
 **
 ** Arguments:
-**	rec	teh record
+**	rec	the record
 ** Returns:	|false|
 **___________________________________________________			     */
 static bool dbl_check(db, rec)			   /*                        */
