@@ -31,6 +31,7 @@
 #include <bibtool/general.h>
 #include <bibtool/error.h>
 #include <bibtool/io.h>
+#include <bibtool/symbols.h>
 #include "config.h"
 
 /*****************************************************************************/
@@ -67,7 +68,7 @@
 #define InputPipeIsEmpty	(input_file_ptr == 0)
 #define PushToInputPipe(FILE)	input_files[input_file_ptr++] = FILE
 #define ForAllInputFiles(FILE)	for (FILE=input_files;			\
-				     FILE<&input_files[input_file_ptr];	\
+				     FILE<input_files[input_file_ptr];	\
 				     FILE++)
 
 /*-----------------------------------------------------------------------------
@@ -108,7 +109,7 @@ void save_input_file(file)			   /*			     */
 	)					   /*			     */
     { OUT_OF_MEMORY("input file pipe."); }	   /*			     */
   }						   /*			     */
-  PushToInputPipe(file);			   /*			     */
+  PushToInputPipe(symbol(file));		   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
