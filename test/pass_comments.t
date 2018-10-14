@@ -1,4 +1,4 @@
-#!/bin/perl -W
+#!/usr/bin/env perl
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -61,7 +61,8 @@ Gerd Neugebauer
 =cut
 
 use strict;
-use BUnit;
+use BUnit;use warnings;
+
 
 use constant BIB => <<__EOF__;
 This is a comment.

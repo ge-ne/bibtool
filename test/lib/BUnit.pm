@@ -1,4 +1,4 @@
-#!/bin/perl -W
+#!/usr/bin/env perl
 # =============================================================================
 #  
 #  This file is part of BibTool.
@@ -68,6 +68,7 @@ none
 package BUnit;
 
 use strict;
+use warnings;
 use Exporter;
 use base qw(Exporter);
 our @EXPORT    = qw(all summary run quiet);

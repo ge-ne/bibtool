@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w
+#!/usr/usr/env bin/perl
 #==============================================================================
 #  
 #  This file is part of BibTool.
@@ -61,7 +61,8 @@ Gerd Neugebauer
 =cut
 
 use strict;
-use BUnit;
+use BUnit;use warnings;
+
 
 
 #------------------------------------------------------------------------------
