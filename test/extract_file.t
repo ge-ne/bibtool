@@ -152,7 +152,7 @@ __EOF__
     );
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'extract_file_2',
+BUnit::run(name => 'extract_file_3',
     args => '-- \'extract.file={xyzzy}\'',
     expected_out => '',
     expected_err => <<__EOF__,
@@ -162,7 +162,7 @@ __EOF__
     );
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'extract_file_3',
+BUnit::run(name => 'extract_file_4',
     args     => '-- \'extract.file={_xyzzy.aux}\'',
     prepare  => sub {
       my $fd = new FileHandle("_xyzzy.aux",'w') || die "_xyzzy.aux: $!\n";
@@ -190,7 +190,7 @@ __EOF__
     );
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'extract_file_4',
+BUnit::run(name => 'extract_file_5',
     args     => '-- \'extract.file={_xyzzy.aux}\'',
     prepare  => sub {
       my $fd = new FileHandle("_xyzzy.aux",'w') || die "_xyzzy.aux: $!\n";
@@ -228,7 +228,7 @@ __EOF__
     );
 
 #------------------------------------------------------------------------------
-BUnit::run(name => 'extract_file_5',
+BUnit::run(name => 'extract_file_6',
     args     => '-- \'extract.file={_xyzzy.aux}\'',
     prepare  => sub {
       my $fd = new FileHandle("_xyzzy.aux",'w') || die "_xyzzy.aux: $!\n";
