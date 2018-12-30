@@ -144,7 +144,7 @@ void error(type, s1, s2, s3, line, err_pos, line_no, fname)/*		     */
 {						   /*			     */
   if ( (type&ERR_ERROR) == 0 && rsc_quiet ) return;/* anything less than an  */
 						   /*  error is ignored.     */
-  ErrNL;					   /*			     */
+  if (!(type&ERR_NO_NL)) { ErrNL; }		   /*			     */
   if ( (type&ERR_POINT) && line != NULL )	   /*			     */
   { ErrS((char*)line);				   /* print the error line.  */
     if ( line[strlen((char*)line)-1] != '\n' ) ErrNL;/*			     */
@@ -155,16 +155,16 @@ void error(type, s1, s2, s3, line, err_pos, line_no, fname)/*		     */
   ErrS("*** BibTool");				   /*                        */
   if	  ( type&ERR_ERROR ) ErrS(" ERROR"  );	   /*		             */
   else if ( type&ERR_WARN  ) ErrS(" WARNING");	   /*		             */
-  ErrS(": ");					   /*                        */
   if ( type&ERR_FILE )			   	   /*			     */
   { (void)fprintf(err_file,			   /*			     */
-		  " (line %d in %s): ",		   /*			     */
+		  " (line %d in %s)",		   /*			     */
 		  line_no,			   /*			     */
-		  fname );			   /*			     */
+		  *fname ? fname : "<STDIN>" );    /*			     */
   }						   /*			     */
+  ErrS(": ");					   /*                        */
   if ( s1 ) { ErrS((char*)s1); }		   /*			     */
   if ( s2 ) { ErrS((char*)s2); }		   /*			     */
   if ( s3 ) { ErrS((char*)s3); }		   /*			     */
-  ErrNL;					   /*			     */
+  if (!(type&ERR_NO_NL)) { ErrNL; }		   /*			     */
   if ( type&ERR_EXIT ) exit(-1);		   /*			     */
 }						   /*------------------------*/

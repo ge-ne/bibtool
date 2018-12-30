@@ -417,7 +417,7 @@ BUnit::run(name => '_k_1',
 EOF
 	expected_err => <<EOF);
 
-*** BibTool WARNING:  (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
 EOF
 
 #------------------------------------------------------------------------------
@@ -782,7 +782,7 @@ BUnit::run(name => '_f_short_1',
 EOF
 	expected_err => <<EOF);
 
-*** BibTool WARNING:  (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
 EOF
 
 #------------------------------------------------------------------------------
@@ -1147,7 +1147,7 @@ BUnit::run(name         => '_K_1',
 EOF
 	expected_err => <<EOF);
 
-*** BibTool WARNING:  (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
 EOF
 
 #------------------------------------------------------------------------------
@@ -1512,7 +1512,7 @@ BUnit::run(name         => '_f_long_1',
 EOF
 	expected_err => <<EOF);
 
-*** BibTool WARNING:  (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
 EOF
 
 #------------------------------------------------------------------------------

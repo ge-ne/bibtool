@@ -62,7 +62,7 @@ BUnit::run(name  => 'print_0',
     expected_out => '',
     expected_err => <<__EOF__,
 
-*** BibTool ERROR:  (line 2 in ./_test.rsc): Unterminated value
+*** BibTool ERROR (line 2 in ./_test.rsc): Unterminated value
 __EOF__
     );
 

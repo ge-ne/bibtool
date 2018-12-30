@@ -79,7 +79,7 @@ __EOF__
     expected_err => <<__EOF__);
 $xampl--- BibTool: Reading bib/xampl.bib
 ++
-*** BibTool WARNING:  (line 29 in .${fs}bib/xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING (line 29 in .${fs}bib/xampl.bib): 125 non-space characters ignored.
 ++++++++++++++++++++++++++++++++++--- BibTool: Done with bib/xampl.bib
 __EOF__
 
@@ -96,7 +96,7 @@ BUnit::run(name => '_v_1',
 --- BibTool: Trying $ENV{HOME}$fs.bibtoolrsc.rsc
 $t$xampl--- BibTool: Reading bib/xampl.bib
 ++
-*** BibTool WARNING:  (line 29 in .${fs}bib/xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING (line 29 in .${fs}bib/xampl.bib): 125 non-space characters ignored.
 ++++++++++++++++++++++++++++++++++--- BibTool: Done with bib/xampl.bib
 __EOF__
 

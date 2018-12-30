@@ -81,7 +81,7 @@ __EOF__
 
   author	= "A. U. Thor"
 ___^
-*** BibTool ERROR:  (line 2 in ./_test.bib): Unexpected character encountered
+*** BibTool ERROR (line 2 in ./_test.bib): Unexpected character encountered
 
 *** BibTool WARNING: Skipping to next '\@'
 __EOF__
@@ -97,7 +97,7 @@ __EOF__
 
   author	= "A. U. Thor"
 ___^
-*** BibTool ERROR:  (line 2 in ./_test.bib): Unexpected character encountered
+*** BibTool ERROR (line 2 in ./_test.bib): Unexpected character encountered
 __EOF__
 	   expected_out => '' );
 

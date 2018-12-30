@@ -60,13 +60,21 @@
 #define ERR_WARN	2
 
 /*-----------------------------------------------------------------------------
+** Constant:	ERR_MESSAGE
+** Type:	int
+** Purpose:	Error type: Indicate that the error is in fact a
+**		message.
+**___________________________________________________			     */
+#define ERR_MESSAGE	4
+
+/*-----------------------------------------------------------------------------
 ** Constant:	ERR_POINT
 ** Type:	int
 ** Purpose:	Error type: Indicate that the line and the error
 **		pointer should be displayed (if not suppressed via
 **		other flags).
 **___________________________________________________			     */
-#define ERR_POINT	4
+#define ERR_POINT	8
 
 /*-----------------------------------------------------------------------------
 ** Constant:	ERR_FILE
@@ -75,7 +83,15 @@
 **		number should be displayed (if not suppressed via
 **		other flags).
 **___________________________________________________			     */
-#define ERR_FILE	8
+#define ERR_FILE	16
+
+/*-----------------------------------------------------------------------------
+** Constant:	ERR_NO_NL
+** Type:	int
+** Purpose:	Error type: Indicate that the terminating newline should be
+**		suppressed.
+**___________________________________________________			     */
+#define ERR_NO_NL	32
 
 /*-----------------------------------------------------------------------------
 ** Constant:	ERR_EXIT

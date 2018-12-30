@@ -65,7 +65,7 @@ BUnit::run(name         => 'macro_file_1',
 __EOF__
     expected_err => <<__EOF__,
 
-*** BibTool WARNING:  (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
 __EOF__
    check => sub {unlink('_null.out'); return 0;}
     );
@@ -80,7 +80,7 @@ BUnit::run(name         => '_m_1',
 __EOF__
     expected_err => <<__EOF__,
 
-*** BibTool WARNING:  (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
 __EOF__
    check => sub {unlink('_null.out'); return 0;}
     );

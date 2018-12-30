@@ -87,7 +87,7 @@ BUnit::run(name => 'count_all_2',
 	 args	      => '--count.all=on bib/xampl.bib',
 	 expected_err		     => <<__EOF__);
 
-*** BibTool WARNING:  (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
 
 ---  STRING              3 read      3 written
 ---  PREAMBLE            1 read      1 written
@@ -143,7 +143,7 @@ BUnit::run(name => '_hash_2',
 	 args	      => '-# bib/xampl.bib',
 	 expected_err => <<__EOF__);
 
-*** BibTool WARNING:  (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
 
 ---  STRING              3 read      3 written
 ---  PREAMBLE            1 read      1 written

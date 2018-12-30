@@ -54,32 +54,31 @@ use strict;
 use BUnit;use warnings;
 
 
-
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'check_rule_1',
-	   resource     => <<__EOF__,
+BUnit::run(name     => 'check_rule_1',
+	   resource => <<__EOF__,
 check.rule { year "^[\\"{]1[89][0-9][0-9][\\"}]\$" }
 check.rule { year "^[\\"{][0-9][0-9][\\"}]\$" }
 check.rule { year "" "\\@ \\\$: Year has to be a suitable number"}
 __EOF__
-	   bib				    => <<__EOF__,
+	   bib	   => <<__EOF__,
 \@Manual{BibTool,
   title = 	 {BibTool},
   author =	 {Gerd Neugebauer},
   year =	 "2011"
 }
 __EOF__
-    expected_err => '*** BibTool: Manual bibtool: Year has to be a suitable number'
+    expected_err => '*** BibTool (line 1 in _test.bib): Manual bibtool: Year has to be a suitable number'
     );
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'check_rule_2',
-	   resource     => <<__EOF__,
+BUnit::run(name     => 'check_rule_2',
+	   resource => <<__EOF__,
 check.rule { year "^[\\"{]1[89][0-9][0-9][\\"}]\$" }
 check.rule { year "^[\\"{][0-9][0-9][\\"}]\$" }
 check.rule { year "" "\\@ \\\$: Year has to be a suitable number"}
 __EOF__
-	   bib				    => <<__EOF__,
+	   bib	   => <<__EOF__,
 \@Manual{BibTool,
   title = 	 {BibTool},
   author =	 {Gerd Neugebauer},
@@ -90,20 +89,59 @@ __EOF__
     );
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'check_rule_3',
-	   resource     => <<__EOF__,
+BUnit::run(name     => 'check_rule_3',
+	   resource => <<__EOF__,
 check.rule { year "^[\\"{]1[89][0-9][0-9][\\"}]\$" }
 check.rule { year "^[\\"{][0-9][0-9][\\"}]\$" }
 check.rule { year "" "\\@ \\\$: Year has to be a suitable number"}
 __EOF__
-	   bib				    => <<__EOF__,
+	   bib	   => <<__EOF__,
 \@Manual{BibTool,
   title = 	 {BibTool},
   author =	 {Gerd Neugebauer},
   year =	 "xxx"
 }
 __EOF__
-    expected_err => '*** BibTool: Manual bibtool: Year has to be a suitable number'
+    expected_err => '*** BibTool (line 1 in _test.bib): Manual bibtool: Year has to be a suitable number'
+    );
+
+#------------------------------------------------------------------------------
+BUnit::run(name     => 'check_rule_4',
+	   resource => <<__EOF__,
+check.rule { year "^[\\"{]20[0-9][0-9][\\"}]\$" }
+check.rule { year "^[\\"{][0-9][0-9][\\"}]\$" }
+check.rule { year "" "\\@ \\\$: Year has to be a suitable number"}
+__EOF__
+	   bib	   => <<__EOF__,
+
+
+\@Manual{BibTool,
+  title = 	 {BibTool},
+  author =	 {Gerd Neugebauer},
+  year =	 "xxx"
+}
+__EOF__
+    expected_err => '*** BibTool (line 3 in _test.bib): Manual bibtool: Year has to be a suitable number'
+    );
+
+#------------------------------------------------------------------------------
+BUnit::run(name     => 'check_rule_5',
+	   stdin    => 1,
+	   resource => <<__EOF__,
+check.rule { year "^[\\"{]20[0-9][0-9][\\"}]\$" }
+check.rule { year "^[\\"{][0-9][0-9][\\"}]\$" }
+check.rule { year "" "\\@ \\\$: Year has to be a suitable number"}
+__EOF__
+	   bib				    => <<__EOF__,
+
+
+\@Manual{BibTool,
+  title = 	 {BibTool},
+  author =	 {Gerd Neugebauer},
+  year =	 "xxx"
+}
+__EOF__
+    expected_err => '*** BibTool (line 3 in <STDIN>): Manual bibtool: Year has to be a suitable number'
     );
 
 #------------------------------------------------------------------------------

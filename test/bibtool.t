@@ -116,7 +116,7 @@ __EOF__
 
   _title = 	 {BibTool},
 ___^
-*** BibTool WARNING:  (line 2 in ./_test.bib): Symbol does not start with a letter
+*** BibTool WARNING (line 2 in ./_test.bib): Symbol does not start with a letter
 __EOF__
     );
 
@@ -141,7 +141,7 @@ __EOF__
 
   \$title = 	 {BibTool},
 ___^
-*** BibTool WARNING:  (line 2 in ./_test.bib): Symbol does not start with a letter
+*** BibTool WARNING (line 2 in ./_test.bib): Symbol does not start with a letter
 __EOF__
     );
 
@@ -166,7 +166,7 @@ __EOF__
 
   !title = 	 {BibTool},
 ___^
-*** BibTool WARNING:  (line 2 in ./_test.bib): Symbol does not start with a letter
+*** BibTool WARNING (line 2 in ./_test.bib): Symbol does not start with a letter
 __EOF__
     );
 

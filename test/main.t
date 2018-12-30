@@ -458,7 +458,7 @@ BUnit::run(name => 'main_4',
 __EOF__
 	expected_err => <<__EOF__);
 
-*** BibTool WARNING:  (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
+*** BibTool WARNING (line 29 in ./bib/xampl.bib): 125 non-space characters ignored.
 __EOF__
 
 #------------------------------------------------------------------------------
