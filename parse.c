@@ -739,7 +739,6 @@ int parse_bib(rec)				   /*			     */
   RecordOldKey(rec)  = NULL;	   	   	   /*			     */
   RecordFree(rec)    = 0;		   	   /*			     */
   RecordComment(rec) = sym_empty;	   	   /*                        */
-  RecordLineno(rec)  = flno;		   	   /*                        */
  						   /*                        */
   do						   /*                        */
   { init_parse();				   /*			     */
@@ -774,6 +773,8 @@ int parse_bib(rec)				   /*			     */
 	      flno, filename);			   /*			     */
       }						   /*			     */
     }						   /*			     */
+						   /*			     */
+    RecordLineno(rec)  = flno;		   	   /*                        */
     DebugPrint2("Look-up type ", flp);		   /*                        */
 						   /*			     */
     if ((type=find_entry_type(flp)) == BIB_NOOP)   /*		             */
