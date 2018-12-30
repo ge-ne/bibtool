@@ -170,9 +170,13 @@ sub run {
   my $bib  = store_file(TEST_BIB, $a{bib}, TEST_BIB) if $a{bib};
   $bib 	   = '' if not $bib;
 
-  print "\n$BIBTOOL $args $rsc $bib <$null 1>$out 2>$err\n" if $a{debug};
-
-  `$BIBTOOL $args $rsc $bib <$null 1>$out 2>$err`;
+  if ($a{stdin}) {
+    print "\n$BIBTOOL $args $rsc <$bib 1>$out 2>$err\n" if $a{debug};
+    `$BIBTOOL $args $rsc <$bib 1>$out 2>$err`;
+  } else {
+    print "\n$BIBTOOL $args $rsc $bib <$null 1>$out 2>$err\n" if $a{debug};
+    `$BIBTOOL $args $rsc $bib <$null 1>$out 2>$err`;
+  }
 
   if ( run_check($name, $a{check}) +
        check($a{expected_out}, $out, 'out', $a{fct_out}) +
