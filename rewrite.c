@@ -944,7 +944,10 @@ void rewrite_record(db, rec)			   /*			     */
 			     db,		   /*                        */
 			     rec))		   /*		             */
 	  )					   /*			     */
-      { Err(cp); }				   /*			     */
+      { error(ERR_MESSAGE|ERR_FILE|ERR_NO_NL,	   /*			     */
+	      cp, NULL, NULL, NULL, 0,
+	      RecordLineno(rec), RecordSource(rec));/*			     */
+      }						   /*			     */
     }						   /*			     */
   }						   /*			     */
 						   /*			     */
