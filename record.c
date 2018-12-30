@@ -86,11 +86,15 @@ Record copy_record(rec)				   /*			     */
   RecordFree(new)	  = RecordFree(rec);	   /*			     */
   RecordComment(new)	  = RecordComment(rec);	   /*			     */
   RecordSource(new)	  = RecordSource(rec);	   /*			     */
+  if (RecordSource(new)) {			   /*			     */
+    LinkSymbol(RecordSource(new));		   /*			     */
+  }			  			   /*			     */
+  RecordLineno(new)	  = RecordLineno(rec);	   /*			     */
   RecordHeap(new)	  = new_heap;		   /*			     */
   RecordFlags(new)	  = RecordFlags(rec);	   /*			     */
   for (i = 0, old_heap = RecordHeap(rec);	   /*			     */
-	i < RecordFree(new);			   /*			     */
-	++i)					   /*			     */
+       i < RecordFree(new);			   /*			     */
+       ++i)					   /*			     */
   { *(new_heap++) = *(old_heap++); }		   /*			     */
   return (new);					   /*			     */
 }						   /*------------------------*/
@@ -125,6 +129,7 @@ Record new_record(token,size)			   /*			     */
   RecordFree(new)	= size;			   /*			     */
   RecordComment(new)	= sym_empty;		   /*			     */
   RecordSource(new)	= sym_empty;		   /*			     */
+  RecordLineno(new)	= -1;             	   /*			     */
   RecordFlags(new)	= 0;	   		   /*			     */
   RecordHeap(new)	= new_heap;		   /*			     */
   for (i = 0; i < RecordFree(new); ++i)		   /*			     */

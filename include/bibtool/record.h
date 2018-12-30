@@ -71,6 +71,7 @@ typedef struct rECORD				/*                           */
   Symbol	rc_source;			/* The source of the record. */
  						/*  I.e. the file name it    */
  						/*  has been read from.      */
+  int           rc_lineno;			/* Line number or -1.        */
   struct rECORD *rc_next;			/* Pointer to the next       */
  						/*  record.                  */
   struct rECORD *rc_prev;			/* Pointer to the previous   */
@@ -356,6 +357,17 @@ typedef struct rECORD				/*                           */
 ** Returns:	
 **___________________________________________________			     */
 #define RecordSource(R)	((R)->rc_source)
+
+/*-----------------------------------------------------------------------------
+** Macro:	RecordLineno()
+** Type:	int
+** Purpose:	This is the line number where the record has been read from.
+**              The value -1 is used for an unknown line number.
+** Arguments:
+**	R	Record to consider
+** Returns:	
+**___________________________________________________			     */
+#define RecordLineno(R)	((R)->rc_lineno)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	RecordFlags()

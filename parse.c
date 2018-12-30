@@ -473,7 +473,7 @@ static bool parse_symbol(alpha)			   /*			     */
   register String cp;				   /*			     */
 						   /*			     */
   c = GetC;					   /*                        */
-  cp = flp-1;			   	   	   /*			     */
+  cp = flp - 1;			   	   	   /*			     */
   if (alpha && (! is_alpha(c)))		   	   /*			     */
   { Warning("Symbol does not start with a letter");/*                        */
   }		   				   /*			     */
@@ -505,7 +505,7 @@ static bool parse_key(alpha)			   /*			     */
   { Error("Key does not start with a letter");	   /*                        */
     return false;				   /*                        */
   }		   				   /*			     */
-  while (is_allowed(CurrentC) || CurrentC == '\'')/*                        */
+  while (is_allowed(CurrentC) || CurrentC == '\'') /*                        */
   { SkipC; }	   				   /*			     */
   c = CurrentC;					   /*                        */
   CurrentC = '\0';		   		   /*			     */
@@ -562,7 +562,7 @@ static bool parse_string(quotep)		   /*			     */
   left = 0;					   /*			     */
   if (quotep) (void)sbputchar('"', parse_sb);	   /*"			     */
   do						   /*			     */
-  { switch (c=skip_nl())			   /*			     */
+  { switch (c = skip_nl())			   /*			     */
     { case EOF:					   /*                        */
 	UnterminatedError("Unterminated double quote",/*                     */
 			  start_flno);		   /*                        */
@@ -739,6 +739,7 @@ int parse_bib(rec)				   /*			     */
   RecordOldKey(rec)  = NULL;	   	   	   /*			     */
   RecordFree(rec)    = 0;		   	   /*			     */
   RecordComment(rec) = sym_empty;	   	   /*                        */
+  RecordLineno(rec)  = flno;		   	   /*                        */
  						   /*                        */
   do						   /*                        */
   { init_parse();				   /*			     */
