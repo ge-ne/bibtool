@@ -324,7 +324,7 @@ static void write_macros(m_file, the_db)	   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function*:	read_in_files()
-** Type:	static void
+** Type:	void
 ** Purpose:	
 **		
 ** Arguments:
@@ -341,6 +341,48 @@ static void read_in_files(db)		   	   /*                        */
 		rsc_verbose))	   		   /*                        */
     { NoFileError(get_input_file(i)); }		   /*			     */
   }						   /*			     */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function*:	write_output()
+** Type:	void
+** Purpose:	
+**		
+** Arguments:
+**	db	the database
+** Returns:	nothing
+**___________________________________________________			     */
+static void write_output(db)		   	   /*                        */
+  DB db;					   /*                        */
+{ FILE	*file;				   	   /*                        */
+  char  *o_file = get_output_file();		   /*                        */
+ 						   /*                        */
+  if (o_file == NULL)			   	   /*                        */
+  { file = stdout; }				   /*                        */
+  else if (*o_file == '\0')		   	   /*                        */
+  { return; }					   /*                        */
+  else if ((file=fopen(o_file,"w")) == NULL)   	   /*                        */
+  { file = stdout;				   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  if (rsc_select) { rsc_del_q = false; }	   /*                        */
+ 						   /*                        */
+  { char * print_spec = (char*)rsc_print_et;	   /*                        */
+ 						   /*                        */
+    if (rsc_expand_macros)			   /*                        */
+    { char * cp;				   /*                        */
+      print_spec = new_string(print_spec);	   /*                        */
+      for (cp=print_spec; *cp; cp++)		   /*                        */
+      { if (*cp == 's' ||			   /*                        */
+	    *cp == 'S' ||			   /*                        */
+	    *cp == '$' ) *cp = ' ';		   /*                        */
+      }						   /*                        */
+    }						   /*                        */
+    print_db(file, db, print_spec);	   	   /*                        */
+    if (rsc_expand_macros) free(print_spec);	   /*                        */
+  }						   /*                        */
+ 						   /*                        */
+  if (file != stdout) { fclose(file); }	   	   /*                        */
 }						   /*------------------------*/
 
 #define Toggle(X) X = !(X)
@@ -370,12 +412,10 @@ int main(argc,argv)				   /*			     */
 						   /* contains a reference to*/
 						   /* this database.	     */
   int	i;				   	   /*			     */
-  FILE	*file;				   	   /*                        */
   bool	need_rsc = true;		   	   /*			     */
   int	(*fct)();			   	   /* Function pointer	     */
   int	c_len;					   /*                        */
   int   *c = NULL;				   /*                        */
-  char  *o_file;				   /*                        */
   bool  have_input_file = false;		   /*                        */
  						   /*                        */
   init_error(stderr);				   /*                        */
@@ -528,45 +568,22 @@ int main(argc,argv)				   /*			     */
     { if (rsc_sort_reverse) fct = rec_lt;	   /*                        */
       else		    fct = rec_gt;	   /*                        */
     }						   /*                        */
-    db_sort(the_db,fct);			   /*                        */
+    db_sort(the_db, fct);			   /*                        */
   }						   /*                        */
  						   /*                        */
   if (rsc_srt_macs)		   	   	   /* Maybe sort macros      */
   { db_mac_sort(the_db); }			   /*                        */
  						   /*                        */
   if (rsc_double_check)		   	   	   /* Maybe look for doubles */
-  { db_forall(the_db,dbl_check); }		   /*                        */
+  { db_forall(the_db, dbl_check); }		   /*                        */
  						   /*                        */
-  o_file = get_output_file();			   /*                        */
- 						   /*                        */
-  if (o_file == NULL ||			   	   /*                        */
-      (file=fopen(o_file,"w")) == NULL)	   	   /*                        */
-  { file = stdout; }				   /*                        */
- 						   /*                        */
-  if (rsc_select) { rsc_del_q = false; }	   /*                        */
- 						   /*                        */
-  { char * print_spec = (char*)rsc_print_et;	   /*                        */
- 						   /*                        */
-    if (rsc_expand_macros)			   /*                        */
-    { char * cp;				   /*                        */
-      print_spec = new_string(print_spec);	   /*                        */
-      for (cp=print_spec; *cp; cp++)		   /*                        */
-      { if (*cp == 's' ||			   /*                        */
-	    *cp == 'S' ||			   /*                        */
-	    *cp == '$' ) *cp = ' ';		   /*                        */
-      }						   /*                        */
-    }						   /*                        */
-    print_db(file,the_db,print_spec);	   	   /*                        */
-    if (rsc_expand_macros) free(print_spec);	   /*                        */
-  }						   /*                        */
- 						   /*                        */
-  if (file != stdout) { fclose(file); }	   	   /*                        */
+  write_output(the_db);				   /*                        */
 						   /*			     */
   write_macros(get_macro_file(), the_db);	   /*                        */
 						   /*			     */
   if (rsc_cnt_all || rsc_cnt_used)		   /*			     */
   { int i;					   /*                        */
-    int *cnt = db_count(the_db,(int*)NULL);	   /*                        */
+    int *cnt = db_count(the_db, (int*)NULL);	   /*                        */
 						   /*                        */
     ErrC('\n');		   	   	   	   /*			     */
     for (i = 0; i < c_len; ++i)			   /*			     */
@@ -776,15 +793,22 @@ static bool dbl_check(db, rec)			   /*                        */
     if (!rsc_quiet)				   /*                        */
     { Symbol k1 = *RecordHeap(rec);		   /*                        */
       Symbol k2 = *RecordHeap(PrevRecord(rec));	   /*                        */
-      ErrPrint("*** BibTool WARNING: Possible double entries discovered: \n***\t");
+      error(ERR_WARNING|ERR_FILE|ERR_NO_NL,        /*                        */
+	    "Possible double entry discovered to", /*                        */
+	    NULL, NULL, NULL, 0,		   /*                        */
+	    RecordLineno(rec), RecordSource(rec)); /*                        */
+      ErrPrintF3(" (line %d in %s) `%s'\n",	   /*                        */
+		 RecordLineno(PrevRecord(rec)),    /*                        */
+		 RecordSource(PrevRecord(rec)),    /*                        */
+		 k2);				   /*                        */
+						   /*                        */
       if (k1 == NO_SYMBOL) k1 = sym_empty;	   /*                        */
       if (k2 == NO_SYMBOL) k2 = sym_empty;	   /*                        */
-      ErrPrint((char*)SymbolValue(k2));		   /*                        */
-      ErrPrint(" =?= ");			   /*                        */
-      ErrPrint((char*)SymbolValue(k1));		   /*                        */
-      ErrPrint("\n***\t");			   /*                        */
-      ErrPrint((char*)SymbolValue(RecordSortkey(rec)));/*		     */
-      ErrPrint("\n");				   /*                        */
+      DebugPrintF3("***\t%s =?= %s\n",		   /*                        */
+		   (char*)SymbolValue(k2),	   /*                        */
+		   (char*)SymbolValue(k1));	   /*                        */
+      DebugPrintF2("***\tsort key: %s\n",	   /*                        */
+		   (char*)SymbolValue(RecordSortkey(rec))); /*               */
     }						   /*                        */
     if (rsc_del_dbl)				   /*                        */
     { delete_record(db,rec); }		   	   /*                        */
