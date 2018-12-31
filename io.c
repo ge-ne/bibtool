@@ -115,11 +115,10 @@ void save_input_file(file)			   /*			     */
 /*-----------------------------------------------------------------------------
 ** Function:	get_no_inputs()
 ** Type:	int
-** Purpose:	
+** Purpose:	Get the number of input file names stored.
 **		
-** Arguments:
-**		
-** Returns:	
+** Arguments:	none
+** Returns:	the number of currently stored input files
 **___________________________________________________			     */
 int get_no_inputs()				   /*                        */
 {						   /*                        */
@@ -129,11 +128,11 @@ int get_no_inputs()				   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	get_input_file()
 ** Type:	char *
-** Purpose:	
+** Purpose:	Getter for a single input file name.
 **		
 ** Arguments:
-**	i	
-** Returns:	
+**	i	the index of the input file to access
+** Returns:	the references input file name or NULL otherwise
 **___________________________________________________			     */
 char * get_input_file(i)			   /*                        */
   int i;					   /*                        */
@@ -147,7 +146,7 @@ char * get_input_file(i)			   /*                        */
 /***			   Output File Section				   ***/
 /*****************************************************************************/
 
- char *output_file = NULL;		   	   /*			     */
+ static char *output_file = NULL;	   	   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function:	save_output_file()
@@ -167,11 +166,10 @@ void save_output_file(file)			   /*			     */
 /*-----------------------------------------------------------------------------
 ** Function:	get_output_file()
 ** Type:	char*
-** Purpose:	
+** Purpose:	This is the getter for the output file name.
 **		
-** Arguments:
-**		
-** Returns:	
+** Arguments:	none
+** Returns:	the output file name or NULL for STDOUT
 **___________________________________________________			     */
 char* get_output_file()			   	   /*			     */
 { return output_file;				   /*			     */
@@ -182,7 +180,7 @@ char* get_output_file()			   	   /*			     */
 /***			   Macro File Section				   ***/
 /*****************************************************************************/
 
- char *macro_file = NULL;		   	   /*			     */
+ static char *macro_file = NULL;	   	   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function:	save_macro_file()
@@ -201,12 +199,10 @@ void save_macro_file(file)			   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function:	get_macro_file()
-** Type:	char*
-** Purpose:	
+** Purpose:	This is the getter for the macro file name.
 **		
-** Arguments:
-**		
-** Returns:	
+** Arguments:	none
+** Returns:	the macro file name or NULL for none
 **___________________________________________________			     */
 char* get_macro_file()			   	   /*			     */
 { return macro_file;				   /*			     */
