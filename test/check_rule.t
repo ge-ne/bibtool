@@ -145,6 +145,27 @@ __EOF__
     );
 
 #------------------------------------------------------------------------------
+BUnit::run(name     => 'check_rule_6',
+	   stdin    => 1,
+	   resource => <<__EOF__,
+sort = true
+check.rule { year "^[\\"{]20[0-9][0-9][\\"}]\$" }
+check.rule { year "^[\\"{][0-9][0-9][\\"}]\$" }
+check.rule { year "" "\\@ \\\$: Year has to be a suitable number"}
+__EOF__
+	   bib				    => <<__EOF__,
+
+
+\@Manual{BibTool,
+  title = 	 {BibTool},
+  author =	 {Gerd Neugebauer},
+  year =	 "xxx"
+}
+__EOF__
+    expected_err => '*** BibTool (line 3 in <STDIN>): Manual bibtool: Year has to be a suitable number'
+    );
+
+#------------------------------------------------------------------------------
 # Local Variables: 
 # mode: perl
 # End: 
