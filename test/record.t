@@ -27,11 +27,11 @@
 
 =head1 NAME
 
-parse.t - Test suite for the BibTool parser.
+check_double.t - Test suite for BibTool check.double.
 
 =head1 SYNOPSIS
 
-parse.t 
+check_double.t 
 
 =head1 DESCRIPTION
 
@@ -51,20 +51,21 @@ Gerd Neugebauer
 =cut
 
 use strict;
-use BUnit;use warnings;
+use BUnit;
+use warnings;
 
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'parse_1',
-	   bib				    => <<__EOF__,
+BUnit::run(name    => 'check_double_1',
+	   bib	   => <<__EOF__,
 \@Manual{BibTool,
   title = 	 {BibTool},
-  author =	 {A.U. Thor},
   author =	 {Gerd Neugebauer},
-  year =	 2018
+  author =	 {Gerd Neugebauer},
+  year =	 "2011"
 }
 __EOF__
-	   expected_err => "\n*** BibTool WARNING (line 1 in _test.bib): Duplicate field `author' overwritten\n"
+    expected_err => "\n*** BibTool WARNING (line 1 in _test.bib): Duplicate field `author' overwritten\n"
     );
 
 #------------------------------------------------------------------------------
