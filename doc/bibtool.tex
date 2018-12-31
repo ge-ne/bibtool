@@ -4013,11 +4013,12 @@ section~\ref{sec:field.rewriting}.
 \end{Resources}
 
 Consider the following example. We want to check that the year field contains
-only years from 1800 to 1999. Additionally we want to allow two digit
+only years from 1800 to 2029. Additionally we want to allow two digit
 abbreviations.
 
 \begin{Resources}
   \rscBraces{check.rule}{\texttt{ year "\Hat[\BS"\symbol{"7B}]1[89][0-9][0-9][\BS"\symbol{"7D}]\$" }}
+  \rscBraces{check.rule}{\texttt{ year "\Hat[\BS"\symbol{"7B}]20[0-2][0-9][\BS"\symbol{"7D}]\$" }}
   \rscBraces{check.rule}{\texttt{ year "\Hat[\BS"\symbol{"7B}][0-9][0-9][\BS"\symbol{"7D}]\$" }}
   \rscBraces{check.rule}{\texttt{ year "" "\BS@ \BS\$: Year has to be a suitable number" }}
 \end{Resources}
@@ -4029,9 +4030,12 @@ braces.\footnote{In fact the regular expression allows also strings starting
   ruled out by the parser already.} The hat at the beginning and the dollar at
 the end force that the pattern matches against the whole field value only.
 
-The next rule covers years consisting of two digits. The first two rules
+The second rule applies for the years starting with 200, 201, or 202. The
+following character is an arbitrary digit.
+
+The next rule covers years consisting of two digits. The first three rules
 produce no error message but end the search for further matches. Thus is
-something suitable is found then one of the first two rules finds it.
+something suitable is found then one of the first rules finds it.
 
 Otherwise we have to produce an error message. This is done with the third
 rule. The empty pattern matches against any value of the year field. This rule
