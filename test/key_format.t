@@ -53,7 +53,7 @@ Gerd Neugebauer
 use strict;
 use BUnit;use warnings;
 
-
+$ENV{'HOSTNAME'} = 'localhost' if not defined $ENV{'HOSTNAME'};
 
 #------------------------------------------------------------------------------
 BUnit::run(name => '_k_1',
