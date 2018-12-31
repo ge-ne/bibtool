@@ -56,7 +56,7 @@ use warnings;
 
 
 #------------------------------------------------------------------------------
-BUnit::run(name    => 'check_double_1',
+BUnit::run(name    => 'record_1',
 	   bib	   => <<__EOF__,
 \@Manual{BibTool,
   title = 	 {BibTool},
