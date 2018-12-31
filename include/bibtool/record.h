@@ -399,7 +399,7 @@ typedef struct rECORD				/*                           */
  void free_1_record _ARG((Record rec));		   /* record.c               */
  void free_record _ARG((Record rec));		   /* record.c               */
  void provide_to_record _ARG((Record rec,Symbol s, Symbol t));/*             */
- void push_to_record _ARG((Record rec,Symbol s, Symbol t));/* record.c       */
+void push_to_record _ARG((Record rec,Symbol s, Symbol t, bool err));/* record.c*/
  void sort_record _ARG((Record rec));		   /* record.c               */
 
 #endif

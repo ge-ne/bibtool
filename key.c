@@ -2551,7 +2551,7 @@ bool set_field(db,rec,name,value)		   /*			     */
     }						   /*                        */
   }						   /*			     */
   else						   /*			     */
-  { push_to_record(rec, name, value);	   	   /*			     */
+  { push_to_record(rec, name, value, false);   	   /*			     */
     return false;				   /*                        */
   }						   /*                        */
  						   /*                        */

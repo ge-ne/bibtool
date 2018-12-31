@@ -697,7 +697,7 @@ static bool parse_equation(rec)		   	   /*			     */
 						   /*			     */
   t = pop_string();				   /*			     */
   s = pop_string();				   /*			     */
-  push_to_record(rec, s, t);			   /*			     */
+  push_to_record(rec, s, t, true);		   /*			     */
   return true;					   /*			     */
 }						   /*------------------------*/
 
@@ -806,13 +806,13 @@ int parse_bib(rec)				   /*			     */
       UnGetC; 					   /*  any more.             */
       (void)parse_rhs();			   /*                        */
       push_to_record(rec, pop_string(),		   /*                        */
-		     NO_SYMBOL);		   /*			     */
+		     NO_SYMBOL, true);		   /*			     */
       return type;				   /*                        */
  						   /*                        */
     case BIB_PREAMBLE:				   /*			     */
       ExpectRhs(BIB_NOOP);			   /*			     */
       push_to_record(rec, pop_string(),		   /*                        */
-		     NO_SYMBOL);		   /*			     */
+		     NO_SYMBOL, true);		   /*			     */
       break;					   /*			     */
 						   /*			     */
     case BIB_STRING:				   /*			     */
@@ -826,7 +826,7 @@ int parse_bib(rec)				   /*			     */
     case BIB_INCLUDE:				   /*			     */
       ExpectRhs(BIB_NOOP);			   /*			     */
       push_to_record(rec, pop_string(),		   /*                        */
-		     NO_SYMBOL);		   /*			     */
+		     NO_SYMBOL, true);		   /*			     */
       break;					   /*			     */
 						   /*			     */
     case BIB_MODIFY:				   /*			     */
@@ -834,14 +834,14 @@ int parse_bib(rec)				   /*			     */
       if (TestC == ',')			   	   /*			     */
       { Warning("Missing reference key");	   /*			     */
 	push_to_record(rec, sym_empty,		   /*                        */
-		       NO_SYMBOL); 		   /*			     */
+		       NO_SYMBOL, true);	   /*			     */
 	(void)GetC;				   /*			     */
       }						   /*			     */
       else					   /*			     */
       { ExpectKey(false, BIB_NOOP);		   /*			     */
 	Expect(',', BIB_NOOP);			   /*			     */
 	push_to_record(rec, pop_string(),	   /*                        */
-		       NO_SYMBOL);		   /*			     */
+		       NO_SYMBOL, true);	   /*			     */
       }						   /*			     */
 						   /*			     */
       do					   /*			     */

@@ -49,7 +49,7 @@
  void free_1_record _ARG((Record rec)); 	   /* record.c               */
  void free_record _ARG((Record rec)); 		   /* record.c               */
  void provide_to_record _ARG((Record rec,Symbol s,Symbol t));/* record.c     */
- void push_to_record _ARG((Record rec,Symbol s,Symbol t));/* record.c        */
+ void push_to_record _ARG((Record rec,Symbol s,Symbol t, bool err));/* record.c*/
  void sort_record _ARG((Record rec)); 		   /* record.c               */
 
 /*****************************************************************************/
@@ -321,14 +321,17 @@ int count_record(rec)				   /*                        */
 **		copies and it is possible to avoid expensive string
 **		comparisons. 
 ** Arguments:
+**	rec	the record
 **	s	Left hand side of the equation.
 **	t	Right hand side of the equation.
+**	err	indicator that a warning for double fields should be issued.
 ** Returns:	nothing
 **___________________________________________________			     */
-void push_to_record(rec, s, t)			   /*			     */
+void push_to_record(rec, s, t, err)		   /*			     */
   register Record rec;				   /*                        */
   register Symbol s;				   /*			     */
   register Symbol t;				   /*			     */
+  bool err;					   /*			     */
 { register int i;		   		   /*			     */
    						   /*                        */
   if (s == sym_crossref || s == sym_xdata)	   /*                        */
@@ -338,6 +341,12 @@ void push_to_record(rec, s, t)			   /*			     */
   { if (RecordHeap(rec)[i] == s)		   /* if found then          */
     { sym_unlink(RecordHeap(rec)[i + 1]);	   /*                        */
       RecordHeap(rec)[i + 1] = t;		   /* overwrite the value    */
+      if (err) {				   /*			     */
+	error(ERR_WARNING|ERR_FILE,		   /*                        */
+	      "Duplicate field `", s, "' overwritten",/*                     */
+	      NULL, 0,				   /*                        */
+	      RecordLineno(rec), RecordSource(rec)); /*                      */
+      }						   /*			     */
       return;					   /*                        */
     }   					   /*                        */
   }						   /*                        */

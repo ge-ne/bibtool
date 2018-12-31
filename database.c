@@ -150,7 +150,7 @@ int apply_modify(db, key, rec)	   		   /*                        */
     { DebugPrint3(SymbolValue(*hp),		   /*                        */
 		  " => ",			   /*                        */
 		  SymbolValue(*(hp+1)));	   /*                        */
-      push_to_record(r, *hp, *(hp+1));		   /*                        */
+      push_to_record(r, *hp, *(hp+1), false);	   /*                        */
     }						   /*			     */
     hp += 2;					   /* Goto next pair.	     */
   }						   /*                        */
