@@ -4,7 +4,7 @@
 %% It is distributed under the Creative Commons Attribution-Share
 %% Alike 3.0 License.
 %%
-%% (c) 1995-2018 Gerd Neugebauer
+%% (c) 1995-2019 Gerd Neugebauer
 %%
 %% Net: gene@gerd-neugebauer.de
 %%
@@ -1208,6 +1208,23 @@ The resource name \rsc{output.file} can also be used for this purpose.
   \rscEqBraces{output.file}{output\_file}
 \end{Resources}
 
+The output file may be one of the special values. If the output file is a
+single minus sign then the output is redirected to the standard output stream
+as shown in the following example:
+
+\begin{Resources}
+  \rscEqBraces{output.file}{-}
+\end{Resources}
+
+If the output file is the empty string -- i.e. no characters at all -- then
+the output is suppressed entirely. This can be useful for instance if the
+input file should be validated only. An empty output file can be seen in the
+following example:
+
+\begin{Resources}
+  \rscEqBraces{output.file}{}
+\end{Resources}
+
 No provisions are made to check if the output file is the same as a input
 file.
 
@@ -1258,7 +1275,8 @@ described in section~\ref{sec:macros} on macros.
 
 \begin{Summary}
   \Desc{\opt{o} file}{\rsc{output.file} \{file\}}{Direct output to the
-    file \textit{file}.}
+    file \textit{file}. If file is \texttt{-} then the standard output is
+    used. If the file is the empty string then the output is suppressed.}
   \Desc{\opt{q}}{\rsc{quiet}=on}{Suppress warnings. Errors can not be
     suppressed.}
   \Desc{\opt{v}}{\rsc{verbose}=on}{Enable informative messages on the
