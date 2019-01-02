@@ -133,11 +133,13 @@ void clear_addlist()				   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function:	foreach_addlist()
 ** Type:	bool
-** Purpose:	
-**		
+** Purpose:	Apply a function for every entry in the |addlist|.
+**		If the function returns |false| then the iteration is
+**		terminated immediately and |false| returned. Otherwise
+**		|true| is returned after all entries have been visited.
 ** Arguments:
 **	fct	the function to be applied
-** Returns:	
+** Returns:	the termination indicator
 **___________________________________________________			     */
 bool foreach_addlist(fct)			   /*                        */
   bool (*fct) _ARG((Symbol key, Symbol val));	   /*                        */
