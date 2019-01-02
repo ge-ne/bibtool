@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -1354,7 +1354,8 @@ static bool add_fmt_tree(s, treep)		   /*			     */
   if ( fmt_parse(&s,&kn) > 0 )			   /*			     */
   { error(ERR_POINT|ERR_WARN,			   /*			     */
 	  (String)"Format Error. Format ignored.", /*			     */
-	  StringNULL,StringNULL,s0,(String)s,0,(char*)s_empty);/*	     */
+	  StringNULL, StringNULL, s0, (String)s,   /*			     */
+	  0, sym_empty);			   /*                        */
     return false;				   /*			     */
   }						   /*			     */
   if ( *treep == (KeyNode)0 ) { *treep	= kn; }	   /*			     */

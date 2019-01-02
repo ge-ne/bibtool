@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -140,7 +140,7 @@ void error(type, s1, s2, s3, line, err_pos, line_no, fname)/*		     */
   String  line;				   	   /* line_no string.	     */
   String  err_pos;				   /* error position in line */
   int	  line_no;		   	   	   /* line number	     */
-  char	  *fname;		   	   	   /* file name		     */
+  Symbol  fname;		   	   	   /* file name		     */
 {						   /*			     */
   if ( (type&ERR_ERROR) == 0 && rsc_quiet ) return;/* anything less than an  */
 						   /*  error is ignored.     */
@@ -159,7 +159,7 @@ void error(type, s1, s2, s3, line, err_pos, line_no, fname)/*		     */
   { (void)fprintf(err_file,			   /*			     */
 		  " (line %d in %s)",		   /*			     */
 		  line_no,			   /*			     */
-		  *fname ? fname : "<STDIN>" );    /*			     */
+		  *fname ? (char*)fname : "<STDIN>");/*			     */
   }						   /*			     */
   ErrS(": ");					   /*                        */
   if ( s1 ) { ErrS((char*)s1); }		   /*			     */

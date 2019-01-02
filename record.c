@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -343,9 +343,9 @@ void push_to_record(rec, s, t, err)		   /*			     */
       RecordHeap(rec)[i + 1] = t;		   /* overwrite the value    */
       if (err) {				   /*			     */
 	error(ERR_WARNING|ERR_FILE,		   /*                        */
-	      "Duplicate field `", s, "' overwritten",/*                     */
-	      NULL, 0,				   /*                        */
-	      RecordLineno(rec), RecordSource(rec)); /*                      */
+	      (String)"Duplicate field `", s,	   /*                        */
+	      (String)"' overwritten", NULL, 0,	   /*                        */
+	      RecordLineno(rec), RecordSource(rec));/*                       */
       }						   /*			     */
       return;					   /*                        */
     }   					   /*                        */

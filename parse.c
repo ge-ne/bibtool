@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -88,7 +88,7 @@
 
 #define FLBLEN	80		/* initial size and increment of line buffer */
 
- static char	*filename;
+ static Symbol  filename;
  static FILE	*file;
  static String	file_line_buffer;
  static String	flp;
@@ -249,23 +249,23 @@ bool see_bib(fname)				   /*			     */
   InitLine;					   /*			     */
   if (fname == NULL)				   /*			     */
   {						   /*                        */
-    filename = str_stdin;		   	   /*			     */
+    filename = (String)str_stdin;	   	   /*			     */
     file     = stdin;			   	   /*			     */
     return true;				   /*			     */
   }						   /*                        */
 #ifdef HAVE_LIBKPATHSEA
-  filename = kpse_find_file((char*)fname,	   /*                        */
+  filename = (String)kpse_find_file((char*)fname,  /*                        */
 			    kpse_bib_format,	   /*                        */
 			    TRUE);		   /*                        */
   if (filename == NULL) return false;	   	   /*                        */
-  file = fopen(filename,"r");			   /*                        */
+  file = fopen((char*)filename, "r");		   /*                        */
 #else
   file = px_fopen((char*)fname,			   /*			     */
 		  "r",			   	   /*			     */
 		  f_pattern,			   /*			     */
 		  f_path,			   /*			     */
 		  see_bib_msg);		   	   /*			     */
-  filename = px_filename;			   /*			     */
+  filename = (String)px_filename;		   /*			     */
 #endif
   return (file != NULL);			   /*			     */
 }						   /*------------------------*/
@@ -727,7 +727,7 @@ int parse_bib(rec)				   /*			     */
 	       c;				   /*			     */
   bool	       again;				   /*			     */
   long	       ignored = 0L;			   /*			     */
-  char         *name;				   /*                        */
+  String       name;				   /*                        */
   int          line;				   /*                        */
   char	       buffer[32];			   /*                        */
   static StringBuffer * comment_sb = (StringBuffer*)NULL;/*                  */
@@ -952,7 +952,7 @@ static bool see_rsc(fname)			   /*			     */
 		  r_pattern,			   /*			     */
 		  r_path,			   /*			     */
 		  see_bib_msg);		   	   /*			     */
-  filename = px_filename;			   /*			     */
+  filename = (String)px_filename;		   /*			     */
   return (file != NULL);			   /*			     */
 }						   /*------------------------*/
 
@@ -1019,7 +1019,7 @@ bool read_rsc(name)				   /*			     */
   String	name;				   /*			     */
 { int	        c;				   /*			     */
   Symbol	token;				   /*			     */
-  char		*s_filename;			   /*			     */
+  String	s_filename;			   /*			     */
   FILE		*s_file;			   /*                        */
   String	s_file_line_buffer;		   /*                        */
   size_t	s_fl_size;			   /*                        */

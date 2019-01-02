@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -39,6 +39,7 @@
 
 #include<stdio.h>
 #include<bibtool/type.h>
+#include<bibtool/symbols.h>
 
 /*-----------------------------------------------------------------------------
 ** Constant:	ERR_ERROR
@@ -118,7 +119,7 @@
 **___________________________________________________			     */
 #define ERROR_EXIT(X)				\
 	error(ERR_ERROR|ERR_EXIT,(String)X,	\
-	      (String)0,(String)0,(String)0,(String)0,0,(char*)0)
+	      (String)0,(String)0,(String)0,(String)0,0,NO_SYMBOL)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	OUT_OF_MEMORY()
@@ -133,7 +134,7 @@
 **___________________________________________________			     */
 #define OUT_OF_MEMORY(X)			\
 	error(ERR_ERROR|ERR_EXIT,err_oom,	\
-	      (String)X,err_point,(String)0,(String)0,0,(char*)0)
+	      (String)X,err_point,(String)0,(String)0,0,NO_SYMBOL)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ERROR()
@@ -146,7 +147,7 @@
 **___________________________________________________			     */
 #define ERROR(X)				\
 	error(ERR_ERROR,(String)X,		\
-	      (String)0,(String)0,(String)0,(String)0,0,(char*)0)
+	      (String)0,(String)0,(String)0,(String)0,0,NO_SYMBOL)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ERROR2()
@@ -160,7 +161,7 @@
 **___________________________________________________			     */
 #define ERROR2(X,Y)				\
 	error(ERR_ERROR,(String)X,		\
-	      (String)Y,(String)0,(String)0,(String)0,0,(char*)0)
+	      (String)Y,(String)0,(String)0,(String)0,0,NO_SYMBOL)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	ERROR3()
@@ -175,7 +176,7 @@
 **___________________________________________________			     */
 #define ERROR3(X,Y,Z)				\
 	error(ERR_ERROR,(String)X,		\
-	      (String)Y,(String)Z,(String)0,(String)0,0,(char*)0)
+	      (String)Y,(String)Z,(String)0,(String)0,0,NO_SYMBOL)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	WARNING()
@@ -188,7 +189,7 @@
 **___________________________________________________			     */
 #define WARNING(X)				\
 	error(ERR_WARN,(String)X,		\
-	      (String)0,(String)0,(String)0,(String)0,0,(char*)0)
+	      (String)0,(String)0,(String)0,(String)0,0,NO_SYMBOL)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	WARNING2()
@@ -202,7 +203,7 @@
 **___________________________________________________			     */
 #define WARNING2(X,Y)				\
 	error(ERR_WARN,(String)X,		\
-	      (String)Y,(String)0,(String)0,(String)0,0,(char*)0)
+	      (String)Y,(String)0,(String)0,(String)0,0,NO_SYMBOL)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	WARNING3()
@@ -217,7 +218,7 @@
 **___________________________________________________			     */
 #define WARNING3(X,Y,Z)				\
 	error(ERR_WARN,(String)X,		\
-	      (String)Y, (String)Z, StringNULL, StringNULL, 0, (char*)0)
+	      (String)Y, (String)Z, StringNULL, StringNULL, 0, NO_SYMBOL)
 
 /*-----------------------------------------------------------------------------
 ** Macro:	Err()
@@ -455,6 +456,6 @@
 #else
 #define _ARG(A) ()
 #endif
- void error _ARG((int type,String s1,String s2,String s3,String line,String ep,int line_no,char *file_name));/* error.c*/
+ void error _ARG((int type,String s1,String s2,String s3,String line,String ep,int line_no,Symbol file_name));
  void init_error _ARG((FILE * file));
 

@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -49,6 +49,7 @@
 #include <bibtool/type.h>
 #include <bibtool/crossref.h>
 #include <bibtool/version.h>
+#include <bibtool/io.h>
 #include "config.h"
 #define RSC_INIT
 #include <bibtool/rsc.h>
@@ -70,10 +71,6 @@
 /*****************************************************************************/
 /* External Programs							     */
 /*===========================================================================*/
-
- extern void save_input_file _ARG((char *file));   /* main.c		     */
- extern void save_macro_file _ARG((char * file));  /* main.c		     */
- extern void save_output_file _ARG((char * file)); /* main.c		     */
 
 #ifndef __STDC__
 #ifndef HAVE_GETENV

@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -49,7 +49,7 @@
 	       sp_line == NULL ? S : sp_line,	\
 	       (String)S,			\
 	       0,				\
-	       (char*)0)
+	       (String)0)
 
  static String unexpected = (String)"Unexpected "; /*                        */
  static String expected   = (String)" expected.";  /*                        */
@@ -216,7 +216,7 @@ Symbol s_parse(type, sp, errp)			   /*                        */
       break;					   /*                        */
  						   /*                        */
     case StringParseNumber:			   /*                        */
-      if ( is_digit(*s) )			   /*                        */
+      if (is_digit(*s))				   /*                        */
       { do { s++; } while ( is_digit(*s) );	   /*                        */
       }						   /*                        */
       else					   /*                        */
@@ -227,7 +227,7 @@ Symbol s_parse(type, sp, errp)			   /*                        */
  						   /*                        */
     case StringParseBraces:			   /*                        */
     case StringParseUnquotedBraces:		   /*                        */
-      if ( *s != '{' )				   /*                        */
+      if (*s != '{')				   /*                        */
       { Error(errp, s, "Brace", expected);	   /*                        */
 	return NULL;				   /*                        */
       }						   /*                        */

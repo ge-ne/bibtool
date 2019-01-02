@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -161,11 +161,11 @@ bool aux_used(s)				   /*                        */
 **___________________________________________________			     */
 bool read_aux(fname, fct, verbose)		   /*                        */
   String 	fname;			   	   /* aux file name          */
-  void		(*fct)_ARG((char*));		   /*                        */
+  void		(*fct)_ARG((Symbol));		   /*                        */
   bool          verbose;			   /*                        */
 { FILE 	        *file;				   /*                        */
   int           c;                                 /*                        */
-  String	s;				   /*                        */
+  char*		s;				   /*                        */
   	  	  	  	  	  	   /*                        */
   cite_star  = false;				   /*                        */
   rsc_select = true; 				   /*                        */
@@ -197,7 +197,7 @@ bool read_aux(fname, fct, verbose)		   /*                        */
            c != EOF && (is_alpha(c&0xff) || c == '@');/*                     */
            c = getc(file))			   /*                        */
       { (void)sbputchar(c, aux_sb); }              /*                        */
-      s = (String)sbflush(aux_sb);		   /*                        */
+      s = sbflush(aux_sb);			   /*                        */
       sbrewind(aux_sb);				   /*                        */
  						   /*                        */
       if (strcmp((char*)s, "citation") == 0 )	   /*                        */
@@ -206,7 +206,7 @@ bool read_aux(fname, fct, verbose)		   /*                        */
 	  { case EOF: break;			   /*                        */
 	    case ',':				   /*                        */
 	    case '}':		   	   	   /*                        */
-	      s = (String)sbflush(aux_sb);	   /*                        */
+	      s = sbflush(aux_sb);		   /*                        */
 	      sbrewind(aux_sb);			   /*                        */
 	      save_ref((String)s);		   /*                        */
 	      break;				   /*                        */
@@ -221,9 +221,9 @@ bool read_aux(fname, fct, verbose)		   /*                        */
 	while ( c != '}' && c != EOF )		   /*                        */
 	{ c = getc(file);			   /*                        */
 	  if ( c == ',' || c == '}' )		   /*                        */
-	  { s = (String)sbflush(aux_sb);	   /*                        */
+	  { s = sbflush(aux_sb);		   /*                        */
 	    sbrewind(aux_sb);			   /*                        */
-	    (*fct)((char*)s);	   	   	   /*                        */
+	    (*fct)(symbol((String)s));	   	   /*                        */
 	  }					   /*                        */
 	  else					   /*                        */
 	  { (void)sbputchar(c, aux_sb); }	   /*                        */
@@ -232,12 +232,12 @@ bool read_aux(fname, fct, verbose)		   /*                        */
       else if (strcmp((char*)s, "@input") == 0 )   /* Read another aux file  */
       { while ((c=getc(file)) != '}' && c != EOF)  /*                        */
 	{ (void)sbputchar(c,aux_sb); }		   /*                        */
-	s = (String)sbflush(aux_sb);		   /*                        */
+	s = sbflush(aux_sb);			   /*                        */
 	sbrewind(aux_sb);			   /*                        */
 	    					   /*                        */
-	read_aux(s, fct, verbose);	   	   /*                        */
+	read_aux((String)s, fct, verbose);   	   /*                        */
       }						   /*                        */
-      else if (strcmp((char*)s, "endinput") == 0 ) /* At end                 */
+      else if (strcmp(s, "endinput") == 0 )	   /* At end                 */
       { break;					   /*                        */
       }						   /*                        */
     }						   /*                        */

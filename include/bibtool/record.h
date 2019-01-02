@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -115,7 +115,6 @@ typedef struct rECORD				/*                           */
 #define RecordHas(R,F)		(RecordFlags(R)&(F))
 #define RecordSet(R,F)		(RecordFlags(R) |= (F))
 #define RecordClear(R,F)	(RecordFlags(R) &= ~(F))
-
 
 /*-----------------------------------------------------------------------------
 ** Constant:	RecordFlagMARKED
@@ -399,7 +398,7 @@ typedef struct rECORD				/*                           */
  void free_1_record _ARG((Record rec));		   /* record.c               */
  void free_record _ARG((Record rec));		   /* record.c               */
  void provide_to_record _ARG((Record rec,Symbol s, Symbol t));/*             */
-void push_to_record _ARG((Record rec,Symbol s, Symbol t, bool err));/* record.c*/
+ void push_to_record _ARG((Record rec,Symbol s, Symbol t, bool err));/* record.c*/
  void sort_record _ARG((Record rec));		   /* record.c               */
 
 #endif

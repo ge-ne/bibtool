@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 2018 Gerd Neugebauer
+** (c) 2018-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -28,16 +28,18 @@
 **
 ******************************************************************************/
 
+#include <bibtool/symbols.h>
+
 #ifdef __STDC__
 #define _ARG(A) A
 #else
 #define _ARG(A) ()
 #endif
 
- extern void save_input_file _ARG((char *file));   /*                        */
- extern void save_macro_file _ARG((char *file));   /*                        */
- extern void save_output_file _ARG((char * file)); /*                        */
+ extern void save_input_file _ARG((Symbol file));  /*                        */
+ extern void save_macro_file _ARG((Symbol file));  /*                        */
+ extern void save_output_file _ARG((Symbol file)); /*                        */
  extern int get_no_inputs();			   /*                        */
- extern char* get_input_file _ARG((int i));	   /*                        */
- extern char* get_macro_file();   		   /*                        */
- extern char* get_output_file(); 		   /*                        */
+ extern Symbol get_input_file _ARG((int i));	   /*                        */
+ extern Symbol get_macro_file();   		   /*                        */
+ extern Symbol get_output_file(); 		   /*                        */

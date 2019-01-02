@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -153,7 +153,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) 2016 Gerd Neugebauer",
+    "Copyright (C) 2019 Gerd Neugebauer",
     "gene@gerd-neugebauer.de"
   };
 
@@ -215,12 +215,12 @@ static void usage(fullp)			   /*			     */
   ErrPrintF("%s\n",SPECIAL_OPTIONS);		   /*                        */
 }						   /*------------------------*/
 
-#define UnknownWarning(X)     WARNING2("Unknown flag ignored: ",X)
+#define UnknownWarning(X)     WARNING2("Unknown flag ignored: ", X)
 #define NoSFileWarning	      WARNING("Missing select option. Flag ignored.")
-#define NoFileError(X)	      WARNING3("File ",X," not found.")
+#define NoFileError(X)	      WARNING3("File ", SymbolValue(X), " not found.")
 #define MissingPattern	      WARNING("Missing pattern.")
 #define MissingResource	      WARNING("Missing resource.")
-#define NoRscError(X)	      WARNING3("Resource file ",X," not found.")
+#define NoRscError(X)	      WARNING3("Resource file ", X, " not found.")
 
 
 /*****************************************************************************/
@@ -325,21 +325,22 @@ static void write_macros(m_file, the_db)	   /*                        */
 /*-----------------------------------------------------------------------------
 ** Function*:	read_in_files()
 ** Type:	void
-** Purpose:	
-**		
+** Purpose:	Read all the files in the input file pipe.
+**		Note that additional files can be pushed during this
+**		function is active.
 ** Arguments:
 **	db	the database
 ** Returns:	nothing
 **___________________________________________________			     */
 static void read_in_files(db)		   	   /*                        */
   DB db;					   /*                        */
-{ int n = get_no_inputs();			   /*                        */
-  int i;					   /*                        */
-  for (i = 0; i < n; i++)		   	   /* For all input files    */
-  { if (read_db(db,			   	   /*                        */
-		(String)get_input_file(i),	   /*                        */
-		rsc_verbose))	   		   /*                        */
-    { NoFileError(get_input_file(i)); }		   /*			     */
+{ int i;					   /*                        */
+  Symbol in;					   /*                        */
+						   /*                        */
+  for (i = 0; i < get_no_inputs(); i++)	   	   /* For all input files    */
+  { in = get_input_file(i);			   /*			     */
+    if (read_db(db, SymbolValue(in), rsc_verbose)) /*                        */
+    { NoFileError(in); }			   /*			     */
   }						   /*			     */
 }						   /*------------------------*/
 
@@ -354,14 +355,14 @@ static void read_in_files(db)		   	   /*                        */
 **___________________________________________________			     */
 static void write_output(db)		   	   /*                        */
   DB db;					   /*                        */
-{ FILE	*file;				   	   /*                        */
-  char  *o_file = get_output_file();		   /*                        */
+{ FILE  *file;				   	   /*                        */
+  Symbol o_file = get_output_file();		   /*                        */
  						   /*                        */
-  if (o_file == NULL)			   	   /*                        */
+  if (o_file == NO_SYMBOL)		   	   /*                        */
   { file = stdout; }				   /*                        */
   else if (*o_file == '\0')		   	   /*                        */
   { return; }					   /*                        */
-  else if ((file=fopen(o_file,"w")) == NULL)   	   /*                        */
+  else if ((file=fopen((char*)SymbolValue(o_file),"w")) == NULL)/*           */
   { file = stdout;				   /*                        */
   }						   /*                        */
  						   /*                        */
@@ -416,7 +417,6 @@ int main(argc,argv)				   /*			     */
   int	(*fct)();			   	   /* Function pointer	     */
   int	c_len;					   /*                        */
   int   *c = NULL;				   /*                        */
-  bool  have_input_file = false;		   /*                        */
  						   /*                        */
   init_error(stderr);				   /*                        */
   init_bibtool(argv[0]);			   /*                        */
@@ -424,8 +424,7 @@ int main(argc,argv)				   /*			     */
   for (i = 1; i < argc; i++)			   /*			     */
   { char *ap;				   	   /*			     */
     if (*(ap=argv[i]) != OptionLeadingCharacter)   /*			     */
-    { save_input_file(argv[i]);			   /*			     */
-      have_input_file = true;			   /*                        */
+    { save_input_file(symbol((String)argv[i]));	   /*			     */
     }						   /*			     */
     else					   /*			     */
     { switch (*++ap)				   /*			     */
@@ -438,18 +437,18 @@ int main(argc,argv)				   /*			     */
 	case 'f': add_format(argv[++i]);	   /*	!!! no break !!!     */
 	case 'F': rsc_make_key = true;	    break; /* key generation	     */
 	case 'h': usage(true); return 1;	   /* print help	     */
-	case 'i': save_input_file(argv[++i]); break;/*			     */
+	case 'i': save_input_file(symbol((String)argv[++i])); break;/*       */
 	case 'K': add_format("long");	    break; /* key generation	     */
 	case 'k': add_format("short");	    break; /* key generation	     */
 	case 'M':				   /* print macro table	     */
 	case 'm': rsc_all_macs = (*ap=='m');	   /* print macro table	     */
-	  save_macro_file(argv[++i]);		   /*			     */
+	  save_macro_file(symbol((String)argv[++i]));/*			     */
 	  break;				   /*			     */
 	case 'o':				   /* output file	     */
 	  if (++i < argc)   			   /*		             */
-	  { save_output_file(argv[i]); }	   /*                        */
+	  { save_output_file(symbol((String)argv[i])); }/*                   */
 	  else					   /*                        */
-	  { WARNING("Missing output file name"); } /*                        */
+	  { WARNING((String)"Missing output file name"); } /*                */
 	  break; 				   /*			     */
 	case 'q': Toggle(rsc_quiet);	    break; /* quiet		     */
 	case 'r':				   /* resource file	     */
@@ -472,7 +471,6 @@ int main(argc,argv)				   /*			     */
 	  { read_aux((String)(argv[i]),		   /*                        */
 		     save_input_file,		   /*                        */
 		     *++ap=='v');  		   /*                        */
-	    have_input_file = true;		   /*                        */
 	  }					   /*                        */
 	  else					   /*                        */
 	  { NoSFileWarning; }	   		   /*			     */
@@ -502,8 +500,8 @@ int main(argc,argv)				   /*			     */
 						   /*			     */
   if (need_rsc) { (void)search_rsc(); }	   	   /*			     */
 						   /*			     */
-  if (!have_input_file)				   /* If no input file given */
-  { save_input_file("-"); }			   /*  then read from stdin  */
+  if (get_no_inputs() == 0)			   /* If no input file given */
+  { save_input_file(symbol((String)"-")); }	   /*  then read from stdin  */
 						   /*			     */
   init_read();					   /* Just in case the path  */
  						   /*  has been modified.    */
@@ -794,13 +792,13 @@ static bool dbl_check(db, rec)			   /*                        */
     { Symbol k1 = *RecordHeap(rec);		   /*                        */
       Symbol k2 = *RecordHeap(PrevRecord(rec));	   /*                        */
       error(ERR_WARNING|ERR_FILE|ERR_NO_NL,        /*                        */
-	    "Possible double entry discovered to", /*                        */
+	    (String)"Possible double entry discovered to", /*                */
 	    NULL, NULL, NULL, 0,		   /*                        */
 	    RecordLineno(rec), RecordSource(rec)); /*                        */
       ErrPrintF3(" (line %d in %s) `%s'\n",	   /*                        */
 		 RecordLineno(PrevRecord(rec)),    /*                        */
-		 RecordSource(PrevRecord(rec)),    /*                        */
-		 k2);				   /*                        */
+		 (char*)RecordSource(PrevRecord(rec)),/*                     */
+		 (char*)k2);			   /*                        */
 						   /*                        */
       if (k1 == NO_SYMBOL) k1 = sym_empty;	   /*                        */
       if (k2 == NO_SYMBOL) k2 = sym_empty;	   /*                        */

@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -268,6 +268,8 @@ void init_symbols()				   /*			     */
   sym_et	   = symbol((String)"&");	   /*                        */
 }						   /*------------------------*/
 
+#if defined(DEBUG) || defined(COMPLEX_SYMBOL)
+
 /*-----------------------------------------------------------------------------
 ** Function*:	get_sym_tab()
 ** Type:	SymTab
@@ -295,6 +297,8 @@ static SymTab* get_sym_tab(sym)			   /*			     */
  						   /*                        */
   return NULL;			   		   /*			     */
 }						   /*------------------------*/
+
+#endif
 
 /*-----------------------------------------------------------------------------
 ** Function:	symbol()
@@ -414,17 +418,17 @@ void sym_del(sym)				   /*                        */
   sym_pipe[sym_pipe_ptr] = sym;			   /*                        */
   if ( ++sym_pipe_ptr < SYM_PIPE_SIZE) return;	   /*                        */
  						   /*                        */
-  while (--sym_pipe_ptr > 0)
-  { sym = sym_pipe[sym_pipe_ptr];
-    if (SymbolCount(sym) > 0) continue;
-
-    stp = get_sym_tab(sym);
-    if (stp == NULL) continue;
-    st	 = *stp;
-    *stp = NextSymTab(st);
-    free(st);
-    free(SymbolValue(sym));
-    free(sym);
+  while (--sym_pipe_ptr > 0)			   /*                        */
+  { sym = sym_pipe[sym_pipe_ptr];		   /*                        */
+    if (SymbolCount(sym) > 0) continue;		   /*                        */
+						   /*                        */
+    stp = get_sym_tab(sym);			   /*                        */
+    if (stp == NULL) continue;			   /*                        */
+    st	 = *stp;				   /*                        */
+    *stp = NextSymTab(st);			   /*                        */
+    free(st);					   /*                        */
+    free(SymbolValue(sym));			   /*                        */
+    free(sym);					   /*                        */
   }						   /*                        */
 #endif
 }						   /*------------------------*/

@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -38,15 +38,6 @@
 /* Internal Programs							     */
 /*===========================================================================*/
 
-#ifdef __STDC__
-#define _ARG(A) A
-#else
-#define _ARG(A) ()
-#endif
- void save_input_file _ARG((char *file));	   /*                        */
- void save_macro_file _ARG((char *file));	   /*                        */
- void save_output_file _ARG((char * file));	   /*                        */
-
 /*****************************************************************************/
 /* External Programs and Variables					     */
 /*===========================================================================*/
@@ -60,9 +51,9 @@
 
 #define InputFilePipeIncrement 8
 
- static char **input_files;
- static int  input_file_size = 0;
- static int  input_file_ptr  = 0;
+ static Symbol* input_files;
+ static int input_file_size = 0;
+ static int input_file_ptr  = 0;
 
 #define InputPipeIsFull		(input_file_ptr >= input_file_size)
 #define InputPipeIsEmpty	(input_file_ptr == 0)
@@ -86,30 +77,31 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 void save_input_file(file)			   /*			     */
-  char *file;					   /*			     */
+  Symbol file;					   /*			     */
 {						   /*			     */
-  if (file == NULL)				   /*			     */
+  if (file == NO_SYMBOL)			   /*			     */
   { WARNING("Missing input file name. Flag ignored.");/*		     */
     return;					   /*			     */
   }						   /*			     */
-  if (*file == '-' && file[1] == '\0')		   /*			     */
-  { file = NULL; }				   /*			     */
+  if (*SymbolValue(file) == '-' &&		   /*			     */
+      SymbolValue(file)[1] == '\0')		   /*			     */
+  { file = NO_SYMBOL; }				   /*			     */
 						   /*			     */
   if (InputPipeIsFull)				   /* No space left?	     */
   { input_file_size += InputFilePipeIncrement;	   /*			     */
 						   /*			     */
     if (InputPipeIsEmpty			   /* Try to enlarge array   */
 	? NULL==(input_files=			   /*			     */
-		 (char**)malloc(sizeof(char*)	   /*			     */
+		 (Symbol*)malloc(sizeof(Symbol)	   /*			     */
 				*(size_t)input_file_size))/*		     */
 	: NULL==(input_files=			   /*			     */
-		 (char**)realloc((char*)input_files,/*			     */
-				 sizeof(char*)	   /*			     */
+		 (Symbol*)realloc((char*)input_files,/*			     */
+				 sizeof(Symbol)	   /*			     */
 				 *(size_t)input_file_size))/*		     */
 	)					   /*			     */
     { OUT_OF_MEMORY("input file pipe."); }	   /*			     */
   }						   /*			     */
-  PushToInputPipe(symbol(file));		   /*			     */
+  PushToInputPipe(file);			   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -134,11 +126,11 @@ int get_no_inputs()				   /*                        */
 **	i	the index of the input file to access
 ** Returns:	the references input file name or NULL otherwise
 **___________________________________________________			     */
-char * get_input_file(i)			   /*                        */
+Symbol get_input_file(i)			   /*                        */
   int i;					   /*                        */
 { return (i >= 0 && i < input_file_ptr		   /*                        */
 	  ? input_files[i]			   /*                        */
-	  : NULL);	 			   /*                        */
+	  : NO_SYMBOL);	 			   /*                        */
 }						   /*------------------------*/
 
 
@@ -146,7 +138,7 @@ char * get_input_file(i)			   /*                        */
 /***			   Output File Section				   ***/
 /*****************************************************************************/
 
- static char *output_file = NULL;	   	   /*			     */
+ static Symbol output_file = NO_SYMBOL;	   	   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function:	save_output_file()
@@ -157,21 +149,23 @@ char * get_input_file(i)			   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void save_output_file(file)			   /*			     */
-  char * file;					   /*			     */
-{ if ( output_file != NULL )			   /*			     */
-  { WARNING2("Output file redefined: ",file); }	   /*			     */
+  Symbol file;					   /*			     */
+{ if (output_file != NO_SYMBOL)			   /*			     */
+  { WARNING2("Output file redefined: ",		   /*			     */
+	     SymbolValue(file));		   /*			     */
+  }						   /*			     */
   output_file = file;				   /*			     */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	get_output_file()
-** Type:	char*
+** Type:	Symbol
 ** Purpose:	This is the getter for the output file name.
 **		
 ** Arguments:	none
 ** Returns:	the output file name or NULL for STDOUT
 **___________________________________________________			     */
-char* get_output_file()			   	   /*			     */
+Symbol get_output_file()		   	   /*			     */
 { return output_file;				   /*			     */
 }						   /*------------------------*/
 
@@ -180,7 +174,7 @@ char* get_output_file()			   	   /*			     */
 /***			   Macro File Section				   ***/
 /*****************************************************************************/
 
- static char *macro_file = NULL;	   	   /*			     */
+ static Symbol macro_file = NO_SYMBOL;	   	   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function:	save_macro_file()
@@ -191,9 +185,11 @@ char* get_output_file()			   	   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void save_macro_file(file)			   /*			     */
-  char *file;					   /*			     */
+  Symbol file;					   /*			     */
 { if ( macro_file != NULL )			   /*			     */
-  { WARNING2("Macro file redefined: ",file); }	   /*			     */
+  { WARNING2("Macro file redefined: ",		   /*			     */
+	     SymbolValue(file));		   /*			     */
+  }						   /*			     */
   macro_file = file;				   /*			     */
 }						   /*------------------------*/
 
@@ -204,6 +200,6 @@ void save_macro_file(file)			   /*			     */
 ** Arguments:	none
 ** Returns:	the macro file name or NULL for none
 **___________________________________________________			     */
-char* get_macro_file()			   	   /*			     */
+Symbol get_macro_file()			   	   /*			     */
 { return macro_file;				   /*			     */
 }						   /*------------------------*/

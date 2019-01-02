@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -31,7 +31,7 @@
 #else
 #define _ARG(A) ()
 #endif
- bool read_aux _ARG((String fname,void (*fct)(char*),bool verbose));/*tex_aux.c*/
+ bool read_aux _ARG((String fname,void (*fct)(Symbol),bool verbose));/*tex_aux.c*/
  bool apply_aux _ARG((DB db));			   /* tex_aux.c              */
  bool foreach_aux _ARG((bool (fct)_ARG((Symbol))));/* tex_aux.c              */
  bool aux_used _ARG((Symbol s));		   /* tex_aux.c              */
