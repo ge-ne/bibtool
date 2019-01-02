@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -672,8 +672,7 @@ static String check_regex(field, value, rule, db, rec)/*		     */
   for ( len  =	symlen(value);		   	   /* Loop through all rules */
 	rule != RuleNULL;			   /*			     */
 	rule =	NextRule(rule) )		   /*			     */
-  {						   /*			     */
-    if ( (   RuleField(rule) == NO_SYMBOL	   /*			     */
+  { if ( (   RuleField(rule) == NO_SYMBOL	   /*			     */
 	  || RuleField(rule) == field )		   /*			     */
 	&&					   /*                        */
 	 (   (RuleFlag(rule)&RULE_REGEXP) == 0	   /*                        */
@@ -945,7 +944,7 @@ void rewrite_record(db, rec)			   /*			     */
 			     rec))		   /*		             */
 	  )					   /*			     */
       { error(ERR_MESSAGE|ERR_FILE|ERR_NO_NL,	   /*			     */
-	      cp, NULL, NULL, NULL, 0,
+	      cp, (String)"\n", NULL, NULL, 0,	   /*			     */
 	      RecordLineno(rec), RecordSource(rec));/*			     */
       }						   /*			     */
     }						   /*			     */

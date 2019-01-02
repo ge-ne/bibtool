@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2011-2018 Gerd Neugebauer
+#  (c) 2011-2019 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -68,7 +68,7 @@ __EOF__
   year =	 "2011"
 }
 __EOF__
-    expected_err => '*** BibTool (line 1 in _test.bib): Manual bibtool: Year has to be a suitable number'
+    expected_err => "*** BibTool (line 1 in _test.bib): Manual bibtool: Year has to be a suitable number\n"
     );
 
 #------------------------------------------------------------------------------
@@ -102,7 +102,7 @@ __EOF__
   year =	 "xxx"
 }
 __EOF__
-    expected_err => '*** BibTool (line 1 in _test.bib): Manual bibtool: Year has to be a suitable number'
+    expected_err => "*** BibTool (line 1 in _test.bib): Manual bibtool: Year has to be a suitable number\n"
     );
 
 #------------------------------------------------------------------------------
@@ -121,7 +121,7 @@ __EOF__
   year =	 "xxx"
 }
 __EOF__
-    expected_err => '*** BibTool (line 3 in _test.bib): Manual bibtool: Year has to be a suitable number'
+    expected_err => "*** BibTool (line 3 in _test.bib): Manual bibtool: Year has to be a suitable number\n"
     );
 
 #------------------------------------------------------------------------------
@@ -141,7 +141,7 @@ __EOF__
   year =	 "xxx"
 }
 __EOF__
-    expected_err => '*** BibTool (line 3 in <STDIN>): Manual bibtool: Year has to be a suitable number'
+    expected_err => "*** BibTool (line 3 in <STDIN>): Manual bibtool: Year has to be a suitable number\n"
     );
 
 #------------------------------------------------------------------------------
@@ -162,7 +162,7 @@ __EOF__
   year =	 "xxx"
 }
 __EOF__
-    expected_err => '*** BibTool (line 3 in <STDIN>): Manual bibtool: Year has to be a suitable number'
+    expected_err => "*** BibTool (line 3 in <STDIN>): Manual bibtool: Year has to be a suitable number\n"
     );
 
 #------------------------------------------------------------------------------

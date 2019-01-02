@@ -142,8 +142,9 @@ void error(type, s1, s2, s3, line, err_pos, line_no, fname)/*		     */
   int	  line_no;		   	   	   /* line number	     */
   Symbol  fname;		   	   	   /* file name		     */
 {						   /*			     */
-  if ( (type&ERR_ERROR) == 0 && rsc_quiet ) return;/* anything less than an  */
-						   /*  error is ignored.     */
+  if ( (type&(ERR_ERROR|ERR_MESSAGE)) == 0	   /* anything less than an  */
+       && rsc_quiet ) return;			   /*  error is ignored.     */
+						   /*			     */
   if (!(type&ERR_NO_NL)) { ErrNL; }		   /*			     */
   if ( (type&ERR_POINT) && line != NULL )	   /*			     */
   { ErrS((char*)line);				   /* print the error line.  */
