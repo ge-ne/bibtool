@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -44,7 +44,7 @@ char * bibtool_version = "2.68";		   /*                        */
 ** Purpose:	This string variable contains the publication year for this
 **		version. 
 **___________________________________________________			     */
-char * bibtool_year = "2018";			   /*                        */
+char * bibtool_year = "2019";			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	show_version()
