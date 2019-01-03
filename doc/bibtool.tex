@@ -3952,11 +3952,9 @@ double entries several problems arise. Which entries should be considered
 equal and what should happen to double entries.
 
 The first question is answered as follows. Two entries are considered equal if
-their sort key is identical and they are adjacent in the final output. The
-first condition of identical sort keys allows the user to specify which
-criteria should be used when comparing entries. This can be achieved with the
-resource \rsc{sort.format} (see section \ref{sorting}). The second condition
-can easily be achieved by also sorting when requesting checking of doubles.
+their sort key is identical. The condition of identical sort keys allows the
+user to specify which criteria should be used when comparing entries. This can
+be achieved with the resource \rsc{sort.format} (see section \ref{sorting}).
 
 It remains the question what to do with the doubles. Usually it is not
 desirable to keep double entries in one data base, so only one entry found is

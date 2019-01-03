@@ -774,46 +774,52 @@ static bool update_crossref(db, rec)		   /*			     */
 
 /*-----------------------------------------------------------------------------
 ** Function*:	dbl_check()
-** Purpose:	
-**		
+** Purpose:	Check whether the given record has a double.
 **
 ** Arguments:
+**	db	the database
 **	rec	the record
 ** Returns:	|false|
 **___________________________________________________			     */
 static bool dbl_check(db, rec)			   /*                        */
   DB	 db;					   /*                        */
   Record rec;					   /*                        */
-{						   /*                        */
-  if (PrevRecord(rec) != RecordNULL		   /*                        */
-      && equal_records(PrevRecord(rec),rec))	   /*			     */
-  {						   /*                        */
-    if (!rsc_quiet)				   /*                        */
-    { Symbol k1 = *RecordHeap(rec);		   /*                        */
-      Symbol k2 = *RecordHeap(PrevRecord(rec));	   /*                        */
-      ErrPrint("*** BibTool WARNING");		   /*                        */
-      ErrPrintF3(" (line %d in %s): Possible double entry discovered to", /* */
-		 RecordLineno(rec),		   /*                        */
-		 (char*)RecordSource(rec),	   /*                        */
-		 (char*)k1);			   /*                        */
-      ErrPrintF3(" (line %d in %s) `%s'\n",	   /*                        */
-		 RecordLineno(PrevRecord(rec)),    /*                        */
-		 (char*)RecordSource(PrevRecord(rec)),/*                     */
-		 (char*)k2);			   /*                        */
+{ register Record prev;				   /*                        */
+  register Record rec2;				   /*                        */
 						   /*                        */
-      if (k1 == NO_SYMBOL) k1 = sym_empty;	   /*                        */
-      if (k2 == NO_SYMBOL) k2 = sym_empty;	   /*                        */
-      DebugPrintF3("***\t%s =?= %s\n",		   /*                        */
-		   (char*)SymbolValue(k2),	   /*                        */
-		   (char*)SymbolValue(k1));	   /*                        */
-      DebugPrintF2("***\tsort key: %s\n",	   /*                        */
-		   (char*)SymbolValue(RecordSortkey(rec))); /*               */
-    }						   /*                        */
-    if (rsc_del_dbl)				   /*                        */
-    { delete_record(db,rec); }		   	   /*                        */
-    else 					   /*                        */
-    { SetRecordDELETED(rec); }			   /*                        */
-  }						   /*			     */
+  for(rec2 = PrevRecord(rec);			   /*                        */
+      rec2 != RecordNULL;			   /*                        */
+      rec2 = prev)				   /*                        */
+  { prev = PrevRecord(rec2);			   /*                        */
+						   /*                        */
+    if (equal_records(rec,rec2))		   /*			     */
+    {						   /*                        */
+      if (!rsc_quiet)				   /*                        */
+      { Symbol k1 = *RecordHeap(rec);		   /*                        */
+	Symbol k2 = *RecordHeap(rec2);		   /*                        */
+	ErrPrint("*** BibTool WARNING ");	   /*                        */
+	ErrPrintF2("(line %d in %s): Possible double entry discovered to", /**/
+		   RecordLineno(rec),		   /*                        */
+		   (char*)RecordSource(rec));	   /*                        */
+	ErrPrintF3(" (line %d in %s) `%s'\n",	   /*                        */
+		   RecordLineno(rec2),		   /*                        */
+		   (char*)RecordSource(rec2),	   /*                        */
+		   (char*)k2);			   /*                        */
+						   /*                        */
+	if (k1 == NO_SYMBOL) k1 = sym_empty;	   /*                        */
+	if (k2 == NO_SYMBOL) k2 = sym_empty;	   /*                        */
+	DebugPrintF3("***\t%s =?= %s\n",	   /*                        */
+		     (char*)SymbolValue(k2),	   /*                        */
+		     (char*)SymbolValue(k1));	   /*                        */
+	DebugPrintF2("***\tsort key: %s\n",	   /*                        */
+		     (char*)SymbolValue(RecordSortkey(rec))); /*             */
+      }						   /*                        */
+      if (rsc_del_dbl)				   /*                        */
+      { delete_record(db,rec); }	   	   /*                        */
+      else 					   /*                        */
+      { SetRecordDELETED(rec); }		   /*                        */
+    }						   /*			     */
+  }						   /*                        */
  						   /*                        */
   return false;					   /*                        */
 }						   /*------------------------*/

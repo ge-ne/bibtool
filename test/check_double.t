@@ -5,7 +5,7 @@
 #  It is distributed under the GNU General Public License.
 #  See the file COPYING for details.
 #  
-#  (c) 2018 Gerd Neugebauer
+#  (c) 2018-2019 Gerd Neugebauer
 #  
 #  Net: gene@gerd-neugebauer.de
 #  
@@ -63,15 +63,43 @@ __EOF__
 \@Manual{BibTool,
   title = 	 {BibTool},
   author =	 {Gerd Neugebauer},
-  year =	 "2011"
+  year =	 "2019"
 }
 \@Manual{BibTool,
   title = 	 {BibTool},
   author =	 {Gerd Neugebauer},
-  year =	 "2011"
+  year =	 "2019"
 }
 __EOF__
     expected_err => "*** BibTool WARNING (line 6 in _test.bib): Possible double entry discovered to (line 1 in _test.bib) `bibtool'\n"
+    );
+
+#------------------------------------------------------------------------------
+BUnit::run(name     => 'check_double_2',
+	   resource => <<__EOF__,
+check.double = true
+__EOF__
+	   bib	    => <<__EOF__,
+\@Manual{BibTool,
+  title = 	 {BibTool},
+  author =	 {Gerd Neugebauer},
+  year =	 "2019"
+}
+
+\@BOOK{book-minimal,
+   author = "Donald E. Knuth",
+   title = "Seminumerical Algorithms",
+   publisher = "Addison-Wesley",
+   year = "{\noopsort{1973c}}1981",
+}
+
+\@Manual{BibTool,
+  title = 	 {BibTool},
+  author =	 {Gerd Neugebauer},
+  year =	 "2019"
+}
+__EOF__
+    expected_err => "*** BibTool WARNING (line 15 in _test.bib): Possible double entry discovered to (line 1 in _test.bib) `bibtool'\n"
     );
 
 #------------------------------------------------------------------------------
