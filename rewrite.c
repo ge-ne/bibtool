@@ -62,14 +62,6 @@
 #define NextRule(X)	((X)->rr_next)
 #define RuleFlag(X)	((X)->rr_flag)
 
-#define RULE_NONE	0x00
-#define RULE_ADD	0x01
-#define RULE_REGEXP	0x02
-#define RULE_NOT	0x04
-#define RULE_RENAME	0x08
-#define RULE_DELETE	0x10
-#define RULE_KEEP	0x20
-
 /*****************************************************************************/
 /* Internal Programs							     */
 /*===========================================================================*/
@@ -92,7 +84,7 @@
 #endif
  static void init_s_search _ARG((String  ignored));/*                        */
  static void rewrite_1 _ARG((String frame,StringBuffer *sb,String match,DB db,Record rec));/**/
- void add_check_rule _ARG((String s));		   /*                        */
+void add_check_rule _ARG((String s,int flags));	   /*                        */
  void add_extract _ARG((Symbol s,int regexp,int notp));/*                    */
  void add_field _ARG((String spec));		   /*                        */
  void add_rewrite_rule _ARG((String s));	   /*                        */
@@ -110,6 +102,8 @@
 /*---------------------------------------------------------------------------*/
 
  static String s_if = (String)"if";
+
+ static Rule match = RuleNULL;
 
 
 /*****************************************************************************/
@@ -483,13 +477,13 @@ static void rewrite_1(frame,sb,match,db,rec)	   /*			     */
 /*-----------------------------------------------------------------------------
 ** Function*:	selector_hits()
 ** Type:	bool
-** Purpose:	
+** Purpose:	Check whether a rule matches a given record.
 **		
 ** Arguments:
 **	rule	the rule
 **	 db	the database
 **	 rec	the record
-** Returns:	
+** Returns:	|true| iff the rule applies
 **___________________________________________________			     */
 static bool selector_hits(rule, db, rec)	   /*                        */
   Rule rule;					   /*                        */
@@ -658,15 +652,18 @@ static String repl_regex(field, value, rule, db, rec)/*			     */
 static String check_regex(field, value, rule, db, rec)/*		     */
   Symbol	field;			   	   /*			     */
   Symbol	value;			   	   /*			     */
-  Rule		rule;			   	   /*			     */
+  register Rule	rule;			   	   /*			     */
   DB		db;			   	   /*                        */
   Record	rec;			   	   /*			     */
 {						   /*			     */
 #ifdef REGEX
-  int			len;			   /*			     */
-  static StringBuffer	*s2 = 0L;		   /*			     */
+  int		      len;			   /*			     */
+  static StringBuffer *s2 = 0L;			   /*			     */
 						   /*			     */
-  if (rule == RuleNULL) return SymbolValue(value); /*			     */
+  if (rule == RuleNULL)				   /*                        */
+  { match = RuleNULL;				   /*                        */
+    return SymbolValue(value);			   /*			     */
+  }						   /*			     */
 						   /*			     */
   if ( s2 == NULL ) { s2 = sbopen(); }		   /*			     */
   else		    { sbrewind(s2);  }		   /*			     */
@@ -684,16 +681,20 @@ static String check_regex(field, value, rule, db, rec)/*		     */
 	 )					   /*                        */
        )					   /*			     */
     { if ( RuleFrame(rule) == NO_SYMBOL )	   /*			     */
-      { return StringNULL; }			   /*			     */
+      { match = RuleNULL;			   /*                        */
+	return StringNULL;			   /*                        */
+      }						   /*			     */
       rewrite_1(SymbolValue(RuleFrame(rule)),	   /*                        */
 		s2,				   /*                        */
 		SymbolValue(value),		   /*                        */
 		db,				   /*                        */
 		rec);  				   /*		             */
+      match = rule;				   /*                        */
       return (String)sbflush(s2);		   /* TODO: update the value?*/
     }						   /*                        */
   }						   /*			     */
 #endif
+  match = RuleNULL;				   /*                        */
   return StringNULL;				   /* return the result.     */
 }						   /*------------------------*/
 
@@ -869,16 +870,18 @@ void keep_field(spec)				   /*			     */
 ** Purpose:	Save a check rule for later use.
 ** Arguments:
 **	s	Rule to save.
+**	flags	the additional rule flags
 ** Returns:	nothing
 **___________________________________________________			     */
-void add_check_rule(s)				   /*			     */
+void add_check_rule(s,flags)			   /*			     */
   String s;				   	   /*			     */
+  int flags;				   	   /*			     */
 {						   /*			     */
   DebugPrintF1("add check rule\n");		   /*			     */
   add_rule(s,					   /*                        */
 	   &c_rule,				   /*                        */
 	   &c_rule_end,				   /*                        */
-	   RULE_REGEXP,				   /*                        */
+	   RULE_REGEXP|flags,			   /*                        */
 	   rsc_case_check);  			   /*			     */
 }						   /*------------------------*/
 
@@ -945,9 +948,19 @@ void rewrite_record(db, rec)			   /*			     */
 			     db,		   /*                        */
 			     rec))		   /*		             */
 	  )					   /*			     */
-      { error(ERR_MESSAGE|ERR_FILE|ERR_NO_NL,	   /*			     */
-	      cp, (String)"\n", NULL, NULL, 0,	   /*			     */
-	      RecordLineno(rec), RecordSource(rec));/*			     */
+      { ErrPrint("*** BibTool");		   /*                        */
+	if (match)				   /*			     */
+	{ if (RuleFlag(match)&RULE_ERROR)	   /*			     */
+	  { ErrPrint(" ERROR"); }		   /*			     */
+	  if (RuleFlag(match)&RULE_WARNING)	   /*			     */
+	  { ErrPrint(" WARNING"); }		   /*			     */
+	}					   /*			     */
+	ErrPrintF3(" (line %d in %s): %s\n",       /*                        */
+		   RecordLineno(rec),		   /*                        */
+		   (*RecordSource(rec)		   /*                        */
+		    ? (char*)RecordSource(rec)	   /*                        */
+		    : "<STDIN>"),		   /*                        */
+		   cp);				   /*                        */
       }						   /*			     */
     }						   /*			     */
   }						   /*			     */

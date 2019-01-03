@@ -3999,12 +3999,14 @@ Checking of doubles can also be turned on with the command line option
 
 The regular expressions (see section \ref{sec:regex}) which are used to
 rewrite fields (see section \ref{sec:field.rewriting}) can also be used to
-perform semantic checks on fields. For this purpose the resource
-\rsc{check.rule} is provided. The syntax of \rsc{check.rule} is the same as
-for \rsc{rewrite.rule}.
+perform semantic checks on fields. For this purpose the resources
+\rsc{check.rule}, \rsc{check.warning.rule}, and \rsc{check.error.rule} are
+provided. The syntax of these resources is the same as for \rsc{rewrite.rule}.
 
 \begin{Resources}
   \rscBraces{check.rule}{ \textit{field \# pattern \# message} }
+  \rscBraces{check.warning.rule}{ \textit{field \# pattern \# message} }
+  \rscBraces{check.error.rule}{ \textit{field \# pattern \# message} }
 \end{Resources}
 
 Again \emph{field} and \emph{message} is optional. The separator \# can also
@@ -4019,6 +4021,9 @@ given then nothing is printed and processing of the current field is ended.
 \emph{message} is treated like the replacement text in \rsc{rewrite.rule},
 Thus the special character combinations described in section
 \ref{sec:field.rewriting} are expanded.
+
+The variants \rsc{check.warning.rule} and \rsc{check.error.rule} contain an
+additional indication as warning or error respectively.
 
 Usually the matching is not done case sensitive. This means that any upper
 case letter matches its lower counterpart and vice versa. This behavior is

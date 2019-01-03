@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -34,7 +34,7 @@
  bool is_selected _ARG((DB db, Record rec));	   /*                        */
  bool foreach_addlist _ARG((bool (*fct)(Symbol,Symbol)));/* rewrite.c        */
  int set_regex_syntax _ARG((char* name));	   /*                        */
- void add_check_rule _ARG((String s));		   /*                        */
+ void add_check_rule _ARG((String s,int flags));   /*                        */
  void add_extract _ARG((Symbol s, int regexp, int notp));/*                  */
  void add_field _ARG((String spec));		   /*                        */
  void add_rewrite_rule _ARG((String s));	   /*                        */
@@ -47,3 +47,13 @@
  char* get_regex_syntax();			   /*                        */
 
 /*---------------------------------------------------------------------------*/
+
+#define RULE_NONE	0x00
+#define RULE_ADD	0x01
+#define RULE_REGEXP	0x02
+#define RULE_NOT	0x04
+#define RULE_RENAME	0x08
+#define RULE_DELETE	0x10
+#define RULE_KEEP	0x20
+#define RULE_ERROR	0x100
+#define RULE_WARNING	0x200
