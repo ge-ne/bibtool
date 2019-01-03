@@ -1,10 +1,10 @@
-/*** databse.c ****************************************************************
+/*** database.c ***************************************************************
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2018 Gerd Neugebauer
+** (c) 1996-2019 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
