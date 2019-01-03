@@ -81,7 +81,7 @@ void init_error(file)				   /*                        */
 ** Function:	error()
 ** Purpose:	This is the generic error printing routine.
 **		It prints an error message together with an optional filename,
-**		the line number, the errorous line and a pointer to the
+**		the line number, the erroneous line and a pointer to the
 **		problematic position.
 **
 **		All parts of an error message are optional and can be
@@ -93,7 +93,7 @@ void init_error(file)				   /*                        */
 **		\item[ERR\_ERROR] If this bit is set then the error
 **		message is marked as ``error''. The flag |ERR_WARNING|
 **		is ignored in this case. This kind of messages can not
-**		be suppresed.
+**		be suppressed.
 **		\item[ERR\_WARNING]  If this bit is set and
 **		|ERR_ERROR| is not set then the error message is
 **		marked as ``warning''. |ERR_WARNING| is ignored 
