@@ -791,10 +791,11 @@ static bool dbl_check(db, rec)			   /*                        */
     if (!rsc_quiet)				   /*                        */
     { Symbol k1 = *RecordHeap(rec);		   /*                        */
       Symbol k2 = *RecordHeap(PrevRecord(rec));	   /*                        */
-      error(ERR_WARNING|ERR_FILE|ERR_NO_NL,        /*                        */
-	    (String)"Possible double entry discovered to", /*                */
-	    NULL, NULL, NULL, 0,		   /*                        */
-	    RecordLineno(rec), RecordSource(rec)); /*                        */
+      ErrPrint("*** BibTool WARNING");		   /*                        */
+      ErrPrintF3(" (line %d in %s): Possible double entry discovered to", /* */
+		 RecordLineno(rec),		   /*                        */
+		 (char*)RecordSource(rec),	   /*                        */
+		 (char*)k1);			   /*                        */
       ErrPrintF3(" (line %d in %s) `%s'\n",	   /*                        */
 		 RecordLineno(PrevRecord(rec)),    /*                        */
 		 (char*)RecordSource(PrevRecord(rec)),/*                     */
