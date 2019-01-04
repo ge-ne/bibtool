@@ -223,15 +223,15 @@ For UNIX this is prepared in the makefile. Usually an invocation of
 make should be enough:
 
 \begin{verbatim}
-  make libbib.a
+  make libbibtool.a
 \end{verbatim}
 
 This invocation of make is in fact the same as the following two
 commands:
 
 \begin{verbatim}
-  ar r libbib.a $OFILES
-  ranlib libbib.a
+  ar r libbibtool.a $OFILES
+  ranlib libbibtool.a
 \end{verbatim}
 
 Here |$OFILES| denotes the list of object files as described above. On
@@ -259,7 +259,7 @@ can be performed with the following command:
   cc mybib.o -L$DIR -lbib -o mybib
 \end{verbatim}
 
-Here |$DIR| denotes the path containing the file |libbib.a|. This path
+Here |$DIR| denotes the path containing the file |libbibtool.a|. This path
 can be omitted if the library has been installed in a ``standard''
 place like |/usr/lib|.
 
