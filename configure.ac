@@ -4,7 +4,7 @@ dnl This file is part of BibTool.
 dnl It is distributed under the GNU General Public License.
 dnl See the file COPYING for details.
 dnl 
-dnl (c) 1996-2018 Gerd Neugebauer
+dnl (c) 1996-2019 Gerd Neugebauer
 dnl 
 dnl Net: gene@gerd-neugebauer.de
 dnl 
@@ -25,7 +25,7 @@ dnl
 dnl ***************************************************************************
 
 AC_REVISION($Revision: 1.12 $)
-AC_COPYRIGHT(Copyright (C) 2017-2018 Gerd Neugebauer
+AC_COPYRIGHT(Copyright (C) 2017-2019 Gerd Neugebauer
 This configure script is part of BibTool.
 Revision 1.12)
 AC_PREREQ(2.69)
