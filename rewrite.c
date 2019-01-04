@@ -77,14 +77,14 @@
  static String  check_regex _ARG((Symbol field,Symbol value,Rule rule,DB db,Record rec));
  static String  repl_regex _ARG((Symbol field,Symbol value,Rule rule,DB db,Record rec));
  static bool s_match _ARG((String  p,String  s));  /*                        */
- static bool s_search _ARG((String  pattern,String  s));/*                    */
- static void add_rule _ARG((String s,Rule *rp,Rule *rp_end,int flags,int casep));/**/
+ static bool s_search _ARG((String  pattern,String  s));/*                   */
+ static void add_rule _ARG((String s,Rule *rp,Rule *rp_end,int flags,int casep));
 #ifdef UNUSED
  static void free_rule _ARG((Rule rule));	   /*                        */
 #endif
  static void init_s_search _ARG((String  ignored));/*                        */
  static void rewrite_1 _ARG((String frame,StringBuffer *sb,String match,DB db,Record rec));/**/
-void add_check_rule _ARG((String s,int flags));	   /*                        */
+ void add_check_rule _ARG((String s,int flags));   /*                        */
  void add_extract _ARG((Symbol s,int regexp,int notp));/*                    */
  void add_field _ARG((String spec));		   /*                        */
  void add_rewrite_rule _ARG((String s));	   /*                        */
@@ -1363,7 +1363,9 @@ char* get_regex_syntax()			   /*                        */
   { case RE_SYNTAX_EMACS:       return "emacs";	   /*                        */
     case RE_SYNTAX_AWK:         return "awk";	   /*                        */
     case RE_SYNTAX_GREP:        return "grep";	   /*                        */
+#if (RE_SYNTAX_EGREP != RE_SYNTAX_POSIX_EGREP)
     case RE_SYNTAX_EGREP:       return "egrep";	   /*                        */
+#endif
     case RE_SYNTAX_POSIX_AWK:   return "posix_awk";/*                        */
     case RE_SYNTAX_POSIX_EGREP: return "posix_egrep";/*                      */
     case RE_SYNTAX_SED:         return "sed";	   /*                        */
