@@ -170,6 +170,8 @@ sub run {
   my $bib  = store_file(TEST_BIB, $a{bib}, TEST_BIB) if $a{bib};
   $bib 	   = '' if not $bib;
 
+  $ENV{'BIBTOOL'} = $a{BIBTOOL} if $a{BIBTOOL};
+
   if ($a{stdin}) {
     print "\n$BIBTOOL $args $rsc <$bib 1>$out 2>$err\n" if $a{debug};
     `$BIBTOOL $args $rsc <$bib 1>$out 2>$err`;
