@@ -153,7 +153,7 @@ __EOF__
 
 #------------------------------------------------------------------------------
 BUnit::run(name         => 'print_entry_types_c1',
-	   ignore	=> 1,
+	   ignore	=> 'TODO',
 	   bib		=> BIB_3,
 	   resource	=> <<__EOF__ ,
 	   print.entry.types {c}
