@@ -27,7 +27,7 @@
 
 =head1 NAME
 
-parse.t - Test suite for the BibTool parser.
+parse.t - Test suite for the BibTool parser and its messages.
 
 =head1 SYNOPSIS
 
@@ -51,20 +51,55 @@ Gerd Neugebauer
 =cut
 
 use strict;
-use BUnit;use warnings;
-
+use warnings;
+use BUnit;
 
 #------------------------------------------------------------------------------
-BUnit::run(name         => 'parse_1',
-	   bib				    => <<__EOF__,
+BUnit::run(name     => 'parse_1',
+	   bib	    => <<__EOF__,
 \@Manual{BibTool,
   title = 	 {BibTool},
   author =	 {A.U. Thor},
   author =	 {Gerd Neugebauer},
-  year =	 2018
+  year =	 2019
 }
 __EOF__
 	   expected_err => "\n*** BibTool WARNING (line 1 in _test.bib): Duplicate field `author' overwritten\n"
+    );
+
+#------------------------------------------------------------------------------
+BUnit::run(name     => 'parse_10',
+	   bib	    => <<__EOF__,
+\@Manual{BibTool,
+  title = 	 {BibTool},
+  author =	 {A.U. Thor}
+  year =	 2019
+}
+__EOF__
+	   expected_err => <<__EOF__
+
+  year =	 2019
+__^
+*** BibTool WARNING (line 4 in ./_test.bib): Missing ',' assumed.
+__EOF__
+    );
+
+#------------------------------------------------------------------------------
+BUnit::run(name     => 'parse_11',
+	   args	    => '-s',
+	   bib      => <<__EOF__,
+\@Manual{BibTool,
+  title = 	 {BibTool},
+  author =	 {A.U. Thor}
+  year =	 2019
+}
+__EOF__
+	   expected_err => <<__EOF__
+
+  year =	 2019
+__^
+*** BibTool WARNING (line 4 in ./_test.bib): Missing ',' assumed.
+__EOF__
     );
 
 #------------------------------------------------------------------------------

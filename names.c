@@ -856,7 +856,7 @@ int main(argc,argv)				   /*                        */
   }						   /*                        */
 }						   /*------------------------*/
 
- int rsc_quiet = 1;
+ bool rsc_quiet = true;
 /*
 
    gcc -g -DDEBUG -DSTANDALONE names.c stack.o symbols.o sbuffer.o type.o error.o -o names

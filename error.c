@@ -46,7 +46,7 @@
 /* External Programs							     */
 /*===========================================================================*/
 
- extern int rsc_quiet;
+ extern bool rsc_quiet;
 
 /*---------------------------------------------------------------------------*/
 
@@ -142,7 +142,7 @@ void error(type, s1, s2, s3, line, err_pos, line_no, fname)/*		     */
   int	  line_no;		   	   	   /* line number	     */
   Symbol  fname;		   	   	   /* file name		     */
 {						   /*			     */
-  if ( (type&(ERR_ERROR|ERR_MESSAGE)) == 0	   /* anything less than an  */
+  if ( (type&ERR_WARNING)			   /* anything less than an  */
        && rsc_quiet ) return;			   /*  error is ignored.     */
 						   /*			     */
   if (!(type&ERR_NO_NL)) { ErrNL; }		   /*			     */
