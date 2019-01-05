@@ -114,24 +114,24 @@
 /*---------------------------------------------------------------------------*/
 
  static String str_unexpected	= (String)"Unexpected character encountered";
- static char *str_stdin		= "<stdin>";
+ static String str_stdin	= (String)"<stdin>";
 
 #define Error3(X,Y,Z)	error(ERR_ERROR|ERR_POINT|ERR_FILE		\
-			      | (rsc_parse_exit ? ERR_EXIT : 0),	\
-			      (String)X,(String)Y,(String)Z,		\
-			      file_line_buffer,flp,flno,filename)
+			      | (rsc_parse_exit ? ERR_EXIT : ERR_NONE),	\
+			      (String)X, (String)Y, (String)Z,		\
+			      file_line_buffer, flp, flno, filename)
 #define Error(X)	error(ERR_ERROR|ERR_POINT|ERR_FILE		\
-			      | (rsc_parse_exit ? ERR_EXIT : 0),	\
-			      (String)X, s_empty,s_empty,		\
-			      file_line_buffer,flp,flno,filename)
+			      | (rsc_parse_exit ? ERR_EXIT : ERR_NONE),	\
+			      (String)X, s_empty, s_empty,		\
+			      file_line_buffer, flp, flno, filename)
 #define Warning(X)	error(ERR_WARN|ERR_POINT|ERR_FILE,(String)X,	\
-			      s_empty,s_empty,				\
-			      file_line_buffer,flp,flno,filename)
+			      s_empty, s_empty,				\
+			      file_line_buffer, flp, flno, filename)
 #define UnterminatedError(X,LINE)					\
 			error(ERR_ERROR|ERR_FILE			\
-			      | (rsc_parse_exit ? ERR_EXIT : 0),	\
-			      (String)X, s_empty,s_empty,		\
-			      NULL,NULL,LINE,filename)
+			      | (rsc_parse_exit ? ERR_EXIT : ERR_NONE),	\
+			      (String)X, s_empty, s_empty,		\
+			      NULL, NULL, LINE, filename)
 #define UnexpectedError Error(str_unexpected)
 
 /*-----------------------------------------------------------------------------
@@ -249,7 +249,7 @@ bool see_bib(fname)				   /*			     */
   InitLine;					   /*			     */
   if (fname == NULL)				   /*			     */
   {						   /*                        */
-    filename = (String)str_stdin;	   	   /*			     */
+    filename = str_stdin;	   	   	   /*			     */
     file     = stdin;			   	   /*			     */
     return true;				   /*			     */
   }						   /*                        */

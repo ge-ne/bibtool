@@ -63,7 +63,6 @@
 **		Initialize the error reporting.
 ** Arguments:
 **	file	the output file to write error messages to
-**		
 ** Returns:	nothing
 **___________________________________________________			     */
 void init_error(file)				   /*                        */
@@ -72,10 +71,29 @@ void init_error(file)				   /*                        */
   err_file = file;				   /*                        */
 }						   /*------------------------*/
 
-
 #define ErrNL		(void)fputc('\n',err_file)
 #define ErrChar(C)	(void)fputc(C,err_file)
 #define ErrS(S)		(void)fputs(S,err_file)
+
+/*-----------------------------------------------------------------------------
+** Function:	err_location()
+** Type:	void
+** Purpose:	Print the error location to the error stream.
+**		
+** Arguments:
+**	lineno	the line number
+**	fname	the file name
+** Returns:	nothing
+**___________________________________________________			     */
+void err_location(lineno,fname)			   /*                        */
+  int    lineno;				   /*                        */
+  String fname;					   /*                        */
+{						   /*                        */
+  (void)fprintf(err_file,			   /*			     */
+		" (line %d in %s)",		   /*			     */
+		lineno,				   /*			     */
+		*fname ? (char*)fname : "<STDIN>");/*			     */
+  }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	error()
@@ -148,20 +166,16 @@ void error(type, s1, s2, s3, line, err_pos, line_no, fname)/*		     */
   if (!(type&ERR_NO_NL)) { ErrNL; }		   /*			     */
   if ( (type&ERR_POINT) && line != NULL )	   /*			     */
   { ErrS((char*)line);				   /* print the error line.  */
-    if ( line[strlen((char*)line)-1] != '\n' ) ErrNL;/*			     */
-    for ( ; line<err_pos; ++line ) ErrChar('_');   /*  and a pointer to the  */
+    if (line[strlen((char*)line)-1] != '\n') ErrNL;/*			     */
+    for ( ; line < err_pos; ++line ) ErrChar('_'); /*  and a pointer to the  */
     ErrChar('^'); ErrNL;			   /*  error position.	     */
   }						   /*			     */
 						   /*			     */
   ErrS("*** BibTool");				   /*                        */
   if	  ( type&ERR_ERROR ) ErrS(" ERROR"  );	   /*		             */
   else if ( type&ERR_WARN  ) ErrS(" WARNING");	   /*		             */
-  if ( type&ERR_FILE )			   	   /*			     */
-  { (void)fprintf(err_file,			   /*			     */
-		  " (line %d in %s)",		   /*			     */
-		  line_no,			   /*			     */
-		  *fname ? (char*)fname : "<STDIN>");/*			     */
-  }						   /*			     */
+  if (type&ERR_FILE)			   	   /*			     */
+  { err_location(line_no,fname); }		   /*			     */
   ErrS(": ");					   /*                        */
   if ( s1 ) { ErrS((char*)s1); }		   /*			     */
   if ( s2 ) { ErrS((char*)s2); }		   /*			     */

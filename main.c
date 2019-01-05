@@ -797,14 +797,13 @@ static bool dbl_check(db, rec)			   /*                        */
       if (!rsc_quiet)				   /*                        */
       { Symbol k1 = *RecordHeap(rec);		   /*                        */
 	Symbol k2 = *RecordHeap(rec2);		   /*                        */
-	ErrPrint("*** BibTool WARNING ");	   /*                        */
-	ErrPrintF2("(line %d in %s): Possible double entry discovered to", /**/
-		   RecordLineno(rec),		   /*                        */
-		   (char*)RecordSource(rec));	   /*                        */
-	ErrPrintF3(" (line %d in %s) `%s'\n",	   /*                        */
-		   RecordLineno(rec2),		   /*                        */
-		   (char*)RecordSource(rec2),	   /*                        */
-		   (char*)k2);			   /*                        */
+	ErrPrint("*** BibTool WARNING");	   /*                        */
+	err_location(RecordLineno(rec),		   /*                        */
+		     RecordSource(rec));	   /*                        */
+	ErrPrint(": Possible double entry discovered to");/*                 */
+	err_location(RecordLineno(rec2),	   /*                        */
+		     RecordSource(rec2));   	   /*                        */
+	ErrPrintF(" `%s'\n", (char*)k2);	   /*                        */
 						   /*                        */
 	if (k1 == NO_SYMBOL) k1 = sym_empty;	   /*                        */
 	if (k2 == NO_SYMBOL) k2 = sym_empty;	   /*                        */

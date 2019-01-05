@@ -42,6 +42,13 @@
 #include<bibtool/symbols.h>
 
 /*-----------------------------------------------------------------------------
+** Constant:	ERR_NONE
+** Type:	int
+** Purpose:	No error flags.
+**___________________________________________________			     */
+#define ERR_NONE	0
+
+/*-----------------------------------------------------------------------------
 ** Constant:	ERR_ERROR
 ** Type:	int
 ** Purpose:	Error type: Indicate that the error can not be
@@ -456,6 +463,6 @@
 #else
 #define _ARG(A) ()
 #endif
- void error _ARG((int type,String s1,String s2,String s3,String line,String ep,int line_no,Symbol file_name));
+ void err_location _ARG((int lineno,String fname));
+ void error _ARG((int type,String s1,String s2,String s3,String line,String err_pos,int line_no,Symbol fname));
  void init_error _ARG((FILE * file));
-

@@ -955,12 +955,9 @@ void rewrite_record(db, rec)			   /*			     */
 	  if (RuleFlag(match)&RULE_WARNING)	   /*			     */
 	  { ErrPrint(" WARNING"); }		   /*			     */
 	}					   /*			     */
-	ErrPrintF3(" (line %d in %s): %s\n",       /*                        */
-		   RecordLineno(rec),		   /*                        */
-		   (*RecordSource(rec)		   /*                        */
-		    ? (char*)RecordSource(rec)	   /*                        */
-		    : "<STDIN>"),		   /*                        */
-		   cp);				   /*                        */
+	err_location(RecordLineno(rec),		   /*                        */
+		     RecordSource(rec));	   /*                        */
+	ErrPrintF(": %s\n", cp);		   /*                        */
       }						   /*			     */
     }						   /*			     */
   }						   /*			     */
