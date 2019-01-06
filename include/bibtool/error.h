@@ -463,6 +463,6 @@
 #else
 #define _ARG(A) ()
 #endif
- void err_location _ARG((int lineno,String fname));
+ void err_location _ARG((int lineno,String fname,char* s1));
  void error _ARG((int type,String s1,String s2,String s3,String line,String err_pos,int line_no,Symbol fname));
  void init_error _ARG((FILE * file));

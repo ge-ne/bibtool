@@ -204,6 +204,10 @@ typedef String Symbol;
 **___________________________________________________			     */
  extern Symbol sym_et;
 
+ extern Symbol sym_key;
+
+ extern Symbol sym_sortkey;
+
 /*-----------------------------------------------------------------------------
 ** Macro:	newString()
 ** Type:	String

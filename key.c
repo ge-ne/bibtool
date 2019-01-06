@@ -1094,6 +1094,7 @@ static bool fmt_c_string(s,min,max,not)		   /*			     */
 void start_key_gen()				   /*                        */
 {						   /*                        */
   free_words(&old_keys, sym_unlink);		   /*                        */
+  init_key();					   /*                        */
 }						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -1245,12 +1246,13 @@ void make_sort_key(db,rec)			   /*			     */
   sbrewind(key_sb);				   /* clear key		     */
 						   /*			     */
   if (	 sort_key_tree != (KeyNode)0		   /*			     */
-      && eval_fmt(key_sb,sort_key_tree,rec,db) == 0 )/*			     */
+      && !eval_fmt(key_sb,sort_key_tree,rec,db) )  /*			     */
   { kp		       = (String)sbflush(key_sb);  /* get collected key	     */
     RecordSortkey(rec) = symbol(kp);	   	   /* store new key	     */
   }						   /*			     */
   else						   /* If everything fails    */
   { RecordSortkey(rec) = RecordHeap(rec)[0];	   /* use the reference key  */
+    LinkSymbol(RecordHeap(rec)[0]);		   /*                        */
   }						   /*			     */
 }						   /*------------------------*/
 

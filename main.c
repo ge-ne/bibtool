@@ -64,6 +64,7 @@
 #include <bibtool/bibtool.h>
 #include <bibtool/sbuffer.h>
 #include <bibtool/crossref.h>
+#include <bibtool/check.h>
 #include <bibtool/io.h>
 #ifdef HAVE_LIBKPATHSEA
 #ifdef __STDC__
@@ -83,7 +84,6 @@
 #define _ARG(A) ()
 #endif
  int main _ARG((int argc,char *argv[]));	   /* main.c                 */
- static bool dbl_check _ARG((DB db,Record rec));   /* main.c                 */
  static bool do_keys _ARG((DB db,Record rec));	   /* main.c                 */
  static bool do_no_keys _ARG((DB db,Record rec));  /* main.c                 */
  static bool update_crossref _ARG((DB db,Record rec));/* main.c              */
@@ -531,11 +531,13 @@ int main(argc,argv)				   /*			     */
     db_forall(the_db,expand_crossref);		   /*                        */
   }						   /*			     */
 						   /*			     */
-  if (rsc_make_key)				   /*                        */
-  {						   /*                        */
+  if (rsc_make_key || need_sort_key) {		   /*                        */
     DebugPrint1("start keygen");		   /*                        */
     start_key_gen();				   /*                        */
+  }						   /*                        */
 						   /*			     */
+  if (rsc_make_key)		   		   /*                        */
+  {						   /*                        */
     if (rsc_key_preserve)	   		   /*                        */
     { db_forall(the_db, mark_key); }		   /*                        */
 						   /*			     */
@@ -572,8 +574,7 @@ int main(argc,argv)				   /*			     */
   if (rsc_srt_macs)		   	   	   /* Maybe sort macros      */
   { db_mac_sort(the_db); }			   /*                        */
  						   /*                        */
-  if (rsc_double_check)		   	   	   /* Maybe look for doubles */
-  { db_forall(the_db, dbl_check); }		   /*                        */
+  apply_checks(the_db);				   /*                        */
  						   /*                        */
   write_output(the_db);				   /*                        */
 						   /*			     */
@@ -692,7 +693,7 @@ static bool do_keys(db, rec)			   /*                        */
   rewrite_record(db, rec);			   /*			     */
   sort_record(rec);				   /*                        */
   make_key(db,rec);				   /*                        */
-  if (rsc_sort || rsc_double_check)		   /*                        */
+  if (rsc_sort || rsc_double_check || need_sort_key)/*                       */
   { make_sort_key(db,rec); }		   	   /*                        */
   return false;					   /*                        */
 }						   /*------------------------*/
@@ -712,7 +713,7 @@ static bool do_no_keys(db, rec)			   /*                        */
   rewrite_record(db, rec);			   /*			     */
   sort_record(rec);				   /*                        */
   mark_key(db,rec);				   /*                        */
-  if (rsc_sort || rsc_double_check)		   /*                        */
+  if (rsc_sort || rsc_double_check || need_sort_key)/*                       */
   { make_sort_key(db,rec); }		   	   /*                        */
   return false;					   /*                        */
 }						   /*------------------------*/
@@ -767,59 +768,6 @@ static bool update_crossref(db, rec)		   /*			     */
 		SymbolValue(s));		   /* make new crossref      */
   *hp = symbol(t);				   /* store new crossref     */
   free(t);					   /* free temp memory	     */
-  return false;					   /*                        */
-}						   /*------------------------*/
-
-#define equal_records(R1,R2) RecordSortkey(R1) == RecordSortkey(R2)
-
-/*-----------------------------------------------------------------------------
-** Function*:	dbl_check()
-** Purpose:	Check whether the given record has a double.
-**
-** Arguments:
-**	db	the database
-**	rec	the record
-** Returns:	|false|
-**___________________________________________________			     */
-static bool dbl_check(db, rec)			   /*                        */
-  DB	 db;					   /*                        */
-  Record rec;					   /*                        */
-{ register Record prev;				   /*                        */
-  register Record rec2;				   /*                        */
-						   /*                        */
-  for(rec2 = PrevRecord(rec);			   /*                        */
-      rec2 != RecordNULL;			   /*                        */
-      rec2 = prev)				   /*                        */
-  { prev = PrevRecord(rec2);			   /*                        */
-						   /*                        */
-    if (equal_records(rec,rec2))		   /*			     */
-    {						   /*                        */
-      if (!rsc_quiet)				   /*                        */
-      { Symbol k1 = *RecordHeap(rec);		   /*                        */
-	Symbol k2 = *RecordHeap(rec2);		   /*                        */
-	ErrPrint("*** BibTool WARNING");	   /*                        */
-	err_location(RecordLineno(rec),		   /*                        */
-		     RecordSource(rec));	   /*                        */
-	ErrPrint(": Possible double entry discovered to");/*                 */
-	err_location(RecordLineno(rec2),	   /*                        */
-		     RecordSource(rec2));   	   /*                        */
-	ErrPrintF(" `%s'\n", (char*)k2);	   /*                        */
-						   /*                        */
-	if (k1 == NO_SYMBOL) k1 = sym_empty;	   /*                        */
-	if (k2 == NO_SYMBOL) k2 = sym_empty;	   /*                        */
-	DebugPrintF3("***\t%s =?= %s\n",	   /*                        */
-		     (char*)SymbolValue(k2),	   /*                        */
-		     (char*)SymbolValue(k1));	   /*                        */
-	DebugPrintF2("***\tsort key: %s\n",	   /*                        */
-		     (char*)SymbolValue(RecordSortkey(rec))); /*             */
-      }						   /*                        */
-      if (rsc_del_dbl)				   /*                        */
-      { delete_record(db,rec); }	   	   /*                        */
-      else 					   /*                        */
-      { SetRecordDELETED(rec); }		   /*                        */
-    }						   /*			     */
-  }						   /*                        */
- 						   /*                        */
   return false;					   /*                        */
 }						   /*------------------------*/
 

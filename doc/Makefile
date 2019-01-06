@@ -69,6 +69,10 @@ ref_card.pdf: ref_card.tex config.tex
 CDIR	= ..$(DIR_SEP)
 HDIR	= ..$(DIR_SEP)include$(DIR_SEP)bibtool$(DIR_SEP)
 CFILES	= $(HDIR)bibtool.h	\
+	  $(HDIR)check.h	\
+	  $(CDIR)check.c	\
+	  $(HDIR)crossref.h	\
+	  $(CDIR)crossref.c	\
 	  $(HDIR)database.h	\
 	  $(CDIR)database.c	\
 	  $(HDIR)entry.h	\
@@ -136,7 +140,7 @@ c_lib.pdf: c_lib.tex c_main.tex c.tex config.tex
 c_main.tex: $(CDIR)main.c c_get.pl
 	perl c_get.pl $(CDIR)main.c > $@
 c.tex: $(CFILES) c_get.pl
-	perl c_get.pl $(CFILES) >  $@
+	perl c_get.pl $(CFILES) > $@
 
 ##-----------------------------------------------------------------------------
 
@@ -149,4 +153,4 @@ veryclean: clean
 distclean: veryclean
 	$(RM) $(TARGETS)
 
-
+##-----------------------------------------------------------------------------

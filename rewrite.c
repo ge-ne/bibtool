@@ -956,7 +956,7 @@ void rewrite_record(db, rec)			   /*			     */
 	  { ErrPrint(" WARNING"); }		   /*			     */
 	}					   /*			     */
 	err_location(RecordLineno(rec),		   /*                        */
-		     RecordSource(rec));	   /*                        */
+		     RecordSource(rec), NULL);	   /*                        */
 	ErrPrintF(": %s\n", cp);		   /*                        */
       }						   /*			     */
     }						   /*			     */

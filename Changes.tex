@@ -87,6 +87,21 @@
     has been dropped. This has the impact that the processing is
     slightly slower.
   \end{New}
+  \begin{New}{gene}
+    New resource file \rsc{unique.field} intruduced. With this
+    resource it is possible to specify additional unique constraints
+    for fields. If different records have the same value for one of
+    those fields then a warning is issued.
+  \end{New}
+  \begin{Update}{gene}
+    Static library renamed from |libbib.a| to |libbibtool.a|.
+  \end{Update}
+  \begin{Update}{gene}
+    Environment variables added to reference card.
+  \end{Update}
+  \begin{New}{gene}
+    New source files |check.c| and |check.h| intruduced.
+  \end{New}
  \end{Release}
 
  % =====================================================================
@@ -675,12 +690,6 @@
     EntryTypes implementation changed. The API doesn't change.
     Data type \verb|StringTab| is now local to \File{symbols.c}.
     Data type \verb|Rule| is now local to \File{rewrite.c}.
-  \end{Update}
-  \begin{Update}{gene}
-    Static library renamed from |libbib.a| to |libbibtool.a|.
-  \end{Update}
-  \begin{Update}{gene}
-    Environment variables added to reference card.
   \end{Update}
  \end{Release}
 

@@ -42,12 +42,13 @@
 #include <bibtool/print.h>
 #include <bibtool/tex_aux.h>
 #include <bibtool/tex_read.h>
+#include <bibtool/check.h>
+#include <bibtool/crossref.h>
 #include <bibtool/key.h>
 #include <bibtool/rewrite.h>
 #include <bibtool/s_parse.h>
 #include <bibtool/entry.h>
 #include <bibtool/type.h>
-#include <bibtool/crossref.h>
 #include <bibtool/version.h>
 #include <bibtool/io.h>
 #include "config.h"

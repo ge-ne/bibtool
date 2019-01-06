@@ -81,6 +81,7 @@ void add_word(sym, wlp)				   /*			     */
   if ( (wl=(WordList)malloc(sizeof(SWordList))) == WordNULL )/*		     */
   { OUT_OF_MEMORY("WordList"); }   		   /*                        */
 						   /*			     */
+  LinkSymbol(sym);				   /*                        */
   ThisWord(wl) = sym;				   /*			     */
   NextWord(wl) = *wlp;				   /*			     */
   *wlp	       = wl;				   /*			     */

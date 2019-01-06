@@ -3992,6 +3992,30 @@ Checking of doubles can also be turned on with the command line option
 
 \sh[d]{}
 
+\subsection{Non-unique Fields}
+
+Double entries are identified by the sort format. Another check which can be
+specified is that certain fields are unique. Examples are the reference key
+or a DOI number.
+
+The resource \rsc{unique.field} can be used to specify unique constraints for
+fields. Each invocation of this resource adds another field and enables the
+respective checks.
+
+\begin{Resources}
+  \rscBraces{unique.field}{\textit{field}}
+\end{Resources}
+
+The argument is the name of a field or pseudo-field. The pseudo-fields |$key|
+and |$sortkey| are supported in this context. The pseudo-field |$key| contains
+the reference key. The pseudo-field |$sortkey| contains the formatted sort
+key. The sort key is constructed according to the contents of the resource
+\rsc{sort.format} -- even if no sorting is requested. If no sort format is
+specified then the value of |$sortkey| contains the |$key|.
+
+Note that this resource produces messages only. Differing from
+\rsc{check.double} the identified records are not marked or deleted.
+
 
 \subsection{Regular Expression Checks}
 

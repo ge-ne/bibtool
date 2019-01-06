@@ -1,4 +1,6 @@
 FILE main.obj
+FILE check.obj
+FILE crossref.obj
 FILE database.obj
 FILE entry.obj
 FILE error.obj

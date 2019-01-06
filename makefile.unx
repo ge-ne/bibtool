@@ -295,8 +295,9 @@ C_FLAGS	      = $(C_INCLUDE) $(CFLAGS) $(FILE_TYPES)
 
 CFILES	      = main.c		\
 		$(CLIBFILES)
-CLIBFILES     = database.c	\
+CLIBFILES     = check.c		\
 		crossref.c	\
+		database.c	\
 		entry.c		\
 		error.c		\
 		expand.c	\
@@ -323,8 +324,9 @@ CLIBFILES     = database.c	\
 
 HPATH	      = include${DIR_SEP}bibtool${DIR_SEP}
 HFILES	      = config.h		\
-		${HPATH}database.h	\
+		${HPATH}check.h		\
 		${HPATH}crossref.h	\
+		${HPATH}database.h	\
 		${HPATH}bibtool.h	\
 		${HPATH}config.h	\
 		${HPATH}entry.h		\
@@ -357,8 +359,9 @@ HFILES	      = config.h		\
 
 OFILES	      = main$(OBJ)	\
 		$(OLIBFILES)
-OLIBFILES     = database$(OBJ)	\
+OLIBFILES     = check(OBJ)	\
 		crossref$(OBJ)	\
+		database$(OBJ)	\
 		entry$(OBJ)	\
 		error$(OBJ)	\
 		expand$(OBJ)	\

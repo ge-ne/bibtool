@@ -140,7 +140,8 @@
  Symbol sym_open_brace	  = NO_SYMBOL;		   /*			     */
  Symbol sym_close_brace	  = NO_SYMBOL;		   /*			     */
  Symbol sym_et		  = NO_SYMBOL;		   /*			     */
-
+ Symbol sym_key		  = NO_SYMBOL;		   /*			     */
+ Symbol sym_sortkey	  = NO_SYMBOL;		   /*			     */
 
 /*****************************************************************************/
 /***			Misc string allocation routine			   ***/
@@ -266,6 +267,8 @@ void init_symbols()				   /*			     */
   sym_open_brace   = symbol((String)"{");	   /*                        */
   sym_close_brace  = symbol((String)"}");	   /*                        */
   sym_et	   = symbol((String)"&");	   /*                        */
+  sym_key	   = symbol((String)"$key");	   /*                        */
+  sym_sortkey	   = symbol((String)"$sortkey");   /*                        */
 }						   /*------------------------*/
 
 #if defined(DEBUG) || defined(COMPLEX_SYMBOL)

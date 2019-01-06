@@ -316,7 +316,8 @@ LD_FLAGS      = $(LDFLAGS)
 
 CFILES	      = main.c				\
 		$(CLIBFILES)
-CLIBFILES     = crossref.c			\
+CLIBFILES     = check.c				\
+		crossref.c			\
 		database.c			\
 		entry.c				\
 		error.c				\
@@ -344,6 +345,7 @@ CLIBFILES     = crossref.c			\
 
 HPATH	      = include${DIR_SEP}bibtool${DIR_SEP}
 HFILES	      = config.h			\
+		${HPATH}check.h			\
 		${HPATH}crossref.h		\
 		${HPATH}database.h		\
 		${HPATH}bibtool.h		\
@@ -378,7 +380,8 @@ HFILES	      = config.h			\
 
 OFILES	      = main$(OBJ)			\
 		$(OLIBFILES)
-OLIBFILES     = crossref$(OBJ)			\
+OLIBFILES     = check$(OBJ)			\
+		crossref$(OBJ)			\
 		database$(OBJ)			\
 		entry$(OBJ)			\
 		error$(OBJ)			\

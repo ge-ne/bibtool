@@ -83,17 +83,20 @@ void init_error(file)				   /*                        */
 ** Arguments:
 **	lineno	the line number
 **	fname	the file name
+**	s1	the optional postfix string
 ** Returns:	nothing
 **___________________________________________________			     */
-void err_location(lineno,fname)			   /*                        */
+void err_location(lineno,fname,s1)		   /*                        */
   int    lineno;				   /*                        */
   String fname;					   /*                        */
+  char*  s1;					   /*                        */
 {						   /*                        */
   (void)fprintf(err_file,			   /*			     */
 		" (line %d in %s)",		   /*			     */
 		lineno,				   /*			     */
 		*fname ? (char*)fname : "<STDIN>");/*			     */
-  }						   /*------------------------*/
+  if ( s1 ) { ErrS(s1); }		   	   /*			     */
+}						   /*------------------------*/
 
 /*-----------------------------------------------------------------------------
 ** Function:	error()
@@ -175,7 +178,7 @@ void error(type, s1, s2, s3, line, err_pos, line_no, fname)/*		     */
   if	  ( type&ERR_ERROR ) ErrS(" ERROR"  );	   /*		             */
   else if ( type&ERR_WARN  ) ErrS(" WARNING");	   /*		             */
   if (type&ERR_FILE)			   	   /*			     */
-  { err_location(line_no,fname); }		   /*			     */
+  { err_location(line_no,fname, NULL); }	   /*			     */
   ErrS(": ");					   /*                        */
   if ( s1 ) { ErrS((char*)s1); }		   /*			     */
   if ( s2 ) { ErrS((char*)s2); }		   /*			     */

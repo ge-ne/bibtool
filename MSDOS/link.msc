@@ -1,4 +1,6 @@
 main.o +
+check.o +
+crossref.o +
 database.o +
 entry.o +
 error.o +

@@ -263,6 +263,17 @@ typedef struct rECORD				/*                           */
 #define RecordIsMARKED(R)	(RecordFlags(R) & RecordFlagMARKED)
 
 /*-----------------------------------------------------------------------------
+** Macro:	RecordKey()
+** Type:	String 
+** Purpose:	
+**		
+**		
+** Arguments:
+**	R	Record to consider
+**___________________________________________________			     */
+#define RecordKey(R)		(*((R)->rc_heap))
+
+/*-----------------------------------------------------------------------------
 ** Macro:	RecordOldKey()
 ** Type:	String 
 ** Purpose:	
