@@ -531,7 +531,7 @@ int main(argc,argv)				   /*			     */
     db_forall(the_db,expand_crossref);		   /*                        */
   }						   /*			     */
 						   /*			     */
-  if (rsc_make_key || need_sort_key) {		   /*                        */
+  if (rsc_sort || rsc_make_key || need_sort_key) { /*                        */
     DebugPrint1("start keygen");		   /*                        */
     start_key_gen();				   /*                        */
   }						   /*                        */
