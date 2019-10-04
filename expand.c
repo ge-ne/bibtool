@@ -1,4 +1,4 @@
-/*** expnad.c *****************************************************************
+/*** expand.c *****************************************************************
 ** 
 ** This file is part of BibTool.
 ** It is distributed under the GNU General Public License.
