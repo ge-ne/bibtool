@@ -160,6 +160,12 @@ typedef String Symbol;
 **___________________________________________________			     */
  extern Symbol sym_space;
 
+/*-----------------------------------------------------------------------------
+** Variable:	sym_star
+** Type:	Symbol
+** Purpose:	The symbol with a single star character. This variable needs
+**		|init_symbols()| to be called first.
+**___________________________________________________			     */
  extern Symbol sym_star;
 
  extern Symbol sym_qqq;
