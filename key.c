@@ -1677,10 +1677,10 @@ static bool eval__fmt(sb,kn,rec)		   /*			     */
 	  DebugPrint1("Field found. Continuing with THEN part");/*           */
 	else DebugPrint1("Field NOT found. Continuing with ELSE part");/*    */
 #endif
-	IfGetField(s,NodeSymbol(kn))		   /*			     */
-	{ (void)eval__fmt(sb,NodeThen(kn),rec); }  /*			     */
+	IfGetField(s, NodeSymbol(kn))		   /*			     */
+	{ (void)eval__fmt(sb, NodeThen(kn),rec); } /*			     */
 	else					   /*			     */
-	{ (void)eval__fmt(sb,NodeElse(kn),rec); }  /*			     */
+	{ (void)eval__fmt(sb, NodeElse(kn),rec); } /*			     */
 	break;					   /*			     */
  						   /*                        */
       case NodeOR:				   /*			     */
@@ -1692,7 +1692,7 @@ static bool eval__fmt(sb,kn,rec)		   /*			     */
 	  if ( eval__fmt(sb,NodeElse(kn),rec) != 0 )/*			     */
 	  { (void)sbseek(sb,pos);		   /*			     */
 	    DebugPrint1("OR ELSE part failed");    /*			     */
-	    return true;				   /*			     */
+	    return true;			   /*			     */
 	  }					   /*			     */
 	  DebugPrint1("OR ELSE part succeeded");   /*			     */
 	}					   /*			     */
@@ -1714,7 +1714,7 @@ static bool eval__fmt(sb,kn,rec)		   /*			     */
 		NodeType(kn)&0xff,		   /*			     */
 		SymbolValue(NodeSymbol(kn)));	   /*			     */
 #endif
-	IfGetField(s,NodeSymbol(kn))		   /*			     */
+	IfGetField(s, NodeSymbol(kn))		   /*			     */
 	{					   /*			     */
 	  DebugPrint1("Field found");	   	   /*			     */
  						   /*                        */
@@ -2026,17 +2026,20 @@ String fmt_expand(sb,cp,db,rec)			   /*                        */
   DB	        db;				   /*                        */
   Record        rec;				   /*                        */
 { Symbol	field;				   /*                        */
-  String	sp;				   /*                        */
   Uchar		c;			   	   /*                        */
   String	trans = trans_id;		   /*                        */
+  String 	s;			   	   /*                        */
   int  		pre  = -1,			   /*                        */
      		post = -1,			   /*                        */
       		type = 0;			   /*                        */
  						   /*                        */
+  if (key_seps == NULL) init_key();		   /*                        */
+					   	   /*                        */
   while ( *cp && *cp != (Uchar)'%' )		   /*                        */
   { sbputchar((Uchar)*cp,sb);			   /*                        */
     cp++;					   /*                        */
   }						   /*                        */
+  DebugPrint2("Expanding ", cp);  		   /*			     */
  					       	   /*                        */
   if ( *cp == (Uchar)'%' )			   /*                        */
   { 						   /*                        */
@@ -2064,22 +2067,25 @@ String fmt_expand(sb,cp,db,rec)			   /*                        */
     type |= *(cp++);			   	   /*			     */
     Expect(cp,'(',cp);			   	   /*			     */
     SkipSpaces(cp);			   	   /*			     */
-    sp = cp;				   	   /*			     */
+    s = cp;				   	   /*			     */
     SkipAllowed(cp);			   	   /*			     */
     c = *cp;					   /*                        */
     *cp = '\0';					   /*                        */
-    field = symbol(sp);			   	   /*                        */
+    s = new_string(s);
     *cp = c;					   /*                        */
+    field = symbol(s);			   	   /*                        */
+    (void)free(s);
     SkipSpaces(cp);			   	   /*			     */
     if ( *cp == ')' ) { cp++; }			   /*                        */
     else					   /*                        */
     { ErrPrintF("*** BibTool: Missing ')' in format before: %s\n",cp);/*     */
       return cp;				   /*                        */
     }						   /*                        */
+    s = SymbolValue(field);			   /*                        */
  						   /*                        */
-    if ( (field=get_field(db,rec,field)) != NULL ) /*                        */
+    if ( (field=get_field(db, rec, field)) != NULL )/*                       */
     {					   	   /*			     */
-      DebugPrint1("Field found");	   	   /*			     */
+      DebugPrintF2("Field %s found\n", s);	   /*			     */
  						   /*                        */
 #define PostOr(X)	(post > 0 ? post : (X))
 #define PreOr(X)	(pre >= 0 ? pre  : (X))
@@ -2095,7 +2101,6 @@ String fmt_expand(sb,cp,db,rec)			   /*                        */
 		    trans);			   /*                        */
 	  break;				   /*			     */
 	case 'n':				   /*			     */
-	  if (key_seps == NULL) { init_key(); }    /*                        */
 	  NameStrip(format[0]) = PostOr(-1);	   /*                        */
 	  fmt_names(sb,				   /*                        */
 		    SymbolValue(field),		   /*                        */
@@ -2104,7 +2109,6 @@ String fmt_expand(sb,cp,db,rec)			   /*                        */
 		    trans);    			   /*                        */
 	  break;				   /*			     */
 	case 'N':				   /*			     */
-	  if (key_seps == NULL) { init_key(); }    /*                        */
 	  NameStrip(format[1]) = PostOr(-1);	   /*                        */
 	  if (NextName(format[1]))		   /*                        */
 	  { NamePre(NextName(format[1])) = NamePreSep;/*                     */
