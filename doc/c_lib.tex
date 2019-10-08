@@ -61,7 +61,8 @@
 \newenvironment{Result}{%
   \begin{description}\item[\textmd{Returns:}] }{\end{description}}
 \newenvironment{Arguments}[1]{\begingroup\ttfamily\tabcolsep=0pt
-  \begin{tabular*}{.925\textwidth}{ll@{\extracolsep{\fill}}>{\it\small}p{.55\textwidth}}
+  \begin{tabular*}{.925\textwidth}%
+    {ll@{\extracolsep{\fill}}>{\normalfont\itshape\small}p{.55\textwidth}}
     #1%
     }{\end{tabular*}\endgroup\par}
 
