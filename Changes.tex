@@ -25,6 +25,7 @@
 \newcommand\BibTool{\textsc{BibTool}}
 \newcommand\BibTcl{\textsc{BibTcl}}
 \newcommand\BibTeX{\textsc{Bib}\TeX}
+\newenvironment{Releases}{\begin{multicols}2\RaggedRight}{\end{multicols}}
 \newenvironment{Release}[2]{%
   \def\tmp{#2}%
   \section*{Release #1 \ifx\tmp\empty\else{\normalsize[#2]}\fi}
@@ -47,10 +48,10 @@
   \Developer{gene}{Gerd Neugebauer}{gene@gerd-neugebauer.de}
 \end{Developers}
 
-\begin{multicols}2\RaggedRight
+\begin{Releases}
 
  % =====================================================================
- \begin{Release}{2.68}{October ??, 2019}
+ \begin{Release}{2.68}{October 8, 2019}
   \begin{Fix}{gene}
     Initialization bug in key.c fixed which came up when using a title format
     without setting a fmt parameter.
@@ -71,7 +72,8 @@
     Double spaces are avoided; two colons in one message are avoided.
   \end{Update}
   \begin{Update}{gene}
-    The format of the messages of check_rule include file and line number.
+    The format of the messages of \texttt{check\_rule} include file and line
+    number.
   \end{Update}
   \begin{New}{gene}
     Warning for double fields added.
@@ -1536,7 +1538,7 @@
   \item[]
  \end{Release}
 
-\end{multicols}
+\end{Releases}
 
 \end{document}%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
