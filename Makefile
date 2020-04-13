@@ -77,8 +77,7 @@ dist:   Changes.pdf install.pdf
 	@( cd doc; make)
 	@( cd ..; rm -f $(DIRNO).tar.gz;			\
 	   tar  -cvzf $(DIRNO).tar.gz $(DISTFILES:%=$(DIR)/%)	\
-		--owner bibtool --group bibtool			\
-		--exclude CVS --exclude config.status )
+		--owner bibtool --group bibtool	)
 	@gpg -a -b ../$(DIRNO).tar.gz
 	@( cd ..; rm -f $(DIRNO).zip;				\
 	   zip  -r $(DIRNO).zip $(DISTFILES:%=$(DIR)/%)		\
