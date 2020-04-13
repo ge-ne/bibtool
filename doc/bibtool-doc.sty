@@ -182,11 +182,13 @@
 \newcommand\sh{\smallskip\par\hspace*{2em}\@ifnextchar[{\sh@}{\sh@@}}
 \def\sh@[#1]#2{%
   \fcolorbox{sh-border}{sh-bg}{\hspace*{1em}\begin{minipage}{.85\textwidth}
-      \texttt{bibtool -{}#1 }\textit{#2}\index{#1@\texttt{-{}#1}}
+      \small
+      \texttt{bibtool -{}#1 }\texttt{#2}\index{#1@\texttt{-{}#1}}
     \end{minipage}}\smallskip\par\noindent\ignorespaces}
 \newcommand\sh@@[1]{%
   \fcolorbox{sh-border}{sh-bg}{\hspace*{1em}\begin{minipage}{.85\textwidth}
-      \texttt{bibtool }\textit{#1}
+      \small
+      \texttt{bibtool }\texttt{#1}
     \end{minipage}}\smallskip\par\noindent\ignorespaces}
 
 %
