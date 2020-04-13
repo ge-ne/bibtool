@@ -36,7 +36,7 @@
 **		numbers.  In addition a post-fix like |alpha| or a
 **		patch level like |p1| can be present.
 **___________________________________________________			     */
-char * bibtool_version = "2.68";		   /*                        */
+char * bibtool_version = "2.69-alpha";		   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Variable:	bibtool_year
@@ -44,7 +44,7 @@ char * bibtool_version = "2.68";		   /*                        */
 ** Purpose:	This string variable contains the publication year for this
 **		version. 
 **___________________________________________________			     */
-char * bibtool_year = "2019";			   /*                        */
+char * bibtool_year = "2020";			   /*                        */
 
 /*-----------------------------------------------------------------------------
 ** Function:	show_version()
