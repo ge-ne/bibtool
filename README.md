@@ -1,27 +1,27 @@
 ----------------------------------------------------------------------
 
-        ######            ############
-        #######           ############
-        ##    ##               ##
-        ##    ##  ##  #####    ##    ####      ####    ##
-        #######   ##  ######   ##   ######    ######   ##
-        #######   ##  ##   ##  ##  ##    ##  ##    ##  ##
-        ##    ##  ##  ######   ##  ##    ##  ##    ##  ##
-        ##    ##  ##  ##   ##  ##  ##    ##  ##    ##  ##
-        ##    ##  ##  ##   ##  ##  ##    ##  ##    ##  ##
-        #######   ##  ######   ##   ######    ######   #######
-        ######    ##  #####    ##    ####      ####    #######
-
+    ######\              ############\
+    #######\             ############ |
+    ##\___##\            \____##\____\|       
+    ## |  ## ) ##\  #####\    ## |   ####\      ####\    ##\     
+    #######\/  ## | ######\   ## |  ######\    ######\   ## |    	
+    ####### |  ## | ##\__##\  ## | ##\___##\  ##\___##\  ## |	
+    ##\___##\  ## | ######\/  ## | ## |  ## | ## |  ## | ## |	
+    ## |  ## | ## | ##\__##\  ## | ## |  ## | ## |  ## | ## |	
+    ## |  ## | ## | ## | ## | ## | ## |  ## | ## |  ## | ## |	
+    ####### \| ## | ###### \| ## | \###### \| \###### \| #######\	
+    ######  /  ## | #####  /  ## |  \####  /   \####  /  ####### |
+    \_____\/   \_\| \____\/   \_\|   \___\/     \___\/   \______\|       
 ----------------------------------------------------------------------
 
           BibTool: A Tool for Manipulating BibTeX Data Bases
 
   
-BibTeX provides    an easy to  use means   to integrate  citations and
-bibliographies into LaTeX documents.  But the user  is left alone with
+BibTeX  provides an  easy  to  use means  to  integrate citations  and
+bibliographies into LaTeX documents.  But  the user is left alone with
 the management of the BibTeX files. The program BibTool is intended to
-fill this gap.  BibTool allows the  manipulation of BibTeX files which
-goes  beyond the possibilities --- and intentions  --- of BibTeX.  The
+fill this gap.  BibTool allows  the manipulation of BibTeX files which
+goes beyond  the possibilities  -- and intentions  -- of  BibTeX.  The
 possibilities of BibTool include
 
 * Pretty-printing BibTeX data bases adjustable by lots of parameters.
