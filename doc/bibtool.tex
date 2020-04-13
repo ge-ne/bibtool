@@ -18,144 +18,15 @@
 
 \documentclass[11pt,a4paper]{scrbook}
 
-\usepackage{bibtool-doc}
-
 \input{config.tex}
+
+\usepackage{bibtool-doc}
 
 \hypersetup{pdftitle={BibTool Manual}}
 \hypersetup{pdfauthor={Gerd Neugebauer}}
 \hypersetup{pdfsubject={Version \Version}}
 
 \makeindex
-
-\DeclareFontShape{OT1}{cmss}{m}{it}{<-> ssub * cmss/m/sl}{}
-
-\definecolor{keyword}{rgb}{0,.5,0}
-\definecolor{bibtex-bg}{rgb}{0.9607843137,0.9019607843,0.8235294118}
-\usepackage{listings}
-\lstdefinelanguage{BibTeX}{sensitive=false,
-  basicstyle=\footnotesize\ttfamily,
-  keywordstyle=\bfseries\color{keyword},
-  keywords={@string,@article,@book,@misc,@proceedings,@manual,@modify,
-    @alias,@include,@InBook,@XData},
-  backgroundcolor=\color{bibtex-bg},
-  frame=single,
-  framerule=0pt}
-\lstdefinelanguage{BibTool}{sensitive=false,
-  basicstyle=\scriptsize\ttfamily,
-  keywordstyle=\color{keyword}\bfseries,
-  alsoletter=.,%
-  keywords={add.field,apply.alias,apply.modify,apply.include,and,
-    bibtex.env.name,bibtex.search.path,check.double,
-    check.double.delete,check.rule,check.case.sensitive,
-    clear.crossref.map,clear.ignored.words,count.all,count.used,
-    crossref.limit,crossref.map,default.key,delete.field,
-    dir.file.separator,dump.symbols,env.separator,extract.file,
-    extract.regex,expand.macros,expand.crossref,expand.xdata,
-    fmt.inter.name,fmt.name.pre,fmt.name.name,fmt.name.title,
-    fmt.title.title,fmt.et.al,fmt.word.separator,field.type,false,
-    input,ignored.word,ilike,key.generation,key.base,key.format,
-    key.make.alias,key.number.separator,key.expand.macros,like,
-    macro.file,mod,new.entry.type,new.field.type,new.format.type,not,
-    nil,output.file,or,pass.comments,preserve.key.case,preserve.keys,
-    print,print.align.string,print.align.comment,print.align.preamble,
-    print.align.key,print.align,print.all.strings,print.entry.types,
-    print.equal.right,print.braces,print.comma.at.end,
-    print.deleted.prefix,print.deleted.entries,print.indent,
-    print.line.length,print.newline,print.parentheses,
-    print.terminal.comma,print.use.tab,print.wide.equal,quiet,
-    regexp.syntax,rename.field,resource,resource.search.path,
-    rewrite.rule,rewrite.case.sensitive,rewrite.limit,select,
-    select.by.string,select.by.non.string,select.by.string.ignored,
-    select.case.sensitive,select.fields,select.non,select.crossrefs,
-    sort,sort.cased,sort.macros,sort.reverse,sort.order,sort.format,
-    suppress.initial.newline,symbol.type,tex.define,true,verbose,
-    version},
-  backgroundcolor=\color{rsc-bg},
-  frame=single,
-  framerule=0pt}
-
-\makeatletter%>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-\newcommand\opt[1]{\texttt{-{}#1}\index{#1@\texttt{-{}#1}}}
-
-\definecolor{sh-bg}{rgb}{.9,.9,.9}
-\definecolor{sh-border}{rgb}{.4,.4,.4}
-
-\newcommand\sh{\smallskip\par\hspace*{2em}\@ifnextchar[{\sh@}{\sh@@}}
-\def\sh@[#1]#2{%
-  \fcolorbox{sh-border}{sh-bg}{\hspace*{1em}\begin{minipage}{.85\textwidth}
-      \texttt{bibtool -{}#1 }\textit{#2}\index{#1@\texttt{-{}#1}}
-    \end{minipage}}\smallskip\par\noindent\ignorespaces}
-\newcommand\sh@@[1]{%
-  \fcolorbox{sh-border}{sh-bg}{\hspace*{1em}\begin{minipage}{.85\textwidth}
-      \texttt{bibtool }\textit{#1}
-    \end{minipage}}\smallskip\par\noindent\ignorespaces}
-
-\newcommand\bibLaTeX{Bib\-\LaTeX\index{biblatex@Bib\-\LaTeX}}
-
-\makeatother%<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-\newcommand\rsc[1]{\textsf{#1}\index{#1@\textsf{#1}}}
-\newcommand\rscEqBraces[2]{\rsc{#1} = \(\{\)#2\(\}\)}
-\newcommand\rscBraces[2]{\rsc{#1} \(\{\)#2\(\}\)}
-\newcommand\rscIt[1]{\textsf{\textit{#1}}}
-\newcommand\env[1]{\texttt{#1}\index{#1@\texttt{#1}}}
-
-\definecolor{rsc-bg}{rgb}{.9,1,.9}
-\definecolor{rsc-border}{rgb}{.4,.6,.4}
-\newbox\rscbox
-\newenvironment{Resources}%
-  {\setbox\rscbox=\hbox\bgroup\hspace*{.06\textwidth}\begin{minipage}{.88\textwidth}\sffamily\obeylines\obeyspaces
-  }{\end{minipage}\egroup\vspace{1.5ex}%
-    \fcolorbox{rsc-border}{rsc-bg}{\usebox\rscbox}%
-    \medskip\par
-  }
-
-\newcommand\code[1]{\texttt{#1}}
-\newcommand\file[1]{\textsf{#1}}
-
-\newcommand\off{\textsf{off}}
-\newcommand\on{\textsf{on}}
-
-\newcommand\bs{\texttt{\symbol{"5C}}\ignorespaces}
-\newcommand\BS{\(\backslash\)}
-\newcommand\Hat{\^{}}
-
-\newfont\cminch{cminch}
-\ifx\chaptername\relax\else
-\renewcommand\chaptername{\cminch}
-\renewcommand\appendixname{\cminch}
-\fi
-
-\newcommand\rfill[1]{\leaders\hrule height #1\hfill}
-
-\newenvironment{Summary}{\subsection*{Summary}
-  \begin{center}\small
-    \begin{tabular}{p{.08\textwidth}p{.35\textwidth}p{.48\textwidth}}
-      \toprule
-      \textit{\scriptsize Option}&
-      \textit{\scriptsize Resource command}&
-      \textit{\scriptsize Description}\\
-      \midrule
-}{\bottomrule\end{tabular}\end{center}}
-
-\newcommand\Desc[3]{\textit{#1}&\textit{#2}&#3\\\hline}
-
-\newenvironment{Example}{\smallskip\par\textit{Example}\par}{\smallskip\par}
-
-\newenvironment{Disclaimer}{\begin{center}\sffamily\tiny --- }{ ---\end{center}}
-
-\newcommand\LINK[2]{\texttt{#2}}
-\newcommand\Link[2]{\href{#1}{\texttt{#2}}}
-\newcommand\email[1]{\href{mailto:#1}{\texttt{#1}}}
-
-\newcommand\FTP[2]{\texttt{#1}}
-
-\newcommand\ASCII{\textsc{ascii}}
-
-\let\BIBTEX\BibTeX
-\renewcommand\BibTeX{\BIBTEX\index{bibtex@\BIBTEX}}
 
 \begin{document} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
