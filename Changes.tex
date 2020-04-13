@@ -4,7 +4,7 @@
 %% It is distributed under the Creative Commons Attribution-Share
 %% Alike 3.0 License.
 %%
-%% (c) 2010-2019 Gerd Neugebauer
+%% (c) 2010-2020 Gerd Neugebauer
 %%
 %% Net: gene@gerd-neugebauer.de
 %%
@@ -51,14 +51,17 @@
 \begin{Releases}
 
  % =====================================================================
- \begin{Release}{2.68}{October 8, 2019}
+ \begin{Release}{2.68}{April 13, 2020}
   \begin{Fix}{gene}
-    Initialization bug in key.c fixed which came up when using a title format
-    without setting a fmt parameter.
+    Initialization bug in \File{key.c} fixed which came up when using a title
+    format without setting a fmt parameter.
   \end{Fix}
   \begin{Fix}{gene}
     Nasty bug in the memory management fixed which could have appeared
     during extracting by aux file.
+  \end{Fix}
+  \begin{Fix}{gene}
+    Casting error and incomplete path in \File{rewrite.c} fixed.
   \end{Fix}
   \begin{Update}{gene}
     Handling of extracting by aux file improved.
@@ -72,7 +75,7 @@
     Double spaces are avoided; two colons in one message are avoided.
   \end{Update}
   \begin{Update}{gene}
-    The format of the messages of \texttt{check\_rule} include file and line
+    The format of the messages of \verb|check_rule| include file and line
     number.
   \end{Update}
   \begin{New}{gene}
@@ -100,13 +103,13 @@
     those fields then a warning is issued.
   \end{New}
   \begin{Update}{gene}
-    Static library renamed from |libbib.a| to |libbibtool.a|.
+    Static library renamed from \File{libbib.a} to \File{libbibtool.a}.
   \end{Update}
   \begin{Update}{gene}
     Environment variables added to reference card.
   \end{Update}
   \begin{New}{gene}
-    New source files |check.c| and |check.h| intruduced.
+    New source files \File{check.c} and \File{check.h} intruduced.
   \end{New}
  \end{Release}
 

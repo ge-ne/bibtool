@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2019 Gerd Neugebauer
+** (c) 1996-2020 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -523,7 +523,7 @@ static bool selector_hits(rule, db, rec)	   /*                        */
 **	rule	the rule
 **	db	the database
 **	rec	the record
-** Returns:	
+** Returns:	the result of the replacement
 **___________________________________________________			     */
 static String repl_regex(field, value, rule, db, rec)/*			     */
   Symbol field;				   	   /*			     */
@@ -532,8 +532,8 @@ static String repl_regex(field, value, rule, db, rec)/*			     */
   DB	 db;				   	   /*                        */
   Record rec;			   	   	   /*			     */
 {						   /*			     */
-#ifdef REGEX
   String        val = SymbolValue(value);	   /*                        */
+#ifdef REGEX
   char		c;			   	   /*			     */
   int		len;			   	   /*			     */
   StringBuffer	*sp;			   	   /* intermediate pointer   */
@@ -901,7 +901,7 @@ static bool dont_keep(sym,rec,db)		   /*                        */
   Record   rec;					   /*                        */
   DB       db;					   /*                        */
 { Rule     r;					   /*                        */
-  intptr_t idx = (int)(sym) % K_RULES_SIZE;	   /*                        */
+  int      idx = (int)((long)sym % K_RULES_SIZE);  /*                        */
   if (idx < 0) idx = -idx;			   /*                        */
  						   /*                        */
   for (r = k_rules[idx]; r; r = NextRule(r))	   /*                        */
