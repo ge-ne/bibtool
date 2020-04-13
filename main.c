@@ -153,7 +153,7 @@ char * getenv(name)				   /*			     */
     "\t%c$\t\tSymbol table output (debugging only)\n",
 #endif
     0L,
-    "Copyright (C) 2019 Gerd Neugebauer",
+    "Copyright (C) 2020 Gerd Neugebauer",
     "gene@gerd-neugebauer.de"
   };
 
