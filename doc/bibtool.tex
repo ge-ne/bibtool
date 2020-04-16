@@ -3877,12 +3877,13 @@ respective checks.
   \rscBraces{unique.field}{\textit{field}}
 \end{Resources}
 
-The argument is the name of a field or pseudo-field. The pseudo-fields |$key|
-and |$sortkey| are supported in this context. The pseudo-field |$key| contains
-the reference key. The pseudo-field |$sortkey| contains the formatted sort
-key. The sort key is constructed according to the contents of the resource
-\rsc{sort.format} -- even if no sorting is requested. If no sort format is
-specified then the value of |$sortkey| contains the |$key|.
+The argument is the name of a field or pseudo-field. The pseudo-fields
+\verb|$key| and \verb|$sortkey| are supported in this context. The
+pseudo-field \verb|$key| contains the reference key. The pseudo-field
+\verb|$sortkey| contains the formatted sort key. The sort key is constructed
+according to the contents of the resource \rsc{sort.format} -- even if no
+sorting is requested. If no sort format is specified, then the value of
+\verb|$sortkey| contains the \verb|$key|.
 
 Note that this resource produces messages only. Differing from
 \rsc{check.double} the identified records are not marked or deleted.
