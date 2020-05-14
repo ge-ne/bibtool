@@ -531,6 +531,7 @@ d-o-c:
 info:
 
 test check: Test
+	@echo
 Test:
 	(cd test; $(MAKE))
 
