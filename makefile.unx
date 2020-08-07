@@ -359,7 +359,7 @@ HFILES	      = config.h		\
 
 OFILES	      = main$(OBJ)	\
 		$(OLIBFILES)
-OLIBFILES     = check(OBJ)	\
+OLIBFILES     = check$(OBJ)	\
 		crossref$(OBJ)	\
 		database$(OBJ)	\
 		entry$(OBJ)	\
