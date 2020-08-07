@@ -22,6 +22,7 @@ install.pdf
 Work
 /.cproject
 /.settings
+.dbeaver
 Changes.pdf
 Changes.dvi
 /core
