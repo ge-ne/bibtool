@@ -59,6 +59,7 @@
  static void puts_in _ARG((String s,int in,int (*fct)_ARG((int))));/* print.c */
  void fput_record _ARG((FILE *file,Record rec,DB db,String start));/* print.c*/
  void put_record _ARG((int (*fct)_ARG((int)),Record rec,DB db,String start));/* print.c*/
+ void rsc_align _ARG((String s));	   	   /* print.c                */
  void set_key_type _ARG((String  s));		   /* print.c                */
  void set_symbol_type _ARG((String  s));	   /* print.c                */
 
@@ -145,6 +146,80 @@ void set_key_type(s)				   /*			     */
   { Err("Unknown key type ignored.\n"); }	   /*			     */
 }						   /*------------------------*/
 #endif
+
+
+ static int align_value = 18;
+ static bool align_auto = false;
+
+/*-----------------------------------------------------------------------------
+** Function:	rsc_align()
+** Purpose:	Parse the value of the resource print.align and set the values
+**		of the parameters accordingly.
+**		Initial spaces are ignored. Then follows the keyword |auto| or
+**		a (optionally negative) number.
+** Arguments:
+**	s	String description of the value.
+** Returns:	nothing
+**___________________________________________________			     */
+void rsc_align(s)				   /*			     */
+  String s;					   /*			     */
+{						   /*			     */
+  int val = 0;					   /*			     */
+  while (*s && is_space(*s)) { s++; }		   /*			     */
+						   /*			     */
+  if (*s == '\0')				   /*			     */
+  { Err("Missing value for print.align.\n");	   /*			     */
+    return;					   /*			     */
+  }						   /*			     */
+  if (strcmp((char*)s, "auto") == 0)
+  { align_auto = true;				   /*			     */
+    return;					   /*			     */
+  }						   /*			     */
+  String sp = s;
+  bool neg = false;
+  if (*sp == '-')				   /*			     */
+  { neg = true;					   /*			     */
+    sp++;					   /*			     */
+  }						   /*			     */
+  while (*sp) {					   /*			     */
+    if (!is_digit(*sp))
+    { Err("Illegal print.align ignored.\n");
+      return;					   /*			     */
+    }						   /*			     */
+    val = val*10 + *sp - '0';			   /*			     */
+    sp++;					   /*			     */
+  }						   /*			     */
+  align_value = neg ? -val: val;		   /*			     */
+  align_auto = false;				   /*			     */
+}						   /*------------------------*/
+
+/*-----------------------------------------------------------------------------
+** Function*:	adjust_align()
+** Purpose:	Set the value of the |align_value| according to the width of the
+**		labels of the current record.
+** Arguments:
+**	rec	the record
+** Returns:	nothing
+**___________________________________________________			     */
+ static void adjust_align(rec)			   /*			     */
+  Record rec;					   /*			     */
+{ register int i;				   /*			     */
+  register int len;				   /*			     */
+  Symbol *hp = RecordHeap(rec);			   /*			     */
+  align_value = 0;				   /*			     */
+						   /*			     */
+  for (i = RecordFree(rec); i > 0; i -= 2)	   /*			     */
+  {		   				   /* Not a deleted or       */
+    if (*hp && is_allowed(*SymbolValue(*hp))	   /*   private entry        */
+        && *(hp+1) )				   /* and is a equation	     */
+    { len = strlen(*hp);			   /*			     */
+      if (len > align_value) align_value = len;	   /*			     */
+    }						   /*			     */
+    hp += 2;					   /*			     */
+  }						   /*                        */
+  align_value += rsc_indent + (rsc_print_we ? 3 : 1);/*                      */
+}						   /*------------------------*/
+
 
 						   /*------------------------*/
  static int column = 0;				   /* The current column of  */
@@ -365,28 +440,24 @@ static void print_equation(pre, lhs, rhs, align, fct)/*			     */
   int  align;				   	   /*			     */
   int (*fct)_ARG((int));			   /*                        */
 {						   /*			     */
-  if ( align < 0 )				   /*			     */
-  { PUTS(pre);		   			   /*			     */
-    PUTS(SymbolValue(get_item(lhs, symbol_type))); /*			     */
-    PUTS(rsc_print_we ? " = " : "=");		   /*                        */
-  }						   /*			     */
-  else						   /*			     */
-  { indent(rsc_indent, fct);			   /*			     */
-    PUTS(pre);		   			   /*			     */
-    PUTS(SymbolValue(get_item(lhs, symbol_type))); /*			     */
-    if ( column >= align - 2 && rsc_print_we )	   /*                        */
-    { PUTC(' '); }				   /*                        */
-    else if ( rsc_eq_right )			   /*                        */
-    { indent(align - 2, fct); }			   /*			     */
-    else if ( column < align || rsc_print_we )	   /*                        */
-    { PUTC(' '); }	   			   /*                        */
-    PUTC('=');					   /*			     */
-    if ( rsc_print_we )	{ PUTC(' '); }		   /*                        */
-    line_breaking(SymbolValue(rhs), align, fct);   /*			     */
-  }						   /*			     */
+  if ( align >= 0 ) indent(rsc_indent, fct);	   /*			     */
+						   /*			     */
+  PUTS(pre);		   			   /*			     */
+  PUTS(SymbolValue(get_item(lhs, symbol_type)));   /*			     */
+						   /*			     */
+  if ( align < 0 ) {}				   /*			     */
+  else if ( rsc_print_we && column > align - 2 )   /*                        */
+  { PUTC(' '); }				   /*                        */
+  else if ( rsc_eq_right )			   /*                        */
+  { indent(align - (rsc_print_we ? 3: align_auto? 1 : 2), fct); }/*	     */
+  else if ( column < align || rsc_print_we )	   /*                        */
+  { PUTC(' '); }	   			   /*                        */
+						   /*			     */
+  PUTS(rsc_print_we ? " = " : "=");		   /*                        */
+  line_breaking(SymbolValue(rhs), align, fct);     /*			     */
 }						   /*------------------------*/
 
- static FILE * ofile=NULL;
+ static FILE * ofile = NULL;
 
 /*-----------------------------------------------------------------------------
 ** Function:	fput_char()
@@ -612,6 +683,10 @@ void put_record(fct, rec, db, start)		   /*                        */
 	  comma2 = s_empty;			   /*                        */
 	}					   /*                        */
  						   /*                        */
+ 	if (align_auto)				   /*                        */
+	{ adjust_align(rec);			   /*                        */
+	}					   /*                        */
+ 						   /*                        */
         for ( i = RecordFree(rec); i > 0; i -= 2 ) /*			     */
 	{		   			   /* No deleted or          */
 	  if (*hp && is_allowed(*SymbolValue(*hp)))/*   private entry        */
@@ -632,7 +707,7 @@ void put_record(fct, rec, db, start)		   /*                        */
 					   db,	   /*                        */
 					   false)  /*                        */
 			      : *(hp+1) ),	   /*                        */
-			     rsc_col,		   /*                        */
+			     align_value,	   /*                        */
 			     fct);		   /*                        */
 	    }					   /*			     */
 	    else				   /* Otherwise print a key  */

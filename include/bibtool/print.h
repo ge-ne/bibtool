@@ -43,6 +43,7 @@
  char *sput_record _ARG((Record rec,DB db,String start));/* print.c          */
  void fput_record _ARG((FILE *file,Record rec,DB db,String start));/* print.c*/
  void put_record _ARG((int (*fct)_ARG((int)),Record rec,DB db, String start));/* print.c*/
+ void rsc_align _ARG((String s));	   	   /* print.c                */
  void set_key_type _ARG((String s));		   /* print.c                */
  void set_symbol_type _ARG((String s));	   	   /* print.c                */
  String get_symbol_type _ARG(());	   	   /* print.c                */

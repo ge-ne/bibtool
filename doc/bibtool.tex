@@ -1249,6 +1249,13 @@ by specifying resources on the command line.
         This numeric resource specifies the column at which the '=' in
         non-comment and non-string entries are aligned. This value defaults
         to 18.
+
+        If the resource contains a negative number then no alignement is
+        applied at all.
+
+        If the resource is set to the special value \texttt{auto} then the
+        alignment column is determined automatically. It is based on the
+        widest field name in the current record.
   \item [\rsc{print.align.key}]
         This numeric resource specifies the column at which the keys in
         non-comment and non-string entries are aligned. This value defaults
@@ -1304,24 +1311,33 @@ First we look at a string entry.
 \ifHTML
 {\small
 \begin{verbatim}
-                  |                                                        |
-                  | print.align.string                   print.line.length |
+@String{ DANTE = "Deutschsprachige Anwendervereinigung \TeX{} e.V."}
+                 |                                                        |
+                 | print.align.string                   print.line.length |
 \end{verbatim}
 }
 \else
 \noindent
 \vbox{
+\noindent
+\hbox{%
 \begin{minipage}{\textwidth}
+{\small
+\begin{verbatim}
+@String{ DANTE = "Deutschsprachige Anwendervereinigung \TeX{} e.V."
+}
+\end{verbatim}%
+}%
 \begingroup%
 \settowidth{\unitlength}{\texttt{\small m}}%
 \begin{picture}(0,2)(0,-3)
-  \put(18,0){\line(0,1){5.5}}
+  \put(17,0){\line(0,1){5.5}}
   \put(77,0){\line(0,1){5.5}}
   \put(77,0){\makebox(0,0)[r]{\rsc{print.line.length}}}
-  \put(18,0){\makebox(0,0)[l]{\rsc{print.align.string}}}
+  \put(17,0){\makebox(0,0)[l]{\rsc{print.align.string}}}
 \end{picture}
 \endgroup
-\vspace{1ex}\end{minipage}}
+\vspace{1ex}\end{minipage}}}
 \fi
 
 Next we look at an unpublished entry. It has a rather long list of authors and
@@ -1442,7 +1458,8 @@ this holds for sorting which does not recognize differences in case.
   \Desc{}{\rsc{print.align.string}=n}{Align the \texttt{=} of string
     entries at column \textit{n}.} 
   \Desc{}{\rsc{print.align}=n}{Align the \texttt{=} of normal entries at
-    column \textit{n}.} 
+    column \textit{n}. If negative then omit alignment. If \texttt{auto} then
+    align automatically for the current record.}
   \Desc{}{\rsc{print.comma.at.end}=on}{Put the separating comma at then end of
   the line instead of the beginning.} 
   \Desc{}{\rsc{print.indent}=n}{Indent normal entries to column \textit{n}.}

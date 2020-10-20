@@ -184,7 +184,7 @@ sub run {
        check($a{expected_out}, $out, 'out', $a{fct_out}) +
        check($a{expected_err}, $err, 'err', $a{fct_err}) ) {
     $failure++;
-    out "\n\t\t\t\t  fail\n"
+    out "\n\t\t\t\t\t  fail\n"
   } else {
     $success++;
     out "ok\n"
