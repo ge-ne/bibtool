@@ -277,6 +277,7 @@ static Rule new_rule(field, value, pattern, frame, flags, casep)/*           */
   DebugPrintF1(flags & RULE_NOT ? " NOT" : "");	   /*                        */
   DebugPrintF1(flags & RULE_ADD ? " ADD" : "");	   /*                        */
   DebugPrintF1(flags & RULE_RENAME ? " RENAME" : "");/*                      */
+  DebugPrintF1(flags & RULE_DELETE ? " DELETE" : "");/*                      */
   DebugPrintF1(flags & RULE_KEEP ? " KEEP" : "");  /*                        */
   DebugPrintF1(flags & RULE_REGEXP ? " REGEXP" : "");/*                      */
   DebugPrintF1("\n");		   		   /*			     */
@@ -708,8 +709,8 @@ static String check_regex(field, value, rule, db, rec)/*		     */
 /*-----------------------------------------------------------------------------
 ** Function:	rename_field()
 ** Type:	void
-** Purpose:	
-**		
+** Purpose:	Parse a specification for renaming a field and add an
+**              appropriate rule.
 ** Arguments:
 **	spec	the argument
 ** Returns:	nothing
@@ -795,7 +796,7 @@ static Rule *k_rules = (Rule*)NULL;
 /*-----------------------------------------------------------------------------
 ** Function:	keep_field()
 ** Type:	void
-** Purpose:	
+** Purpose:	Parse the sepcification for keeping a field.
 **		
 ** Arguments:
 **	spec	the specification
@@ -962,7 +963,7 @@ void rewrite_record(db, rec)			   /*			     */
     }						   /*			     */
   }						   /*			     */
 						   /*			     */
-  if (r_rule)			   		   /*			     */
+  if (r_rule)			   		   /* Apply the rewrite	rules*/
   {   						   /*			     */
     for (i = RecordFree(rec), hp = RecordHeap(rec);/*			     */
 	 i > 0;					   /*			     */
@@ -985,7 +986,7 @@ void rewrite_record(db, rec)			   /*			     */
     }						   /*			     */
   }						   /*			     */
 						   /*                        */
-  if (k_rules)			   		   /*			     */
+  if (k_rules)			   		   /* Apply all keep rules   */
   {						   /*                        */
     for (i = RecordFree(rec), hp = RecordHeap(rec);/*			     */
 	 i > 0;					   /*			     */
