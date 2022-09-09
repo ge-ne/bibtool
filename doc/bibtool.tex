@@ -100,7 +100,7 @@ bibliographic databases include
   \item editing
   \item using citations in documents
   \item sorting and merging of bibliographic data bases
-  \item extraction of bibliographic data bases
+  \item extraction of citations from bibliographic data bases
 \end{itemize}
 %
 Since only the integration in documents is covered by \BibTeX{} several
@@ -209,8 +209,8 @@ description may be too short or incomplete. Some additional information can be
 found in \cite[Chapter~13]{goosens.mittelbach.ea:companion}.
 
 Most of those utilities are tailored towards a particular operating system and
-thus they are not available on other platforms. Most of these program are made
-to perform a single task. Often they can not be configured to suit a personal
+thus they are not available on other platforms. Most of these programs are
+targeted at a single task. Often they cannot be configured to suit a personal
 taste of a user.
 
 Still there are some points not covered by the utilities mentioned above.
@@ -284,7 +284,7 @@ characters.
 
 If you want to sort the \BibTeX{} files according to the date then you have to
 know how the year field is filled. Suppose you know that the year contains the
-year preceeded by the month like in \texttt{Mar 2018}. Then the following
+year preceded by the month like in \texttt{Mar 2018}. Then the following
 invocation sorts according to the year:\index{d@\%d}
 
 \sh[s]{-{}-sort.format="\%d(year)" file1.bib file2.bib}
@@ -332,8 +332,8 @@ simply have to run the following command:
 
 \sh[k]{\texttt{sample.bib \opt{o} sample1.bib}}
 
-After the command has completed it's work the following entry can be found in
-the output file \file{sample1.bib}: 
+After the command has completed as a result the following entry can be found
+in the output file \file{sample1.bib}:
 
 \begin{lstlisting}[language=BibTeX]
 @Article{         aamport:gnats,
@@ -453,7 +453,7 @@ sense that it sometimes fails but never produces a wrong result.
 purpose \BibTool{} analyzes the \verb|.aux| file and takes the information
 given there. This includes the names of the \BibTeX{} files. Thus no \BibTeX{}
 files have to be given in the command line. Instead the \verb|.aux| file has
-to specified---preceded by the option \opt{x}.
+to be specified---preceded by the option \opt{x}.
 
 \sh[x]{document.aux \opt{o} document.bib}
 
@@ -480,9 +480,9 @@ output stream the result is written into this file.
 
 Next we want to look up all entries containing a sub-string in some of its
 fields. For this purpose we search for the string in all fields
-first:\footnote{Note that some command line interpreters (e.g the UN*X shells)
-  might need additional quoting of the select instruction since it contains
-  special characters.}
+first:\footnote{Note that some command line interpreters (e.g. the UN*X
+  shells) might need additional quoting of the select instruction since it
+  contains special characters.}
 
 \sh[-]{select\{"tex"\} all.bib \texttt{-o} some.bib}
 
@@ -573,14 +573,14 @@ detail:
   initial letter.
 \end{description}
 
-The sorting according to ascending ASCII order will bring all the entries with
-crossref fields to the beginning.
+The sorting according to ascending \ASCII{} order will bring all the entries
+with crossref fields to the beginning.
 
 
 %------------------------------------------------------------------------------
 \subsection{Petering Out Fields}
 
-Sometimes you might be collecting \BibTeX\ files form various sources. Then
+Sometimes you might be collecting \BibTeX\ files from various sources. Then
 there might be additional and for you useless fields. For instance a creator
 of the \BibTeX\ files may have included a library number in the field |libno|
 and you want to get rid of it. In such a case you can use the resource
@@ -664,7 +664,7 @@ for \texttt{gene@gerd-neugebauer.de}.
 
 \BibTool\ is hosted in a public repository at
 \Link{https://github.com}{github}\footnote{It used to be on
-  Sarovar 'till December 2013.}. The repository contains the released sources
+  Sarovar untill December 2013.}. The repository contains the released sources
 as well as the development versions. The repository can be found at
 \begin{quote}
   \Link{https://github.com/ge-ne/bibtool}{https://github.com/ge-ne/bibtool}
@@ -688,7 +688,7 @@ the following information into a bug report:
 \item The version of \BibTool{} you are using.
 \item Your hardware specification and operating system version.
 \item The C compiler you are using and its version. (Only for compilation and
-  installation problems)
+  installation problems.)
 \item The resource file you are using. Try to reduce it to the absolute
   minimum necessary for demonstrating the problem.
 \item A \emph{small} \BibTeX{} file showing the problem.
@@ -723,8 +723,8 @@ program I have the following suggestions.
 \begin{itemize}
 \item Proofread this documentation and report any errors you find as well as
   additional material to put in.
-\item Provide additional contributed pieces to \BibTool. For instance useful
-  resource files which could be included into the library.
+\item Provide additional contributed pieces to \BibTool{} -- for instance
+  useful resource files which could be included into the library.
 \item Write a useful program and release it to the public without making
   profit, preferably under an Open Source license like the \LINK{GPL.html}{GNU
     General Public License} or the GNU artistic license.
@@ -845,7 +845,7 @@ potentially overwritten:
 \sh{\opt{r} my\_rsc \opt{R} \opt{i} sample}
 
 Additionally note that resource files are evaluated at once whereas input
-files are read in one chunk at the end. Thus you can not specify one set of
+files are read in one chunk at the end. Thus you cannot specify one set of
 parameters to be used for one file and another set of parameters for the next
 file. This is impossible within one invocation of \BibTool\footnote{This might
   be changed in the next major revision (3.0).}.
@@ -908,7 +908,7 @@ given between resource commands. All characters to the end of the line are
 ignored afterwards.
 
 
-Now we come the description of the first resource available. To read in
+Now we come to the description of the first resource available. To read in
 additional resource files the resource file may contain the resource
 
 \begin{Resources}
@@ -1104,14 +1104,14 @@ The standard error stream is used for this purpose.
 
 The messages can roughly be divided in three categories: error messages,
 warnings, and status reports. Error messages indicate severe problems. They
-can not be suppressed. Warnings indicate possible problems which could
+cannot be suppressed. Warnings indicate possible problems which could
 (possibly) have been corrected. They are displayed by default but can be
 suppressed. Status reports are messages during the processing which indicate
 actions currently performed. They are suppressed by default but can be
 enabled.
 
 Warning messages can be suppressed using the command line option \opt{q}.
-This option toggles the Boolean quiet value.
+This option toggles the boolean quiet value.
 
 \sh[q]{}
 
@@ -1123,12 +1123,12 @@ The same effect can be obtained by assigning the value \textsf{on} or
 \end{Resources}
 
 Status reports are useful to see the operations performed. They can be enabled
-using the command line option \opt{v}. This option toggles the Boolean verbose
+using the command line option \opt{v}. This option toggles the boolean verbose
 value.
 
 \sh[v]{}
 
-The same can also be achieved with the Boolean resource \rsc{verbose}:
+The same can also be achieved with the boolean resource \rsc{verbose}:
 
 \begin{Resources}
   \rsc{verbose} = on
@@ -1148,7 +1148,7 @@ described in section~\ref{sec:macros} on macros.
   \Desc{\opt{o} file}{\rsc{output.file} \{file\}}{Direct output to the
     file \textit{file}. If file is \texttt{-} then the standard output is
     used. If the file is the empty string then the output is suppressed.}
-  \Desc{\opt{q}}{\rsc{quiet}=on}{Suppress warnings. Errors can not be
+  \Desc{\opt{q}}{\rsc{quiet}=on}{Suppress warnings. Errors cannot be
     suppressed.}
   \Desc{\opt{v}}{\rsc{verbose}=on}{Enable informative messages on the
     activities of \BibTool.}
@@ -1164,8 +1164,9 @@ pedantic about the accepted syntax. Thus I decided to try to be generous and
 correct as many errors as I can.
 
 This can be changed with the resource \rsc{parse.exit.on.error}. If this
-resouce is turned on then \BibTool\ exits iimediately when an error during the
+resource is turned on then \BibTool\ exits immediately when an error during
 parsing is encountered. The default is \textsf{off}.
+
 \begin{Resources}
   \rsc{parse.exit.on.error} = on
 \end{Resources}
@@ -1173,7 +1174,7 @@ parsing is encountered. The default is \textsf{off}.
 Each input file is parsed and stored in an internal representation. \BibTeX{}
 simply ignores any characters between entries. \BibTool{} stores the comments
 and attaches them to the entry immediately following them. Normally anything
-between entries is simply discarded and a warning printed. The Boolean
+between entries is simply discarded and a warning printed. The boolean
 resource \rsc{pass.comments} can be used to change this behavior.
 
 \begin{Resources}
@@ -1238,7 +1239,7 @@ by specifying resources on the command line.
 
 \begin{description}
   \item [\rsc{print.line.length}]
-        This numeric resource specifies the desired width of the lines. lines
+        This numeric resource specifies the desired width of the lines. Lines
         which turn out to be longer are tried to split at spaces and continued
         in the next line. The value defaults to 77.
   \item [\rsc{print.indent}]
@@ -1272,35 +1273,35 @@ by specifying resources on the command line.
         since comments do not have to follow any syntactic
         restriction.} This value defaults to 10. 
   \item [\rsc{print.comma.at.end}]
-    	This Boolean resource determines whether the comma between fields
+    	This boolean resource determines whether the comma between fields
     	should be printed at the end of the line. If it is \textsf{off} then
     	the comma is printed just before the field name. In this case the
     	alignment given by \rsc{print.align} determines the column of the
     	comma.
   \item [\rsc{print.equal.right}]
-        This Boolean resource specifies whether the = sign in normal entries
+        This boolean resource specifies whether the = sign in normal entries
         is aligned right. If turned off then the = sign is flushed left to the
         field name. This value defaults to \textsf{on}.
   \item [\rsc{print.newline}]
         This numeric resource specifies the number of newlines between
         entries. This value defaults to 1.
   \item [\rsc{print.terminal.comma}]
-        This Boolean resource specifies whether a comma should be printed
+        This boolean resource specifies whether a comma should be printed
         after the last record of a normal entry. This contradicts the rules of
         \BibTeX\ but might be useful for other programs. This value defaults
         to \textsf{off}.
   \item [\rsc{print.use.tab}]
-        This Boolean resource specifies if the \texttt{TAB} character should be
+        This boolean resource specifies if the \texttt{TAB} character should be
         used for indenting. This use is said to cause portability problems.
         Thus it can be disabled. If disabled then the appropriate number of
         spaces are inserted instead. This value defaults to \textsf{on}.
   \item [\rsc{print.wide.equal}]
-    	This Boolean resource determines whether the equality sign should be
+    	This boolean resource determines whether the equality sign should be
     	forced to be surrounded by spaces. Usually this resource is \off{}
     	which means that no spaces are required around the equality sign and
     	they can be omitted if the alignment forces it.
   \item [\rsc{suppress.initial.newline}]
-        This Boolean resource suppresses the initial newline before normal
+        This boolean resource suppresses the initial newline before normal
         records since this might be distracting under certain circumstances.
 \end{description}
 
@@ -1429,7 +1430,7 @@ The reference key is usually translated to lower case letters unless a new key
 is generated (see section~\ref{sec:key.gen}). In this case the chosen format
 determines the case of the key. Sometimes it can be desirable to preserve the
 case of the key as given (even so \BibTeX{} does not mind). This can be
-achieved with the Boolean resource \rsc{preserve.key.case}. Usually it is
+achieved with the boolean resource \rsc{preserve.key.case}. Usually it is
 turned off (because of backward compatibility and the memory used for this
 feature). You can turn it on as in
 
@@ -1487,7 +1488,7 @@ default the reference key. Sorting can enabled with the command line switches
 
 The first variant sorts in ascending \ASCII{} order (including differentiation
 of upper and lower case). The second form sorts in descending \ASCII{} order.
-The same effect can be achieved with the Boolean resource values \rsc{sort}
+The same effect can be achieved with the boolean resource values \rsc{sort}
 and \rsc{sort.reverse} respectively.
 
 \begin{Resources}
@@ -1533,7 +1534,7 @@ uppercase letters all come before the lowercase letters.  \medskip
 Usually the keys are folded to lower case during the normalization. Thus the
 lower case variants are also used for comparison. The resource
 \rsc{preserve.key.case} can be used to print cased keys as they are
-encountered in the input file. This feature can be combined with the Boolean
+encountered in the input file. This feature can be combined with the boolean
 resource \rsc{sort.cased} to achieve sorting according to the unfolded
 reference key:
 
@@ -1711,13 +1712,13 @@ this purpose.
   \rscBraces{extract.file}{\textit{file.aux}}
 \end{Resources}
 
-A small difference exists between the two variants. the command line option
+A small difference exists between the two variants. The command line option
 automatically sets the resource \rsc{print.all.strings} to \verb|off|. This
 has to be done in the resource file manually.
 
 Note that the extraction automatically respects the cross-references in the
 selected entries. Thus you will get a complete \BibTeX\ file---unless some
-references can not be resolved and an error is produced.
+references cannot be resolved and an error is produced.
 
 One special feature of \BibTeX{} is supported. If the command
 \verb|\nocite{*}| is given in the \LaTeX{} file then all entries of the
@@ -1758,7 +1759,7 @@ general syntax for this resource is as follows:
 
 To make this selection operation more flexible it is possible to determine
 whether or not the comparison against the value of a field is performed case
-sensitive. This can be done with the Boolean resource
+sensitive. This can be done with the boolean resource
 \rsc{select.case.sensitive}. Since the selection is performed after all
 resources have been read the value of this resource is only considered then.
 Thus it is not possible to mix case sensitive and non case sensitive
@@ -1831,7 +1832,7 @@ matching can be negated. The resource to perform this functionality is
 \end{Resources}
 
 
-The Boolean resource \rsc{select.case.sensitive} can be used to determine
+The boolean resource \rsc{select.case.sensitive} can be used to determine
 whether the selection is performed case sensitive or not:
 
 \begin{Resources}
@@ -1940,7 +1941,7 @@ cross-referenced entries:
 
 Note that the crossref mechanism implemented in \BibTool\ acts like
 inheritance. This means that fields \emph{not present} in the entry containing
-a \texttt{crossref} field are taken from the referenced entry. If for instance
+a \texttt{crossref} field are taken from the referenced entry. For instance if
 the entry and the referenced entry both contain a title filed then the one in
 the entry in not overwritten by one in the referenced entry.
 
@@ -1961,7 +1962,7 @@ names of the fields which are included via \texttt{crossref}. This can for
 instance be useful because the standard styles expect a title field of a @Book
 but the same information goes into the booktitle field in an @InBook.
 
-To support this behaviour \BibTool\ contains a mapping which declares which
+To support this behavior \BibTool\ contains a mapping which declares which
 name for a field should be substituted when the cross-referencing is expanded.
 It defines which field name to used when the field is expanded from a source
 entry of a type with a certain name into an entry of another type.
@@ -2074,8 +2075,9 @@ be enabled using the command line option \opt{f} in the following way:
 
 \sh[f]{format}
 
-This command adds format disjunctivly to the formatting instructions already
-given. The same effect can be achieved with the resource \rsc{key.format}.
+This command adds the given format disjunctively to the formatting
+instructions already given. The same effect can be achieved with the resource
+\rsc{key.format}.
 
 \begin{Resources}
   \rscEqBraces{key.format}{\textit{format}}
@@ -2194,7 +2196,7 @@ explicitly. This can be done using the command line option \opt{F} as in
 
 \sh[F]{}
 
-Alternatively the Boolean resource \rsc{key.generation} can be used in a
+Alternatively the boolean resource \rsc{key.generation} can be used in a
 resource file:
 
 \begin{Resources}
@@ -2228,7 +2230,7 @@ lower case by default.  This can be suppressed by switching
 \rsc{preserve.key.case} to \verb|on| (see section~\ref{sec:parse.pretty}).
 
 When the \rsc{key.format} is not \rsc{empty} then the keys are disambiguated
-by appending letters or numbers. Thus there can not occur a conflict which
+by appending letters or numbers. Thus there cannot occur a conflict which
 would arise when two entries have the same key. The disambiguation uses the
 resource \rsc{key.number.separator}. If a key is found (during the generation)
 which is already been used then the valid characters from the value of this
@@ -2257,11 +2259,11 @@ instructions on the command line.
 
 \begin{description}
   \item [\rsc{preserve.keys}]
-        This Boolean resource determines whether existing keys should
+        This boolean resource determines whether existing keys should
         be left unchanged when new keys are generated.
         The default value is \verb|off|.
   \item [\rsc{preserve.key.case}]
-        This Boolean resource determines whether keys should be recorded and
+        This boolean resource determines whether keys should be recorded and
         used exactly as read as opposed to normalizing them by translating all
         uppercase letters to lower case.  The default value is \verb|off|.
   \item [\rsc{default.key}]
@@ -2277,7 +2279,7 @@ instructions on the command line.
         number from the rest of the key.
         The default value is \verb|*|.
   \item [\rsc{key.expand.macros}]
-        The value of this Boolean resource is used to indicate whether
+        The value of this boolean resource is used to indicate whether
         macros should be expanded while generating a key.
         The default value is \verb|off|.
   \item [\rsc{fmt.name.title}]
@@ -2306,7 +2308,7 @@ instructions on the command line.
   \item [\rsc{fmt.word.separator}]
         The value of this resource is used as additional characters not to be
         considered as word constituents. Word separators are white-space and
-        punctuation characters. Those can not be redefined.
+        punctuation characters. Those cannot be redefined.
         The default value is empty. 
 \end{description}
 
@@ -2341,7 +2343,7 @@ definitions for those entries whoich have received a new key during the key
 generation. This works for a sufficiently current \BibTeX{} only.
 
 The aliases can be requested with the boolean resource \rsc{key.make.alias}.
-This can be set in a resource file file thie:
+This can be set in a resource file file:
 
 \begin{Resources}
   \rsc{key.make.alias} = on
@@ -2429,11 +2431,38 @@ The simplest form is for instance\index{N@\%N}
 \end{verbatim}
 
 The \texttt{\%} character is followed by a single character---here
-\verb|N|---which indicates the way of formatting and the name of the field to
-be formatted enclosed in parenthesis. The example above requests to format the
+\verb|N|. It indicates the way of formatting. The provided possibilities are
+described below. Finally the name of the field to be formatted
+follows---enclosed in parenthesis. The example above requests to format the
 field \verb|author| according to formatting rules for names (\verb|N|).
 
-The general form is
+The specification can take optional parameters between the \verb|%| and the
+qualifying letter. These parameters have the form of a decimal number
+optionally preceded by a sign. This are some examples:
+\begin{verbatim}
+  2
+  2.
+  .4
+  1.2
+  -3.5
+  +2.7
+\end{verbatim}
+The parameters are interpreted differently accoding to the qualifying
+letter. For instance for \verb|%N| they specify the number of names to
+consider, the number of characters in each name and the translation to upper
+or lower case (see below).
+
+The qualifying letter can be preceded by a hash (\#). In this case the objects
+are counted instead of formatted. The number is compared to the
+parameters. For instance
+\begin{verbatim}
+  %1.3#N(author)
+\end{verbatim}
+
+Again the effect depends on the qualifying letter. The possible combinations
+are described below.
+
+The general form of a formatting specification is
 
 \begin{itemize}
   \item [] \texttt{\%}\textit{sign pre.post qualifier letter}\texttt{(}\textit{field}\texttt{)}
@@ -2446,9 +2475,10 @@ case of the field is preserved.
 
 \textit{pre} and \textit{post} are positive integers whose meaning depends on
 the format letter \textit{letter}. \textit{qualifier letter} is a one letter
-specification indicating the desired formatting type optionally preceded by
-the qualifier \verb|#|. Possible values are as described in the following
-list:
+specification indicating the desired formatting type. It is optionally
+preceded by the qualifier \verb|#|.
+
+Possible values are described in the following list:
 
 \begin{itemize}
   \item [\texttt{p}] \index{p@\%p|(}Format names according to the format
@@ -2535,8 +2565,8 @@ list:
   \item [\texttt{d}] \index{d@\%d|(}Format a number, e.g.\ a year.\\
     
     The \textit{post}$^{th}$ number in the field is searched. At most
-    \textit{pre} digits---counted from the right---are used. For instance
-    the field \texttt{"june 1958"} formatted with \texttt{\%2d} results in
+    \textit{pre} digits---counted from the right---are used. For instance the
+    field value \texttt{"June 1958"} formatted with \texttt{\%2d} results in
     \texttt{58}.
     
     \textit{pre} defaults to a large number except in when the negative sign
@@ -2938,7 +2968,7 @@ pseudo fields. They are listed below.
 
 \item [\texttt{\$source}]%
   This pseudo field contains the name of the file the entry has been read
-  from. If this file can not be determined, e.g. because the entry has been
+  from. If this file cannot be determined, e.g. because the entry has been
   read from stdin, then this pseudo field is empty.
 
 \item [\texttt{\$type}]%
@@ -2958,7 +2988,7 @@ pseudo fields. They are listed below.
 \item [\texttt{\$day}]%
   This pseudo field contains the current day as a two digit number or the
   empty string if this value is not available. The date and time values are
-  determined at the beginning of the \BibTool{} run and does not reflect the
+  determined at the beginning of the \BibTool{} run. They do not reflect the
   execution time used by \BibTool.
 
   On some systems the timing function might be missing or returning strange
@@ -3173,8 +3203,8 @@ ignored. Any unwanted spaces after the equality sign may have strange effects.
 Usually the macro name starts with a backslash (\verb|\|). If the macro name
 starts with another character then this character is made active
 (cf.~\cite{knuth:texbook}). This feature is especially useful for translating
-characters with an extended ASCII code (\(\geq128\)) to the appropriate \TeX{}
-macros.
+characters with an extended \ASCII{} code (\(\geq128\)) to the appropriate
+\TeX{} macros.
 
 For instance the following definition forces the expansion of the macro
 \verb|\TeX| to the string \verb|TeX|.
@@ -3188,7 +3218,7 @@ Without this definition the title \verb|The \TeX{}book| would result in
 
 Suppose you have an input file containing 8-bit characters (e.g. ISO 8859-1
 encoding). The following definition can be used to map this character into a
-pure ASCII string\footnote{To add an e is the German convention for umlaut
+pure \ASCII{} string\footnote{To add an e is the German convention for umlaut
   characters.}
 
 \begin{Resources}
@@ -3341,10 +3371,11 @@ the keys should be generated:
   should be used.
 \item If the type of the entry is a book then the authors/editors are used
   followed by the year separated by a colon.
-\item If the type of the entry is an article in a journal (\texttt{article}) then
-  the author, the journal, the number, and the year should be used. Author and
-  journal should be separated by a colon, The journal should be abbreviated
-  with the initials and separated from number and year by a period.
+\item If the type of the entry is an article in a journal (\texttt{article})
+  then the author, the journal, the number, and the year should be
+  used. Author and journal should be separated by a colon. The journal should
+  be abbreviated with the initials and separated from number and year by a
+  period.
 \item If the type of the entry is a volume of conference proceedings
   (\texttt{proceedings}) then the editor, the first 5 initials of the title
   and the year should be used. The editor should be followed by a colon and
@@ -3526,7 +3557,7 @@ Next you can add a condition
 
 The condition follows the key word \texttt{if}. It consists of the comparison
 of a field -- or pseudo-field -- with a pattern. The pattern is a regular
-expression with which the field is matched. The matching is perfomed
+expression with which the field is matched. The matching is performed
 case-insensitiv.
 
 As simplification you can specify several fields to be kept in one rule. For
@@ -3716,7 +3747,7 @@ new one.
 
 Usually the matching is done case insensitive. This means that any upper case
 letter matches its lower counterpart and vice versa. This behavior is
-controlled by the Boolean resource \rsc{rewrite.case.sensitive} which is
+controlled by the boolean resource \rsc{rewrite.case.sensitive} which is
 \rsc{on} by default. Changing this variable influences only rewrite rules
 specified later.
 
@@ -3785,7 +3816,7 @@ the resource \rsc{sort.order}. The general form is as follows:
 \emph{entry} is the name of an entry like \texttt{book}. The \emph{field}s are
 an arbitrary number of field names like \texttt{author}. This specification
 says that \emph{field1} should precede \emph{field2} etc. Fields which are not
-in this list are arranged after the specified ones. The are left in the same
+in this list are arranged after the specified ones. They are left in the same
 order as they appear in the entry.
 
 Another possibility is to specify the entry \texttt{*}. Such a sorting order
@@ -3853,7 +3884,7 @@ entries if \rsc{pass.comments} is \rsc{off}, which is the default.
 
 Sometimes it is not desirable to include deleted entries in the output -- not
 even as comments. In this case the default behavior can be changed with the
-help of the Boolean resource \rsc{print.deleted.entries}. If this resource is
+help of the boolean resource \rsc{print.deleted.entries}. If this resource is
 \rsc{off} then deleted entries are suppressed completely.
 
 The prefix for deleted entries is stored in the resource
@@ -3861,7 +3892,7 @@ The prefix for deleted entries is stored in the resource
 redefined. However note that you should avoid using a string ending in an at
 sign \texttt{@} since this would undo the effect of deleting an entry.
 
-The Boolean resource \rsc{check.double.delete} can be used to delete double
+The boolean resource \rsc{check.double.delete} can be used to delete double
 entries completely. For this purpose it has to be turned off as in:
 
 \begin{Resources}
@@ -3929,7 +3960,7 @@ rule is found where \emph{field} (if given) is identical to the field name and
 found then the \emph{message} is written to the error stream. If no message is
 given then nothing is printed and processing of the current field is ended.
 
-\emph{message} is treated like the replacement text in \rsc{rewrite.rule},
+\emph{message} is treated like the replacement text in \rsc{rewrite.rule}.
 Thus the special character combinations described in section
 \ref{sec:field.rewriting} are expanded.
 
@@ -3938,7 +3969,7 @@ additional indication as warning or error respectively.
 
 Usually the matching is not done case sensitive. This means that any upper
 case letter matches its lower counterpart and vice versa. This behavior is
-controlled by the Boolean resource \rsc{check.case.sensitive} which is ON by
+controlled by the boolean resource \rsc{check.case.sensitive} which is ON by
 default. Changing this variable influences only rewrite rules as described in
 section~\ref{sec:field.rewriting}.
 
@@ -4007,7 +4038,7 @@ does not deserve special treatment. You can simply give the macro file as one
 of the input files---preferably before any input file that makes use of one of
 the macros contained therein.
 
-The Boolean resource \rsc{print.all.strings} indicates if all macros defined
+The boolean resource \rsc{print.all.strings} indicates if all macros defined
 in the \BibTeX{} file should be printed or only those macros actually used.
 
 \begin{Resources}
@@ -4065,7 +4096,7 @@ double quotes are taken. It can be changed like in
 
 The delimiters of the whole entry are recommended to be braces. For
 compatibility with Scribe it is also allowed that parentheses are used for
-those delimiters. This behavior can be achieved with the Boolean resource
+those delimiters. This behavior can be achieved with the boolean resource
 \rsc{print.parentheses}. Initially this resource is off. It can be set like in
 the following instruction:
 
@@ -4201,9 +4232,9 @@ bugs.
   design decision and I don't think that I will change it.
 \item The \TeX{} reading apparatus is only imitated to a certain limit. But
   this should be enough for most applications to produce satisfactory results.
-\item In several modules ASCII encoding is assumed. I do not know to which
+\item In several modules \ASCII{} encoding is assumed. I do not know to which
   extend this influences the functionality since I don't have access to
-  non-ASCII machines.
+  non-\ASCII{} machines.
 \item Macro expansion uses a dynamic array which can turn out to be too
   short. This will be corrected as soon as I have an example where this bug
   shows up. 
@@ -4221,7 +4252,7 @@ a look at the contents of this file.
 Sample resource files are included in the distribution of \BibTool{} in the
 directory \file{lib}. Only some of them are reproduced in this section.
 
-\section{The Default Settings}
+\section{Default Settings}
 
 The following list shows the defaults for all resource instructions.
 
