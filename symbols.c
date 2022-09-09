@@ -377,6 +377,8 @@ void sym_unlink(sym)				   /*			     */
   if (sym == NO_SYMBOL) return;		   	   /* ignore dummies.	     */
 #ifdef COMPLEX_SYMBOL
   if (--SymbolCount(sym) > 0) return;		   /* double check used.     */
+  DebugPrint2("Symbol removed ",                   /*                        */
+              SymbolValue(sym));                   /*                        */
 #else
  						   /*                        */
 #ifdef DEBUG
