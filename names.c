@@ -4,7 +4,7 @@
 ** It is distributed under the GNU General Public License.
 ** See the file COPYING for details.
 ** 
-** (c) 1996-2020 Gerd Neugebauer
+** (c) 1996-2022 Gerd Neugebauer
 ** 
 ** Net: gene@gerd-neugebauer.de
 ** 
@@ -842,11 +842,11 @@ int main(argc,argv)				   /*                        */
   init_type();					   /*                        */
  						   /*                        */
   fputs("Format: ",stdout);			   /*                        */
-  gets(s);					   /*                        */
+  fgets(s, 1024, stdin);			   /*                        */
  						   /*                        */
   format = name_format(s);		   	   /*                        */
  						   /*                        */
-  while ( gets(s) ) 				   /*                        */
+  while ( fgets(s, 1024, stdin) ) 		   /*                        */
   { puts (pp_names(s,				   /*                        */
 		   format,			   /*                        */
 		   trans_lower,			   /*                        */
