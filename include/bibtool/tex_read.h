@@ -38,7 +38,7 @@
 #else
 #define _ARG(A) ()
 #endif
- int TeX_read _ARG((String cp, String *sp));	   /* tex-read.c             */
+ bool TeX_read _ARG((String cp, String *sp));	   /* tex-read.c             */
  void TeX_active _ARG((int c,int arity, String s));/* tex_read.c             */
  void TeX_close _ARG((void));			   /* tex_read.c             */
  void TeX_def _ARG((String s));		   	   /* tex_read.c             */

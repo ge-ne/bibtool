@@ -42,7 +42,7 @@ extern FILE * px_fopen(
 	char  * mode,
 	char  **pattern,
 	char  **path,
-	int   (*show)()
+	int   (*show)(char*)
 #endif
 	);
 

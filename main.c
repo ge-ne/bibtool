@@ -414,7 +414,7 @@ int main(argc,argv)				   /*			     */
 						   /* this database.	     */
   int	i;				   	   /*			     */
   bool	need_rsc = true;		   	   /*			     */
-  int	(*fct)();			   	   /* Function pointer	     */
+  int	(*fct)(Record, Record);			   /* Function pointer	     */
   int	c_len;					   /*                        */
   int   *c = NULL;				   /*                        */
  						   /*                        */
