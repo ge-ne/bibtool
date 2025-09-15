@@ -53,6 +53,10 @@ AC_ISC_POSIX
 AC_MINIX
 
 dnl ---------------------------------------------------------------------------
+dnl Checks for compile flags.
+AX_APPEND_COMPILE_FLAGS(-Wno-old-style-definition)
+
+dnl ---------------------------------------------------------------------------
 dnl Checks for libraries.
 
 dnl ---------------------------------------------------------------------------
