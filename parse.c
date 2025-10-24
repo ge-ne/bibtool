@@ -55,7 +55,7 @@
  bool see_bib _ARG((String fname));		   /* parse.c                */
  bool seen _ARG((void));			   /* parse.c                */
  int parse_bib _ARG((Record rec));		   /* parse.c                */
- static bool parse_block _ARG((int quotep));	   /* parse.c                */
+ static bool parse_block _ARG((bool quotep));	   /* parse.c                */
  static bool parse_equation _ARG((Record rec));	   /* parse.c                */
  static bool parse_key _ARG((int alpha));	   /* parse.c                */
  static bool parse_rhs _ARG((void));		   /* parse.c                */
@@ -65,7 +65,7 @@
  static bool see_rsc _ARG((String fname));	   /* parse.c                */
  static int fill_line _ARG((void));		   /* parse.c                */
  static int see_bib_msg _ARG((char *s));	   /* parse.c                */
- static int skip _ARG((int inc));		   /* parse.c                */
+ static int skip _ARG((bool inc));		   /* parse.c                */
  static int skip_c _ARG((void));		   /* parse.c                */
  static int skip_nl _ARG((void));		   /* parse.c                */
  static void init___ _ARG((char ***pathp,char **pattern,char **envvp,char *env));/* parse.c*/
