@@ -67,8 +67,7 @@
 **	rec	The record to copy.
 ** Returns:	The new copy of |rec|.
 **___________________________________________________			     */
-Record copy_record(rec)				   /*			     */
-  register Record rec;				   /*			     */
+Record copy_record(register Record rec)				   /*			     */
 { register Record new;				   /*			     */
   register Symbol *new_heap,			   /*			     */
 		  *old_heap;			   /*			     */
@@ -109,9 +108,7 @@ Record copy_record(rec)				   /*			     */
 **	size	The initial heap size.
 ** Returns:	The new record.
 **___________________________________________________			     */
-Record new_record(token,size)			   /*			     */
-  int		  token;			   /*			     */
-  int		  size;				   /*                        */
+Record new_record(int token, int size)			   /*			     */
 { register Record new;				   /*			     */
   register Symbol *new_heap;			   /*			     */
   register int	  i;				   /*			     */
@@ -145,8 +142,7 @@ Record new_record(token,size)			   /*			     */
 **	rec	Arbitrary Record in the chain.
 ** Returns:	nothing
 **___________________________________________________			     */
-void free_record(rec)				   /*                        */
-  Record rec;					   /*                        */
+void free_record(Record rec)				   /*                        */
 { Record r;					   /*                        */
  						   /*                        */
   if ( rec == RecordNULL ) return;		   /*                        */
@@ -170,8 +166,7 @@ void free_record(rec)				   /*                        */
 **	rec	record to free
 ** Returns:	nothing
 **___________________________________________________			     */
-void free_1_record(rec)				   /*                        */
-  Record rec;					   /*                        */
+void free_1_record(Record rec)				   /*                        */
 { int i;					   /*                        */
  						   /*                        */
   if ( rec != RecordNULL )			   /*                        */
@@ -200,8 +195,7 @@ void free_1_record(rec)				   /*                        */
 **	rec	Record to free.
 ** Returns:	nothing
 **___________________________________________________			     */
-Record unlink_record(rec)			   /*                        */
-  Record rec;					   /*                        */
+Record unlink_record(Record rec)			   /*                        */
 { Record r;					   /*                        */
  						   /*                        */
   if ( NextRecord(rec) )			   /*                        */
@@ -234,8 +228,7 @@ Record unlink_record(rec)			   /*                        */
 ** Returns:	Pointer to some entry in the cleared chain or
 **		|RecordNULL| if none is left.
 **___________________________________________________			     */
-Record record_gc(rec)				   /*                        */
-  Record rec;					   /*                        */
+Record record_gc(Record rec)				   /*                        */
 { Record ret = RecordNULL;			   /*                        */
  						   /*                        */
   if ( rec == RecordNULL ) return rec;		   /*                        */
@@ -267,9 +260,7 @@ Record record_gc(rec)				   /*                        */
 **	key	the key
 ** Returns:	
 **___________________________________________________			     */
-Symbol record_get(rec, key)			   /*                        */
-  Record rec;					   /*                        */
-  Symbol key;					   /*                        */
+Symbol record_get(Record rec, Symbol key)			   /*                        */
 { int i;					   /*                        */
   register Symbol *hp;				   /*                        */
   register Symbol s, t;				   /*                        */
@@ -295,8 +286,7 @@ Symbol record_get(rec, key)			   /*                        */
 **	rec	the record
 ** Returns:	
 **___________________________________________________			     */
-int count_record(rec)				   /*                        */
-  Record rec;					   /*                        */
+int count_record(Record rec)				   /*                        */
 { int len = 0;					   /*                        */
   int i;					   /*                        */
   register Symbol *hp;				   /*                        */
@@ -327,11 +317,7 @@ int count_record(rec)				   /*                        */
 **	err	indicator that a warning for double fields should be issued.
 ** Returns:	nothing
 **___________________________________________________			     */
-void push_to_record(rec, s, t, err)		   /*			     */
-  register Record rec;				   /*                        */
-  register Symbol s;				   /*			     */
-  register Symbol t;				   /*			     */
-  bool err;					   /*			     */
+void push_to_record(register Record rec, register Symbol s, register Symbol t, bool err)		   /*			     */
 { register int i;		   		   /*			     */
    						   /*                        */
   if (s == sym_crossref || s == sym_xdata)	   /*                        */
@@ -383,10 +369,7 @@ void push_to_record(rec, s, t, err)		   /*			     */
 **	t	Right hand side of the equation.
 ** Returns:	nothing
 **___________________________________________________			     */
-void provide_to_record(rec,s,t)			   /*			     */
-  register Record rec;				   /*                        */
-  register Symbol s;				   /*			     */
-  register Symbol t;				   /*			     */
+void provide_to_record(register Record rec, register Symbol s, register Symbol t)			   /*			     */
 { register int i;		   		   /*			     */
    						   /*                        */
   if (s == sym_crossref || s == sym_xdata)	   /*                        */
@@ -432,8 +415,7 @@ void provide_to_record(rec,s,t)			   /*			     */
 **	s	Initial string to fill in the WordList structure
 ** Returns:	
 **___________________________________________________			     */
-WordList new_wordlist(s)			   /*                        */
-  Symbol s;				   	   /*                        */
+WordList new_wordlist(Symbol s)			   /*                        */
 { register WordList wl;				   /*                        */
   if ( (wl=(WordList)malloc(sizeof(SWordList))) == WordNULL )/*              */
   { OUT_OF_MEMORY("WordList"); }		   /*                        */
@@ -464,8 +446,7 @@ WordList new_wordlist(s)			   /*                        */
 **	val	string resource of the order.
 ** Returns:	nothing
 **___________________________________________________			     */
-void add_sort_order(val)			   /*                        */
-  Symbol    val;				   /*                        */
+void add_sort_order(Symbol val)			   /*                        */
 { Symbol    sym;				   /*                        */
   rec_type  type;				   /*                        */
   OrderList ol;					   /*                        */
@@ -538,8 +519,7 @@ void add_sort_order(val)			   /*                        */
 **	rec     Record to sort
 ** Returns:	nothing
 **___________________________________________________			     */
-void sort_record(rec)				   /*			     */
-  register Record rec;				   /*			     */
+void sort_record(register Record rec)				   /*			     */
 { Record          r;				   /* Temp. record           */
   OrderList       ol;				   /*                        */
   int             i, ptr;			   /*                        */

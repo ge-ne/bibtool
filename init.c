@@ -68,8 +68,7 @@
 **	progname Name of the program for |KPATHSEA|.
 ** Returns:	nothing
 **___________________________________________________			     */
-void init_bibtool(progname)			   /*                        */
-  char * progname;				   /*                        */
+void init_bibtool(char *progname)		   /*                        */
 {						   /*                        */
 #ifdef EMTEX_LIKE_PATH
   static StringBuffer *sb_rsc;			   /*                        */

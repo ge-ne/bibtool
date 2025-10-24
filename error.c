@@ -65,8 +65,7 @@
 **	file	the output file to write error messages to
 ** Returns:	nothing
 **___________________________________________________			     */
-void init_error(file)				   /*                        */
-  FILE * file;					   /*                        */
+void init_error(FILE *file)				   /*                        */
 {						   /*                        */
   err_file = file;				   /*                        */
 }						   /*------------------------*/
@@ -86,10 +85,7 @@ void init_error(file)				   /*                        */
 **	s1	the optional postfix string
 ** Returns:	nothing
 **___________________________________________________			     */
-void err_location(lineno,fname,s1)		   /*                        */
-  int    lineno;				   /*                        */
-  String fname;					   /*                        */
-  char*  s1;					   /*                        */
+void err_location(int lineno, String fname, char *s1)		   /*                        */
 {						   /*                        */
   (void)fprintf(err_file,			   /*			     */
 		" (line %d in %s)",		   /*			     */
@@ -153,15 +149,7 @@ void err_location(lineno,fname,s1)		   /*                        */
 **	fname	The file name where the error occurred.
 ** Returns:	nothing
 **___________________________________________________			     */
-void error(type, s1, s2, s3, line, err_pos, line_no, fname)/*		     */
-  int	  type;			   	   	   /* defined in error.h     */
-  String  s1;			   	   	   /* 1st error message	     */
-  String  s2;			   	   	   /* 2nd error message	     */
-  String  s3;			   	   	   /* 3rd error message	     */
-  String  line;				   	   /* line_no string.	     */
-  String  err_pos;				   /* error position in line */
-  int	  line_no;		   	   	   /* line number	     */
-  Symbol  fname;		   	   	   /* file name		     */
+void error(int type, String s1, String s2, String s3, String line, String err_pos, int line_no, Symbol fname)/*		     */
 {						   /*			     */
   if ( (type&ERR_WARNING)			   /* anything less than an  */
        && rsc_quiet ) return;			   /*  error is ignored.     */

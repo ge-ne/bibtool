@@ -95,8 +95,7 @@ StringBuffer* sbopen()				   /*                        */
 **	sb	Pointer to string buffer which should be closed
 ** Returns:	Return |false| upon failure.
 **___________________________________________________			     */
-bool sbclose(sb)				   /*                        */
-  StringBuffer* sb;				   /*                        */
+bool sbclose(StringBuffer *sb)				   /*                        */
 {						   /*                        */
   if (sb == NULL) return true;		   	   /*                        */
   if (sb->sb__string != NULL) free(sb->sb__string);/*                        */
@@ -112,9 +111,7 @@ bool sbclose(sb)				   /*                        */
 **	sb	Destination string buffer.
 ** Returns:	|false| if something went wrong.
 **___________________________________________________			     */
-bool sbputs(s,sb)				   /*                        */
-  char         *s;				   /*                        */
-  StringBuffer* sb;				   /*                        */
+bool sbputs(char *s, StringBuffer *sb)				   /*                        */
 {						   /*                        */
   if (sb == NULL) return false;			   /*                        */
  						   /*                        */
@@ -139,9 +136,7 @@ bool sbputs(s,sb)				   /*                        */
 **	sb	Destination string buffer.
 ** Returns:	|false| if no memory is left.
 **___________________________________________________			     */
-bool sbputc(c,sb)				   /*                        */
-  register int           c;			   /*                        */
-  register StringBuffer* sb;			   /*                        */
+bool sbputc(register int c, register StringBuffer *sb)				   /*                        */
 { register char         *cp;			   /*                        */
  						   /*                        */
   if ( sb->sb__ptr >= sb->sb__size )		   /*                        */
@@ -172,8 +167,7 @@ bool sbputc(c,sb)				   /*                        */
 ** Returns:	The string contained in the string buffer as a proper
 **		C string.
 **___________________________________________________			     */
-char* sbflush(sb)				   /*                        */
-  StringBuffer* sb;				   /*                        */
+char* sbflush(StringBuffer *sb)				   /*                        */
 { 						   /*                        */
   (void)sbputchar('\0',sb);			   /*                        */
   sb->sb__ptr--;				   /*                        */
@@ -188,8 +182,7 @@ char* sbflush(sb)				   /*                        */
 **	sb	String buffer to consider.
 ** Returns:	nothing
 **___________________________________________________			     */
-void sbrewind(sb)				   /*                        */
-  StringBuffer* sb;				   /*                        */
+void sbrewind(StringBuffer *sb)				   /*                        */
 { sb->sb__ptr = 0;				   /*                        */
 }						   /*------------------------*/
 
@@ -203,8 +196,7 @@ void sbrewind(sb)				   /*                        */
 **		position. This is an integer offset from the beginning
 **		of the string buffer.
 **___________________________________________________			     */
-int sbtell(sb)					   /*                        */
-  StringBuffer* sb;				   /*                        */
+int sbtell(StringBuffer *sb)					   /*                        */
 { return sb->sb__ptr;				   /*                        */
 }						   /*------------------------*/
 
@@ -218,9 +210,7 @@ int sbtell(sb)					   /*                        */
 **	pos	New position of the string buffer.
 ** Returns:	|false| if everything went right.
 **___________________________________________________			     */
-bool sbseek(sb, pos)				   /*                        */
-  StringBuffer* sb;				   /*                        */
-  int           pos;				   /*                        */
+bool sbseek(StringBuffer *sb, int pos)				   /*                        */
 { 						   /*                        */
   if ( pos < 0 || pos > sb->sb__ptr ) return true; /*                        */
   sb->sb__ptr = pos;				   /*                        */

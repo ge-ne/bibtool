@@ -132,8 +132,7 @@ void init_entries()				   /*			     */
 **	s	String containing the name of the entry.
 ** Returns:	nothing
 **___________________________________________________			     */
-void def_entry_type(sym)			   /*			     */
-  Symbol sym;				   	   /*			     */
+void def_entry_type(Symbol sym)			   /*			     */
 { int  i;				   	   /*                        */
   String s = SymbolValue(sym);			   /*                        */
  						   /*                        */
@@ -172,9 +171,7 @@ void def_entry_type(sym)			   /*			     */
 ** Returns:	|true| iff the arguments are identical or the second
 **		string is a substring not followed by a letter or digit.
 **___________________________________________________			     */
-static bool match(s,t)				   /*			     */
-  register String s;				   /*			     */
-  register String t;				   /*			     */
+static bool match(register String s, register String t)				   /*			     */
 {						   /*			     */
   while (*t)					   /*			     */
   { if ( ToLower(*s) != ToLower(*t) ) return false;/*			     */
@@ -192,8 +189,7 @@ static bool match(s,t)				   /*			     */
 **	s	String of the potential entry name.
 ** Returns:	The index in the array or |NOOP|.
 **___________________________________________________			     */
-rec_type find_entry_type(s)			   /*			     */
-  String s;				   	   /*			     */
+rec_type find_entry_type(String s)			   /*			     */
 { int i;				   	   /*			     */
 						   /*			     */
   for (i = 0; i < entry_ptr; ++i)		   /*			     */
@@ -213,8 +209,7 @@ rec_type find_entry_type(s)			   /*			     */
 **	idx	Index of entry type.
 ** Returns:	Print representation of the entry type or |NULL|.
 **___________________________________________________			     */
-Symbol  get_entry_type(idx)			   /*                        */
-  int idx;				   	   /*                        */
+Symbol  get_entry_type(int idx)			   /*                        */
 {						   /*                        */
   return (idx < 0 || idx >= entry_ptr		   /*                        */
 	  ? NO_SYMBOL				   /*                        */

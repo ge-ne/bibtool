@@ -73,11 +73,7 @@
 **	df	destination field name
 ** Returns:	the new map
 **___________________________________________________			     */
-static Map new_map(sr,sf,dr,df)			   /*                        */
-  rec_type sr;					   /*                        */
-  Symbol sf;					   /*                        */
-  rec_type dr;					   /*                        */
-  Symbol df;					   /*                        */
+static Map new_map(rec_type sr, Symbol sf, rec_type dr, Symbol df)			   /*                        */
 { Map m;					   /*                        */
   if ( (m = (Map)malloc(sizeof(SMap))) == (Map)NULL)/*                       */
   { OUT_OF_MEMORY("map"); }		   	   /*                        */
@@ -98,8 +94,7 @@ static Map new_map(sr,sf,dr,df)			   /*                        */
 **	m	the map
 ** Returns:	nothing
 **___________________________________________________			     */
-static void free_map(m)				   /*                        */
-  Map m;					   /*                        */
+static void free_map(Map m)				   /*                        */
 { Map nxt;					   /*                        */
   while (m)					   /*                        */
   { nxt = NextMap(m);				   /*                        */
@@ -146,11 +141,7 @@ void clear_map()				   /*                        */
 **	d_fld	the destination field name
 ** Returns:	nothing
 **___________________________________________________			     */
-void map_add(s_rec,s_fld,d_rec,d_fld)		   /*                        */
-  rec_type s_rec;				   /*                        */
-  Symbol s_fld;					   /*                        */
-  rec_type d_rec;				   /*                        */
-  Symbol d_fld;					   /*                        */
+void map_add(rec_type s_rec, Symbol s_fld, rec_type d_rec, Symbol d_fld)		   /*                        */
 { int idx;					   /*                        */
   Map m;					   /*                        */
  						   /*                        */
@@ -187,10 +178,7 @@ void map_add(s_rec,s_fld,d_rec,d_fld)		   /*                        */
 **	d_rec	the index of the destination entry type
 ** Returns:	the new field name or |NO_SYMBOL|
 **___________________________________________________			     */
-Symbol map_get(s_rec, s_fld, d_rec)		   /*                        */
-  rec_type s_rec;				   /*                        */
-  Symbol s_fld;					   /*                        */
-  rec_type d_rec;				   /*                        */
+Symbol map_get(rec_type s_rec, Symbol s_fld, rec_type d_rec)		   /*                        */
 { int i = MAP_INDEX(s_rec, s_fld, d_rec);	   /*                        */
   Map m	= map[i];	   			   /*                        */
 						   /*                        */
@@ -212,8 +200,7 @@ Symbol map_get(s_rec, s_fld, d_rec)		   /*                        */
 **	spec	the argument
 ** Returns:	nothing
 **___________________________________________________			     */
-void crossref_map(spec)				   /*                        */
-  String spec;				   	   /*			     */
+void crossref_map(String spec)				   /*                        */
 { Symbol *src, *dest;				   /*                        */
   Symbol src_field, dest_field;			   /*                        */
   Symbol *sp, *dp;				   /*                        */
@@ -272,12 +259,7 @@ void crossref_map(spec)				   /*                        */
 **	msg	the message prefix for an unknown entry message
 ** Returns:	|true| iff the record could be inserted
 **___________________________________________________			     */
-static bool insert_record(db, rec, hp, s, msg)	   /*                        */
-  DB     db;					   /*                        */
-  Record rec;					   /*                        */
-  register Symbol *hp;				   /*			     */
-  Symbol s;					   /*                        */
-  String msg;					   /*                        */
+static bool insert_record(DB db, Record rec, register Symbol *hp, Symbol s, String msg)	   /*                        */
 { Record r;					   /*                        */
   Symbol t, ms;					   /*                        */
   int    i;					   /*                        */
@@ -310,9 +292,7 @@ static bool insert_record(db, rec, hp, s, msg)	   /*                        */
 **	rec	The record to expand
 ** Returns:	|false| iff an error has occured
 **___________________________________________________			     */
-bool expand_crossref(db, rec)		   	   /*                        */
-  DB     db;					   /*                        */
-  Record rec;					   /*                        */
+bool expand_crossref(DB db, Record rec)		   	   /*                        */
 { register Symbol *hp;				   /*			     */
   register int    i;				   /*                        */
   String	  x;				   /*                        */

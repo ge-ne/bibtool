@@ -93,8 +93,7 @@
 **	s	String description of the value.
 ** Returns:	nothing
 **___________________________________________________			     */
-void set_symbol_type(s)				   /*			     */
-  register String  s;				   /*			     */
+void set_symbol_type(register String s)				   /*			     */
 { if ( case_eq(s, s_upper) )			   /*			     */
   { symbol_type = SYMBOL_TYPE_UPPER; }		   /*			     */
   else if ( case_eq(s, s_cased) )		   /*			     */
@@ -134,8 +133,7 @@ String get_symbol_type()			   /*                        */
 **	s	String description of the value.
 ** Returns:	nothing
 **___________________________________________________			     */
-void set_key_type(s)				   /*			     */
-  register String  s;				   /*			     */
+void set_key_type(register String s)				   /*			     */
 { if ( case_cmp(s,s_upper) )			   /*			     */
   { key_type = SYMBOL_TYPE_UPPER; }		   /*			     */
   else if ( case_cmp(s,s_cased) )		   /*			     */
@@ -161,8 +159,7 @@ void set_key_type(s)				   /*			     */
 **	s	String description of the value.
 ** Returns:	nothing
 **___________________________________________________			     */
-void rsc_align(s)				   /*			     */
-  String s;					   /*			     */
+void rsc_align(String s)				   /*			     */
 {						   /*			     */
   int val = 0;					   /*			     */
   while (*s && is_space(*s)) { s++; }		   /*			     */
@@ -201,8 +198,7 @@ void rsc_align(s)				   /*			     */
 **	rec	the record
 ** Returns:	nothing
 **___________________________________________________			     */
- static void adjust_align(rec)			   /*			     */
-  Record rec;					   /*			     */
+ static void adjust_align(Record rec)			   /*			     */
 { register int i;				   /*			     */
   register int len;				   /*			     */
   Symbol *hp = RecordHeap(rec);			   /*			     */
@@ -239,10 +235,7 @@ void rsc_align(s)				   /*			     */
 **	fct	function to use for writing a character.
 ** Returns:	nothing
 **___________________________________________________			     */
-static void puts_in(s,in,fct)			   /*			     */
-  register String s;				   /*			     */
-  register int  in;				   /*                        */
-  int (*fct)_ARG((int));			   /*                        */
+static void puts_in(register String s, register int in, int (*fct)_ARG((int)))			   /*			     */
 {						   /*			     */
   while ( *s )					   /*			     */
   { (void)(*fct)(*s);			   	   /*                        */
@@ -269,9 +262,7 @@ static void puts_in(s,in,fct)			   /*			     */
 **	fct	function to use for writing a character.
 ** Returns:	nothing
 **___________________________________________________			     */
-static void indent(col,fct)			   /*			     */
-  register int col;				   /*			     */
-  int (*fct)_ARG((int));			   /*                        */
+static void indent(register int col, int (*fct)_ARG((int)))			   /*			     */
 {						   /*			     */
   if ( col > rsc_linelen ) col = rsc_linelen;	   /*                        */
   while ( column < col )			   /*			     */
@@ -300,10 +291,7 @@ static void indent(col,fct)			   /*			     */
 **	fct	function to use for writing a character.
 ** Returns:	nothing
 **___________________________________________________			     */
-static void line_breaking(t, align, fct)	   /*			     */
-  register String t;				   /* string to print.	     */
-  int		 align;				   /* alignment column	     */
-  int            (*fct)_ARG((int));		   /*                        */
+static void line_breaking(register String t, int align, int (*fct)_ARG((int)))	   /*			     */
 { register String s;			   	   /* intermediate pointer   */
   char		  end_c;			   /* temp. character.	     */
   int		  brace,			   /* brace counter	     */
@@ -433,12 +421,7 @@ static void line_breaking(t, align, fct)	   /*			     */
 **	fct	function to use for writing a character.
 ** Returns:	nothing
 **___________________________________________________'			     */
-static void print_equation(pre, lhs, rhs, align, fct)/*			     */
-  String pre;					   /*                        */
-  Symbol lhs;				   	   /*			     */
-  Symbol rhs;				   	   /*			     */
-  int  align;				   	   /*			     */
-  int (*fct)_ARG((int));			   /*                        */
+static void print_equation(String pre, Symbol lhs, Symbol rhs, int align, int (*fct)_ARG((int)))/*			     */
 {						   /*			     */
   if ( align >= 0 ) indent(rsc_indent, fct);	   /*			     */
 						   /*			     */
@@ -467,8 +450,7 @@ static void print_equation(pre, lhs, rhs, align, fct)/*			     */
 **	c	Character to print.
 ** Returns:	The return status of |fputc()|.
 **___________________________________________________			     */
-static int fput_char(c)				   /*                        */
-  int c;					   /*                        */
+static int fput_char(int c)				   /*                        */
 { return fputc(c, ofile);			   /*                        */
 }						   /*------------------------*/
 
@@ -483,11 +465,7 @@ static int fput_char(c)				   /*                        */
 **	start	Initial string used before the type. Should be "@" normally.
 ** Returns:	nothing
 **___________________________________________________			     */
-void fput_record(file, rec, db, start)	   	   /*			     */
-  FILE	 *file;			   		   /*                        */
-  DB	 db;			   		   /*                        */
-  Record rec;			   		   /* record to print	     */
-  String start;		   	   	   	   /* initial string = "@"   */
+void fput_record(FILE *file, Record rec, DB db, String start)	   	   /*			     */
 {						   /*                        */
   ofile = file;					   /*                        */
   put_record(fput_char, rec, db, start);	   /*                        */
@@ -503,8 +481,7 @@ void fput_record(file, rec, db, start)	   	   /*			     */
 **	c	Character to print.
 ** Returns:	The return status of |fputc()|.
 **___________________________________________________			     */
-static int sput_char(c)				   /*                        */
-  int c;					   /*                        */
+static int sput_char(int c)				   /*                        */
 { return sbputchar(c, osb);			   /*                        */
 }						   /*------------------------*/
 
@@ -520,10 +497,7 @@ static int sput_char(c)				   /*                        */
 **	start	Initial string used before the type. Should be "@" normally.
 ** Returns:	The string containing the printed representation.
 **___________________________________________________			     */
-char * sput_record(rec, db, start)	   	   /*			     */
-  DB	 db;			   		   /*                        */
-  Record rec;			   		   /* record to print	     */
-  String start;		   	   	   	   /* initial string = "@"   */
+char * sput_record(Record rec, DB db, String start)	   	   /*			     */
 {						   /*                        */
   if ( osb == NULL ) osb = sbopen();		   /*                        */
   sbrewind(osb);				   /*                        */
@@ -581,11 +555,7 @@ char * sput_record(rec, db, start)	   	   /*			     */
 **	start	Initial string used before the type. Should be "@" normally.
 ** Returns:	nothing
 **___________________________________________________			     */
-void put_record(fct, rec, db, start)		   /*                        */
-  int	       (*fct)_ARG((int));		   /*                        */
-  Record       rec;				   /*                        */
-  DB	       db;				   /*                        */
-  String       start;		   	   	   /* initial string = "@"   */
+void put_record(int (*fct)_ARG((int)), Record rec, DB db, String start)		   /*                        */
 { Symbol       *hp;			   	   /* heap pointer	     */
   unsigned int i;			   	   /*			     */
   char	       open_brace, close_brace;		   /*			     */
