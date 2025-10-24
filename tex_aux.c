@@ -89,8 +89,7 @@ void clear_aux()				   /*                        */
 **	fct	funtion to apply
 ** Returns:	|cite_star|
 **___________________________________________________			     */
-bool foreach_aux(fct)				   /*                        */
-  bool (fct)_ARG((Symbol));			   /*                        */
+bool foreach_aux(bool (fct)_ARG((Symbol)))				   /*                        */
 { int i;					   /*                        */
   for (i = 0; i < 32; i++)			   /*                        */
   { foreach_word(cite[i], fct); }		   /*                        */
@@ -106,8 +105,7 @@ bool foreach_aux(fct)				   /*                        */
 **	key	the reference key of * for all
 ** Returns:	nothing
 **___________________________________________________			     */
-static void save_ref(key)			   /*                        */
-  register String key;				   /*                        */
+static void save_ref(register String key)			   /*                        */
 { 						   /*                        */
   if (cite_star) return;			   /*                        */
  						   /*                        */
@@ -125,8 +123,7 @@ static void save_ref(key)			   /*                        */
 **	s	reference key to check
 ** Returns:	|true| if the reference is used.
 **___________________________________________________			     */
-bool aux_used(s)				   /*                        */
-  Symbol s;					   /*                        */
+bool aux_used(Symbol s)				   /*                        */
 {						   /*                        */
   return cite_star				   /*                        */
     || find_word(SymbolValue(s),		   /*                        */
@@ -159,10 +156,7 @@ bool aux_used(s)				   /*                        */
 **		indicating the status of the operation.
 ** Returns:	|true| iff the file could not be opened.
 **___________________________________________________			     */
-bool read_aux(fname, fct, verbose)		   /*                        */
-  String 	fname;			   	   /* aux file name          */
-  void		(*fct)_ARG((Symbol));		   /*                        */
-  bool          verbose;			   /*                        */
+bool read_aux(String fname, void (*fct)_ARG((Symbol)), bool verbose)		   /*                        */
 { FILE 	        *file;				   /*                        */
   int           c;                                 /*                        */
   char*		s;				   /*                        */
@@ -278,8 +272,7 @@ bool read_aux(fname, fct, verbose)		   /*                        */
 ** Returns:	|false| iff all entries are kept because of an
 **		explicit or implicit star (*).
 **___________________________________________________			     */
-bool apply_aux(db)				   /*                        */
-  DB     db;					   /*                        */
+bool apply_aux(DB db)				   /*                        */
 { Record rec, rec1;				   /*                        */
  						   /*                        */
   if (cite_star) return false;		   	   /* No selection desired.  */

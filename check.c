@@ -66,8 +66,7 @@
 **	key	the key to check
 ** Returns:	nothing
 **___________________________________________________			     */
-void add_unique_field(key)			   /*                        */
-  Symbol key;					   /*                        */
+void add_unique_field(Symbol key)			   /*                        */
 { StringBuffer *sb = sbopen();			   /*                        */
   sbputs((char*)SymbolValue(key), sb);		   /*                        */
   key = symbol(lower((String)sbflush(sb)));	   /*                        */
@@ -85,8 +84,7 @@ void add_unique_field(key)			   /*                        */
 **	db	
 ** Returns:	nothing
 **___________________________________________________			     */
-void apply_checks(db)				   /*                        */
-  DB db;					   /*                        */
+void apply_checks(DB db)				   /*                        */
 {						   /*                        */
   if (rsc_double_check || unique_fields)	   /* Maybe look for doubles */
   { db_forall(db, do_checks); }		   	   /* or apply unique checks */
@@ -103,9 +101,7 @@ void apply_checks(db)				   /*                        */
 **	rec	the record
 ** Returns:	|false|
 **___________________________________________________			     */
-static bool do_checks(db,rec)			   /*                        */
-  DB	 db;					   /*                        */
-  Record rec;					   /*                        */
+static bool do_checks(DB db, Record rec)			   /*                        */
 { register Record prev;				   /*                        */
   register Record rec2;				   /*                        */
   WordList wl;					   /*                        */

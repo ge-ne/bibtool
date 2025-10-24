@@ -66,9 +66,7 @@
 **	wlp	Pointer to a wordlist.
 ** Returns:	nothing
 **___________________________________________________			     */
-void add_word(sym, wlp)				   /*			     */
-  register Symbol   sym;			   /*			     */
-  register WordList *wlp;			   /*			     */
+void add_word(register Symbol sym, register WordList *wlp)				   /*			     */
 { register WordList wl;				   /*			     */
   register int	    cmp = 1;			   /*			     */
 						   /*			     */
@@ -103,10 +101,7 @@ void add_word(sym, wlp)				   /*			     */
 **	fct	Function to call to free the memory occupied by the word.
 ** Returns:	|0| if the word was not found. |1| otherwise.
 **___________________________________________________			     */
-int delete_word(sym, wlp, fct)			   /*                        */
-  Symbol   sym;					   /*                        */
-  WordList *wlp;				   /*                        */
-  void    (*fct)_ARG((String));			   /*                        */
+int delete_word(Symbol sym, WordList *wlp, void (*fct)_ARG((String)))			   /*                        */
 { WordList wl;				   	   /*			     */
   int cmp = 1;					   /*                        */
   while ( *wlp != WordNULL			   /*			     */
@@ -134,9 +129,7 @@ int delete_word(sym, wlp, fct)			   /*                        */
 **		If it is |NULL| then no function is called.
 ** Returns:	nothing
 **___________________________________________________			     */
-void free_words(wlp, fct)			   /*                        */
-  WordList *wlp;				   /*                        */
-  void    (*fct)_ARG((Symbol));			   /*                        */
+void free_words(WordList *wlp, void (*fct)_ARG((Symbol)))			   /*                        */
 { WordList wl, next;				   /*                        */
  						   /*                        */
   if (wlp == NULL) return;			   /*                        */
@@ -171,9 +164,7 @@ void free_words(wlp, fct)			   /*                        */
 **	fct	function to apply.
 ** Returns:	return value of last function or |true|.
 **___________________________________________________			     */
-bool foreach_word(wl, fct)			   /*                        */
-  WordList wl;					   /*                        */
-  bool (*fct)_ARG((Symbol));			   /*                        */
+bool foreach_word(WordList wl, bool (*fct)_ARG((Symbol)))			   /*                        */
 { bool ret = true;				   /*                        */
   while ( wl && (ret=(fct)(ThisWord(wl))) )	   /*                        */
   { wl = NextWord(wl); }			   /*                        */
@@ -189,9 +180,7 @@ bool foreach_word(wl, fct)			   /*                        */
 **	wl	Word list to search in.
 ** Returns:	|false| iff the word does not occur in the word list.
 **___________________________________________________			     */
-bool find_word(s, wl)				   /*			     */
-  register String   s;				   /*			     */
-  register WordList wl;				   /*			     */
+bool find_word(register String s, register WordList wl)				   /*			     */
 {					   	   /*			     */
   while ( wl != WordNULL )			   /*                        */
   { if (case_eq(SymbolValue(ThisWord(wl)), s))	   /*                        */

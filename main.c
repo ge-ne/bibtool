@@ -78,11 +78,7 @@
 /* Internal Programs							     */
 /*===========================================================================*/
 
-#ifdef __STDC__
 #define _ARG(A) A
-#else
-#define _ARG(A) ()
-#endif
  int main _ARG((int argc,char *argv[]));	   /* main.c                 */
  static bool do_keys _ARG((DB db,Record rec));	   /* main.c                 */
  static bool do_no_keys _ARG((DB db,Record rec));  /* main.c                 */
@@ -169,8 +165,7 @@ char * getenv(name)				   /*			     */
 **	fullp	Boolean. If |false| only the version is displayed.
 ** Returns:	nothing
 **___________________________________________________			     */
-static void usage(fullp)			   /*			     */
-  bool           fullp;				   /*                        */
+static void usage(bool fullp)			   /*			     */
 { static char    *comma = ", ";			   /*                        */
   char		 *sep   = " ";			   /*                        */
   POSSIBLY_UNUSED(comma);			   /*			     */
@@ -237,9 +232,7 @@ static void usage(fullp)			   /*			     */
 **	rec	the record
 ** Returns:	|false|
 **___________________________________________________			     */
-static bool keep_selected(db, rec)		   /*                        */
-  DB db;					   /*                        */
-  Record rec;					   /*                        */
+static bool keep_selected(DB db, Record rec)		   /*                        */
 {						   /*                        */
   if (!is_selected(db, rec))			   /*                        */
   { SetRecordDELETED(rec); }			   /*                        */
@@ -258,9 +251,7 @@ static bool keep_selected(db, rec)		   /*                        */
 **	rec	the record
 ** Returns:	|false|
 **___________________________________________________			     */
-static bool keep_xref(db,rec)			   /*                        */
-  DB db;					   /*                        */
-  Record rec;					   /*                        */
+static bool keep_xref(DB db, Record rec)			   /*                        */
 {						   /*                        */
   if (!RecordIsDELETED(rec))		   	   /*                        */
   { Symbol key;				   	   /*                        */
@@ -305,9 +296,7 @@ static bool keep_xref(db,rec)			   /*                        */
 **	the_db	the database
 ** Returns:	nothing
 **___________________________________________________			     */
-static void write_macros(m_file, the_db)	   /*                        */
-  char* m_file;		   			   /*                        */
-  DB	the_db;					   /*                        */
+static void write_macros(char *m_file, DB the_db)	   /*                        */
 { FILE * file;					   /*                        */
  						   /*                        */
   if (m_file == NULL || *m_file == 0) return;      /*			     */
@@ -332,8 +321,7 @@ static void write_macros(m_file, the_db)	   /*                        */
 **	db	the database
 ** Returns:	nothing
 **___________________________________________________			     */
-static void read_in_files(db)		   	   /*                        */
-  DB db;					   /*                        */
+static void read_in_files(DB db)		   	   /*                        */
 { int i;					   /*                        */
   Symbol in;					   /*                        */
 						   /*                        */
@@ -353,8 +341,7 @@ static void read_in_files(db)		   	   /*                        */
 **	db	the database
 ** Returns:	nothing
 **___________________________________________________			     */
-static void write_output(db)		   	   /*                        */
-  DB db;					   /*                        */
+static void write_output(DB db)		   	   /*                        */
 { FILE  *file;				   	   /*                        */
   Symbol o_file = get_output_file();		   /*                        */
  						   /*                        */
@@ -402,9 +389,7 @@ static void write_output(db)		   	   /*                        */
 **		which leads to an |exit()|. Thus this function does
 **		not need to signal an error to the calling environment.
 **___________________________________________________			     */
-int main(argc,argv)				   /*			     */
-  int	argc;				   	   /* Argument count	     */
-  char	*argv[];			   	   /* Argument values	     */
+int main(int argc, char *argv[])				   /*			     */
 { DB	the_db;				   	   /* The \BibTool{} program */
 						   /* currently handles a    */
 						   /* single database at a   */
@@ -621,9 +606,7 @@ int main(argc,argv)				   /*			     */
 **	r2	the second record
 ** Returns:	
 **___________________________________________________			     */
-static int rec_gt(r1, r2)			   /*                        */
-  Record r1;					   /*                        */
-  Record r2;					   /*                        */
+static int rec_gt(Record r1, Record r2)			   /*                        */
 { return symcmp(RecordSortkey(r1),		   /*                        */
 		RecordSortkey(r2)) < 0;	   	   /*                        */
 }						   /*------------------------*/
@@ -638,9 +621,7 @@ static int rec_gt(r1, r2)			   /*                        */
 **	r2	the second record
 ** Returns:	
 **___________________________________________________			     */
-static int rec_lt(r1, r2)			   /*                        */
-  Record r1;					   /*                        */
-  Record r2;					   /*                        */
+static int rec_lt(Record r1, Record r2)			   /*                        */
 { return symcmp(RecordSortkey(r1),	   	   /*                        */
 		RecordSortkey(r2)) > 0;   	   /*                        */
 }						   /*------------------------*/
@@ -655,9 +636,7 @@ static int rec_lt(r1, r2)			   /*                        */
 **	r2	the second record
 ** Returns:	
 **___________________________________________________			     */
-static int rec_gt_cased(r1, r2)			   /*                        */
-  Record r1;					   /*                        */
-  Record r2;					   /*                        */
+static int rec_gt_cased(Record r1, Record r2)			   /*                        */
 { return symcmp(get_key(RecordSortkey(r1)),   	   /*                        */
 		get_key(RecordSortkey(r2))) < 0;   /*                        */
 }						   /*------------------------*/
@@ -672,9 +651,7 @@ static int rec_gt_cased(r1, r2)			   /*                        */
 **	r2	the second record
 ** Returns:	
 **___________________________________________________			     */
-static int rec_lt_cased(r1, r2)			   /*                        */
-  Record r1;					   /*                        */
-  Record r2;					   /*                        */
+static int rec_lt_cased(Record r1, Record r2)			   /*                        */
 { return symcmp(get_key(RecordSortkey(r1)),   	   /*                        */
 		get_key(RecordSortkey(r2))) > 0;   /*                        */
 }						   /*------------------------*/
@@ -686,9 +663,7 @@ static int rec_lt_cased(r1, r2)			   /*                        */
 **	rec	the record
 ** Returns:	|false|	
 **___________________________________________________			     */
-static bool do_keys(db, rec)			   /*                        */
-  DB	 db;					   /*                        */
-  Record rec;					   /*                        */
+static bool do_keys(DB db, Record rec)			   /*                        */
 {						   /*                        */
   rewrite_record(db, rec);			   /*			     */
   sort_record(rec);				   /*                        */
@@ -706,9 +681,7 @@ static bool do_keys(db, rec)			   /*                        */
 **	rec	the record
 ** Returns:	|false|
 **___________________________________________________			     */
-static bool do_no_keys(db, rec)			   /*                        */
-  DB	 db;					   /*                        */
-  Record rec;					   /*                        */
+static bool do_no_keys(DB db, Record rec)			   /*                        */
 {						   /*                        */
   rewrite_record(db, rec);			   /*			     */
   sort_record(rec);				   /*                        */
@@ -728,9 +701,7 @@ static bool do_no_keys(db, rec)			   /*                        */
 **	first_rec	the first record
 ** Returns:	|false|
 **___________________________________________________			     */
-static bool update_crossref(db, rec)		   /*			     */
-  DB		  db;				   /*                        */
-  Record	  rec;				   /*			     */
+static bool update_crossref(DB db, Record rec)		   /*			     */
 { register Symbol *hp;				   /*			     */
   register int    i;				   /*                        */
   Symbol	  s;				   /*                        */
@@ -779,8 +750,7 @@ static bool update_crossref(db, rec)		   /*			     */
 **	c	Character to print.
 ** Returns:	nothing
 **___________________________________________________			     */
-void printchar(c)				   /*                        */
-  register char c;				   /*                        */
+void printchar(register char c)				   /*                        */
 { ErrC(c);					   /*                        */
 }						   /*------------------------*/
 #endif
