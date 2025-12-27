@@ -48,20 +48,13 @@ dnl AC_PATH_PROGS(TCLSH,tclsh tclsh-8.0 tclsh-8.1 tclsh-8.2 tclx,/usr/local/bin/
 
 dnl ---------------------------------------------------------------------------
 dnl for regexp
-AC_AIX
-AC_ISC_POSIX
-AC_MINIX
+AC_USE_SYSTEM_EXTENSIONS
+AC_SEARCH_LIBS([strerror],[cposix])
+AC_USE_SYSTEM_EXTENSIONS
 
 dnl ---------------------------------------------------------------------------
 dnl Checks for compile flags.
 AX_APPEND_COMPILE_FLAGS(-Wno-old-style-definition)
-
-dnl ---------------------------------------------------------------------------
-dnl Checks for libraries.
-
-dnl ---------------------------------------------------------------------------
-dnl Checks for header files.
-AC_STDC_HEADERS
 
 dnl ---------------------------------------------------------------------------
 dnl Checks for typedefs, structures, and compiler characteristics.
@@ -96,17 +89,14 @@ else
 	kpathsea_lib=
 	kpathsea_lib_static=
 	kpathsea_def=
-	AC_TRY_COMPILE(
-	[
+	AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 		#include <stdio.h>
 		#include <kpathsea/tex-file.h>
-	],[],
-	[
+	]], [[]])],[
 		kpathsea_dir=/usr/include
 		kpathsea_lib=-lkpathsea
 		kpathsea_def=-DHAVE_LIBKPATHSEA
-	],
-	[
+	],[
 	for cand in .. ../kpse3-2 kpse3-2 . /usr/include /usr/local/include
 	do
 	  if test -f $cand/kpathsea/tex-file.h ; then
@@ -141,7 +131,8 @@ dnl ---------------------------------------------------------------------------
 
 dnl AC_CONFIG_SUBDIRS(BibTcl)
 
-AC_CONFIG_HEADER(include/bibtool/config.h:AutoConf/config.h.in regex-0.12/config.h:AutoConf/reconfig.h.in)
+AC_CONFIG_HEADERS([include/bibtool/config.h:AutoConf/config.h.in regex-0.12/config.h:AutoConf/reconfig.h.in])
 
-AC_OUTPUT(makefile:AutoConf/makefile.in)
+AC_CONFIG_FILES([makefile:AutoConf/makefile.in])
+AC_OUTPUT
 dnl ---------------------------------------------------------------------------
