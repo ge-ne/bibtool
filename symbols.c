@@ -325,7 +325,6 @@ static SymTab* get_sym_tab(register Symbol sym)			   /*			     */
 **___________________________________________________			     */
 Symbol symbol(String s)			   	   /*			     */
 { register SymTab *stp;			   	   /*			     */
-  Symbol sym;				   	   /*                        */
 						   /*			     */
   if (s == StringNULL) return NO_SYMBOL;	   /* ignore dummies.	     */
  						   /*                        */
@@ -334,7 +333,7 @@ Symbol symbol(String s)			   	   /*			     */
   for ( stp = &sym_tab[hashindex(s)];		   /*			     */
        *stp != NULL;		   		   /*			     */
         stp = &NextSymTab(*stp) )		   /*			     */
-  { sym	= SymTabSymbol(*stp);			   /*                        */
+  { Symbol sym	= SymTabSymbol(*stp);			   /*                        */
     DebugPrintF3("\tlooking at '%s' == '%s'\n",	   /*                        */
 	      (char*)s, (char*)SymbolValue(sym));  /*                        */
     if (strcmp((char*)s,			   /*                        */

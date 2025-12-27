@@ -354,7 +354,7 @@ static void line_breaking(register String t, int align, int (*fct)_ARG((int)))	 
 	first = true;				   /*			     */
       }						   /* Now we have to break   */
       else					   /*  a single entry	     */
-      { Uchar  save_c;			   	   /*                        */
+      {
 	String save_ptr,		   	   /*                        */
 	       ptr;			   	   /*			     */
 						   /*			     */
@@ -387,7 +387,7 @@ static void line_breaking(register String t, int align, int (*fct)_ARG((int)))	 
 	    { save_ptr++; }	   		   /*                        */
 	  }					   /*                        */
 	  len += s - save_ptr;			   /* Update the length	     */
-	  save_c = *save_ptr; *save_ptr = '\0';	   /* Save and mark end.     */
+	  Uchar save_c = *save_ptr; *save_ptr = '\0';	   /* Save and mark end.     */
 	  puts_in(s, align, fct);		   /*                        */
 	  if (save_c != 0)			   /*                        */
 	  { NL;					   /*                        */

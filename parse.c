@@ -145,8 +145,7 @@
 ** Returns:	nothing
 **___________________________________________________			     */
 static void init___(char ***pathp, char **pattern, char **envvp, char *env)	   /*			     */
-{ register char **cpp,				   /*			     */
-		*cp;				   /*			     */
+{
 						   /*			     */
   if (*pathp != (char**)0)			   /*			     */
   { free((char*)*pathp);			   /*                        */
@@ -165,9 +164,9 @@ static void init___(char ***pathp, char **pattern, char **envvp, char *env)	   /
   }						   /*			     */
 						   /*			     */
   if (*rsc_dir_file_sep != '/')		   	   /*			     */
-  { for (cpp = pattern; *cpp; ++cpp)		   /*			     */
+  { for (char **cpp = pattern; *cpp; ++cpp)		   /*			     */
     { *cpp = new_string(*cpp);			   /*                        */
-      for (cp = *cpp; *cp; ++cp)		   /*			     */
+      for (char *cp = *cpp; *cp; ++cp)		   /*			     */
       { if (*cp == '/') *cp = *rsc_dir_file_sep;   /*			     */
       }						   /*			     */
     }						   /*			     */
@@ -1002,7 +1001,6 @@ static bool parse_value()			   /*			     */
 **___________________________________________________			     */
 bool read_rsc(String name)				   /*			     */
 { int	        c;				   /*			     */
-  Symbol	token;				   /*			     */
   String	s_filename;			   /*			     */
   FILE		*s_file;			   /*                        */
   String	s_file_line_buffer;		   /*                        */
@@ -1035,7 +1033,7 @@ bool read_rsc(String name)				   /*			     */
 	  { (void)seen();			   /*                        */
 	    return true;			   /*                        */
 	  }	   				   /*			     */
-	  token = pop_string();			   /*			     */
+	  Symbol token = pop_string();			   /*			     */
 	  if (TestC == '=') (void)GetC;	   	   /* = is optional	     */
 	  if (!parse_value())			   /*			     */
 	  { (void)seen();			   /*                        */

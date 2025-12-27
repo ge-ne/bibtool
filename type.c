@@ -132,9 +132,9 @@ bool case_eq(register String s, register String t)/*                        */
 ** Returns:	
 **___________________________________________________			     */
 int cmp(register String s, register String t)	   /*                        */
-{ register int d;				   /*                        */
+{
   while ( *s )					   /*                        */
-  { d = *(s++) - *(t++);                    	   /*                        */
+  { int d = *(s++) - *(t++);                    	   /*                        */
     if ( d ) return d;			   	   /*                        */
   }						   /*                        */
   return *s - *t;			   	   /*                        */

@@ -322,11 +322,10 @@ static void write_macros(char *m_file, DB the_db)	   /*                        *
 ** Returns:	nothing
 **___________________________________________________			     */
 static void read_in_files(DB db)		   	   /*                        */
-{ int i;					   /*                        */
-  Symbol in;					   /*                        */
+{
 						   /*                        */
-  for (i = 0; i < get_no_inputs(); i++)	   	   /* For all input files    */
-  { in = get_input_file(i);			   /*			     */
+  for (int i = 0; i < get_no_inputs(); i++)	   	   /* For all input files    */
+  { Symbol in = get_input_file(i);			   /*			     */
     if (read_db(db, SymbolValue(in), rsc_verbose)) /*                        */
     { NoFileError(in); }			   /*			     */
   }						   /*			     */
@@ -397,7 +396,6 @@ int main(int argc, char *argv[])				   /*			     */
 						   /* variable |the_db|      */
 						   /* contains a reference to*/
 						   /* this database.	     */
-  int	i;				   	   /*			     */
   bool	need_rsc = true;		   	   /*			     */
   int	(*fct)(Record, Record);			   /* Function pointer	     */
   int	c_len;					   /*                        */
@@ -406,7 +404,7 @@ int main(int argc, char *argv[])				   /*			     */
   init_error(stderr);				   /*                        */
   init_bibtool(argv[0]);			   /*                        */
 						   /*			     */
-  for (i = 1; i < argc; i++)			   /*			     */
+  for (int i = 1; i < argc; i++)			   /*			     */
   { char *ap;				   	   /*			     */
     if (*(ap=argv[i]) != OptionLeadingCharacter)   /*			     */
     { save_input_file(symbol((String)argv[i]));	   /*			     */
@@ -501,13 +499,13 @@ int main(int argc, char *argv[])				   /*			     */
   if (rsc_xref_select) db_xref_undelete(the_db);   /*                        */
  						   /*                        */
   if (rsc_cnt_all || rsc_cnt_used)		   /*			     */
-  { int i;					   /*                        */
+  {
     int * cnt = db_count(the_db,&c_len);	   /*                        */
  						   /*                        */
     if ((c=(int*)malloc(c_len*sizeof(int))) == NULL)/*                       */
     { rsc_cnt_all = rsc_cnt_used = 0; }		   /*                        */
     else					   /*                        */
-    { for (i = 0; i < c_len; i++) c[i] = cnt[i];   /*                        */
+    { for (int i = 0; i < c_len; i++) c[i] = cnt[i];   /*                        */
     }						   /*                        */
   }						   /*                        */
 						   /*			     */

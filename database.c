@@ -527,7 +527,7 @@ static void print_strings(FILE *file, DB db, bool allp)	   /*                   
     { SetRecordMARK(rec); }			   /*                        */
   }						   /*                        */
   else						   /*                        */
-  { int i;					   /*                        */
+  {
  						   /*                        */
     for (rec = strings;				   /* reset all marks        */
 	 rec != RecordNULL;			   /*                        */
@@ -544,7 +544,7 @@ static void print_strings(FILE *file, DB db, bool allp)	   /*                   
       {						   /*                        */
 	if (!RecordIsDELETED(rec))		   /*                        */
 	{					   /*                        */
-	  for (i = 2; i < RecordFree(rec); i += 2) /*                        */
+	  for (int i = 2; i < RecordFree(rec); i += 2) /*                        */
 	  { if (RecordHeap(rec)[i] != NULL)	   /*                        */
 	    { mark_string(strings,		   /*                        */
 			  SymbolValue(RecordHeap(rec)[i+1]));/*              */

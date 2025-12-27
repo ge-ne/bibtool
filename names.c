@@ -387,7 +387,6 @@ NameNode name_format(String s)				   /*                        */
 String  pp_list_of_names(String *wa, NameNode format, String trans, int max, String comma, String and, char *namesep, char *etal)/*       */
 { String	    *w;			   	   /*                        */
   String	    word;		   	   /*                        */
-  int  		    commas;			   /*                        */
   bool 		    first = true;		   /*                        */
   static StringBuffer *sb = (StringBuffer*)0;	   /*                        */
  						   /*                        */
@@ -409,7 +408,7 @@ String  pp_list_of_names(String *wa, NameNode format, String trans, int max, Str
       break;					   /*                        */
     }						   /*                        */
  						   /*                        */
-    commas = 0;					   /*                        */
+    int commas = 0;					   /*                        */
     for (w = wa; *w && *w != and; w++)		   /*                        */
     { if (*w == comma) commas++;		   /*                        */
       DebugPrint1(*w);				   /*                        */

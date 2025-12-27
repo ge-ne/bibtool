@@ -112,7 +112,6 @@ static bool absolute_file(char *name, char **basename, char ***path)	   /*      
 { static char *absolut_path[2];			   /*                        */
   static int  first = (-1);			   /*                        */
   size_t         l;				   /*                        */
-  char        *sp;				   /*                        */
 #undef SEPARATOR
   						   /*                        */
 #ifdef MSDOS
@@ -132,7 +131,7 @@ static bool absolute_file(char *name, char **basename, char ***path)	   /*      
 #endif
   { return false; }				   /*                        */
  						   /*                        */
-  sp = strrchr(name,SEPARATOR);			   /* find last separator    */
+  char *sp = strrchr(name,SEPARATOR);			   /* find last separator    */
   						   /* existence guarenteed!  */
 #ifdef AMIGA
   if ( sp == NULL ) sp = strchr(name,':');	   /*                        */

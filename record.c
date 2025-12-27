@@ -143,7 +143,7 @@ Record new_record(int token, int size)			   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void free_record(Record rec)				   /*                        */
-{ Record r;					   /*                        */
+{
  						   /*                        */
   if ( rec == RecordNULL ) return;		   /*                        */
  						   /*                        */
@@ -151,7 +151,7 @@ void free_record(Record rec)				   /*                        */
   { rec = PrevRecord(rec); }			   /*                        */
  						   /*                        */
   while ( rec != RecordNULL )			   /*                        */
-  { r = rec;					   /*                        */
+  { Record r = rec;					   /*                        */
     rec = NextRecord(rec);			   /*                        */
     free_1_record(r);				   /*                        */
   }						   /*                        */
@@ -167,7 +167,7 @@ void free_record(Record rec)				   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 void free_1_record(Record rec)				   /*                        */
-{ int i;					   /*                        */
+{
  						   /*                        */
   if ( rec != RecordNULL )			   /*                        */
   {						   /*                        */
@@ -177,7 +177,7 @@ void free_1_record(Record rec)				   /*                        */
     UnlinkSymbol(RecordSource(rec));		   /*                        */
     if ( RecordHeap(rec) != NULL )		   /*                        */
     {						   /*                        */
-      for (i = 0; i < RecordFree(rec); i++ )	   /*                        */
+      for (int i = 0; i < RecordFree(rec); i++ )	   /*                        */
       { UnlinkSymbol(RecordHeap(rec)[i]); }	   /*                        */
       free(RecordHeap(rec));			   /*                        */
     }						   /*                        */
@@ -288,14 +288,10 @@ Symbol record_get(Record rec, Symbol key)			   /*                        */
 **___________________________________________________			     */
 int count_record(Record rec)				   /*                        */
 { int len = 0;					   /*                        */
-  int i;					   /*                        */
-  register Symbol *hp;				   /*                        */
-  register Symbol t;				   /*                        */
  						   /*                        */
-  for (i = RecordFree(rec), hp = RecordHeap(rec);  /* visit all fields       */
-       i > 0;					   /*			     */
-       i -= 2)			   	   	   /*			     */
-  { t = *hp++;                                     /*                        */
+  for (int i = RecordFree(rec); i > 0; i -= 2)			   	   	   /*			     */
+  { Symbol *hp = RecordHeap(rec);			/* visit all fields       */
+    Symbol t = *hp++;                                     /*                        */
     if (t != NO_SYMBOL) { len++; }		   /*                        */
   }						   /*			     */
   						   /*                        */

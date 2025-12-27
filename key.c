@@ -824,8 +824,7 @@ void def_format_type(String s)				   /*                        */
 ** Returns:	nothing
 **___________________________________________________			     */
 static void fmt_names(StringBuffer *sb, String line, int maxname, int post, String trans)  /*		             */
-{ int	        wp,				   /*			     */
-	        i;				   /*			     */
+{ int	        wp;				   /*			     */
   static bool   undef_warning = false;		   /*                        */
   						   /*                        */
   if (maxname == 0) return;			   /*                        */
@@ -847,7 +846,7 @@ static void fmt_names(StringBuffer *sb, String line, int maxname, int post, Stri
 	     DETEX_FLAG_COMMA);			   /*	                     */
   words[wp] = StringNULL;			   /*                        */
  						   /*                        */
-  for (i = 0; i < wp; i++)			   /*			     */
+  for (int i = 0; i < wp; i++)			   /*			     */
   {						   /*                        */
     DebugPrintF3("+++ %3d '%s'\n", i, words[i]);   /*                        */
  						   /*                        */
@@ -1177,8 +1176,7 @@ void make_key(DB db, register Record rec)				   /*			     */
 ** Returns:	nothing
 **___________________________________________________			     */
 void make_sort_key(DB db, register Record rec)			   /*			     */
-{ register String kp;				   /*			     */
-						   /*			     */
+{
   if ( IsSpecialRecord(RecordType(rec)) ) return;  /*			     */
 						   /*			     */
   key_init();					   /*			     */
@@ -1186,7 +1184,7 @@ void make_sort_key(DB db, register Record rec)			   /*			     */
 						   /*			     */
   if (	 sort_key_tree != (KeyNode)0		   /*			     */
       && !eval_fmt(key_sb,sort_key_tree,rec,db) )  /*			     */
-  { kp		       = (String)sbflush(key_sb);  /* get collected key	     */
+  { register String kp = (String)sbflush(key_sb);  /* get collected key	     */
     RecordSortkey(rec) = symbol(kp);	   	   /* store new key	     */
   }						   /*			     */
   else						   /* If everything fails    */
@@ -1936,9 +1934,7 @@ int apply_fmt(StringBuffer *sb, char *fmt, Record rec, DB db)			   /*           
 **___________________________________________________			     */
 String fmt_expand(StringBuffer *sb, Uchar *cp, DB db, Record rec)			   /*                        */
 { Symbol	field;				   /*                        */
-  Uchar		c;			   	   /*                        */
   String	trans = trans_id;		   /*                        */
-  String 	s;			   	   /*                        */
   int  		pre  = -1,			   /*                        */
      		post = -1,			   /*                        */
       		type = 0;			   /*                        */
@@ -1977,9 +1973,9 @@ String fmt_expand(StringBuffer *sb, Uchar *cp, DB db, Record rec)			   /*       
     type |= *(cp++);			   	   /*			     */
     Expect(cp,'(',cp);			   	   /*			     */
     SkipSpaces(cp);			   	   /*			     */
-    s = cp;				   	   /*			     */
+    String s = cp;				   	   /*			     */
     SkipAllowed(cp);			   	   /*			     */
-    c = *cp;					   /*                        */
+    Uchar c = *cp;				   /*                        */
     *cp = '\0';					   /*                        */
     s = new_string(s);
     *cp = c;					   /*                        */
@@ -2313,15 +2309,15 @@ Symbol get_field(DB db, register Record rec, register Symbol name)		   	   /*			
     }						   /*                        */
   }						   /*			     */
   else						   /*			     */
-  { register Symbol *cpp;			   /*			     */
-    Symbol	    xref;			   /*                        */
-    register int    n, count;			   /*			     */
+  {
 						   /*			     */
-    for (count = rsc_xref_limit;		   /*                        */
+    for (int count = rsc_xref_limit;		   /*                        */
 	 count >= 0;				   /*                        */
 	 count-- )				   /* Prevent infinite loop  */
     {						   /*                        */
-      xref = NO_SYMBOL;				   /*                        */
+      Symbol *cpp;
+      Symbol xref = NO_SYMBOL;				   /*                        */
+      int n;
       for (cpp = RecordHeap(rec), n = RecordFree(rec);/*	             */
 	   n > 0;				   /*			     */
 	   n -= 2 )				   /*			     */

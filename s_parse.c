@@ -352,11 +352,10 @@ bool sp_expect(register String *sp, register String expect, bool verbose)		   /*
 Symbol* sp_symbols(String *sp)				   /*                        */
 { Symbol s;					   /*                        */
   Symbol *a = NULL;				   /*                        */
-  int n	= 0;					   /*                        */
   int i = 0;					   /*                        */
  						   /*                        */
   if (sp_expect(sp, (String)"{", false))	   /*                        */
-  { n = 4;					   /*                        */
+  { int n = 4;					   /*                        */
     a = (Symbol*)malloc(n * sizeof(Symbol));	   /*                        */
     if (a == (Symbol*)NULL)			   /*                        */
     { OUT_OF_MEMORY("symbols"); }   		   /*                        */

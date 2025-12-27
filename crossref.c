@@ -261,8 +261,6 @@ void crossref_map(String spec)				   /*                        */
 **___________________________________________________			     */
 static bool insert_record(DB db, Record rec, register Symbol *hp, Symbol s, String msg)	   /*                        */
 { Record r;					   /*                        */
-  Symbol t, ms;					   /*                        */
-  int    i;					   /*                        */
  						   /*                        */
   if ((r = db_find(db, s)) == RecordNULL)	   /*			     */
   { ERROR3(msg," entry not found: ",		   /*                        */
@@ -270,13 +268,12 @@ static bool insert_record(DB db, Record rec, register Symbol *hp, Symbol s, Stri
     return false;				   /*			     */
   }						   /*			     */
     						   /*                        */
-  for (i = RecordFree(r), hp = RecordHeap(r);  	   /* visit all fields       */
-       i > 0;				   	   /*			     */
-       i -= 2)			   	   	   /*			     */
-  { s = *hp++;			   	   	   /*                        */
-    t = *hp++;			   	   	   /*                        */
+  for (int i = RecordFree(r); i > 0; i -= 2) 	   	   /*			     */
+  { hp = RecordHeap(r);  			   /* visit all fields       */
+    s = *hp++;			   	   	   /*                        */
+    Symbol t = *hp++;			   	   	   /*                        */
     if (t != NO_SYMBOL)			   	   /*                        */
-    { ms = map_get(RecordType(r), s,	   	   /*                        */
+    { Symbol ms = map_get(RecordType(r), s,	      /*                        */
 		   RecordType(rec));	   	   /*                        */
       provide_to_record(rec, ms ? ms : s, t);  	   /*                        */
     }	   				   	   /*                        */
