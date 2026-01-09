@@ -33,7 +33,7 @@
 ******************************************************************************/
 
 #include <bibtool/symbols.h>
-
+#warning ##RSC_BIBTOOL_DEFAULT
 #ifdef RSC_INIT
 #define RscNumeric(SYM,S,V,I) int    V = I;
 #define RscString(SYM,S,V,I)  String V = (String)I;
