@@ -160,8 +160,7 @@
 ** Returns:	Pointer to newly allocated memory containing a
 **		duplicate of the argument string.
 **___________________________________________________			     */
-char * new_string(s)				   /*			     */
-  register char * s;				   /*			     */
+char * new_string(register char *s)				   /*			     */
 { register char * t;				   /*			     */
   if ( (t=malloc((size_t)strlen(s) + 1)) == NULL ) /*			     */
   { OUT_OF_MEMORY("string"); }	   		   /*			     */
@@ -185,8 +184,7 @@ char * new_string(s)				   /*			     */
 **	value	String value of the |SymTab| node.
 ** Returns:	Pointer to a new instance of a |SymTab|.
 **___________________________________________________			     */
-static SymTab new_sym_tab(value)		   /*			     */
-  String value;			   	   	   /*			     */
+static SymTab new_sym_tab(String value)		   /*			     */
 { register SymTab new_symtab;		   	   /*			     */
   Symbol sym;					   /*                        */
  						   /*			     */
@@ -215,8 +213,7 @@ static SymTab new_sym_tab(value)		   /*			     */
 **	s	string to be analyzed.
 ** Returns:	hash index
 **___________________________________________________			     */
-static int hashindex(s)				   /*                        */
-  String s;					   /*                        */
+static int hashindex(String s)				   /*                        */
 { int	index = 0;				   /*                        */
   while (*s) index = (index + *(s++)) % HASHMAX;   /*                        */
   return ( index < 0 ? -index : index );	   /*                        */
@@ -282,8 +279,7 @@ void init_symbols()				   /*			     */
 **	sym	the symbol to search for
 ** Returns:	
 **___________________________________________________			     */
-static SymTab* get_sym_tab(sym)			   /*			     */
-  register Symbol sym;			   	   /*			     */
+static SymTab* get_sym_tab(register Symbol sym)			   /*			     */
 { register SymTab *stp;			   	   /*			     */
 						   /*			     */
   if (sym == NO_SYMBOL) return NULL;	   	   /* ignore dummies.	     */
@@ -327,10 +323,8 @@ static SymTab* get_sym_tab(sym)			   /*			     */
 **	s	String which should be translated into a symbol.
 ** Returns:	The new symbol.
 **___________________________________________________			     */
-Symbol symbol(s)			   	   /*			     */
-  String  s;				   	   /*			     */
+Symbol symbol(String s)			   	   /*			     */
 { register SymTab *stp;			   	   /*			     */
-  Symbol sym;				   	   /*                        */
 						   /*			     */
   if (s == StringNULL) return NO_SYMBOL;	   /* ignore dummies.	     */
  						   /*                        */
@@ -339,7 +333,7 @@ Symbol symbol(s)			   	   /*			     */
   for ( stp = &sym_tab[hashindex(s)];		   /*			     */
        *stp != NULL;		   		   /*			     */
         stp = &NextSymTab(*stp) )		   /*			     */
-  { sym	= SymTabSymbol(*stp);			   /*                        */
+  { Symbol sym	= SymTabSymbol(*stp);			   /*                        */
     DebugPrintF3("\tlooking at '%s' == '%s'\n",	   /*                        */
 	      (char*)s, (char*)SymbolValue(sym));  /*                        */
     if (strcmp((char*)s,			   /*                        */
@@ -371,8 +365,7 @@ Symbol symbol(s)			   	   /*			     */
 **	sym	Symbol to be released.
 ** Returns:	nothing
 **___________________________________________________			     */
-void sym_unlink(sym)				   /*			     */
-  register Symbol sym;			   	   /*			     */
+void sym_unlink(register Symbol sym)				   /*			     */
 {						   /*                        */
   if (sym == NO_SYMBOL) return;		   	   /* ignore dummies.	     */
 #ifdef COMPLEX_SYMBOL
@@ -413,8 +406,7 @@ void sym_unlink(sym)				   /*			     */
 **	sym	
 ** Returns:	nothing
 **___________________________________________________			     */
-void sym_del(sym)				   /*                        */
-  Symbol sym;		   			   /*                        */
+void sym_del(Symbol sym)				   /*                        */
 {						   /*                        */
 #ifdef COMPLEX_SYMBOL
   SymTab *stp;					   /*                        */
@@ -488,9 +480,7 @@ void sym_gc()					   /*                        */
 **	lowercase	indicate that lowering is requested
 ** Returns:	
 **___________________________________________________			     */
-Symbol  sym_extract(sp, lowercase)		   /*			     */
-  register String *sp;				   /* pointer to first char  */
-  bool   lowercase;				   /*                        */
+Symbol  sym_extract(register String *sp, bool lowercase)		   /*			     */
 { Uchar  c;					   /*			     */
   String t = *sp;				   /*                        */
   Symbol sym;					   /*                        */
@@ -518,8 +508,7 @@ Symbol  sym_extract(sp, lowercase)		   /*			     */
 **	sym_arr	symbol array
 ** Returns:	nothing
 **___________________________________________________			     */
-void free_sym_array(sym_arr)			   /*                        */
-  Symbol *sym_arr;				   /*                        */
+void free_sym_array(Symbol *sym_arr)			   /*                        */
 { Symbol *a;					   /*                        */
   for (a = sym_arr; *a; a++)			   /*                        */
   { if (*a) UnlinkSymbol(*a); }			   /*                        */

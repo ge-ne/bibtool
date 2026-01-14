@@ -55,7 +55,7 @@
  bool see_bib _ARG((String fname));		   /* parse.c                */
  bool seen _ARG((void));			   /* parse.c                */
  int parse_bib _ARG((Record rec));		   /* parse.c                */
- static bool parse_block _ARG((int quotep));	   /* parse.c                */
+ static bool parse_block _ARG((bool quotep));	   /* parse.c                */
  static bool parse_equation _ARG((Record rec));	   /* parse.c                */
  static bool parse_key _ARG((int alpha));	   /* parse.c                */
  static bool parse_rhs _ARG((void));		   /* parse.c                */
@@ -65,7 +65,7 @@
  static bool see_rsc _ARG((String fname));	   /* parse.c                */
  static int fill_line _ARG((void));		   /* parse.c                */
  static int see_bib_msg _ARG((char *s));	   /* parse.c                */
- static int skip _ARG((int inc));		   /* parse.c                */
+ static int skip _ARG((bool inc));		   /* parse.c                */
  static int skip_c _ARG((void));		   /* parse.c                */
  static int skip_nl _ARG((void));		   /* parse.c                */
  static void init___ _ARG((char ***pathp,char **pattern,char **envvp,char *env));/* parse.c*/
@@ -144,13 +144,8 @@
 **	env	the environment string
 ** Returns:	nothing
 **___________________________________________________			     */
-static void init___(pathp,pattern,envvp,env)	   /*			     */
-  char		***pathp;			   /*			     */
-  char		**pattern;			   /*			     */
-  char		**envvp;			   /*			     */
-  char		*env;				   /*			     */
-{ register char **cpp,				   /*			     */
-		*cp;				   /*			     */
+static void init___(char ***pathp, char **pattern, char **envvp, char *env)	   /*			     */
+{
 						   /*			     */
   if (*pathp != (char**)0)			   /*			     */
   { free((char*)*pathp);			   /*                        */
@@ -169,9 +164,9 @@ static void init___(pathp,pattern,envvp,env)	   /*			     */
   }						   /*			     */
 						   /*			     */
   if (*rsc_dir_file_sep != '/')		   	   /*			     */
-  { for (cpp = pattern; *cpp; ++cpp)		   /*			     */
+  { for (char **cpp = pattern; *cpp; ++cpp)		   /*			     */
     { *cpp = new_string(*cpp);			   /*                        */
-      for (cp = *cpp; *cp; ++cp)		   /*			     */
+      for (char *cp = *cpp; *cp; ++cp)		   /*			     */
       { if (*cp == '/') *cp = *rsc_dir_file_sep;   /*			     */
       }						   /*			     */
     }						   /*			     */
@@ -214,8 +209,7 @@ void init_read()				   /*			     */
 **	s	String to print
 ** Returns:	|true| to indicate that continuation is desired.
 **___________________________________________________			     */
-static int see_bib_msg(s)			   /*			     */
-  register char *s;				   /*			     */
+static int see_bib_msg(register char *s)			   /*			     */
 {						   /*			     */
   if (rsc_verbose) VerbosePrint2("Trying ", s);	   /*			     */
   return true;					   /*			     */
@@ -242,8 +236,7 @@ static int see_bib_msg(s)			   /*			     */
 **	fname	Name of the file or |NULL|.
 ** Returns:	|true| iff the file could be opened for reading.
 **___________________________________________________			     */
-bool see_bib(fname)				   /*			     */
-  register String fname;			   /*			     */
+bool see_bib(register String fname)				   /*			     */
 {						   /*			     */
   init_parse();					   /*			     */
   InitLine;					   /*			     */
@@ -393,8 +386,7 @@ static int fill_line()				   /*			     */
 **		returned.
 ** Returns:	The next character
 **___________________________________________________			     */
-static int skip(inc)				   /*			     */
-  register bool inc;				   /*			     */
+static int skip(register bool inc)				   /*			     */
 {						   /*			     */
   FOREVER					   /*			     */
   { if (EmptyC && fill_line())   return EOF;	   /*			     */
@@ -467,8 +459,7 @@ static int skip_nl()				   /*			     */
 **	alpha	indicator that the symbol has to start with an alpha character
 ** Returns:	Success status
 **___________________________________________________			     */
-static bool parse_symbol(alpha)			   /*			     */
-  register int   alpha;				   /*			     */
+static bool parse_symbol(register int alpha)			   /*			     */
 { register Uchar c;				   /*			     */
   register String cp;				   /*			     */
 						   /*			     */
@@ -493,8 +484,7 @@ static bool parse_symbol(alpha)			   /*			     */
 **	alpha	indicator that the symbol has to start with an alpha character
 ** Returns:	Success status
 **___________________________________________________			     */
-static bool parse_key(alpha)			   /*			     */
-  register int   alpha;				   /*			     */
+static bool parse_key(register int alpha)			   /*			     */
 { register Uchar c;				   /*			     */
   register String cp;			   	   /*			     */
   Symbol name;					   /*                        */
@@ -553,8 +543,7 @@ static void parse_number()			   /*			     */
 **		off the input stream.
 ** Returns:	Success status
 **___________________________________________________"			     */
-static bool parse_string(quotep)		   /*			     */
-  int quotep;				   	   /*			     */
+static bool parse_string(int quotep)		   /*			     */
 { int c;					   /*                        */
   int left;				   	   /*			     */
   int start_flno = flno;			   /*                        */
@@ -594,8 +583,7 @@ static bool parse_string(quotep)		   /*			     */
 **		the input stream.
 ** Returns:	Success status
 **___________________________________________________			     */
-static bool parse_block(quotep)			   /*			     */
-  bool quotep;					   /*			     */
+static bool parse_block(bool quotep)			   /*			     */
 { int c;					   /*                        */
   int left;				   	   /*			     */
   int start_flno = flno;			   /*                        */
@@ -687,8 +675,7 @@ static bool parse_rhs()				   /*			     */
 **	rec	The record to store the result in
 ** Returns:	Success status
 **___________________________________________________			     */
-static bool parse_equation(rec)		   	   /*			     */
-  Record rec;					   /*                        */
+static bool parse_equation(Record rec)		   	   /*			     */
 { Symbol s, t;				   	   /*			     */
 						   /*			     */
   ExpectSymbol(true, false);			   /*			     */
@@ -720,8 +707,7 @@ static bool parse_equation(rec)		   	   /*			     */
 **	rec	Record to store the result in.
 ** Returns:	The type of the entry read, |BIB_EOF|, or |BIB_NOOP|.
 **___________________________________________________			     */
-int parse_bib(rec)				   /*			     */
-  Record rec;					   /*                        */
+int parse_bib(Record rec)				   /*			     */
 { register rec_type type;			   /*			     */
   register int n,				   /*			     */
 	       c;				   /*			     */
@@ -921,8 +907,7 @@ int parse_bib(rec)				   /*			     */
 **	val	The string representation of the file search path.
 ** Returns:	nothing
 **___________________________________________________			     */
-void set_rsc_path(val)				   /*			     */
-  String  val;				   	   /*			     */
+void set_rsc_path(String val)				   /*			     */
 {						   /*			     */
   rsc_v_rsc = val;			   	   /*			     */
   init___(&r_path,				   /*			     */
@@ -940,8 +925,7 @@ void set_rsc_path(val)				   /*			     */
 **	fname	The file name to take into account.
 ** Returns:	|true| iff the operation succeeds.
 **___________________________________________________			     */
-static bool see_rsc(fname)			   /*			     */
-  String fname;				   	   /*			     */
+static bool see_rsc(String fname)			   /*			     */
 {						   /*			     */
   if (fname  == StringNULL) return false;	   /*			     */
  						   /*                        */
@@ -1015,10 +999,8 @@ static bool parse_value()			   /*			     */
 **	name	Name of the file to read from.
 ** Returns:	|true| if an error has occured
 **___________________________________________________			     */
-bool read_rsc(name)				   /*			     */
-  String	name;				   /*			     */
+bool read_rsc(String name)				   /*			     */
 { int	        c;				   /*			     */
-  Symbol	token;				   /*			     */
   String	s_filename;			   /*			     */
   FILE		*s_file;			   /*                        */
   String	s_file_line_buffer;		   /*                        */
@@ -1051,7 +1033,7 @@ bool read_rsc(name)				   /*			     */
 	  { (void)seen();			   /*                        */
 	    return true;			   /*                        */
 	  }	   				   /*			     */
-	  token = pop_string();			   /*			     */
+	  Symbol token = pop_string();			   /*			     */
 	  if (TestC == '=') (void)GetC;	   	   /* = is optional	     */
 	  if (!parse_value())			   /*			     */
 	  { (void)seen();			   /*                        */

@@ -108,14 +108,10 @@
 ** Returns:	The return value is |true|
 **		Otherwise |false| is returned and nothing changed.
 **___________________________________________________			     */
-static bool absolute_file(name,basename,path)	   /*                        */
-  char        *name;				   /*                        */
-  char        **basename;			   /*                        */
-  char        ***path;				   /*                        */
+static bool absolute_file(char *name, char **basename, char ***path)	   /*                        */
 { static char *absolut_path[2];			   /*                        */
   static int  first = (-1);			   /*                        */
   size_t         l;				   /*                        */
-  char        *sp;				   /*                        */
 #undef SEPARATOR
   						   /*                        */
 #ifdef MSDOS
@@ -135,7 +131,7 @@ static bool absolute_file(name,basename,path)	   /*                        */
 #endif
   { return false; }				   /*                        */
  						   /*                        */
-  sp = strrchr(name,SEPARATOR);			   /* find last separator    */
+  char *sp = strrchr(name,SEPARATOR);			   /* find last separator    */
   						   /* existence guarenteed!  */
 #ifdef AMIGA
   if ( sp == NULL ) sp = strchr(name,':');	   /*                        */
@@ -172,12 +168,7 @@ static bool absolute_file(name,basename,path)	   /*                        */
 **	show	A function pointer or |NULL|.
 ** Returns:	A file pointer refering to the file or |NULL|.
 **___________________________________________________			     */
-FILE * px_fopen(name,mode,pattern,path,show)	   /*			     */
-  char	* name;					   /*			     */
-  char	* mode;					   /*			     */
-  char	**pattern;				   /*			     */
-  char	**path;					   /*			     */
-  int	(*show)_ARG((char*));			   /*			     */
+FILE * px_fopen(char *name, char *mode, char **pattern, char **path, int (*show)_ARG((char*)))	   /*			     */
 { char	**fmt;					   /*			     */
   char	**pp;					   /*			     */
   FILE	* file;					   /*			     */
@@ -241,9 +232,7 @@ FILE * px_fopen(name,mode,pattern,path,show)	   /*			     */
 **	sep	Separator
 ** Returns:	The array of the components
 **___________________________________________________			     */
-char ** px_s2p(s,sep)				   /*			     */
-  char		  * s;				   /*			     */
-  int		  sep;				   /*			     */
+char ** px_s2p(char *s, int sep)				   /*			     */
 { register char	  *cp;				   /*			     */
   register size_t l = 1;			   /*			     */
   char		  **pattern;			   /*			     */
@@ -316,10 +305,7 @@ char ** px_s2p(s,sep)				   /*			     */
 **	se	
 ** Returns:	
 **___________________________________________________			     */
-static void expand_env(s,se,res)		   /*                        */
-  char * s;					   /*                        */
-  char * se;					   /*                        */
-  StringBuffer * res;				   /*                        */
+static void expand_env(char *s, char *se, StringBuffer *res)		   /*                        */
 {						   /*                        */
   StringBuffer * val = sbopen();		   /*                        */
  						   /*                        */

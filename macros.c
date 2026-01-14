@@ -54,11 +54,7 @@
 **	count	The initial reference count.
 ** Returns:	The new |Macro|.
 **___________________________________________________			     */
-Macro new_macro(name, value, next, count)	   /*                        */
-  Symbol	 name;				   /*                        */
-  Symbol	 value;				   /*                        */
-  int		 count;				   /*                        */
-  Macro          next;				   /*                        */
+Macro new_macro(Symbol name, Symbol value, Macro next, int count)	   /*                        */
 { register Macro macro;				   /*                        */
  						   /*                        */
   if ( (macro=(Macro)malloc(sizeof(SMacro))) == MacroNULL )/*                */
@@ -80,8 +76,7 @@ Macro new_macro(name, value, next, count)	   /*                        */
 **	mac	First Macro to release.
 ** Returns:	nothing
 **___________________________________________________			     */
-void free_macro(mac)				   /*                        */
-  Macro mac;					   /*                        */
+void free_macro(Macro mac)				   /*                        */
 { Macro next;					   /*                        */
  						   /*                        */
   while (mac)					   /*                        */
@@ -102,10 +97,7 @@ void free_macro(mac)				   /*                        */
 **	count	initial count for the macro.
 ** Returns:	nothing
 **___________________________________________________			     */
-int def_macro(name, val, count)			   /*                        */
-  Symbol	 name;			   	   /*                        */
-  Symbol	 val;				   /*                        */
-  int		 count;				   /*                        */
+int def_macro(Symbol name, Symbol val, int count)			   /*                        */
 { register Macro *mp;				   /*                        */
  						   /*                        */
   for (mp   = &macros;				   /*                        */
@@ -144,9 +136,7 @@ int def_macro(name, val, count)			   /*                        */
 **		is required.
 ** Returns:	The value or |NULL|.
 **___________________________________________________			     */
-Symbol look_macro(name, add)			   /*                        */
-  Symbol	 name;			   	   /*                        */
-  int		 add;				   /*                        */
+Symbol look_macro(Symbol name, int add)			   /*                        */
 { register Macro *mp;				   /*                        */
 						   /*                        */
   for (mp   = &macros;				   /*                        */
@@ -184,8 +174,7 @@ Symbol look_macro(name, add)			   /*                        */
 **	fct	Function to apply to each macro.
 ** Returns:	nothing
 **___________________________________________________			     */
-void foreach_macro(fct)				   /*                        */
-  bool (*fct) _ARG((Symbol ,Symbol ));		   /*                        */
+void foreach_macro(bool (*fct) _ARG((Symbol, Symbol)))				   /*                        */
 { Macro mac;					   /*                        */
   for (mac = macros; 				   /*                        */
        mac != MacroNULL; 			   /*                        */
@@ -208,9 +197,7 @@ void foreach_macro(fct)				   /*                        */
 ** Returns:	|true| if the function has terminated the loop and
 **		|false| in case the end of the list has been reached
 **___________________________________________________			     */
-bool each_macro(m, fct)				   /*                        */
-  Macro m;					   /*                        */
-  bool (*fct) _ARG((Symbol ,Symbol));		   /*                        */
+bool each_macro(Macro m, bool (*fct) _ARG((Symbol, Symbol)))				   /*                        */
 {						   /*                        */
   for ( ; m != MacroNULL; m = NextMacro(m))	   /*                        */
   { if (! (*fct)(MacroName(m), MacroValue(m))) 	   /*                        */
@@ -227,9 +214,7 @@ bool each_macro(m, fct)				   /*                        */
 **	allp	if == 0 only the used macros are written.
 ** Returns:	nothing
 **___________________________________________________			     */
-void dump_mac(fname,allp)			   /*                        */
-  char           *fname;			   /*                        */
-  int            allp;				   /*                        */
+void dump_mac(char *fname, int allp)			   /*                        */
 { FILE           *file;				   /*                        */
   register Macro mac;				   /*                        */
  						   /*                        */
@@ -308,9 +293,7 @@ void init_macros()				   /*                        */
 **	value	the value of the item
 ** Returns:	nothing
 **___________________________________________________			     */
-static void def_item(name, value)		   /*                        */
-  register Symbol name;			   	   /*                        */
-  register Symbol value;			   /*                        */
+static void def_item(register Symbol name, register Symbol value)		   /*                        */
 {						   /*                        */
   items = new_macro(name, value, items, 0);	   /*                        */
 }						   /*------------------------*/
@@ -331,8 +314,7 @@ static void def_item(name, value)		   /*                        */
 **		during the process.
 ** Returns:	nothing
 **___________________________________________________			     */
-void def_field_type(s)				   /*                        */
-  String s;					   /*                        */
+void def_field_type(String s)				   /*                        */
 { Symbol name;					   /*                        */
  						   /*                        */
   while (*s && !is_allowed(*s)) ++s;		   /*                        */
@@ -362,10 +344,7 @@ void def_field_type(s)				   /*                        */
 **		|SYMBOL_TYPE_UPPER|, or |SYMBOL_TYPE_CASED|.
 ** Returns:	the requested value
 **___________________________________________________			     */
-static Symbol get_mapped_or_cased(name, mac, type) /*                        */
-  Symbol	 name;				   /*                        */
-  int            type;				   /*                        */
-  register Macro mac;				   /*                        */
+static Symbol get_mapped_or_cased(Symbol name, register Macro mac, int type) /*                        */
 { static StringBuffer* sb = (StringBuffer*)NULL;   /*                        */
   register String s;	   			   /*                        */
  						   /*                        */
@@ -429,9 +408,7 @@ static Symbol get_mapped_or_cased(name, mac, type) /*                        */
 ** Returns:	A pointer to a static string. This location  is reused
 **		upon the next invocation of this function.
 **___________________________________________________			     */
-Symbol get_item(name, type)			   /*                        */
-  Symbol name;				   	   /*                        */
-  int    type;				   	   /*                        */
+Symbol get_item(Symbol name, int type)			   /*                        */
 { return get_mapped_or_cased(name, items, type);   /*                        */
 }						   /*------------------------*/
 
@@ -451,9 +428,7 @@ Symbol get_item(name, type)			   /*                        */
 **	key	the key as printed
 ** Returns:	nothing
 **___________________________________________________			     */
-void save_key(name, key)			   /*                        */
-  Symbol name;				   	   /*                        */
-  Symbol key;					   /*                        */
+void save_key(Symbol name, Symbol key)			   /*                        */
 { keys = new_macro(name, key, keys, 1);		   /*                        */
 }						   /*------------------------*/
 
@@ -467,8 +442,7 @@ void save_key(name, key)			   /*                        */
 **	name	the name of the key to find. This must be in lower-case
 ** Returns:	the requested representation
 **___________________________________________________			     */
-Symbol get_key(name)			   	   /*                        */
-  Symbol name;			   	   	   /*                        */
+Symbol get_key(Symbol name)			   	   /*                        */
 { return get_mapped_or_cased(name,	   	   /*                        */
 			     keys,	   	   /*                        */
 			     SYMBOL_TYPE_LOWER);   /*                        */

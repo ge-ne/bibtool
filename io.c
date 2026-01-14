@@ -76,8 +76,7 @@
 **	file	File name to save.
 ** Returns:	nothing
 **___________________________________________________			     */
-void save_input_file(file)			   /*			     */
-  Symbol file;					   /*			     */
+void save_input_file(Symbol file)		   /*			     */
 {						   /*			     */
   if (file == NO_SYMBOL)			   /*			     */
   { WARNING("Missing input file name. Flag ignored.");/*		     */
@@ -126,8 +125,7 @@ int get_no_inputs()				   /*                        */
 **	i	the index of the input file to access
 ** Returns:	the references input file name or NULL otherwise
 **___________________________________________________			     */
-Symbol get_input_file(i)			   /*                        */
-  int i;					   /*                        */
+Symbol get_input_file(int i)			   /*                        */
 { return (i >= 0 && i < input_file_ptr		   /*                        */
 	  ? input_files[i]			   /*                        */
 	  : NO_SYMBOL);	 			   /*                        */
@@ -148,8 +146,7 @@ Symbol get_input_file(i)			   /*                        */
 **	file	File name to save
 ** Returns:	nothing
 **___________________________________________________			     */
-void save_output_file(file)			   /*			     */
-  Symbol file;					   /*			     */
+void save_output_file(Symbol file)		   /*			     */
 { if (output_file != NO_SYMBOL)			   /*			     */
   { WARNING2("Output file redefined: ",		   /*			     */
 	     SymbolValue(file));		   /*			     */
@@ -184,8 +181,7 @@ Symbol get_output_file()		   	   /*			     */
 **	file	File name to save
 ** Returns:	nothing
 **___________________________________________________			     */
-void save_macro_file(file)			   /*			     */
-  Symbol file;					   /*			     */
+void save_macro_file(Symbol file)		   /*			     */
 { if ( macro_file != NULL )			   /*			     */
   { WARNING2("Macro file redefined: ",		   /*			     */
 	     SymbolValue(file));		   /*			     */

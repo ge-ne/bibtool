@@ -47,7 +47,7 @@
 #define _ARG(A) ()
 #endif
  Symbol expand_rhs _ARG((Symbol s,Symbol pre,Symbol post,DB db, bool lowercase));/* expand.c*/
- static bool expand _ARG((String s,StringBuffer *sb,int brace,int first,String q_open,String q_close,DB db));/* expand.c*/
+ static bool expand _ARG((String s, StringBuffer *sb, bool brace, bool first, String q_open, String q_close, DB db));/* expand.c*/
  static void expand__ _ARG((String s,StringBuffer *sb,String q_open,String q_close,DB db));/* expand.c*/
 
 /*****************************************************************************/
@@ -76,12 +76,7 @@
 **		static variable of this function and will be overwritten with
 **		the next invocation.
 **___________________________________________________			     */
-Symbol expand_rhs(sym,pre,post,db,lowercase)	   /*                        */
-  Symbol sym;					   /*                        */
-  Symbol pre;					   /*                        */
-  Symbol post;					   /*                        */
-  DB   db;					   /*                        */
-  bool lowercase;				   /*                        */
+Symbol expand_rhs(Symbol sym, Symbol pre, Symbol post, DB db, bool lowercase)	   /*                        */
 { static StringBuffer *sb = NULL;		   /*                        */
   String s;					   /*                        */
 						   /*                        */
@@ -116,12 +111,7 @@ Symbol expand_rhs(sym,pre,post,db,lowercase)	   /*                        */
 **	db	the database
 ** Returns:	nothing
 **___________________________________________________			     */
-static void expand__(s, sb, q_open, q_close, db)   /*                        */
-  register String s;				   /*                        */
-  StringBuffer   *sb;				   /*                        */
-  String         q_open;			   /*                        */
-  String         q_close;			   /*                        */
-  DB		 db;				   /*                        */
+static void expand__(register String s, StringBuffer *sb, String q_open, String q_close, DB db)   /*                        */
 {						   /*                        */
   if (!expand(s,sb,true,true,q_open,q_close,db))   /*                        */
   { PUTS(q_close, sb); }			   /*                        */
@@ -146,14 +136,7 @@ static void expand__(s, sb, q_open, q_close, db)   /*                        */
 **	q_close	Close delimiter. This is a close brace or a double quote.
 ** Returns:	
 **___________________________________________________			     */
-static bool expand(s, sb, brace, first, q_open, q_close, db)/*               */
-  register String s;				   /* specification          */
-  StringBuffer   *sb;				   /* output device          */
-  bool           brace;				   /* is a brace needed?     */
-  bool           first;				   /* is this the first part?*/
-  String         q_open;			   /* open delimiter         */
-  String         q_close;			   /* close delimiter        */
-  DB		 db;				   /*                        */
+static bool expand(register String s, StringBuffer *sb, bool brace, bool first, String q_open, String q_close, DB db)/*               */
 {						   /*                        */
   while ( *s )					   /*                        */
   { 						   /*                        */

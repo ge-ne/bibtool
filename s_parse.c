@@ -67,8 +67,7 @@
 **	s	String to open for parsing.
 ** Returns:	nothing
 **___________________________________________________			     */
-void sp_open(s)					   /*                        */
-  String s;				   	   /*                        */
+void sp_open(String s)					   /*                        */
 { sp_line = s;				   	   /*                        */
 }						   /*------------------------*/
 
@@ -94,8 +93,7 @@ void sp_close()					   /*                        */
 **	sp	the string pointer
 ** Returns:	
 **___________________________________________________			     */
-String sp_eos(sp)				   /*                        */
-  String *sp;					   /*                        */
+String sp_eos(String *sp)				   /*                        */
 { register String s = *sp;			   /*                        */
  						   /*                        */
   while( is_space(*s) ) s++;			   /*                        */
@@ -119,8 +117,7 @@ String sp_eos(sp)				   /*                        */
 **	sp	the string pointer
 ** Returns:	
 **___________________________________________________			     */
-void sp_skip(sp)				   /*                        */
-  register String *sp;				   /*                        */
+void sp_skip(register String *sp)				   /*                        */
 { register String s = *sp;			   /*                        */
   while (   is_space(*s) 			   /*                        */
 	 || *s == '='			   	   /*                        */
@@ -184,10 +181,7 @@ void sp_skip(sp)				   /*                        */
 **		message should be created in case of an error.
 ** Returns:	A symbol containing the requested entity or |NULL|.
 **___________________________________________________			     */
-Symbol s_parse(type, sp, errp)			   /*                        */
-  int 		  type;				   /*                        */
-  String	  *sp;				   /*                        */
-  bool		  errp;				   /*                        */
+Symbol s_parse(int type, String *sp, bool errp)			   /*                        */
 { register String s = *sp;			   /*                        */
   Uchar           c;				   /*                        */
   String	  cp;				   /*                        */
@@ -329,10 +323,7 @@ Symbol s_parse(type, sp, errp)			   /*                        */
 **	verbose	the indicator whether an error message should be produced
 ** Returns:	|true| iff the expected string is found
 **___________________________________________________			     */
-bool sp_expect(sp, expect, verbose)		   /*                        */
-  register String *sp;				   /*                        */
-  register String expect;			   /*                        */
-  bool verbose;					   /*                        */
+bool sp_expect(register String *sp, register String expect, bool verbose)		   /*                        */
 {						   /*                        */
   while (is_space(**sp)) (*sp)++;	   	   /*                        */
  						   /*                        */
@@ -358,15 +349,13 @@ bool sp_expect(sp, expect, verbose)		   /*                        */
 **	sp	the pointer to the value to be parsed
 ** Returns:	an array of Symbols
 **___________________________________________________			     */
-Symbol* sp_symbols(sp)				   /*                        */
-  String *sp;					   /*                        */
+Symbol* sp_symbols(String *sp)				   /*                        */
 { Symbol s;					   /*                        */
   Symbol *a = NULL;				   /*                        */
-  int n	= 0;					   /*                        */
   int i = 0;					   /*                        */
  						   /*                        */
   if (sp_expect(sp, (String)"{", false))	   /*                        */
-  { n = 4;					   /*                        */
+  { int n = 4;					   /*                        */
     a = (Symbol*)malloc(n * sizeof(Symbol));	   /*                        */
     if (a == (Symbol*)NULL)			   /*                        */
     { OUT_OF_MEMORY("symbols"); }   		   /*                        */

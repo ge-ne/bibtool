@@ -103,8 +103,7 @@ DB new_db()				   	   /*                        */
 **	db	Database to release.
 ** Returns:	nothing
 **___________________________________________________			     */
-void free_db(db)				   /*                        */
-  DB db;					   /*                        */
+void free_db(DB db)				   /*                        */
 {						   /*                        */
   free_record(DBnormal(db));			   /*                        */
   free_record(DBstring(db));			   /*                        */
@@ -127,10 +126,7 @@ void free_db(db)				   /*                        */
 **	rec	the record
 ** Returns:	
 **___________________________________________________			     */
-int apply_modify(db, key, rec)	   		   /*                        */
-  DB    db;					   /*                        */
-  Symbol key;					   /*                        */
-  Record rec;					   /*                        */
+int apply_modify(DB db, Symbol key, Record rec)	   		   /*                        */
 { Symbol *hp = RecordHeap(rec);			   /*                        */
   int i;					   /*                        */
   Record r  = db_find(db, key);			   /*                        */
@@ -169,11 +165,7 @@ int apply_modify(db, key, rec)	   		   /*                        */
 **	verbose	the verbose indicator
 ** Returns:	
 **___________________________________________________			     */
-static bool apply_alias(db, key, rec, verbose)	   /*                        */
-  DB     db;					   /*                        */
-  Symbol key;					   /*                        */
-  Record rec;					   /*                        */
-  bool   verbose;				   /*                        */
+static bool apply_alias(DB db, Symbol key, Record rec, bool verbose)	   /*                        */
 { Record r = db_find(db, key);			   /*                        */
   if (r == RecordNULL)				   /*                        */
   { WARNING2("Entry to alias not found: ", key);   /*                        */
@@ -200,10 +192,7 @@ static bool apply_alias(db, key, rec, verbose)	   /*                        */
 **	verbose	Boolean to determine whether progress should be reported.
 ** Returns:	nothing
 **___________________________________________________			     */
-void db_insert(db, rec, verbose)		   /*                        */
-  DB     db;					   /*                        */
-  Record rec;					   /*                        */
-  bool   verbose;				   /*                        */
+void db_insert(DB db, Record rec, bool verbose)		   /*                        */
 { Record *rp;					   /*                        */
 						   /*                        */
   switch (RecordType(rec))			   /*                        */
@@ -291,10 +280,7 @@ void db_insert(db, rec, verbose)		   /*                        */
 **	verbose	Boolean to determine whether progress should be reported.
 ** Returns:	|true| if the file can not be opened. |false| otherwise.
 **___________________________________________________			     */
-bool read_db(db, file, verbose)		   	   /*                        */
-  DB		  db;				   /*                        */
-  String	  file;			   	   /*                        */
-  bool		  verbose;			   /*                        */
+bool read_db(DB db, String file, bool verbose)		   	   /*                        */
 { register int	  type;				   /*			     */
   static Record	  master_record = RecordNULL;	   /*			     */
   Record	  rec;				   /*			     */
@@ -361,9 +347,7 @@ bool read_db(db, file, verbose)		   	   /*                        */
 **	s	the string
 ** Returns:	nothing
 **___________________________________________________			     */
-static void mark_string(rec, s)			   /*                        */
-  Record rec;					   /*                        */
-  String s;					   /*                        */
+static void mark_string(Record rec, String s)			   /*                        */
 { int    d;					   /*                        */
   Record r;					   /*                        */
  						   /*                        */
@@ -421,11 +405,7 @@ static void mark_string(rec, s)			   /*                        */
 **	allp	the indicator for printing all
 ** Returns:	nothing
 **___________________________________________________			     */
-static void print_segment(file, db, rec, allp)	   /*                        */
-  FILE   *file;					   /*                        */
-  DB     db;					   /*                        */
-  Record rec;					   /*                        */
-  bool   allp;					   /*                        */
+static void print_segment(FILE *file, DB db, Record rec, bool allp)	   /*                        */
 {						   /*                        */
   if (rec == RecordNULL) return;		   /*                        */
  						   /*                        */
@@ -456,11 +436,7 @@ static void print_segment(file, db, rec, allp)	   /*                        */
 **	rec	the record
 ** Returns:	nothing
 **___________________________________________________			     */
-static void preprint_string(file, db, strings, rec)/*                        */
-  FILE   *file;					   /*                        */
-  DB     db;					   /*                        */
-  Record strings;				   /*                        */
-  Record rec;					   /*                        */
+static void preprint_string(FILE *file, DB db, Record strings, Record rec)/*                        */
 { int    i, d;					   /*                        */
   Record r;					   /*                        */
  						   /*                        */
@@ -534,10 +510,7 @@ static void preprint_string(file, db, strings, rec)/*                        */
 **	allp	the indicator to include all
 ** Returns:	nothing
 **___________________________________________________			     */
-static void print_strings(file, db, allp)	   /*                        */
-  FILE   *file;					   /*                        */
-  DB     db;					   /*                        */
-  bool   allp;					   /*                        */
+static void print_strings(FILE *file, DB db, bool allp)	   /*                        */
 { Record strings = DBstring(db);		   /*                        */
   Record rec;					   /*                        */
     						   /*                        */
@@ -554,7 +527,7 @@ static void print_strings(file, db, allp)	   /*                        */
     { SetRecordMARK(rec); }			   /*                        */
   }						   /*                        */
   else						   /*                        */
-  { int i;					   /*                        */
+  {
  						   /*                        */
     for (rec = strings;				   /* reset all marks        */
 	 rec != RecordNULL;			   /*                        */
@@ -571,7 +544,7 @@ static void print_strings(file, db, allp)	   /*                        */
       {						   /*                        */
 	if (!RecordIsDELETED(rec))		   /*                        */
 	{					   /*                        */
-	  for (i = 2; i < RecordFree(rec); i += 2) /*                        */
+	  for (int i = 2; i < RecordFree(rec); i += 2) /*                        */
 	  { if (RecordHeap(rec)[i] != NULL)	   /*                        */
 	    { mark_string(strings,		   /*                        */
 			  SymbolValue(RecordHeap(rec)[i+1]));/*              */
@@ -640,10 +613,7 @@ static void print_strings(file, db, allp)	   /*                        */
 **	spec	String containing the specification of the parts to print.
 ** Returns:	nothing
 **___________________________________________________			     */
-void print_db(file,db,spec)			   /*                        */
-  FILE   *file;					   /*                        */
-  DB     db;					   /*                        */
-  char   *spec;					   /*                        */
+void print_db(FILE *file, DB db, char *spec)			   /*                        */
 {						   /*                        */
   while (*spec)				   	   /*                        */
   { switch (*(spec++))			   	   /*                        */
@@ -690,9 +660,7 @@ void print_db(file,db,spec)			   /*                        */
 **	rec	Record to delete.
 ** Returns:	nothing
 **___________________________________________________			     */
-void delete_record(db,rec)			   /*                        */
-  DB     db;					   /*                        */
-  Record rec;					   /*                        */
+void delete_record(DB db, Record rec)			   /*                        */
 { Record *rp;					   /*                        */
  						   /*                        */
   switch (RecordType(rec))			   /*                        */
@@ -731,9 +699,7 @@ void delete_record(db,rec)			   /*                        */
 **		processing. It takes two arguments a |DB| and a |Record|.
 ** Returns:	nothing
 **___________________________________________________			     */
-void db_forall(db,fct)				   /*                        */
-  DB              db;				   /*                        */
-  bool		  (*fct)_ARG((DB,Record));	   /* Function pointer	     */
+void db_forall(DB db, bool (*fct)_ARG((DB,Record)))				   /*                        */
 { register Record rec, next;			   /*                        */
 						   /*                        */
   if (DBnormal(db) == RecordNULL) return;	   /*                        */
@@ -770,9 +736,7 @@ void db_forall(db,fct)				   /*                        */
 **	key	the key to search for
 ** Returns:	the record found or |NULL| if none is found
 **___________________________________________________			     */
-Record db_find(db,key)				   /*                        */
-  DB              db;				   /*                        */
-  Symbol	  key;				   /*                        */
+Record db_find(DB db, Symbol key)				   /*                        */
 { register Record rec;				   /*                        */
 						   /*                        */
   DebugPrint2("Finding... ", SymbolValue(key));	   /*                        */
@@ -820,9 +784,7 @@ Record db_find(db,key)				   /*                        */
 **	key	the key to search for
 ** Returns:	the record found or |NULL| if none is found
 **___________________________________________________			     */
-Record db_search(db, key)			   /*                        */
-  DB              db;				   /*                        */
-  Symbol	  key;				   /*                        */
+Record db_search(DB db, Symbol key)			   /*                        */
 { register Record rec;				   /*                        */
 						   /*                        */
   if (DBnormal(db) == RecordNULL) return RecordNULL;/*                       */
@@ -854,9 +816,7 @@ Record db_search(db, key)			   /*                        */
 **	key	Key to find.
 ** Returns:	nothing
 **___________________________________________________			     */
-Symbol db_new_key(db, key)			   /*                        */
-  DB              db;				   /*                        */
-  Symbol	  key;				   /*                        */
+Symbol db_new_key(DB db, Symbol key)			   /*                        */
 { register Record rec;				   /*                        */
 						   /*                        */
   if (DBnormal(db) == RecordNULL) return NULL;     /*                        */
@@ -890,8 +850,7 @@ Symbol db_new_key(db, key)			   /*                        */
 **	db	Database to rewind.
 ** Returns:	nothing
 **___________________________________________________			     */
-void db_rewind(db)				   /*                        */
-  DB db;					   /*                        */
+void db_rewind(DB db)				   /*                        */
 {					   	   /*                        */
   if (DBnormal(db) == RecordNULL) return;	   /*                        */
  						   /*                        */
@@ -908,9 +867,7 @@ void db_rewind(db)				   /*                        */
 **	less	the comparator
 ** Returns:	
 **___________________________________________________			     */
-static Record rec__sort(rec,less)		   /*                        */
-  Record rec;					   /*                        */
-  int	 (*less)_ARG((Record,Record));	   	   /* Function pointer	     */
+static Record rec__sort(Record rec, int (*less)_ARG((Record,Record)))		   /*                        */
 { Record r;				   	   /*                        */
   Record new;		   		   	   /*                        */
  						   /*                        */
@@ -966,10 +923,7 @@ static Record rec__sort(rec,less)		   /*                        */
 ** NOTE: CURRENTLY THE ALGORITHM IS NOT STABLE:
 **	 Records with the same key may get mixed in the sorted list.
 **___________________________________________________			     */
-static Record insert_record(rec,ptr,less)	   /*			     */
-  register Record rec;				   /*			     */
-  register Record ptr;				   /*			     */
-  int		  (*less)_ARG((Record,Record));	   /* Function pointer	     */
+static Record insert_record(register Record rec, register Record ptr, int (*less)_ARG((Record,Record)))	   /*			     */
 {					   	   /*			     */
   if (ptr == RecordNULL) {	   		   /* List is empty	     */
     PrevRecord(rec) = RecordNULL;		   /*		             */
@@ -1021,9 +975,7 @@ static Record insert_record(rec,ptr,less)	   /*			     */
 **	r2	Second record to compare.
 ** Returns:	1 if the first record is smaller than the second one.
 **___________________________________________________			     */
-static int cmp_heap(r1,r2)		   	   /*                        */
-  register Record r1;				   /*                        */
-  register Record r2;				   /*                        */
+static int cmp_heap(register Record r1, register Record r2)		   	   /*                        */
 {						   /*                        */
   return symcmp(*RecordHeap(r1),		   /*                        */
 		*RecordHeap(r2)) < 0;		   /*                        */
@@ -1041,8 +993,7 @@ static int cmp_heap(r1,r2)		   	   /*                        */
 **	less	comparison function to use.
 ** Returns:	nothing
 **___________________________________________________			     */
-void db_mac_sort(db)			   	   /*                        */
-  DB db;				   	   /*                        */
+void db_mac_sort(DB db)			   	   /*                        */
 {						   /*                        */
   DBstring(db) = rec__sort(DBstring(db), cmp_heap);/*                        */
 }						   /*------------------------*/
@@ -1060,9 +1011,7 @@ void db_mac_sort(db)			   	   /*                        */
 **		is less than the second one.
 ** Returns:	nothing
 **___________________________________________________			     */
-void db_sort(db,less)				   /*                        */
-  DB  db;				   	   /*                        */
-  int (*less)_ARG((Record,Record));	   	   /* Function pointer	     */
+void db_sort(DB db, int (*less)_ARG((Record,Record)))				   /*                        */
 {						   /*                        */
   DBnormal(db) = rec__sort(DBnormal(db), less);	   /*                        */
 }						   /*------------------------*/
@@ -1079,10 +1028,7 @@ void db_sort(db,less)				   /*                        */
 **	localp	Boolean determining whether the search is only local to the db.
 ** Returns:	The macro expansion or |NULL| upon failure.
 **___________________________________________________			     */
-Symbol db_string(db, sym, localp)		   /*                        */
-  DB     db;					   /*                        */
-  Symbol sym;					   /*                        */
-  bool   localp;				   /*                        */
+Symbol db_string(DB db, Symbol sym, bool localp)		   /*                        */
 { Record rec;					   /*                        */
  						   /*                        */
   if ((rec=DBstring(db)))			   /*                        */
@@ -1122,9 +1068,7 @@ Symbol db_string(db, sym, localp)		   /*                        */
 **	lp	pointer to an integer for the length.
 ** Returns:	Static array containing the statistics.
 **___________________________________________________			     */
-int * db_count(db,lp)				   /*                        */
-  DB         db;				   /*                        */
-  int        *lp;				   /*                        */
+int * db_count(DB db, int *lp)				   /*                        */
 { static int *count;				   /*                        */
   static int len = 0;				   /*                        */
   int        i;					   /*                        */
@@ -1214,8 +1158,7 @@ int * db_count(db,lp)				   /*                        */
 **	db	Database to treat
 ** Returns:	nothing
 **___________________________________________________			     */
-void db_xref_undelete(db)			   /*                        */
-  DB db;					   /*                        */
+void db_xref_undelete(DB db)			   /*                        */
 { Record rec = DBnormal(db);			   /*                        */
   if (rec == RecordNULL) return;		   /* No entries left anyhow.*/
  						   /*                        */

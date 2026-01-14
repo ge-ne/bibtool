@@ -135,8 +135,7 @@ void clear_addlist()				   /*                        */
 **	fct	the function to be applied
 ** Returns:	the termination indicator
 **___________________________________________________			     */
-bool foreach_addlist(fct)			   /*                        */
-  bool (*fct) _ARG((Symbol key, Symbol val));	   /*                        */
+bool foreach_addlist(bool (*fct) _ARG((Symbol key, Symbol val)))			   /*                        */
 { return each_macro(addlist, fct);		   /*                        */
 }						   /*------------------------*/
 
@@ -148,8 +147,7 @@ bool foreach_addlist(fct)			   /*                        */
 **		  | token=value|
 ** Returns:	nothing
 **___________________________________________________			     */
-void add_field(spec)				   /*			     */
-  String spec;					   /*			     */
+void add_field(String spec)				   /*			     */
 { register Symbol field, value;		   	   /*			     */
 						   /*			     */
   sp_open(spec);				   /*			     */
@@ -171,9 +169,7 @@ void add_field(spec)				   /*			     */
 **	rec	Record in which the field should be removed.
 ** Returns:	nothing
 **___________________________________________________			     */
-void remove_field(field, rec)			   /*			     */
-  register Symbol field;			   /*			     */
-  Record	 rec;				   /*			     */
+void remove_field(register Symbol field, Record rec)			   /*			     */
 { register int	 i;				   /*			     */
 						   /*			     */
   for (i = 0; i < RecordFree(rec); i += 2 )	   /*			     */
@@ -208,13 +204,7 @@ void remove_field(field, rec)			   /*			     */
 **	casep	Boolean; indicating case sensitive comparison.
 ** Returns:	A pointer to the allocated structure or |NULL| upon failure.
 **___________________________________________________			     */
-static Rule new_rule(field, value, pattern, frame, flags, casep)/*           */
-  Symbol	field;				   /*			     */
-  Symbol	value;			   	   /*			     */
-  Symbol	pattern;			   /*			     */
-  Symbol	frame;				   /*			     */
-  int		flags;				   /*			     */
-  int		casep;				   /*			     */
+static Rule new_rule(Symbol field, Symbol value, Symbol pattern, Symbol frame, int flags, int casep)/*           */
 { register Rule rule;				   /*			     */
   static int    init = 1;			   /*                        */
  						   /*                        */
@@ -295,8 +285,7 @@ static Rule new_rule(field, value, pattern, frame, flags, casep)/*           */
 **	rule	First rule in the list.
 ** Returns:	nothing
 **___________________________________________________			     */
-static void free_rule(rule)			   /*                        */
-  Rule rule;					   /*                        */
+static void free_rule(Rule rule)			   /*                        */
 { Rule next;					   /*                        */
  						   /*                        */
   while (rule)				   	   /*                        */
@@ -321,12 +310,7 @@ static void free_rule(rule)			   /*                        */
 **	casep	the indicator for cased matching
 ** Returns:	nothing
 **___________________________________________________			     */
-static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
-  String	s;				   /*			     */
-  Rule		*rp;				   /*			     */
-  Rule		*rp_end;			   /*			     */
-  int		flags;				   /*                        */
-  int		casep;				   /*			     */
+static void add_rule(String s, Rule *rp, Rule *rp_end, int flags, int casep)	   /*			     */
 { Symbol	field;				   /*			     */
   Symbol	pattern;			   /*			     */
   Symbol	frame;				   /*			     */
@@ -424,12 +408,7 @@ static void add_rule(s,rp,rp_end,flags,casep)	   /*			     */
 **	rec
 ** Returns:	nothing
 **___________________________________________________			     */
-static void rewrite_1(frame,sb,match,db,rec)	   /*			     */
-  String	frame;			   	   /*			     */
-  StringBuffer	*sb;			   	   /*			     */
-  String	match;			   	   /*			     */
-  DB		db;			   	   /*                        */
-  Record	rec;			   	   /*			     */
+static void rewrite_1(String frame, StringBuffer *sb, String match, DB db, Record rec)	   /*			     */
 {						   /*                        */
   for (; *frame; frame++)			   /*			     */
   { if (*frame == '%')			   	   /*	                     */
@@ -486,10 +465,7 @@ static void rewrite_1(frame,sb,match,db,rec)	   /*			     */
 **	 rec	the record
 ** Returns:	|true| iff the rule applies
 **___________________________________________________			     */
-static bool selector_hits(rule, db, rec)	   /*                        */
-  Rule rule;					   /*                        */
-  DB db;					   /*                        */
-  Record rec;					   /*                        */
+static bool selector_hits(Rule rule, DB db, Record rec)	   /*                        */
 { Symbol field = RuleFrame(rule);		   /*                        */
   Symbol value;					   /*                        */
   int len;					   /*                        */
@@ -526,12 +502,7 @@ static bool selector_hits(rule, db, rec)	   /*                        */
 **	rec	the record
 ** Returns:	the result of the replacement
 **___________________________________________________			     */
-static String repl_regex(field, value, rule, db, rec)/*			     */
-  Symbol field;				   	   /*			     */
-  Symbol value;				   	   /*			     */
-  Rule	 rule;			   	   	   /*			     */
-  DB	 db;				   	   /*                        */
-  Record rec;			   	   	   /*			     */
+static String repl_regex(Symbol field, Symbol value, Rule rule, DB db, Record rec)/*			     */
 {						   /*			     */
   String        val = SymbolValue(value);	   /*                        */
 #ifdef REGEX
@@ -650,12 +621,7 @@ static String repl_regex(field, value, rule, db, rec)/*			     */
 **	rec	the record
 ** Returns:	
 **___________________________________________________			     */
-static String check_regex(field, value, rule, db, rec)/*		     */
-  Symbol	field;			   	   /*			     */
-  Symbol	value;			   	   /*			     */
-  register Rule	rule;			   	   /*			     */
-  DB		db;			   	   /*                        */
-  Record	rec;			   	   /*			     */
+static String check_regex(Symbol field, Symbol value, register Rule rule, DB db, Record rec)/*		     */
 {						   /*			     */
 #ifdef REGEX
   int		      len;			   /*			     */
@@ -715,8 +681,7 @@ static String check_regex(field, value, rule, db, rec)/*		     */
 **	spec	the argument
 ** Returns:	nothing
 **___________________________________________________			     */
-void rename_field(spec)				   /*			     */
-  Symbol spec;					   /*                        */
+void rename_field(Symbol spec)				   /*			     */
 { String s = SymbolValue(spec);			   /*                        */
   Symbol from;					   /*                        */
   Symbol to;					   /*                        */
@@ -773,8 +738,7 @@ void rename_field(spec)				   /*			     */
 **	s	Rule to save
 ** Returns:	nothing
 **___________________________________________________			     */
-void add_rewrite_rule(s)			   /*			     */
-  String s;				   	   /*			     */
+void add_rewrite_rule(String s)			   /*			     */
 {						   /*			     */
   DebugPrintF1("add rewrite rule\n");		   /*			     */
  						   /*                        */
@@ -802,14 +766,12 @@ static Rule *k_rules = (Rule*)NULL;
 **	spec	the specification
 ** Returns:	nothing
 **___________________________________________________			     */
-void keep_field(spec)				   /*			     */
-  Symbol spec;					   /*                        */
+void keep_field(Symbol spec)				   /*			     */
 { String s = SymbolValue(spec);			   /*                        */
   Symbol* names;				   /*                        */
   Symbol* np;				   	   /*                        */
   Symbol field 	 = NO_SYMBOL;			   /*                        */
   Symbol pattern = NO_SYMBOL;		   	   /*                        */
-  intptr_t i;					   /*                        */
  						   /*                        */
   sp_open(s);				   	   /*			     */
   if ((names = sp_symbols(&s)) == NULL)    	   /*		             */
@@ -849,7 +811,7 @@ void keep_field(spec)				   /*			     */
 			 field,			   /*                        */
 			 RULE_KEEP | RULE_REGEXP,  /*                        */
 			 true);	   	   	   /*                        */
-    i = (intptr_t)(*np) % K_RULES_SIZE;		   /*                        */
+    intptr_t i = (intptr_t)(*np) % K_RULES_SIZE;		   /*                        */
     if (i < 0) i = -i;				   /*                        */
  						   /*                        */
     NextRule(rule) = k_rules[i];		   /*                        */
@@ -874,9 +836,7 @@ void keep_field(spec)				   /*			     */
 **	flags	the additional rule flags
 ** Returns:	nothing
 **___________________________________________________			     */
-void add_check_rule(s,flags)			   /*			     */
-  String s;				   	   /*			     */
-  int flags;				   	   /*			     */
+void add_check_rule(String s, int flags)			   /*			     */
 {						   /*			     */
   DebugPrintF1("add check rule\n");		   /*			     */
   add_rule(s,					   /*                        */
@@ -897,10 +857,7 @@ void add_check_rule(s,flags)			   /*			     */
 **	db	the database
 ** Returns:	
 **___________________________________________________			     */
-static bool dont_keep(sym,rec,db)		   /*                        */
-  Symbol   sym;					   /*                        */
-  Record   rec;					   /*                        */
-  DB       db;					   /*                        */
+static bool dont_keep(Symbol sym, Record rec, DB db)		   /*                        */
 { Rule     r;					   /*                        */
   int      idx = (int)((long)sym % K_RULES_SIZE);  /*                        */
   if (idx < 0) idx = -idx;			   /*                        */
@@ -923,9 +880,7 @@ static bool dont_keep(sym,rec,db)		   /*                        */
 **	db	The database record is belonging to.
 ** Returns:	nothing
 **___________________________________________________			     */
-void rewrite_record(db, rec)			   /*			     */
-  DB		  db;				   /*                        */
-  register Record rec;				   /*			     */
+void rewrite_record(DB db, register Record rec)			   /*			     */
 { register int	  i;				   /*			     */
   register Symbol *hp;				   /* heap pointer	     */
   register Macro  mac;				   /*			     */
@@ -1051,10 +1006,7 @@ void rewrite_record(db, rec)			   /*			     */
 **		negated. 
 ** Returns:	nothing
 **___________________________________________________			     */
-void add_extract(s,regexp,notp)			   /*			     */
-  Symbol s;				   	   /*			     */
-  int regexp;					   /*                        */
-  int notp;					   /*                        */
+void add_extract(Symbol s, int regexp, int notp)			   /*			     */
 {						   /*                        */
   add_rule(SymbolValue(s),			   /* The main task is       */
 	   &x_rule,				   /*  performed by          */
@@ -1074,8 +1026,7 @@ void add_extract(s,regexp,notp)			   /*			     */
 **	s	Regular expression to search for.
 ** Returns:	nothing
 **___________________________________________________			     */
-void save_regex(s)				   /*                        */
-  String s;				   	   /*                        */
+void save_regex(String s)				   /*                        */
 { String t = malloc( (size_t)strlen((char*)s)	   /*                        */
 		   + (size_t)strlen((char*)rsc_sel_fields)/*                 */
 		   + 4 );			   /*			     */
@@ -1110,8 +1061,7 @@ void save_regex(s)				   /*                        */
 **	ignored	the letters to be ignored
 ** Returns:	Nothing
 **___________________________________________________			     */
-static void init_s_search(ignored)		   /*                        */
-  String ignored;				   /*                        */
+static void init_s_search(String ignored)		   /*                        */
 { int i;					   /*                        */
   for (i = 0; i < 256; i++) s_class[i] = i;	   /*                        */
  						   /*                        */
@@ -1161,9 +1111,7 @@ static void init_s_search(ignored)		   /*                        */
 **	s	the string
 ** Returns:	
 **___________________________________________________			     */
-static bool s_match(p,s)			   /*                        */
-  String  p;					   /*                        */
-  String  s;					   /*                        */
+static bool s_match(String p, String s)			   /*                        */
 {						   /*                        */
   while (*p && s_class[(unsigned int)*p] == '\0') p++;/*                     */
  						   /*                        */
@@ -1188,9 +1136,7 @@ static bool s_match(p,s)			   /*                        */
 ** Returns:	If a match is found then |true| is returned. Otherwise
 **		|false|.
 **___________________________________________________			     */
-static bool s_search(pattern,s)			   /*                        */
-  String  pattern;				   /*                        */
-  String  s;					   /*                        */
+static bool s_search(String pattern, String s)			   /*                        */
 {						   /*                        */
   if ( s_cased != rsc_case_select ||		   /*                        */
        strcmp((char*)s_ignored,			   /*                        */
@@ -1221,9 +1167,7 @@ static bool s_search(pattern,s)			   /*                        */
 ** Returns:	|true| iff the record is seleced by a regexp or none is
 **		given.
 **___________________________________________________			     */
-bool is_selected(db,rec)			   /*			     */
-  DB     db;					   /*                        */
-  Record rec;			   		   /*			     */
+bool is_selected(DB db, Record rec)			   /*			     */
 {						   /*			     */
   int	 len, i;				   /*			     */
   Symbol value;				   	   /*                        */
@@ -1318,8 +1262,7 @@ bool is_selected(db,rec)			   /*			     */
 **	name	
 ** Returns:	nothing
 **___________________________________________________			     */
-int set_regex_syntax(name)			   /*                        */
-  char* name;					   /*                        */
+int set_regex_syntax(char *name)			   /*                        */
 {						   /*                        */
 #ifdef REGEX
   if ( strcmp(name,"emacs")  == 0 )		   /*                        */

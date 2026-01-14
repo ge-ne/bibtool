@@ -79,13 +79,7 @@
 **	post	
 ** Returns:	The new instance of a node.
 **___________________________________________________			     */
-static NameNode new_name_node(type, strip, trim, pre, mid, post)/*           */
-  int      type;				   /*                        */
-  int      strip;				   /*                        */
-  int      trim;				   /*                        */
-  Symbol   pre;				   	   /*                        */
-  Symbol   mid;				   	   /*                        */
-  Symbol   post;				   /*                        */
+static NameNode new_name_node(int type, int strip, int trim, Symbol pre, Symbol mid, Symbol post)/*           */
 { NameNode node;				   /*                        */
  						   /*                        */
   if ( (node = (NameNode)malloc(sizeof(SNameNode))) == NameNULL )/*          */
@@ -111,8 +105,7 @@ static NameNode new_name_node(type, strip, trim, pre, mid, post)/*           */
 **	node	Node to free.
 ** Returns:	nothing
 **___________________________________________________			     */
-static void free_name_node(node)		   /*                        */
-  NameNode node;				   /*                        */
+static void free_name_node(NameNode node)		   /*                        */
 { NameNode next;				   /*                        */
  						   /*                        */
   while ( node )				   /*                        */
@@ -133,8 +126,7 @@ static void free_name_node(node)		   /*                        */
 **	n	
 ** Returns:	nothing
 **___________________________________________________			     */
-static void dump_name_node(n)			   /*                        */
-  NameNode n;					   /*                        */
+static void dump_name_node(NameNode n)			   /*                        */
 {						   /*                        */
   fputc('%',err_file);				   /*                        */
   switch ( NameType(n) & NameTranslationMask )	   /*                        */
@@ -176,9 +168,7 @@ static void dump_name_node(n)			   /*                        */
 **	midp
 ** Returns:	
 **___________________________________________________			     */
-static void set_type(sp,midp)			   /*                        */
-  char **sp;					   /*                        */
-  char **midp;					   /*                        */
+static void set_type(char **sp, char **midp)			   /*                        */
 { char c, *s, *mid;				   /*                        */
   int type = 0;					   /*                        */
    						   /*                        */
@@ -209,9 +199,7 @@ static void set_type(sp,midp)			   /*                        */
 **	s	
 ** Returns:	nothing
 **___________________________________________________			     */
-void set_name_format(nodep,s)			   /*                        */
-  NameNode *nodep;				   /*                        */
-  char     *s;					   /*                        */
+void set_name_format(NameNode *nodep, char *s)			   /*                        */
 { int      n,					   /*                        */
 	   type,				   /*                        */
     	   strip,				   /*                        */
@@ -288,8 +276,7 @@ void set_name_format(nodep,s)			   /*                        */
 **	s
 ** Returns:	
 **___________________________________________________			     */
-NameNode name_format(s)				   /*                        */
-  String   s;					   /*                        */
+NameNode name_format(String s)				   /*                        */
 { int	   type,				   /*                        */
 	   strip,				   /*                        */
 	   trim;				   /*                        */
@@ -397,18 +384,9 @@ NameNode name_format(s)				   /*                        */
 ** Returns:	Pointer to static string which is reused upon the next
 **		invocation of this function.
 **___________________________________________________			     */
-String  pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
-  String    	    *wa;			   /*                        */
-  NameNode	    format;			   /*                        */
-  String	    trans;			   /*                        */
-  int   	    max;			   /*                        */
-  String 	    comma;			   /*                        */
-  String 	    and;			   /*                        */
-  char 		    *namesep;			   /*                        */
-  char 		    *etal;			   /*                        */
+String  pp_list_of_names(String *wa, NameNode format, String trans, int max, String comma, String and, char *namesep, char *etal)/*       */
 { String	    *w;			   	   /*                        */
   String	    word;		   	   /*                        */
-  int  		    commas;			   /*                        */
   bool 		    first = true;		   /*                        */
   static StringBuffer *sb = (StringBuffer*)0;	   /*                        */
  						   /*                        */
@@ -430,7 +408,7 @@ String  pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
       break;					   /*                        */
     }						   /*                        */
  						   /*                        */
-    commas = 0;					   /*                        */
+    int commas = 0;					   /*                        */
     for (w = wa; *w && *w != and; w++)		   /*                        */
     { if (*w == comma) commas++;		   /*                        */
       DebugPrint1(*w);				   /*                        */
@@ -468,14 +446,7 @@ String  pp_list_of_names(wa,format,trans,max,comma,and,namesep,etal)/*       */
 **	commas	
 ** Returns:	nothing
 **___________________________________________________			     */
-static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
-  StringBuffer  *sb;				   /*                        */
-  String        *w;				   /*                        */
-  NameNode      format;				   /*                        */
-  String 	trans;				   /*                        */
-  int	        len;				   /*                        */
-  String        comma;				   /*                        */
-  int           commas;				   /*                        */
+static void pp_one_name(StringBuffer *sb, String *w, NameNode format, String trans, int len, String comma, int commas)/*          */
 { NameNode      nn;				   /*                        */
   char          t;				   /*                        */
   char          *type;				   /*                        */
@@ -617,11 +588,7 @@ static void pp_one_name(sb, w, format, trans, len, comma, commas)/*          */
 **	sb	the target string buffer
 ** Returns:	nothing
 **___________________________________________________			     */
-static void initial(s,trans,len,sb)		   /*                        */
-  String        s;				   /*                        */
-  String	trans;				   /*                        */
-  int           len;				   /*                        */
-  StringBuffer  *sb;				   /*                        */
+static void initial(String s, String trans, int len, StringBuffer *sb)		   /*                        */
 { 						   /*                        */
   if (len < 0) { sbputs((char*)s, sb); return; }   /*                        */
  						   /*                        */
@@ -646,9 +613,7 @@ static void initial(s,trans,len,sb)		   /*                        */
 **		Roman numbers
 ** Returns:	
 **___________________________________________________			     */
-static bool is_jr(s, eager)			   /*                        */
-  String  s;					   /*                        */
-  bool    eager;				   /*                        */
+static bool is_jr(String s, bool eager)			   /*                        */
 {						   /*                        */
   switch ( ToLower(*s) )			   /*                        */
   { case 'j':					   /*                        */
@@ -720,8 +685,7 @@ static bool is_jr(s, eager)			   /*                        */
 **	s	Word to test
 ** Returns:	|true| or |false|
 **___________________________________________________			     */
-static bool is_lower_word(s)			   /*                        */
-  register String s;				   /*                        */
+static bool is_lower_word(register String s)			   /*                        */
 { 						   /*                        */
   while(*s)					   /*                        */
   { if ( is_lower(*s) ) return true;		   /*                        */
@@ -751,13 +715,7 @@ static bool is_lower_word(s)			   /*                        */
 **	etal	string to be added instead of `and others'
 ** Returns:	a new symbol with the reformatted names.
 **___________________________________________________			     */
-char * pp_names(s, format, trans, max, namesep, etal)/*                      */
-  char          *s;				   /*                        */
-  NameNode      format;				   /*                        */
-  String 	trans;				   /*                        */
-  int	  	max;				   /*                        */
-  char   	*namesep;			   /*                        */
-  char   	*etal;				   /*                        */
+char * pp_names(char *s, NameNode format, String trans, int max, char *namesep, char *etal)/*                      */
 { char   	*wp,				   /*                        */
         	*comma,				   /*                        */
         	*and;				   /*                        */
@@ -833,9 +791,7 @@ char * pp_names(s, format, trans, max, namesep, etal)/*                      */
 **	argv	Array of command line arguments (and program name)
 ** Returns:     
 **___________________________________________________                        */
-int main(argc,argv)				   /*                        */
-  int  argc;					   /*                        */
-  char *argv[];					   /*                        */
+int main(int argc, char *argv[])				   /*                        */
 { Uchar s[1024];				   /*                        */
   NameNode format = NameNULL;			   /*                        */
  						   /*                        */
