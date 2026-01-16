@@ -180,8 +180,7 @@ bool search_rsc()				   /*			     */
 **	name	The name of the resource file to read.
 ** Returns:	|false| iff the reading failed.
 **___________________________________________________			     */
-bool load_rsc(name)			   	   /*			     */
-  register String name;				   /*			     */
+bool load_rsc(register String name)			   	   /*			     */
 {						   /*			     */
   if (r_v == NULL) { init_rsc(); }		   /*			     */
   return (name != NULL ? read_rsc(name) : false);  /*			     */
@@ -196,8 +195,7 @@ bool load_rsc(name)			   	   /*			     */
 **	name	the name of the resource file
 ** Returns:	
 **___________________________________________________			     */
-bool resource(name)			   	   /*			     */
-  register String name;				   /*			     */
+bool resource(register String name)			   	   /*			     */
 {						   /*			     */
   bool ret = load_rsc(name);			   /*                        */
   if (!ret) { NoRscError(name); }		   /*                        */
@@ -215,8 +213,7 @@ bool resource(name)			   	   /*			     */
 **	sym	String to check for the boolean value.
 ** Returns:	|true| iff the string represents true.
 **___________________________________________________			     */
-static bool test_true(sym)			   /*			     */
-  Symbol sym;				   	   /*			     */
+static bool test_true(Symbol sym)			   /*			     */
 { register String s = SymbolValue(sym);		   /*                        */
 						   /*			     */
   switch ( *s )					   /*                        */
@@ -250,8 +247,7 @@ static bool test_true(sym)			   /*			     */
 **	s	String containing a resource command.
 ** Returns:	|true| iff an error has occurred.
 **___________________________________________________			     */
-bool use_rsc(s)					   /*			     */
-  String	  s;				   /*			     */
+bool use_rsc(String s)					   /*			     */
 { register Symbol name,				   /*			     */
 		  value;			   /*			     */
 						   /*			     */
@@ -280,9 +276,7 @@ bool use_rsc(s)					   /*			     */
 **	val	The new value of the resource.
 ** Returns:	|false| iff everything went right.
 **___________________________________________________			     */
-bool set_rsc(name,val)				   /*			     */
-  Symbol name;				   	   /*			     */
-  Symbol val;				   	   /*			     */
+bool set_rsc(Symbol name, Symbol val)				   /*			     */
 {						   /*			     */
   if ( rsc_verbose )				   /*			     */
   { VerbosePrint4("Set resource ",		   /*                        */
@@ -333,8 +327,7 @@ bool set_rsc(name,val)				   /*			     */
 **	s	String to print.
 ** Returns:	nothing
 **___________________________________________________			     */
-void rsc_print(s)				   /*			     */
-  String s;				   	   /*			     */
+void rsc_print(String s)				   /*			     */
 { ErrPrintF("%s\n", (char*)s);			   /* print the string itself*/
 			   			   /* followed by a newline  */
 }						   /*------------------------*/

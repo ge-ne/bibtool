@@ -144,8 +144,7 @@ static size_t words_used = 0;
 **	word	word to push
 ** Returns:	nothing
 **___________________________________________________			     */
-static void push_word(word)			   /*			     */
-  register String word;				   /*			     */
+static void push_word(register String word)			   /*			     */
 { PushWord(word);				   /*			     */
 }						   /*------------------------*/
 
@@ -157,8 +156,7 @@ static void push_word(word)			   /*			     */
 **	s	word to push
 ** Returns:	nothing
 **___________________________________________________			     */
-static void Push_Word(s)			   /*			     */
-  register String s;				   /*			     */
+static void Push_Word(register String s)			   /*			     */
 { register String *wp;				   /*			     */
 						   /*			     */
   words_len += WordLenInc;			   /*			     */
@@ -225,9 +223,7 @@ static void Push_Word(s)			   /*			     */
 **		The characters which are not allowed are silently suppressed.
 ** Returns:	nothing
 **___________________________________________________			     */
-void set_separator(n, s)			   /*			     */
-  register int	n;				   /*			     */
-  String s;				   	   /*			     */
+void set_separator(register int n, String s)			   /*			     */
 { 						   /*                        */
   if (n < 0 || n >= NoSeps)     		   /*			     */
   { ERROR("Invalid separator reference.");	   /*			     */
@@ -275,8 +271,7 @@ void set_separator(n, s)			   /*			     */
 **	n	the index
 ** Returns:	the separator for the given index or NULL
 **___________________________________________________			     */
-Symbol get_separator(n)				   /*                        */
-  int n;					   /*                        */
+Symbol get_separator(int n)				   /*                        */
 { 						   /*                        */
   if (n < 0 || n >= NoSeps)   			   /*			     */
   { ERROR("Invalid separator reference.");     	   /*			     */
@@ -325,8 +320,7 @@ Symbol get_separator(n)				   /*                        */
 **	value	String representation of the new value.
 ** Returns:	nothing
 **___________________________________________________			     */
-void set_base(value)				   /*			     */
-  String value;				   	   /*			     */
+void set_base(String value)				   /*			     */
 {						   /*			     */
   if	  (case_eq(value,(String)"upper")) key_base = KEY_BASE_UPPER;/*      */
   else if (case_eq(value,(String)"lower")) key_base = KEY_BASE_LOWER;/*      */
@@ -373,9 +367,7 @@ String get_base()				   /*                        */
 **	digits	String of digits to use
 ** Returns:	
 **___________________________________________________			     */
-static char * itostr(i,digits)			   /*			     */
-  register int	 i;				   /*			     */
-  register char	 *digits;			   /*			     */
+static char * itostr(register int i, register char *digits)			   /*			     */
 { static char	 buffer[ITOA_LEN];		   /* buffer to store result */
   register char	 *bp;				   /* buffer pointer	     */
   register int	 sign,				   /*			     */
@@ -494,10 +486,7 @@ static void key_init()				   /*			     */
 **	flags	
 ** Returns:	
 **___________________________________________________			     */
-static int deTeX(line,save_fct,flags)		   /*			     */
-  String	line;				   /*			     */
-  int		flags;				   /*			     */
-  void		(*save_fct)_ARG((String));	   /*			     */
+static int deTeX(String line, void (*save_fct)_ARG((String)), int flags)		   /*			     */
 { static String	buffer;			   	   /*			     */
   static size_t len   = 0;			   /*			     */
   Uchar		c;				   /*                        */
@@ -605,11 +594,7 @@ static int deTeX(line,save_fct,flags)		   /*			     */
 **	trans	Translation table
 ** Returns:	nothing
 **___________________________________________________			     */
-static void push_s(sb,s,max,trans)		   /*			     */
-  StringBuffer *sb;				   /*                        */
-  String s;			   	   	   /*			     */
-  int max;				   	   /*                        */
-  String trans;		   		   	   /*			     */
+static void push_s(StringBuffer *sb, String s, int max, String trans)		   /*			     */
 {						   /*                        */
   if ( max <= 0 ) 				   /*                        */
   { while ( *s )				   /*			     */
@@ -642,8 +627,7 @@ static void push_s(sb,s,max,trans)		   /*			     */
 **	word	Word to add.
 ** Returns:	nothing
 **___________________________________________________			     */
-void add_ignored_word(word)			   /*			     */
-  Symbol word;				   	   /*			     */
+void add_ignored_word(Symbol word)			   /*			     */
 {						   /*                        */
   key_init();					   /*                        */
   add_word(word,				   /*                        */
@@ -679,8 +663,7 @@ void clear_ignored_words()			   /*                        */
 **	fct	Function to apply.
 ** Returns:	The return status of the last |fct| call.
 **___________________________________________________			     */
-bool foreach_ignored_word(fct)			   /*                        */
-  bool (*fct)_ARG((Symbol));			   /*                        */
+bool foreach_ignored_word(bool (*fct)_ARG((Symbol)))			   /*                        */
 { int i;					   /*                        */
  						   /*                        */
   key_init();					   /*                        */
@@ -706,14 +689,7 @@ bool foreach_ignored_word(fct)			   /*                        */
 **	sep	String separating the words.
 ** Returns:	nothing
 **___________________________________________________			     */
-static void fmt_title(sb, line, len, in, trans, ignore, sep)/*		     */
-  StringBuffer  *sb;				   /*                        */
-  String        line;				   /*			     */
-  int	        len;				   /*			     */
-  int	        in;				   /*			     */
-  String	trans;				   /* Translation table	     */
-  bool          ignore;				   /*                        */
-  Symbol        sep;				   /*                        */
+static void fmt_title(StringBuffer *sb, String line, int len, int in, String trans, bool ignore, Symbol sep)/*		     */
 { bool	        first = true;			   /*			     */
   int	        nw, i, j;			   /*			     */
   String        s;				   /*			     */
@@ -766,12 +742,7 @@ static void fmt_title(sb, line, len, in, trans, ignore, sep)/*		     */
 **	ignore	flag to indicate if certain words should be ignored.
 ** Returns:	
 **___________________________________________________			     */
-static bool fmt_c_words(line, min, max, not, ignore)/*			     */
-  String line;					   /*			     */
-  int	 min;					   /*			     */
-  int	 max;					   /*			     */
-  bool	 not;					   /*			     */
-  bool	 ignore;				   /*			     */
+static bool fmt_c_words(String line, int min, int max, bool not, bool ignore)/*			     */
 { int	 n, i, nw;				   /*			     */
 						   /*			     */
   ResetWords;					   /*                        */
@@ -809,8 +780,7 @@ static bool fmt_c_words(line, min, max, not, ignore)/*			     */
 **	s
 ** Returns:	nothing
 **___________________________________________________			     */
-void def_format_type(s)				   /*                        */
-  String s;					   /*                        */
+void def_format_type(String s)				   /*                        */
 { int    n;					   /*                        */
   String cp;					   /*                        */
   Uchar  c;					   /*                        */
@@ -853,12 +823,7 @@ void def_format_type(s)				   /*                        */
 **	trans	translation table
 ** Returns:	nothing
 **___________________________________________________			     */
-static void fmt_names(sb,line,maxname,post,trans)  /*		             */
-  StringBuffer  *sb;				   /*                        */
-  String        line;				   /* Name list string	     */
-  int	        maxname;			   /* number of names b4 etal*/
-  int           post;				   /* number of relevant char*/
-  String	trans;				   /* Translation table	     */
+static void fmt_names(StringBuffer *sb, String line, int maxname, int post, String trans)  /*		             */
 { int	        wp,				   /*			     */
 	        i;				   /*			     */
   static bool   undef_warning = false;		   /*                        */
@@ -913,11 +878,7 @@ static void fmt_names(sb,line,maxname,post,trans)  /*		             */
 **	not	negation flag
 ** Returns:	
 **___________________________________________________			     */
-static bool fmt_c_names(line,min,max,not)	   /*		             */
-  String line;				   	   /* Name list string	     */
-  int   min;				   	   /* number of relevant char*/
-  int   max;				   	   /* number of names b4 etal*/
-  bool  not;				   	   /* negation flag          */
+static bool fmt_c_names(String line, int min, int max, bool not)	   /*		             */
 { int   wp,				   	   /*			     */
         i,				   	   /*                        */
 	n;				   	   /*			     */
@@ -960,14 +921,7 @@ static bool fmt_c_names(line,min,max,not)	   /*		             */
 **	trunc	Boolean indicating whether or not to truncate the number.
 ** Returns:	
 **___________________________________________________			     */
-static bool fmt_digits(sb,s,mp,pp,n,sel,trunc)	   /*			     */
-  StringBuffer    *sb;				   /*                        */
-  register String s;				   /*			     */
-  int             mp;				   /*                        */
-  int             pp;				   /*                        */
-  register int 	  n;				   /*			     */
-  int		  sel;				   /*                        */
-  bool            trunc;			   /*                        */
+static bool fmt_digits(StringBuffer *sb, register String s, int mp, int pp, register int n, int sel, bool trunc)	   /*			     */
 { register String cp;				   /*			     */
 						   /*			     */
   if (n < 0) { n = ( mp ? 1 : 0x7fff ); }	   /*                        */
@@ -1019,12 +973,7 @@ static bool fmt_digits(sb,s,mp,pp,n,sel,trunc)	   /*			     */
 **	sep	Separator
 ** Returns:	nothing
 **___________________________________________________			     */
-static void fmt_string(sb,s,n,trans,sep)	   /*			     */
-  StringBuffer	  *sb;				   /*                        */
-  register String s;				   /*			     */
-  register int	  n;				   /*			     */
-  register String trans;			   /*			     */
-  String       	  sep;			   	   /*                        */
+static void fmt_string(StringBuffer *sb, register String s, register int n, register String trans, String sep)	   /*			     */
 {						   /*			     */
   while (*s && n > 0)				   /*			     */
   { if (is_allowed(*s))			   	   /*			     */
@@ -1053,11 +1002,7 @@ static void fmt_string(sb,s,n,trans,sep)	   /*			     */
 **	not	negation flag
 ** Returns:	
 **___________________________________________________			     */
-static bool fmt_c_string(s,min,max,not)		   /*			     */
-  register String  s;				   /*			     */
-  register int   min;				   /*			     */
-  register int   max;				   /*			     */
-  register bool  not;				   /*			     */
+static bool fmt_c_string(String s, register int min, register int max, register bool not)		   /*			     */
 { int            n = 0;				   /*			     */
  						   /*                        */
   while (*s)				   	   /*			     */
@@ -1117,9 +1062,7 @@ void end_key_gen()				   /*                        */
 **	rec	Record to consider
 ** Returns:	nothing
 **___________________________________________________			     */
-bool mark_key(db,rec)				   /*			     */
-  DB	 db;					   /*                        */
-  Record rec;				   	   /*			     */
+bool mark_key(DB db, Record rec)				   /*			     */
 {						   /*			     */
   POSSIBLY_UNUSED(db);				   /*                        */
 						   /*			     */
@@ -1139,9 +1082,7 @@ bool mark_key(db,rec)				   /*			     */
 **	rec	Record to consider.
 ** Returns:	nothing
 **___________________________________________________			     */
-void make_key(db,rec)				   /*			     */
-  DB		  db;				   /*                        */
-  register Record rec;				   /*			     */
+void make_key(DB db, register Record rec)				   /*			     */
 { register String kp;			   	   /*			     */
   Symbol	  key;				   /*                        */
   Symbol          old;			   	   /*			     */
@@ -1235,9 +1176,7 @@ void make_key(db,rec)				   /*			     */
 **	rec	Record to consider.
 ** Returns:	nothing
 **___________________________________________________			     */
-void make_sort_key(db,rec)			   /*			     */
-  DB		  db;				   /*                        */
-  register Record rec;				   /*			     */
+void make_sort_key(DB db, register Record rec)			   /*			     */
 { register String kp;				   /*			     */
 						   /*			     */
   if ( IsSpecialRecord(RecordType(rec)) ) return;  /*			     */
@@ -1270,9 +1209,7 @@ void make_sort_key(db,rec)			   /*			     */
 ** Returns:	The address of the new node.
 **		Upon failure exit() is called.
 **___________________________________________________			     */
-static KeyNode new_key_node(type, sym)	   	   /*			     */
-  int	  type;					   /*			     */
-  Symbol  sym;				   	   /*			     */
+static KeyNode new_key_node(int type, Symbol sym)	   	   /*			     */
 { KeyNode new_node;				   /*			     */
   if( (new_node=(KeyNode)malloc(sizeof(SKeyNode))) ==/*                      */
       (KeyNode)0 )				   /*		             */
@@ -1295,8 +1232,7 @@ static KeyNode new_key_node(type, sym)	   	   /*			     */
 **	kn	KeyNode to be freed.
 ** Returns:	nothing
 **___________________________________________________			     */
-void free_key_node(kn)				   /*			     */
-  KeyNode kn;					   /*			     */
+void free_key_node(KeyNode kn)				   /*			     */
 { KeyNode next;					   /*                        */
 						   /*			     */
   while ( kn != (KeyNode)0 )			   /*                        */
@@ -1317,9 +1253,7 @@ void free_key_node(kn)				   /*			     */
 **	treep	the pointer to the tree to be extended
 ** Returns:	|true| iff the operation succeeds
 **___________________________________________________			     */
-static bool add_fmt_tree(s, treep)		   /*			     */
-  char	  *s;					   /*			     */
-  KeyNode *treep;				   /*			     */
+static bool add_fmt_tree(char *s, KeyNode *treep)		   /*			     */
 { KeyNode kn, kn_or;				   /*			     */
   int	  special   = 0;			   /*			     */
   String  s0 = (String)s;			   /*			     */
@@ -1410,8 +1344,7 @@ static bool add_fmt_tree(s, treep)		   /*			     */
 **	s	Specification string
 ** Returns:	nothing
 **___________________________________________________			     */
-void add_format(s)				   /*			     */
-  register char *s;				   /*			     */
+void add_format(register char *s)				   /*			     */
 {						   /*			     */
   if (s == NULL)				   /*			     */
   { WARNING("Missing key format.");		   /*			     */
@@ -1452,8 +1385,7 @@ void add_format(s)				   /*			     */
 **	s	Specification string
 ** Returns:	nothing
 **___________________________________________________			     */
-void add_sort_format(s)				   /*			     */
-  register char *s;				   /*			     */
+void add_sort_format(register char *s)				   /*			     */
 {						   /*			     */
   if ( s == NULL )				   /*			     */
   { WARNING("Missing sort key format.");	   /*			     */
@@ -1473,9 +1405,7 @@ void add_sort_format(s)				   /*			     */
 **	knp
 ** Returns:	Error code. 0 = success
 **___________________________________________________			     */
-static int fmt_parse(sp,knp)			   /*			     */
-  char		**sp;				   /*			     */
-  KeyNode	*knp;				   /*			     */
+static int fmt_parse(char **sp, KeyNode *knp)			   /*			     */
 { int		ret;				   /*			     */
   KeyNode	new;				   /*			     */
 						   /*			     */
@@ -1505,9 +1435,7 @@ static int fmt_parse(sp,knp)			   /*			     */
 **	knp	Pointer to the key node in which to store the result
 ** Returns:	Error code or 0 upon success
 **___________________________________________________			     */
-static int fmt__parse(sp,knp)			   /*			     */
-  char		**sp;				   /*			     */
-  KeyNode	*knp;				   /*			     */
+static int fmt__parse(char **sp, KeyNode *knp)			   /*			     */
 { register char *cp;				   /*			     */
   char		c;				   /*			     */
   int		ret;				   /*			     */
@@ -1623,11 +1551,7 @@ static int fmt__parse(sp,knp)			   /*			     */
 **	db	the database
 ** Returns:	|false| upon success.
 **___________________________________________________			     */
-static bool eval_fmt(sb,kn,rec,db)		   /*			     */
-  StringBuffer *sb;				   /*                        */
-  KeyNode	kn;				   /*			     */
-  Record	rec;				   /*			     */
-  DB		db;				   /*                        */
+static bool eval_fmt(StringBuffer *sb, KeyNode kn, Record rec, DB db)		   /*			     */
 { int		pos = sbtell(sb);		   /*			     */
 						   /*			     */
   tmp_key_db = db;				   /*                        */
@@ -1649,10 +1573,7 @@ static bool eval_fmt(sb,kn,rec,db)		   /*			     */
 **	rec	the record
 ** Returns:	
 **___________________________________________________			     */
-static bool eval__fmt(sb,kn,rec)		   /*			     */
-  StringBuffer  *sb;				   /*                        */
-  KeyNode	kn;				   /*			     */
-  Record	rec;				   /*			     */
+static bool eval__fmt(StringBuffer *sb, KeyNode kn, Record rec)		   /*			     */
 { Symbol	s;				   /*			     */
   int		pos;				   /*			     */
   String	trans;				   /*                        */
@@ -1885,10 +1806,7 @@ static bool eval__fmt(sb,kn,rec)		   /*			     */
 **	rec	the record
 ** Returns:	nothing
 **___________________________________________________			     */
-static void eval__special(sb,kn,rec)		   /*			     */
-  StringBuffer *sb;				   /*                        */
-  KeyNode	kn;				   /*			     */
-  Record	rec;				   /*			     */
+static void eval__special(StringBuffer *sb, KeyNode kn, Record rec)		   /*			     */
 { Symbol	s;				   /*			     */
   bool		missing	= true;		   	   /*			     */
   int		fmt;			   	   /*			     */
@@ -1982,11 +1900,7 @@ static void eval__special(sb,kn,rec)		   /*			     */
 ** Returns:	|1| iff the format is invalid or the evaluation fails. |0|
 **		otherwise.
 **___________________________________________________			     */
-int apply_fmt(sb,fmt,rec,db)			   /*                        */
-  StringBuffer   *sb;				   /*                        */
-  char	         *fmt;				   /*                        */
-  Record         rec;				   /*                        */
-  DB	         db;				   /*                        */
+int apply_fmt(StringBuffer *sb, char *fmt, Record rec, DB db)			   /*                        */
 { static char    *old_fmt = NULL;		   /*                        */
   static KeyNode old_kn   = (KeyNode)0;		   /*                        */
  						   /*                        */
@@ -2020,11 +1934,7 @@ int apply_fmt(sb,fmt,rec,db)			   /*                        */
 **	cp	format
 ** Returns:	The first character after the % format.
 **___________________________________________________			     */
-String fmt_expand(sb,cp,db,rec)			   /*                        */
-  StringBuffer  *sb;				   /*                        */
-  Uchar         *cp;				   /*                        */
-  DB	        db;				   /*                        */
-  Record        rec;				   /*                        */
+String fmt_expand(StringBuffer *sb, Uchar *cp, DB db, Record rec)			   /*                        */
 { Symbol	field;				   /*                        */
   Uchar		c;			   	   /*                        */
   String	trans = trans_id;		   /*                        */
@@ -2204,9 +2114,7 @@ String fmt_expand(sb,cp,db,rec)			   /*                        */
 **	in
 ** Returns:	nothing
 **___________________________________________________			     */
-static void show_fmt(kn,in)			   /*			     */
-  register KeyNode kn;				   /*			     */
-  register int     in;				   /*                        */
+static void show_fmt(register KeyNode kn, register int in)			   /*			     */
 { register int     i;				   /*			     */
 #define NLin(S) ErrC('\n');for(i=in;i>0;i--) ErrC(' '); (void)fputs(S,err_file)
 #define ErrS(S) (void)fputs(S,err_file)
@@ -2274,10 +2182,7 @@ static void show_fmt(kn,in)			   /*			     */
 **		arbitrary string.
 ** Returns:	The address of the value or |NULL|.
 **___________________________________________________			     */
-Symbol get_field(db,rec,name)		   	   /*			     */
-  DB		  db;				   /*                        */
-  register Record rec;				   /*			     */
-  register Symbol name;			   	   /*			     */
+Symbol get_field(DB db, register Record rec, register Symbol name)		   	   /*			     */
 { String s = SymbolValue(name);			   /*                        */
   Symbol sym;					   /*                        */
   DebugPrint2("get_field ", s);		   	   /*                        */
@@ -2478,11 +2383,7 @@ Symbol get_field(db,rec,name)		   	   /*			     */
 **	value	the new value
 ** Returns:	|false| if the asignment has succeeded.
 **___________________________________________________			     */
-bool set_field(db,rec,name,value)		   /*			     */
-  DB db;					   /*                        */
-  register Record rec;				   /*			     */
-  Symbol	  name;			   	   /*			     */
-  Symbol	  value;		   	   /*			     */
+bool set_field(DB db, register Record rec, Symbol name, Symbol value)		   /*			     */
 { int c = *SymbolValue(name);			   /*                        */
   POSSIBLY_UNUSED(db);				   /*                        */
 						   /*			     */

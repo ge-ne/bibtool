@@ -85,8 +85,7 @@ void init_type()				   /*                        */
 **	s	the allowed word separator characters
 ** Returns:	nothing
 **___________________________________________________			     */
-void add_word_sep(s)				   /*                        */
-  register String s;				   /*                        */
+void add_word_sep(register String s)		   /*                        */
 {						   /*                        */
   if ( s == StringNULL ) return;		   /*                        */
   for ( ; *s ; s++ )				   /*                        */
@@ -107,9 +106,7 @@ void add_word_sep(s)				   /*                        */
 **	t	Second string to consider.
 ** Returns:	|true| iff the strings are equal.
 **___________________________________________________			     */
-bool case_eq(s, t)				   /*                        */
-  register String s;			   	   /*                        */
-  register String t;			   	   /*                        */
+bool case_eq(register String s, register String t)/*                        */
 {						   /*                        */
 #ifdef DEBUG
   assert(s != NULL);				   /*                        */
@@ -134,9 +131,7 @@ bool case_eq(s, t)				   /*                        */
 **	t	the second string
 ** Returns:	
 **___________________________________________________			     */
-int cmp(s, t)				   	   /*                        */
-  register String s;			   	   /*                        */
-  register String t;			   	   /*                        */
+int cmp(register String s, register String t)	   /*                        */
 { register int d;				   /*                        */
   while ( *s )					   /*                        */
   { d = *(s++) - *(t++);                    	   /*                        */
@@ -152,8 +147,7 @@ int cmp(s, t)				   	   /*                        */
 **	s	string to convert
 ** Returns:	The converted string.
 **___________________________________________________			     */
-String lower(s)					   /*                        */
-  register String s;				   /*                        */
+String lower(register String s)		   /*                        */
 { String t = s;					   /*                        */
   while ( *s ) { *s = ToLower(*s); ++s; }	   /*                        */
   return t;				   	   /*                        */

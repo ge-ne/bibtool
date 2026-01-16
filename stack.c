@@ -76,8 +76,7 @@
 **	s	String to push to the stack.
 ** Returns:	nothing
 **___________________________________________________			     */
-void push_string(s)				   /*                        */
-  register Symbol s;				   /*                        */
+void push_string(register Symbol s)				   /*                        */
 {						   /*                        */
   if ( stack_ptr >= stack_size )		   /*                        */
   { stack_size += 16;		   		   /*                        */
