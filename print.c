@@ -449,11 +449,13 @@ static void print_equation(pre, lhs, rhs, align, fct)/*			     */
   else if ( rsc_print_we && column > align - 2 )   /*                        */
   { PUTC(' '); }				   /*                        */
   else if ( rsc_eq_right )			   /*                        */
-  { indent(align - (rsc_print_we ? 3: align_auto? 1 : 2), fct); }/*	     */
+  { indent(align - ((rsc_print_we || !align_auto) ? 2 : 1), fct); }/*	     */
   else if ( column < align || rsc_print_we )	   /*                        */
   { PUTC(' '); }	   			   /*                        */
 						   /*			     */
-  PUTS(rsc_print_we ? " = " : "=");		   /*                        */
+  PUTC('=');		   			   /*                        */
+  if ( rsc_print_we && column > align )
+  { PUTC(' '); }	   			   /*                        */
   line_breaking(SymbolValue(rhs), align, fct);     /*			     */
 }						   /*------------------------*/
 
