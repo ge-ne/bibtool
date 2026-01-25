@@ -7,11 +7,32 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
+  test-ubuntu-gcc:
 
     runs-on: ubuntu-latest
 
     steps:
+    - uses: actions/checkout@v6
+    - name: configure
+      run: ./configure
+    - name: make
+      run: make
+    - name: make test
+      run: make test
+
+  test-windows-msys2-UCRT64:
+
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: UCRT64
+        install: make mingw-w64-ucrt-x86_64-gcc
     - uses: actions/checkout@v6
     - name: configure
       run: ./configure
